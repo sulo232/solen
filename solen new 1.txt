@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>solen.ch — Salons & Studios in Basel buchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#0d0d0d; --white:#fafaf8; --cream:#f5f2ec;
+  --accent:#c8a96e; --accent2:#e0c28a; --accent-dark:#a88748;
+  --mid:#888; --light:#e8e5df; --green:#1a4d3e;
+  --radius:14px; --shadow:0 8px 32px rgba(0,0,0,.10);
+  --shadow-lg:0 24px 64px rgba(0,0,0,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--white);color:var(--black);overflow-x:hidden;}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;}
+
+.lang-toggle{display:flex;align-items:center;gap:4px;background:var(--cream);border-radius:20px;padding:4px 8px;border:1.5px solid var(--light);}
+.lang-btn{padding:4px 10px;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:'Outfit',sans-serif;color:var(--mid);transition:all .2s;}
+.lang-btn.active{background:var(--accent);color:white;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:68px;background:rgba(250,250,248,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--light);}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-1px;color:var(--black);cursor:pointer;display:flex;align-items:center;gap:4px;}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:28px;}
+.nav-links a{font-size:14px;font-weight:500;color:var(--black);text-decoration:none;opacity:.7;transition:opacity .2s;cursor:pointer;}
+.nav-links a:hover{opacity:1;}
+.nav-actions{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:40px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .2s;}
+.btn-outline{background:transparent;border:1.5px solid var(--light);color:var(--black);}
+.btn-outline:hover{border-color:var(--black);}
+.btn-primary{background:var(--black);color:white;}
+.btn-primary:hover{background:#222;}
+.btn-gold{background:var(--accent);color:white;}
+.btn-gold:hover{background:var(--accent-dark);}
+.btn-sm{padding:8px 16px;font-size:13px;}
+
+.hero{padding:140px 48px 80px;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--cream);border:1.5px solid var(--light);border-radius:30px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--accent-dark);margin-bottom:24px;}
+.hero-badge::before{content:'✦';color:var(--accent);}
+.hero h1{font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1.08;letter-spacing:-2px;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:var(--accent);}
+.hero p{font-size:17px;color:var(--mid);line-height:1.7;margin-bottom:32px;max-width:440px;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-img{border-radius:24px;overflow:hidden;height:480px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;}
+.hero-img-cell{overflow:hidden;border-radius:12px;background:#eee;}
+.hero-img-cell:first-child{grid-row:1/3;border-radius:16px 4px 4px 16px;}
+.hero-img-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
+.hero-img-cell:hover img{transform:scale(1.04);}
+
+.stats{background:var(--black);padding:48px;display:flex;justify-content:center;gap:80px;}
+.stat{text-align:center;}
+.stat-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--accent);}
+.stat-label{font-size:14px;color:rgba(255,255,255,.5);margin-top:4px;}
+
+.section{padding:80px 48px;max-width:1280px;margin:0 auto;}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;}
+.section-header h2{font-size:32px;font-weight:800;letter-spacing:-1px;}
+.section-header p{font-size:14px;color:var(--mid);}
+
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;}
+.filter-btn{padding:8px 18px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--light);background:transparent;font-family:'Outfit',sans-serif;color:var(--mid);transition:all .2s;}
+.filter-btn.active,.filter-btn:hover{background:var(--black);color:white;border-color:var(--black);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;}
+
+.card{background:white;border-radius:20px;overflow:hidden;border:1.5px solid var(--light);cursor:pointer;transition:all .25s;position:relative;}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent;}
+.card-img{height:200px;overflow:hidden;position:relative;background:#f0ede7;}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.card:hover .card-img img{transform:scale(1.06);}
+.card-badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.badge-registered{background:var(--accent);color:white;}
+.badge-unregistered{background:rgba(0,0,0,.55);color:rgba(255,255,255,.8);backdrop-filter:blur(6px);}
+.card-owner-btn{position:absolute;top:12px;right:12px;background:white;border:none;border-radius:10px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--black);box-shadow:0 2px 8px rgba(0,0,0,.15);transition:all .2s;z-index:10;}
+.card-owner-btn:hover{background:var(--accent);color:white;}
+.card-body{padding:18px 20px 20px;}
+.card-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:6px;}
+.card-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:4px;}
+.card-location{font-size:13px;color:var(--mid);display:flex;align-items:center;gap:4px;margin-bottom:12px;}
+.card-meta{display:flex;align-items:center;justify-content:space-between;}
+.card-rating{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;}
+.stars{color:var(--accent);}
+.card-price{font-size:13px;color:var(--mid);}
+.card-action{margin-top:14px;}
+.card-action .btn{width:100%;justify-content:center;}
+.card-not-bookable{margin-top:14px;padding:10px 14px;background:var(--cream);border-radius:10px;font-size:12px;color:var(--mid);text-align:center;line-height:1.5;}
+
+/* ── DETAIL MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:white;border-radius:24px;width:100%;max-width:820px;max-height:90vh;overflow-y:auto;position:relative;transform:translateY(20px);transition:transform .25s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(6px);color:var(--black);}
+.modal-close:hover{background:var(--black);color:white;}
+
+/* Gallery */
+.gallery{position:relative;height:320px;overflow:hidden;background:#111;border-radius:24px 24px 0 0;}
+.gallery-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s;}
+.gallery-img.active{opacity:1;}
+.gallery-nav{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;}
+.gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);border:none;cursor:pointer;transition:all .2s;}
+.gallery-dot.active{background:white;width:22px;border-radius:4px;}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;color:white;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s;}
+.gallery-arrow:hover{background:rgba(255,255,255,.35);}
+.gallery-arrow.prev{left:16px;}
+.gallery-arrow.next{right:16px;}
+.gallery-count{position:absolute;top:16px;right:16px;background:rgba(0,0,0,.5);color:white;font-size:12px;padding:4px 10px;border-radius:20px;backdrop-filter:blur(4px);}
+
+.modal-body{padding:28px 32px 32px;}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:16px;}
+.modal-title-block .modal-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:6px;}
+.modal-title-block h2{font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:6px;}
+.modal-rating{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;}
+.modal-actions{display:flex;gap:10px;flex-shrink:0;}
+
+.info-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--cream);border-radius:30px;font-size:13px;color:var(--black);text-decoration:none;border:1px solid var(--light);transition:all .2s;}
+.chip:hover{background:var(--black);color:white;}
+.chip-icon{font-size:14px;}
+
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--light);margin-bottom:24px;}
+.tab{padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:'Outfit',sans-serif;color:var(--mid);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.tab.active{color:var(--black);border-bottom-color:var(--black);}
+
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.service-list{display:flex;flex-direction:column;gap:0;}
+.service-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--light);}
+.service-row:last-child{border-bottom:none;}
+.service-name{font-size:15px;font-weight:500;}
+.service-details{display:flex;gap:16px;align-items:center;}
+.service-dur{font-size:13px;color:var(--mid);}
+.service-price{font-size:15px;font-weight:700;color:var(--accent-dark);}
+
+.hours-grid{display:grid;grid-template-columns:120px 1fr;gap:0;}
+.hours-row{display:contents;}
+.hours-day{padding:10px 0;font-size:14px;font-weight:600;border-bottom:1px solid var(--light);}
+.hours-time{padding:10px 0;font-size:14px;color:var(--mid);border-bottom:1px solid var(--light);}
+.hours-closed{color:#e05050;}
+
+.info-block{margin-bottom:20px;}
+.info-block h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mid);margin-bottom:8px;}
+.info-block p{font-size:15px;line-height:1.7;color:var(--black);}
+
+/* BOOKING MODAL */
+.modal-booking{max-width:520px;}
+.booking-form{display:flex;flex-direction:column;gap:14px;margin-top:20px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:13px;font-weight:600;color:var(--mid);}
+.form-group input,.form-group select{padding:12px 14px;border:1.5px solid var(--light);border-radius:10px;font-size:14px;font-family:'Outfit',sans-serif;background:var(--cream);transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent);}
+
+/* AUTH MODAL */
+.modal-auth{max-width:440px;}
+.auth-title{font-size:24px;font-weight:800;letter-spacing:-1px;margin-bottom:6px;}
+.auth-sub{font-size:14px;color:var(--mid);margin-bottom:28px;}
+.auth-providers{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.auth-provider-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;border:1.5px solid var(--light);background:white;}
+.auth-provider-btn:hover{border-color:var(--black);}
+.auth-divider{text-align:center;font-size:12px;color:var(--mid);margin:16px 0;position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--light);}
+.auth-divider::before{left:0;}
+.auth-divider::after{right:0;}
+.auth-switch{text-align:center;font-size:13px;color:var(--mid);margin-top:16px;}
+.auth-switch a{color:var(--accent-dark);font-weight:600;cursor:pointer;text-decoration:underline;}
+
+/* EDIT MODAL */
+.modal-edit{max-width:600px;}
+.edit-section{margin-bottom:24px;}
+.edit-section h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mid);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--light);}
+.photo-grid-edit{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.photo-thumb{position:relative;height:90px;border-radius:10px;overflow:hidden;background:#f0ede7;}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.photo-remove{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:white;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.photo-add{border:2px dashed var(--light);background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;height:90px;border-radius:10px;font-size:11px;color:var(--mid);gap:4px;}
+.photo-add:hover{border-color:var(--accent);color:var(--accent);}
+.photo-url-input{display:flex;gap:8px;}
+.photo-url-input input{flex:1;padding:10px 12px;border:1.5px solid var(--light);border-radius:10px;font-size:13px;font-family:'Outfit',sans-serif;}
+.photo-url-input input:focus{outline:none;border-color:var(--accent);}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--black);color:white;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:500;z-index:9999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* USER CHIP in nav */
+.user-chip{display:flex;align-items:center;gap:8px;background:var(--cream);border:1.5px solid var(--light);border-radius:30px;padding:6px 14px 6px 8px;cursor:pointer;transition:all .2s;}
+.user-chip:hover{border-color:var(--black);}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;}
+.user-name{font-size:13px;font-weight:600;}
+
+/* REGISTER CTA */
+.register-cta{background:linear-gradient(135deg,var(--black) 0%,#1a1a1a 100%);border-radius:24px;padding:64px;margin:0 48px 80px;display:flex;align-items:center;justify-content:space-between;gap:40px;}
+.register-cta h2{font-size:32px;font-weight:800;color:white;letter-spacing:-1px;margin-bottom:12px;}
+.register-cta p{font-size:15px;color:rgba(255,255,255,.55);max-width:440px;line-height:1.7;}
+.register-cta .cta-actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;}
+
+footer{background:var(--black);padding:48px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;}
+footer .footer-brand{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:white;letter-spacing:-1px;margin-bottom:8px;}
+footer .footer-brand span{color:var(--accent);}
+footer p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;}
+footer h4{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.4);margin-bottom:14px;}
+footer a{display:block;font-size:14px;color:rgba(255,255,255,.6);text-decoration:none;margin-bottom:8px;transition:color .2s;}
+footer a:hover{color:var(--accent);}
+footer .footer-copy{grid-column:1/-1;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.25);text-align:center;}
+
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .hero{padding:100px 20px 60px;grid-template-columns:1fr;gap:40px;}
+  .hero-img{display:none;}
+  .stats{gap:40px;padding:40px 20px;flex-wrap:wrap;}
+  .section{padding:60px 20px;}
+  .register-cta{padding:40px 24px;flex-direction:column;margin:0 20px 60px;}
+  footer{grid-template-columns:1fr;padding:40px 20px;}
+  .modal{border-radius:20px 20px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:92vh;margin:0;}
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .gallery{height:240px;}
+  .modal-body{padding:20px 20px 28px;}
+  .modal-header{flex-direction:column;align-items:flex-start;}
+  .modal-actions{flex-direction:row;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="scrollTo(0,0)">solen<span>.ch</span></div>
+  <div class="nav-links">
+    <a onclick="filterCat('hair')" data-t="nav_hair">Hair</a>
+    <a onclick="filterCat('barber')" data-t="nav_barber">Barber</a>
+    <a onclick="filterCat('nails')" data-t="nav_nails">Nails</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <div id="navAuthArea">
+      <button class="btn btn-outline btn-sm" onclick="openAuth()" data-t="nav_login">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuth('register')" data-t="nav_register">Register</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-badge" data-t="hero_badge">Basel's #1 Booking Platform</div>
+    <h1 data-t="hero_title">Your <em>perfect</em><br>appointment<br>in Basel.</h1>
+    <p data-t="hero_sub">Browse top-rated hair salons, barbershops, and nail studios. Book in seconds — no calls, no waiting.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="document.getElementById('listings').scrollIntoView({behavior:'smooth'})" data-t="hero_cta1">Browse Salons</button>
+      <button class="btn btn-outline" onclick="openAuth('register')" data-t="hero_cta2">List Your Business</button>
+    </div>
+  </div>
+  <div class="hero-img">
+    <div class="hero-img-cell"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80" alt="salon"></div>
+    <div class="hero-img-cell"><img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&q=80" alt="barber"></div>
+    <div class="hero-img-cell"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80" alt="nails"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">40+</div><div class="stat-label" data-t="stat1">Basel Salons</div></div>
+  <div class="stat"><div class="stat-num">2,400+</div><div class="stat-label" data-t="stat2">Bookings Monthly</div></div>
+  <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label" data-t="stat3">Average Rating</div></div>
+  <div class="stat"><div class="stat-num">Free</div><div class="stat-label" data-t="stat4">Always Free for Customers</div></div>
+</div>
+
+<!-- LISTINGS -->
+<section class="section" id="listings">
+  <div class="section-header">
+    <div>
+      <h2 data-t="listings_title">Salons in Basel</h2>
+      <p data-t="listings_sub">Click any listing to see full details, hours, and services</p>
+    </div>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCat('all')" data-t="filter_all">All</button>
+    <button class="filter-btn" onclick="filterCat('hair')" data-t="filter_hair">💇 Hair Salons</button>
+    <button class="filter-btn" onclick="filterCat('barber')" data-t="filter_barber">✂️ Barbershops</button>
+    <button class="filter-btn" onclick="filterCat('nails')" data-t="filter_nails">💅 Nail Studios</button>
+  </div>
+  <div class="grid" id="listingGrid"></div>
+</section>
+
+<!-- REGISTER CTA -->
+<div class="register-cta">
+  <div>
+    <h2 data-t="cta_title">Own a salon in Basel?</h2>
+    <p data-t="cta_sub">Join solen.ch and start receiving bookings today. Set your own schedule, showcase your work, and reach thousands of customers in Basel — completely free.</p>
+    <div class="cta-actions">
+      <button class="btn btn-gold" onclick="openAuth('register')" data-t="cta_btn1">Register Your Business</button>
+      <button class="btn btn-outline" style="color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.2)" data-t="cta_btn2">Learn More</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">solen<span>.ch</span></div>
+    <p data-t="footer_desc">Basel's booking platform for hair salons, barbershops, and nail studios.</p>
+  </div>
+  <div>
+    <h4 data-t="footer_for_customers">For Customers</h4>
+    <a href="#" data-t="footer_browse">Browse Salons</a>
+    <a href="#" data-t="footer_how">How It Works</a>
+    <a href="#" data-t="footer_faq">FAQ</a>
+  </div>
+  <div>
+    <h4 data-t="footer_for_salons">For Salons</h4>
+    <a href="#" onclick="openAuth('register')" data-t="footer_register">Register Business</a>
+    <a href="#" data-t="footer_pricing">Pricing</a>
+    <a href="#" data-t="footer_contact">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 solen.ch · Basel, Switzerland · <a href="mailto:hallo@solen.ch">hallo@solen.ch</a></div>
+</footer>
+
+<!-- ═══════════ DETAIL MODAL ═══════════ -->
+<div class="modal-overlay" id="detailOverlay" onclick="closeIfOverlay(event,'detailOverlay')">
+  <div class="modal" id="detailModal">
+    <button class="modal-close" onclick="closeModal('detailOverlay')">✕</button>
+    <div class="gallery" id="detailGallery">
+      <button class="gallery-arrow prev" onclick="galleryNav(-1)">‹</button>
+      <button class="gallery-arrow next" onclick="galleryNav(1)">›</button>
+      <div class="gallery-nav" id="galleryDots"></div>
+      <div class="gallery-count" id="galleryCount">1 / 1</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-header">
+        <div class="modal-title-block">
+          <div class="modal-cat" id="detailCat"></div>
+          <h2 id="detailName"></h2>
+          <div class="modal-rating"><span class="stars">★★★★★</span><span id="detailRating"></span></div>
+        </div>
+        <div class="modal-actions" id="detailModalActions"></div>
+      </div>
+      <div class="info-chips" id="detailChips"></div>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('services')" data-t="tab_services">Services</button>
+        <button class="tab" onclick="switchTab('hours')" data-t="tab_hours">Hours</button>
+        <button class="tab" onclick="switchTab('info')" data-t="tab_info">Info</button>
+      </div>
+      <div class="tab-panel active" id="tab-services">
+        <div class="service-list" id="detailServices"></div>
+      </div>
+      <div class="tab-panel" id="tab-hours">
+        <div class="hours-grid" id="detailHours"></div>
+      </div>
+      <div class="tab-panel" id="tab-info">
+        <div class="info-block">
+          <h4 data-t="info_about">About</h4>
+          <p id="detailDesc"></p>
+        </div>
+        <div class="info-block" id="detailAddressBlock">
+          <h4 data-t="info_address">Address</h4>
+          <p id="detailAddress"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ BOOKING MODAL ═══════════ -->
+<div class="modal-overlay" id="bookingOverlay" onclick="closeIfOverlay(event,'bookingOverlay')">
+  <div class="modal modal-booking">
+    <button class="modal-close" onclick="closeModal('bookingOverlay')">✕</button>
+    <div class="modal-body" style="padding-top:32px;">
+      <div class="modal-cat" id="bookingCat"></div>
+      <h2 style="font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:4px" id="bookingName"></h2>
+      <p style="font-size:14px;color:var(--mid);margin-bottom:0" id="bookingSub"></p>
+      <div class="booking-form" id="bookingForm">
+        <div class="form-group">
+          <label data-t="form_service">Service</label>
+          <select id="bService"></select>
+        </div>
+        <div class="form-group">
+          <label data-t="form_date">Date</label>
+          <input type="date" id="bDate">
+        </div>
+        <div class="form-group">
+          <label data-t="form_time">Time</label>
+          <select id="bTime">
+            <option value="09:00">09:00</option>
+            <option value="09:30">09:30</option>
+            <option value="10:00">10:00</option>
+            <option value="10:30">10:30</option>
+            <option value="11:00">11:00</option>
+            <option value="11:30">11:30</option>
+            <option value="12:00">12:00</option>
+            <option value="14:00">14:00</option>
+            <option value="14:30">14:30</option>
+            <option value="15:00">15:00</option>
+            <option value="15:30">15:30</option>
+            <option value="16:00">16:00</option>
+            <option value="16:30">16:30</option>
+            <option value="17:00">17:00</option>
+            <option value="17:30">17:30</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-t="form_name">Your Name</label>
+          <input type="text" id="bName" placeholder="Max Mustermann">
+        </div>
+        <div class="form-group">
+          <label data-t="form_email">Your Email</label>
+          <input type="email" id="bEmail" placeholder="max@email.com">
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="confirmBooking()" data-t="form_book">Book Appointment</button>
+        <p style="font-size:12px;color:var(--mid);text-align:center" data-t="form_note">You'll receive a confirmation email immediately.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ AUTH MODAL ═══════════ -->
+<div class="modal-overlay" id="authOverlay" onclick="closeIfOverlay(event,'authOverlay')">
+  <div class="modal modal-auth">
+    <button class="modal-close" onclick="closeModal('authOverlay')">✕</button>
+    <div class="modal-body" style="padding-top:32px;">
+      <h2 class="auth-title" id="authTitle">Welcome back</h2>
+      <p class="auth-sub" id="authSub">Sign in to book appointments or manage your salon.</p>
+      <div class="auth-providers">
+        <button class="auth-provider-btn" onclick="socialLogin('google')">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <button class="auth-provider-btn" onclick="socialLogin('apple')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Continue with Apple
+        </button>
+      </div>
+      <div class="auth-divider">or</div>
+      <div class="booking-form">
+        <div class="form-group" id="authNameGroup" style="display:none">
+          <label data-t="form_name">Full Name</label>
+          <input type="text" id="authName" placeholder="Max Mustermann">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="authEmail" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+          <label data-t="form_password">Password</label>
+          <input type="password" id="authPassword" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="emailAuth()" id="authSubmitBtn">Sign In</button>
+        <div class="auth-switch"><span id="authSwitchText">Don't have an account? </span><a onclick="toggleAuthMode()" id="authSwitchLink">Register</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ EDIT MODAL ═══════════ -->
+<div class="modal-overlay" id="editOverlay" onclick="closeIfOverlay(event,'editOverlay')">
+  <div class="modal modal-edit">
+    <button class="modal-close" onclick="closeModal('editOverlay')">✕</button>
+    <div class="modal-body" style="padding-top:32px;">
+      <h2 style="font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:4px" data-t="edit_title">Edit Your Listing</h2>
+      <p style="font-size:14px;color:var(--mid);margin-bottom:24px" data-t="edit_sub">Changes are saved instantly and visible to customers.</p>
+
+      <div class="edit-section">
+        <h4 data-t="edit_photos">Photos</h4>
+        <div class="photo-grid-edit" id="editPhotoGrid"></div>
+        <div class="photo-url-input">
+          <input type="url" id="editPhotoUrl" placeholder="https://... paste image URL">
+          <button class="btn btn-outline btn-sm" onclick="addEditPhoto()" data-t="edit_add_photo">Add</button>
+        </div>
+        <p style="font-size:12px;color:var(--mid);margin-top:6px" data-t="edit_photo_tip">Tip: Right-click any image online → "Copy image address" and paste here.</p>
+      </div>
+
+      <div class="edit-section">
+        <h4 data-t="edit_basic">Basic Info</h4>
+        <div class="booking-form" style="gap:12px">
+          <div class="form-group">
+            <label data-t="edit_salon_name">Salon Name</label>
+            <input type="text" id="editName">
+          </div>
+          <div class="form-group">
+            <label data-t="edit_phone">Phone Number</label>
+            <input type="text" id="editPhone" placeholder="+41 61 ...">
+          </div>
+          <div class="form-group">
+            <label data-t="edit_website">Website (optional)</label>
+            <input type="url" id="editWebsite" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>Instagram (optional)</label>
+            <input type="text" id="editInsta" placeholder="@yourhandle">
+          </div>
+          <div class="form-group">
+            <label data-t="edit_desc">Description (DE)</label>
+            <input type="text" id="editDesc" placeholder="Kurze Beschreibung deines Salons...">
+          </div>
+          <div class="form-group">
+            <label data-t="edit_desc_en">Description (EN)</label>
+            <input type="text" id="editDescEN" placeholder="Short description of your salon...">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="saveEdit()" data-t="edit_save">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const LISTINGS = [
+  {
+    id: 1, cat: 'hair', registered: true,
+    ownerEmail: 'kings@solen.ch',
+    name: "King's Hair Salon",
+    address: 'Marktgasse 12, 4051 Basel',
+    phone: '+41 61 261 44 22',
+    website: 'https://kings-hair.ch',
+    insta: '@kingshairbasel',
+    rating: 4.9, reviews: 128, price: 'CHF 45–120',
+    desc: 'Erstklassiger Damensalon im Herzen Basels. Haarschnitte, Färbungen, Balayage und Haarbehandlungen auf höchstem Niveau.',
+    descEN: 'Top-rated hair salon in the heart of Basel. Specialising in cuts, colour, balayage, and professional hair treatments.',
+    photos: [
+      'https://images.unsplash.com/photo-1560066984-138daaa0ad8c?w=800&q=80',
+      'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80',
+      'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=800&q=80'
+    ],
+    services: [
+      {name:'Damen Haarschnitt',nameEN:'Ladies Haircut',duration:'45 min',price:'CHF 65'},
+      {name:'Herrenhaarschnitt',nameEN:'Men\'s Haircut',duration:'30 min',price:'CHF 45'},
+      {name:'Balayage / Ombré',nameEN:'Balayage / Ombré',duration:'150 min',price:'ab CHF 120'},
+      {name:'Haarverlängerung',nameEN:'Hair Extensions',duration:'180 min',price:'ab CHF 200'},
+      {name:'Haarbehandlung',nameEN:'Hair Treatment',duration:'60 min',price:'CHF 55'}
+    ],
+    hours: {Mon:'09:00–19:00',Tue:'09:00–19:00',Wed:'09:00–19:00',Thu:'09:00–20:00',Fri:'09:00–19:00',Sat:'08:00–17:00',Sun:'Closed'}
+  },
+  {
+    id: 2, cat: 'barber', registered: true,
+    ownerEmail: 'elite@solen.ch',
+    name: 'Elite Barber Basel',
+    address: 'Steinenvorstadt 5, 4051 Basel',
+    phone: '+41 61 272 18 40',
+    website: '',
+    insta: '@elitebarberbs',
+    rating: 4.8, reviews: 213, price: 'CHF 35–70',
+    desc: 'Traditionelle Barbershop-Atmosphäre mit modernem Touch. Rasuren, Fades und Bartpflege in Basel.',
+    descEN: 'Traditional barbershop atmosphere with a modern touch. Classic shaves, fades, and beard grooming in Basel.',
+    photos: [
+      'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80',
+      'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80',
+      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80'
+    ],
+    services: [
+      {name:'Haarschnitt',nameEN:'Haircut',duration:'30 min',price:'CHF 35'},
+      {name:'Haarschnitt + Bart',nameEN:'Haircut + Beard',duration:'50 min',price:'CHF 50'},
+      {name:'Rasur mit Klinge',nameEN:'Straight Razor Shave',duration:'45 min',price:'CHF 45'},
+      {name:'Bartpflege',nameEN:'Beard Grooming',duration:'25 min',price:'CHF 30'},
+      {name:'Skin Fade',nameEN:'Skin Fade',duration:'40 min',price:'CHF 42'}
+    ],
+    hours: {Mon:'08:00–18:00',Tue:'08:00–18:00',Wed:'08:00–18:00',Thu:'08:00–20:00',Fri:'08:00–19:00',Sat:'08:00–16:00',Sun:'Closed'}
+  },
+  {
+    id: 3, cat: 'nails', registered: true,
+    ownerEmail: 'nails@solen.ch',
+    name: 'Nails & Glow Studio',
+    address: 'Freie Strasse 80, 4001 Basel',
+    phone: '+41 61 281 77 00',
+    website: 'https://nailsandglow.ch',
+    insta: '@nailsglowbasel',
+    rating: 5.0, reviews: 94, price: 'CHF 55–150',
+    desc: 'Luxuriöses Nagelstudio mit dem grössten Gel-Sortiment in Basel. Maniküre, Pediküre, Nail Art.',
+    descEN: 'Luxury nail studio with the widest gel polish selection in Basel. Manicures, pedicures, and nail art.',
+    photos: [
+      'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&q=80',
+      'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=800&q=80',
+      'https://images.unsplash.com/photo-1632345031435-8727f592d8db?w=800&q=80'
+    ],
+    services: [
+      {name:'Maniküre klassisch',nameEN:'Classic Manicure',duration:'45 min',price:'CHF 55'},
+      {name:'Gel Maniküre',nameEN:'Gel Manicure',duration:'60 min',price:'CHF 75'},
+      {name:'Pediküre',nameEN:'Pedicure',duration:'60 min',price:'CHF 65'},
+      {name:'Nail Art',nameEN:'Nail Art',duration:'30 min',price:'ab CHF 20'},
+      {name:'Gel Aufbau',nameEN:'Gel Extensions',duration:'90 min',price:'CHF 110'}
+    ],
+    hours: {Mon:'Closed',Tue:'10:00–19:00',Wed:'10:00–19:00',Thu:'10:00–20:00',Fri:'10:00–19:00',Sat:'09:00–18:00',Sun:'Closed'}
+  },
+  {
+    id: 4, cat: 'hair', registered: false,
+    ownerEmail: '',
+    name: 'Salon Margrit',
+    address: 'Klybeckstrasse 95, 4057 Basel',
+    phone: '+41 61 692 30 10',
+    website: '',
+    insta: '',
+    rating: 4.6, reviews: 47, price: 'CHF 40–90',
+    desc: 'Familiärer Damensalon mit über 20 Jahren Erfahrung in Basel-Kleinhüningen.',
+    descEN: 'Family-run ladies salon with over 20 years of experience in Basel-Kleinhüningen.',
+    photos: [
+      'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=800&q=80',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80'
+    ],
+    services: [
+      {name:'Haarschnitt',nameEN:'Haircut',duration:'45 min',price:'CHF 40'},
+      {name:'Waschen + Föhnen',nameEN:'Wash & Blowdry',duration:'30 min',price:'CHF 30'},
+      {name:'Dauerwelle',nameEN:'Perm',duration:'120 min',price:'CHF 90'}
+    ],
+    hours: {Mon:'Closed',Tue:'09:00–17:00',Wed:'09:00–17:00',Thu:'09:00–19:00',Fri:'09:00–17:00',Sat:'08:00–13:00',Sun:'Closed'}
+  },
+  {
+    id: 5, cat: 'barber', registered: false,
+    ownerEmail: '',
+    name: 'Barber Corner Basel',
+    address: 'Rheingasse 6, 4058 Basel',
+    phone: '+41 61 681 22 88',
+    website: '',
+    insta: '@barbercornerbs',
+    rating: 4.7, reviews: 88, price: 'CHF 30–55',
+    desc: 'Entspannter Barbershop im Kleinbasel mit fairen Preisen und schnellen Terminen.',
+    descEN: 'Relaxed barbershop in Kleinbasel with fair prices and fast appointments.',
+    photos: [
+      'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80',
+      'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80'
+    ],
+    services: [
+      {name:'Haarschnitt',nameEN:'Haircut',duration:'25 min',price:'CHF 30'},
+      {name:'Haarschnitt + Bart',nameEN:'Haircut + Beard',duration:'40 min',price:'CHF 45'},
+      {name:'Kinderhaarschnitt',nameEN:'Kids Haircut',duration:'20 min',price:'CHF 22'}
+    ],
+    hours: {Mon:'09:00–18:00',Tue:'09:00–18:00',Wed:'09:00–18:00',Thu:'09:00–19:00',Fri:'09:00–18:00',Sat:'09:00–15:00',Sun:'Closed'}
+  },
+  {
+    id: 6, cat: 'nails', registered: false,
+    ownerEmail: '',
+    name: 'Pretty Nails Basel',
+    address: 'Güterstrasse 120, 4053 Basel',
+    phone: '+41 61 361 55 44',
+    website: '',
+    insta: '',
+    rating: 4.5, reviews: 62, price: 'CHF 45–100',
+    desc: 'Freundliches Nagelstudio mit schnellem Service und grossen Auswahl an Farben.',
+    descEN: 'Friendly nail studio with quick service and a wide selection of colours.',
+    photos: [
+      'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=800&q=80',
+      'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&q=80'
+    ],
+    services: [
+      {name:'Maniküre',nameEN:'Manicure',duration:'40 min',price:'CHF 45'},
+      {name:'Gel Maniküre',nameEN:'Gel Manicure',duration:'55 min',price:'CHF 65'},
+      {name:'Pediküre',nameEN:'Pedicure',duration:'55 min',price:'CHF 60'}
+    ],
+    hours: {Mon:'Closed',Tue:'10:00–18:00',Wed:'10:00–18:00',Thu:'10:00–19:00',Fri:'10:00–18:00',Sat:'09:00–17:00',Sun:'Closed'}
+  }
+];
+
+const STORE_OWNERS = {
+  'kings@solen.ch': 1,
+  'elite@solen.ch': 2,
+  'nails@solen.ch': 3
+};
+
+// ═══════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════
+const T = {
+  de: {
+    nav_hair:'Hair', nav_barber:'Barber', nav_nails:'Nails',
+    nav_login:'Anmelden', nav_register:'Registrieren',
+    hero_badge:'Basels #1 Buchungsplattform',
+    hero_title:'Dein <em>perfekter</em><br>Termin<br>in Basel.',
+    hero_sub:'Entdecke top-bewertete Haarschnitte, Barbershops und Nagelstudios. In Sekunden buchen — kein Anruf nötig.',
+    hero_cta1:'Salons entdecken', hero_cta2:'Salon eintragen',
+    stat1:'Basler Salons', stat2:'Buchungen/Monat', stat3:'Ø Bewertung', stat4:'Immer kostenlos',
+    listings_title:'Salons in Basel',
+    listings_sub:'Klick auf einen Salon für alle Details, Zeiten und Dienstleistungen',
+    filter_all:'Alle', filter_hair:'💇 Friseursalons', filter_barber:'✂️ Barbershops', filter_nails:'💅 Nagelstudios',
+    tab_services:'Leistungen', tab_hours:'Öffnungszeiten', tab_info:'Info',
+    info_about:'Über den Salon', info_address:'Adresse',
+    form_service:'Dienstleistung', form_date:'Datum', form_time:'Uhrzeit',
+    form_name:'Dein Name', form_email:'Deine E-Mail', form_password:'Passwort',
+    form_book:'Termin buchen', form_note:'Du erhältst sofort eine Bestätigungsmail.',
+    cta_title:'Besitzt du einen Salon in Basel?',
+    cta_sub:'Tritt solen.ch bei und erhalte ab heute Buchungen. Lege deinen eigenen Stundenplan fest, präsentiere deine Arbeit und erreiche tausende Kunden in Basel — komplett kostenlos.',
+    cta_btn1:'Salon registrieren', cta_btn2:'Mehr erfahren',
+    footer_desc:'Basels Buchungsplattform für Friseursalons, Barbershops und Nagelstudios.',
+    footer_for_customers:'Für Kunden', footer_browse:'Salons entdecken', footer_how:'So funktioniert\'s', footer_faq:'FAQ',
+    footer_for_salons:'Für Salons', footer_register:'Salon registrieren', footer_pricing:'Preise', footer_contact:'Kontakt',
+    edit_title:'Dein Inserat bearbeiten', edit_sub:'Änderungen sind sofort für Kunden sichtbar.',
+    edit_photos:'Fotos', edit_add_photo:'Hinzufügen',
+    edit_photo_tip:'Tipp: Rechtsklick auf ein Bild im Web → "Bildadresse kopieren" und hier einfügen.',
+    edit_basic:'Grundinfos', edit_salon_name:'Salonname', edit_phone:'Telefonnummer',
+    edit_website:'Webseite (optional)', edit_desc:'Beschreibung (DE)', edit_desc_en:'Beschreibung (EN)',
+    edit_save:'Änderungen speichern',
+    book_btn:'Termin buchen', book_sub:'Wähle Datum und Uhrzeit für deinen Besuch.',
+    cat_hair:'Friseursalon', cat_barber:'Barbershop', cat_nails:'Nagelstudio',
+    not_bookable:'Noch nicht buchbar über solen.ch',
+    not_bookable_sub:'Bist du der Inhaber? Registriere deinen Salon kostenlos und starte heute mit Online-Buchungen.',
+    owner_cta:'Salon jetzt registrieren',
+    edit_btn:'✏️ Bearbeiten',
+    closed:'Geschlossen',
+    booking_success:'✅ Termin gebucht! Bestätigung wird per E-Mail gesendet.',
+    save_success:'✅ Änderungen gespeichert!',
+  },
+  en: {
+    nav_hair:'Hair', nav_barber:'Barber', nav_nails:'Nails',
+    nav_login:'Log in', nav_register:'Register',
+    hero_badge:'Basel\'s #1 Booking Platform',
+    hero_title:'Your <em>perfect</em><br>appointment<br>in Basel.',
+    hero_sub:'Browse top-rated hair salons, barbershops, and nail studios. Book in seconds — no calls, no waiting.',
+    hero_cta1:'Browse Salons', hero_cta2:'List Your Business',
+    stat1:'Basel Salons', stat2:'Bookings Monthly', stat3:'Average Rating', stat4:'Always Free',
+    listings_title:'Salons in Basel',
+    listings_sub:'Click any listing to see full details, hours, and services',
+    filter_all:'All', filter_hair:'💇 Hair Salons', filter_barber:'✂️ Barbershops', filter_nails:'💅 Nail Studios',
+    tab_services:'Services', tab_hours:'Hours', tab_info:'Info',
+    info_about:'About', info_address:'Address',
+    form_service:'Service', form_date:'Date', form_time:'Time',
+    form_name:'Your Name', form_email:'Your Email', form_password:'Password',
+    form_book:'Book Appointment', form_note:'You\'ll receive a confirmation email immediately.',
+    cta_title:'Own a salon in Basel?',
+    cta_sub:'Join solen.ch and start receiving bookings today. Set your own schedule, showcase your work, and reach thousands of customers in Basel — completely free.',
+    cta_btn1:'Register Your Business', cta_btn2:'Learn More',
+    footer_desc:'Basel\'s booking platform for hair salons, barbershops, and nail studios.',
+    footer_for_customers:'For Customers', footer_browse:'Browse Salons', footer_how:'How It Works', footer_faq:'FAQ',
+    footer_for_salons:'For Salons', footer_register:'Register Business', footer_pricing:'Pricing', footer_contact:'Contact',
+    edit_title:'Edit Your Listing', edit_sub:'Changes are saved instantly and visible to customers.',
+    edit_photos:'Photos', edit_add_photo:'Add Photo',
+    edit_photo_tip:'Tip: Right-click any image online → "Copy image address" and paste here.',
+    edit_basic:'Basic Info', edit_salon_name:'Salon Name', edit_phone:'Phone Number',
+    edit_website:'Website (optional)', edit_desc:'Description (DE)', edit_desc_en:'Description (EN)',
+    edit_save:'Save Changes',
+    book_btn:'Book Appointment', book_sub:'Choose a date and time for your visit.',
+    cat_hair:'Hair Salon', cat_barber:'Barbershop', cat_nails:'Nail Studio',
+    not_bookable:'Not yet bookable on solen.ch',
+    not_bookable_sub:'Are you the owner? Register your salon for free and start taking online bookings today.',
+    owner_cta:'Register Your Salon',
+    edit_btn:'✏️ Edit',
+    closed:'Closed',
+    booking_success:'✅ Appointment booked! Confirmation will be sent by email.',
+    save_success:'✅ Changes saved!',
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let lang = 'de';
+let currentUser = null;
+let ownerStoreId = null;
+let activeCat = 'all';
+let activeDetailId = null;
+let galleryIndex = 0;
+let authMode = 'login';
+
+function t(key) { return T[lang][key] || key; }
+
+// ═══════════════════════════════════════════════════════
+// LANG
+// ═══════════════════════════════════════════════════════
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
+  applyTranslations();
+  renderGrid();
+}
+
+function detectLang() {
+  const nav = navigator.language || navigator.userLanguage || 'de';
+  lang = nav.startsWith('de') ? 'de' : 'en';
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === lang.toUpperCase()));
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.getAttribute('data-t');
+    if (!T[lang][key]) return;
+    if (el.innerHTML.includes('<')) {
+      el.innerHTML = T[lang][key];
+    } else {
+      el.textContent = T[lang][key];
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// GRID
+// ═══════════════════════════════════════════════════════
+function renderGrid() {
+  const grid = document.getElementById('listingGrid');
+  const items = activeCat === 'all' ? LISTINGS : LISTINGS.filter(l => l.cat === activeCat);
+  grid.innerHTML = items.map(l => cardHTML(l)).join('');
+}
+
+function catLabel(cat) {
+  return {hair: t('cat_hair'), barber: t('cat_barber'), nails: t('cat_nails')}[cat] || cat;
+}
+
+function cardHTML(l) {
+  const isOwner = ownerStoreId === l.id;
+  const ownerBtn = isOwner ? `<button class="card-owner-btn" onclick="event.stopPropagation();openEdit(${l.id})">${t('edit_btn')}</button>` : '';
+  const badgeClass = l.registered ? 'badge-registered' : 'badge-unregistered';
+  const badgeText = l.registered ? '✓ Bookable' : 'View Only';
+  const actionHTML = l.registered
+    ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openBookingDirect(${l.id})">${t('book_btn')}</button>`
+    : `<div class="card-not-bookable">${t('not_bookable')}</div>`;
+  return `
+  <div class="card" onclick="openDetail(${l.id})">
+    <div class="card-img">
+      <img src="${l.photos[0]}" alt="${l.name}" loading="lazy">
+      <span class="card-badge ${badgeClass}">${badgeText}</span>
+      ${ownerBtn}
+    </div>
+    <div class="card-body">
+      <div class="card-cat">${catLabel(l.cat)}</div>
+      <div class="card-name">${l.name}</div>
+      <div class="card-location">📍 ${l.address}</div>
+      <div class="card-meta">
+        <div class="card-rating"><span class="stars">★</span>${l.rating} <span style="color:var(--mid);font-weight:400">(${l.reviews})</span></div>
+        <div class="card-price">${l.price}</div>
+      </div>
+      <div class="card-action">${actionHTML}</div>
+    </div>
+  </div>`;
+}
+
+function filterCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const map = {all:'filter_all',hair:'filter_hair',barber:'filter_barber',nails:'filter_nails'};
+  document.querySelector(`[data-t="${map[cat]}"]`)?.classList.add('active');
+  renderGrid();
+  if (cat !== 'all') document.getElementById('listings').scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════════════════
+function openDetail(id) {
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l) return;
+  activeDetailId = id;
+  galleryIndex = 0;
+
+  // Gallery
+  const gallery = document.getElementById('detailGallery');
+  // Remove old images
+  gallery.querySelectorAll('.gallery-img').forEach(i => i.remove());
+  l.photos.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.className = 'gallery-img' + (i === 0 ? ' active' : '');
+    img.src = src;
+    img.alt = l.name;
+    gallery.insertBefore(img, gallery.querySelector('.gallery-arrow'));
+  });
+  renderGalleryDots(l);
+
+  // Header
+  document.getElementById('detailCat').textContent = catLabel(l.cat);
+  document.getElementById('detailName').textContent = l.name;
+  document.getElementById('detailRating').textContent = `${l.rating} (${l.reviews} Reviews)`;
+
+  // Action buttons
+  const actionsEl = document.getElementById('detailModalActions');
+  if (l.registered) {
+    actionsEl.innerHTML = `<button class="btn btn-primary" onclick="openBookingDirect(${l.id})">${t('book_btn')}</button>`;
+  } else {
+    actionsEl.innerHTML = `<div style="font-size:12px;color:var(--mid);max-width:180px;text-align:right">${t('not_bookable')}</div>`;
+  }
+  if (ownerStoreId === l.id) {
+    actionsEl.innerHTML += `<button class="btn btn-outline btn-sm" onclick="openEdit(${l.id})">${t('edit_btn')}</button>`;
+  }
+
+  // Info chips
+  const chips = document.getElementById('detailChips');
+  chips.innerHTML = '';
+  if (l.phone) chips.innerHTML += `<a class="chip" href="tel:${l.phone}"><span class="chip-icon">📞</span>${l.phone}</a>`;
+  if (l.address) chips.innerHTML += `<a class="chip" href="https://maps.google.com?q=${encodeURIComponent(l.address)}" target="_blank"><span class="chip-icon">📍</span>${l.address}</a>`;
+  if (l.website) chips.innerHTML += `<a class="chip" href="${l.website}" target="_blank"><span class="chip-icon">🌐</span>${lang==='de'?'Webseite':'Website'}</a>`;
+  if (l.insta) chips.innerHTML += `<a class="chip" href="https://instagram.com/${l.insta.replace('@','')}" target="_blank"><span class="chip-icon">📸</span>${l.insta}</a>`;
+
+  // Services tab
+  document.getElementById('detailServices').innerHTML = l.services.map(s => `
+    <div class="service-row">
+      <div class="service-name">${lang === 'de' ? s.name : (s.nameEN || s.name)}</div>
+      <div class="service-details">
+        <span class="service-dur">⏱ ${s.duration}</span>
+        <span class="service-price">${s.price}</span>
+      </div>
+    </div>`).join('');
+
+  // Hours tab
+  const daysDE = {Mon:'Mo',Tue:'Di',Wed:'Mi',Thu:'Do',Fri:'Fr',Sat:'Sa',Sun:'So'};
+  const daysEN = {Mon:'Mon',Tue:'Tue',Wed:'Wed',Thu:'Thu',Fri:'Fri',Sat:'Sat',Sun:'Sun'};
+  const days = lang === 'de' ? daysDE : daysEN;
+  document.getElementById('detailHours').innerHTML = Object.entries(l.hours).map(([d,h]) => {
+    const isClosed = h === 'Closed';
+    return `<div class="hours-row">
+      <div class="hours-day">${days[d]}</div>
+      <div class="hours-time ${isClosed ? 'hours-closed' : ''}">${isClosed ? t('closed') : h}</div>
+    </div>`;
+  }).join('');
+
+  // Info tab
+  document.getElementById('detailDesc').textContent = lang === 'de' ? l.desc : (l.descEN || l.desc);
+  document.getElementById('detailAddress').textContent = l.address;
+
+  // Reset to first tab
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.tab').classList.add('active');
+  document.getElementById('tab-services').classList.add('active');
+
+  openModal('detailOverlay');
+}
+
+function renderGalleryDots(l) {
+  const dots = document.getElementById('galleryDots');
+  dots.innerHTML = l.photos.map((_, i) =>
+    `<button class="gallery-dot ${i===0?'active':''}" onclick="goGallery(${i})"></button>`
+  ).join('');
+  document.getElementById('galleryCount').textContent = `1 / ${l.photos.length}`;
+}
+
+function galleryNav(dir) {
+  const l = LISTINGS.find(x => x.id === activeDetailId);
+  if (!l) return;
+  galleryIndex = (galleryIndex + dir + l.photos.length) % l.photos.length;
+  goGallery(galleryIndex);
+}
+
+function goGallery(i) {
+  const l = LISTINGS.find(x => x.id === activeDetailId);
+  if (!l) return;
+  galleryIndex = i;
+  document.querySelectorAll('#detailGallery .gallery-img').forEach((img, idx) => img.classList.toggle('active', idx === i));
+  document.querySelectorAll('#galleryDots .gallery-dot').forEach((dot, idx) => dot.classList.toggle('active', idx === i));
+  document.getElementById('galleryCount').textContent = `${i + 1} / ${l.photos.length}`;
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${name}')"]`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// BOOKING MODAL
+// ═══════════════════════════════════════════════════════
+function openBookingDirect(id) {
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l) return;
+  document.getElementById('bookingCat').textContent = catLabel(l.cat);
+  document.getElementById('bookingName').textContent = l.name;
+  document.getElementById('bookingSub').textContent = t('book_sub');
+
+  const sel = document.getElementById('bService');
+  sel.innerHTML = l.services.map(s => `<option value="${lang==='de'?s.name:s.nameEN||s.name}">${lang==='de'?s.name:s.nameEN||s.name} — ${s.price}</option>`).join('');
+
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('bDate').min = today;
+  document.getElementById('bDate').value = today;
+
+  // Pre-fill from current user
+  if (currentUser) {
+    document.getElementById('bName').value = currentUser.name || '';
+    document.getElementById('bEmail').value = currentUser.email || '';
+  }
+
+  // Store current salon for booking
+  document.getElementById('bookingForm').dataset.salonId = id;
+
+  if (document.getElementById('detailOverlay').classList.contains('open')) {
+    closeModal('detailOverlay');
+    setTimeout(() => openModal('bookingOverlay'), 200);
+  } else {
+    openModal('bookingOverlay');
+  }
+}
+
+async function confirmBooking() {
+  const salonId = parseInt(document.getElementById('bookingForm').dataset.salonId);
+  const salon = LISTINGS.find(x => x.id === salonId);
+  const customerName = document.getElementById('bName').value.trim();
+  const customerEmail = document.getElementById('bEmail').value.trim();
+  const service = document.getElementById('bService').value;
+  const date = document.getElementById('bDate').value;
+  const time = document.getElementById('bTime').value;
+
+  if (!customerName || !customerEmail || !date) {
+    showToast('⚠️ ' + (lang === 'de' ? 'Bitte alle Felder ausfüllen.' : 'Please fill in all fields.'));
+    return;
+  }
+
+  const btn = document.querySelector('#bookingForm .btn-primary');
+  btn.textContent = '...';
+  btn.disabled = true;
+
+  try {
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        customerEmail, customerName,
+        salonName: salon.name,
+        salonEmail: salon.ownerEmail || '',
+        serviceName: service,
+        date, time, lang
+      })
+    });
+  } catch(e) {
+    console.log('Email not available in preview mode');
+  }
+
+  showToast(t('booking_success'));
+  closeModal('bookingOverlay');
+  btn.textContent = t('form_book');
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════
+function openAuth(mode = 'login') {
+  authMode = mode;
+  updateAuthUI();
+  openModal('authOverlay');
+}
+
+function updateAuthUI() {
+  const isRegister = authMode === 'register';
+  document.getElementById('authTitle').textContent = isRegister
+    ? (lang==='de' ? 'Konto erstellen' : 'Create account')
+    : (lang==='de' ? 'Willkommen zurück' : 'Welcome back');
+  document.getElementById('authSub').textContent = isRegister
+    ? (lang==='de' ? 'Erstelle dein solen.ch-Konto um Termine zu buchen.' : 'Create your solen.ch account to book appointments.')
+    : (lang==='de' ? 'Melde dich an, um Termine zu buchen oder deinen Salon zu verwalten.' : 'Sign in to book appointments or manage your salon.');
+  document.getElementById('authNameGroup').style.display = isRegister ? 'flex' : 'none';
+  document.getElementById('authSubmitBtn').textContent = isRegister
+    ? (lang==='de' ? 'Konto erstellen' : 'Create Account')
+    : (lang==='de' ? 'Anmelden' : 'Sign In');
+  document.getElementById('authSwitchText').textContent = isRegister
+    ? (lang==='de' ? 'Schon ein Konto? ' : 'Already have an account? ')
+    : (lang==='de' ? 'Noch kein Konto? ' : "Don't have an account? ");
+  document.getElementById('authSwitchLink').textContent = isRegister
+    ? (lang==='de' ? 'Anmelden' : 'Sign In')
+    : (lang==='de' ? 'Registrieren' : 'Register');
+}
+
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'register' : 'login';
+  updateAuthUI();
+}
+
+function socialLogin(provider) {
+  // Demo: treat as salon owner for testing with known emails
+  const demoEmails = {google: 'kings@solen.ch', apple: 'elite@solen.ch'};
+  loginUser({name: provider === 'google' ? 'Google User' : 'Apple User', email: demoEmails[provider]});
+  closeModal('authOverlay');
+}
+
+function emailAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const name = authMode === 'register' ? document.getElementById('authName').value.trim() : 'User';
+  if (!email) return;
+  loginUser({name: name || email.split('@')[0], email});
+  closeModal('authOverlay');
+}
+
+function loginUser(user) {
+  currentUser = user;
+  ownerStoreId = STORE_OWNERS[user.email] || null;
+  const navArea = document.getElementById('navAuthArea');
+  navArea.innerHTML = `
+    <div class="user-chip" onclick="logoutUser()">
+      <div class="user-avatar">${user.name[0].toUpperCase()}</div>
+      <span class="user-name">${user.name.split(' ')[0]}</span>
+      <span style="font-size:11px;color:var(--mid);margin-left:2px">✕</span>
+    </div>`;
+  renderGrid();
+  if (ownerStoreId) showToast('👋 ' + (lang==='de' ? 'Salon-Ansicht aktiviert!' : 'Salon view activated!'));
+}
+
+function logoutUser() {
+  currentUser = null;
+  ownerStoreId = null;
+  document.getElementById('navAuthArea').innerHTML = `
+    <button class="btn btn-outline btn-sm" onclick="openAuth()" data-t="nav_login">${t('nav_login')}</button>
+    <button class="btn btn-primary btn-sm" onclick="openAuth('register')" data-t="nav_register">${t('nav_register')}</button>`;
+  renderGrid();
+}
+
+// ═══════════════════════════════════════════════════════
+// EDIT MODAL
+// ═══════════════════════════════════════════════════════
+function openEdit(id) {
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l || ownerStoreId !== id) return;
+
+  document.getElementById('editName').value = l.name;
+  document.getElementById('editPhone').value = l.phone || '';
+  document.getElementById('editWebsite').value = l.website || '';
+  document.getElementById('editInsta').value = l.insta || '';
+  document.getElementById('editDesc').value = l.desc || '';
+  document.getElementById('editDescEN').value = l.descEN || '';
+  renderEditPhotos(l);
+
+  document.getElementById('editOverlay').dataset.editId = id;
+  if (document.getElementById('detailOverlay').classList.contains('open')) {
+    closeModal('detailOverlay');
+    setTimeout(() => openModal('editOverlay'), 200);
+  } else {
+    openModal('editOverlay');
+  }
+}
+
+function renderEditPhotos(l) {
+  const grid = document.getElementById('editPhotoGrid');
+  grid.innerHTML = l.photos.map((src, i) => `
+    <div class="photo-thumb">
+      <img src="${src}" alt="">
+      <button class="photo-remove" onclick="removeEditPhoto(${i})">✕</button>
+    </div>`).join('');
+  grid.innerHTML += `<div class="photo-add" onclick="document.getElementById('editPhotoUrl').focus()">＋<span>Add photo</span></div>`;
+}
+
+function removeEditPhoto(idx) {
+  const id = parseInt(document.getElementById('editOverlay').dataset.editId);
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l || l.photos.length <= 1) return;
+  l.photos.splice(idx, 1);
+  renderEditPhotos(l);
+}
+
+function addEditPhoto() {
+  const url = document.getElementById('editPhotoUrl').value.trim();
+  if (!url) return;
+  const id = parseInt(document.getElementById('editOverlay').dataset.editId);
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l) return;
+  l.photos.push(url);
+  renderEditPhotos(l);
+  document.getElementById('editPhotoUrl').value = '';
+}
+
+function saveEdit() {
+  const id = parseInt(document.getElementById('editOverlay').dataset.editId);
+  const l = LISTINGS.find(x => x.id === id);
+  if (!l) return;
+  l.name = document.getElementById('editName').value.trim() || l.name;
+  l.phone = document.getElementById('editPhone').value.trim();
+  l.website = document.getElementById('editWebsite').value.trim();
+  l.insta = document.getElementById('editInsta').value.trim();
+  l.desc = document.getElementById('editDesc').value.trim();
+  l.descEN = document.getElementById('editDescEN').value.trim();
+  closeModal('editOverlay');
+  renderGrid();
+  showToast(t('save_success'));
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL UTILS
+// ═══════════════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeIfOverlay(e, id) {
+  if (e.target.id === id) closeModal(id);
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+detectLang();
+applyTranslations();
+renderGrid();
+
+// Set date input language
+document.getElementById('bDate').lang = lang;
+</script>
+</body>
+</html>
