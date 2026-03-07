@@ -74,6 +74,14 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .price-tag{font-size:.82rem;font-weight:700;color:var(--muted)}
 .book-btn{background:var(--accent);color:var(--bg);border:none;padding:9px 22px;border-radius:50px;font-weight:700;font-size:.88rem;transition:.2s;box-shadow:var(--shadow)}
 .book-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow2)}
+.admin-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--border)}
+.admin-tab{padding:10px 20px;border:none;background:transparent;font-weight:600;font-size:.9rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s}
+.admin-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.admin-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.admin-table th,.admin-table td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}
+.admin-table th{font-weight:700;color:var(--muted);font-size:.8rem;text-transform:uppercase}
+.admin-table td button{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);font-size:.8rem;cursor:pointer;margin-right:4px}
+.admin-table td button:hover{background:var(--surfaceAlt)}
 .visited-badge{position:absolute;top:12px;right:50px;background:var(--success);color:#fff;padding:3px 10px;border-radius:50px;font-size:.7rem;font-weight:700}
 .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--surfaceAlt) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -187,6 +195,7 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
     <div id="navUser" style="display:none" class="nav-user">
       <div class="avatar" id="navAvatar">S</div>
       <span id="navName" style="cursor:pointer" onclick="openProfilePage()">Gast</span>
+      <button id="adminBtn" class="nav-btn ghost" style="display:none" onclick="openAdmin()">Admin</button>
       <button class="nav-btn ghost" onclick="signOut()">Abmelden</button>
     </div>
   </div>
@@ -917,6 +926,191 @@ function rebookFromHistory(b){
   openBooking(String(store.id));
 }
 
+/* ─── ADMIN PANEL ─── */
+let adminTab='stores';
+function openAdmin(){
+  if(!ADMIN_EMAILS.includes(currentUser?.email))return;
+  const overlay=document.createElement('div');
+  overlay.id='adminOverlay';
+  overlay.className='overlay open';
+  overlay.style.alignItems='center';
+  overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
+  overlay.innerHTML=`<div class="modal" style="max-width:900px;width:95%;max-height:90vh;padding:28px">
+    <button class="modal-close" onclick="document.getElementById('adminOverlay').remove()">&times;</button>
+    <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:16px">Admin Panel</h2>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('stores',this)">Stores verwalten</button>
+      <button class="admin-tab" onclick="switchAdminTab('services',this)">Services verwalten</button>
+      <button class="admin-tab" onclick="switchAdminTab('bookings',this)">Buchungen</button>
+    </div>
+    <div id="adminContent"></div>
+  </div>`;
+  document.body.appendChild(overlay);
+  adminTab='stores';loadAdminStores();
+}
+
+function switchAdminTab(tab,btn){
+  adminTab=tab;
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='stores')loadAdminStores();
+  else if(tab==='services')loadAdminServices();
+  else if(tab==='bookings')loadAdminBookings();
+}
+
+async function loadAdminStores(){
+  const c=document.getElementById('adminContent');
+  if(!c)return;
+  c.innerHTML='<p style="color:var(--muted)">Wird geladen...</p>';
+  try{
+    const {data}=await sb.from('stores').select('*');
+    const stores=data||[];
+    c.innerHTML=`<button class="btn-next" style="margin-bottom:16px;max-width:200px;padding:10px 20px;font-size:.9rem" onclick="showStoreForm()">+ Neuer Salon</button>
+    <div id="storeFormArea"></div>
+    ${stores.length?`<table class="admin-table"><thead><tr><th>Name</th><th>Typ</th><th>Adresse</th><th>Aktionen</th></tr></thead><tbody>${stores.map(s=>`<tr><td>${s.name}</td><td>${s.type||''}</td><td>${s.address||''}</td><td><button onclick="editStoreAdmin('${s.id}')">Bearbeiten</button><button onclick="deleteStoreAdmin('${s.id}')">Löschen</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:var(--muted)">Noch keine Stores in der Datenbank.</p>'}`;
+  }catch(e){c.innerHTML='<p style="color:var(--error)">Fehler beim Laden.</p>';}
+}
+
+function showStoreForm(store){
+  const s=store||{name:'',type:'hair',address:'',phone:'',description:''};
+  const isEdit=!!store;
+  document.getElementById('storeFormArea').innerHTML=`<div style="background:var(--surfaceAlt);padding:16px;border-radius:var(--r);margin-bottom:16px;border:1px solid var(--border)">
+    <div class="form-row">
+      <div class="form-group"><label>Name</label><input id="sfName" value="${s.name}"></div>
+      <div class="form-group"><label>Typ</label><select id="sfType">${['hair','barber','nails','spa','brows'].map(t=>`<option value="${t}" ${s.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-group"><label>Adresse</label><input id="sfAddr" value="${s.address||''}"></div>
+    <div class="form-group"><label>Telefon</label><input id="sfPhone" value="${s.phone||''}"></div>
+    <div class="form-group"><label>Beschreibung</label><textarea id="sfDesc" rows="2">${s.description||''}</textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-next" style="max-width:160px;padding:10px;font-size:.9rem" onclick="saveStoreAdmin('${isEdit?s.id:''}')">${isEdit?'Aktualisieren':'Speichern'}</button>
+      <button class="btn-back" onclick="document.getElementById('storeFormArea').innerHTML=''">Abbrechen</button>
+    </div>
+  </div>`;
+}
+
+async function saveStoreAdmin(id){
+  const payload={
+    name:document.getElementById('sfName').value.trim(),
+    type:document.getElementById('sfType').value,
+    address:document.getElementById('sfAddr').value.trim(),
+    phone:document.getElementById('sfPhone').value.trim()||null,
+    description:document.getElementById('sfDesc').value.trim()
+  };
+  if(!payload.name){showToast('Name ist erforderlich.');return;}
+  try{
+    if(id){await sb.from('stores').update(payload).eq('id',id);}
+    else{await sb.from('stores').insert([payload]);}
+    showToast(id?'Store aktualisiert!':'Store erstellt!');
+    loadAdminStores();loadStores();
+  }catch(e){showToast('Fehler beim Speichern.');}
+}
+
+async function editStoreAdmin(id){
+  try{
+    const {data}=await sb.from('stores').select('*').eq('id',id).single();
+    if(data)showStoreForm(data);
+  }catch(e){showToast('Fehler beim Laden.');}
+}
+
+async function deleteStoreAdmin(id){
+  if(!confirm('Diesen Salon wirklich löschen?'))return;
+  try{
+    await sb.from('stores').delete().eq('id',id);
+    showToast('Store gelöscht.');
+    loadAdminStores();loadStores();
+  }catch(e){showToast('Fehler beim Löschen.');}
+}
+
+async function loadAdminServices(){
+  const c=document.getElementById('adminContent');
+  if(!c)return;
+  c.innerHTML='<p style="color:var(--muted)">Wird geladen...</p>';
+  try{
+    const {data:stores}=await sb.from('stores').select('id,name');
+    if(!stores||!stores.length){c.innerHTML='<p style="color:var(--muted)">Zuerst einen Store anlegen.</p>';return;}
+    c.innerHTML=`<div class="form-group"><label>Store auswählen</label><select id="adminStoreSelect" onchange="loadServicesForStore(this.value)"><option value="">—</option>${stores.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div><div id="adminServicesList"></div>`;
+  }catch(e){c.innerHTML='<p style="color:var(--error)">Fehler beim Laden.</p>';}
+}
+
+async function loadServicesForStore(storeId){
+  const el=document.getElementById('adminServicesList');
+  if(!el||!storeId){if(el)el.innerHTML='';return;}
+  el.innerHTML='<p style="color:var(--muted)">Wird geladen...</p>';
+  try{
+    const {data}=await sb.from('services').select('*').eq('store_id',storeId);
+    const svcs=data||[];
+    el.innerHTML=`<button class="btn-next" style="margin-bottom:12px;max-width:200px;padding:8px 16px;font-size:.85rem" onclick="showServiceForm('${storeId}')">+ Neuer Service</button>
+    <div id="svcFormArea"></div>
+    ${svcs.length?`<table class="admin-table"><thead><tr><th>Name</th><th>Preis (CHF)</th><th>Dauer (Min)</th><th>Aktionen</th></tr></thead><tbody>${svcs.map(sv=>`<tr><td>${sv.name}</td><td>${sv.price}</td><td>${sv.duration}</td><td><button onclick="deleteServiceAdmin('${sv.id}','${storeId}')">Löschen</button></td></tr>`).join('')}</tbody></table>`:'<p style="color:var(--muted)">Noch keine Services.</p>'}`;
+  }catch(e){el.innerHTML='<p style="color:var(--error)">Fehler beim Laden.</p>';}
+}
+
+function showServiceForm(storeId){
+  document.getElementById('svcFormArea').innerHTML=`<div style="background:var(--surfaceAlt);padding:12px;border-radius:var(--r);margin-bottom:12px;border:1px solid var(--border)">
+    <div class="form-row" style="grid-template-columns:2fr 1fr 1fr">
+      <div class="form-group"><label>Name</label><input id="svcName"></div>
+      <div class="form-group"><label>Preis (CHF)</label><input id="svcPrice" type="number"></div>
+      <div class="form-group"><label>Dauer (Min)</label><input id="svcDur" type="number"></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-next" style="max-width:140px;padding:8px;font-size:.85rem" onclick="saveServiceAdmin('${storeId}')">Speichern</button>
+      <button class="btn-back" onclick="document.getElementById('svcFormArea').innerHTML=''">Abbrechen</button>
+    </div>
+  </div>`;
+}
+
+async function saveServiceAdmin(storeId){
+  const payload={
+    store_id:storeId,
+    name:document.getElementById('svcName').value.trim(),
+    price:parseFloat(document.getElementById('svcPrice').value)||0,
+    duration:parseInt(document.getElementById('svcDur').value)||0
+  };
+  if(!payload.name){showToast('Name ist erforderlich.');return;}
+  try{
+    await sb.from('services').insert([payload]);
+    showToast('Service erstellt!');
+    loadServicesForStore(storeId);loadStores();
+  }catch(e){showToast('Fehler beim Speichern.');}
+}
+
+async function deleteServiceAdmin(id,storeId){
+  if(!confirm('Diesen Service wirklich löschen?'))return;
+  try{
+    await sb.from('services').delete().eq('id',id);
+    showToast('Service gelöscht.');
+    loadServicesForStore(storeId);loadStores();
+  }catch(e){showToast('Fehler beim Löschen.');}
+}
+
+async function loadAdminBookings(){
+  const c=document.getElementById('adminContent');
+  if(!c)return;
+  c.innerHTML='<p style="color:var(--muted)">Wird geladen...</p>';
+  try{
+    const {data}=await sb.from('bookings').select('*').order('created_at',{ascending:false}).limit(100);
+    const bookings=data||[];
+    if(!bookings.length){c.innerHTML='<p style="color:var(--muted)">Noch keine Buchungen.</p>';return;}
+    c.innerHTML=`<div style="overflow-x:auto"><table class="admin-table"><thead><tr><th>Datum</th><th>Uhrzeit</th><th>Kunde</th><th>Service</th><th>Salon</th><th>Status</th><th>Aktion</th></tr></thead><tbody>${bookings.map(b=>`<tr>
+      <td>${b.booking_date}</td><td>${b.booking_time}</td>
+      <td>${b.customer_first||''} ${b.customer_last||''}</td>
+      <td>${b.service_name}</td><td>${b.store_name}</td>
+      <td><span style="padding:2px 8px;border-radius:50px;font-size:.75rem;background:${b.status==='confirmed'?'var(--success)':'var(--error)'};color:#fff">${b.status==='confirmed'?'Bestätigt':'Storniert'}</span></td>
+      <td>${b.status==='confirmed'?`<button onclick="cancelBookingAdmin('${b.id}')">Stornieren</button>`:''}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+  }catch(e){c.innerHTML='<p style="color:var(--error)">Fehler beim Laden.</p>';}
+}
+
+async function cancelBookingAdmin(id){
+  if(!confirm('Diese Buchung wirklich stornieren?'))return;
+  try{
+    await sb.from('bookings').update({status:'cancelled'}).eq('id',id);
+    showToast('Buchung storniert.');
+    loadAdminBookings();
+  }catch(e){showToast('Fehler beim Stornieren.');}
+}
+
 function updateNav(){
   const guest=document.getElementById('navGuest');
   const user=document.getElementById('navUser');
@@ -925,6 +1119,8 @@ function updateNav(){
     const name=currentUser.user_metadata?.full_name||currentUser.email||'User';
     document.getElementById('navName').textContent=name.split(' ')[0];
     document.getElementById('navAvatar').textContent=(name[0]||'U').toUpperCase();
+    const adminBtn=document.getElementById('adminBtn');
+    if(adminBtn)adminBtn.style.display=ADMIN_EMAILS.includes(currentUser?.email)?'inline-flex':'none';
   }else{
     guest.style.display='flex';user.style.display='none';
   }
