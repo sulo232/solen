@@ -490,17 +490,20 @@ function renderStep(){
 
 function renderServices(){
   const svcs=booking.store.services||[];
-  if(!svcs.length)return '<p style="color:var(--muted);text-align:center;padding:30px">Keine Services verf\u00fcgbar.</p>';
-  return `<div class="service-list">${svcs.map(sv=>`
-    <div class="service-item${booking.service&&booking.service.id===sv.id?' sel':''}" onclick="selService(this,${JSON.stringify(sv).replace(/</g,'&lt;')})">
+  if(!svcs.length)return '<p style="color:var(--muted);text-align:center;padding:30px">Keine Services verfügbar.</p>';
+  window._svcMap={};
+  const sorted=sortServicesByProfile(svcs);
+  sorted.forEach((sv,i)=>{window._svcMap[i]=sv;});
+  return `<div class="service-list">${sorted.map((sv,i)=>`
+    <div class="service-item${booking.service&&booking.service.name===sv.name?' sel':''}" onclick="selServiceByIndex(this,${i})">
       <div class="sel-dot"></div>
-      <div class="service-info" style="flex:1;padding:0 12px">
+      <div style="flex:1;padding:0 12px">
         <h4>${sv.name}</h4>
-        <p>${sv.duration} Min.</p>
+        <p style="color:var(--muted);font-size:.85rem">${sv.duration} Min.</p>
       </div>
-      <div class="service-price">
-        <div class="price">CHF ${sv.price}</div>
-        <div class="dur">${sv.duration} Min</div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:var(--accent)">CHF ${sv.price}</div>
+        <div style="font-size:.8rem;color:var(--muted)">${sv.duration} Min</div>
       </div>
     </div>`).join('')}
   </div>
@@ -509,8 +512,8 @@ function renderServices(){
   </div>`;
 }
 
-function selService(el,sv){
-  booking.service=sv;
+function selServiceByIndex(el,i){
+  booking.service=window._svcMap[i];
   document.querySelectorAll('.service-item').forEach(e=>e.classList.remove('sel'));
   el.classList.add('sel');
   const btn=document.getElementById('btnNext1');
