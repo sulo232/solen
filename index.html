@@ -411,7 +411,7 @@ function filterStores(){
   const q=(document.getElementById('searchInput').value||'').toLowerCase();
   filteredStores=allStores.filter(s=>{
     const catOk=!activeCat||s.type===activeCat;
-    const qOk=!q||s.name.toLowerCase().includes(q)||(s.address||'').toLowerCase().includes(q)||(s.type||'').includes(q);
+    const qOk=!q||s.name.toLowerCase().includes(q)||(s.address||'').toLowerCase().includes(q)||(s.type||'').includes(q)||(s.services||[]).some(sv=>sv.name.toLowerCase().includes(q));
     return catOk&&qOk;
   });
   renderStores();
