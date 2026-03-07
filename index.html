@@ -639,9 +639,11 @@ function selSlot(el,t){
 }
 
 function renderForm(){
+  const profile=window._userProfile;
   const email=currentUser?.email||'';
-  const fullName=currentUser?.user_metadata?.full_name||'';
-  const [fname,lname]=[fullName.split(' ')[0]||'',fullName.split(' ').slice(1).join(' ')||''];
+  const displayName=profile?.display_name||currentUser?.user_metadata?.full_name||'';
+  const [fname,lname]=displayName.includes(' ')?[displayName.split(' ')[0],displayName.split(' ').slice(1).join(' ')]:[displayName,''];
+  const notes=profile?.stylist_notes||'';
   return `
   <div class="form-row">
     <div class="form-group"><label>Vorname *</label><input id="fFirst" type="text" placeholder="Max" value="${fname}"></div>
@@ -649,7 +651,7 @@ function renderForm(){
   </div>
   <div class="form-group"><label>E-Mail *</label><input id="fEmail" type="email" placeholder="max@beispiel.ch" value="${email}"></div>
   <div class="form-group"><label>Telefon</label><input id="fPhone" type="tel" placeholder="+41 79 123 45 67"></div>
-  <div class="form-group"><label>Anmerkungen (optional)</label><textarea id="fNote" rows="3" placeholder="Besondere W\u00fcnsche f\u00fcr den Salon..."></textarea></div>
+  <div class="form-group"><label>Anmerkungen (optional)</label><textarea id="fNote" rows="3" placeholder="Besondere Wünsche für den Salon...">${notes}</textarea></div>
   <div class="wizard-actions">
     <button class="btn-back" onclick="goStep(3)">&#8592; Zur\u00fcck</button>
     <button class="btn-next" onclick="validateStep4()">Weiter &#8594;</button>
