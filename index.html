@@ -339,21 +339,21 @@ const ADMIN_EMAILS=['habobi1238@proton.me'];
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 const DEMO_STORES=[
-  {id:'d1',name:'Salon Beautique Basel',type:'hair',address:'Freie Strasse 12, 4001 Basel',phone:'061 123 45 67',rating:4.9,reviews:142,description:'Moderner Friseursalon im Herzen Basels.',image_url:'',
+  {id:'d1',name:'Salon Beautique Basel',type:'hair',address:'Freie Strasse 12, 4001 Basel',rating:4.9,reviews:0,description:'Moderner Friseursalon im Herzen Basels.',image_url:'',
    services:[{id:'s1',name:'Damen-Haarschnitt',price:65,duration:60},{id:'s2',name:'Herren-Haarschnitt',price:45,duration:45},{id:'s3',name:'F\u00e4rben & Highlights',price:95,duration:90},{id:'s4',name:'Bl\u00f6wout & Styling',price:50,duration:45},{id:'s5',name:'Keratin-Behandlung',price:180,duration:120},{id:'s5a',name:'Kinder-Haarschnitt (bis 12)',price:25,duration:30},{id:'s5b',name:'Teenager-Schnitt (12-17)',price:35,duration:35}]},
-  {id:'d2',name:'The Barber Club Basel',type:'barber',address:'Steinenvorstadt 8, 4051 Basel',phone:'061 234 56 78',rating:4.8,reviews:98,description:'Premium Barbershop mit klassischen Techniken.',image_url:'',
+  {id:'d2',name:'The Barber Club Basel',type:'barber',address:'Steinenvorstadt 8, 4051 Basel',rating:4.8,reviews:0,description:'Premium Barbershop mit klassischen Techniken.',image_url:'',
    services:[{id:'s6',name:'Herrenschnitt Classic',price:28,duration:30},{id:'s7',name:'Bart Trim & Shape',price:22,duration:25},{id:'s8',name:'Schnitt + Bart Kombi',price:45,duration:50},{id:'s9',name:'Hei\u00dfe Rasur',price:35,duration:40},{id:'s10',name:'Fade & Skin Fade',price:30,duration:35}]},
-  {id:'d3',name:'Nail Art Studio Sinem',type:'nails',address:'Clarastrasse 22, 4058 Basel',phone:'061 345 67 89',rating:4.9,reviews:201,description:'Kreative Nageldesigns und professionelle Pflege.',image_url:'',
+  {id:'d3',name:'Nail Art Studio Sinem',type:'nails',address:'Clarastrasse 22, 4058 Basel',rating:4.9,reviews:0,description:'Kreative Nageldesigns und professionelle Pflege.',image_url:'',
    services:[{id:'s11',name:'Klassische Maniküre',price:35,duration:45},{id:'s12',name:'Gel Maniküre',price:55,duration:60},{id:'s13',name:'Nail Art Design',price:75,duration:90},{id:'s14',name:'Klassische Pediküre',price:45,duration:60},{id:'s15',name:'Acryl Verl\u00e4ngerung',price:85,duration:90}]},
-  {id:'d4',name:'Basel Wellness Spa',type:'spa',address:'Peter Merian-Weg 4, 4052 Basel',phone:'061 456 78 90',rating:4.7,reviews:75,description:'Entspannungs-Oase mitten in Basel.',image_url:'',
+  {id:'d4',name:'Basel Wellness Spa',type:'spa',address:'Peter Merian-Weg 4, 4052 Basel',rating:4.7,reviews:0,description:'Entspannungs-Oase mitten in Basel.',image_url:'',
    services:[{id:'s16',name:'Classic Massage 60min',price:90,duration:60},{id:'s17',name:'Tiefengewebsmassage',price:110,duration:60},{id:'s18',name:'Hot Stone Massage',price:130,duration:75},{id:'s19',name:'Gesichtspflege Classic',price:85,duration:60},{id:'s20',name:'Anti-Age Facial',price:120,duration:75}]},
-  {id:'d5',name:'Coiffeur Magnolia',type:'hair',address:'Gundeldinger Str. 45, 4053 Basel',phone:'061 567 89 01',rating:4.6,reviews:88,description:'Famili\u00e4rer Salon mit 20 Jahren Erfahrung.',image_url:'',
+  {id:'d5',name:'Coiffeur Magnolia',type:'hair',address:'Gundeldinger Str. 45, 4053 Basel',rating:4.6,reviews:0,description:'Famili\u00e4rer Salon mit 20 Jahren Erfahrung.',image_url:'',
    services:[{id:'s21',name:'Kinderhaarschnitt',price:25,duration:30},{id:'s22',name:'Damenhaarschnitt',price:55,duration:50},{id:'s23',name:'Herrenhaarschnitt',price:38,duration:40},{id:'s24',name:'Dauerwelle',price:95,duration:120},{id:'s25',name:'Colorierung komplett',price:85,duration:90}]},
-  {id:'d6',name:'Brow & Lash Lab',type:'brows',address:'Aeschenvorstadt 17, 4051 Basel',phone:'061 678 90 12',rating:4.8,reviews:134,description:'Spezialist f\u00fcr Brauen-Design und Wimpern.',image_url:'',
+  {id:'d6',name:'Brow & Lash Lab',type:'brows',address:'Aeschenvorstadt 17, 4051 Basel',rating:4.8,reviews:0,description:'Spezialist f\u00fcr Brauen-Design und Wimpern.',image_url:'',
    services:[{id:'s26',name:'Brauen Formen & F\u00e4rben',price:35,duration:45},{id:'s27',name:'Lash Lifting',price:65,duration:60},{id:'s28',name:'Wimpernverl\u00e4ngerung',price:120,duration:120},{id:'s29',name:'Brow Lamination',price:55,duration:50},{id:'s30',name:'Wimpern Auff\u00fcllen',price:70,duration:60}]},
-  {id:'d7',name:'Fade Factory Barbershop',type:'barber',address:'Feldbergstrasse 55, 4057 Basel',phone:'061 789 01 23',rating:4.7,reviews:167,description:'Urban Barbershop f\u00fcr moderne Fades.',image_url:'',
+  {id:'d7',name:'Fade Factory Barbershop',type:'barber',address:'Feldbergstrasse 55, 4057 Basel',rating:4.7,reviews:0,description:'Urban Barbershop f\u00fcr moderne Fades.',image_url:'',
    services:[{id:'s31',name:'Fade Haarschnitt',price:30,duration:35},{id:'s32',name:'Design Konturierung',price:35,duration:40},{id:'s33',name:'Kids Cut',price:22,duration:25},{id:'s34',name:'Bart Kombo',price:50,duration:55},{id:'s35',name:'Bridal Event Look',price:75,duration:70}]},
-  {id:'d8',name:'La Belle Nails & Beauty',type:'nails',address:'Rheingasse 8, 4058 Basel',phone:'061 890 12 34',rating:4.5,reviews:59,description:'Elegantes Nagelstudio mit Premium-Produkten.',image_url:'',
+  {id:'d8',name:'La Belle Nails & Beauty',type:'nails',address:'Rheingasse 8, 4058 Basel',rating:4.5,reviews:0,description:'Elegantes Nagelstudio mit Premium-Produkten.',image_url:'',
    services:[{id:'s36',name:'Shellac Maniküre',price:48,duration:55},{id:'s37',name:'French Maniküre',price:42,duration:50},{id:'s38',name:'Baby Boomer',price:65,duration:65},{id:'s39',name:'Gel Pediküre',price:60,duration:70},{id:'s40',name:'Nail Art je Finger',price:8,duration:10}]}
 ];
 
@@ -454,9 +454,8 @@ function storeCard(s){
     <div class="store-body">
       <div class="store-name">${s.name}</div>
       <div class="store-type">${label}</div>
-      <div class="store-row"><span class="stars">${stars}</span>&nbsp;<strong>${(s.rating||4.5).toFixed(1)}</strong>&nbsp;<span>(${s.reviews||0} Bewertungen)</span></div>
+      <div class="store-row"><span class="stars">${stars}</span>&nbsp;<strong>${(s.rating||4.5).toFixed(1)}</strong>&nbsp;<span>${s.reviews>0?'('+s.reviews+' Bewertungen)':'Neu'}</span></div>
       <div class="store-row">&#128205;&nbsp;${s.address||'Basel'}</div>
-      ${s.phone?`<div class="store-row">&#128222;&nbsp;${s.phone}</div>`:''}
     </div>
     <div class="store-footer">
       <span class="price-tag">ab CHF ${minPrice(s)||'?'}</span>
