@@ -225,9 +225,9 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
 <div class="mobile-menu" id="mobileMenu"></div>
 
 <section class="hero">
-  <div class="hero-badge">&#127894; Jetzt in Basel verf&#252;gbar</div>
+  <div class="hero-badge">Jetzt in Basel verfügbar</div>
   <h1>Dein Beauty-Termin<br>in wenigen Klicks</h1>
-  <p>Finde die besten Salons, Barbershops und Nail Studios in Basel &#8212; und buche sofort online, 24/7.</p>
+  <p>Finde die besten Salons in Basel und buche deinen Termin &mdash; ganz einfach, direkt online.</p>
   <div class="search-bar">
     <input id="searchInput" type="text" placeholder="Salon oder Service suchen..." oninput="filterStores()">
     <button onclick="filterStores()">Suchen</button>
@@ -292,25 +292,25 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
     <div class="how-grid">
       <div class="how-step">
         <div class="step-num">1</div>
-        <div class="step-icon">&#128269;</div>
+        <div class="step-icon"></div>
         <h3>Salon finden</h3>
         <p>Suche nach Salons in deiner N&#228;he und filter nach Service oder Kategorie.</p>
       </div>
       <div class="how-step">
         <div class="step-num">2</div>
-        <div class="step-icon">&#9998;</div>
+        <div class="step-icon"></div>
         <h3>Service w&#228;hlen</h3>
         <p>W&#228;hle deinen gew&#252;nschten Service mit Preis und Dauer direkt in der App.</p>
       </div>
       <div class="how-step">
         <div class="step-num">3</div>
-        <div class="step-icon">&#128197;</div>
+        <div class="step-icon"></div>
         <h3>Termin buchen</h3>
         <p>W&#228;hle Datum und Uhrzeit aus verf&#252;gbaren Slots &#8212; sofort und ohne Anruf.</p>
       </div>
       <div class="how-step">
         <div class="step-num">4</div>
-        <div class="step-icon">&#10003;</div>
+        <div class="step-icon"></div>
         <h3>Genie&#223;en!</h3>
         <p>Du erh&#228;ltst eine Best&#228;tigung per E-Mail. Erscheine einfach zum Termin!</p>
       </div>
@@ -328,7 +328,7 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
     <a href="#">AGB</a>
     <a href="#">Kontakt</a>
   </div>
-  <div class="footer-bottom">&#169; 2025 Solen. Alle Rechte vorbehalten.</div>
+  <div class="footer-bottom">&copy; 2026 Solen. Alle Rechte vorbehalten.</div>
 </footer>
 
 <!-- BOOKING MODAL -->
@@ -499,7 +499,7 @@ function storeCard(s){
 function renderStores(){
   const g=document.getElementById('storesGrid');
   if(!filteredStores.length){
-    g.innerHTML='<p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:40px 0">Keine Salons gefunden.</p>';return;
+    g.innerHTML='<p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:40px 0">Kein Salon gefunden. Versuch einen anderen Begriff.</p>';return;
   }
   g.innerHTML=filteredStores.map(s=>storeCard(s)).join('');
 }
@@ -733,9 +733,9 @@ async function submitBooking(btn){
     document.getElementById('wiz-sub').textContent='';
     document.getElementById('wizContent').innerHTML=`
     <div class="success-box">
-      <div class="success-icon">&#127881;</div>
-      <h2>Buchung best\u00e4tigt!</h2>
-      <p>Dein Termin bei <strong>${booking.store.name}</strong> ist gebucht.<br>Best\u00e4tigung geht an <strong>${booking.customerEmail}</strong>.</p>
+      <div class="success-icon">&#10003;</div>
+      <h2>Dein Termin ist gebucht!</h2>
+      <p>Wir freuen uns auf deinen Besuch bei <strong>${booking.store.name}</strong>.<br>Bestätigung geht an <strong>${booking.customerEmail}</strong>.</p>
       <div class="success-code">${code}</div>
       <p style="font-size:.8rem;color:var(--muted);margin-top:8px">Buchungsnummer &mdash; bitte merken!</p>
       <div style="margin-top:28px">
@@ -829,7 +829,7 @@ function openProfileSetup(){
   overlay.innerHTML=`<div class="modal" style="max-width:480px;text-align:center;padding:40px 28px">
     <button class="modal-close" onclick="document.getElementById('profileSetupOverlay').remove()">&times;</button>
     <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:8px">Willkommen bei Solen!</h2>
-    <p style="color:var(--muted);margin-bottom:28px">Möchtest du dein Profil anpassen? So können Salons dich besser beraten.</p>
+    <p style="color:var(--muted);margin-bottom:28px">Erzähl uns ein bisschen über dich — so können wir deine Erfahrung verbessern.</p>
     <div style="display:flex;gap:12px;justify-content:center">
       <button class="btn-next" style="flex:0 1 auto;padding:12px 28px" onclick="document.getElementById('profileSetupOverlay').remove();openProfileEdit()">Jetzt anpassen</button>
       <button class="btn-back" onclick="document.getElementById('profileSetupOverlay').remove()">Später</button>
