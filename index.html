@@ -185,7 +185,7 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
     </div>
     <div id="navUser" style="display:none" class="nav-user">
       <div class="avatar" id="navAvatar">S</div>
-      <span id="navName">Gast</span>
+      <span id="navName" style="cursor:pointer" onclick="openProfilePage()">Gast</span>
       <button class="nav-btn ghost" onclick="signOut()">Abmelden</button>
     </div>
   </div>
@@ -367,6 +367,7 @@ async function init(){
   });
   const {data:{session}}=await sb.auth.getSession();
   currentUser=session?.user||null;
+  if(session?.user){await loadUserProfile();}
   updateNav();
   await loadStores();
 }
@@ -762,9 +763,148 @@ async function emailSignup(){
   if(!email||!pass){showToast('Bitte alle Felder ausf\u00fcllen.');return;}
   const {error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:(first+' '+last).trim()}}});
   if(error)showToast(error.message);
-  else{closeAuth();showToast('Registrierung erfolgreich! Bitte E-Mail best\u00e4tigen.');}
+  else{closeAuth();showToast('Registrierung erfolgreich! Bitte E-Mail bestätigen.');setTimeout(()=>openProfileSetup(),1000);}
 }
-async function signOut(){await sb.auth.signOut();showToast('Abgemeldet.');}
+async function signOut(){await sb.auth.signOut();window._userProfile=null;showToast('Abgemeldet.');}
+
+/* ─── PROFILE SYSTEM ─── */
+async function loadUserProfile(){
+  if(!currentUser)return;
+  try{
+    const {data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+    window._userProfile=data||null;
+  }catch(e){window._userProfile=null;}
+}
+
+function openProfileSetup(){
+  const overlay=document.createElement('div');
+  overlay.id='profileSetupOverlay';
+  overlay.className='overlay open';
+  overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
+  overlay.innerHTML=`<div class="modal" style="max-width:480px;text-align:center;padding:40px 28px">
+    <button class="modal-close" onclick="document.getElementById('profileSetupOverlay').remove()">&times;</button>
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:8px">Willkommen bei Solen!</h2>
+    <p style="color:var(--muted);margin-bottom:28px">Möchtest du dein Profil anpassen? So können Salons dich besser beraten.</p>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn-next" style="flex:0 1 auto;padding:12px 28px" onclick="document.getElementById('profileSetupOverlay').remove();openProfileEdit()">Jetzt anpassen</button>
+      <button class="btn-back" onclick="document.getElementById('profileSetupOverlay').remove()">Später</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+function openProfileEdit(){
+  const p=window._userProfile||{};
+  const overlay=document.createElement('div');
+  overlay.id='profileEditOverlay';
+  overlay.className='overlay open';
+  overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
+  const prefServices=['Haarschnitt','Färbung','Styling','Bartpflege','Nägel','Wimpern/Brauen','Wellness'];
+  const prefChecks=prefServices.map(ps=>`<label style="display:flex;align-items:center;gap:6px;font-size:.9rem;cursor:pointer"><input type="checkbox" class="pref-svc" value="${ps}" ${(p.preferred_services||[]).includes(ps)?'checked':''}> ${ps}</label>`).join('');
+  overlay.innerHTML=`<div class="modal" style="max-width:520px;padding:28px 24px">
+    <button class="modal-close" onclick="document.getElementById('profileEditOverlay').remove()">&times;</button>
+    <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:20px">Profil bearbeiten</h2>
+    <div class="form-group"><label>Anzeigename</label><input id="pfName" type="text" value="${p.display_name||''}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Altersgruppe</label><select id="pfAge"><option value="">—</option>${['Unter 12','12-17','18-25','26-35','36-50','50+'].map(a=>`<option ${p.age_range===a?'selected':''}>${a}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Geschlecht</label><select id="pfGender"><option value="">—</option>${['Weiblich','Mannlich','Divers','Keine Angabe'].map(g=>`<option ${p.gender===g?'selected':''}>${g}</option>`).join('')}</select></div>
+    </div>
+    <h3 style="font-size:1rem;font-weight:700;margin:20px 0 12px;border-top:1px solid var(--border);padding-top:16px">Haarprofil</h3>
+    <div class="form-row">
+      <div class="form-group"><label>Haartyp</label><select id="pfHairType"><option value="">—</option>${['Glatt','Wellig','Lockig','Kraus'].map(h=>`<option ${p.hair_type===h?'selected':''}>${h}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Haarzustand</label><select id="pfHairCond"><option value="">—</option>${['Gesund','Gefärbt','Chemisch behandelt','Strapaziert'].map(h=>`<option ${p.hair_condition===h?'selected':''}>${h}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-group"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="pfColorTreated" ${p.color_treated?'checked':''}> Haarfärbung</label></div>
+    <h3 style="font-size:1rem;font-weight:700;margin:20px 0 12px;border-top:1px solid var(--border);padding-top:16px">Präferenzen</h3>
+    <div class="form-group"><label>Bevorzugte Services</label><div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:6px">${prefChecks}</div></div>
+    <div class="form-group"><label>Notizen für den Stylisten</label><textarea id="pfNotes" rows="3" maxlength="200" placeholder="Besondere Wünsche...">${p.stylist_notes||''}</textarea></div>
+    <button class="btn-next" style="width:100%;margin-top:8px" onclick="saveProfileForm()">Profil speichern</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+async function saveProfileForm(){
+  const data={
+    display_name:document.getElementById('pfName').value.trim(),
+    age_range:document.getElementById('pfAge').value,
+    gender:document.getElementById('pfGender').value,
+    hair_type:document.getElementById('pfHairType').value,
+    hair_condition:document.getElementById('pfHairCond').value,
+    color_treated:document.getElementById('pfColorTreated').checked,
+    preferred_services:[...document.querySelectorAll('.pref-svc:checked')].map(c=>c.value),
+    stylist_notes:document.getElementById('pfNotes').value.trim(),
+    updated_at:new Date().toISOString()
+  };
+  try{
+    await sb.from('profiles').upsert({id:currentUser.id,...data});
+    window._userProfile=data;
+    showToast('Profil gespeichert!');
+    const el=document.getElementById('profileEditOverlay');
+    if(el)el.remove();
+    updateNav();
+  }catch(e){showToast('Fehler beim Speichern.');}
+}
+
+function openProfilePage(){
+  const overlay=document.createElement('div');
+  overlay.id='profilePageOverlay';
+  overlay.className='overlay open';
+  overlay.onclick=function(e){if(e.target===overlay)overlay.remove();};
+  overlay.innerHTML=`<div class="modal" style="max-width:600px;padding:28px 24px">
+    <button class="modal-close" onclick="document.getElementById('profilePageOverlay').remove()">&times;</button>
+    <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:4px">Mein Profil</h2>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:20px">${currentUser?.email||''}</p>
+    <div id="profileInfo" style="margin-bottom:20px"></div>
+    <button class="btn-back" style="margin-bottom:24px" onclick="document.getElementById('profilePageOverlay').remove();openProfileEdit()">Bearbeiten</button>
+    <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:16px;border-top:1px solid var(--border);padding-top:16px">Meine Buchungen</h3>
+    <div id="myBookingsList"><p style="color:var(--muted)">Wird geladen...</p></div>
+  </div>`;
+  document.body.appendChild(overlay);
+  renderProfileInfo();
+  loadMyBookings();
+}
+
+function renderProfileInfo(){
+  const p=window._userProfile;
+  const el=document.getElementById('profileInfo');
+  if(!el)return;
+  if(!p){el.innerHTML='<p style="color:var(--muted)">Noch kein Profil angelegt.</p>';return;}
+  const rows=[];
+  if(p.display_name)rows.push(['Name',p.display_name]);
+  if(p.age_range)rows.push(['Alter',p.age_range]);
+  if(p.gender)rows.push(['Geschlecht',p.gender]);
+  if(p.hair_type)rows.push(['Haartyp',p.hair_type]);
+  if(p.hair_condition)rows.push(['Haarzustand',p.hair_condition]);
+  if(p.color_treated)rows.push(['Färbung','Ja']);
+  if(p.preferred_services&&p.preferred_services.length)rows.push(['Services',p.preferred_services.join(', ')]);
+  if(p.stylist_notes)rows.push(['Notizen',p.stylist_notes]);
+  if(!rows.length){el.innerHTML='<p style="color:var(--muted)">Noch kein Profil angelegt.</p>';return;}
+  el.innerHTML=`<div style="background:var(--surfaceAlt);border-radius:var(--r);padding:16px;border:1px solid var(--border)">${rows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:.9rem"><span style="color:var(--muted)">${k}</span><span style="font-weight:600">${v}</span></div>`).join('')}</div>`;
+}
+
+async function loadMyBookings(){
+  const el=document.getElementById('myBookingsList');
+  if(!el)return;
+  try{
+    const {data}=await sb.from('bookings').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    const bookings=data||[];
+    if(!bookings.length){el.innerHTML='<p style="color:var(--muted)">Noch keine Buchungen.</p>';return;}
+    el.innerHTML=bookings.map(b=>`<div style="background:var(--surfaceAlt);border-radius:var(--r);padding:14px;margin-bottom:10px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>${b.store_name}</strong><span style="font-size:.8rem;padding:2px 8px;border-radius:50px;background:${b.status==='confirmed'?'var(--success)':'var(--error)'};color:#fff">${b.status==='confirmed'?'Bestätigt':'Storniert'}</span></div>
+      <div style="font-size:.9rem;color:var(--muted)">${b.service_name} &middot; CHF ${b.service_price}</div>
+      <div style="font-size:.85rem;color:var(--muted)">${b.booking_date} um ${b.booking_time} Uhr</div>
+      <button class="btn-back" style="margin-top:8px;padding:6px 14px;font-size:.8rem" onclick="document.getElementById('profilePageOverlay').remove();rebookFromHistory(${JSON.stringify(b).replace(/"/g,'&quot;')})">Erneut buchen</button>
+    </div>`).join('');
+  }catch(e){el.innerHTML='<p style="color:var(--muted)">Fehler beim Laden.</p>';}
+}
+
+function rebookFromHistory(b){
+  const store=allStores.find(s=>String(s.id)===String(b.store_id))||{
+    id:b.store_id,name:b.store_name,
+    services:[{name:b.service_name,price:b.service_price,duration:b.service_duration}]
+  };
+  openBooking(String(store.id));
+}
 
 function updateNav(){
   const guest=document.getElementById('navGuest');
