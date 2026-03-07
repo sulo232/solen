@@ -3,28 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>solen.ch – Basel Beauty Booking</title>
+<title>solen.ch â Basel Beauty Booking</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --gold: #c8a96e;
-  --dark: #0f0f0f;
-  --card: #1a1a1a;
-  --border: #2a2a2a;
-  --text: #e8e0d0;
-  --muted: #888;
-  --green: #4caf50;
-  --red: #e53935;
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --border: #E0E0E0;
+  --text: #111111;
+  --muted: #666666;
+  --accent: #111111;
+  --accent-light: #F5F5F5;
+  --accent-mid: #333333;
+  --gold: #111111;
+  --green: #1A7A38;
+  --red: #CC0000;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --radius-sm: 8px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--dark); color: var(--text); font-family: 'Georgia', serif; min-height: 100vh; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* NAV */
+/* ââ NAV âââââââââââââââââââââââââââââââââââââââââââââââââ */
 nav {
-  background: #111;
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 0 24px;
-  height: 60px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,401 +48,556 @@ nav {
   top: 0;
   z-index: 100;
 }
-.nav-logo { font-size: 1.5rem; color: var(--gold); letter-spacing: 2px; font-weight: bold; }
-.nav-right { display: flex; gap: 12px; align-items: center; }
+.nav-logo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--accent-mid); }
+.nav-right { display: flex; gap: 10px; align-items: center; }
 .lang-btn {
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-.lang-btn.active { border-color: var(--gold); color: var(--gold); }
-.btn {
-  padding: 8px 18px;
+  padding: 5px 11px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.lang-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.lang-btn:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+.btn {
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
   border: none;
-  transition: opacity 0.2s;
+  transition: all 0.15s;
+  font-family: inherit;
 }
-.btn:hover { opacity: 0.85; }
-.btn-gold { background: var(--gold); color: #000; font-weight: bold; }
-.btn-outline { background: none; border: 1px solid var(--gold); color: var(--gold); }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-mid); }
+.btn-outline { background: none; border: 1.5px solid var(--accent); color: var(--accent); }
+.btn-outline:hover { background: var(--accent-light); }
 .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }
-.btn-danger { background: var(--red); color: #fff; }
+.btn-ghost:hover { background: var(--bg); }
+.btn-danger { background: none; border: 1px solid #FCA5A5; color: var(--red); }
+.btn-danger:hover { background: #FEF2F2; }
+.btn-gold { background: var(--gold); color: #000; font-weight: 600; }
+.btn-gold:hover { filter: brightness(1.05); }
 .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
-.btn-green { background: var(--green); color: #fff; }
 
-/* HERO */
+/* ââ HERO ââââââââââââââââââââââââââââââââââââââââââââââââ */
 .hero {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border);
+  padding: 60px 24px 48px;
   text-align: center;
-  padding: 70px 24px 50px;
-  background: radial-gradient(ellipse at 50% 0%, #1e1508 0%, transparent 70%);
 }
-.hero h1 { font-size: 2.8rem; color: var(--gold); margin-bottom: 12px; }
-.hero p { color: var(--muted); font-size: 1.1rem; max-width: 500px; margin: 0 auto 30px; }
+.hero-content { max-width: 600px; margin: 0 auto; }
+.hero-eyebrow {
+  display: inline-block;
+  background: #F5F5F5;
+  color: #666666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  border: 1px solid #E0E0E0;
+}
+.hero h1 {
+  color: #111111;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.hero h1 em { color: #111111; font-style: normal; text-decoration: underline; text-decoration-thickness: 3px; }
+.hero p {
+  color: #555555;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  font-weight: 300;
+}
 
-/* FILTERS */
+/* ââ FILTERS âââââââââââââââââââââââââââââââââââââââââââââ */
 .filters {
+  padding: 24px 24px 8px;
   display: flex;
-  gap: 10px;
-  justify-content: center;
+  gap: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
   flex-wrap: wrap;
-  padding: 0 24px 30px;
 }
 .filter-btn {
-  padding: 7px 18px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: none;
+  padding: 8px 18px;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   font-size: 0.85rem;
-  transition: all 0.2s;
+  font-weight: 500;
+  transition: all 0.15s;
+  font-family: inherit;
 }
-.filter-btn.active, .filter-btn:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(200,169,110,0.08);
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.25);
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  margin-left: 4px;
 }
+.filter-btn.active .filter-count { background: rgba(255,255,255,0.2); }
 
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 0 24px 60px;
+/* ââ GRID ââââââââââââââââââââââââââââââââââââââââââââââââ */
+.grid-wrap {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 16px 24px 60px;
 }
+.grid-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.grid-count { font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* ââ CARD ââââââââââââââââââââââââââââââââââââââââââââââââ */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: var(--surface);
+  border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
-.card:hover { transform: translateY(-3px); border-color: var(--gold); }
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  border-color: transparent;
+}
 .card-img {
   width: 100%;
-  height: 180px;
+  height: 200px;
   object-fit: cover;
-  background: #222;
   display: block;
 }
-.card-img-placeholder {
-  width: 100%;
-  height: 180px;
-  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+.card-placeholder {
+  height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
 }
-.card-body { padding: 14px; }
-.card-cat {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--gold);
-  margin-bottom: 5px;
+.card-placeholder.hair {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
-.card-name { font-size: 1.05rem; margin-bottom: 5px; }
-.card-addr { font-size: 0.8rem; color: var(--muted); }
-.card-registered {
-  display: inline-block;
-  margin-top: 8px;
+.card-placeholder.barber {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+.card-placeholder.nails {
+  background: linear-gradient(135deg, #f093fb 0%, #c471ed 50%, #f64f59 100%);
+}
+.card-placeholder-icon {
+  font-size: 3.5rem;
+  opacity: 0.9;
+}
+.card-body { padding: 16px 18px 18px; }
+.card-cat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.cat-badge {
   font-size: 0.7rem;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: rgba(200,169,110,0.15);
-  color: var(--gold);
-  border: 1px solid rgba(200,169,110,0.3);
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
 }
+.cat-badge.hair { background: #EDE9FE; color: #5B21B6; }
+.cat-badge.barber { background: #DBEAFE; color: #1D4ED8; }
+.cat-badge.nails { background: #FCE7F3; color: #BE185D; }
+.online-badge {
+  font-size: 0.7rem;
+  color: var(--green);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.online-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+}
+.card-name { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.card-addr { font-size: 0.82rem; color: var(--muted); display: flex; align-items: flex-start; gap: 5px; line-height: 1.4; }
+.card-addr svg { flex-shrink: 0; margin-top: 1px; }
 
-/* MODALS */
+/* ââ OVERLAY / MODAL âââââââââââââââââââââââââââââââââââââ */
 .overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.8);
-  z-index: 200;
   display: none;
-  align-items: flex-start;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: center;
   justify-content: center;
   padding: 20px;
-  overflow-y: auto;
+  backdrop-filter: blur(4px);
 }
 .overlay.open { display: flex; }
 .modal {
-  background: #111;
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--surface);
+  border-radius: var(--radius);
   width: 100%;
   max-width: 600px;
-  margin: auto;
-  animation: slideUp 0.25s ease;
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
 }
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px 16px;
+  padding: 20px 24px 18px;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
 }
-.modal-header h2 { font-size: 1.2rem; color: var(--gold); }
-.close-btn {
-  background: none; border: none; color: var(--muted);
-  font-size: 1.5rem; cursor: pointer; line-height: 1;
-}
-.close-btn:hover { color: var(--text); }
-.modal-body { padding: 20px 24px; }
-
-/* GALLERY */
-.gallery { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; }
-.gallery img {
-  height: 120px; min-width: 160px; object-fit: cover;
-  border-radius: 8px; cursor: pointer;
-}
-.gallery img:first-child { min-width: 240px; height: 160px; }
-
-/* INFO ROW */
-.info-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.info-chip {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 0.8rem;
+.modal-title { font-size: 1.15rem; font-weight: 600; }
+.modal-close {
+  background: var(--bg);
+  border: none;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
   color: var(--muted);
-  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
 }
-.info-chip:hover { border-color: var(--gold); color: var(--gold); }
-
-/* SERVICES */
-.services-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.service-row {
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 14px;
-}
-.service-name { font-size: 0.9rem; }
-.service-meta { font-size: 0.8rem; color: var(--muted); }
-.service-price { color: var(--gold); font-size: 0.9rem; }
-
-/* HOURS */
-.hours-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 6px; font-size: 0.82rem;
-}
-.hours-grid span:nth-child(odd) { color: var(--muted); }
-
-/* FORMS */
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 5px; }
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%;
-  background: #1a1a1a;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 9px 12px;
-  color: var(--text);
-  font-size: 0.9rem;
-  font-family: inherit;
-}
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  outline: none; border-color: var(--gold);
-}
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-close:hover { background: var(--border); color: var(--text); }
+.modal-body { padding: 24px; overflow-y: auto; flex: 1; }
 .modal-footer {
   padding: 16px 24px;
   border-top: 1px solid var(--border);
-  display: flex; justify-content: flex-end; gap: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
-/* AUTH MODAL */
-.auth-divider {
-  text-align: center; position: relative; margin: 16px 0;
-  color: var(--muted); font-size: 0.8rem;
-}
-.auth-divider::before {
-  content: '';
-  position: absolute; top: 50%; left: 0; right: 0;
-  height: 1px; background: var(--border); z-index: 0;
-}
-.auth-divider span {
-  position: relative; z-index: 1; background: #111; padding: 0 10px;
-}
-.google-btn {
-  width: 100%;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  background: #fff; color: #333;
-  border: none; border-radius: 6px;
-  padding: 10px;
-  font-size: 0.95rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: opacity 0.2s;
-}
-.google-btn:hover { opacity: 0.9; }
-.google-btn svg { width: 20px; height: 20px; }
-.auth-switch { text-align: center; margin-top: 14px; font-size: 0.85rem; color: var(--muted); }
-.auth-switch a { color: var(--gold); cursor: pointer; text-decoration: none; }
-.auth-switch a:hover { text-decoration: underline; }
-.auth-error {
-  background: rgba(229,57,53,0.15);
-  border: 1px solid rgba(229,57,53,0.4);
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 0.85rem;
-  color: #ff8a80;
-  margin-bottom: 12px;
-  display: none;
-}
-
-/* USER MENU */
-.user-avatar {
-  width: 34px; height: 34px;
-  background: var(--gold);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #000; font-weight: bold; font-size: 0.9rem;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: border-color 0.2s;
-}
-.user-avatar:hover { border-color: var(--gold); }
-.user-menu {
-  position: absolute; top: 56px; right: 16px;
-  background: #1a1a1a;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  width: 200px;
-  z-index: 300;
-  overflow: hidden;
-  display: none;
-}
-.user-menu.open { display: block; }
-.user-menu-item {
-  padding: 11px 16px;
-  cursor: pointer;
-  font-size: 0.88rem;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s;
-}
-.user-menu-item:last-child { border-bottom: none; }
-.user-menu-item:hover { background: rgba(200,169,110,0.1); }
-.user-menu-email { padding: 12px 16px; font-size: 0.78rem; color: var(--muted); border-bottom: 1px solid var(--border); }
-
-/* ADMIN PANEL */
-.admin-section {
-  max-width: 1000px; margin: 0 auto;
-  padding: 30px 24px;
-  display: none;
-}
-.admin-section.visible { display: block; }
-.admin-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 24px;
-}
-.admin-header h2 { font-size: 1.4rem; color: var(--gold); }
-.admin-table {
-  width: 100%; border-collapse: collapse;
-  font-size: 0.85rem;
-}
-.admin-table th {
-  padding: 10px 12px; text-align: left;
-  border-bottom: 1px solid var(--border);
-  color: var(--muted);
-  font-weight: normal;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  letter-spacing: 1px;
-}
-.admin-table td {
-  padding: 11px 12px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-.admin-table tr:hover td { background: rgba(255,255,255,0.02); }
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 0.72rem;
-}
-.badge-gold { background: rgba(200,169,110,0.2); color: var(--gold); }
-.badge-muted { background: rgba(136,136,136,0.15); color: var(--muted); }
-.action-btns { display: flex; gap: 6px; }
-
-/* TOAST */
-.toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: #1a1a1a;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 18px;
-  font-size: 0.88rem;
-  z-index: 9999;
-  animation: slideUp 0.25s ease;
-  max-width: 300px;
-  display: none;
-}
-.toast.show { display: block; }
-.toast.success { border-color: var(--green); color: #81c784; }
-.toast.error { border-color: var(--red); color: #e57373; }
-
-/* LOADING */
-.loading {
-  text-align: center; padding: 60px 24px;
-  color: var(--muted); font-size: 0.9rem;
-}
-.spinner {
-  display: inline-block;
-  width: 24px; height: 24px;
-  border: 2px solid var(--border);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  margin-right: 10px;
-  vertical-align: middle;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* TABS */
-.tabs {
-  display: flex; gap: 0;
-  border-bottom: 1px solid var(--border);
+/* ââ DETAIL MODAL ââââââââââââââââââââââââââââââââââââââââ */
+.detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
   margin-bottom: 20px;
 }
-.tab {
-  padding: 10px 18px;
+.detail-gallery img { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; cursor: pointer; }
+.detail-hero-placeholder {
+  height: 180px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+.info-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.info-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.info-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 20px 0 10px;
+}
+.services-list { display: flex; flex-direction: column; gap: 8px; }
+.service-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.service-name { font-size: 0.9rem; font-weight: 500; }
+.service-meta { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+.service-price { font-weight: 600; font-size: 0.9rem; color: var(--accent); white-space: nowrap; }
+.hours-grid {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 6px 12px;
+  font-size: 0.85rem;
+}
+.hours-grid .day-label { color: var(--muted); font-weight: 500; }
+.hours-grid .day-hours { color: var(--text); }
+.hours-grid .closed { color: var(--muted); font-style: italic; }
+.desc-text { font-size: 0.875rem; color: var(--muted); line-height: 1.65; margin-bottom: 16px; }
+
+/* ââ AUTH MODAL ââââââââââââââââââââââââââââââââââââââââââ */
+.auth-modal { max-width: 420px; }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+.auth-tab {
+  flex: 1; padding: 10px; text-align: center;
+  cursor: pointer; font-size: 0.9rem; font-weight: 500;
+  color: var(--muted); border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: all 0.15s; background: none; border-left: none; border-right: none; border-top: none;
+  font-family: inherit;
+}
+.auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.google-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: white;
   cursor: pointer;
-  font-size: 0.88rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.15s;
+  font-family: inherit;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+.google-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.divider { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; color: var(--muted); font-size: 0.8rem; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ââ FORMS âââââââââââââââââââââââââââââââââââââââââââââââ */
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.error-msg {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: var(--red);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  margin-bottom: 14px;
+  display: none;
+}
+.checkbox-row { display: flex; align-items: center; gap: 8px; }
+.checkbox-row input { width: auto; }
+.checkbox-row label { margin: 0; font-size: 0.875rem; }
+
+/* ââ BOOKING MODAL âââââââââââââââââââââââââââââââââââââââ */
+.booking-modal { max-width: 480px; }
+
+/* ââ ADMIN PANEL âââââââââââââââââââââââââââââââââââââââââ */
+.admin-panel {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 24px;
+}
+.admin-header {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.admin-title { font-size: 1.15rem; font-weight: 600; }
+.table-wrap { max-width: 1200px; margin: 0 auto; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+th { text-align: left; padding: 10px 14px; font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: var(--bg); }
+td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:hover td { background: var(--bg); }
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.badge-green { background: #DCFCE7; color: #15803D; }
+.badge-muted { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+.action-btns { display: flex; gap: 6px; }
+
+/* ââ STORE EDITOR ââââââââââââââââââââââââââââââââââââââââ */
+.editor-modal { max-width: 680px; }
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); padding: 0 24px; flex-shrink: 0; }
+.tab {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
   color: var(--muted);
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: color 0.2s;
+  transition: all 0.15s;
+  background: none;
+  border-left: none; border-right: none; border-top: none;
+  font-family: inherit;
 }
-.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-/* RESPONSIVE */
-@media (max-width: 600px) {
+/* ââ USER MENU âââââââââââââââââââââââââââââââââââââââââââ */
+.user-menu-wrap { position: relative; }
+.user-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+.user-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  min-width: 200px;
+  display: none;
+  z-index: 300;
+}
+.user-menu.open { display: block; }
+.user-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 6px;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+.user-menu-item:hover { background: var(--bg); }
+.user-menu-item.danger { color: var(--red); }
+.user-menu-email { padding: 8px 12px 4px; font-size: 0.78rem; color: var(--muted); border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+
+/* ââ TOAST âââââââââââââââââââââââââââââââââââââââââââââââ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 20px;
+  background: var(--text);
+  color: white;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 9999;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: #15803D; }
+.toast.error { background: var(--red); }
+
+/* ââ LOADING / EMPTY âââââââââââââââââââââââââââââââââââââ */
+.loading-state {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.loading-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ââ RESPONSIVE ââââââââââââââââââââââââââââââââââââââââââ */
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .hero { padding: 48px 16px 40px; }
   .hero h1 { font-size: 2rem; }
+  .filters { padding: 16px 16px 4px; }
+  .grid-wrap { padding: 12px 16px 40px; }
+  .store-grid { grid-template-columns: 1fr; gap: 14px; }
   .form-row { grid-template-columns: 1fr; }
-  .admin-table th:nth-child(3),
-  .admin-table td:nth-child(3) { display: none; }
+  .overlay { padding: 0; align-items: flex-end; }
+  .modal { border-radius: var(--radius) var(--radius) 0 0; max-height: 95vh; }
 }
 </style>
 </head>
@@ -434,379 +605,372 @@ nav {
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">solen.ch</div>
+  <div class="nav-logo">solen<span>.ch</span></div>
   <div class="nav-right">
-    <button class="lang-btn active" onclick="setLang('de')">DE</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
     <div id="authArea"></div>
   </div>
 </nav>
-<div class="user-menu" id="userMenu"></div>
 
 <!-- HERO -->
 <div class="hero">
-  <h1 id="heroTitle">Basel Beauty Booking</h1>
-  <p id="heroSub">Entdecke die besten Salons, Barbershops und Nagelstudios in Basel.</p>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Basel Beauty</div>
+    <h1 id="heroTitle">Salons, Barbershops &amp; <em>Nagelstudios</em></h1>
+    <p id="heroSub">Entdecke die besten Beauty-Adressen in Basel â schnell, einfach, online buchbar.</p>
+  </div>
 </div>
 
 <!-- FILTERS -->
-<div class="filters">
-  <button class="filter-btn active" onclick="setFilter('all')" id="f-all" data-de="Alle" data-en="All">Alle</button>
-  <button class="filter-btn" onclick="setFilter('hair')" id="f-hair" data-de="Friseur" data-en="Hair">Friseur</button>
-  <button class="filter-btn" onclick="setFilter('barber')" id="f-barber" data-de="Barbershop" data-en="Barber">Barbershop</button>
-  <button class="filter-btn" onclick="setFilter('nails')" id="f-nails" data-de="Nägel" data-en="Nails">Nägel</button>
+<div class="filters" id="filterBar">
+  <button class="filter-btn active" id="f-all" onclick="setFilter('all')">
+    <span id="f-all-label">Alle</span> <span class="filter-count" id="cnt-all">0</span>
+  </button>
+  <button class="filter-btn" id="f-hair" onclick="setFilter('hair')">
+    âï¸ <span id="f-hair-label">Friseur</span> <span class="filter-count" id="cnt-hair">0</span>
+  </button>
+  <button class="filter-btn" id="f-barber" onclick="setFilter('barber')">
+    ð <span id="f-barber-label">Barbershop</span> <span class="filter-count" id="cnt-barber">0</span>
+  </button>
+  <button class="filter-btn" id="f-nails" onclick="setFilter('nails')">
+    ð <span id="f-nails-label">NÃ¤gel</span> <span class="filter-count" id="cnt-nails">0</span>
+  </button>
 </div>
 
-<!-- MAIN GRID -->
-<div class="grid" id="storeGrid">
-  <div class="loading"><span class="spinner"></span> <span id="loadingText">Lädt...</span></div>
-</div>
-
-<!-- ADMIN SECTION -->
-<div class="admin-section" id="adminSection">
-  <div class="admin-header">
-    <h2 id="adminTitle">Admin Panel</h2>
-    <button class="btn btn-gold" onclick="openStoreModal(null)">+ <span data-de="Geschäft hinzufügen" data-en="Add Store">Geschäft hinzufügen</span></button>
+<!-- GRID -->
+<div class="grid-wrap">
+  <div class="grid-header">
+    <div class="grid-count" id="gridCount"></div>
   </div>
-  <table class="admin-table" id="adminTable">
-    <thead>
-      <tr>
-        <th data-de="Name" data-en="Name">Name</th>
-        <th data-de="Kategorie" data-en="Category">Kategorie</th>
-        <th data-de="Status" data-en="Status">Status</th>
-        <th data-de="Aktionen" data-en="Actions">Aktionen</th>
-      </tr>
-    </thead>
-    <tbody id="adminTableBody"></tbody>
-  </table>
+  <div class="store-grid" id="storeGrid">
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <div>Wird geladenâ¦</div>
+    </div>
+  </div>
 </div>
 
-<!-- STORE DETAIL MODAL -->
+<!-- ADMIN PANEL (hidden by default) -->
+<div class="admin-panel" id="adminPanel" style="display:none">
+  <div class="admin-header">
+    <div class="admin-title" id="adminTitle">Admin-Panel</div>
+    <button class="btn btn-primary" onclick="openStoreModal(null)" id="addStoreBtn">+ GeschÃ¤ft hinzufÃ¼gen</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th id="th-name">Name</th>
+          <th id="th-cat">Kategorie</th>
+          <th id="th-status">Status</th>
+          <th id="th-actions">Aktionen</th>
+        </tr>
+      </thead>
+      <tbody id="adminTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
 <div class="overlay" id="detailOverlay">
-  <div class="modal" id="detailModal">
+  <div class="modal" style="max-width:580px">
     <div class="modal-header">
-      <h2 id="detailName"></h2>
-      <button class="close-btn" onclick="closeDetail()">×</button>
+      <div class="modal-title" id="detailName"></div>
+      <button class="modal-close" onclick="closeDetail()">Ã</button>
     </div>
     <div class="modal-body" id="detailBody"></div>
     <div class="modal-footer">
-      <button class="btn btn-gold" id="bookBtn" onclick="openBooking()">
-        <span data-de="Termin buchen" data-en="Book Appointment">Termin buchen</span>
-      </button>
+      <button class="btn btn-ghost" onclick="closeDetail()" id="closeDetailBtn">Schliessen</button>
+      <button class="btn btn-primary" onclick="openBooking()" id="bookBtn" style="display:none" id="bookBtn">Termin buchen</button>
     </div>
   </div>
 </div>
 
-<!-- BOOKING MODAL -->
+<!-- BOOKING OVERLAY -->
 <div class="overlay" id="bookingOverlay">
-  <div class="modal">
+  <div class="modal booking-modal">
     <div class="modal-header">
-      <h2 id="bookingTitle" data-de="Termin buchen" data-en="Book Appointment">Termin buchen</h2>
-      <button class="close-btn" onclick="closeBooking()">×</button>
+      <div class="modal-title" id="bookingTitle">Termin buchen</div>
+      <button class="modal-close" onclick="closeBooking()">Ã</button>
     </div>
     <div class="modal-body">
-      <div id="bookingError" class="auth-error"></div>
-      <div class="form-row">
-        <div class="form-group">
-          <label data-de="Dein Name" data-en="Your Name">Dein Name</label>
-          <input type="text" id="bookName" placeholder="Max Mustermann">
-        </div>
-        <div class="form-group">
-          <label data-de="E-Mail" data-en="Email">E-Mail</label>
-          <input type="email" id="bookEmail" placeholder="max@example.com">
-        </div>
+      <div class="error-msg" id="bookingError"></div>
+      <div class="form-group">
+        <label id="bookNameLabel">Name</label>
+        <input type="text" id="bookName" placeholder="Ihr Name">
       </div>
       <div class="form-group">
-        <label data-de="Service" data-en="Service">Service</label>
+        <label id="bookEmailLabel">E-Mail</label>
+        <input type="email" id="bookEmail" placeholder="name@example.com">
+      </div>
+      <div class="form-group">
+        <label id="bookServiceLabel">Service</label>
         <select id="bookService"></select>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label data-de="Datum" data-en="Date">Datum</label>
+          <label id="bookDateLabel">Datum</label>
           <input type="date" id="bookDate">
         </div>
         <div class="form-group">
-          <label data-de="Uhrzeit" data-en="Time">Uhrzeit</label>
-          <select id="bookTime">
-            <option>09:00</option><option>09:30</option><option>10:00</option>
-            <option>10:30</option><option>11:00</option><option>11:30</option>
-            <option>12:00</option><option>13:00</option><option>14:00</option>
-            <option>14:30</option><option>15:00</option><option>15:30</option>
-            <option>16:00</option><option>16:30</option><option>17:00</option>
-          </select>
+          <label id="bookTimeLabel">Uhrzeit</label>
+          <input type="time" id="bookTime" value="10:00">
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeBooking()" data-de="Abbrechen" data-en="Cancel">Abbrechen</button>
-      <button class="btn btn-gold" onclick="submitBooking()" data-de="Buchen" data-en="Book">Buchen</button>
+      <button class="btn btn-ghost" onclick="closeBooking()" id="cancelBookBtn">Abbrechen</button>
+      <button class="btn btn-primary" onclick="submitBooking()" id="submitBookBtn">Termin bestÃ¤tigen</button>
     </div>
   </div>
 </div>
 
-<!-- AUTH MODAL -->
+<!-- AUTH OVERLAY -->
 <div class="overlay" id="authOverlay">
-  <div class="modal" style="max-width:420px">
+  <div class="modal auth-modal">
     <div class="modal-header">
-      <h2 id="authTitle">Anmelden</h2>
-      <button class="close-btn" onclick="closeAuth()">×</button>
+      <div class="modal-title" id="authTitle">Anmelden</div>
+      <button class="modal-close" onclick="closeAuth()">Ã</button>
     </div>
     <div class="modal-body">
-      <div id="authError" class="auth-error"></div>
-
-      <!-- Google -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="showLogin(this)" id="tabLoginBtn">Anmelden</button>
+        <button class="auth-tab" onclick="showRegister(this)" id="tabRegBtn">Registrieren</button>
+      </div>
       <button class="google-btn" onclick="loginGoogle()">
-        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
         Mit Google anmelden
       </button>
-
-      <div class="auth-divider"><span>oder</span></div>
-
-      <!-- Login form -->
+      <div class="divider">oder</div>
       <div id="loginForm">
-        <div class="form-group">
-          <label>E-Mail</label>
-          <input type="email" id="authEmail" placeholder="deine@email.com">
-        </div>
-        <div class="form-group">
-          <label>Passwort</label>
-          <input type="password" id="authPassword" placeholder="••••••••">
-        </div>
-        <button class="btn btn-gold" style="width:100%" onclick="loginEmail()" data-de="Anmelden" data-en="Sign In">Anmelden</button>
-        <div class="auth-switch">
-          <span data-de="Noch kein Konto?" data-en="No account yet?">Noch kein Konto?</span>
-          <a onclick="showRegister()" data-de=" Registrieren" data-en=" Register"> Registrieren</a>
-        </div>
+        <div class="error-msg" id="authError"></div>
+        <div class="form-group"><label id="emailLabel">E-Mail</label><input type="email" id="authEmail" placeholder="name@example.com"></div>
+        <div class="form-group"><label id="pwLabel">Passwort</label><input type="password" id="authPassword" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="loginEmail()" id="loginBtn">Anmelden</button>
       </div>
-
-      <!-- Register form -->
       <div id="registerForm" style="display:none">
-        <div class="form-group">
-          <label>E-Mail</label>
-          <input type="email" id="regEmail" placeholder="deine@email.com">
-        </div>
-        <div class="form-group">
-          <label>Passwort</label>
-          <input type="password" id="regPassword" placeholder="••••••••">
-        </div>
-        <button class="btn btn-gold" style="width:100%" onclick="registerEmail()" data-de="Konto erstellen" data-en="Create Account">Konto erstellen</button>
-        <div class="auth-switch">
-          <span data-de="Schon ein Konto?" data-en="Already have an account?">Schon ein Konto?</span>
-          <a onclick="showLogin()" data-de=" Anmelden" data-en=" Sign In"> Anmelden</a>
-        </div>
+        <div class="error-msg" id="authErrorReg"></div>
+        <div class="form-group"><label>E-Mail</label><input type="email" id="regEmail" placeholder="name@example.com"></div>
+        <div class="form-group"><label>Passwort</label><input type="password" id="regPassword" placeholder="Mindestens 6 Zeichen"></div>
+        <button class="btn btn-primary" style="width:100%" onclick="registerEmail()" id="registerBtn">Konto erstellen</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- STORE EDITOR MODAL (Admin) -->
+<!-- STORE EDITOR OVERLAY -->
 <div class="overlay" id="storeEditorOverlay">
-  <div class="modal" style="max-width:700px">
+  <div class="modal editor-modal">
     <div class="modal-header">
-      <h2 id="storeEditorTitle">Geschäft bearbeiten</h2>
-      <button class="close-btn" onclick="closeStoreEditor()">×</button>
+      <div class="modal-title" id="storeEditorTitle">GeschÃ¤ft bearbeiten</div>
+      <button class="modal-close" onclick="closeStoreEditor()">Ã</button>
+    </div>
+    <input type="hidden" id="editStoreId">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('tabBasic',this)">Allgemein</button>
+      <button class="tab" onclick="switchTab('tabServices',this)">Services</button>
+      <button class="tab" onclick="switchTab('tabHours',this)">Ãffnungszeiten</button>
+      <button class="tab" onclick="switchTab('tabPhotos',this)">Fotos</button>
     </div>
     <div class="modal-body">
-      <input type="hidden" id="editStoreId">
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab('tabBasic',this)">Basis</div>
-        <div class="tab" onclick="switchTab('tabServices',this)">Services</div>
-        <div class="tab" onclick="switchTab('tabHours',this)">Öffnungszeiten</div>
-        <div class="tab" onclick="switchTab('tabPhotos',this)">Fotos</div>
-      </div>
-      <!-- Basic Tab -->
+      <!-- BASIC TAB -->
       <div class="tab-content active" id="tabBasic">
         <div class="form-row">
-          <div class="form-group">
-            <label>Name *</label>
-            <input type="text" id="eName" placeholder="Salon Name">
-          </div>
-          <div class="form-group">
-            <label>Kategorie *</label>
+          <div class="form-group"><label>Name *</label><input type="text" id="eName"></div>
+          <div class="form-group"><label>Kategorie</label>
             <select id="eCat">
               <option value="hair">Friseur</option>
               <option value="barber">Barbershop</option>
-              <option value="nails">Nägel</option>
+              <option value="nails">NÃ¤gel</option>
             </select>
           </div>
         </div>
+        <div class="form-group"><label>Adresse</label><input type="text" id="eAddress"></div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Adresse</label>
-            <input type="text" id="eAddress" placeholder="Musterstrasse 1, 4051 Basel">
-          </div>
-          <div class="form-group">
-            <label>Telefon</label>
-            <input type="text" id="ePhone" placeholder="+41 61 000 00 00">
-          </div>
+          <div class="form-group"><label>Telefon</label><input type="text" id="ePhone"></div>
+          <div class="form-group"><label>Website</label><input type="text" id="eWebsite"></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Website</label>
-            <input type="url" id="eWebsite" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label>Instagram</label>
-            <input type="text" id="eInsta" placeholder="@username">
-          </div>
+          <div class="form-group"><label>Instagram</label><input type="text" id="eInsta" placeholder="@handle"></div>
+          <div class="form-group"><label>Owner E-Mail</label><input type="email" id="eOwnerEmail"></div>
         </div>
-        <div class="form-group">
-          <label>Beschreibung (DE)</label>
-          <textarea id="eDesc" rows="3" placeholder="Über den Salon..."></textarea>
-        </div>
-        <div class="form-group">
-          <label>Description (EN)</label>
-          <textarea id="eDescEn" rows="3" placeholder="About the salon..."></textarea>
-        </div>
-        <div class="form-group">
-          <label>Owner E-Mail</label>
-          <input type="email" id="eOwnerEmail" placeholder="owner@example.com">
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-            <input type="checkbox" id="eRegistered" style="width:auto"> Registriert (auf solen.ch buchbar)
-          </label>
+        <div class="form-group"><label>Beschreibung (DE)</label><textarea id="eDesc"></textarea></div>
+        <div class="form-group"><label>Description (EN)</label><textarea id="eDescEn"></textarea></div>
+        <div class="checkbox-row" style="margin-top:8px">
+          <input type="checkbox" id="eRegistered">
+          <label for="eRegistered">Online buchbar</label>
         </div>
       </div>
-      <!-- Services Tab -->
+      <!-- SERVICES TAB -->
       <div class="tab-content" id="tabServices">
-        <div id="servicesList"></div>
-        <button class="btn btn-outline btn-sm" onclick="addServiceRow()">+ Service hinzufügen</button>
+        <div id="servicesList" style="margin-bottom:12px"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addServiceRow()">+ Service hinzufÃ¼gen</button>
       </div>
-      <!-- Hours Tab -->
+      <!-- HOURS TAB -->
       <div class="tab-content" id="tabHours">
         <div id="hoursList"></div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:8px">Format: 09:00-18:30 (leer = Geschlossen)</div>
       </div>
-      <!-- Photos Tab -->
+      <!-- PHOTOS TAB -->
       <div class="tab-content" id="tabPhotos">
-        <div class="form-group">
-          <label>Foto URLs (eine pro Zeile)</label>
-          <textarea id="ePhotos" rows="6" placeholder="https://images.unsplash.com/...&#10;https://..."></textarea>
-        </div>
+        <div class="form-group"><label>Foto-URLs (eine pro Zeile)</label><textarea id="ePhotos" style="min-height:140px" placeholder="https://..."></textarea></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeStoreEditor()" data-de="Abbrechen" data-en="Cancel">Abbrechen</button>
-      <button class="btn btn-gold" onclick="saveStore()" data-de="Speichern" data-en="Save">Speichern</button>
+      <button class="btn btn-ghost" onclick="closeStoreEditor()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="saveStore()">Speichern</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── SUPABASE INIT ──────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://tocfnsmxmdxkrcmjzzdw.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvY2Zuc214bWR4a3JjbWp6emR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODA4OTcsImV4cCI6MjA4ODM1Njg5N30.8J2qPNlDW48UhCnPQSOigHQOV_uOxJtoXWmMW1LUaTc';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+// âââ SUPABASE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const SUPA_URL = 'https://tocfnsmxmdxkrcmjzzdw.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvY2Zuc214bWR4a3JjbWp6emR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODA4OTcsImV4cCI6MjA4ODM1Njg5N30.8J2qPNlDW48UhCnPQSOigHQOV_uOxJtoXWmMW1LUaTc';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+const ADMIN_EMAILS = ['habobi1238@proton.me'];
 
-// ─── STATE ──────────────────────────────────────────────────────────────────
-let lang = 'de';
-let currentFilter = 'all';
 let stores = [];
+let currentFilter = 'all';
 let currentStore = null;
 let currentUser = null;
-let isAdmin = false;
-const DAYS_DE = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const DAYS_LABELS_DE = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
-const DAYS_LABELS_EN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let lang = localStorage.getItem('lang') || 'de';
 
-// ─── LANG ───────────────────────────────────────────────────────────────────
+// âââ I18N âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const T = {
+  de: {
+    heroTitle: 'Salons, Barbershops & <em>Nagelstudios</em>',
+    heroSub: 'Entdecke die besten Beauty-Adressen in Basel â schnell, einfach, online buchbar.',
+    all: 'Alle', hair: 'Friseur', barber: 'Barbershop', nails: 'NÃ¤gel',
+    signin: 'Anmelden', signout: 'Abmelden', admin: 'Admin',
+    book: 'Termin buchen', close: 'Schliessen', cancel: 'Abbrechen',
+    online: 'Online buchbar', closed: 'Geschlossen',
+    services: 'Services', hours: 'Ãffnungszeiten',
+    confirm: 'BestÃ¤tigen', saved: 'â Gespeichert!', deleted: 'GelÃ¶scht!',
+    loading: 'Wird geladenâ¦', noStores: 'Keine Salons gefunden',
+    address: 'Adresse', phone: 'Telefon', website: 'Website',
+    results: 'Ergebnisse', result: 'Ergebnis',
+    addStore: '+ GeschÃ¤ft hinzufÃ¼gen', edit: 'Bearbeiten', delete: 'LÃ¶schen',
+    adminTitle: 'Admin-Panel',
+    registered: 'Registriert', notRegistered: 'Nicht registriert',
+    catHair: 'Friseur', catBarber: 'Barbershop', catNails: 'Nagelstudio',
+    days: ['Mo','Di','Mi','Do','Fr','Sa','So'],
+    daysFull: ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'],
+  },
+  en: {
+    heroTitle: 'Salons, Barbershops & <em>Nail Studios</em>',
+    heroSub: 'Discover the best beauty addresses in Basel â quick, simple, bookable online.',
+    all: 'All', hair: 'Hair Salon', barber: 'Barbershop', nails: 'Nails',
+    signin: 'Sign In', signout: 'Sign Out', admin: 'Admin',
+    book: 'Book Appointment', close: 'Close', cancel: 'Cancel',
+    online: 'Online booking', closed: 'Closed',
+    services: 'Services', hours: 'Opening Hours',
+    confirm: 'Confirm', saved: 'â Saved!', deleted: 'Deleted!',
+    loading: 'Loadingâ¦', noStores: 'No salons found',
+    address: 'Address', phone: 'Phone', website: 'Website',
+    results: 'results', result: 'result',
+    addStore: '+ Add Store', edit: 'Edit', delete: 'Delete',
+    adminTitle: 'Admin Panel',
+    registered: 'Registered', notRegistered: 'Not registered',
+    catHair: 'Hair Salon', catBarber: 'Barbershop', catNails: 'Nail Studio',
+    days: ['Mo','Tu','We','Th','Fr','Sa','Su'],
+    daysFull: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+  }
+};
+function t(k) { return T[lang][k] || T.de[k] || k; }
+
 function setLang(l) {
   lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
-  document.querySelectorAll('[data-de]').forEach(el => {
-    const attr = el.dataset[l];
-    if (attr) el.textContent = attr;
-  });
-  document.getElementById('heroTitle').textContent = l === 'de' ? 'Basel Beauty Booking' : 'Basel Beauty Booking';
-  document.getElementById('heroSub').textContent = l === 'de'
-    ? 'Entdecke die besten Salons, Barbershops und Nagelstudios in Basel.'
-    : 'Discover the best salons, barbershops and nail studios in Basel.';
-  document.getElementById('loadingText').textContent = l === 'de' ? 'Lädt...' : 'Loading...';
+  localStorage.setItem('lang', l);
+  document.getElementById('btn-de').classList.toggle('active', l === 'de');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.documentElement.lang = l;
+  updateI18n();
   renderGrid();
 }
 
-// ─── AUTH ───────────────────────────────────────────────────────────────────
-async function initAuth() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) await handleSession(session);
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (session) await handleSession(session);
-    else {
-      currentUser = null; isAdmin = false;
-      renderAuthArea();
-      document.getElementById('adminSection').classList.remove('visible');
-    }
+function updateI18n() {
+  document.getElementById('heroTitle').innerHTML = t('heroTitle');
+  document.getElementById('heroSub').textContent = t('heroSub');
+  document.getElementById('f-all-label').textContent = t('all');
+  document.getElementById('f-hair-label').textContent = t('hair');
+  document.getElementById('f-barber-label').textContent = t('barber');
+  document.getElementById('f-nails-label').textContent = t('nails');
+  if (document.getElementById('bookBtn')) document.getElementById('bookBtn').textContent = t('book');
+  if (document.getElementById('closeDetailBtn')) document.getElementById('closeDetailBtn').textContent = t('close');
+  if (document.getElementById('cancelBookBtn')) document.getElementById('cancelBookBtn').textContent = t('cancel');
+  if (document.getElementById('submitBookBtn')) document.getElementById('submitBookBtn').textContent = t('confirm');
+  if (document.getElementById('addStoreBtn')) document.getElementById('addStoreBtn').textContent = t('addStore');
+  if (document.getElementById('adminTitle')) document.getElementById('adminTitle').textContent = t('adminTitle');
+  updateAuthArea();
+}
+
+// âââ AUTH âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function updateAuthArea() {
+  const area = document.getElementById('authArea');
+  if (currentUser) {
+    const initials = (currentUser.email || 'U').slice(0,2).toUpperCase();
+    area.innerHTML = `
+      <div class="user-menu-wrap">
+        <button class="user-avatar" onclick="document.getElementById('userMenu').classList.toggle('open')">${initials}</button>
+        <div class="user-menu" id="userMenu">
+          <div class="user-menu-email">${currentUser.email || ''}</div>
+          ${ADMIN_EMAILS.includes(currentUser.email) ? `<button class="user-menu-item" onclick="toggleAdmin();document.getElementById('userMenu').classList.remove('open')">${t('admin')}</button>` : ''}
+          <button class="user-menu-item danger" onclick="signOut()">${t('signout')}</button>
+        </div>
+      </div>`;
+  } else {
+    area.innerHTML = `<button class="btn btn-primary" onclick="openAuth()">${t('signin')}</button>`;
+  }
+}
+
+function initAuth() {
+  sb.auth.getSession().then(({ data }) => {
+    currentUser = data.session?.user || null;
+    updateAuthArea();
+    if (ADMIN_EMAILS.includes(currentUser?.email)) showAdminPanel();
+  });
+  sb.auth.onAuthStateChange((_ev, session) => {
+    currentUser = session?.user || null;
+    updateAuthArea();
+    if (ADMIN_EMAILS.includes(currentUser?.email)) { showAdminPanel(); loadAdminTable(); }
+    else hideAdminPanel();
   });
 }
 
-async function handleSession(session) {
-  currentUser = session.user;
-  // Check if admin
-  const { data } = await sb.from('profiles').select('is_admin').eq('id', currentUser.id).single();
-  isAdmin = data?.is_admin || false;
-  // If admin not set yet but email matches
-  if (!isAdmin && currentUser.email === 'habobi1238@proton.me') {
-    await sb.from('profiles').upsert({ id: currentUser.id, email: currentUser.email, is_admin: true });
-    isAdmin = true;
-  }
-  renderAuthArea();
-  if (isAdmin) loadAdminTable();
-}
-
-function renderAuthArea() {
-  const el = document.getElementById('authArea');
-  if (currentUser) {
-    const initials = (currentUser.email || 'U').charAt(0).toUpperCase();
-    el.innerHTML = `<div class="user-avatar" onclick="toggleUserMenu()">${initials}</div>`;
-    const menu = document.getElementById('userMenu');
-    menu.innerHTML = `
-      <div class="user-menu-email">${currentUser.email}</div>
-      ${isAdmin ? `<div class="user-menu-item" onclick="toggleAdmin()">⚙️ Admin Panel</div>` : ''}
-      <div class="user-menu-item" onclick="logout()">🚪 ${lang === 'de' ? 'Abmelden' : 'Sign Out'}</div>
-    `;
-  } else {
-    el.innerHTML = `<button class="btn btn-gold btn-sm" onclick="openAuth()">${lang === 'de' ? 'Anmelden' : 'Sign In'}</button>`;
-    document.getElementById('userMenu').innerHTML = '';
-  }
-}
-
-function toggleUserMenu() {
-  document.getElementById('userMenu').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  if (!e.target.closest('.user-avatar') && !e.target.closest('.user-menu')) {
-    document.getElementById('userMenu').classList.remove('open');
-  }
-});
-
+function showAdminPanel() { document.getElementById('adminPanel').style.display = 'block'; loadAdminTable(); }
+function hideAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
 function toggleAdmin() {
-  document.getElementById('userMenu').classList.remove('open');
-  const sec = document.getElementById('adminSection');
-  sec.classList.toggle('visible');
-  if (sec.classList.contains('visible')) loadAdminTable();
+  const p = document.getElementById('adminPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  if (p.style.display === 'block') loadAdminTable();
 }
 
-async function logout() {
+async function signOut() {
   await sb.auth.signOut();
-  document.getElementById('userMenu').classList.remove('open');
-  document.getElementById('adminSection').classList.remove('visible');
-  showToast(lang === 'de' ? 'Abgemeldet' : 'Signed out', 'success');
+  document.getElementById('userMenu')?.classList.remove('open');
+  showToast(lang === 'de' ? 'Abgemeldet' : 'Signed out');
 }
 
 function openAuth() { document.getElementById('authOverlay').classList.add('open'); }
 function closeAuth() { document.getElementById('authOverlay').classList.remove('open'); }
-function showLogin() {
+
+function showLogin(el) {
   document.getElementById('loginForm').style.display = 'block';
   document.getElementById('registerForm').style.display = 'none';
-  document.getElementById('authTitle').textContent = lang === 'de' ? 'Anmelden' : 'Sign In';
+  document.getElementById('authTitle').textContent = t('signin');
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
-function showRegister() {
+function showRegister(el) {
   document.getElementById('loginForm').style.display = 'none';
   document.getElementById('registerForm').style.display = 'block';
   document.getElementById('authTitle').textContent = lang === 'de' ? 'Registrieren' : 'Register';
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
 }
 
 async function loginGoogle() {
@@ -816,69 +980,78 @@ async function loginGoogle() {
   });
   if (error) showAuthError(error.message);
 }
-
 async function loginEmail() {
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
-  if (!email || !password) return showAuthError('Bitte alle Felder ausfüllen');
+  if (!email || !password) return showAuthError(lang === 'de' ? 'Bitte alle Felder ausfÃ¼llen' : 'Please fill all fields');
   const { error } = await sb.auth.signInWithPassword({ email, password });
   if (error) showAuthError(error.message);
   else { closeAuth(); showToast(lang === 'de' ? 'Willkommen!' : 'Welcome!', 'success'); }
 }
-
 async function registerEmail() {
   const email = document.getElementById('regEmail').value.trim();
   const password = document.getElementById('regPassword').value;
-  if (!email || !password) return showAuthError('Bitte alle Felder ausfüllen');
+  if (!email || !password) return showAuthError(lang === 'de' ? 'Bitte alle Felder ausfÃ¼llen' : 'Please fill all fields');
   const { error } = await sb.auth.signUp({ email, password });
   if (error) showAuthError(error.message);
-  else { closeAuth(); showToast(lang === 'de' ? 'Konto erstellt!' : 'Account created!', 'success'); }
+  else { closeAuth(); showToast(lang === 'de' ? 'Konto erstellt! Bitte E-Mail bestÃ¤tigen.' : 'Account created! Please confirm your email.', 'success'); }
 }
-
 function showAuthError(msg) {
-  const el = document.getElementById('authError');
-  el.textContent = msg;
-  el.style.display = 'block';
+  ['authError','authErrorReg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = msg; el.style.display = 'block'; }
+  });
 }
 
-// ─── STORES ─────────────────────────────────────────────────────────────────
+// âââ STORES âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function loadStores() {
   const { data, error } = await sb.from('stores').select('*').order('name');
   if (error) {
-    document.getElementById('storeGrid').innerHTML = `<div class="loading">Fehler beim Laden</div>`;
+    document.getElementById('storeGrid').innerHTML = `<div class="loading-state">Fehler beim Laden: ${error.message}</div>`;
     return;
   }
   stores = data || [];
+  updateCounts();
   renderGrid();
+}
+
+function updateCounts() {
+  document.getElementById('cnt-all').textContent = stores.length;
+  document.getElementById('cnt-hair').textContent = stores.filter(s => s.cat === 'hair').length;
+  document.getElementById('cnt-barber').textContent = stores.filter(s => s.cat === 'barber').length;
+  document.getElementById('cnt-nails').textContent = stores.filter(s => s.cat === 'nails').length;
 }
 
 function renderGrid() {
   const grid = document.getElementById('storeGrid');
   const filtered = currentFilter === 'all' ? stores : stores.filter(s => s.cat === currentFilter);
+  const count = document.getElementById('gridCount');
+  count.textContent = `${filtered.length} ${filtered.length === 1 ? t('result') : t('results')}`;
+
   if (filtered.length === 0) {
-    grid.innerHTML = `<div class="loading" style="grid-column:1/-1">${lang === 'de' ? 'Keine Salons gefunden' : 'No salons found'}</div>`;
+    grid.innerHTML = `<div class="loading-state">${t('noStores')}</div>`;
     return;
   }
-  const icons = { hair: '✂️', barber: '💈', nails: '💅' };
-  const catLabels = {
-    hair: { de: 'Friseur', en: 'Hair Salon' },
-    barber: { de: 'Barbershop', en: 'Barbershop' },
-    nails: { de: 'Nagelstudio', en: 'Nail Studio' }
-  };
+
+  const catIcons = { hair: 'âï¸', barber: 'ð', nails: 'ð' };
+  const catLabels = { hair: t('catHair'), barber: t('catBarber'), nails: t('catNails') };
+
   grid.innerHTML = filtered.map(s => {
-    const img = s.photos && s.photos.length > 0
-      ? `<img class="card-img" src="${s.photos[0]}" alt="${s.name}" loading="lazy" onerror="this.style.display='none'">`
-      : `<div class="card-img-placeholder">${icons[s.cat] || '🏠'}</div>`;
-    return `
-      <div class="card" onclick="openDetail(${s.id})">
-        ${img}
-        <div class="card-body">
-          <div class="card-cat">${catLabels[s.cat]?.[lang] || s.cat}</div>
-          <div class="card-name">${s.name}</div>
-          ${s.address ? `<div class="card-addr">📍 ${s.address}</div>` : ''}
-          ${s.registered ? `<span class="card-registered">${lang === 'de' ? '✓ Online buchbar' : '✓ Online booking'}</span>` : ''}
+    const imgHtml = s.photos && s.photos.length > 0
+      ? `<img class="card-img" src="${s.photos[0]}" alt="${s.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\"card-placeholder ${s.cat}\\"><div class=\\"card-placeholder-icon\\">${catIcons[s.cat]||'âï¸'}</div></div>'">`
+      : `<div class="card-placeholder ${s.cat}"><div class="card-placeholder-icon">${catIcons[s.cat]||'âï¸'}</div></div>`;
+
+    return `<div class="card" onclick="openDetail(${s.id})">
+      ${imgHtml}
+      <div class="card-body">
+        <div class="card-cat-row">
+          <span class="cat-badge ${s.cat}">${catLabels[s.cat] || s.cat}</span>
+          ${s.registered ? `<span class="online-badge">${t('online')}</span>` : ''}
         </div>
-      </div>`;
+        <div class="card-name">${s.name}</div>
+        ${s.address ? `<div class="card-addr"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 21s-8-7.5-8-12a8 8 0 0 1 16 0c0 4.5-8 12-8 12z"/><circle cx="12" cy="9" r="2.5"/></svg>${s.address}</div>` : ''}
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -889,101 +1062,96 @@ function setFilter(f) {
   renderGrid();
 }
 
-// ─── DETAIL ──────────────────────────────────────────────────────────────────
+// âââ DETAIL âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openDetail(id) {
   currentStore = stores.find(s => s.id === id);
   if (!currentStore) return;
-  document.getElementById('detailName').textContent = currentStore.name;
-  const body = document.getElementById('detailBody');
   const s = currentStore;
+  document.getElementById('detailName').textContent = s.name;
+  const body = document.getElementById('detailBody');
 
-  // Gallery
-  let gallery = '';
+  const catIcons = { hair: 'âï¸', barber: 'ð', nails: 'ð' };
+  const catLabels = { hair: t('catHair'), barber: t('catBarber'), nails: t('catNails') };
+
+  // Gallery or placeholder
+  let mediaHtml = '';
   if (s.photos && s.photos.length > 0) {
-    gallery = `<div class="gallery">${s.photos.map(p => `<img src="${p}" alt="foto" onclick="window.open('${p}')" onerror="this.style.display='none'">`).join('')}</div>`;
+    mediaHtml = `<div class="detail-gallery">${s.photos.map(p => `<img src="${p}" alt="foto" onclick="window.open('${p}')" onerror="this.style.display='none'">`).join('')}</div>`;
+  } else {
+    mediaHtml = `<div class="detail-hero-placeholder card-placeholder ${s.cat}" style="margin-bottom:20px"><span style="font-size:4rem">${catIcons[s.cat]||'âï¸'}</span></div>`;
   }
 
-  // Description
-  const desc = lang === 'en' && s.description_en ? s.description_en : (s.description || '');
+  // Cat badge
+  const badge = `<span class="cat-badge ${s.cat}" style="margin-bottom:14px;display:inline-block">${catLabels[s.cat] || s.cat}</span>`;
 
   // Info chips
-  let chips = '<div class="info-row">';
-  if (s.address) chips += `<a class="info-chip" href="https://maps.google.com/?q=${encodeURIComponent(s.address)}" target="_blank">📍 ${s.address}</a>`;
-  if (s.phone) chips += `<a class="info-chip" href="tel:${s.phone}">📞 ${s.phone}</a>`;
-  if (s.website) chips += `<a class="info-chip" href="${s.website}" target="_blank">🌐 Website</a>`;
-  if (s.insta) chips += `<a class="info-chip" href="https://instagram.com/${s.insta.replace('@','')}" target="_blank">📸 ${s.insta}</a>`;
-  chips += '</div>';
+  let chips = `<div class="info-chips">`;
+  if (s.address) chips += `<a class="info-chip" href="https://maps.google.com/?q=${encodeURIComponent(s.addressy}" target="_blank">ð ${s.address}</a>`;
+  if (s.phone) chips += `<a class="info-chip" href="tel:${s.phone}">ð ${s.phone}</a>`;
+  if (s.website) chips += `<a class="info-chip" href="${s.website.startsWith('http') ? s.website : 'https://'+s.website}" target="_blank" rel="noopener">ð Website</a>`;
+  if (s.insta) chips += `<a class="info-chip" href="https://instagram.com/${s.insta.replace('@','')}" target="_blank" rel="noopener">ð¸ ${s.insta}</a>`;
+  chips += `</div>`;
+
+  // Description
+  const desc = (lang === 'en' && s.description_en) ? s.description_en : (s.description || '');
+  const descHtml = desc ? `<p class="desc-text">${desc}</p>` : '';
 
   // Services
   let servicesHtml = '';
   if (s.services && s.services.length > 0) {
-    servicesHtml = `<h3 style="font-size:0.9rem;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">${lang === 'de' ? 'Services' : 'Services'}</h3>
-    <div class="services-grid">${s.services.map(sv => `
-      <div class="service-row">
-        <div>
-          <div class="service-name">${lang === 'en' && sv.nameEN ? sv.nameEN : sv.name}</div>
-          <div class="service-meta">${sv.duration || ''}</div>
-        </div>
-        <div class="service-price">${sv.price || ''}</div>
-      </div>`).join('')}</div>`;
+    servicesHtml = `<div class="section-label">${t('services')}</div><div class="services-list">
+    ${s.services.map(sv => `<div class="service-row">
+      <div><div class="service-name">${lang === 'en' && sv.nameEN ? sv.nameEN : sv.name}</div>${sv.duration ? `<div class="service-meta">${sv.duration}</div>` : ''}</div>
+      ${sv.price ? `<div class="service-price">${sv.price}</div>` : ''}
+    </div>`).join('')}</div>`;
   }
 
   // Hours
   let hoursHtml = '';
   if (s.hours && Object.keys(s.hours).length > 0) {
-    const days = lang === 'de' ? DAYS_LABELS_DE : DAYS_LABELS_EN;
-    hoursHtml = `<h3 style="font-size:0.9rem;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;margin-top:16px">${lang === 'de' ? 'Öffnungszeiten' : 'Opening Hours'}</h3>
-    <div class="hours-grid">`;
     const keys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-    const labels = lang === 'de' ? ['Mo','Di','Mi','Do','Fr','Sa','So'] : ['Mo','Tu','We','Th','Fr','Sa','Su'];
+    const labels = t('days');
+    hoursHtml = `<div class="section-label" style="margin-top:20px">${t('hours')}</div><div class="hours-grid">`;
     keys.forEach((k, i) => {
-      hoursHtml += `<span>${labels[i]}</span><span>${s.hours[k] || (lang === 'de' ? 'Geschlossen' : 'Closed')}</span>`;
+      const val = s.hours[k];
+      hoursHtml += `<div class="day-label">${labels[i]}</div><div class="${val ? 'day-hours' : 'closed'}">${val || t('closed')}</div>`;
     });
     hoursHtml += '</div>';
   }
 
-  body.innerHTML = gallery + chips + (desc ? `<p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;line-height:1.6">${desc}</p>` : '') + servicesHtml + hoursHtml;
+  body.innerHTML = mediaHtml + badge + chips + descHtml + servicesHtml + hoursHtml;
 
-  document.getElementById('bookBtn').style.display = s.registered ? 'block' : 'none';
+  const bookBtn = document.getElementById('bookBtn');
+  if (bookBtn) bookBtn.style.display = s.registered ? 'block' : 'none';
   document.getElementById('detailOverlay').classList.add('open');
 }
 
 function closeDetail() { document.getElementById('detailOverlay').classList.remove('open'); }
 
-// ─── BOOKING ─────────────────────────────────────────────────────────────────
+// âââ BOOKING ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openBooking() {
   if (!currentStore) return;
   closeDetail();
-  document.getElementById('bookingTitle').textContent = currentStore.name + ' — ' + (lang === 'de' ? 'Termin' : 'Appointment');
+  document.getElementById('bookingTitle').textContent = currentStore.name;
   document.getElementById('bookingError').style.display = 'none';
-
-  // Prefill from logged in user
-  if (currentUser) {
-    document.getElementById('bookEmail').value = currentUser.email || '';
-  }
-
-  // Set min date to today
+  if (currentUser) document.getElementById('bookEmail').value = currentUser.email || '';
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('bookDate').min = today;
   document.getElementById('bookDate').value = today;
-
-  // Services
   const sel = document.getElementById('bookService');
   sel.innerHTML = '';
-  if (currentStore.services && currentStore.services.length > 0) {
+  if (currentStore.services?.length > 0) {
     currentStore.services.forEach(sv => {
-      const opt = document.createElement('option');
-      opt.value = sv.name;
-      opt.textContent = (lang === 'en' && sv.nameEN ? sv.nameEN : sv.name) + (sv.price ? ' — ' + sv.price : '');
-      sel.appendChild(opt);
+      const o = document.createElement('option');
+      o.value = sv.name;
+      o.textContent = (lang === 'en' && sv.nameEN ? sv.nameEN : sv.name) + (sv.price ? ' â ' + sv.price : '');
+      sel.appendChild(o);
     });
   } else {
-    sel.innerHTML = '<option>Allgemeine Buchung</option>';
+    sel.innerHTML = '<option>' + (lang === 'de' ? 'Allgemeine Buchung' : 'General booking') + '</option>';
   }
-
   document.getElementById('bookingOverlay').classList.add('open');
 }
-
 function closeBooking() { document.getElementById('bookingOverlay').classList.remove('open'); }
 
 async function submitBooking() {
@@ -992,107 +1160,64 @@ async function submitBooking() {
   const service = document.getElementById('bookService').value;
   const date = document.getElementById('bookDate').value;
   const time = document.getElementById('bookTime').value;
-
+  const errEl = document.getElementById('bookingError');
   if (!name || !email || !date) {
-    document.getElementById('bookingError').textContent = lang === 'de' ? 'Bitte alle Pflichtfelder ausfüllen.' : 'Please fill in all required fields.';
-    document.getElementById('bookingError').style.display = 'block';
+    errEl.textContent = lang === 'de' ? 'Bitte alle Pflichtfelder ausfÃ¼llen.' : 'Please fill in all required fields.';
+    errEl.style.display = 'block';
     return;
   }
-
   const { error } = await sb.from('bookings').insert({
-    store_id: currentStore.id,
-    store_name: currentStore.name,
-    customer_name: name,
-    customer_email: email,
-    service_name: service,
-    booking_date: date,
-    booking_time: time,
-    status: 'pending'
+    store_id: currentStore.id, store_name: currentStore.name,
+    customer_name: name, customer_email: email,
+    service_name: service, booking_date: date, booking_time: time, status: 'pending'
   });
-
-  if (error) {
-    document.getElementById('bookingError').textContent = error.message;
-    document.getElementById('bookingError').style.display = 'block';
-    return;
-  }
-
-  // Send email notification
-  try {
-    await fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        customerName: name,
-        customerEmail: email,
-        salonName: currentStore.name,
-        salonEmail: currentStore.owner_email || 'noreply@solen.ch',
-        serviceName: service,
-        bookingDate: date,
-        bookingTime: time
-      })
-    });
-  } catch(e) { console.log('Email send failed:', e); }
-
+  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
   closeBooking();
-  showToast(lang === 'de' ? '🎉 Termin gebucht!' : '🎉 Appointment booked!', 'success');
+  showToast(lang === 'de' ? 'ð Termin gebucht!' : 'ð Appointment booked!', 'success');
 }
 
-// ─── ADMIN TABLE ─────────────────────────────────────────────────────────────
+// âââ ADMIN ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function loadAdminTable() {
   const { data } = await sb.from('stores').select('*').order('name');
   stores = data || [];
+  updateCounts();
   renderGrid();
-  const tbody = document.getElementById('adminTableBody');
-  tbody.innerHTML = stores.map(s => `
+  const catLabels = { hair: t('catHair'), barber: t('catBarber'), nails: t('catNails') };
+  document.getElementById('adminTableBody').innerHTML = stores.map(s => `
     <tr>
-      <td>${s.name}</td>
-      <td>${s.cat}</td>
-      <td><span class="badge ${s.registered ? 'badge-gold' : 'badge-muted'}">${s.registered ? (lang === 'de' ? 'Registriert' : 'Registered') : (lang === 'de' ? 'Nicht registriert' : 'Not registered')}</span></td>
-      <td>
-        <div class="action-btns">
-          <button class="btn btn-sm btn-outline" onclick="openStoreModal(${s.id})">${lang === 'de' ? 'Bearbeiten' : 'Edit'}</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteStore(${s.id})">${lang === 'de' ? 'Löschen' : 'Delete'}</button>
-        </div>
-      </td>
+      <td><strong>${s.name}</strong></td>
+      <td><span class="cat-badge ${s.cat}">${catLabels[s.cat]||s.cat}</span></td>
+      <td><span class="badge ${s.registered ? 'badge-green' : 'badge-muted'}">${s.registered ? t('registered') : t('notRegistered')}</span></td>
+      <td><div class="action-btns">
+        <button class="btn btn-sm btn-ghost" onclick="openStoreModal(${s.id})">${t('edit')}</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteStore(${s.id})">${t('delete')}</button>
+      </div></td>
     </tr>`).join('');
 }
 
 async function deleteStore(id) {
-  if (!confirm(lang === 'de' ? 'Wirklich löschen?' : 'Really delete?')) return;
+  if (!confirm(lang === 'de' ? 'Wirklich lÃ¶schen?' : 'Really delete?')) return;
   const { error } = await sb.from('stores').delete().eq('id', id);
   if (error) { showToast(error.message, 'error'); return; }
-  showToast(lang === 'de' ? 'Gelöscht!' : 'Deleted!', 'success');
+  showToast(t('deleted'), 'success');
   loadAdminTable();
 }
 
-// ─── STORE EDITOR ────────────────────────────────────────────────────────────
+// âââ STORE EDITOR âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openStoreModal(id) {
-  document.getElementById('userMenu').classList.remove('open');
-  const overlay = document.getElementById('storeEditorOverlay');
-  // Reset to first tab
+  document.getElementById('userMenu')?.classList.remove('open');
   switchTab('tabBasic', document.querySelector('#storeEditorOverlay .tab'));
-
   if (id === null) {
-    // New store
-    document.getElementById('storeEditorTitle').textContent = lang === 'de' ? 'Neues Geschäft' : 'New Store';
+    document.getElementById('storeEditorTitle').textContent = lang === 'de' ? 'Neues GeschÃ¤ft' : 'New Store';
     document.getElementById('editStoreId').value = '';
-    document.getElementById('eName').value = '';
+    ['eName','eAddress','ePhone','eWebsite','eInsta','eDesc','eDescEn','eOwnerEmail','ePhotos'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
     document.getElementById('eCat').value = 'hair';
-    document.getElementById('eAddress').value = '';
-    document.getElementById('ePhone').value = '';
-    document.getElementById('eWebsite').value = '';
-    document.getElementById('eInsta').value = '';
-    document.getElementById('eDesc').value = '';
-    document.getElementById('eDescEn').value = '';
-    document.getElementById('eOwnerEmail').value = '';
     document.getElementById('eRegistered').checked = false;
-    document.getElementById('ePhotos').value = '';
-    renderServiceRows([]);
-    renderHourRows({});
+    renderServiceRows([]); renderHourRows({});
   } else {
     const s = stores.find(x => x.id === id);
     if (!s) return;
-    document.getElementById('storeEditorTitle').textContent = lang === 'de' ? 'Geschäft bearbeiten' : 'Edit Store';
+    document.getElementById('storeEditorTitle').textContent = lang === 'de' ? 'GeschÃ¤ft bearbeiten' : 'Edit Store';
     document.getElementById('editStoreId').value = s.id;
     document.getElementById('eName').value = s.name || '';
     document.getElementById('eCat').value = s.cat || 'hair';
@@ -1108,65 +1233,50 @@ function openStoreModal(id) {
     renderServiceRows(s.services || []);
     renderHourRows(s.hours || {});
   }
-  overlay.classList.add('open');
+  document.getElementById('storeEditorOverlay').classList.add('open');
 }
-
 function closeStoreEditor() { document.getElementById('storeEditorOverlay').classList.remove('open'); }
 
 function renderServiceRows(services) {
-  const list = document.getElementById('servicesList');
-  list.innerHTML = services.map((sv, i) => serviceRowHtml(i, sv)).join('');
+  document.getElementById('servicesList').innerHTML = services.map((sv, i) => serviceRowHtml(i, sv)).join('');
 }
-
 function serviceRowHtml(i, sv = {}) {
-  return `<div class="form-row" style="margin-bottom:8px" id="srow${i}">
-    <div class="form-group" style="margin:0"><input type="text" placeholder="Name DE" value="${sv.name||''}" class="sname" data-i="${i}"></div>
-    <div class="form-group" style="margin:0"><input type="text" placeholder="Name EN" value="${sv.nameEN||''}" class="snameEN" data-i="${i}"></div>
-    <div class="form-group" style="margin:0"><input type="text" placeholder="Dauer" value="${sv.duration||''}" class="sduration" data-i="${i}"></div>
-    <div class="form-group" style="margin:0"><input type="text" placeholder="Preis" value="${sv.price||''}" class="sprice" data-i="${i}"></div>
-    <button class="btn btn-sm btn-danger" style="align-self:flex-end" onclick="this.parentElement.remove()">×</button>
+  return `<div class="form-row" style="margin-bottom:8px;align-items:end" id="srow${i}">
+    <div class="form-group" style="margin:0"><label style="font-size:0.75rem">Name DE</label><input type="text" value="${sv.name||''}" class="sname"></div>
+    <div class="form-group" style="margin:0"><label style="font-size:0.75rem">Name EN</label><input type="text" value="${sv.nameEN||''}" class="snameEN"></div>
+    <div class="form-group" style="margin:0"><label style="font-size:0.75rem">Dauer</label><input type="text" value="${sv.duration||''}" class="sduration" placeholder="45 Min"></div>
+    <div class="form-group" style="margin:0"><label style="font-size:0.75rem">Preis</label><input type="text" value="${sv.price||''}" class="sprice" placeholder="CHF 60"></div>
+    <button class="btn btn-sm btn-danger" onclick="this.closest('.form-row').remove()">Ã</button>
   </div>`;
 }
-
 function addServiceRow() {
   const list = document.getElementById('servicesList');
-  const i = Date.now();
   const div = document.createElement('div');
-  div.innerHTML = serviceRowHtml(i);
+  div.innerHTML = serviceRowHtml(Date.now());
   list.appendChild(div.firstElementChild);
 }
-
 function getServicesFromForm() {
-  const rows = document.querySelectorAll('#servicesList .form-row');
-  return Array.from(rows).map(row => ({
+  return Array.from(document.querySelectorAll('#servicesList .form-row')).map(row => ({
     name: row.querySelector('.sname')?.value || '',
     nameEN: row.querySelector('.snameEN')?.value || '',
     duration: row.querySelector('.sduration')?.value || '',
     price: row.querySelector('.sprice')?.value || ''
   })).filter(s => s.name);
 }
-
 function renderHourRows(hours) {
-  const list = document.getElementById('hoursList');
   const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const labels = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
-  list.innerHTML = days.map((d, i) => `
-    <div class="form-row" style="align-items:center;margin-bottom:8px">
-      <div style="font-size:0.85rem;color:var(--muted);padding-top:8px">${labels[i]}</div>
-      <div class="form-group" style="margin:0">
-        <input type="text" class="hday" data-day="${d}" placeholder="09:00-19:00 oder Geschlossen" value="${hours[d]||''}">
-      </div>
+  document.getElementById('hoursList').innerHTML = days.map((d, i) => `
+    <div class="form-row" style="align-items:center;margin-bottom:8px;grid-template-columns:100px 1fr">
+      <div class="form-group" style="margin:0"><label style="font-size:0.8rem;color:var(--muted);margin:0;padding-top:6px">${labels[i]}</label></div>
+      <div class="form-group" style="margin:0"><input type="text" class="hday" data-day="${d}" placeholder="09:00-18:30" value="${hours[d]||''}"></div>
     </div>`).join('');
 }
-
 function getHoursFromForm() {
-  const hours = {};
-  document.querySelectorAll('.hday').forEach(inp => {
-    if (inp.value.trim()) hours[inp.dataset.day] = inp.value.trim();
-  });
-  return hours;
+  const h = {};
+  document.querySelectorAll('.hday').forEach(inp => { if (inp.value.trim()) h[inp.dataset.day] = inp.value.trim(); });
+  return h;
 }
-
 async function saveStore() {
   const id = document.getElementById('editStoreId').value;
   const data = {
@@ -1184,23 +1294,17 @@ async function saveStore() {
     hours: getHoursFromForm(),
     photos: document.getElementById('ePhotos').value.split('\n').map(s => s.trim()).filter(Boolean)
   };
-
   if (!data.name) { showToast(lang === 'de' ? 'Name ist Pflicht' : 'Name is required', 'error'); return; }
-
-  let error;
-  if (id) {
-    ({ error } = await sb.from('stores').update(data).eq('id', id));
-  } else {
-    ({ error } = await sb.from('stores').insert(data));
-  }
-
+  const { error } = id
+    ? await sb.from('stores').update(data).eq('id', id)
+    : await sb.from('stores').insert(data);
   if (error) { showToast(error.message, 'error'); return; }
   closeStoreEditor();
-  showToast(lang === 'de' ? '✓ Gespeichert!' : '✓ Saved!', 'success');
+  showToast(t('saved'), 'success');
   loadAdminTable();
 }
 
-// ─── TABS ────────────────────────────────────────────────────────────────────
+// âââ TABS âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function switchTab(tabId, el) {
   document.querySelectorAll('#storeEditorOverlay .tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('#storeEditorOverlay .tab-content').forEach(t => t.classList.remove('active'));
@@ -1208,24 +1312,32 @@ function switchTab(tabId, el) {
   document.getElementById(tabId)?.classList.add('active');
 }
 
-// ─── TOAST ───────────────────────────────────────────────────────────────────
+// âââ TOAST ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let toastTimer;
 function showToast(msg, type = 'success') {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast show ${type}`;
+  el.textContent = msg; el.className = `toast show ${type}`;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
-// ─── CLOSE ON OVERLAY CLICK ──────────────────────────────────────────────────
+// âââ CLOSE ON BACKDROP ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 ['detailOverlay','bookingOverlay','authOverlay','storeEditorOverlay'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => {
     if (e.target.id === id) document.getElementById(id).classList.remove('open');
   });
 });
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
+// âââ CLOSE USER MENU ON OUTSIDE CLICK ââââââââââââââââââââââââââââââââââââââââ
+document.addEventListener('click', e => {
+  const menu = document.getElementById('userMenu');
+  if (menu && !menu.closest('.user-menu-wrap')?.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+// âââ INIT âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+setLang(lang);
 initAuth();
 loadStores();
 </script>
