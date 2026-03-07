@@ -161,11 +161,27 @@ footer{background:#1A1033;color:rgba(255,255,255,.75);padding:40px 20px;margin-t
 .footer-links a{font-size:.85rem;opacity:.7;transition:.2s}
 .footer-links a:hover{opacity:1;color:#fff}
 .footer-bottom{margin-top:24px;font-size:.8rem;opacity:.5}
+.booking-card{background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;transition:.2s}
+.booking-card:hover{border-color:var(--p2);box-shadow:var(--shadow)}
+.booking-card .bc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.booking-card .bc-salon{font-weight:800;font-size:1rem}
+.booking-card .bc-status{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:50px}
+.bc-status.confirmed{background:#D1FAE5;color:#065F46}
+.bc-status.cancelled{background:#FEE2E2;color:#991B1B}
+.bc-status.pending{background:#FEF3C7;color:#92400E}
+.booking-card .bc-details{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:.85rem;color:var(--muted)}
+.booking-card .bc-details strong{color:var(--text)}
+.booking-card .bc-actions{margin-top:12px;display:flex;gap:8px}
+.admin-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.admin-stat{background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.admin-stat .as-num{font-size:1.5rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.admin-stat .as-label{font-size:.78rem;color:var(--muted);margin-top:2px}
 @media(max-width:640px){
   .hero-stats{gap:24px}.stat-num{font-size:1.5rem}
   .form-row{grid-template-columns:1fr}
   .slots-grid{grid-template-columns:repeat(3,1fr)}
-  .nav-btn.ghost{display:none}
+  .nav-btn.ghost.hide-mobile{display:none}
+  .booking-card .bc-details{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -181,6 +197,8 @@ footer{background:#1A1033;color:rgba(255,255,255,.75);padding:40px 20px;margin-t
     <div id="navUser" style="display:none" class="nav-user">
       <div class="avatar" id="navAvatar">S</div>
       <span id="navName">Gast</span>
+      <button class="nav-btn ghost" onclick="openMyBookings()">Meine Termine</button>
+      <button class="nav-btn ghost" id="navAdmin" style="display:none" onclick="openAdmin()">Admin</button>
       <button class="nav-btn ghost" onclick="signOut()">Abmelden</button>
     </div>
   </div>
@@ -290,7 +308,7 @@ footer{background:#1A1033;color:rgba(255,255,255,.75);padding:40px 20px;margin-t
     <a href="#">AGB</a>
     <a href="#">Kontakt</a>
   </div>
-  <div class="footer-bottom">&#169; 2025 Solen. Alle Rechte vorbehalten.</div>
+  <div class="footer-bottom">&#169; 2026 Solen. Alle Rechte vorbehalten.</div>
 </footer>
 
 <!-- BOOKING MODAL -->
@@ -321,6 +339,29 @@ footer{background:#1A1033;color:rgba(255,255,255,.75);padding:40px 20px;margin-t
       <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Registrieren</button>
     </div>
     <div id="authContent"></div>
+  </div>
+</div>
+
+<!-- MY BOOKINGS MODAL -->
+<div class="overlay" id="myBookingsOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:640px">
+    <button class="modal-close" onclick="document.getElementById('myBookingsOverlay').classList.remove('open')">&#10005;</button>
+    <div class="wizard-header"><h2>Meine Termine</h2><p>Deine kommenden und vergangenen Buchungen</p></div>
+    <div id="myBookingsContent" style="max-height:60vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="overlay" id="adminOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:780px">
+    <button class="modal-close" onclick="document.getElementById('adminOverlay').classList.remove('open')">&#10005;</button>
+    <div class="wizard-header"><h2>Admin Dashboard</h2><p>Alle Buchungen verwalten</p></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="nav-btn ghost" style="font-size:.8rem" onclick="adminFilter='all';loadAdmin()">Alle</button>
+      <button class="nav-btn ghost" style="font-size:.8rem" onclick="adminFilter='confirmed';loadAdmin()">Best&auml;tigt</button>
+      <button class="nav-btn ghost" style="font-size:.8rem" onclick="adminFilter='cancelled';loadAdmin()">Storniert</button>
+    </div>
+    <div id="adminContent" style="max-height:60vh;overflow-y:auto"></div>
   </div>
 </div>
 
@@ -549,11 +590,13 @@ function shiftMonth(dir){calMonth=new Date(calMonth.getFullYear(),calMonth.getMo
 
 function selDate(y,m,d){booking.date=new Date(y,m,d);booking.time=null;renderStep();}
 
-function renderSlots(){
+async function renderSlotsAsync(){
   const slots=['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30'];
-  const taken=['09:00','10:30','14:00','16:00'];
   const dateStr=booking.date?booking.date.toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'}):'';
-  return `
+  const isoDate=booking.date?booking.date.toISOString().split('T')[0]:'';
+  const taken=await fetchTakenSlots(booking.store.id,isoDate);
+  const c=document.getElementById('wizContent');
+  c.innerHTML=`
   <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:16px">&#128197; ${dateStr}</p>
   <div class="slots-grid">
     ${slots.map(t=>{
@@ -566,6 +609,11 @@ function renderSlots(){
     <button class="btn-back" onclick="goStep(2)">&#8592; Zur\u00fcck</button>
     <button class="btn-next" id="btnNext3" onclick="goStep(4)" ${!booking.time?'disabled':''}>Weiter &#8594;</button>
   </div>`;
+}
+
+function renderSlots(){
+  renderSlotsAsync();
+  return '<p style="text-align:center;padding:30px;color:var(--muted)">Verf\u00fcgbarkeit pr\u00fcfen...</p>';
 }
 
 function selSlot(el,t){
@@ -641,6 +689,15 @@ async function submitBooking(btn){
     };
     try{await sb.from('bookings').insert([payload]);}catch(e){}
     const code='SOL-'+Math.random().toString(36).substring(2,7).toUpperCase();
+    // Send email notifications
+    try{
+      await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        customerEmail:booking.customerEmail,customerName:booking.customerFirst+' '+booking.customerLast,
+        salonName:booking.store.name,salonEmail:booking.store.email||null,
+        serviceName:booking.service.name,date:booking.date.toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
+        time:booking.time+' Uhr',lang:'de'
+      })});
+    }catch(e){console.log('Email notification skipped:',e.message);}
     document.getElementById('progBar').style.display='none';
     document.getElementById('wiz-title').textContent='';
     document.getElementById('wiz-sub').textContent='';
@@ -730,9 +787,114 @@ function updateNav(){
     const name=currentUser.user_metadata?.full_name||currentUser.email||'User';
     document.getElementById('navName').textContent=name.split(' ')[0];
     document.getElementById('navAvatar').textContent=(name[0]||'U').toUpperCase();
+    const adminBtn=document.getElementById('navAdmin');
+    if(adminBtn)adminBtn.style.display=ADMIN_EMAILS.includes(currentUser.email)?'inline-block':'none';
   }else{
     guest.style.display='flex';user.style.display='none';
   }
+}
+
+/* ─── MY BOOKINGS ─── */
+async function openMyBookings(){
+  if(!currentUser){openAuth('login');return;}
+  document.getElementById('myBookingsOverlay').classList.add('open');
+  document.getElementById('myBookingsContent').innerHTML='<p style="text-align:center;padding:30px;color:var(--muted)">Lade Termine...</p>';
+  try{
+    const {data,error}=await sb.from('bookings').select('*').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
+    if(error)throw error;
+    if(!data||!data.length){
+      document.getElementById('myBookingsContent').innerHTML='<p style="text-align:center;padding:40px;color:var(--muted)">Noch keine Buchungen vorhanden.<br>Buche jetzt deinen ersten Termin!</p>';
+      return;
+    }
+    document.getElementById('myBookingsContent').innerHTML=data.map(b=>bookingCardHtml(b,false)).join('');
+  }catch(e){
+    document.getElementById('myBookingsContent').innerHTML='<p style="text-align:center;padding:30px;color:var(--muted)">Buchungen konnten nicht geladen werden.</p>';
+  }
+}
+
+function bookingCardHtml(b,isAdmin){
+  const statusLabel={confirmed:'Best\u00e4tigt',cancelled:'Storniert',pending:'Ausstehend'};
+  const dateStr=b.booking_date||'';
+  const canCancel=b.status==='confirmed'&&new Date(b.booking_date+'T'+b.booking_time)>new Date();
+  return `<div class="booking-card">
+    <div class="bc-header">
+      <span class="bc-salon">${b.store_name||'Salon'}</span>
+      <span class="bc-status ${b.status||'confirmed'}">${statusLabel[b.status]||b.status||'Best\u00e4tigt'}</span>
+    </div>
+    <div class="bc-details">
+      <div><strong>Service:</strong> ${b.service_name||''}</div>
+      <div><strong>Preis:</strong> CHF ${b.service_price||'?'}</div>
+      <div><strong>Datum:</strong> ${dateStr}</div>
+      <div><strong>Uhrzeit:</strong> ${b.booking_time||''} Uhr</div>
+      ${isAdmin?`<div><strong>Kunde:</strong> ${b.customer_first||''} ${b.customer_last||''}</div>
+      <div><strong>E-Mail:</strong> ${b.customer_email||''}</div>
+      ${b.customer_phone?`<div><strong>Tel:</strong> ${b.customer_phone}</div>`:''}
+      ${b.note?`<div><strong>Notiz:</strong> ${b.note}</div>`:''}`:''}
+    </div>
+    <div class="bc-actions">
+      ${canCancel?`<button class="nav-btn ghost" style="font-size:.8rem;padding:6px 14px" onclick="cancelBooking('${b.id}')">Stornieren</button>`:''}
+      ${isAdmin&&b.status==='confirmed'?`<button class="nav-btn ghost" style="font-size:.8rem;padding:6px 14px" onclick="updateBookingStatus('${b.id}','cancelled')">Stornieren</button>`:''}
+      ${isAdmin&&b.status==='cancelled'?`<button class="nav-btn ghost" style="font-size:.8rem;padding:6px 14px" onclick="updateBookingStatus('${b.id}','confirmed')">Reaktivieren</button>`:''}
+    </div>
+  </div>`;
+}
+
+async function cancelBooking(id){
+  if(!confirm('Termin wirklich stornieren?'))return;
+  try{
+    await sb.from('bookings').update({status:'cancelled'}).eq('id',id).eq('user_id',currentUser.id);
+    showToast('Termin storniert.');
+    openMyBookings();
+  }catch(e){showToast('Fehler beim Stornieren.');}
+}
+
+/* ─── ADMIN DASHBOARD ─── */
+let adminFilter='all';
+async function openAdmin(){
+  if(!currentUser||!ADMIN_EMAILS.includes(currentUser.email)){showToast('Kein Zugriff.');return;}
+  document.getElementById('adminOverlay').classList.add('open');
+  loadAdmin();
+}
+
+async function loadAdmin(){
+  const c=document.getElementById('adminContent');
+  c.innerHTML='<p style="text-align:center;padding:30px;color:var(--muted)">Lade...</p>';
+  try{
+    let query=sb.from('bookings').select('*').order('created_at',{ascending:false});
+    if(adminFilter!=='all')query=query.eq('status',adminFilter);
+    const {data,error}=await query;
+    if(error)throw error;
+    if(!data||!data.length){c.innerHTML='<p style="text-align:center;padding:40px;color:var(--muted)">Keine Buchungen gefunden.</p>';return;}
+    const total=data.length;
+    const confirmed=data.filter(b=>b.status==='confirmed').length;
+    const cancelled=data.filter(b=>b.status==='cancelled').length;
+    const revenue=data.filter(b=>b.status==='confirmed').reduce((sum,b)=>sum+(b.service_price||0),0);
+    c.innerHTML=`
+      <div class="admin-stat-row">
+        <div class="admin-stat"><div class="as-num">${total}</div><div class="as-label">Total</div></div>
+        <div class="admin-stat"><div class="as-num">${confirmed}</div><div class="as-label">Best\u00e4tigt</div></div>
+        <div class="admin-stat"><div class="as-num">${cancelled}</div><div class="as-label">Storniert</div></div>
+        <div class="admin-stat"><div class="as-num">CHF ${revenue}</div><div class="as-label">Umsatz</div></div>
+      </div>
+      ${data.map(b=>bookingCardHtml(b,true)).join('')}`;
+  }catch(e){c.innerHTML='<p style="text-align:center;padding:30px;color:var(--muted)">Fehler beim Laden der Daten.</p>';}
+}
+
+async function updateBookingStatus(id,status){
+  try{
+    await sb.from('bookings').update({status}).eq('id',id);
+    showToast('Status aktualisiert.');
+    loadAdmin();
+  }catch(e){showToast('Fehler.');}
+}
+
+/* ─── REAL SLOT AVAILABILITY ─── */
+async function fetchTakenSlots(storeId,dateStr){
+  try{
+    const {data,error}=await sb.from('bookings').select('booking_time').eq('store_id',storeId).eq('booking_date',dateStr).eq('status','confirmed');
+    if(error)throw error;
+    return (data||[]).map(b=>b.booking_time);
+  }catch(e){return [];}
 }
 
 let toastTimer;
