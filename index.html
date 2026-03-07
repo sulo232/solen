@@ -74,6 +74,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);position:sti
 .price-tag{font-size:.82rem;font-weight:700;color:var(--muted)}
 .book-btn{background:var(--accent);color:var(--bg);border:none;padding:9px 22px;border-radius:50px;font-weight:700;font-size:.88rem;transition:.2s;box-shadow:var(--shadow)}
 .book-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow2)}
+.visited-badge{position:absolute;top:12px;right:50px;background:var(--success);color:#fff;padding:3px 10px;border-radius:50px;font-size:.7rem;font-weight:700}
 .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--surfaceAlt) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .sk-card{height:340px;border-radius:16px}
@@ -356,7 +357,7 @@ const DEMO_STORES=[
    services:[{id:'s36',name:'Shellac Maniküre',price:48,duration:55},{id:'s37',name:'French Maniküre',price:42,duration:50},{id:'s38',name:'Baby Boomer',price:65,duration:65},{id:'s39',name:'Gel Pediküre',price:60,duration:70},{id:'s40',name:'Nail Art je Finger',price:8,duration:10}]}
 ];
 
-let allStores=[],filteredStores=[],activeCat='',currentUser=null;
+let allStores=[],filteredStores=[],activeCat='',currentUser=null,userBookedStoreIds=new Set();
 let booking={store:null,service:null,date:null,time:null,step:1};
 let calMonth=new Date();
 
@@ -372,6 +373,14 @@ async function init(){
   await loadStores();
 }
 
+async function getUserBookedStoreIds(){
+  if(!currentUser)return new Set();
+  try{
+    const {data}=await sb.from('bookings').select('store_id').eq('user_id',currentUser.id);
+    return new Set((data||[]).map(b=>b.store_id));
+  }catch(e){return new Set();}
+}
+
 async function loadStores(){
   try{
     const {data,error}=await sb.from('stores').select('*,services(*)');
@@ -379,6 +388,7 @@ async function loadStores(){
     allStores=(data&&data.length>0)?data:DEMO_STORES;
   }catch(e){allStores=DEMO_STORES;}
   filteredStores=[...allStores];
+  userBookedStoreIds=await getUserBookedStoreIds();
   renderStores();
 }
 
@@ -432,11 +442,13 @@ function storeCard(s){
   const icon=typeIcon[s.type]||'&#10024;';
   const label=typeLabel[s.type]||s.type||'Beauty';
   const img=s.image_url?`<img src="${s.image_url}" alt="${s.name}" onerror="this.style.display='none'">`:`<span style="font-size:3.5rem">${icon}</span>`;
+  const visited=userBookedStoreIds.has(String(s.id));
   return `
   <div class="store-card" onclick="openBooking('${s.id}')">
     <div class="store-img">
       ${img}
       <span class="store-badge">${label}</span>
+      ${visited?'<span class="visited-badge">Schon besucht</span>':''}
       <button class="store-fav" onclick="event.stopPropagation();this.textContent=this.textContent==='&#9825;'?'&#9829;':'&#9825;'">&#9825;</button>
     </div>
     <div class="store-body">
