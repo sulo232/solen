@@ -175,11 +175,32 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
 .footer-links a{font-size:.85rem;opacity:.7;transition:.2s}
 .footer-links a:hover{opacity:1;color:#fff}
 .footer-bottom{margin-top:24px;font-size:.8rem;opacity:.5}
+.hamburger{display:none;background:none;border:none;font-size:1.5rem;color:var(--text);cursor:pointer;padding:4px}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;z-index:199;box-shadow:var(--shadow2);flex-direction:column;gap:8px}
+.mobile-menu.open{display:flex}
 @media(max-width:640px){
+  .nav-inner{padding:0 16px}
+  .hero h1{font-size:clamp(1.6rem,6vw,2.5rem)}
+  .hero p{font-size:.9rem}
+  .stores-grid{grid-template-columns:1fr;gap:16px}
+  .cats-grid{display:flex;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;gap:12px;padding-bottom:8px}
+  .cats-grid::-webkit-scrollbar{display:none}
+  .cat-card{min-width:130px;flex-shrink:0}
   .hero-stats{gap:24px}.stat-num{font-size:1.5rem}
   .form-row{grid-template-columns:1fr}
   .slots-grid{grid-template-columns:repeat(3,1fr)}
-  .nav-btn.ghost{display:none}
+  .wizard-modal,.modal{width:100%;max-width:100%;border-radius:0;margin:0}
+  .overlay{align-items:flex-end}
+  .admin-table{font-size:.8rem}
+  #navGuest,#navUser .nav-btn{display:none!important}
+  .hamburger{display:block}
+  .profile-grid{grid-template-columns:1fr}
+}
+@media(min-width:641px)and(max-width:1024px){
+  .stores-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(min-width:1025px){
+  .stores-grid{grid-template-columns:repeat(3,1fr)}
 }
 </style>
 </head>
@@ -188,6 +209,7 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
 <nav>
   <div class="nav-inner">
     <div class="logo">Solen</div>
+    <button class="hamburger" onclick="toggleMobileMenu()">&#9776;</button>
     <div id="navGuest" style="display:flex;gap:8px">
       <button class="nav-btn ghost" onclick="openAuth('login')">Anmelden</button>
       <button class="nav-btn solid" onclick="openAuth('signup')">Registrieren</button>
@@ -200,6 +222,7 @@ footer{background:var(--accent);color:var(--bg);padding:40px 20px;margin-top:60p
     </div>
   </div>
 </nav>
+<div class="mobile-menu" id="mobileMenu"></div>
 
 <section class="hero">
   <div class="hero-badge">&#127894; Jetzt in Basel verf&#252;gbar</div>
@@ -1133,6 +1156,24 @@ function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+function toggleMobileMenu(){
+  const menu=document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+  if(menu.classList.contains('open')){
+    if(currentUser){
+      const name=currentUser.user_metadata?.full_name||currentUser.email||'User';
+      const isAdmin=ADMIN_EMAILS.includes(currentUser?.email);
+      menu.innerHTML=`<div style="padding:4px 0;font-weight:600">${name.split(' ')[0]}</div>
+        <button class="nav-btn ghost" style="width:100%;text-align:left" onclick="toggleMobileMenu();openProfilePage()">Mein Profil</button>
+        ${isAdmin?'<button class="nav-btn ghost" style="width:100%;text-align:left" onclick="toggleMobileMenu();openAdmin()">Admin</button>':''}
+        <button class="nav-btn ghost" style="width:100%;text-align:left" onclick="toggleMobileMenu();signOut()">Abmelden</button>`;
+    }else{
+      menu.innerHTML=`<button class="nav-btn ghost" style="width:100%;text-align:left" onclick="toggleMobileMenu();openAuth('login')">Anmelden</button>
+        <button class="nav-btn solid" style="width:100%;text-align:center" onclick="toggleMobileMenu();openAuth('signup')">Registrieren</button>`;
+    }
+  }
 }
 
 init();
