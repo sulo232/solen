@@ -361,7 +361,10 @@ let booking={store:null,service:null,date:null,time:null,step:1};
 let calMonth=new Date();
 
 async function init(){
-  sb.auth.onAuthStateChange((_,session)=>{currentUser=session?.user||null;updateNav();});
+  sb.auth.onAuthStateChange((_,session)=>{
+    currentUser=session?.user||null;updateNav();
+    if(currentUser&&window._pendingStore){const store=window._pendingStore;window._pendingStore=null;setTimeout(()=>startBookingFlow(store),300);}
+  });
   const {data:{session}}=await sb.auth.getSession();
   currentUser=session?.user||null;
   updateNav();
@@ -482,7 +485,16 @@ const sortServicesByProfile=(function(){
 function openBooking(storeId){
   const s=allStores.find(x=>String(x.id)===String(storeId));
   if(!s)return;
-  booking={store:s,service:null,date:null,time:null,step:1,customerFirst:'',customerLast:'',customerEmail:'',customerPhone:'',note:''};
+  if(!currentUser){
+    window._pendingStore=s;
+    openAuth('login');
+    showToast('Bitte melde dich an, um zu buchen.');
+    return;
+  }
+  startBookingFlow(s);
+}
+function startBookingFlow(store){
+  booking={step:1,store,service:null,date:null,time:null,customerFirst:'',customerLast:'',customerEmail:'',customerPhone:'',note:''};
   calMonth=new Date();
   document.getElementById('bookingOverlay').classList.add('open');
   renderStep();
@@ -737,7 +749,10 @@ async function emailLogin(){
   if(!email||!pass){showToast('Bitte alle Felder ausf\u00fcllen.');return;}
   const {error}=await sb.auth.signInWithPassword({email,password:pass});
   if(error)showToast(error.message);
-  else{closeAuth();showToast('Willkommen zur\u00fcck!');}
+  else{
+    closeAuth();showToast('Willkommen zurück!');
+    if(window._pendingStore){const store=window._pendingStore;window._pendingStore=null;setTimeout(()=>startBookingFlow(store),300);}
+  }
 }
 async function emailSignup(){
   const email=document.getElementById('aEmail').value.trim();
