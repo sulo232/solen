@@ -339,7 +339,7 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 const DEMO_STORES=[
   {id:'d1',name:'Salon Beautique Basel',type:'hair',address:'Freie Strasse 12, 4001 Basel',phone:'061 123 45 67',rating:4.9,reviews:142,description:'Moderner Friseursalon im Herzen Basels.',image_url:'',
-   services:[{id:'s1',name:'Damen-Haarschnitt',price:65,duration:60},{id:'s2',name:'Herren-Haarschnitt',price:45,duration:45},{id:'s3',name:'F\u00e4rben & Highlights',price:95,duration:90},{id:'s4',name:'Bl\u00f6wout & Styling',price:50,duration:45},{id:'s5',name:'Keratin-Behandlung',price:180,duration:120}]},
+   services:[{id:'s1',name:'Damen-Haarschnitt',price:65,duration:60},{id:'s2',name:'Herren-Haarschnitt',price:45,duration:45},{id:'s3',name:'F\u00e4rben & Highlights',price:95,duration:90},{id:'s4',name:'Bl\u00f6wout & Styling',price:50,duration:45},{id:'s5',name:'Keratin-Behandlung',price:180,duration:120},{id:'s5a',name:'Kinder-Haarschnitt (bis 12)',price:25,duration:30},{id:'s5b',name:'Teenager-Schnitt (12-17)',price:35,duration:35}]},
   {id:'d2',name:'The Barber Club Basel',type:'barber',address:'Steinenvorstadt 8, 4051 Basel',phone:'061 234 56 78',rating:4.8,reviews:98,description:'Premium Barbershop mit klassischen Techniken.',image_url:'',
    services:[{id:'s6',name:'Herrenschnitt Classic',price:28,duration:30},{id:'s7',name:'Bart Trim & Shape',price:22,duration:25},{id:'s8',name:'Schnitt + Bart Kombi',price:45,duration:50},{id:'s9',name:'Hei\u00dfe Rasur',price:35,duration:40},{id:'s10',name:'Fade & Skin Fade',price:30,duration:35}]},
   {id:'d3',name:'Nail Art Studio Sinem',type:'nails',address:'Clarastrasse 22, 4058 Basel',phone:'061 345 67 89',rating:4.9,reviews:201,description:'Kreative Nageldesigns und professionelle Pflege.',image_url:'',
@@ -456,6 +456,27 @@ function renderStores(){
   }
   g.innerHTML=filteredStores.map(s=>storeCard(s)).join('');
 }
+
+/* ─── SERVICE SORTING ─── */
+const sortServicesByProfile=(function(){
+  return function(svcs){
+    if(!window._userProfile)return svcs;
+    const p=window._userProfile;
+    const score=(sv)=>{
+      let s=0;
+      const name=sv.name.toLowerCase();
+      if(p.gender==='Weiblich'&&(name.includes('damen')||name.includes('frauen')))s+=3;
+      if(p.gender==='Mannlich'&&(name.includes('herren')||name.includes('manner')||name.includes('barber')))s+=3;
+      if((p.age_range==='Unter 12')&&(name.includes('kinder')||name.includes('kind')))s+=5;
+      if((p.age_range==='12-17')&&(name.includes('teenager')||name.includes('jugend')))s+=5;
+      if(p.preferred_services&&p.preferred_services.length){
+        p.preferred_services.forEach(pref=>{if(name.includes(pref.toLowerCase()))s+=2;});
+      }
+      return s;
+    };
+    return [...svcs].sort((a,b)=>score(b)-score(a));
+  };
+})();
 
 /* ─── BOOKING WIZARD ─── */
 function openBooking(storeId){
