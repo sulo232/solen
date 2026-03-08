@@ -61,10 +61,11 @@ input,select,textarea{font-family:inherit}
 .theme-toggle{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;flex-shrink:0;margin-right:8px}
 .theme-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:white}
 .nav-actions{display:flex;gap:10px;align-items:center}
-.btn-nav-ghost{color:rgba(255,255,255,.95);border:1.5px solid rgba(255,255,255,.32);background:rgba(255,255,255,.07);padding:8px 20px;border-radius:100px;font-size:.9rem;cursor:pointer;transition:all .2s}
-.btn-nav-ghost:hover{background:rgba(255,255,255,.08);color:white}
-.btn-nav-primary{background:var(--gradient);color:#0D0D0D;border:none;padding:8px 20px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-nav-primary:hover{opacity:.9;transform:scale(1.03)}
+/* Login = teal outline pill, Register = coral solid pill — always visible on dark nav */
+.btn-nav-ghost{color:#4ECDC4;border:1.5px solid rgba(78,205,196,.55);background:rgba(78,205,196,.10);padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.01em}
+.btn-nav-ghost:hover{background:rgba(78,205,196,.20);border-color:#4ECDC4;color:#4ECDC4}
+.btn-nav-primary{background:#FF6B6B;color:#fff;border:none;padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 10px rgba(255,107,107,.40);letter-spacing:.01em}
+.btn-nav-primary:hover{background:#e55a5a;transform:scale(1.04);box-shadow:0 4px 16px rgba(255,107,107,.55)}
 .nav-user{display:flex;align-items:center;gap:10px}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;cursor:pointer;flex-shrink:0}
 .nav-menu{position:relative}
@@ -478,7 +479,7 @@ html,body{overflow-x:hidden;max-width:100vw}
 .neighbourhood-chip{padding:6px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
 .neighbourhood-chip:hover{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.25)}
 .neighbourhood-chip.active{background:rgba(255,255,255,.9);color:#0D0D0D;border-color:transparent;font-weight:700}
-.btn-nav-salon{background:transparent;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:7px 18px;border-radius:100px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;display:none}.btn-nav-salon:hover{background:var(--accent-lemon);color:#0D0D0D}@media(min-width:640px){.btn-nav-salon{display:inline-flex;align-items:center;gap:6px}}.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
+.btn-nav-salon{display:none!important}}.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
 .btn-location:hover{border-color:var(--accent);color:var(--accent)}
 
 /* VERIFIED BADGE */
@@ -656,10 +657,9 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-actions nav-desktop" id="navActions">
-      <div id="navGuest">
+      <div id="navGuest" style="display:flex;gap:10px;align-items:center">
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
-        <button class="btn-nav-salon" onclick="openSalonRegistration()">✦ Salon eintragen</button>
       </div>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
@@ -690,11 +690,11 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="lang-btn" onclick="switchLang('fr')">FR</button>
         <button class="lang-btn" onclick="switchLang('tr')">TR</button>
       </div>
-      <button style="display:block;width:100%;text-align:center;background:var(--accent-lemon);color:#0D0D0D;border:none;padding:13px;border-radius:16px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>
       <div id="mobileNavGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
-      </div>
+      
+        <button style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button></div>
       <div id="mobileNavUser" class="hidden">
         <a href="#" class="btn-nav-ghost" onclick="showPage('profile');closeMobileMenu();return false" data-i18n="nav_my_profile" style="display:block;text-align:center;margin-bottom:8px">Mein Profil</a>
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
@@ -837,7 +837,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <div id="formRegChoice" class="hidden">
         <div class="reg-choice">
           <h2>Wähle deinen Zugang</h2>
-          <p>Bist du ein Kunde oder ein Salon-Besitzer?</p>
+          <p>Bist du ein Kunde oder möchtest du deinen Salon eintragen?</p>
           <div class="reg-choice-cards">
             <div class="reg-choice-card" onclick="openAuth('customer-signup')">
               <div class="reg-choice-icon">&#128134;</div>
@@ -845,9 +845,9 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
               <p>Termin buchen, Salons entdecken, Profil verwalten</p>
               <span class="reg-choice-btn">Kostenlos registrieren</span>
             </div>
-            <div class="reg-choice-card" onclick="openAuth('salon-signup')">
+            <div class="reg-choice-card" onclick="closeAuth();openSalonRegistration()" style="border-color:var(--accent-lemon);background:rgba(255,230,109,.06)">
               <div class="reg-choice-icon">&#9986;</div>
-              <h3>Als Salon-Besitzer</h3>
+              <h3>Salon eintragen</h3>
               <p>Deinen Salon listen, Buchungen verwalten, Kunden gewinnen</p>
               <span class="reg-choice-btn">Salon anmelden</span>
             </div>
