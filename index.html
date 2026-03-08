@@ -603,7 +603,14 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 .asm-field input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-family:inherit;font-size:.9rem}
 .asm-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
 </style>
-</head>
+
+  <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
+  <meta property="og:site_name" content="solen.ch">
+  <meta property="og:type" content="website">
+  <meta property="og:title" id="ogTitle" content="solen.ch | Beauty &amp; Wellness Basel">
+  <meta property="og:description" id="ogDesc" content="Salons &amp; Beauty-Studios in Basel entdecken und direkt buchen.">
+  <meta property="og:image" id="ogImage" content="https://solen.ch/og-default.jpg">
+  <link rel="canonical" id="canonicalUrl" href="https://solen.ch/"></head>
 <body>
 <script>
 (function(){var t=localStorage.getItem('solenTheme')||localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
@@ -1940,6 +1947,7 @@ async function loadStores(){
   try{sessionStorage.getItem('solenSession')||(() => {sessionStorage.setItem('solenSession','1');localStorage.removeItem('solenViewedDismissed');})();}catch(e){}
   renderStores();
   renderLastMinute();
+  checkURLStore();
 }
 
 function getStoreEmoji(type){
@@ -2255,11 +2263,44 @@ function restoreCategoryFilter(){
     }
   }catch(e){}
 }
+function slugify(str){return str.toLowerCase().replace(/[äöü]/g,c=>({'ä':'ae','ö':'oe','ü':'ue'})[c]||c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function updateSalonSEO(s){
+  const slug=slugify(s.name);
+  const url='/?s='+slug+'-'+s.id;
+  history.pushState({salonId:s.id},'',url);
+  document.title=s.name+' — solen.ch';
+  const desc=(s.description||s.desc||'').slice(0,155)||s.name+' in Basel buchen auf solen.ch';
+  document.querySelector('meta[name="description"]')?.setAttribute('content',desc);
+  document.getElementById('ogTitle')?.setAttribute('content',s.name+' | solen.ch');
+  document.getElementById('ogDesc')?.setAttribute('content',desc);
+  document.getElementById('ogImage')?.setAttribute('content',s.photo_url||s.image_url||'https://solen.ch/og-default.jpg');
+  document.getElementById('canonicalUrl')?.setAttribute('href','https://solen.ch'+url);
+  let ld=document.getElementById('salonJsonLd');
+  if(!ld){ld=document.createElement('script');ld.type='application/ld+json';ld.id='salonJsonLd';document.head.appendChild(ld);}
+  ld.textContent=JSON.stringify({'@context':'https://schema.org','@type':'BeautySalon',name:s.name,description:desc,url:'https://solen.ch'+url,image:s.photo_url||s.image_url||'',address:{'@type':'PostalAddress',streetAddress:s.address||'',addressLocality:'Basel',addressCountry:'CH'},telephone:s.phone||''});
+}
+function resetSalonSEO(){
+  history.pushState({},'','/');
+  document.title='solen.ch | Beauty & Wellness Basel';
+  document.querySelector('meta[name="description"]')?.setAttribute('content','Salons & Beauty-Studios in Basel buchen.');
+  document.getElementById('ogTitle')?.setAttribute('content','solen.ch | Beauty & Wellness Basel');
+  document.getElementById('canonicalUrl')?.setAttribute('href','https://solen.ch/');
+  document.getElementById('salonJsonLd')?.remove();
+}
+function checkURLStore(){
+  const p=new URLSearchParams(window.location.search).get('s');
+  if(!p)return;
+  const parts=p.split('-');
+  const id=parts[parts.length-1];
+  if(id&&allStores.find(x=>x.id===id))setTimeout(()=>openStore(id),100);
+}
+
 
 // STORE DETAIL
 async function openStore(storeId){
   const s=allStores.find(x=>x.id===storeId);
   if(!s)return;
+  updateSalonSEO(s);
   trackRecentStore(storeId);
   const svcs=allServices.filter(x=>x.store_id===storeId||x.salon_id===storeId);
   const photoUrl=getSalonPhoto(s);
@@ -2306,7 +2347,8 @@ async function startBooking(storeId){
   document.getElementById('bookingTitle').textContent=`${t('btn_book_now')} — ${store.name}`;
   document.getElementById('bookingOverlay').classList.remove('hidden');
   renderWizStep(1);
-}
+
+  resetSalonSEO();}
 function closeBooking(){document.getElementById('bookingOverlay').classList.add('hidden');bookingState={};}
 
 function setWizStep(n){
@@ -3654,7 +3696,8 @@ function selectStaff(id,name,el){
 }
 
 // Close add-staff modal on backdrop click
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('
+  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.add('hidden');});DOMContentLoaded',function(){
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
