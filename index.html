@@ -2401,7 +2401,9 @@ async function confirmBooking(){
     customer_phone:bookingState.phone,
     note:bookingState.note,
     status:'confirmed',
-    reference:reference
+    reference:reference,
+    staff_id:_selStaffId||null,
+    staff_name:_selStaffName||null
   });
   if(error){toast(t('toast_booking_failed'),'error');if(btn){btn.disabled=false;btn.textContent=t('btn_confirm');}}
   else{
