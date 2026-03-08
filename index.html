@@ -1854,7 +1854,7 @@ async function loadStores(){
   renderSkeletons();
   let data,error;
   try{
-    ({data,error}=await sb.from('stores').select('*').or('status.is.null,status.eq.active,status.eq.approved').order('name'));
+    ({data,error}=await sb.from('stores').select('*').order('name'));
   }catch(e){error=e;}
   if(error&&!data){
     document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#9888;</div><h3>${t('load_failed')}</h3><button onclick="loadStores()" style="margin-top:12px">${t('reload')}</button></div>`;
