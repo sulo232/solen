@@ -330,6 +330,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 /* UTIL */
 .stores-grid .store-card{animation:cardFadeIn .2s ease}
 @keyframes cardFadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes slideInUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
 .hidden{display:none!important}
 .flex{display:flex}
 .gap-8{gap:8px}
@@ -547,7 +548,7 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
           <div class="avatar" id="navAvatar" onclick="toggleNavMenu()">?</div>
           <div class="nav-dropdown" id="navDropdown" data-dropdown="">
             <a href="#" onclick="showPage('profile');return false" data-i18n="nav_my_profile">Mein Profil</a>
-            <a href="#" onclick="openSetup(false);return false" data-i18n="nav_edit_profile">Profil bearbeiten</a>
+            <a href="#" onclick="openProfileModal();return false" data-i18n="nav_edit_profile">Profil bearbeiten</a>
             <a href="#" onclick="showPage('bookings');return false" data-i18n="nav_my_bookings">Meine Buchungen</a>
             <div id="salonDashLink" class="hidden">
               <a href="#" onclick="showPage('salon-dashboard');return false" data-i18n="nav_salon_dash">Salon Dashboard</a>
@@ -1342,7 +1343,7 @@ applyTranslations();
   }catch(e){loadStores();}
 })();
 sb.auth.onAuthStateChange((event,session)=>{
-  if(event==='SIGNED_IN'&&session?.user){currentUser=session.user;onSignIn(session.user);}
+  if(event==='SIGNED_IN'&&session?.user){currentUser=session.user;onSignIn(session.user);if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}}
   else if(event==='SIGNED_OUT'){currentUser=null;onSignOut();}
 });
 
@@ -1405,9 +1406,6 @@ async function loadProfile(){
   if(!currentUser)return;
   const{data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
   currentProfile=data;
-  if(!data||(!data.age_range&&!data.gender&&!data.hair_type)){
-    setTimeout(()=>openSetup(true),800);
-  }
 }
 
 // MOBILE NAV
@@ -2236,7 +2234,7 @@ async function renderProfile(){
         ${p.stylist_notes?`<div class="profile-item" style="grid-column:1/-1"><div class="profile-item-label">Notizen</div><div class="profile-item-val">${p.stylist_notes}</div></div>`:''}
       </div>
     </div>
-    <button class="btn-sm solid" onclick="openSetup()">Profil bearbeiten</button>`;
+    <button class="btn-sm solid" onclick="openProfileModal()">Profil bearbeiten</button>`;
 }
 
 // BOOKINGS PAGE
@@ -2838,9 +2836,53 @@ async function submitReview(salonId){
 }
 
 // KEYBOARD SHORTCUTS
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('setupOverlay').classList.add('hidden');document.getElementById('impressumModal')?.classList.remove('open');document.getElementById('datenschutzModal')?.classList.remove('open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('setupOverlay').classList.add('hidden');document.getElementById('profileEditModal').style.display='none';document.body.style.overflow='';document.getElementById('profileSlideIn').style.display='none';document.getElementById('impressumModal')?.classList.remove('open');document.getElementById('datenschutzModal')?.classList.remove('open');}});
+
+// PROFILE SLIDE-IN
+function showProfileSlideIn(){document.getElementById('profileSlideIn').style.display='block';}
+function dismissProfileSlideIn(){document.getElementById('profileSlideIn').style.display='none';localStorage.setItem('solenProfileDone','1');}
+async function saveProfileSlideIn(){
+  try{const{data:{user}}=await sb.auth.getUser();if(user){await sb.from('profiles').upsert({user_id:user.id,display_name:document.getElementById('siDisplayName').value,age_range:document.getElementById('siAgeRange').value,gender:document.getElementById('siGender').value,hair_type:document.getElementById('siHairType').value,profile_complete:true,updated_at:new Date().toISOString()},{onConflict:'user_id'});}}catch(e){}
+  dismissProfileSlideIn();
+  if(typeof toast==='function')toast('Profil gespeichert!','success');
+}
+
+// PROFILE EDIT MODAL
+async function openProfileModal(){document.getElementById('profileEditModal').style.display='block';document.body.style.overflow='hidden';try{const{data:{user}}=await sb.auth.getUser();if(user){document.getElementById('pmEmail').value=user.email||'';const{data}=await sb.from('profiles').select('*').eq('user_id',user.id).single();if(data){document.getElementById('pmDisplayName').value=data.display_name||'';document.getElementById('pmAgeRange').value=data.age_range||'';document.getElementById('pmGender').value=data.gender||'';document.getElementById('pmHairType').value=data.hair_type||'';document.getElementById('pmHairLength').value=data.hair_length||'';document.getElementById('pmNeighbourhood').value=data.neighbourhood||'';const initials=(data.display_name||user.email||'S')[0].toUpperCase();document.getElementById('profileAvatar').textContent=initials;if(data.preferred_services){const s=typeof data.preferred_services==='string'?JSON.parse(data.preferred_services):data.preferred_services;document.querySelectorAll('.pm-svc').forEach(cb=>cb.checked=s.includes(cb.value));}}}}catch(e){}}
+function closeProfileModal(){document.getElementById('profileEditModal').style.display='none';document.body.style.overflow='';}
+async function saveProfileModal(){try{const{data:{user}}=await sb.auth.getUser();if(!user)return;const svcs=[...document.querySelectorAll('.pm-svc:checked')].map(c=>c.value);await sb.from('profiles').upsert({user_id:user.id,display_name:document.getElementById('pmDisplayName').value,age_range:document.getElementById('pmAgeRange').value,gender:document.getElementById('pmGender').value,hair_type:document.getElementById('pmHairType').value,hair_length:document.getElementById('pmHairLength').value,neighbourhood:document.getElementById('pmNeighbourhood').value,preferred_services:JSON.stringify(svcs),profile_complete:true,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(typeof toast==='function')toast('Profil gespeichert!','success');localStorage.setItem('solenProfileDone','1');closeProfileModal();}catch(e){if(typeof toast==='function')toast('Fehler beim Speichern','error');}}
 // Close booking modal on click outside
 document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.target.id==='bookingModal')closeBookingModal();});
 </script>
+<!-- PROFILE SLIDE-IN -->
+<div id="profileSlideIn" style="display:none;position:fixed;bottom:24px;right:24px;width:320px;background:var(--card);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);z-index:9999;padding:20px;animation:slideInUp 0.3s ease">
+<button onclick="dismissProfileSlideIn()" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted)">x</button>
+<h3 style="margin:0 0 4px;font-size:15px;color:var(--text)">Profil vervollstandigen</h3>
+<p style="margin:0 0 14px;font-size:12px;color:var(--text-muted)">Hilft uns, bessere Empfehlungen zu geben</p>
+<input id="siDisplayName" type="text" placeholder="Dein Name" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:8px;box-sizing:border-box">
+<select id="siAgeRange" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:8px;box-sizing:border-box"><option value="">Altersgruppe</option><option>unter 18</option><option>18-24</option><option>25-34</option><option>35-44</option><option>45+</option></select>
+<select id="siGender" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:8px;box-sizing:border-box"><option value="">Geschlecht</option><option>Frau</option><option>Mann</option><option>Divers</option><option>Keine Angabe</option></select>
+<select id="siHairType" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:12px;box-sizing:border-box"><option value="">Haartyp</option><option>Glatt</option><option>Wellig</option><option>Lockig</option><option>Afro</option></select>
+<button onclick="saveProfileSlideIn()" style="width:100%;padding:10px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-weight:600;font-size:14px;cursor:pointer;margin-bottom:6px">Speichern</button>
+<button onclick="dismissProfileSlideIn()" style="width:100%;padding:6px;background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline">Uberspringen</button>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div id="profileEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;overflow-y:auto">
+<div style="max-width:480px;margin:40px auto;background:var(--card);border-radius:20px;padding:32px;position:relative">
+<button onclick="closeProfileModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)">x</button>
+<div style="text-align:center;margin-bottom:24px"><div id="profileAvatar" style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">S</div><h2 style="margin:0;font-size:20px;color:var(--text)">Mein Profil</h2></div>
+Name: <input id="pmDisplayName" type="text" placeholder="Dein Name" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;box-sizing:border-box">
+E-Mail: <input id="pmEmail" type="email" readonly style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);margin-bottom:12px;box-sizing:border-box;opacity:0.7">
+Altersgruppe: <select id="pmAgeRange" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;box-sizing:border-box"><option value="">Wahlen</option><option>unter 18</option><option>18-24</option><option>25-34</option><option>35-44</option><option>45+</option></select>
+Geschlecht: <select id="pmGender" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;box-sizing:border-box"><option value="">Wahlen</option><option>Frau</option><option>Mann</option><option>Divers</option><option>Keine Angabe</option></select>
+Haartyp: <select id="pmHairType" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;box-sizing:border-box"><option value="">Wahlen</option><option>Glatt</option><option>Wellig</option><option>Lockig</option><option>Afro</option><option>Keine Angabe</option></select>
+Haarlange: <select id="pmHairLength" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;box-sizing:border-box"><option value="">Wahlen</option><option>Kurz</option><option>Mittel</option><option>Lang</option><option>Sehr lang</option></select>
+Bevorzugte Services: <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"><label><input type="checkbox" value="Haarschnitt" class="pm-svc"> Haarschnitt</label> <label><input type="checkbox" value="Farben" class="pm-svc"> Farben</label> <label><input type="checkbox" value="Styling" class="pm-svc"> Styling</label> <label><input type="checkbox" value="Pflege" class="pm-svc"> Pflege</label> <label><input type="checkbox" value="Nagel" class="pm-svc"> Nagel</label> <label><input type="checkbox" value="Massage" class="pm-svc"> Massage</label></div>
+Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:20px;box-sizing:border-box"><option value="">Alle</option><option>Grossbasel</option><option>Kleinbasel</option><option>St. Johann</option><option>Gundeldingen</option><option>Bruderholz</option><option>Hirzbrunnen</option></select>
+<button onclick="saveProfileModal()" style="width:100%;padding:14px;border-radius:12px;background:var(--accent);color:#fff;border:none;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:10px">Speichern</button>
+<button onclick="closeProfileModal()" style="width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;cursor:pointer">Abbrechen</button>
+</div></div>
+
 </body>
 </html>
