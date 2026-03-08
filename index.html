@@ -1522,24 +1522,41 @@ function toggleTheme(){
 })();
 
 
-// AUTO-TRANSLATE STORE DESCRIPTIONS
+// AUTO-TRANSLATE DYNAMIC CONTENT (MyMemory API – free, no key, 5000 req/day)
 const _trCache={};
+let _trQ=[],_trFlying=0;
+const _TR_MAX=2;
+function _trDrain(){
+  while(_trFlying<_TR_MAX&&_trQ.length){const fn=_trQ.shift();_trFlying++;fn().finally(()=>{_trFlying--;_trDrain();});}
+}
+function _trFetch(text,lang){
+  const key=lang+'|'+text.substring(0,80);
+  if(key in _trCache)return Promise.resolve(_trCache[key]);
+  return new Promise(res=>{
+    _trQ.push(async ()=>{
+      if(key in _trCache){res(_trCache[key]);return;}
+      try{
+        const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(text.substring(0,500))+'&langpair=de|'+lang);
+        const j=await r.json();
+        if(j.responseStatus===200&&j.responseData?.translatedText){res(_trCache[key]=j.responseData.translatedText);return;}
+      }catch(e){}
+      res(_trCache[key]=null); // cache failure â show original
+    });
+    _trDrain();
+  });
+}
 async function autoTranslateElement(el,lang){
   if(!el||!lang||lang==='de')return;
-  const deText=el.getAttribute('data-de');
-  if(!deText)return;
-  const key=lang+'|'+deText.substring(0,80);
-  if(_trCache[key]){el.textContent=_trCache[key];return;}
-  try{
-    const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(deText.substring(0,500))+'&langpair=de|'+lang);
-    const json=await r.json();
-    if(json.responseStatus===200&&json.responseData?.translatedText){
-      _trCache[key]=json.responseData.translatedText;
-      el.textContent=json.responseData.translatedText;
-    }
-  }catch(e){}
+  const orig=el.getAttribute('data-de');
+  if(!orig)return;
+  const key=lang+'|'+orig.substring(0,80);
+  // Apply from cache synchronously if available
+  if(key in _trCache){if(_trCache[key])el.textContent=_trCache[key];return;}
+  const tx=await _trFetch(orig,lang);
+  if(tx)el.textContent=tx;
 }
-async function translateVisibleDescriptions(lang){
+function translateVisibleDescriptions(lang){
+  if(!lang||lang==='de')return;
   document.querySelectorAll('[data-de]').forEach(el=>autoTranslateElement(el,lang));
 }
 
@@ -2374,13 +2391,14 @@ async function openStore(storeId){
         <div class="section-hd"><h3>Services</h3><button class="btn-sm solid" onclick="closeStoreDetail();openBookingModal(findStore('${s.id}'),null)">${t('book_now')}</button></div>
         ${svcs.length?`<div class="services-grid">${svcs.map(sv=>`
           <div class="svc-card">
-            <div class="svc-name">${sv.name}</div>
+            <div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div>
             <div class="svc-meta"><span>CHF ${sv.price}</span><span>${sv.duration} Min.</span></div>
           </div>`).join('')}</div>`:'<p class="text-muted" style="font-size:.88rem">Noch keine Services hinterlegt.</p>'}
       </div>
       ${renderReviewsSection(storeId,reviews)}
     </div>`;
   document.getElementById('storeOverlay').classList.add('active');
+  if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
 function closeStoreDetail(){document.getElementById('storeOverlay').classList.remove('active');}
 
@@ -3232,7 +3250,7 @@ function renderBookingModal(){
   // 1. Service picker
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_service')}</h4>`;
   if(svcs.length){
-    html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
   } else {
     html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
   }
@@ -3274,6 +3292,7 @@ function renderBookingModal(){
   // 6. Book button
   html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
   document.getElementById('bmBody').innerHTML=html;
+  if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
 function bmSelectService(id){bmState.service=allServices.find(s=>s.id===id);renderBookingModal();}
 function bmSelectTime(t){bmState.time=t;renderBookingModal();}
