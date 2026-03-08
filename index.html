@@ -61,10 +61,11 @@ input,select,textarea{font-family:inherit}
 .theme-toggle{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;flex-shrink:0;margin-right:8px}
 .theme-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:white}
 .nav-actions{display:flex;gap:10px;align-items:center}
-.btn-nav-ghost{color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);background:transparent;padding:8px 20px;border-radius:100px;font-size:.9rem;cursor:pointer;transition:all .2s}
-.btn-nav-ghost:hover{background:rgba(255,255,255,.08);color:white}
-.btn-nav-primary{background:var(--gradient);color:#0D0D0D;border:none;padding:8px 20px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-nav-primary:hover{opacity:.9;transform:scale(1.03)}
+/* Login = teal outline pill, Register = coral solid pill — always visible on dark nav */
+.btn-nav-ghost{color:#4ECDC4;border:1.5px solid rgba(78,205,196,.55);background:rgba(78,205,196,.10);padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.01em}
+.btn-nav-ghost:hover{background:rgba(78,205,196,.20);border-color:#4ECDC4;color:#4ECDC4}
+.btn-nav-primary{background:#FF6B6B;color:#fff;border:none;padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 10px rgba(255,107,107,.40);letter-spacing:.01em}
+.btn-nav-primary:hover{background:#e55a5a;transform:scale(1.04);box-shadow:0 4px 16px rgba(255,107,107,.55)}
 .nav-user{display:flex;align-items:center;gap:10px}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;cursor:pointer;flex-shrink:0}
 .nav-menu{position:relative}
@@ -177,8 +178,8 @@ input,select,textarea{font-family:inherit}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
 /* MODAL BASE */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-width:100vw;overflow:hidden}
-.overlay.hidden{display:none}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-width:100vw;overflow:hidden}
+.overlay.active{display:flex}
 .modal{background:var(--surface);border-radius:var(--r2);width:100%;max-width:min(480px,100vw);max-height:90vh;overflow-y:auto;overflow-x:hidden;box-shadow:var(--shadow3);border:1px solid var(--border)}
 .modal-wide{max-width:min(700px,100vw)}
 .modal-hd{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
@@ -472,16 +473,13 @@ html,body{overflow-x:hidden;max-width:100vw}
 }
 
 /* NEIGHBOURHOOD CHIPS */
-.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 0 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.neighbourhood-bar::before,.neighbourhood-bar::after{content:"";flex-shrink:0;min-width:20px;display:block}
+.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 0 4px;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}.neighbourhood-bar::before,.neighbourhood-bar::after{content:"";flex-shrink:0;min-width:20px;display:block}
 .neighbourhood-bar::-webkit-scrollbar{display:none}
-@media(min-width:769px){
-  .hero .neighbourhood-bar{flex-wrap:wrap;overflow-x:visible;justify-content:center!important;padding-bottom:8px}
-  .hero .neighbourhood-bar::before,.hero .neighbourhood-bar::after{display:none!important}
-}
+@media(min-width:769px){ .hero .neighbourhood-bar{flex-wrap:wrap;overflow-x:visible;justify-content:center!important;padding-bottom:8px} .hero .neighbourhood-bar::before,.hero .neighbourhood-bar::after{display:none!important} }
 .neighbourhood-chip{padding:6px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
 .neighbourhood-chip:hover{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.25)}
 .neighbourhood-chip.active{background:rgba(255,255,255,.9);color:#0D0D0D;border-color:transparent;font-weight:700}
-.btn-nav-salon{background:transparent;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:7px 18px;border-radius:100px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;display:none}.btn-nav-salon:hover{background:var(--accent-lemon);color:#0D0D0D}@media(min-width:640px){.btn-nav-salon{display:inline-flex;align-items:center;gap:6px}}.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
+.btn-nav-salon{display:none!important}.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
 .btn-location:hover{border-color:var(--accent);color:var(--accent)}
 
 /* VERIFIED BADGE */
@@ -515,15 +513,7 @@ html,body{overflow-x:hidden;max-width:100vw}
 #bookingModal .bm-header{padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 #bookingModal .bm-header h2{font-size:1.15rem;font-weight:800}
 #bookingModal .bm-body{padding:20px 24px 24px}
-/* BOOKING STEP INDICATOR */
-.bm-steps{display:flex;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.bm-step-item{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--muted);flex:1;min-width:0}
-.bm-step-item span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bm-step-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;transition:all .2s}
-.bm-step-item.done{color:var(--success)}.bm-step-item.done .bm-step-dot{background:var(--success);border-color:var(--success);color:#fff}
-.bm-step-item.active{color:var(--text)}.bm-step-item.active .bm-step-dot{background:var(--accent);border-color:var(--accent);color:#fff}
-.bm-step-line{flex:1;height:1px;background:var(--border);margin:0 4px;max-width:28px;flex-shrink:0}
-.bm-step-item.done~.bm-step-line,.bm-step-item.done+.bm-step-line{background:var(--success)}
+/* BOOKING STEP INDICATOR */ .bm-steps{display:flex;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)} .bm-step-item{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--muted);flex:1;min-width:0} .bm-step-item span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .bm-step-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;transition:all .2s} .bm-step-item.done{color:var(--success)}.bm-step-item.done .bm-step-dot{background:var(--success);border-color:var(--success);color:#fff} .bm-step-item.active{color:var(--text)}.bm-step-item.active .bm-step-dot{background:var(--accent);border-color:var(--accent);color:#fff} .bm-step-line{flex:1;height:1px;background:var(--border);margin:0 4px;max-width:28px;flex-shrink:0} .bm-step-item.done~.bm-step-line,.bm-step-item.done+.bm-step-line{background:var(--success)}
 .bm-service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
 .bm-svc-card{padding:12px;border:1.5px solid var(--border2);border-radius:var(--r);cursor:pointer;transition:.15s;background:var(--surface);min-height:44px}
 .bm-svc-card:hover{border-color:var(--accent)}
@@ -562,6 +552,14 @@ html,body{overflow-x:hidden;max-width:100vw}
 .rating-chip{padding:6px 14px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:36px}
 .rating-chip:hover{border-color:var(--accent)}
 .rating-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* PRICE SLIDER */
+.price-filter-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.price-slider{-webkit-appearance:none;appearance:none;width:120px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--pct,100%),var(--border2) var(--pct,100%));outline:none;cursor:pointer;flex-shrink:0}
+.price-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer}
+.price-slider::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer;border:none}
+.price-label{font-size:.8rem;font-weight:700;color:var(--text);white-space:nowrap;min-width:64px}
+.price-filter-mobile .price-slider{width:100%}
 
 /* MOBILE FILTER BOTTOM SHEET */
 .filter-sheet-btn{display:none;padding:10px 20px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;min-height:44px;transition:all .2s}
@@ -630,24 +628,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 .store-card.revealed{opacity:1;transform:translateY(0);}
 .btn-book:active,.btn-primary:active{transform:scale(0.97)!important;}
 .btn-book:hover,.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
-.page-title{letter-spacing:-0.02em;}
-
-/* === TYPOGRAPHY HIERARCHY === */
-/* Mid-range mobile (481–640px): smooth intermediate sizes */
-@media(max-width:640px){
-  .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15}
-  .hero p{font-size:.95rem}
-  .page-title{font-size:1.55rem;font-weight:900}
-  .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em}
-}
-/* Small mobile (≤480px): tighten further */
-@media(max-width:480px){
-  .store-name{font-size:1rem;font-weight:700}
-  .store-body .store-meta{font-size:.8rem}
-  .section-title{font-size:.95rem}
-  .bm-header h2{font-size:1rem}
-  .modal-hd h2{font-size:1rem}
-}
+.page-title{letter-spacing:-0.02em;} @media(max-width:640px){ .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15} .hero p{font-size:.95rem} .page-title{font-size:1.55rem;font-weight:900} .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em} } @media(max-width:480px){ .store-name{font-size:1rem;font-weight:700} .store-body .store-meta{font-size:.8rem} .section-title{font-size:.95rem} .bm-header h2{font-size:1rem} .modal-hd h2{font-size:1rem} }
 </style>
 
   <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -676,10 +657,9 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-actions nav-desktop" id="navActions">
-      <div id="navGuest">
+      <div id="navGuest" style="display:flex;gap:10px;align-items:center">
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
-        <button class="btn-nav-salon" onclick="openSalonRegistration()">✦ Salon eintragen</button>
       </div>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
@@ -710,10 +690,10 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="lang-btn" onclick="switchLang('fr')">FR</button>
         <button class="lang-btn" onclick="switchLang('tr')">TR</button>
       </div>
-      <button style="display:block;width:100%;text-align:center;background:var(--accent-lemon);color:#0D0D0D;border:none;padding:13px;border-radius:16px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>
       <div id="mobileNavGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
+        <button style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>
       </div>
       <div id="mobileNavUser" class="hidden">
         <a href="#" class="btn-nav-ghost" onclick="showPage('profile');closeMobileMenu();return false" data-i18n="nav_my_profile" style="display:block;text-align:center;margin-bottom:8px">Mein Profil</a>
@@ -741,7 +721,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
       </div>
-      <div class="neighbourhood-bar" style="justify-content:center;padding:12px 0 0">
+      <div class="neighbourhood-bar" style="padding:12px 0 0">
         <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'')" data-i18n="neighbourhood_all">Alle Quartiere</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel')">Grossbasel</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel')">Kleinbasel</button>
@@ -781,11 +761,17 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="padding:8px 36px 8px 12px;font-size:.82rem;border-radius:100px;min-width:140px">
             <option value="default">Standard</option>
+            <option value="popular">Beliebt</option>
             <option value="price_asc">Preis &#8593;</option>
             <option value="price_desc">Preis &#8595;</option>
             <option value="name_asc">Name A&#8211;Z</option>
             <option value="distance" data-i18n="sort_distance">Entfernung</option>
           </select>
+          <div class="price-filter-wrap" id="priceFilterDesktop">
+            <span style="font-size:.8rem;font-weight:600;color:var(--muted)">Max. Preis:</span>
+            <input type="range" class="price-slider" id="priceSliderDesktop" min="20" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'desktop')" style="--pct:100%">
+            <span class="price-label" id="priceLabelDesktop">Alle</span>
+          </div>
           <div class="rating-filter" id="ratingFilterDesktop">
             <span style="font-size:.8rem;font-weight:600;color:var(--muted)" data-i18n="rating_filter">Min. Bewertung:</span>
             <button class="rating-chip active" onclick="setMinRating(0,this)">Alle</button>
@@ -838,7 +824,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 </div>
 
 <!-- AUTH MODAL -->
-<div class="overlay hidden" id="authOverlay">
+<div class="overlay" id="authOverlay">
   <div class="modal" id="authModal">
     <div class="modal-hd">
       <h2 id="authModalTitle" data-i18n="auth_login_title">Anmelden</h2>
@@ -851,7 +837,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <div id="formRegChoice" class="hidden">
         <div class="reg-choice">
           <h2>Wähle deinen Zugang</h2>
-          <p>Bist du ein Kunde oder ein Salon-Besitzer?</p>
+          <p>Bist du ein Kunde oder möchtest du deinen Salon eintragen?</p>
           <div class="reg-choice-cards">
             <div class="reg-choice-card" onclick="openAuth('customer-signup')">
               <div class="reg-choice-icon">&#128134;</div>
@@ -859,11 +845,11 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
               <p>Termin buchen, Salons entdecken, Profil verwalten</p>
               <span class="reg-choice-btn">Kostenlos registrieren</span>
             </div>
-            <div class="reg-choice-card" onclick="openAuth('salon-signup')">
+            <div class="reg-choice-card" onclick="closeAuth();openSalonRegistration()" style="border-color:var(--accent-lemon);background:rgba(255,230,109,.06)">
               <div class="reg-choice-icon">&#9986;</div>
-              <h3>Als Salon-Besitzer</h3>
+              <h3>Salon eintragen</h3>
               <p>Deinen Salon listen, Buchungen verwalten, Kunden gewinnen</p>
-              <span class="reg-choice-btn">Salon anmelden</span>
+              <span class="reg-choice-btn" style="background:var(--accent-lemon);color:#0D0D0D">✦ Salon eintragen</span>
             </div>
           </div>
           <div class="auth-switch" style="margin-top:20px">Bereits registriert? <a onclick="openAuth('login')">Anmelden</a></div>
@@ -970,7 +956,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 </div>
 
 <!-- PROFILE SETUP MODAL -->
-<div class="overlay hidden" id="setupOverlay">
+<div class="overlay" id="setupOverlay">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="setupTitle">Profil einrichten</h2>
@@ -1044,14 +1030,14 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 </div>
 
 <!-- STORE DETAIL MODAL -->
-<div class="overlay hidden" id="storeOverlay">
+<div class="overlay" id="storeOverlay">
   <div class="modal modal-wide">
     <div id="storeDetailContent"></div>
   </div>
 </div>
 
 <!-- BOOKING WIZARD MODAL -->
-<div class="overlay hidden" id="bookingOverlay">
+<div class="overlay" id="bookingOverlay">
   <div class="modal modal-wide">
     <div class="modal-hd">
       <h2 id="bookingTitle">Termin buchen</h2>
@@ -1075,7 +1061,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 </div>
 
 <!-- EDIT STORE MODAL (ADMIN) -->
-<div class="overlay hidden" id="editStoreOverlay">
+<div class="overlay" id="editStoreOverlay">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="editStoreTitle">Salon bearbeiten</h2>
@@ -1103,11 +1089,17 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
   <h3>Sortierung</h3>
   <select class="form-input" id="sortSelectMobile" onchange="changeSort(this.value)" style="margin-bottom:16px;padding:10px 36px 10px 12px;font-size:.88rem;border-radius:var(--r)">
     <option value="default">Standard</option>
+    <option value="popular">Beliebt</option>
     <option value="price_asc">Preis &#8593;</option>
     <option value="price_desc">Preis &#8595;</option>
     <option value="name_asc">Name A&#8211;Z</option>
     <option value="distance">Entfernung</option>
   </select>
+  <h3>Max. Preis (CHF)</h3>
+  <div class="price-filter-mobile" style="margin-bottom:16px">
+    <input type="range" class="price-slider" id="priceSliderMobile" min="20" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'mobile')" style="--pct:100%;width:100%">
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.78rem;color:var(--muted)"><span>CHF 20</span><span class="price-label" id="priceLabelMobile">Alle</span><span>CHF 300</span></div>
+  </div>
   <h3 data-i18n="rating_filter">Min. Bewertung</h3>
   <div class="rating-filter" style="margin-bottom:16px" id="ratingFilterMobile">
     <button class="rating-chip active" onclick="setMinRating(0,this)">Alle</button>
@@ -1178,11 +1170,11 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 </nav>
 
 <!-- NEW PASSWORD MODAL (for reset link) -->
-<div class="overlay hidden" id="newPasswordOverlay">
+<div class="overlay" id="newPasswordOverlay">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="newPwTitle">Neues Passwort</h2>
-      <button class="close-btn" onclick="document.getElementById('newPasswordOverlay').classList.add('hidden')">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('newPasswordOverlay').classList.remove('active')">&times;</button>
     </div>
     <div class="modal-body">
       <div id="newPwMsg"></div>
@@ -1204,13 +1196,13 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
   <div class="modal">
     <div class="modal-hd">
       <h2>Termin absagen?</h2>
-      <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.add('hidden')">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">&times;</button>
     </div>
     <div class="modal-bd">
       <p style="color:#666;margin-bottom:20px">Möchtest du diesen Termin wirklich absagen?</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="cancelBooking()">Ja, absagen</button>
-        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.add('hidden')">Zurück</button>
+        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">Zurück</button>
       </div>
     </div>
   </div>
@@ -1229,7 +1221,7 @@ let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBooki
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 let currentLang=localStorage.getItem('solenLang')||'de';
-let userLat=null, userLng=null, activeNeighbourhood='', minRatingFilter=0;
+let userLat=null, userLng=null, activeNeighbourhood='', minRatingFilter=0, maxPriceFilter=0;
 let bmState={};
 
 // TRANSLATIONS
@@ -1270,7 +1262,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Bitte E-Mail und Passwort eingeben.',err_fill_all:'Bitte alle Felder ausf\u00fcllen.',err_pw_min:'Passwort muss mindestens 6 Zeichen haben.',
     err_wrong_pw:'Falsches Passwort oder E-Mail. Bitte \u00fcberpr\u00fcfe deine Eingaben.',err_confirm_email:'Bitte best\u00e4tige zuerst deine E-Mail-Adresse.',
-    err_invalid_email:'Bitte gib eine g\u00fcltige E-Mail-Adresse ein.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
+    err_invalid_email:'Bitte gib eine g\u00fcltige E-Mail-Adresse ein.',err_email_not_registered:'Diese E-Mail-Adresse ist nicht registriert.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
     err_already_registered:'Diese E-Mail ist bereits registriert.',err_signup_failed:'Registrierung fehlgeschlagen. Bitte versuche es erneut.',
     confirm_email_sent:'Best\u00e4tigungs-E-Mail gesendet! Bitte pr\u00fcfe dein Postfach.',
     setup_title:'Profil einrichten',setup_welcome:'Willkommen! M\u00f6chtest du dein Profil einrichten?',setup_edit:'Profil bearbeiten',
@@ -1321,7 +1313,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Please enter email and password.',err_fill_all:'Please fill in all fields.',err_pw_min:'Password must be at least 6 characters.',
     err_wrong_pw:'Wrong password or email. Please check your input.',err_confirm_email:'Please confirm your email address first.',
-    err_invalid_email:'Please enter a valid email address.',err_generic:'An error occurred. Please try again.',
+    err_invalid_email:'Please enter a valid email address.',err_email_not_registered:'This email address is not registered.',err_generic:'An error occurred. Please try again.',
     err_already_registered:'This email is already registered.',err_signup_failed:'Registration failed. Please try again.',
     confirm_email_sent:'Confirmation email sent! Please check your inbox.',
     setup_title:'Set up profile',setup_welcome:'Welcome! Would you like to set up your profile?',setup_edit:'Edit profile',
@@ -1372,7 +1364,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Veuillez entrer e-mail et mot de passe.',err_fill_all:'Veuillez remplir tous les champs.',err_pw_min:'Le mot de passe doit contenir au moins 6 caract\u00e8res.',
     err_wrong_pw:'Mauvais mot de passe ou e-mail.',err_confirm_email:'Veuillez confirmer votre e-mail.',
-    err_invalid_email:'Veuillez entrer un e-mail valide.',err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
+    err_invalid_email:'Veuillez entrer un e-mail valide.',err_email_not_registered:"Cette adresse e-mail n'est pas enregistrée.",err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
     err_already_registered:'Cet e-mail est d\u00e9j\u00e0 inscrit.',err_signup_failed:'\u00c9chec de l\u2019inscription. Veuillez r\u00e9essayer.',
     confirm_email_sent:'E-mail de confirmation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
     setup_title:'Configurer le profil',setup_welcome:'Bienvenue ! Veux-tu configurer ton profil ?',setup_edit:'Modifier le profil',
@@ -1422,7 +1414,7 @@ const T={
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
     err_email_pw:'Lütfen e-posta ve şifre girin.',err_fill_all:'Lütfen tüm alanları doldurun.',err_pw_min:'Şifre en az 6 karakter olmalıdır.',
     err_wrong_pw:'Yanlış şifre veya e-posta.',err_confirm_email:'Lütfen önce e-posta adresinizi onaylayın.',
-    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_generic:'Bir hata oluştu. Lütfen tekrar deneyin.',
+    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayıtlı değil.',err_generic:'Bir hata oluştu. Lütfen tekrar deneyin.',
     err_already_registered:'Bu e-posta zaten kayıtlı.',err_signup_failed:'Kayıt başarısız. Lütfen tekrar deneyin.',
     confirm_email_sent:'Onay e-postası gönderildi! Lütfen gelen kutunuzu kontrol edin.',
     setup_title:'Profil Oluştur',setup_welcome:'Hoş geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili düzenle',
@@ -1594,7 +1586,7 @@ sb.auth.onAuthStateChange((event,session)=>{
   if(event==='SIGNED_IN'&&session?.user){if(!currentUser){currentUser=session.user;onSignIn(session.user);}if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}}else if(event==='PASSWORD_RECOVERY'){
     // User arrived via password-reset email link — show the reset form
     closeAuth();
-    document.getElementById('newPasswordOverlay').classList.remove('hidden');
+    document.getElementById('newPasswordOverlay').classList.add('active');
   }
   
   else if(event==='SIGNED_OUT'){currentUser=null;onSignOut();}
@@ -1602,11 +1594,11 @@ sb.auth.onAuthStateChange((event,session)=>{
 
 async function onSignIn(user){
   currentUser=user;
-  document.getElementById('navGuest').classList.add('hidden');
-  document.getElementById('navUser').classList.remove('hidden');
+  document.getElementById('navGuest').classList.remove('active');
+  document.getElementById('navUser').classList.add('active');
   // Sync mobile menu
-  const mGuest=document.getElementById('mobileNavGuest');if(mGuest)mGuest.classList.add('hidden');
-  const mUser=document.getElementById('mobileNavUser');if(mUser)mUser.classList.remove('hidden');
+  const mGuest=document.getElementById('mobileNavGuest');if(mGuest)mGuest.classList.remove('active');
+  const mUser=document.getElementById('mobileNavUser');if(mUser)mUser.classList.add('active');
   const initials=(user.user_metadata?.full_name||user.email||'?').substring(0,1).toUpperCase();
   document.getElementById('navAvatar').textContent=initials;
   // Admin check - email match OR metadata role
@@ -1614,9 +1606,9 @@ async function onSignIn(user){
   console.log('[Solen Auth] Admin check:', {email:user.email, isAdmin, metadata:user.user_metadata, appMeta:user.app_metadata});
   if(isAdmin){
     window._isAdmin=true;
-    document.getElementById('adminLink').classList.remove('hidden');
+    document.getElementById('adminLink').classList.add('active');
     const bnAdmin=document.getElementById('bnAdmin');
-    if(bnAdmin)bnAdmin.classList.remove('hidden');
+    if(bnAdmin)bnAdmin.classList.add('active');
     // Upsert profile with is_admin=true
     sb.from('profiles').upsert({id:user.id,is_admin:true,updated_at:new Date().toISOString()},{onConflict:'id'});
   }
@@ -1635,21 +1627,21 @@ async function onSignIn(user){
   // Check if salon owner
   const{data:salonData}=await sb.from('salons').select('id').eq('owner_id',user.id).limit(1);
   if(salonData&&salonData.length>0){
-    document.getElementById('salonDashLink').classList.remove('hidden');
+    document.getElementById('salonDashLink').classList.add('active');
   }
   loadStores();
 }
 
 function onSignOut(){
   currentUser=null; currentProfile=null; window._isAdmin=false;
-  document.getElementById('navGuest').classList.remove('hidden');
-  document.getElementById('navUser').classList.add('hidden');
+  document.getElementById('navGuest').classList.add('active');
+  document.getElementById('navUser').classList.remove('active');
   // Sync mobile menu
-  const mGuest=document.getElementById('mobileNavGuest');if(mGuest)mGuest.classList.remove('hidden');
-  const mUser=document.getElementById('mobileNavUser');if(mUser)mUser.classList.add('hidden');
-  document.getElementById('adminLink').classList.add('hidden');
+  const mGuest=document.getElementById('mobileNavGuest');if(mGuest)mGuest.classList.add('active');
+  const mUser=document.getElementById('mobileNavUser');if(mUser)mUser.classList.remove('active');
+  document.getElementById('adminLink').classList.remove('active');
   const bnAdmin=document.getElementById('bnAdmin');
-  if(bnAdmin)bnAdmin.classList.add('hidden');
+  if(bnAdmin)bnAdmin.classList.remove('active');
   // Clear personalized localStorage
   try{localStorage.removeItem('solenViewed');localStorage.removeItem('lastViewedStore');}catch(e){}
   toast(t('toast_signedout'),'info');
@@ -1691,7 +1683,7 @@ function applyFilters(){renderStores();}
 
 // AUTH MODAL
 function openAuth(tab='login'){
-  document.getElementById('authOverlay').classList.remove('hidden');
+  document.getElementById('authOverlay').classList.add('active');
   switchAuthTab(tab);
   document.getElementById('authMsg').innerHTML='';
   const modal=document.getElementById('authModal');
@@ -1699,7 +1691,7 @@ function openAuth(tab='login'){
   else if(tab==='register-choice')modal.style.maxWidth='540px';
   else modal.style.maxWidth='480px';
 }
-function closeAuth(){document.getElementById('authOverlay').classList.add('hidden');}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('active');}
 function switchAuthTab(tab){
   const titleKeys={'login':'auth_login_title','register-choice':'auth_register_title','customer-signup':'auth_customer_title','salon-signup':'auth_salon_title','password-reset':'forgot_password'};
   document.getElementById('authModalTitle').textContent=t(titleKeys[tab]||'auth_login_title');
@@ -1865,7 +1857,8 @@ async function doPasswordReset(){
   if(!email)return showAuthMsg(t('err_invalid_email'));
   const btn=document.querySelector('#formPasswordReset .btn-primary');
   btn.disabled=true;btn.textContent='...';
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
+  const{data:emailCheck,error:checkErr}=await sb.from('user_profiles').select('id').eq('email',email.toLowerCase()).maybeSingle();if(!checkErr&&emailCheck===null){btn.disabled=false;btn.textContent='Reset senden';return showAuthMsg(t('err_email_not_registered'));}
+const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
   btn.disabled=false;btn.textContent='Reset senden';
   if(error){console.error('[Solen] Password reset error:',error);showAuthMsg(t('err_generic'));}
   else{showAuthMsg(t('reset_email_sent')||'Reset-Link gesendet! Prüfe dein Postfach.','success');}
@@ -1881,7 +1874,7 @@ async function doUpdatePassword(){
   const{error}=await sb.auth.updateUser({password:pw1});
   btn.disabled=false;btn.textContent='Passwort speichern';
   if(error){console.error('[Solen] Update password error:',error);msgEl.innerHTML='<div class="msg error">'+t('err_generic')+'</div>';}
-  else{document.getElementById('newPasswordOverlay').classList.add('hidden');toast('Passwort erfolgreich geändert!','success');window.location.hash='';}
+  else{document.getElementById('newPasswordOverlay').classList.remove('active');toast('Passwort erfolgreich geändert!','success');window.location.hash='';}
 }
 // Check for password recovery hash on load
 (function checkPasswordRecovery(){
@@ -1891,7 +1884,7 @@ async function doUpdatePassword(){
     setTimeout(async()=>{
       const{data:{session}}=await sb.auth.getSession();
       if(session?.user){
-        document.getElementById('newPasswordOverlay').classList.remove('hidden');
+        document.getElementById('newPasswordOverlay').classList.add('active');
       }
     },1500);
   }
@@ -1900,7 +1893,7 @@ async function doUpdatePassword(){
 // PROFILE SETUP
 function openSetup(isWelcome){
   const el=document.getElementById('setupOverlay');
-  el.classList.remove('hidden');
+  el.classList.add('active');
   const heading=document.getElementById('setupWelcomeHeading');
   const title=document.getElementById('setupTitle');
   if(isWelcome){
@@ -1924,7 +1917,7 @@ function openSetup(isWelcome){
   }
   document.getElementById('setupStepLabel').textContent='';
 }
-function closeSetup(){document.getElementById('setupOverlay').classList.add('hidden');}
+function closeSetup(){document.getElementById('setupOverlay').classList.remove('active');}
 function skipSetup(){closeSetup();toast('Du kannst dein Profil jederzeit vervollständigen.','info');}
 
 function toggleChip(el){el.classList.toggle('selected');}
@@ -2144,10 +2137,19 @@ function renderStores(){
     const matchSearch=!query||s.name.toLowerCase().includes(query)||(s.description||'').toLowerCase().includes(query)||(s.cat||s.type||'').toLowerCase().includes(query)||svcs.some(sv=>sv.name.toLowerCase().includes(query));
     const matchNeighbourhood=!activeNeighbourhood||(s.address||'').toLowerCase().includes(activeNeighbourhood.toLowerCase());
     const matchRating=minRatingFilter<=0||(parseFloat(s.avg_rating)||0)>=minRatingFilter;
-    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating;
+    const svcPrices=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id).map(x=>x.price).filter(p=>p>0);
+    const minSvcPrice=svcPrices.length?Math.min(...svcPrices):0;
+    const matchPrice=maxPriceFilter<=0||maxPriceFilter>=300||minSvcPrice<=0||minSvcPrice<=maxPriceFilter;
+    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating&&matchPrice;
   });
   // Sort
-  if(currentSort==='price_asc'||currentSort==='price_desc'){
+  if(currentSort==='popular'){
+    filtered=[...filtered].sort((a,b)=>{
+      const sa=(parseFloat(a.avg_rating)||0)*(parseInt(a.review_count)||0);
+      const sb=(parseFloat(b.avg_rating)||0)*(parseInt(b.review_count)||0);
+      return sb-sa;
+    });
+  } else if(currentSort==='price_asc'||currentSort==='price_desc'){
     filtered=[...filtered].sort((a,b)=>{
       const pa=Math.min(...(allServices.filter(x=>x.store_id===a.id||x.salon_id===a.id).map(x=>x.price).concat([999])));
       const pb=Math.min(...(allServices.filter(x=>x.store_id===b.id||x.salon_id===b.id).map(x=>x.price).concat([999])));
@@ -2237,18 +2239,21 @@ function dismissRecent(){
 function resetFilters(){
   activeCategories.clear();
   document.getElementById('searchInput').value='';
-  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
+  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.add('hidden');if(b.dataset.cat==='all')b.classList.remove('hidden');});
   renderStores();
 }
 function resetAllFilters(){
   activeCategories.clear();
   activeNeighbourhood='';
   minRatingFilter=0;
+  maxPriceFilter=0;
   document.getElementById('searchInput').value='';
-  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
-  document.querySelectorAll('.neighbourhood-chip').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.neighbourhood-chip').forEach((b,i)=>{if(i===0)b.classList.add('active');});
+  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.add('hidden');if(b.dataset.cat==='all')b.classList.remove('hidden');});
+  document.querySelectorAll('.neighbourhood-chip').forEach(b=>b.classList.add('hidden'));
+  document.querySelectorAll('.neighbourhood-chip').forEach((b,i)=>{if(i===0)b.classList.remove('hidden');});
   document.querySelectorAll('.rating-chip').forEach((b,i)=>{b.classList.toggle('active',i===0);});
+  ['priceSliderDesktop','priceSliderMobile'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=300;el.style.setProperty('--pct','100%');}});
+  ['priceLabelDesktop','priceLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='Alle';});
   renderStores();
 }
 
@@ -2259,7 +2264,7 @@ function getTypeName(type){
 function selectCat(btn,cat){
   if(cat==='all'){
     activeCategories.clear();
-    document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.cat-pill').forEach(b=>b.classList.add('hidden'));
     btn.classList.add('active');
   } else {
     // Toggle this category
@@ -2367,7 +2372,7 @@ async function openStore(storeId){
             ${s.phone?`<span style="width:3px;height:3px;border-radius:50%;background:var(--muted);display:inline-block"></span><a href="tel:${s.phone}" style="color:var(--accent)">&#128222; ${s.phone}</a>`:''}
           </div>
         </div>
-        <button class="close-btn" style="font-size:1.6rem;flex-shrink:0" onclick="document.getElementById('storeOverlay').classList.add('hidden')">&times;</button>
+        <button class="close-btn" style="font-size:1.6rem;flex-shrink:0" onclick="document.getElementById('storeOverlay').classList.remove('active')">&times;</button>
       </div>
       <p id="storeDetailDesc" data-de="${(s.description||'').replace(/"/g,'&quot;')}" style="margin-top:12px;color:var(--text2);font-size:.92rem;line-height:1.6">${s.description||''}</p>
       <div style="margin-top:24px">
@@ -2380,9 +2385,9 @@ async function openStore(storeId){
       </div>
       ${renderReviewsSection(storeId,reviews)}
     </div>`;
-  document.getElementById('storeOverlay').classList.remove('hidden');
+  document.getElementById('storeOverlay').classList.add('active');
 }
-function closeStoreDetail(){document.getElementById('storeOverlay').classList.add('hidden');}
+function closeStoreDetail(){document.getElementById('storeOverlay').classList.remove('active');}
 
 // BOOKING WIZARD
 async function startBooking(storeId){
@@ -2398,11 +2403,11 @@ async function startBooking(storeId){
   if(!store)return;
   bookingState={storeId,store,step:1,service:null,date:null,time:null};
   document.getElementById('bookingTitle').textContent=`${t('btn_book_now')} — ${store.name}`;
-  document.getElementById('bookingOverlay').classList.remove('hidden');
+  document.getElementById('bookingOverlay').classList.add('active');
   renderWizStep(1);
 
   resetSalonSEO();}
-function closeBooking(){document.getElementById('bookingOverlay').classList.add('hidden');bookingState={};}
+function closeBooking(){document.getElementById('bookingOverlay').classList.remove('active');bookingState={};}
 
 function setWizStep(n){
   [1,2,3,4,5].forEach(i=>{
@@ -2620,7 +2625,7 @@ function showPage(page){
   // close mobile nav
   document.getElementById('navActions')?.classList.remove('open');
   // Update bottom nav active state
-  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.add('hidden'));
   const bnMap={home:'bnHome',bookings:'bnBookings',profile:'bnProfile',admin:'bnAdmin'};
   const bnEl=document.getElementById(bnMap[page]||'');
   if(bnEl)bnEl.classList.add('active');
@@ -2705,12 +2710,12 @@ function rebookBooking(storeId){showPage('home');setTimeout(()=>startBooking(sto
 
 function cancelBookingConfirm(id){
   window._cancelId=id;
-  document.getElementById('cancelBookingOverlay').classList.remove('hidden');
+  document.getElementById('cancelBookingOverlay').classList.add('active');
 }
 async function cancelBooking(){
   const id=window._cancelId;
   if(!id)return;
-  document.getElementById('cancelBookingOverlay').classList.add('hidden');
+  document.getElementById('cancelBookingOverlay').classList.remove('active');
   window._cancelId=null;
   const{error}=await supabase.from('bookings').update({status:'cancelled'}).eq('id',id);
   if(error){toast(t('error_generic'),'error');return;}
@@ -2746,7 +2751,7 @@ function downloadIcs(){
 // ADMIN
 let adminTab='adminStores';
 function showAdminTab(btn,tab){
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.add('hidden'));
   btn.classList.add('active');
   ['adminStores','adminServices','adminBookings','adminUsers'].forEach(t=>{
     const el=document.getElementById(t);
@@ -2962,10 +2967,10 @@ async function openEditStore(storeId){
     <div class="form-group"><label>Beschreibung</label><textarea class="form-input" id="esDesc" rows="3">${s.description||''}</textarea></div>
     <div class="form-group"><label>Bild-URL (optional)</label><input class="form-input" id="esImg" value="${s.image_url||''}" placeholder="https://..."></div>
     <button class="btn-primary" onclick="saveStore()">Speichern</button>`;
-  document.getElementById('editStoreOverlay').classList.remove('hidden');
+  document.getElementById('editStoreOverlay').classList.add('active');
 }
 
-function closeEditStore(){document.getElementById('editStoreOverlay').classList.add('hidden');editingStore=null;}
+function closeEditStore(){document.getElementById('editStoreOverlay').classList.remove('active');editingStore=null;}
 
 async function saveStore(){
   const d={
@@ -3017,7 +3022,7 @@ function openAddService(){
         </select>
       </div>
       <button class="btn-primary" onclick="saveService()">Speichern</button>`;
-    document.getElementById('editStoreOverlay').classList.remove('hidden');
+    document.getElementById('editStoreOverlay').classList.add('active');
   });
 }
 
@@ -3132,8 +3137,20 @@ function requestGeolocation(){
 // NEIGHBOURHOOD FILTER
 function selectNeighbourhood(btn,name){
   activeNeighbourhood=name;
-  document.querySelectorAll('.neighbourhood-chip').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.neighbourhood-chip').forEach(b=>b.classList.add('hidden'));
   btn.classList.add('active');
+  renderStores();
+}
+
+// PRICE FILTER
+function setMaxPrice(val,side){
+  const v=parseInt(val)||300;
+  maxPriceFilter=v>=300?0:v;
+  const pct=Math.round(((v-20)/(300-20))*100)+'%';
+  const label=v>=300?'Alle':`bis CHF ${v}`;
+  // sync both sliders + labels
+  ['priceSliderDesktop','priceSliderMobile'].forEach(id=>{const el=document.getElementById(id);if(el&&(side==='both'||el.id.includes(side)||true)){el.value=v;el.style.setProperty('--pct',pct);}});
+  ['priceLabelDesktop','priceLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label;});
   renderStores();
 }
 
@@ -3207,11 +3224,7 @@ function renderBookingModal(){
   }
 
   // Step indicator
-  const hasService=!!bmState.service;
-  const hasDateTime=!!(bmState.date&&bmState.time);
-  const step1=hasService?'done':'active';
-  const step2=hasService?(hasDateTime?'done':'active'):'';
-  const step3=hasDateTime?'active':'';
+  const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=hasDateTime?'active':'';
   let html=`<div class="bm-steps">
     <div class="bm-step-item ${step1}"><div class="bm-step-dot">${hasService?'&#10003;':'1'}</div><span>Service</span></div>
     <div class="bm-step-line"></div>
@@ -3345,7 +3358,7 @@ async function submitReview(salonId){
 }
 
 // KEYBOARD SHORTCUTS
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('setupOverlay').classList.add('hidden');document.getElementById('profileEditModal').style.display='none';document.body.style.overflow='';document.getElementById('profileSlideIn').style.display='none';document.getElementById('impressumModal')?.classList.remove('open');document.getElementById('datenschutzModal')?.classList.remove('open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('setupOverlay').classList.remove('active');document.getElementById('profileEditModal').style.display='none';document.body.style.overflow='';document.getElementById('profileSlideIn').style.display='none';document.getElementById('impressumModal')?.classList.remove('open');document.getElementById('datenschutzModal')?.classList.remove('open');}});
 
 // PROFILE SLIDE-IN
 function showProfileSlideIn(){document.getElementById('profileSlideIn').style.display='block';}
@@ -3754,7 +3767,7 @@ function selectStaff(id,name,el){
 
 // Close add-staff modal on backdrop click
 document.addEventListener('DOMContentLoaded',function(){
-  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.add('hidden');});
+  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.remove('active');});
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
