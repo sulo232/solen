@@ -2681,17 +2681,7 @@ function downloadIcs(){
   const title=encodeURIComponent((svc.name||'Termin')+' @ '+(s.name||'')).replace(/%20/g,' ');
   const loc=(s.address||'')+(s.city?', '+s.city:'');
   const uid=Date.now()+'@solen.ch';
-  const ics='BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//solen.ch//EN
-BEGIN:VEVENT
-UID:'+uid+'
-DTSTART:'+calStart+'
-DTEND:'+calEnd+'
-SUMMARY:'+(svc.name||'Termin')+' @ '+(s.name||'')+'
-LOCATION:'+loc+'
-END:VEVENT
-END:VCALENDAR';
+  const ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//solen.ch//EN\r\nBEGIN:VEVENT\r\nUID:${uid}\r\nDTSTART:${calStart}\r\nDTEND:${calEnd}\r\nSUMMARY:${(svc.name||'Termin')+' @ '+(s.name||'')}\r\nLOCATION:${loc}\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n`
   const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
