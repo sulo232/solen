@@ -761,16 +761,13 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <div style="margin-left:auto" class="desktop-filters">
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="padding:8px 36px 8px 12px;font-size:.82rem;border-radius:100px;min-width:140px">
-            <option value="default">Standard</option>
-            <option value="popular">Beliebt</option>
-            <option value="price_asc">Preis &#8593;</option>
-            <option value="price_desc">Preis &#8595;</option>
-            <option value="name_asc">Name A&#8211;Z</option>
-            <option value="distance" data-i18n="sort_distance">Entfernung</option>
+            <option value="default">Empfohlen</option>
+            <option value="price_asc">Günstigste zuerst</option>
+            <option value="popular">Beliebteste</option>
           </select>
           <div class="price-filter-wrap" id="priceFilterDesktop">
             <span style="font-size:.8rem;font-weight:600;color:var(--muted)">Max. Preis:</span>
-            <input type="range" class="price-slider" id="priceSliderDesktop" min="20" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'desktop')" style="--pct:100%">
+            <input type="range" class="price-slider" id="priceSliderDesktop" min="0" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'desktop')" style="--pct:100%">
             <span class="price-label" id="priceLabelDesktop">Alle</span>
           </div>
           <div class="rating-filter" id="ratingFilterDesktop">
@@ -1089,17 +1086,14 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
   <div class="sheet-handle"></div>
   <h3>Sortierung</h3>
   <select class="form-input" id="sortSelectMobile" onchange="changeSort(this.value)" style="margin-bottom:16px;padding:10px 36px 10px 12px;font-size:.88rem;border-radius:var(--r)">
-    <option value="default">Standard</option>
-    <option value="popular">Beliebt</option>
-    <option value="price_asc">Preis &#8593;</option>
-    <option value="price_desc">Preis &#8595;</option>
-    <option value="name_asc">Name A&#8211;Z</option>
-    <option value="distance">Entfernung</option>
+    <option value="default">Empfohlen</option>
+    <option value="price_asc">Günstigste zuerst</option>
+    <option value="popular">Beliebteste</option>
   </select>
   <h3>Max. Preis (CHF)</h3>
   <div class="price-filter-mobile" style="margin-bottom:16px">
-    <input type="range" class="price-slider" id="priceSliderMobile" min="20" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'mobile')" style="--pct:100%;width:100%">
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.78rem;color:var(--muted)"><span>CHF 20</span><span class="price-label" id="priceLabelMobile">Alle</span><span>CHF 300</span></div>
+    <input type="range" class="price-slider" id="priceSliderMobile" min="0" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'mobile')" style="--pct:100%;width:100%">
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.78rem;color:var(--muted)"><span>CHF 0</span><span class="price-label" id="priceLabelMobile">Alle</span><span>CHF 300</span></div>
   </div>
   <h3 data-i18n="rating_filter">Min. Bewertung</h3>
   <div class="rating-filter" style="margin-bottom:16px" id="ratingFilterMobile">
@@ -3165,7 +3159,7 @@ function selectNeighbourhood(btn,name){
 function setMaxPrice(val,side){
   const v=parseInt(val)||300;
   maxPriceFilter=v>=300?0:v;
-  const pct=Math.round(((v-20)/(300-20))*100)+'%';
+  const pct=Math.round((v/300)*100)+'%';
   const label=v>=300?'Alle':`bis CHF ${v}`;
   // sync both sliders + labels
   ['priceSliderDesktop','priceSliderMobile'].forEach(id=>{const el=document.getElementById(id);if(el&&(side==='both'||el.id.includes(side)||true)){el.value=v;el.style.setProperty('--pct',pct);}});
