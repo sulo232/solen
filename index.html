@@ -388,6 +388,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
           <div class="avatar" id="navAvatar" onclick="toggleNavMenu()">?</div>
           <div class="nav-dropdown" id="navDropdown">
             <a href="#" onclick="showPage('profile');return false">Mein Profil</a>
+            <a href="#" onclick="openSetup(false);return false">Profil bearbeiten</a>
             <a href="#" onclick="showPage('bookings');return false">Meine Buchungen</a>
             <div id="salonDashLink" class="hidden">
               <a href="#" onclick="showPage('salon-dashboard');return false">Salon Dashboard</a>
@@ -615,30 +616,29 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 <div class="overlay hidden" id="setupOverlay">
   <div class="modal">
     <div class="modal-hd">
-      <h2>Profil einrichten</h2>
+      <h2 id="setupTitle">Profil einrichten</h2>
       <span style="font-size:.82rem;color:var(--muted)" id="setupStepLabel">Schritt 1 von 3</span>
     </div>
     <div class="modal-body">
-      <div class="setup-progress" id="setupProgress">
-        <div class="setup-dot done" id="sdot1"></div>
-        <div class="setup-dot" id="sdot2"></div>
-        <div class="setup-dot" id="sdot3"></div>
-      </div>
+      <!-- single-page setup -->
 
       <!-- Step 1: Basic info -->
       <div class="setup-step active" id="setupStep1">
-        <h3 style="margin-bottom:6px;font-size:1rem">Wer bist Du?</h3>
+        <h3 style="margin-bottom:6px;font-size:1rem" id="setupWelcomeHeading">Willkommen! Möchtest du dein Profil einrichten?</h3>
         <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px">Damit Salons besser für dich planen können</p>
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-input" type="text" id="setupName" placeholder="Dein Name">
+        </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Altersgruppe</label>
+            <label>Alter</label>
             <select class="form-input" id="setupAge">
               <option value="">Wählen...</option>
-              <option value="kind">Kind (unter 12)</option>
-              <option value="teen">Teenager (12–17)</option>
-              <option value="18-25">18–25</option>
-              <option value="26-35">26–35</option>
-              <option value="36-50">36–50</option>
+              <option value="Unter 12">Unter 12</option>
+              <option value="12-17">12–17</option>
+              <option value="18-29">18–29</option>
+              <option value="30-49">30–49</option>
               <option value="50+">50+</option>
             </select>
           </div>
@@ -646,102 +646,42 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
             <label>Geschlecht</label>
             <select class="form-input" id="setupGender">
               <option value="">Wählen...</option>
-              <option value="male">Männlich</option>
-              <option value="female">Weiblich</option>
-              <option value="diverse">Divers</option>
-              <option value="none">Keine Angabe</option>
+              <option value="Männlich">Männlich</option>
+              <option value="Weiblich">Weiblich</option>
+              <option value="Divers">Divers</option>
+              <option value="Keine Angabe">Keine Angabe</option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label>Bevorzugte Services</label>
+          <label>Haartyp</label>
+          <select class="form-input" id="setupHairType">
+            <option value="">Wählen...</option>
+            <option value="Glatt">Glatt</option>
+            <option value="Wellig">Wellig</option>
+            <option value="Lockig">Lockig</option>
+            <option value="Sehr lockig">Sehr lockig</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bevorzugte Leistungen</label>
           <div class="chip-group" id="prefServicesChips">
-            <button class="chip" data-val="haircut" onclick="toggleChip(this)">Haarschnitt</button>
-            <button class="chip" data-val="coloring" onclick="toggleChip(this)">Färben</button>
-            <button class="chip" data-val="styling" onclick="toggleChip(this)">Styling</button>
-            <button class="chip" data-val="beard" onclick="toggleChip(this)">Bartpflege</button>
-            <button class="chip" data-val="nails" onclick="toggleChip(this)">Nägel</button>
-            <button class="chip" data-val="skincare" onclick="toggleChip(this)">Hautpflege</button>
-            <button class="chip" data-val="massage" onclick="toggleChip(this)">Massage</button>
-            <button class="chip" data-val="makeup" onclick="toggleChip(this)">Make-up</button>
-            <button class="chip" data-val="eyebrows" onclick="toggleChip(this)">Augenbrauen</button>
+            <button class="chip" data-val="Haarschnitt" onclick="toggleChip(this)">Haarschnitt</button>
+            <button class="chip" data-val="Färben" onclick="toggleChip(this)">Färben</button>
+            <button class="chip" data-val="Styling" onclick="toggleChip(this)">Styling</button>
+            <button class="chip" data-val="Bartpflege" onclick="toggleChip(this)">Bartpflege</button>
+            <button class="chip" data-val="Nägel" onclick="toggleChip(this)">Nägel</button>
+            <button class="chip" data-val="Hautpflege" onclick="toggleChip(this)">Hautpflege</button>
+            <button class="chip" data-val="Massage" onclick="toggleChip(this)">Massage</button>
+            <button class="chip" data-val="Make-up" onclick="toggleChip(this)">Make-up</button>
+            <button class="chip" data-val="Augenbrauen" onclick="toggleChip(this)">Augenbrauen</button>
           </div>
         </div>
-        <button class="btn-primary" onclick="setupNext(2)">Weiter</button>
+        <button class="btn-primary" onclick="finishSetup()">Profil speichern</button>
         <button class="btn-secondary mt-12" onclick="skipSetup()">Überspringen</button>
       </div>
 
-      <!-- Step 2: Hair info -->
-      <div class="setup-step" id="setupStep2">
-        <h3 style="margin-bottom:6px;font-size:1rem">Dein Haartyp</h3>
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px">Hilft Stylistinnen sich vorzubereiten</p>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Haartyp</label>
-            <select class="form-input" id="setupHairType">
-              <option value="">Wählen...</option>
-              <option value="gerade">Glatt</option>
-              <option value="wellig">Wellig</option>
-              <option value="lockig">Lockig</option>
-              <option value="krauses">Krauses Haar</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Haarlänge</label>
-            <select class="form-input" id="setupHairLength">
-              <option value="">Wählen...</option>
-              <option value="kurz">Kurz</option>
-              <option value="mittel">Mittel</option>
-              <option value="lang">Lang</option>
-              <option value="sehr-lang">Sehr lang</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Haardicke</label>
-            <select class="form-input" id="setupHairThickness">
-              <option value="">Wählen...</option>
-              <option value="dünn">Dünn / fein</option>
-              <option value="mittel">Mittel</option>
-              <option value="dick">Dick / voll</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Haarzustand</label>
-            <select class="form-input" id="setupHairCondition">
-              <option value="">Wählen...</option>
-              <option value="gesund">Gesund</option>
-              <option value="trocken">Trocken</option>
-              <option value="fettig">Fettig</option>
-              <option value="geschädigt">Geschädigt</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-            <input type="checkbox" id="setupColorTreated"> Chemisch behandelt / gefärbt
-          </label>
-        </div>
-        <div class="wiz-btns">
-          <button class="btn-secondary" onclick="setupNext(1)">Zurück</button>
-          <button class="btn-primary" onclick="setupNext(3)">Weiter</button>
-        </div>
-      </div>
-
-      <!-- Step 3: Notes -->
-      <div class="setup-step" id="setupStep3">
-        <h3 style="margin-bottom:6px;font-size:1rem">Notizen für Stylisten</h3>
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px">Optional: Besondere Wünsche oder Infos</p>
-        <div class="form-group">
-          <label>Deine Notiz</label>
-          <textarea class="form-input" id="setupNotes" rows="4" placeholder="z.B. Allergien, Lieblingsprodukte, Besonderheiten..."></textarea>
-        </div>
-        <div class="wiz-btns">
-          <button class="btn-secondary" onclick="setupNext(2)">Zurück</button>
-          <button class="btn-primary" onclick="finishSetup()">Profil speichern</button>
-        </div>
-      </div>
+      <!-- Steps 2 & 3 removed - single-page profile setup -->
     </div>
   </div>
 </div>
@@ -894,7 +834,7 @@ async function loadProfile(){
   const{data}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
   currentProfile=data;
   if(!data||(!data.age_range&&!data.gender&&!data.hair_type)){
-    setTimeout(()=>openSetup(),800);
+    setTimeout(()=>openSetup(true),800);
   }
 }
 
@@ -1040,40 +980,51 @@ async function signOut(){
 }
 
 // PROFILE SETUP
-function openSetup(){
-  document.getElementById('setupOverlay').classList.remove('hidden');
-  setupNext(1);
+function openSetup(isWelcome){
+  const el=document.getElementById('setupOverlay');
+  el.classList.remove('hidden');
+  const heading=document.getElementById('setupWelcomeHeading');
+  const title=document.getElementById('setupTitle');
+  if(isWelcome){
+    heading.textContent='Willkommen! Möchtest du dein Profil einrichten?';
+    title.textContent='Profil einrichten';
+  } else {
+    heading.textContent='Profil bearbeiten';
+    title.textContent='Profil bearbeiten';
+  }
+  // Pre-fill from existing profile
+  if(currentProfile){
+    const n=document.getElementById('setupName');if(n)n.value=currentProfile.name||currentProfile.display_name||'';
+    const a=document.getElementById('setupAge');if(a)a.value=currentProfile.age_range||'';
+    const g=document.getElementById('setupGender');if(g)g.value=currentProfile.gender||'';
+    const h=document.getElementById('setupHairType');if(h)h.value=currentProfile.hair_type||'';
+    // Pre-select preferred services chips
+    const prefs=currentProfile.preferred_services||[];
+    document.querySelectorAll('#prefServicesChips .chip').forEach(c=>{
+      c.classList.toggle('selected',prefs.includes(c.dataset.val));
+    });
+  }
+  document.getElementById('setupStepLabel').textContent='';
 }
 function closeSetup(){document.getElementById('setupOverlay').classList.add('hidden');}
 function skipSetup(){closeSetup();toast('Du kannst dein Profil jederzeit vervollständigen.','info');}
-
-function setupNext(step){
-  [1,2,3].forEach(i=>{
-    document.getElementById(`setupStep${i}`).classList.toggle('active',i===step);
-    document.getElementById(`sdot${i}`).classList.toggle('done',i<=step);
-  });
-  document.getElementById('setupStepLabel').textContent=`Schritt ${step} von 3`;
-}
 
 function toggleChip(el){el.classList.toggle('selected');}
 
 async function finishSetup(){
   const preferred=Array.from(document.querySelectorAll('#prefServicesChips .chip.selected')).map(c=>c.dataset.val);
+  const nameVal=document.getElementById('setupName').value.trim();
   const data={
-    display_name:currentUser.user_metadata?.full_name||currentUser.email.split('@')[0],
+    name:nameVal||null,
+    display_name:nameVal||currentUser.user_metadata?.full_name||currentUser.email.split('@')[0],
     age_range:document.getElementById('setupAge').value||null,
     gender:document.getElementById('setupGender').value||null,
     hair_type:document.getElementById('setupHairType').value||null,
-    hair_length:document.getElementById('setupHairLength').value||null,
-    hair_thickness:document.getElementById('setupHairThickness').value||null,
-    hair_condition:document.getElementById('setupHairCondition').value||null,
-    color_treated:document.getElementById('setupColorTreated').checked,
     preferred_services:preferred,
-    stylist_notes:document.getElementById('setupNotes').value||null,
     updated_at:new Date().toISOString()
   };
   const{error}=await sb.from('profiles').upsert({id:currentUser.id,...data});
-  if(error)toast(error.message,'error');
+  if(error)toast('Fehler beim Speichern: '+error.message,'error');
   else{currentProfile={...currentProfile,...data};closeSetup();toast('Profil gespeichert!','success');}
 }
 
