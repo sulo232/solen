@@ -769,7 +769,7 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 // STATE
 let currentUser=null, currentProfile=null, allStores=[], allServices=[];
-let activeCategory='all', bookingState={}, editingStore=null, pendingBookingStoreId=null;
+let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBookingStoreId=null;
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 
@@ -1112,7 +1112,7 @@ function getStoreEmoji(type){
 function renderStores(){
   const query=document.getElementById('searchInput').value.toLowerCase();
   const filtered=allStores.filter(s=>{
-    const matchCat=activeCategory==='all'||s.type===activeCategory;
+    const matchCat=activeCategories.size===0||activeCategories.has(s.type);
     const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
     const matchSearch=!query||s.name.toLowerCase().includes(query)||(s.description||'').toLowerCase().includes(query)||(s.type||'').toLowerCase().includes(query)||svcs.some(sv=>sv.name.toLowerCase().includes(query));
     return matchCat&&matchSearch;
@@ -1148,7 +1148,7 @@ function renderStores(){
 }
 
 function resetFilters(){
-  activeCategory='all';
+  activeCategories.clear();
   document.getElementById('searchInput').value='';
   document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
   renderStores();
@@ -1159,9 +1159,25 @@ function getTypeName(type){
 }
 
 function selectCat(btn,cat){
-  document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activeCategory=cat;
+  if(cat==='all'){
+    activeCategories.clear();
+    document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  } else {
+    // Toggle this category
+    document.querySelector('.cat-pill[data-cat="all"]').classList.remove('active');
+    if(activeCategories.has(cat)){
+      activeCategories.delete(cat);
+      btn.classList.remove('active');
+    } else {
+      activeCategories.add(cat);
+      btn.classList.add('active');
+    }
+    // If none selected, revert to all
+    if(activeCategories.size===0){
+      document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+    }
+  }
   renderStores();
 }
 
