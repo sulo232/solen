@@ -624,8 +624,8 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 /* === UI POLISH === */
 body{line-height:1.6;}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-#scroll-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .1s linear;pointer-events:none;}
-.store-card{opacity:0;transform:translateY(18px);transition:opacity .38s ease,transform .38s ease,box-shadow .25s ease!important;}
+#scrollProgress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .1s linear;pointer-events:none;}
+.store-card{opacity:0;transform:translateY(24px);transition:opacity 0.4s ease,transform 0.4s ease,box-shadow .25s ease!important;}
 .store-card.revealed{opacity:1;transform:translateY(0);}
 .btn-book:active,.btn-primary:active{transform:scale(0.97)!important;}
 .btn-book:hover,.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
@@ -1193,17 +1193,17 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 </div>
 
 <!-- TOAST -->
-<div class="hidden" id="cancelBookingOverlay">
+<div class="overlay" id="cancelBookingOverlay">
   <div class="modal">
     <div class="modal-hd">
       <h2>Termin absagen?</h2>
       <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">&times;</button>
     </div>
     <div class="modal-bd">
-      <p style="color:#666;margin-bottom:20px">Möchtest du diesen Termin wirklich absagen?</p>
+      <p style="color:#666;margin-bottom:20px">Sicher, dass du diesen Termin absagen möchtest?</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="cancelBooking()">Ja, absagen</button>
-        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">Zurück</button>
+        <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="userCancelBooking()">Ja, absagen</button>
+        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">Nein</button>
       </div>
     </div>
   </div>
@@ -2703,7 +2703,7 @@ async function renderBookings(){
     const storeName=b.salon_name||b.stores?.name||(allStores.find(s=>s.id===b.store_id)?.name)||'Salon';
     const storeType=b.stores?.type||(allStores.find(s=>s.id===b.store_id)?.type)||'hairsalon';
     const statusClass={confirmed:'status-confirmed',pending:'status-pending',cancelled:'status-cancelled'}[b.status]||'status-pending';
-    return`<div class="booking-item">
+    return`<div class="booking-item" data-booking-id="${b.id}">
       <div class="booking-icon">${getStoreEmoji(storeType)}</div>
       <div class="booking-info">
         <div class="booking-store">${storeName}</div>
@@ -2713,7 +2713,7 @@ async function renderBookings(){
       <span class="booking-status ${statusClass}">${b.status==='confirmed'?t('status_confirmed'):b.status==='cancelled'?t('status_cancelled'):t('status_pending')}</span>
       <div class="booking-actions">
         <button class="btn-sm solid" onclick="rebookBooking('${b.store_id}')">${t('rebook')}</button>
-        ${(b.status==='confirmed'||b.status==='pending')?`<button class="btn-sm cancel-btn" onclick="cancelBookingConfirm('${b.id}')">${t('cancel_booking')}</button>`:''}
+        ${(b.status==='confirmed'||b.status==='pending')?`<button class="btn-sm cancel-btn" style="background:#dc2626;color:#fff;border-color:#dc2626" onclick="cancelBookingConfirm('${b.id}')">${t('cancel_booking')}</button>`:''}
       </div>
     </div>`;
   }).join('')}</div>`;
@@ -2726,15 +2726,20 @@ function cancelBookingConfirm(id){
   window._cancelId=id;
   document.getElementById('cancelBookingOverlay').classList.add('active');
 }
-async function cancelBooking(){
+async function userCancelBooking(){
   const id=window._cancelId;
   if(!id)return;
   document.getElementById('cancelBookingOverlay').classList.remove('active');
   window._cancelId=null;
-  const{error}=await supabase.from('bookings').update({status:'cancelled'}).eq('id',id);
+  const{error}=await sb.from('bookings').delete().eq('id',id).eq('user_id',currentUser.id);
   if(error){toast(t('error_generic'),'error');return;}
-  toast(t('booking_cancelled'),'success');
-  renderBookings();
+  const card=document.querySelector(`.booking-item[data-booking-id="${id}"]`);
+  if(card)card.remove();
+  const list=document.querySelector('#bookingsContent .booking-list');
+  if(list&&!list.children.length){
+    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
+  }
+  toast('Termin wurde abgesagt.','success');
 }
 
 function downloadIcs(){
@@ -3290,8 +3295,16 @@ function renderBookingModal(){
   html+=`<div class="row"><span>Adresse</span><span>${s.address||'Basel'}</span></div>`;
   html+=`<div class="row"><span>Stornierung</span><span>${s.cancellation_policy||'24h Stornierungsfrist'}</span></div>`;
   html+=`</div>`;
-  // 6. Book button
-  html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
+  // 6. Book button or waiting list prompt
+  if(bmState.slotConflict){
+    html+=`<div style="background:var(--surfaceAlt);border:1.5px solid var(--border2);border-radius:var(--r);padding:16px;margin-top:4px;text-align:center">`;
+    html+=`<p style="font-weight:700;margin-bottom:6px;color:var(--text)">Dieser Termin ist leider vergeben.</p>`;
+    html+=`<p style="font-size:.9rem;color:var(--text-muted);margin-bottom:14px">Auf die Warteliste setzen?</p>`;
+    html+=`<button class="btn-primary" onclick="joinWaitingList()" style="min-height:44px;background:var(--accent-secondary,#f97316)">Auf Warteliste setzen</button>`;
+    html+=`</div>`;
+  } else {
+    html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
+  }
   document.getElementById('bmBody').innerHTML=html;
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
@@ -3321,10 +3334,36 @@ async function insertBooking(){
     status:'pending',
     notes:bmState.notes
   });
-  if(error){toast(t('toast_booking_failed'),'error');return;}
+  if(error){
+    bmState.slotConflict=true;
+    renderBookingModal();
+    return;
+  }
   bmState.confirmed=true;
+  bmState.slotConflict=false;
   renderBookingModal();
   toast(t('booking_confirmed'),'success');
+}
+
+async function joinWaitingList(){
+  const s=bmState.store;
+  const svc=bmState.service;
+  const slotDt=bmState.date&&bmState.time?bmState.date+'T'+bmState.time+':00':null;
+  const storeId=typeof s.id==='string'&&s.id.startsWith('d')?null:s.id;
+  const{error}=await sb.from('waiting_list').insert({
+    store_id:storeId,
+    service:svc?.name||bmState.customSvc||null,
+    slot_datetime:slotDt,
+    user_id:currentUser?.id||null,
+    user_email:bmState.guestEmail||currentUser?.email||null
+  });
+  if(error){toast('Fehler beim Eintragen in die Warteliste.','error');return;}
+  document.getElementById('bmBody').innerHTML=`
+    <div class="bm-confirmation">
+      <div style="font-size:3rem;margin-bottom:12px">&#9203;</div>
+      <h3 style="margin-bottom:8px">Du stehst auf der Warteliste!</h3>
+      <p style="color:var(--text-muted)">Wir benachrichtigen dich, falls der Termin frei wird.</p>
+    </div>`;
 }
 
 // REVIEWS
@@ -3789,13 +3828,13 @@ document.addEventListener('DOMContentLoaded',function(){
 
 // === UI POLISH ===
 (function(){
-  var p=document.createElement('div');p.id='scroll-progress';document.body.prepend(p);
+  var p=document.createElement('div'); p.id='scrollProgress';document.body.prepend(p);
   window.addEventListener('scroll',function(){var h=document.documentElement;p.style.width=((h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
   var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.08});
   function revealCards(){document.querySelectorAll('.store-card:not(.revealed)').forEach(function(c,i){c.style.transitionDelay=(i*80)+'ms';obs.observe(c);});}
   setTimeout(revealCards,300);
-  function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*10)+'px,'+(((e.clientY-r.top)/r.height-.5)*10)+'px)';});el.addEventListener('mouseleave',function(){el.style.transform='';});}
-  setTimeout(function(){document.querySelectorAll('.btn-book,.btn-primary').forEach(mag);},500);
+  function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transition='none';el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*12)+'px,'+(((e.clientY-r.top)/r.height-.5)*12)+'px)';});el.addEventListener('mouseleave',function(){el.style.transition='transform 0.3s ease';el.style.transform='';});}
+  setTimeout(function(){document.querySelectorAll('.btn-primary').forEach(mag);},500);
 })();
 </script>
 </body>
