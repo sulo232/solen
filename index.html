@@ -1621,7 +1621,11 @@ function showAuthMsg(msg,type='error'){
   document.getElementById('authMsg').innerHTML=`<div class="msg ${type}">${msg}</div>`;
 }
 
+// Rate limiter — prevents brute-force and spam (in-memory, resets on page reload)
+const _rl={counts:{},check(key,limit=5,windowMs=60000){const now=Date.now();if(!this.counts[key])this.counts[key]=[];this.counts[key]=this.counts[key].filter(t=>now-t<windowMs);if(this.counts[key].length>=limit)return false;this.counts[key].push(now);return true;}};
+
 async function doLogin(){
+  if(!_rl.check('auth',5,60000)){toast('Too many attempts — please wait 60s','error');return;}
   const email=document.getElementById('loginEmail').value.trim();
   const pw=document.getElementById('loginPw').value;
   if(!email||!pw)return showAuthMsg(t('err_email_pw'));
@@ -1744,6 +1748,7 @@ async function doSalonSignup(){
 }
 
 async function signInGoogle(){
+  if(!_rl.check('auth',5,60000)){toast('Too many attempts — please wait 60s','error');return;}
   const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://www.solen.ch'}});
   if(error)toast(error.message,'error');
 }
@@ -2382,6 +2387,7 @@ function wizNext(step){
 }
 
 async function confirmBooking(){
+  if(!_rl.check('booking',3,60000)){toast('Please wait before making another booking','error');return;}
   const btn=document.querySelector('#wizContent .btn-primary');
   if(btn){btn.disabled=true;btn.textContent='Buchen...';}
   const s=bookingState.service;
