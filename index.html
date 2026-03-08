@@ -2176,7 +2176,7 @@ async function renderLastMinute(){
     const avail=slots.filter(t=>!takenMap[s.id]?.has(t)).slice(0,3);
     if(!avail.length)continue;
     const photo=s.photo_url||s.image_url||'';
-    html+='<div class="lm-card">'+(photo?'<img src="'+photo+'" class="lm-img" loading="lazy" alt="'+s.name+'">':'')+'<div class="lm-name">'+s.name+'</div><div class="lm-chips">'+avail.map(t=>'<button class="lm-chip" onclick="openBookingModal(allStores.find(x=>x.id===''+s.id+''),''+t+'')">'+t+'</button>').join('')+'</div></div>';
+    html+='<div class="lm-card">'+(photo?'<img src="'+photo+'" class="lm-img" loading="lazy" alt="'+s.name+'">':'')+'<div class="lm-name">'+s.name+'</div><div class="lm-chips">'+avail.map(t=>`<button class="lm-chip" onclick="openBookingModal(allStores.find(x=>x.id==='${s.id}'),'${t}')">${t}</button>`).join('')+'</div></div>';
   }
   if(!html){section.classList.add('hidden');return;}
   const dow=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
