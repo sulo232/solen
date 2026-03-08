@@ -2534,7 +2534,7 @@ async function confirmBooking(){
     is_new_customer:bmState.isNewCustome
     ,recurrence_group_id:recurGroupId
     ,recurrence_index:0
-    ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0r
+    ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
   });
   if(error){toast(t('toast_booking_failed'),'error');if(btn){btn.disabled=false;btn.textContent=t('btn_confirm');}}
   else{
@@ -3696,8 +3696,8 @@ function selectStaff(id,name,el){
 }
 
 // Close add-staff modal on backdrop click
-document.addEventListener('
-  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.add('hidden');});DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded',function(){
+  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.add('hidden');});
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
