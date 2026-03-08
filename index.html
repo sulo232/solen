@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>solen — Beauty &amp; Wellness Basel</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,6 +95,8 @@ input,select,textarea{font-family:inherit}
 .hero-highlight{color:#0D0D0D;-webkit-text-fill-color:#0D0D0D;background:none}
 .hero p{font-size:1.15rem;color:rgba(255,255,255,.85);margin-bottom:36px;font-weight:500}
 .hero-search{display:flex;gap:10px;max-width:560px;margin:0 auto 32px;background:rgba(255,255,255,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.4);border-radius:50px;padding:8px}
+
+@media(max-width:640px){.hero-search{width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;margin:0 16px 24px!important}}
 .search-field{display:flex;align-items:center;gap:8px;flex:1;padding-left:12px}
 .search-field svg{width:20px;height:20px;stroke:rgba(0,0,0,.4);fill:none;stroke-width:2;flex-shrink:0}
 .hero-search input{flex:1;background:none;border:none;outline:none;color:#0D0D0D;font-size:1rem;padding:10px 14px}
@@ -435,12 +437,12 @@ html,body{overflow-x:hidden;max-width:100vw}
 }
 
 /* NEIGHBOURHOOD CHIPS */
-.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 20px 0 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 0 0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.neighbourhood-bar::before,.neighbourhood-bar::after{content:"";flex-shrink:0;min-width:20px;display:block}
 .neighbourhood-bar::-webkit-scrollbar{display:none}
 .neighbourhood-chip{padding:6px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
 .neighbourhood-chip:hover{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.25)}
 .neighbourhood-chip.active{background:rgba(255,255,255,.9);color:#0D0D0D;border-color:transparent;font-weight:700}
-.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
+.btn-nav-salon{background:transparent;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:7px 18px;border-radius:100px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;display:none}.btn-nav-salon:hover{background:var(--accent-lemon);color:#0D0D0D}@media(min-width:640px){.btn-nav-salon{display:inline-flex;align-items:center;gap:6px}}.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
 .btn-location:hover{border-color:var(--accent);color:var(--accent)}
 
 /* VERIFIED BADGE */
@@ -556,14 +558,11 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
     <a class="logo" href="#" onclick="showPage('home');return false"><span>&#9673;</span> solen</a>
-    <button class="theme-toggle" id="navThemeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
-      <svg id="themeIconSun" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg id="themeIconMoon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-    </button>
     <div class="lang-switcher" id="langSwitcher">
       <button class="lang-btn active" onclick="switchLang('de')">DE</button>
       <button class="lang-btn" onclick="switchLang('en')">EN</button>
       <button class="lang-btn" onclick="switchLang('fr')">FR</button>
+      <button class="lang-btn" onclick="switchLang('tr')">TR</button>
     </div>
     <button class="hamburger" onclick="toggleMobileMenu()" id="hamburgerBtn" aria-label="Menu">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -572,6 +571,7 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
       <div id="navGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
+        <button class="btn-nav-salon" onclick="openSalonRegistration()">✦ Salon eintragen</button>
       </div>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
@@ -587,6 +587,7 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
               <div class="sep"></div>
               <a href="#" onclick="showPage('admin');return false" data-i18n="nav_admin">Admin Panel</a>
             </div>
+            <button onclick="toggleTheme()" id="dropdownThemeBtn" data-i18n="nav_theme" style="width:100%;text-align:left;background:none;border:none;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:8px;transition:background .2s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg> Hell / Dunkel</button>
             <div class="sep"></div>
             <button onclick="signOut()" data-i18n="nav_logout">Abmelden</button>
           </div>
@@ -599,7 +600,9 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
         <button class="lang-btn active" onclick="switchLang('de')">DE</button>
         <button class="lang-btn" onclick="switchLang('en')">EN</button>
         <button class="lang-btn" onclick="switchLang('fr')">FR</button>
+        <button class="lang-btn" onclick="switchLang('tr')">TR</button>
       </div>
+      <button style="display:block;width:100%;text-align:center;background:var(--accent-lemon);color:#0D0D0D;border:none;padding:13px;border-radius:16px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>
       <div id="mobileNavGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
@@ -1259,7 +1262,57 @@ const T={
     impressum:'Mentions l\u00e9gales',privacy:'Confidentialit\u00e9',nearest_slot_tomorrow:'Prochain : demain',
     add_to_calendar:'Ajouter \u00e0 Google Agenda',sort_distance:'Distance',
     location_unavailable:'Position non disponible',load_failed:'Impossible de charger les salons',reload:'Recharger',
-  }
+  },
+  tr:{
+    nav_login:'Giriş Yap',nav_register:'Kayıt Ol',nav_logout:'Çıkış Yap',nav_theme:'Açık / Koyu',
+    nav_my_profile:'Profilim',nav_edit_profile:'Profili Düzenle',nav_my_bookings:'Rezervasyonlarım',
+    nav_salon_dash:'Salon Paneli',nav_admin:'Yönetici Paneli',
+    hero_badge:'Basel · İsviçre',hero_title:'Basel'de Güzellik &amp; Wellness<br><span class="hero-highlight">Salonları</span>',
+    hero_sub:'Salonunuz. Randevunuz. Saniyeler içinde rezervasyon.',
+    search_placeholder:'Hizmet, salon veya kategori...',search_btn:'Ara',
+    stat_salons:'Salon',stat_services:'Hizmet',stat_location:'Konum',
+    cat_all:'Tümü',stores_title:'Basel'de Salonlar',
+    profile_title:'Profilim',profile_sub:'Kişisel bilgilerinizi ve tercihlerinizi yönetin',
+    bookings_title:'Rezervasyonlarım',bookings_sub:'Geçmiş ve gelecek randevularınız',
+    admin_title:'Yönetici Paneli',admin_sub:'Salonları, hizmetleri ve rezervasyonları yönetin',
+    salon_dash_title:'Salon Paneli',salon_dash_sub:'Salonunuzu ve rezervasyonlarınızı yönetin',
+    auth_login_title:'Giriş Yap',auth_register_title:'Kayıt Ol',auth_customer_title:'Müşteri Kaydı',auth_salon_title:'Salon Kaydı',
+    btn_login:'Giriş Yap',btn_create_account:'Hesap Oluştur',btn_book:'Rezervasyon',btn_book_now:'Şimdi Rezervasyon',
+    btn_confirm:'Randevuyu Onayla',btn_cancel:'İptal',btn_back:'Geri',btn_next:'İleri',btn_save:'Profili Kaydet',btn_skip:'Atla',
+    lbl_email:'E-posta',lbl_password:'Şifre',lbl_firstname:'Ad',lbl_lastname:'Soyad',
+    wiz_service:'Hizmet',wiz_date:'Tarih',wiz_time:'Saat',wiz_details:'Detaylar',wiz_confirm:'Onayla',
+    wiz_choose_service:'Hizmet Seç',wiz_choose_date:'Tarih Seç',wiz_choose_time:'Saat Seç',wiz_your_details:'Bilgileriniz',wiz_confirm_booking:'Rezervasyonu Onayla',
+    wiz_summary:'Özet',wiz_salon:'Salon',wiz_service_lbl:'Hizmet',wiz_date_lbl:'Tarih',wiz_time_lbl:'Saat',wiz_duration:'Süre',wiz_price:'Fiyat',
+    toast_welcome:'Tekrar hoş geldiniz',toast_signedout:'Çıkış yapıldı',toast_booked:'Rezervasyon yapıldı! Referans:',toast_profile_saved:'Profil kaydedildi!',
+    toast_booking_failed:'Rezervasyon başarısız. Lütfen tekrar deneyin.',
+    empty_no_salon:'Salon bulunamadı',empty_try_other:'Farklı bir arama terimi deneyin veya başka bir kategori seçin.',empty_show_all:'Tüm salonları göster',
+    empty_no_bookings:'Henüz rezervasyon yok',empty_book_first:'İlk randevunuzu alın',empty_discover:'Salonları Keşfet',
+    auth_no_account:'Hesabınız yok mu?',auth_already:'Zaten kayıtlı mısınız?',auth_register_now:'Şimdi kayıt ol',auth_login_now:'Giriş yap',
+    auth_google_login:'Google ile giriş yap',auth_google_register:'Google ile kayıt ol',auth_or:'veya',
+    auth_choose:'Erişim türünü seçin',auth_customer_or_owner:'Müşteri misiniz yoksa salon sahibi mi?',
+    auth_as_customer:'Müşteri Olarak',auth_customer_desc:'Randevu alın, salonları keşfedin, profilinizi yönetin',auth_free_register:'Ücretsiz kayıt',
+    auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonları yönetin, müşteri kazanın',auth_register_salon:'Salon kaydı',
+    bn_home:'Ana Sayfa',bn_bookings:'Rezervasyonlar',bn_profile:'Profil',
+    recently_viewed:'Son görüntülenenler',resume_at:'Devam et',
+    status_confirmed:'Onaylandı',status_pending:'Beklemede',status_cancelled:'İptal edildi',
+    rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
+    err_email_pw:'Lütfen e-posta ve şifre girin.',err_fill_all:'Lütfen tüm alanları doldurun.',err_pw_min:'Şifre en az 6 karakter olmalıdır.',
+    err_wrong_pw:'Yanlış şifre veya e-posta.',err_confirm_email:'Lütfen önce e-posta adresinizi onaylayın.',
+    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_generic:'Bir hata oluştu. Lütfen tekrar deneyin.',
+    err_already_registered:'Bu e-posta zaten kayıtlı.',err_signup_failed:'Kayıt başarısız. Lütfen tekrar deneyin.',
+    confirm_email_sent:'Onay e-postası gönderildi! Lütfen gelen kutunuzu kontrol edin.',
+    setup_title:'Profil Oluştur',setup_welcome:'Hoş geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili düzenle',
+    setup_desc:'Salonlar sizin için daha iyi planlama yapabilsin',
+    forgot_password:'Şifremi unuttum?',reset_desc:'E-posta adresinizi girin, size sıfırlama bağlantısı gönderelim.',
+    back_to_login:'Girişe geri dön',reset_email_sent:'Sıfırlama bağlantısı gönderildi!',
+    book_now:'Şimdi Rezervasyon',select_service:'Hizmet Seçin',select_date:'Tarih Seçin',select_time:'Saat Seçin',
+    guest_info:'Misafir bilgileri',booking_confirmed:'Rezervasyon onaylandı!',write_review:'Yorum yaz',
+    rating_filter:'Min. puan',no_results:'Salon bulunamadı',reset_filters:'Filtreleri sıfırla',
+    use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'Tüm mahalleler',
+    impressum:'Künye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: Yarın',
+    add_to_calendar:'Google Takvime Ekle',sort_distance:'Mesafe',
+    location_unavailable:'Konum mevcut değil',load_failed:'Salonlar yüklenemedi',reload:'Yenile',
+  },
 };
 
 function t(key){return T[currentLang]?.[key]||T.de[key]||key;}
@@ -1290,6 +1343,7 @@ function switchLang(lang){
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===lang);
   });
   applyTranslations();
+  if(lang!=='de')translateVisibleDescriptions(lang);
 }
 
 // Init language on load
@@ -1340,15 +1394,38 @@ function toggleTheme(){
   const current=html.getAttribute('data-theme');
   const next=current==='dark'?'light':'dark';
   html.setAttribute('data-theme',next);
+  document.cookie='solenTheme='+next+';path=/;max-age=31536000;SameSite=Lax';
   localStorage.setItem('solenTheme',next);
   updateThemeIcons(next==='dark');
 }
 (function(){
-  const saved=localStorage.getItem('solenTheme')||localStorage.getItem('theme');
+  const cookieTheme=document.cookie.split(';').find(c=>c.trim().startsWith('solenTheme='))?.split('=')[1];const saved=cookieTheme||localStorage.getItem('solenTheme')||localStorage.getItem('theme');
   const isDark=saved?saved==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches;
   if(!saved&&isDark)document.documentElement.setAttribute('data-theme','dark');
   updateThemeIcons(isDark);
 })();
+
+
+// AUTO-TRANSLATE STORE DESCRIPTIONS
+const _trCache={};
+async function autoTranslateElement(el,lang){
+  if(!el||!lang||lang==='de')return;
+  const deText=el.getAttribute('data-de');
+  if(!deText)return;
+  const key=lang+'|'+deText.substring(0,80);
+  if(_trCache[key]){el.textContent=_trCache[key];return;}
+  try{
+    const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(deText.substring(0,500))+'&langpair=de|'+lang);
+    const json=await r.json();
+    if(json.responseStatus===200&&json.responseData?.translatedText){
+      _trCache[key]=json.responseData.translatedText;
+      el.textContent=json.responseData.translatedText;
+    }
+  }catch(e){}
+}
+async function translateVisibleDescriptions(lang){
+  document.querySelectorAll('[data-de]').forEach(el=>autoTranslateElement(el,lang));
+}
 
 // NAV MENU
 function toggleNavMenu(){
@@ -1390,7 +1467,7 @@ applyTranslations();
   }catch(e){loadStores();}
 })();
 sb.auth.onAuthStateChange((event,session)=>{
-  if(event==='SIGNED_IN'&&session?.user){currentUser=session.user;onSignIn(session.user);if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}}
+  if(event==='SIGNED_IN'&&session?.user){if(!currentUser){currentUser=session.user;onSignIn(session.user);}if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}}
   else if(event==='SIGNED_OUT'){currentUser=null;onSignOut();}
 });
 
@@ -1751,7 +1828,7 @@ async function loadStores(){
   renderSkeletons();
   let data,error;
   try{
-    ({data,error}=await sb.from('stores').select('*').order('name'));
+    ({data,error}=await sb.from('stores').select('*').or('status.is.null,status.eq.active,status.eq.approved').order('name'));
   }catch(e){error=e;}
   if(error&&!data){
     document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#9888;</div><h3>${t('load_failed')}</h3><button onclick="loadStores()" style="margin-top:12px">${t('reload')}</button></div>`;
@@ -1827,8 +1904,7 @@ function getSalonPhoto(store){
   return photos[cat]||photos['default'];
 }
 
-function getPriceRange(store){
-  const priceMap={'hair':'ab CHF 45','barbershop':'ab CHF 35','barber':'ab CHF 35','nails':'ab CHF 40','spa':'ab CHF 70','makeup':'ab CHF 55','cosmetik':'ab CHF 50','hairsalon':'ab CHF 45','eyebrows':'ab CHF 28'};
+function getPriceRange(s){const c=(s.cat||'').toLowerCase();if(c.includes('barbershop'))return 'ab CHF 25';if(c.includes('friseursalon')||c.includes('coiffeur'))return 'ab CHF 45';if(c.includes('nagelstudio')||c.includes('nail'))return 'ab CHF 35';if(c.includes('make-up')||c.includes('kosmetik'))return 'ab CHF 80';if(c.includes('spa')||c.includes('wellness'))return 'ab CHF 60';if(c.includes('braids')||c.includes('afro'))return 'ab CHF 50';if(c.includes('augenbrauen')||c.includes('wimpern'))return 'ab CHF 30';return 'ab CHF 35';};
   return priceMap[store.cat]||priceMap[store.type]||'ab CHF 50';
 }
 
@@ -2090,7 +2166,7 @@ async function openStore(storeId){
         </div>
         <button class="close-btn" style="font-size:1.6rem" onclick="document.getElementById('storeOverlay').classList.add('hidden')">&times;</button>
       </div>
-      <p style="margin-top:12px;color:var(--text2);font-size:.92rem;line-height:1.6">${s.description||''}</p>
+      <p id="storeDetailDesc" data-de="${(s.description||'').replace(/"/g,'&quot;')}" style="margin-top:12px;color:var(--text2);font-size:.92rem;line-height:1.6">${s.description||''}</p>
       <div style="margin-top:24px">
         <div class="section-hd"><h3>Services</h3><button class="btn-sm solid" onclick="closeStoreDetail();openBookingModal(findStore('${s.id}'),null)">${t('book_now')}</button></div>
         ${svcs.length?`<div class="services-grid">${svcs.map(sv=>`
@@ -3022,5 +3098,246 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 <button onclick="closeProfileModal()" style="width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;cursor:pointer">Abbrechen</button>
 </div></div>
 
+
+<!-- SALON REGISTRATION MODAL -->
+<style>
+#salonRegModal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+#salonRegModal.open{display:flex}
+@media(max-width:600px){#salonRegModal{align-items:flex-end;padding:0}}
+.salon-reg-wrap{background:var(--surface);border-radius:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);position:relative}
+@media(max-width:600px){.salon-reg-wrap{border-radius:28px 28px 0 0;max-height:94vh}}
+.salon-reg-header{padding:28px 28px 0;display:flex;align-items:center;justify-content:space-between}
+.salon-reg-header h2{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--text);margin:0}
+.salon-reg-close{background:none;border:none;cursor:pointer;color:var(--text2);padding:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;width:36px;height:36px}
+.salon-reg-close:hover{background:var(--surfaceAlt);color:var(--text)}
+.salon-reg-steps{display:flex;gap:6px;padding:20px 28px 0}
+.salon-reg-dot{flex:1;height:4px;border-radius:4px;background:var(--border);transition:background .3s}
+.salon-reg-dot.active{background:var(--accent2)}
+.salon-reg-dot.done{background:var(--accent)}
+.salon-reg-body{padding:20px 28px 0}
+.salon-reg-body p.step-hint{color:var(--text2);font-size:.85rem;margin:0 0 18px}
+.reg-field{margin-bottom:14px}
+.reg-field label{display:block;font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.reg-field input,.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none}
+.reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--accent2)}
+.reg-field textarea{resize:vertical;min-height:90px}
+.reg-hours{display:flex;flex-direction:column;gap:6px}
+.reg-day-row{display:flex;align-items:center;gap:8px;font-size:.85rem}
+.reg-day-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent2);cursor:pointer;flex-shrink:0}
+.reg-day-lbl{width:28px;font-weight:600;color:var(--text2);font-size:.8rem}
+.reg-time-inputs{display:flex;align-items:center;gap:6px;flex:1}
+.reg-time-inputs input[type=time]{flex:1;background:var(--surfaceAlt);border:1px solid var(--border);border-radius:8px;padding:5px 8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;outline:none;min-width:0}
+.reg-time-dash{color:var(--text2);font-size:.8rem}
+.salon-reg-footer{display:flex;gap:10px;padding:20px 28px 28px;justify-content:flex-end}
+.salon-reg-footer button{padding:11px 24px;border-radius:100px;border:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s}
+.reg-btn-back{background:var(--surfaceAlt);color:var(--text)}
+.reg-btn-back:hover{background:var(--border)}
+.reg-btn-next{background:var(--accent2);color:white}
+.reg-btn-next:hover{opacity:.88;transform:translateY(-1px)}
+.reg-step{display:none}
+.reg-step.active{display:block}
+.reg-success{text-align:center;padding:48px 28px}
+.reg-success .reg-emoji{font-size:3.5rem;margin-bottom:16px}
+.reg-success h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:10px}
+.reg-success p{color:var(--text2);font-size:.92rem;line-height:1.6;margin-bottom:24px}
+</style>
+
+<div id="salonRegModal" role="dialog" aria-modal="true">
+  <div class="salon-reg-wrap">
+    <div class="salon-reg-header">
+      <h2>✦ Salon eintragen</h2>
+      <button class="salon-reg-close" onclick="closeSalonReg()" aria-label="Schliessen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="salon-reg-steps">
+      <div class="salon-reg-dot active" id="regDot1"></div>
+      <div class="salon-reg-dot" id="regDot2"></div>
+      <div class="salon-reg-dot" id="regDot3"></div>
+    </div>
+    <form id="salonRegForm" onsubmit="submitSalonReg(event)" novalidate>
+      <!-- STEP 1: Basics -->
+      <div class="reg-step active" id="regStep1">
+        <div class="salon-reg-body">
+          <p class="step-hint">Schritt 1 von 3 — Basis-Informationen</p>
+          <div class="reg-field"><label>Salonname *</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization"></div>
+          <div class="reg-field"><label>Kategorie *</label>
+            <select id="reg_cat">
+              <option value="">Kategorie wählen...</option>
+              <option>Friseursalon / Coiffeur</option><option>Barbershop</option>
+              <option>Nagelstudio</option><option>Make-up &amp; Kosmetik</option>
+              <option>Spa &amp; Wellness</option><option>Braids &amp; Afro Hair</option>
+              <option>Augenbrauen &amp; Wimpern</option><option>Massage</option>
+              <option>Tattoo &amp; Piercing</option><option>Sonstiges</option>
+            </select>
+          </div>
+          <div class="reg-field"><label>Telefon</label><input type="tel" id="reg_phone" placeholder="+41 79 000 00 00" autocomplete="tel"></div>
+          <div class="reg-field"><label>E-Mail des Salons *</label><input type="email" id="reg_email" placeholder="salon@example.com" autocomplete="email"></div>
+        </div>
+        <div class="salon-reg-footer"><button type="button" class="reg-btn-next" onclick="regNext(1)">Weiter →</button></div>
+      </div>
+      <!-- STEP 2: Location -->
+      <div class="reg-step" id="regStep2">
+        <div class="salon-reg-body">
+          <p class="step-hint">Schritt 2 von 3 — Standort &amp; Online-Präsenz</p>
+          <div class="reg-field"><label>Strasse &amp; Hausnummer *</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address"></div>
+          <div class="reg-field"><label>Quartier *</label>
+            <select id="reg_nb">
+              <option value="">Quartier wählen...</option>
+              <option>Altstadt Grossbasel</option><option>Altstadt Kleinbasel</option>
+              <option>Am Ring</option><option>Bachletten</option><option>Bruderholz</option>
+              <option>Clara</option><option>Gundeldingen</option><option>Hirzbrunnen</option>
+              <option>Iselin</option><option>Matthäus</option><option>Neubad</option>
+              <option>St. Alban</option><option>St. Johann</option><option>Vorstädte</option>
+              <option>Wettstein</option>
+            </select>
+          </div>
+          <div class="reg-field"><label>Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
+          <div class="reg-field"><label>Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
+        </div>
+        <div class="salon-reg-footer">
+          <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zurück</button>
+          <button type="button" class="reg-btn-next" onclick="regNext(2)">Weiter →</button>
+        </div>
+      </div>
+      <!-- STEP 3: Details -->
+      <div class="reg-step" id="regStep3">
+        <div class="salon-reg-body">
+          <p class="step-hint">Schritt 3 von 3 — Beschreibung &amp; Öffnungszeiten</p>
+          <div class="reg-field"><label>Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
+          <div class="reg-field">
+            <label>Öffnungszeiten</label>
+            <div class="reg-hours" id="regHoursGrid"></div>
+          </div>
+          <div class="reg-field" style="margin-top:18px">
+            <label style="display:flex;align-items:flex-start;gap:10px;text-transform:none;letter-spacing:0;font-size:.85rem;color:var(--text);font-weight:400;cursor:pointer">
+              <input type="checkbox" id="reg_terms" style="margin-top:2px;accent-color:var(--accent2);flex-shrink:0">
+              <span>Ich akzeptiere die <a href="#" style="color:var(--accent2)" onclick="return false">Nutzungsbedingungen</a> und bestätige, dass ich berechtigt bin, diesen Salon einzutragen. *</span>
+            </label>
+          </div>
+        </div>
+        <div class="salon-reg-footer">
+          <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
+          <button type="submit" class="reg-btn-next" id="regSubmitBtn">✦ Jetzt eintragen</button>
+        </div>
+      </div>
+    </form>
+    <!-- SUCCESS -->
+    <div id="regSuccess" style="display:none">
+      <div class="reg-success">
+        <div class="reg-emoji">🎉</div>
+        <h3>Anfrage eingereicht!</h3>
+        <p>Vielen Dank! Wir prüfen deinen Salon und melden uns so bald wie möglich per E-Mail bei dir.</p>
+        <button onclick="closeSalonReg()" style="background:var(--accent2);color:white;border:none;padding:13px 32px;border-radius:100px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer">Schliessen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openSalonRegistration(){
+  const modal=document.getElementById('salonRegModal');
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+  // Build hours grid once
+  const grid=document.getElementById('regHoursGrid');
+  if(grid&&!grid.dataset.built){
+    const days=[['Mo','Montag'],['Di','Dienstag'],['Mi','Mittwoch'],['Do','Donnerstag'],['Fr','Freitag'],['Sa','Samstag'],['So','Sonntag']];
+    grid.innerHTML=days.map(([k,label])=>`
+      <div class="reg-day-row">
+        <input type="checkbox" id="rh_${k}" checked>
+        <span class="reg-day-lbl">${k}</span>
+        <div class="reg-time-inputs">
+          <input type="time" id="rh_${k}_f" value="09:00">
+          <span class="reg-time-dash">–</span>
+          <input type="time" id="rh_${k}_t" value="19:00">
+        </div>
+      </div>`).join('');
+    grid.dataset.built='1';
+  }
+  regGoTo(1);
+}
+function closeSalonReg(){
+  document.getElementById('salonRegModal').classList.remove('open');
+  document.body.style.overflow='';
+  setTimeout(()=>{
+    document.getElementById('salonRegForm').style.display='';
+    document.getElementById('regSuccess').style.display='none';
+  },300);
+}
+function regGoTo(step){
+  [1,2,3].forEach(i=>{
+    const s=document.getElementById('regStep'+i);
+    const d=document.getElementById('regDot'+i);
+    if(s)s.classList.toggle('active',i===step);
+    if(d){d.classList.toggle('active',i===step);d.classList.toggle('done',i<step);}
+  });
+  document.querySelector('.salon-reg-wrap').scrollTop=0;
+}
+function regNext(cur){
+  if(cur===1){
+    const n=document.getElementById('reg_name').value.trim();
+    const c=document.getElementById('reg_cat').value;
+    const e=document.getElementById('reg_email').value.trim();
+    if(!n||!c||!e){toast('Bitte alle Pflichtfelder ausfüllen.','error');return;}
+    if(!/^[^s@]+@[^s@]+.[^s@]+$/.test(e)){toast('Bitte eine gültige E-Mail eingeben.','error');return;}
+  }
+  if(cur===2){
+    const s=document.getElementById('reg_street').value.trim();
+    const nb=document.getElementById('reg_nb').value;
+    if(!s||!nb){toast('Bitte Strasse und Quartier angeben.','error');return;}
+  }
+  regGoTo(cur+1);
+}
+function regPrev(cur){regGoTo(cur-1);}
+async function submitSalonReg(e){
+  e.preventDefault();
+  if(!document.getElementById('reg_terms').checked){toast('Bitte Nutzungsbedingungen akzeptieren.','error');return;}
+  const btn=document.getElementById('regSubmitBtn');
+  btn.textContent='Wird gesendet...';btn.disabled=true;
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const hours={};
+  days.forEach(d=>{
+    const cb=document.getElementById('rh_'+d);
+    if(cb?.checked){
+      const f=document.getElementById('rh_'+d+'_f')?.value||'09:00';
+      const t2=document.getElementById('rh_'+d+'_t')?.value||'19:00';
+      hours[d]=f+'-'+t2;
+    }
+  });
+  const data={
+    name:document.getElementById('reg_name').value.trim(),
+    cat:document.getElementById('reg_cat').value,
+    phone:document.getElementById('reg_phone').value.trim()||null,
+    email:document.getElementById('reg_email').value.trim(),
+    address:document.getElementById('reg_street').value.trim()+', Basel',
+    neighbourhood:document.getElementById('reg_nb').value,
+    website:document.getElementById('reg_web').value.trim()||null,
+    instagram:document.getElementById('reg_ig').value.trim()||null,
+    description:document.getElementById('reg_desc').value.trim()||null,
+    hours:hours,
+    status:'pending',
+    created_at:new Date().toISOString()
+  };
+  try{
+    let err;
+    // Try store_applications table first, fall back to stores
+    const r1=await sb.from('store_applications').insert([data]);
+    err=r1.error;
+    if(err){const r2=await sb.from('stores').insert([data]);err=r2.error;}
+    if(err)throw err;
+    document.getElementById('salonRegForm').style.display='none';
+    document.getElementById('regSuccess').style.display='block';
+  }catch(ex){
+    console.error('Reg error:',ex);
+    toast('Fehler beim Senden. Bitte erneut versuchen.','error');
+    btn.textContent='✦ Jetzt eintragen';btn.disabled=false;
+  }
+}
+// Close on backdrop click
+document.getElementById('salonRegModal').addEventListener('click',function(e){
+  if(e.target===this)closeSalonReg();
+});
+</script>
 </body>
 </html>
