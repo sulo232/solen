@@ -3420,7 +3420,7 @@ async function loadDashStaffSection(salonId){
   grid.innerHTML=data.map(m=>{
     const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
     const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
-    return '<div class="staff-card"><button class="s-del" onclick="deleteStaff(''+m.id+'',''+salonId+'')" title="Entfernen">✕</button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
+    return '<div class="staff-card"><button class="s-del" data-id="'+m.id+'" data-sid="'+salonId+'" onclick="deleteStaff(this.dataset.id,this.dataset.sid)" title="Entfernen">✕</button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
   }).join('');
 }
 
@@ -3473,7 +3473,7 @@ async function loadStaffPickerInBooking(storeId){
     const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
     const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
     const first=m.name.split(' ')[0];
-    return '<div class="sp-chip" onclick="selectStaff(''+m.id+'',''+first+'',this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
+    return '<div class="sp-chip" data-id="'+m.id+'" data-name="'+first+'" onclick="selectStaff(this.dataset.id,this.dataset.name,this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
   }).join('');
   sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av">✦</div><span>Egal</span></div>'+chips+'</div>';
   const bmBody=document.getElementById('bmBody');
