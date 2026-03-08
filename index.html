@@ -1209,23 +1209,45 @@ function setWizStep(n){
   });
 }
 
+function orderServicesByProfile(svcs){
+  if(!currentProfile)return svcs;
+  const p=currentProfile;
+  const prefs=p.preferred_services||[];
+  const gender=p.gender||'';
+  const age=p.age_range||'';
+  const name=(s)=>s.name.toLowerCase();
+
+  function score(s){
+    let sc=0;
+    // User's preferred services always highest priority
+    if(prefs.some(pref=>name(s).includes(pref.toLowerCase())))sc+=100;
+    // Gender-based ordering
+    if(gender==='Männlich'&&(name(s).includes('herren')||name(s).includes('bart')))sc+=50;
+    if(gender==='Weiblich'&&(name(s).includes('damen')||name(s).includes('farb')||name(s).includes('color')))sc+=50;
+    // Age-based ordering
+    if((age==='Unter 12'||age==='12-17')&&name(s).includes('kinder'))sc+=60;
+    if(age==='12-17'&&name(s).includes('teenager'))sc+=55;
+    return sc;
+  }
+  return[...svcs].sort((a,b)=>score(b)-score(a));
+}
+
 function renderWizStep(step){
   bookingState.step=step;
   setWizStep(step);
-  const svcs=allServices.filter(x=>x.store_id===bookingState.storeId);
-  const prefs=currentProfile?.preferred_services||[];
-  const preferred=svcs.filter(s=>prefs.some(p=>s.name.toLowerCase().includes(p)||s.category===p));
-  const rest=svcs.filter(s=>!preferred.includes(s));
-  const ordered=[...preferred,...rest];
+  const svcs=allServices.filter(x=>x.store_id===bookingState.storeId||x.salon_id===bookingState.storeId);
+  const ordered=orderServicesByProfile(svcs);
 
   let html='';
   if(step===1){
     html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Service wählen</h3>`;
     if(ordered.length===0){html+='<p class="text-muted">Keine Services verfügbar.</p>';}
     else{
-      if(preferred.length>0)html+=`<div class="text-muted" style="font-size:.8rem;margin-bottom:8px;font-weight:600">EMPFOHLEN FÜR DICH</div>`;
+      const prefs=currentProfile?.preferred_services||[];
+      const hasPreferred=prefs.length>0&&ordered.some(s=>prefs.some(p=>s.name.toLowerCase().includes(p.toLowerCase())));
+      if(hasPreferred)html+=`<div class="text-muted" style="font-size:.8rem;margin-bottom:8px;font-weight:600">EMPFOHLEN FÜR DICH</div>`;
       html+=`<div class="services-grid">${ordered.map(s=>{
-        const isPreferred=preferred.includes(s);
+        const isPreferred=prefs.some(p=>s.name.toLowerCase().includes(p.toLowerCase()));
         const sel=bookingState.service?.id===s.id;
         return`<div class="svc-card ${sel?'selected':''} ${isPreferred?'preferred':''}" data-svc-id="${s.id}" onclick="selectService('${s.id}')" role="button" tabindex="0">
           ${isPreferred?`<div class="svc-badge preferred-badge">Empfohlen</div>`:''}
@@ -1233,7 +1255,6 @@ function renderWizStep(step){
           <div class="svc-meta"><span>CHF ${s.price}</span><span>${s.duration} Min.</span></div>
         </div>`;
       }).join('')}</div>`;
-      if(preferred.length>0&&rest.length>0)html+=`<div class="text-muted" style="font-size:.8rem;margin-top:16px;margin-bottom:8px;font-weight:600">WEITERE SERVICES</div>`;
     }
     html+=`<div class="wiz-btns" style="margin-top:20px"><button class="btn-secondary" onclick="closeBooking()">Abbrechen</button><button class="btn-primary" onclick="wizNext(2)" id="wizNext1" ${!bookingState.service?'disabled':''}>Weiter</button></div>`;
   }
