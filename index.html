@@ -19,10 +19,11 @@
   --border:#E5E7EB;--border2:#D1D5DB;
   --success:#2d7a4f;--error:#c0392b;--warning:#d97706;
   --r:16px;--r2:24px;--radius:16px;
-  --shadow:0 2px 16px rgba(0,0,0,0.06);--shadow2:0 8px 32px rgba(0,0,0,.08);--shadow3:0 20px 60px rgba(0,0,0,.10);
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04),0 12px 24px rgba(0,0,0,.04);--shadow2:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
   --glow:0 0 24px rgba(78,205,196,0.25);
   --cat-hair:#FF6B6B;--cat-barbershop:#4A4A8A;--cat-nails:#FF90BC;--cat-spa:#4ECDC4;--cat-makeup:#C77DFF;--cat-cosmetik:#FFB347;--cat-tattoo:#2D2D2D;
-}
+
+  --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;}
 [data-theme="dark"]{
   --bg:#0D0D0D;--bg2:#1A1A1A;--surface:#1A1A1A;--surfaceAlt:#252525;
   --text:#FAFAFA;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
@@ -52,7 +53,7 @@ img{max-width:100%;display:block}
 input,select,textarea{font-family:inherit}
 
 /* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(13,13,13,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(13,13,13,0.82);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 1px 24px rgba(0,0,0,.25);}
 .nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,107,.3),transparent)}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:white;letter-spacing:-.02em;text-decoration:none;margin-right:auto;position:relative}
@@ -135,7 +136,7 @@ input,select,textarea{font-family:inherit}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
 .stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:24px}
 .store-card{background:var(--surface);border-radius:var(--r2);overflow:hidden;border:none;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;box-shadow:var(--shadow)}
-.store-card:hover{transform:translateY(-4px) scale(1.01);box-shadow:var(--shadow2)}
+.store-card:hover{transform:translateY(-6px);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
 .store-card-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,rgba(78,205,196,.15),#1a1a1a 60%);display:flex;align-items:center;justify-content:center;position:relative}
 .store-card-img .category-icon{font-size:3rem;opacity:.4}
 .store-card-body{padding:20px}
@@ -147,7 +148,7 @@ input,select,textarea{font-family:inherit}
 .service-chip::before{content:'';position:absolute;left:7px;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:var(--accent-mint)}
 .store-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
 .store-price-range{font-size:.85rem;color:var(--accent2);font-weight:700;font-family:'Space Grotesk',sans-serif}
-.btn-book{background:var(--accent);color:#fff;border:none;padding:9px 22px;border-radius:50px;font-size:.875rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-book{background:linear-gradient(160deg,#FF6B6B 0%,#E55A5A 100%);color:#fff;border:none;padding:9px 22px;border-radius:50px;font-size:.875rem;font-weight:700;cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);text-shadow:0 1px 2px rgba(0,0,0,.15);box-shadow:0 2px 8px rgba(255,107,107,.35);}
 .btn-book:hover{background:var(--accent-dark);transform:scale(1.05);box-shadow:var(--glow)}
 .visited-badge{position:absolute;top:12px;left:12px;background:rgba(45,122,79,0.9);color:white;font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px)}
 .store-img{height:220px;background:linear-gradient(135deg,rgba(78,205,196,.12),#1a1a1a 60%);position:relative;overflow:hidden}
@@ -213,7 +214,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .lm-chips{display:flex;flex-wrap:wrap;gap:6px}
 .lm-chip{background:var(--primary);color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s}
 .lm-chip:hover{opacity:.85}.vt-opt input{accent-color:var(--primary)}
-.btn-primary{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;transition:all .2s;margin-top:4px}
+.btn-primary{width:100%;padding:13px;background:linear-gradient(160deg,#4ECDC4 0%,#3DBDB5 100%);color:#fff;border:none;border-radius:50px;font-size:1rem;font-weight:700;transition:all .2s cubic-bezier(.34,1.56,.64,1);margin-top:4px;text-shadow:0 1px 2px rgba(0,0,0,.15);box-shadow:0 2px 8px rgba(78,205,196,.35);}
 .btn-primary:hover{background:var(--accent-dark);transform:scale(1.02);box-shadow:var(--glow)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn-secondary{width:100%;padding:12px;background:transparent;color:var(--text);border:1.5px solid var(--border2);border-radius:50px;font-size:.95rem;font-weight:600;transition:.15s}
@@ -602,6 +603,16 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 .asm-field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:4px}
 .asm-field input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-family:inherit;font-size:.9rem}
 .asm-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+
+/* === UI POLISH === */
+body{line-height:1.6;}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+#scroll-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .1s linear;pointer-events:none;}
+.store-card{opacity:0;transform:translateY(18px);transition:opacity .38s ease,transform .38s ease,box-shadow .25s ease!important;}
+.store-card.revealed{opacity:1;transform:translateY(0);}
+.btn-book:active,.btn-primary:active{transform:scale(0.97)!important;}
+.btn-book:hover,.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
+.page-title{letter-spacing:-0.02em;}
 </style>
 
   <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -3691,6 +3702,17 @@ document.addEventListener('DOMContentLoaded',function(){
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
+
+// === UI POLISH ===
+(function(){
+  var p=document.createElement('div');p.id='scroll-progress';document.body.prepend(p);
+  window.addEventListener('scroll',function(){var h=document.documentElement;p.style.width=((h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.08});
+  function revealCards(){document.querySelectorAll('.store-card:not(.revealed)').forEach(function(c,i){c.style.transitionDelay=(i*80)+'ms';obs.observe(c);});}
+  setTimeout(revealCards,300);
+  function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*10)+'px,'+(((e.clientY-r.top)/r.height-.5)*10)+'px)';});el.addEventListener('mouseleave',function(){el.style.transform='';});}
+  setTimeout(function(){document.querySelectorAll('.btn-book,.btn-primary').forEach(mag);},500);
+})();
 </script>
 </body>
 </html>
