@@ -319,6 +319,8 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
   .status-cancelled{background:#7f1d1d;color:#fca5a5}
 }
 .booking-actions{display:flex;gap:8px;flex-shrink:0}
+.cancel-btn{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;font-size:.8rem;cursor:pointer}
+.cancel-btn:hover{background:#fca5a5;border-color:#dc2626}
 
 /* ADMIN */
 .admin-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;overflow-x:auto}
@@ -1125,6 +1127,21 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 </div>
 
 <!-- TOAST -->
+<div class="hidden" id="cancelBookingOverlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2>Termin absagen?</h2>
+      <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.add('hidden')">&times;</button>
+    </div>
+    <div class="modal-bd">
+      <p style="color:#666;margin-bottom:20px">Möchtest du diesen Termin wirklich absagen?</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="cancelBooking()">Ja, absagen</button>
+        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.add('hidden')">Zurück</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -1175,7 +1192,7 @@ const T={
     auth_as_owner:'Als Salon-Besitzer',auth_owner_desc:'Deinen Salon listen, Buchungen verwalten, Kunden gewinnen',auth_register_salon:'Salon anmelden',
     bn_home:'Home',bn_bookings:'Termine',bn_profile:'Profil',
     recently_viewed:'Zuletzt angesehen',resume_at:'Weiter bei',
-    status_confirmed:'Best\u00e4tigt',status_pending:'Ausstehend',status_cancelled:'Storniert',
+    status_confirmed:'Best\u00e4tigt',status_pending:'Ausstehend',status_cancelled:'Storniert',cancel_booking:'Termin absagen',booking_cancelled:'Termin abgesagt.',
     rebook:'Erneut buchen',
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Bitte E-Mail und Passwort eingeben.',err_fill_all:'Bitte alle Felder ausf\u00fcllen.',err_pw_min:'Passwort muss mindestens 6 Zeichen haben.',
@@ -2514,6 +2531,7 @@ async function renderBookings(){
       <span class="booking-status ${statusClass}">${b.status==='confirmed'?t('status_confirmed'):b.status==='cancelled'?t('status_cancelled'):t('status_pending')}</span>
       <div class="booking-actions">
         <button class="btn-sm solid" onclick="rebookBooking('${b.store_id}')">${t('rebook')}</button>
+        ${(b.status==='confirmed'||b.status==='pending')?`<button class="btn-sm cancel-btn" onclick="cancelBookingConfirm('${b.id}')">${t('cancel_booking')}</button>`:''}
       </div>
     </div>`;
   }).join('')}</div>`;
@@ -2521,6 +2539,21 @@ async function renderBookings(){
 }
 
 function rebookBooking(storeId){showPage('home');setTimeout(()=>startBooking(storeId),300);}
+
+function cancelBookingConfirm(id){
+  window._cancelId=id;
+  document.getElementById('cancelBookingOverlay').classList.remove('hidden');
+}
+async function cancelBooking(){
+  const id=window._cancelId;
+  if(!id)return;
+  document.getElementById('cancelBookingOverlay').classList.add('hidden');
+  window._cancelId=null;
+  const{error}=await supabase.from('bookings').update({status:'cancelled'}).eq('id',id);
+  if(error){toast(t('error_generic'),'error');return;}
+  toast(t('booking_cancelled'),'success');
+  renderBookings();
+}
 
 // ADMIN
 let adminTab='adminStores';
