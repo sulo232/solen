@@ -2181,7 +2181,7 @@ async function renderLastMinute(){
   if(!html){section.classList.add('hidden');return;}
   const dow=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
   section.classList.remove('hidden');
-  section.innerHTML='<div class="lm-hd">⚡ <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="document.getElementById('searchInput').focus()">Alle zeigen →</span></div><div class="lm-scroll">'+html+'</div>';
+  section.innerHTML='<div class="lm-hd">⚡ <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="searchInput.focus()">Alle zeigen →</span></div><div class="lm-scroll">'+html+'</div>';
 }
 function dismissRecent(){
   localStorage.setItem('solenViewedDismissed','1');
