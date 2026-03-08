@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+h<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -1801,16 +1801,18 @@ function getSalonPhoto(store){
     'eyebrows':'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80',
     'default':'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80'
   };
-  const cat=store.category||store.type||'';
+  const cat=store.cat||store.type||'';
   return photos[cat]||photos['default'];
 }
+
+  function getPriceRange(store){const priceMap={'hair':'ab CHF 45','barbershop':'ab CHF 35','nails':'ab CHF 40','spa':'afbu nCcHtFi o7n0 'g,e'tmParkiecuepR'a:n'gaeb( sCtHoFr e5)5{'c,o'ncsots mpertiicke'M:a'pa=b{ 'ChHaFi r5'0:''}a;br eCtHuFr n4 5p'r,i'cbeaMrabpe[rssthoorpe'.:c'aatb] |C|H'Fa b3 5C'H,F' n5a0i'l;s}':'ab CHF 40','spa':'ab CHF 70','makeup':'ab CHF 55','cosmetik':'ab CHF 50'};return priceMap[store.cat]||'ab CHF 50';}
 
 // OPEN/CLOSED STATUS (BUG 4)
 function getOpenStatus(store){
   const now=new Date();
   const hour=now.getHours();
   const day=now.getDay(); // 0=Sun
-  const hours=store.opening_hours||'Mo-Sa 9:00-19:00';
+  const hours=store.hours||'Mo-Sa 9:00-19:00';
   // Simple parse: check if current time is within range
   const match=hours.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
   if(match){
