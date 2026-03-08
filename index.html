@@ -1832,21 +1832,43 @@ function getPriceRange(store){
   return priceMap[store.cat]||priceMap[store.type]||'ab CHF 50';
 }
 
-// OPEN/CLOSED STATUS (BUG 4)
+// OPEN/CLOSED STATUS (BUG 4 — FIXED)
 function getOpenStatus(store){
   const now=new Date();
   const days=['So','Mo','Di','Mi','Do','Fr','Sa'];
   const today=days[now.getDay()];
   const currentHour=now.getHours()+now.getMinutes()/60;
-  const hours=store.hours||'Mo-Sa 9:00-19:00';
-  const match=hours.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
-  if(!match)return{open:false,text:'Geschlossen',hours:hours};
+  const rawHours=store.hours;
+  let hoursStr='';
+  if(rawHours&&typeof rawHours==='object'){
+    // JSON object like {"Mo":"09:00-19:00","Di":"09:00-19:00",...}
+    // Try keys: full German day abbreviations and common variants
+    const keyVariants=[today,today.charAt(0).toUpperCase()+today.slice(1).toLowerCase(),
+      {'So':'Sun','Mo':'Mon','Di':'Tue','Mi':'Wed','Do':'Thu','Fr':'Fri','Sa':'Sat'}[today]];
+    for(const k of keyVariants){if(rawHours[k]){hoursStr=rawHours[k];break;}}
+    // Also try case-insensitive match on all keys
+    if(!hoursStr){
+      const todayLower=today.toLowerCase();
+      for(const k of Object.keys(rawHours)){
+        if(k.toLowerCase().startsWith(todayLower)){hoursStr=rawHours[k];break;}
+      }
+    }
+    if(!hoursStr){
+      // Today not found in hours object — store is closed today
+      const tomorrow=days[(now.getDay()+1)%7];
+      return{open:false,text:'Geschlossen',hours:JSON.stringify(rawHours)};
+    }
+  }else{
+    hoursStr=typeof rawHours==='string'?rawHours:'Mo-Sa 9:00-19:00';
+  }
+  const match=hoursStr.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
+  if(!match)return{open:false,text:'Geschlossen',hours:hoursStr};
   const openH=parseInt(match[1])+parseInt(match[2])/60;
   const closeH=parseInt(match[3])+parseInt(match[4])/60;
-  const isSunday=now.getDay()===0&&!hours.toLowerCase().includes('so');
-  if(isSunday)return{open:false,text:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hours};
+  const isSunday=now.getDay()===0&&typeof hoursStr==='string'&&!hoursStr.toLowerCase().includes('so');
+  if(isSunday)return{open:false,text:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hoursStr};
   const isOpen=currentHour>=openH&&currentHour<closeH;
-  return{open:isOpen,text:isOpen?`Offen · schliesst ${match[3]}:${match[4]}`:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hours};
+  return{open:isOpen,text:isOpen?`Offen · schliesst ${match[3]}:${match[4]}`:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hoursStr};
 }
 
 function renderStars(rating){
