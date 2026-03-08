@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solen — Beauty &amp; Wellness Basel</title>
+<link rel="manifest" href="/manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease,opacity .2s ease}
@@ -410,6 +411,111 @@ html,body{overflow-x:hidden;max-width:100vw}
 @media(min-width:769px){
   .hamburger{display:none}
 }
+
+/* NEIGHBOURHOOD CHIPS */
+.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 20px 0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.neighbourhood-bar::-webkit-scrollbar{display:none}
+.neighbourhood-chip{padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s}
+.neighbourhood-chip:hover{border-color:var(--accent);color:var(--accent)}
+.neighbourhood-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
+.btn-location:hover{border-color:var(--accent);color:var(--accent)}
+
+/* VERIFIED BADGE */
+.verified-badge{position:absolute;top:12px;right:12px;background:rgba(212,164,62,0.92);color:#fff;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px);display:flex;align-items:center;gap:4px;z-index:2}
+
+/* DISTANCE BADGE */
+.distance-badge{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,0.7);color:#fff;font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px);z-index:2}
+
+/* STAR RATING */
+.star-rating{display:flex;align-items:center;gap:4px;margin-bottom:8px;font-size:.85rem}
+.star-rating .stars{color:#D4A43E;letter-spacing:1px}
+.star-rating .review-count{color:var(--muted);font-size:.78rem}
+
+/* TIME SLOT CHIPS */
+.time-chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.time-chip{padding:5px 12px;border-radius:100px;border:1.5px solid var(--accent);color:var(--accent);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;background:transparent;min-height:32px}
+.time-chip:hover{background:var(--accent);color:#fff}
+.time-chip.tomorrow{border-color:var(--border2);color:var(--muted);cursor:default;font-style:italic}
+
+/* BOOKING MODAL */
+#bookingModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#bookingModal.open{display:flex}
+#bookingModal .bm-content{background:var(--surface);border-radius:var(--r2);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);border:1px solid var(--border);padding:0}
+#bookingModal .bm-header{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+#bookingModal .bm-header h2{font-size:1.15rem;font-weight:800}
+#bookingModal .bm-body{padding:20px 24px 24px}
+.bm-service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
+.bm-svc-card{padding:12px;border:1.5px solid var(--border2);border-radius:var(--r);cursor:pointer;transition:.15s;background:var(--surface);min-height:44px}
+.bm-svc-card:hover{border-color:var(--accent)}
+.bm-svc-card.selected{border-color:var(--accent);background:var(--surfaceAlt)}
+.bm-svc-card .svc-name{font-weight:700;font-size:.88rem;margin-bottom:2px}
+.bm-svc-card .svc-price{font-size:.82rem;color:var(--accent);font-weight:600}
+.bm-time-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:20px}
+.bm-time-btn{padding:10px;border:1.5px solid var(--border2);border-radius:var(--r);text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;background:var(--surface);min-height:44px}
+.bm-time-btn:hover{border-color:var(--accent)}
+.bm-time-btn.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bm-summary{background:var(--bg2);border-radius:var(--r);padding:16px;margin:16px 0}
+.bm-summary .row{display:flex;justify-content:space-between;font-size:.85rem;padding:3px 0;color:var(--text2)}
+.bm-summary .row.total{font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
+.bm-confirmation{text-align:center;padding:20px 0}
+.bm-confirmation h3{font-size:1.2rem;font-weight:800;margin-bottom:8px;color:var(--success)}
+.bm-confirmation p{font-size:.9rem;color:var(--text2);margin-bottom:16px}
+.bm-cal-link{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:1.5px solid var(--border2);border-radius:var(--r);font-size:.88rem;font-weight:600;color:var(--text);text-decoration:none;transition:.15s;min-height:44px}
+.bm-cal-link:hover{border-color:var(--accent);color:var(--accent)}
+
+/* REVIEWS */
+.reviews-section{margin-top:24px;border-top:1px solid var(--border);padding-top:20px}
+.review-item{padding:14px 0;border-bottom:1px solid var(--border)}
+.review-item:last-child{border-bottom:none}
+.review-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.review-stars{color:#D4A43E;font-size:.85rem}
+.review-name{font-weight:700;font-size:.88rem}
+.review-date{font-size:.75rem;color:var(--muted)}
+.review-comment{font-size:.88rem;color:var(--text2);line-height:1.5}
+.review-form{margin-top:16px;padding:16px;background:var(--bg2);border-radius:var(--r)}
+.star-input{display:flex;gap:4px;margin-bottom:12px}
+.star-input span{font-size:1.5rem;cursor:pointer;color:var(--border2);transition:color .15s}
+.star-input span.active{color:#D4A43E}
+
+/* RATING FILTER */
+.rating-filter{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rating-chip{padding:6px 14px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:36px}
+.rating-chip:hover{border-color:var(--accent)}
+.rating-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* MOBILE FILTER BOTTOM SHEET */
+.filter-sheet-btn{display:none;padding:10px 20px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;min-height:44px;transition:all .2s}
+.filter-sheet-btn:hover{border-color:var(--accent)}
+#filterSheet{position:fixed;bottom:0;left:0;right:0;z-index:600;background:var(--surface);border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 -8px 32px rgba(0,0,0,.25);transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);padding:20px 24px 40px;max-height:70vh;overflow-y:auto}
+#filterSheet.open{transform:translateY(0)}
+#filterSheet .sheet-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+#filterSheet h3{font-size:1rem;font-weight:700;margin-bottom:12px}
+#filterSheetOverlay{position:fixed;inset:0;z-index:599;background:rgba(0,0,0,.4);display:none}
+#filterSheetOverlay.open{display:block}
+@media(max-width:768px){
+  .filter-sheet-btn{display:inline-flex;align-items:center;gap:6px}
+  .desktop-filters{display:none!important}
+}
+@media(min-width:769px){
+  #filterSheet,#filterSheetOverlay{display:none!important}
+}
+
+/* IMPRESSUM/DATENSCHUTZ MODAL */
+.legal-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.legal-modal.open{display:flex}
+.legal-modal .legal-content{background:var(--surface);border-radius:var(--r2);width:100%;max-width:520px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow3);border:1px solid var(--border);padding:24px}
+.legal-modal h2{font-size:1.2rem;font-weight:800;margin-bottom:16px}
+.legal-modal p{font-size:.9rem;color:var(--text2);line-height:1.7;margin-bottom:12px}
+
+/* FOOTER */
+.site-footer{background:var(--surface);border-top:1px solid var(--border);padding:24px;text-align:center;font-size:.82rem;color:var(--muted)}
+.site-footer a{color:var(--accent);font-weight:600;margin:0 12px;cursor:pointer;text-decoration:none}
+.site-footer a:hover{text-decoration:underline}
+
+/* GLOBAL POLISH */
+body{overflow-x:hidden}
+button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-primary{min-height:44px}
 </style>
 </head>
 <body>
@@ -473,7 +579,17 @@ html,body{overflow-x:hidden;max-width:100vw}
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="Service, Salon oder Kategorie..." oninput="debounceSearch()">
         </div>
+        <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
+      </div>
+      <div class="neighbourhood-bar" style="justify-content:center;padding:12px 0 0">
+        <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'')" data-i18n="neighbourhood_all">Alle Quartiere</button>
+        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel')">Grossbasel</button>
+        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel')">Kleinbasel</button>
+        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann')">St. Johann</button>
+        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Gundeldingen')">Gundeldingen</button>
+        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Bruderholz')">Bruderholz</button>
+        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Hirzbrunnen')">Hirzbrunnen</button>
       </div>
       <div class="hero-stats">
         <div class="stat"><span id="statSalons">12</span><label data-i18n="stat_salons">Salons</label></div>
@@ -501,13 +617,23 @@ html,body{overflow-x:hidden;max-width:100vw}
     <div class="stores-header">
       <div class="section-title" style="margin-bottom:0" data-i18n="stores_title">Salons in Basel</div>
       <div class="stores-count" id="storesCount"></div>
-      <div style="margin-left:auto">
-        <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="padding:8px 36px 8px 12px;font-size:.82rem;border-radius:100px;min-width:140px">
-          <option value="default">Standard</option>
-          <option value="price_asc">Preis ↑</option>
-          <option value="price_desc">Preis ↓</option>
-          <option value="name_asc">Name A–Z</option>
-        </select>
+      <button class="filter-sheet-btn" onclick="openFilterSheet()">&#9881; Filter &amp; Sortierung</button>
+      <div style="margin-left:auto" class="desktop-filters">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="padding:8px 36px 8px 12px;font-size:.82rem;border-radius:100px;min-width:140px">
+            <option value="default">Standard</option>
+            <option value="price_asc">Preis &#8593;</option>
+            <option value="price_desc">Preis &#8595;</option>
+            <option value="name_asc">Name A&#8211;Z</option>
+            <option value="distance" data-i18n="sort_distance">Entfernung</option>
+          </select>
+          <div class="rating-filter" id="ratingFilterDesktop">
+            <span style="font-size:.8rem;font-weight:600;color:var(--muted)" data-i18n="rating_filter">Min. Bewertung:</span>
+            <button class="rating-chip active" onclick="setMinRating(0,this)">Alle</button>
+            <button class="rating-chip" onclick="setMinRating(4.0,this)">4.0+</button>
+            <button class="rating-chip" onclick="setMinRating(4.5,this)">4.5+</button>
+          </div>
+        </div>
       </div>
     </div>
     <div id="storesGrid" class="stores-grid"><div class="spinner"></div></div>
@@ -799,6 +925,76 @@ html,body{overflow-x:hidden;max-width:100vw}
   </div>
 </div>
 
+<!-- BOOKING MODAL (new) -->
+<div id="bookingModal">
+  <div class="bm-content">
+    <div class="bm-header">
+      <h2 id="bmTitle">Termin buchen</h2>
+      <button class="close-btn" onclick="closeBookingModal()">&times;</button>
+    </div>
+    <div class="bm-body" id="bmBody"></div>
+  </div>
+</div>
+
+<!-- MOBILE FILTER BOTTOM SHEET -->
+<div id="filterSheetOverlay" onclick="closeFilterSheet()"></div>
+<div id="filterSheet">
+  <div class="sheet-handle"></div>
+  <h3>Sortierung</h3>
+  <select class="form-input" id="sortSelectMobile" onchange="changeSort(this.value)" style="margin-bottom:16px;padding:10px 36px 10px 12px;font-size:.88rem;border-radius:var(--r)">
+    <option value="default">Standard</option>
+    <option value="price_asc">Preis &#8593;</option>
+    <option value="price_desc">Preis &#8595;</option>
+    <option value="name_asc">Name A&#8211;Z</option>
+    <option value="distance">Entfernung</option>
+  </select>
+  <h3 data-i18n="rating_filter">Min. Bewertung</h3>
+  <div class="rating-filter" style="margin-bottom:16px" id="ratingFilterMobile">
+    <button class="rating-chip active" onclick="setMinRating(0,this)">Alle</button>
+    <button class="rating-chip" onclick="setMinRating(4.0,this)">4.0+</button>
+    <button class="rating-chip" onclick="setMinRating(4.5,this)">4.5+</button>
+  </div>
+  <h3 data-i18n="neighbourhood">Quartier</h3>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'');closeFilterSheet()">Alle</button>
+    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel');closeFilterSheet()">Grossbasel</button>
+    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel');closeFilterSheet()">Kleinbasel</button>
+    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann');closeFilterSheet()">St. Johann</button>
+    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Gundeldingen');closeFilterSheet()">Gundeldingen</button>
+    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Bruderholz');closeFilterSheet()">Bruderholz</button>
+    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Hirzbrunnen');closeFilterSheet()">Hirzbrunnen</button>
+  </div>
+</div>
+
+<!-- IMPRESSUM MODAL -->
+<div class="legal-modal" id="impressumModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="legal-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2 style="margin:0" data-i18n="impressum">Impressum</h2>
+      <button class="close-btn" onclick="document.getElementById('impressumModal').classList.remove('open')">&times;</button>
+    </div>
+    <p>Solen GmbH, Basel, Schweiz.<br>E-Mail: info@solen.ch<br>Handelsregisternummer: CHE-XXX.XXX.XXX</p>
+  </div>
+</div>
+
+<!-- DATENSCHUTZ MODAL -->
+<div class="legal-modal" id="datenschutzModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="legal-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h2 style="margin:0" data-i18n="privacy">Datenschutz</h2>
+      <button class="close-btn" onclick="document.getElementById('datenschutzModal').classList.remove('open')">&times;</button>
+    </div>
+    <p>Wir erheben nur Daten fuer die Buchung. Keine Weitergabe an Dritte. Gemaess DSG haben Sie Recht auf Auskunft, Berichtigung und Loeschung.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="siteFooter">
+  <span>&copy; 2026 Solen GmbH</span>
+  <a onclick="document.getElementById('impressumModal').classList.add('open')" data-i18n="impressum">Impressum</a>
+  <a onclick="document.getElementById('datenschutzModal').classList.add('open')" data-i18n="privacy">Datenschutz</a>
+</footer>
+
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav" id="bottomNav">
   <div class="bottom-nav-inner">
@@ -858,6 +1054,8 @@ let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBooki
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 let currentLang=localStorage.getItem('solenLang')||'de';
+let userLat=null, userLng=null, activeNeighbourhood='', minRatingFilter=0;
+let bmState={};
 
 // TRANSLATIONS
 const T={
@@ -904,6 +1102,13 @@ const T={
     setup_desc:'Damit Salons besser f\u00fcr dich planen k\u00f6nnen',
     forgot_password:'Passwort vergessen?',reset_desc:'Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zur\u00fccksetzen.',
     back_to_login:'Zur\u00fcck zur Anmeldung',reset_email_sent:'Reset-Link gesendet! Pr\u00fcfe dein Postfach.',
+    book_now:'Jetzt buchen',select_service:'Service w\u00e4hlen',select_date:'Datum w\u00e4hlen',select_time:'Uhrzeit w\u00e4hlen',
+    guest_info:'Gastinformationen',booking_confirmed:'Buchung best\u00e4tigt!',write_review:'Bewertung schreiben',
+    rating_filter:'Min. Bewertung',no_results:'Keine Salons gefunden',reset_filters:'Filter zur\u00fccksetzen',
+    use_location:'Standort',neighbourhood:'Quartier',neighbourhood_all:'Alle Quartiere',
+    impressum:'Impressum',privacy:'Datenschutz',nearest_slot_tomorrow:'N\u00e4chster: Morgen',
+    add_to_calendar:'Zu Google Kalender hinzuf\u00fcgen',sort_distance:'Entfernung',
+    location_unavailable:'Standort nicht verf\u00fcgbar',load_failed:'Salons konnten nicht geladen werden',reload:'Neu laden',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
@@ -948,6 +1153,13 @@ const T={
     setup_desc:'So salons can plan better for you',
     forgot_password:'Forgot password?',reset_desc:'Enter your email address and we\'ll send you a reset link.',
     back_to_login:'Back to sign in',reset_email_sent:'Reset link sent! Check your inbox.',
+    book_now:'Book now',select_service:'Select service',select_date:'Select date',select_time:'Select time',
+    guest_info:'Guest information',booking_confirmed:'Booking confirmed!',write_review:'Write review',
+    rating_filter:'Min. rating',no_results:'No salons found',reset_filters:'Reset filters',
+    use_location:'Location',neighbourhood:'Neighbourhood',neighbourhood_all:'All neighbourhoods',
+    impressum:'Imprint',privacy:'Privacy',nearest_slot_tomorrow:'Next: Tomorrow',
+    add_to_calendar:'Add to Google Calendar',sort_distance:'Distance',
+    location_unavailable:'Location not available',load_failed:'Could not load salons',reload:'Reload',
   },
   fr:{
     nav_login:'Se connecter',nav_register:"S'inscrire",nav_logout:'Se d\u00e9connecter',nav_theme:'Clair / Sombre',
@@ -992,6 +1204,13 @@ const T={
     setup_desc:'Pour que les salons puissent mieux planifier pour toi',
     forgot_password:'Mot de passe oubli\u00e9 ?',reset_desc:'Entre ton adresse e-mail et nous t\'enverrons un lien de r\u00e9initialisation.',
     back_to_login:'Retour \u00e0 la connexion',reset_email_sent:'Lien de r\u00e9initialisation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
+    book_now:'R\u00e9server maintenant',select_service:'Choisir un service',select_date:'Choisir une date',select_time:'Choisir une heure',
+    guest_info:'Informations client',booking_confirmed:'R\u00e9servation confirm\u00e9e !',write_review:'\u00c9crire un avis',
+    rating_filter:'Note min.',no_results:'Aucun salon trouv\u00e9',reset_filters:'R\u00e9initialiser les filtres',
+    use_location:'Position',neighbourhood:'Quartier',neighbourhood_all:'Tous les quartiers',
+    impressum:'Mentions l\u00e9gales',privacy:'Confidentialit\u00e9',nearest_slot_tomorrow:'Prochain : demain',
+    add_to_calendar:'Ajouter \u00e0 Google Agenda',sort_distance:'Distance',
+    location_unavailable:'Position non disponible',load_failed:'Impossible de charger les salons',reload:'Recharger',
   }
 };
 
@@ -1459,7 +1678,7 @@ async function finishSetup(){
 }
 
 // SKELETON
-function renderSkeletons(n=6){
+function renderSkeletons(n=4){
   const grid=document.getElementById('storesGrid');
   grid.innerHTML=Array(n).fill(0).map(()=>`<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w60" style="position:relative;overflow:hidden"></div><div class="skeleton-line w40" style="position:relative;overflow:hidden"></div><div class="skeleton-line w80" style="position:relative;overflow:hidden"></div></div></div>`).join('');
 }
@@ -1467,13 +1686,23 @@ function renderSkeletons(n=6){
 // STORES
 async function loadStores(){
   renderSkeletons();
-  // Load from stores table
-  const{data,error}=await sb.from('stores').select('*').order('name');
+  let data,error;
+  try{
+    ({data,error}=await sb.from('stores').select('*').order('name'));
+  }catch(e){error=e;}
+  if(error&&!data){
+    document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#9888;</div><h3>${t('load_failed')}</h3><button onclick="loadStores()" style="margin-top:12px">${t('reload')}</button></div>`;
+    return;
+  }
   // Also load approved salons
   const{data:salons}=await sb.from('salons').select('*').eq('status','approved').order('name');
   const dbStores=(data||[]).concat((salons||[]).map(s=>({...s,store_id:s.id})));
   if(dbStores.length===0){allStores=DEMO_STORES;}
   else allStores=dbStores;
+  // Assign default Basel coords for stores without lat/lng
+  allStores.forEach(s=>{
+    if(!s.lat||!s.lng){s.lat=47.5596+(Math.random()-0.5)*0.02;s.lng=7.5886+(Math.random()-0.5)*0.02;}
+  });
   const{data:svcs}=await sb.from('services').select('*');
   allServices=svcs||[];
   if(allServices.length===0){
@@ -1501,29 +1730,58 @@ function getStoreEmoji(type){
   return map[type]||'✨';
 }
 
+function getNextTimeSlots(n){
+  const slots=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+  const now=new Date();
+  const hh=now.getHours(),mm=now.getMinutes();
+  const nowMins=hh*60+mm;
+  const future=slots.filter(s=>{const[h,m]=s.split(':').map(Number);return h*60+m>nowMins;});
+  return future.slice(0,n);
+}
+
+function renderStars(rating){
+  const r=Math.round((rating||0)*2)/2;
+  let html='';
+  for(let i=1;i<=5;i++){
+    if(i<=Math.floor(r))html+='&#9733;';
+    else html+='&#9734;';
+  }
+  return html;
+}
+
 function renderStoreCard(s){
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
   const topSvcs=svcs.slice(0,3);
   const minPrice=svcs.length?Math.min(...svcs.map(x=>x.price)):null;
   const visited=userBookedStores.has(s.id);
+  const photoUrl=s.photo_url||s.image_url;
+  const dist=(userLat&&userLng&&s.lat&&s.lng)?haversine(userLat,userLng,s.lat,s.lng):null;
+  const nextSlots=getNextTimeSlots(3);
+  const avgR=parseFloat(s.avg_rating)||0;
+  const revCount=parseInt(s.review_count)||0;
   return`<div class="store-card" onclick="openStore('${s.id}')">
-    <div class="store-img">
-      ${s.image_url?`<img src="${s.image_url}" alt="${s.name}" loading="lazy">`:`<div class="store-img-placeholder">${getStoreEmoji(s.type)}</div>`}
-      ${s.type?`<span class="store-badge">${getTypeName(s.type)}</span>`:''}
+    <div class="store-img" style="height:180px">
+      ${photoUrl?`<img src="${photoUrl}" alt="${s.name}" loading="lazy" style="width:100%;height:180px;object-fit:cover">`:`<div class="store-img-placeholder" style="height:180px">${getStoreEmoji(s.type)}</div>`}
+      ${s.is_verified?'<span class="verified-badge">&#10003; Verifiziert</span>':''}
+      ${s.type&&!s.is_verified?`<span class="store-badge">${getTypeName(s.type)}</span>`:''}
       ${visited?'<span class="visited-badge">Bereits besucht</span>':''}
+      ${dist!==null?`<span class="distance-badge">${dist.toFixed(1)} km</span>`:''}
     </div>
     <div class="store-body">
       <div class="store-name">${s.name}</div>
+      <div class="star-rating"><span class="stars">${renderStars(avgR)}</span> <span class="review-count">${avgR.toFixed(1)} (${revCount} Bewertungen)</span></div>
       <div class="store-type-badge">${getTypeName(s.type||'')}</div>
       <div class="store-meta">&#128205; ${s.address||'Basel'}</div>
+      <div class="time-chips">${nextSlots.length?nextSlots.map(ts=>`<button class="time-chip" onclick="event.stopPropagation();openBookingModal(findStore('${s.id}'),'${ts}')">${ts}</button>`).join(''):`<span class="time-chip tomorrow">${t('nearest_slot_tomorrow')}</span>`}</div>
       ${topSvcs.length?`<div class="store-services-preview">${topSvcs.map(sv=>`<span class="service-chip">${sv.name} &middot; CHF ${sv.price}</span>`).join('')}</div>`:''}
       <div class="store-card-footer">
         <span class="store-price-range">${minPrice?`ab CHF ${minPrice}`:''}</span>
-        <button class="btn-book" onclick="event.stopPropagation();startBooking('${s.id}')">${t('btn_book')}</button>
+        <button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore('${s.id}'),null)">${t('btn_book')}</button>
       </div>
     </div>
   </div>`;
 }
+function findStore(id){return allStores.find(x=>x.id===id);}
 
 function changeSort(val){
   currentSort=val;
@@ -1543,7 +1801,9 @@ function renderStores(){
     const matchCat=activeCategories.size===0||activeCategories.has(s.type);
     const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
     const matchSearch=!query||s.name.toLowerCase().includes(query)||(s.description||'').toLowerCase().includes(query)||(s.type||'').toLowerCase().includes(query)||svcs.some(sv=>sv.name.toLowerCase().includes(query));
-    return matchCat&&matchSearch;
+    const matchNeighbourhood=!activeNeighbourhood||(s.address||'').toLowerCase().includes(activeNeighbourhood.toLowerCase());
+    const matchRating=minRatingFilter<=0||(parseFloat(s.avg_rating)||0)>=minRatingFilter;
+    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating;
   });
   // Sort
   if(currentSort==='price_asc'||currentSort==='price_desc'){
@@ -1554,8 +1814,13 @@ function renderStores(){
     });
   } else if(currentSort==='name_asc'){
     filtered=[...filtered].sort((a,b)=>a.name.localeCompare(b.name));
+  } else if(currentSort==='distance'&&userLat&&userLng){
+    filtered=[...filtered].sort((a,b)=>{
+      const da=haversine(userLat,userLng,a.lat||47.56,a.lng||7.59);
+      const db=haversine(userLat,userLng,b.lat||47.56,b.lng||7.59);
+      return da-db;
+    });
   } else {
-    // Default: put recently-viewed at top (stable sort)
     const recentIds=getRecentStores();
     if(recentIds.length>0){
       filtered=[...filtered].sort((a,b)=>{
@@ -1570,7 +1835,7 @@ function renderStores(){
   }
   document.getElementById('storesCount').textContent=`${filtered.length} ${filtered.length!==1?t('salon_count_other'):t('salon_count_one')}`;
   if(filtered.length===0){
-    document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128269;</div><h3>${t('empty_no_salon')}</h3><p>${t('empty_try_other')}</p><button onclick="resetFilters()">${t('empty_show_all')}</button></div>`;
+    document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128269;</div><h3>${t('no_results')}</h3><p>Versuche andere Filter.</p><button onclick="resetAllFilters()">${t('reset_filters')}</button></div>`;
     return;
   }
   // Recently viewed section
@@ -1598,6 +1863,17 @@ function resetFilters(){
   activeCategories.clear();
   document.getElementById('searchInput').value='';
   document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
+  renderStores();
+}
+function resetAllFilters(){
+  activeCategories.clear();
+  activeNeighbourhood='';
+  minRatingFilter=0;
+  document.getElementById('searchInput').value='';
+  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
+  document.querySelectorAll('.neighbourhood-chip').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.neighbourhood-chip').forEach((b,i)=>{if(i===0)b.classList.add('active');});
+  document.querySelectorAll('.rating-chip').forEach((b,i)=>{b.classList.toggle('active',i===0);});
   renderStores();
 }
 
@@ -1660,30 +1936,34 @@ function restoreCategoryFilter(){
 }
 
 // STORE DETAIL
-function openStore(storeId){
+async function openStore(storeId){
   const s=allStores.find(x=>x.id===storeId);
   if(!s)return;
   trackRecentStore(storeId);
-  const svcs=allServices.filter(x=>x.store_id===storeId);
+  const svcs=allServices.filter(x=>x.store_id===storeId||x.salon_id===storeId);
+  const photoUrl=s.photo_url||s.image_url;
+  const reviews=await loadReviews(storeId);
   document.getElementById('storeDetailContent').innerHTML=`
-    ${s.image_url?`<img class="store-detail-img" src="${s.image_url}" alt="${s.name}">`:`<div class="store-detail-img-placeholder">${getStoreEmoji(s.type)}</div>`}
+    ${photoUrl?`<img class="store-detail-img" src="${photoUrl}" alt="${s.name}">`:`<div class="store-detail-img-placeholder">${getStoreEmoji(s.type)}</div>`}
     <div style="padding:24px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
         <div>
-          <div style="font-size:1.3rem;font-weight:900;margin-bottom:4px">${s.name}</div>
+          <div style="font-size:1.3rem;font-weight:900;margin-bottom:4px">${s.name}${s.is_verified?' <span style="color:#D4A43E;font-size:.9rem">&#10003; Verifiziert</span>':''}</div>
+          <div class="star-rating"><span class="stars">${renderStars(s.avg_rating)}</span> <span class="review-count">${(parseFloat(s.avg_rating)||0).toFixed(1)} (${s.review_count||0} Bewertungen)</span></div>
           <div style="font-size:.88rem;color:var(--muted)">${s.address||'Basel'} &bull; ${getTypeName(s.type||'')}</div>
         </div>
         <button class="close-btn" style="font-size:1.6rem" onclick="document.getElementById('storeOverlay').classList.add('hidden')">&times;</button>
       </div>
       <p style="margin-top:12px;color:var(--text2);font-size:.92rem;line-height:1.6">${s.description||''}</p>
       <div style="margin-top:24px">
-        <div class="section-hd"><h3>Services</h3><button class="btn-sm solid" onclick="closeStoreDetail();startBooking('${s.id}')">Termin buchen</button></div>
+        <div class="section-hd"><h3>Services</h3><button class="btn-sm solid" onclick="closeStoreDetail();openBookingModal(findStore('${s.id}'),null)">${t('book_now')}</button></div>
         ${svcs.length?`<div class="services-grid">${svcs.map(sv=>`
           <div class="svc-card">
             <div class="svc-name">${sv.name}</div>
             <div class="svc-meta"><span>CHF ${sv.price}</span><span>${sv.duration} Min.</span></div>
           </div>`).join('')}</div>`:'<p class="text-muted" style="font-size:.88rem">Noch keine Services hinterlegt.</p>'}
       </div>
+      ${renderReviewsSection(storeId,reviews)}
     </div>`;
   document.getElementById('storeOverlay').classList.remove('hidden');
 }
@@ -2352,8 +2632,215 @@ async function updateSalonBooking(id,status){
   else{toast(status==='confirmed'?'Bestätigt':'Storniert','success');renderSalonDashboard();}
 }
 
+// HAVERSINE DISTANCE
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// GEOLOCATION
+function requestGeolocation(){
+  if(!navigator.geolocation){toast(t('location_unavailable'),'error');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userLat=pos.coords.latitude;userLng=pos.coords.longitude;
+    currentSort='distance';
+    const sel=document.getElementById('sortSelect');if(sel)sel.value='distance';
+    const selM=document.getElementById('sortSelectMobile');if(selM)selM.value='distance';
+    renderStores();
+    toast('Standort erkannt','success');
+  },()=>{toast(t('location_unavailable'),'error');});
+}
+
+// NEIGHBOURHOOD FILTER
+function selectNeighbourhood(btn,name){
+  activeNeighbourhood=name;
+  document.querySelectorAll('.neighbourhood-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStores();
+}
+
+// RATING FILTER
+function setMinRating(val,btn){
+  minRatingFilter=val;
+  // Update all rating chip groups
+  document.querySelectorAll('.rating-chip').forEach(b=>{
+    const bVal=parseFloat(b.textContent)||0;
+    b.classList.toggle('active',(val===0&&b.textContent==='Alle')||(val>0&&b.textContent===val.toFixed(1)+'+'));
+  });
+  renderStores();
+}
+
+// FILTER SHEET (mobile)
+function openFilterSheet(){
+  document.getElementById('filterSheet').classList.add('open');
+  document.getElementById('filterSheetOverlay').classList.add('open');
+  // Sync sort select
+  const selM=document.getElementById('sortSelectMobile');if(selM)selM.value=currentSort;
+}
+function closeFilterSheet(){
+  document.getElementById('filterSheet').classList.remove('open');
+  document.getElementById('filterSheetOverlay').classList.remove('open');
+}
+
+// BOOKING MODAL (new simplified)
+function openBookingModal(store,preselectedTime){
+  if(!store)return;
+  bmState={store,service:null,date:'',time:preselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',step:'service',confirmed:false};
+  // Pre-fill from session
+  if(currentUser){
+    bmState.guestEmail=currentUser.email||'';
+    bmState.guestName=currentProfile?.display_name||currentUser.user_metadata?.full_name||'';
+  }
+  // Set default date to today
+  const today=new Date();
+  bmState.date=today.toISOString().split('T')[0];
+  document.getElementById('bmTitle').textContent=`${t('book_now')} — ${store.name}`;
+  renderBookingModal();
+  document.getElementById('bookingModal').classList.add('open');
+}
+function closeBookingModal(){
+  document.getElementById('bookingModal').classList.remove('open');
+  bmState={};
+}
+function renderBookingModal(){
+  const s=bmState.store;
+  const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
+  const slots=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+  const today=new Date().toISOString().split('T')[0];
+  const maxDate=new Date(Date.now()+60*24*60*60*1000).toISOString().split('T')[0];
+
+  if(bmState.confirmed){
+    const svc=bmState.service;
+    const calStart=bmState.date.replace(/-/g,'')+'T'+bmState.time.replace(':','')+'00';
+    const endH=parseInt(bmState.time.split(':')[0])+(svc?.duration?Math.floor(svc.duration/60):1);
+    const endM=parseInt(bmState.time.split(':')[1])+(svc?.duration?svc.duration%60:0);
+    const calEnd=bmState.date.replace(/-/g,'')+'T'+String(endH).padStart(2,'0')+String(endM).padStart(2,'0')+'00';
+    const calUrl=`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent((svc?.name||'Termin')+' @ '+s.name)}&dates=${calStart}/${calEnd}&location=${encodeURIComponent(s.address||'Basel')}&details=${encodeURIComponent('Gebucht via Solen')}`;
+    document.getElementById('bmBody').innerHTML=`
+      <div class="bm-confirmation">
+        <div style="font-size:3rem;margin-bottom:12px">&#10003;</div>
+        <h3>${t('booking_confirmed')}</h3>
+        <p>${s.name} &mdash; ${formatDate(bmState.date)} um ${bmState.time}</p>
+        <a href="${calUrl}" target="_blank" rel="noopener" class="bm-cal-link">&#128197; ${t('add_to_calendar')}</a>
+      </div>`;
+    return;
+  }
+
+  let html='';
+  // 1. Service picker
+  html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_service')}</h4>`;
+  if(svcs.length){
+    html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+  } else {
+    html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
+  }
+  // 2. Date input
+  html+=`<h4 style="font-size:.92rem;font-weight:700;margin:16px 0 10px">${t('select_date')}</h4>`;
+  html+=`<input type="date" class="form-input" value="${bmState.date}" min="${today}" max="${maxDate}" onchange="bmState.date=this.value" style="margin-bottom:16px">`;
+  // 3. Time slot grid
+  html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_time')}</h4>`;
+  html+=`<div class="bm-time-grid">${slots.map(sl=>`<button class="bm-time-btn ${bmState.time===sl?'selected':''}" onclick="bmSelectTime('${sl}')">${sl}</button>`).join('')}</div>`;
+  // 4. Guest form
+  html+=`<h4 style="font-size:.92rem;font-weight:700;margin:8px 0 10px">${t('guest_info')}</h4>`;
+  html+=`<div class="form-row"><div class="form-group"><label>Name *</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div><div class="form-group"><label>Telefon *</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="Telefon" required></div></div>`;
+  html+=`<div class="form-row"><div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail}" type="email" placeholder="E-Mail"></div><div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes}" placeholder="Besondere W\u00fcnsche"></div></div>`;
+  // 5. Summary
+  const svc=bmState.service;
+  html+=`<div class="bm-summary"><div class="row"><span>Salon</span><span>${s.name}</span></div>`;
+  if(svc)html+=`<div class="row"><span>Service</span><span>${svc.name}</span></div><div class="row"><span>Preis</span><span>CHF ${svc.price}</span></div>`;
+  html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
+  html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
+  html+=`<div class="row"><span>Adresse</span><span>${s.address||'Basel'}</span></div>`;
+  html+=`<div class="row"><span>Stornierung</span><span>${s.cancellation_policy||'24h Stornierungsfrist'}</span></div>`;
+  html+=`</div>`;
+  // 6. Book button
+  html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
+  document.getElementById('bmBody').innerHTML=html;
+}
+function bmSelectService(id){bmState.service=allServices.find(s=>s.id===id);renderBookingModal();}
+function bmSelectTime(t){bmState.time=t;renderBookingModal();}
+async function insertBooking(){
+  // Read current form values
+  bmState.guestName=document.getElementById('bmGuestName')?.value||'';
+  bmState.guestPhone=document.getElementById('bmGuestPhone')?.value||'';
+  bmState.guestEmail=document.getElementById('bmGuestEmail')?.value||'';
+  bmState.notes=document.getElementById('bmNotes')?.value||'';
+  bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
+  bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';
+  if(!bmState.guestName||!bmState.guestPhone){toast('Name und Telefon sind erforderlich.','error');return;}
+  if(!bmState.date||!bmState.time){toast('Datum und Uhrzeit w\u00e4hlen.','error');return;}
+  const svc=bmState.service;
+  const{error}=await sb.from('bookings').insert({
+    salon_id:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,
+    user_id:currentUser?.id||null,
+    guest_name:bmState.guestName,
+    guest_phone:bmState.guestPhone,
+    guest_email:bmState.guestEmail,
+    service_name:svc?.name||bmState.customSvc||'',
+    service_price:svc?.price||parseFloat(bmState.customPrice)||0,
+    booking_date:bmState.date,
+    booking_time:bmState.time,
+    status:'pending',
+    notes:bmState.notes
+  });
+  if(error){toast(t('toast_booking_failed'),'error');return;}
+  bmState.confirmed=true;
+  renderBookingModal();
+  toast(t('booking_confirmed'),'success');
+}
+
+// REVIEWS
+async function loadReviews(salonId){
+  const{data}=await sb.from('reviews').select('*').eq('salon_id',salonId).order('created_at',{ascending:false});
+  return data||[];
+}
+function renderReviewsSection(salonId,reviews){
+  let html=`<div class="reviews-section"><div class="section-hd"><h3>Bewertungen (${reviews.length})</h3><button class="btn-sm" onclick="toggleReviewForm('${salonId}')">${t('write_review')}</button></div>`;
+  html+=`<div id="reviewForm_${salonId}" class="hidden"><div class="review-form"><div class="star-input" id="starInput_${salonId}">`;
+  for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}">&#9734;</span>`;
+  html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Dein Kommentar..."></textarea></div><button class="btn-primary" onclick="submitReview('${salonId}')">Absenden</button></div></div>`;
+  reviews.forEach(r=>{
+    const d=new Date(r.created_at).toLocaleDateString('de-CH');
+    html+=`<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${r.reviewer_name}</span><span class="review-date">${d}</span></div><div class="review-comment">${r.comment||''}</div></div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+let reviewStarVal={};
+function setReviewStar(salonId,val){
+  reviewStarVal[salonId]=val;
+  const container=document.getElementById('starInput_'+salonId);
+  if(container)container.querySelectorAll('span').forEach(s=>{s.classList.toggle('active',parseInt(s.dataset.star)<=val);s.innerHTML=parseInt(s.dataset.star)<=val?'&#9733;':'&#9734;';});
+}
+function toggleReviewForm(salonId){
+  const el=document.getElementById('reviewForm_'+salonId);
+  if(el)el.classList.toggle('hidden');
+}
+async function submitReview(salonId){
+  const name=document.getElementById('reviewName_'+salonId)?.value?.trim();
+  const comment=document.getElementById('reviewComment_'+salonId)?.value?.trim();
+  const rating=reviewStarVal[salonId]||0;
+  if(!name||!rating){toast('Name und Bewertung erforderlich.','error');return;}
+  const{error}=await sb.from('reviews').insert({salon_id:salonId,user_id:currentUser?.id||null,reviewer_name:name,rating,comment});
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  // Update local store
+  const store=allStores.find(s=>s.id===salonId);
+  if(store){
+    const rc=(parseInt(store.review_count)||0)+1;
+    const ar=((parseFloat(store.avg_rating)||0)*(rc-1)+rating)/rc;
+    store.review_count=rc;store.avg_rating=ar;
+  }
+  toast('Bewertung gespeichert!','success');
+  openStore(salonId);
+}
+
 // KEYBOARD SHORTCUTS
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();document.getElementById('setupOverlay').classList.add('hidden');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('setupOverlay').classList.add('hidden');document.getElementById('impressumModal')?.classList.remove('open');document.getElementById('datenschutzModal')?.classList.remove('open');}});
+// Close booking modal on click outside
+document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.target.id==='bookingModal')closeBookingModal();});
 </script>
 </body>
 </html>
