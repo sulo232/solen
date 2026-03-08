@@ -33,6 +33,7 @@
   --shadow:0 2px 8px rgba(0,0,0,.3);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
   --glow:0 0 16px rgba(255,142,142,0.3);
 }}
+html,body{overflow-x:hidden;max-width:100vw}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:inherit}
@@ -86,8 +87,8 @@ input,select,textarea{font-family:inherit}
 .hero-stats .stat+.stat{border-left:1px solid rgba(255,255,255,.1);padding-left:40px}
 
 /* CATEGORIES */
-.categories-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:64px;z-index:100}
-.cat-scroll{max-width:1200px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:14px 0;scrollbar-width:none}
+.categories-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:64px;z-index:100;max-width:100vw;overflow:hidden}
+.cat-scroll{max-width:1200px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:14px 0;scrollbar-width:none}
 .cat-scroll::-webkit-scrollbar{display:none}
 .cat-pill{display:flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.875rem;font-weight:500;white-space:nowrap;cursor:pointer;transition:all .2s}
 .cat-pill:hover{border-color:var(--accent);color:var(--accent);background:var(--surfaceAlt)}
@@ -98,7 +99,7 @@ input,select,textarea{font-family:inherit}
 .stores-section{max-width:1200px;margin:0 auto;padding:40px 20px 60px}
 .stores-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
-.stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:24px}
 .store-card{background:var(--surface);border-radius:var(--r2);overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative}
 .store-card:hover{transform:translateY(-5px);box-shadow:0 12px 40px rgba(0,0,0,.12);border-color:var(--accent)}
 .store-card-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,rgba(255,107,107,.15),#1a1a1a 60%);display:flex;align-items:center;justify-content:center;position:relative}
@@ -141,10 +142,10 @@ input,select,textarea{font-family:inherit}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
 /* MODAL BASE */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-width:100vw;overflow:hidden}
 .overlay.hidden{display:none}
-.modal{background:var(--surface);border-radius:var(--r2);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);border:1px solid var(--border)}
-.modal-wide{max-width:700px}
+.modal{background:var(--surface);border-radius:var(--r2);width:100%;max-width:min(480px,100vw);max-height:90vh;overflow-y:auto;overflow-x:hidden;box-shadow:var(--shadow3);border:1px solid var(--border)}
+.modal-wide{max-width:min(700px,100vw)}
 .modal-hd{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
 .modal-hd h2{font-size:1.2rem;font-weight:800}
 .close-btn{background:transparent;border:none;font-size:1.4rem;color:var(--muted);line-height:1;padding:4px;cursor:pointer}
@@ -313,7 +314,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 @keyframes toastSlide{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
 
 /* BOTTOM NAV */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom,6px)}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom,6px);width:100%;max-width:100vw}
 .bottom-nav-inner{display:flex;justify-content:space-around;align-items:center;max-width:600px;margin:0 auto}
 .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;font-size:.65rem;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;min-width:44px;min-height:44px;justify-content:center}
 .bottom-nav-item.active{color:var(--accent)}
@@ -857,9 +858,13 @@ function toggleTheme(){
 
 // NAV MENU
 function toggleNavMenu(){document.getElementById('navDropdown').classList.toggle('open')}
+function closeAllDropdowns(){
+  document.getElementById('navDropdown').classList.remove('open');
+  document.getElementById('navActions')?.classList.remove('open');
+}
 document.addEventListener('click',e=>{
-  if(!document.getElementById('navMenu').contains(e.target))
-    document.getElementById('navDropdown').classList.remove('open');
+  // Close nav dropdown if clicking outside
+  if(!e.target.closest('.nav-menu,.hamburger'))closeAllDropdowns();
 });
 
 // AUTH STATE
@@ -873,7 +878,7 @@ async function onSignIn(user){
   currentUser=user;
   document.getElementById('navGuest').classList.add('hidden');
   document.getElementById('navUser').classList.remove('hidden');
-  const initials=(user.user_metadata?.full_name||user.email||'?').substring(0,2).toUpperCase();
+  const initials=(user.user_metadata?.full_name||user.email||'?').substring(0,1).toUpperCase();
   document.getElementById('navAvatar').textContent=initials;
   // Admin check
   if(user.email===ADMIN_EMAIL){
@@ -886,6 +891,9 @@ async function onSignIn(user){
   }
   closeAuth();
   await loadProfile();
+  const displayName=currentProfile?.full_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'';
+  toast(`Willkommen zurück, ${displayName}!`,'success');
+  loadStores();
   // Auto-open booking if user tried to book before login
   if(pendingBookingStoreId){
     const sid=pendingBookingStoreId;
@@ -907,6 +915,9 @@ function onSignOut(){
   document.getElementById('adminLink').classList.add('hidden');
   const bnAdmin=document.getElementById('bnAdmin');
   if(bnAdmin)bnAdmin.classList.add('hidden');
+  // Clear personalized localStorage
+  try{localStorage.removeItem('recentlyViewed');localStorage.removeItem('lastViewedStore');}catch(e){}
+  toast('Erfolgreich abgemeldet','info');
   showPage('home');loadStores();
 }
 
@@ -967,11 +978,11 @@ async function doLogin(){
   btn.disabled=false;btn.textContent='Anmelden';
   if(error){
     let msg='Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
-    if(error.message==='Invalid login credentials')msg='E-Mail oder Passwort stimmen nicht. Bitte überprüfe deine Eingaben.';
+    if(error.message==='Invalid login credentials')msg='Falsches Passwort oder E-Mail. Bitte überprüfe deine Eingaben.';
     else if(error.message.includes('Email not confirmed'))msg='Bitte bestätige zuerst deine E-Mail-Adresse.';
+    else if(error.message.includes('Invalid email'))msg='Bitte gib eine gültige E-Mail-Adresse ein.';
     showAuthMsg(msg);
   }
-  else toast('Willkommen zurück!','success');
 }
 
 async function doSignup(){
@@ -988,12 +999,16 @@ async function doSignup(){
   btn.disabled=false;btn.textContent='Konto erstellen';
   if(error){
     let msg='Registrierung fehlgeschlagen. Bitte versuche es erneut.';
-    if(error.message.includes('already registered'))msg='Diese E-Mail ist bereits registriert. Versuche dich anzumelden.';
+    if(error.message.includes('already registered')||error.message.includes('already been registered'))msg='Diese E-Mail ist bereits registriert. <a onclick="openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Jetzt anmelden</a>';
     else if(error.message.includes('valid email'))msg='Bitte gib eine gültige E-Mail-Adresse ein.';
+    else if(error.message.includes('password'))msg='Passwort muss mindestens 6 Zeichen haben.';
     showAuthMsg(msg);
   }
+  else if(data?.user?.identities?.length===0){
+    // Supabase returns fake user with empty identities when email already exists
+    showAuthMsg('Diese E-Mail ist bereits registriert. <a onclick="openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Jetzt anmelden</a>');
+  }
   else{
-    // Create profile
     if(data?.user){
       await sb.from('profiles').upsert({id:data.user.id,display_name:name,role:'customer'});
     }
@@ -1030,7 +1045,16 @@ async function doSalonSignup(){
   btn.disabled=true;btn.textContent='Salon anmelden...';
 
   const{error,data}=await sb.auth.signUp({email,password:pw,options:{data:{full_name:[first,last].filter(Boolean).join(' ')},emailRedirectTo:'https://www.solen.ch'}});
-  if(error){btn.disabled=false;btn.textContent='Salon anmelden';return showAuthMsg(error.message);}
+  if(error){
+    btn.disabled=false;btn.textContent='Salon anmelden';
+    let msg='Registrierung fehlgeschlagen. Bitte versuche es erneut.';
+    if(error.message.includes('already registered')||error.message.includes('already been registered'))msg='Diese E-Mail ist bereits registriert. <a onclick="openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Jetzt anmelden</a>';
+    return showAuthMsg(msg);
+  }
+  if(data?.user?.identities?.length===0){
+    btn.disabled=false;btn.textContent='Salon anmelden';
+    return showAuthMsg('Diese E-Mail ist bereits registriert. <a onclick="openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Jetzt anmelden</a>');
+  }
 
   if(data?.user){
     // Create profile as salon_owner
@@ -1150,12 +1174,37 @@ async function loadStores(){
   const el2=document.getElementById('statServices');
   if(el1)el1.textContent=allStores.length;
   if(el2)el2.textContent=allServices.length;
+  restoreCategoryFilter();
   renderStores();
 }
 
 function getStoreEmoji(type){
   const map={barber:'✂️',hairsalon:'💇',nails:'💅',spa:'🧖',makeup:'💄',eyebrows:'👁️'};
   return map[type]||'✨';
+}
+
+function renderStoreCard(s){
+  const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
+  const topSvcs=svcs.slice(0,3);
+  const minPrice=svcs.length?Math.min(...svcs.map(x=>x.price)):null;
+  const visited=userBookedStores.has(s.id);
+  return`<div class="store-card" onclick="openStore('${s.id}')">
+    <div class="store-img">
+      ${s.image_url?`<img src="${s.image_url}" alt="${s.name}" loading="lazy">`:`<div class="store-img-placeholder">${getStoreEmoji(s.type)}</div>`}
+      ${s.type?`<span class="store-badge">${getTypeName(s.type)}</span>`:''}
+      ${visited?'<span class="visited-badge">Bereits besucht</span>':''}
+    </div>
+    <div class="store-body">
+      <div class="store-name">${s.name}</div>
+      <div class="store-type-badge">${getTypeName(s.type||'')}</div>
+      <div class="store-meta">&#128205; ${s.address||'Basel'}</div>
+      ${topSvcs.length?`<div class="store-services-preview">${topSvcs.map(sv=>`<span class="service-chip">${sv.name} &middot; CHF ${sv.price}</span>`).join('')}</div>`:''}
+      <div class="store-card-footer">
+        <span class="store-price-range">${minPrice?`ab CHF ${minPrice}`:''}</span>
+        <button class="btn-book" onclick="event.stopPropagation();startBooking('${s.id}')">Buchen</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function renderStores(){
@@ -1171,29 +1220,28 @@ function renderStores(){
     document.getElementById('storesGrid').innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128269;</div><h3>Kein Salon gefunden</h3><p>Versuch einen anderen Suchbegriff oder wähle eine andere Kategorie.</p><button onclick="resetFilters()">Alle Salons anzeigen</button></div>';
     return;
   }
-  document.getElementById('storesGrid').innerHTML=filtered.map(s=>{
-    const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
-    const topSvcs=svcs.slice(0,3);
-    const minPrice=svcs.length?Math.min(...svcs.map(x=>x.price)):null;
-    const visited=userBookedStores.has(s.id);
-    return`<div class="store-card" onclick="openStore('${s.id}')">
-      <div class="store-img">
-        ${s.image_url?`<img src="${s.image_url}" alt="${s.name}" loading="lazy">`:`<div class="store-img-placeholder">${getStoreEmoji(s.type)}</div>`}
-        ${s.type?`<span class="store-badge">${getTypeName(s.type)}</span>`:''}
-        ${visited?'<span class="visited-badge">Bereits besucht</span>':''}
-      </div>
-      <div class="store-body">
-        <div class="store-name">${s.name}</div>
-        <div class="store-type-badge">${getTypeName(s.type||'')}</div>
-        <div class="store-meta">&#128205; ${s.address||'Basel'}</div>
-        ${topSvcs.length?`<div class="store-services-preview">${topSvcs.map(sv=>`<span class="service-chip">${sv.name} &middot; CHF ${sv.price}</span>`).join('')}</div>`:''}
-        <div class="store-card-footer">
-          <span class="store-price-range">${minPrice?`ab CHF ${minPrice}`:''}</span>
-          <button class="btn-book" onclick="event.stopPropagation();startBooking('${s.id}')">Buchen</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+  // Recently viewed section
+  let recentHtml='';
+  if(currentUser){
+    const recentIds=getRecentStores();
+    const recentStores=recentIds.map(id=>allStores.find(x=>x.id===id)).filter(Boolean).filter(s=>filtered.includes(s));
+    if(recentStores.length>0){
+      recentHtml=`<div style="grid-column:1/-1;margin-bottom:8px"><div style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Zuletzt angesehen</div><div class="stores-grid" style="margin-bottom:24px">${recentStores.slice(0,3).map(s=>renderStoreCard(s)).join('')}</div><div style="height:1px;background:var(--border);margin-bottom:8px"></div></div>`;
+    }
+  }
+  // Resume banner
+  let resumeHtml='';
+  const lastViewedId=localStorage.getItem('lastViewedStore');
+  if(currentUser&&lastViewedId){
+    const lastStore=allStores.find(x=>x.id===lastViewedId);
+    if(lastStore){
+      resumeHtml=`<div style="grid-column:1/-1;background:var(--surfaceAlt);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <span style="font-size:.9rem;font-weight:600">Weiter bei ${lastStore.name}?</span>
+        <button class="btn-sm solid" onclick="startBooking('${lastStore.id}')">Termin buchen</button>
+      </div>`;
+    }
+  }
+  document.getElementById('storesGrid').innerHTML=resumeHtml+recentHtml+filtered.map(s=>renderStoreCard(s)).join('');
 }
 
 function resetFilters(){
@@ -1227,13 +1275,45 @@ function selectCat(btn,cat){
       document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
     }
   }
+  saveCategoryFilter();
   renderStores();
+}
+
+// BEHAVIOR TRACKING
+function trackRecentStore(storeId){
+  try{
+    let recent=JSON.parse(localStorage.getItem('recentlyViewed')||'[]');
+    recent=recent.filter(id=>id!==storeId);
+    recent.unshift(storeId);
+    if(recent.length>5)recent=recent.slice(0,5);
+    localStorage.setItem('recentlyViewed',JSON.stringify(recent));
+    localStorage.setItem('lastViewedStore',storeId);
+  }catch(e){}
+}
+function getRecentStores(){
+  try{return JSON.parse(localStorage.getItem('recentlyViewed')||'[]');}catch(e){return[];}
+}
+function saveCategoryFilter(){
+  try{localStorage.setItem('lastFilter',JSON.stringify([...activeCategories]));}catch(e){}
+}
+function restoreCategoryFilter(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('lastFilter')||'[]');
+    if(saved.length){
+      activeCategories=new Set(saved);
+      document.querySelectorAll('.cat-pill').forEach(b=>{
+        if(b.dataset.cat==='all')b.classList.toggle('active',activeCategories.size===0);
+        else b.classList.toggle('active',activeCategories.has(b.dataset.cat));
+      });
+    }
+  }catch(e){}
 }
 
 // STORE DETAIL
 function openStore(storeId){
   const s=allStores.find(x=>x.id===storeId);
   if(!s)return;
+  trackRecentStore(storeId);
   const svcs=allServices.filter(x=>x.store_id===storeId);
   document.getElementById('storeDetailContent').innerHTML=`
     ${s.image_url?`<img class="store-detail-img" src="${s.image_url}" alt="${s.name}">`:`<div class="store-detail-img-placeholder">${getStoreEmoji(s.type)}</div>`}
@@ -1677,13 +1757,12 @@ async function loadAdminBookings(){
   el.innerHTML='<div class="spinner"></div>';
   const{data}=await sb.from('bookings').select('*,stores(name)').order('booking_date',{ascending:false}).limit(100);
   el.innerHTML=data&&data.length?`<div class="table-wrap"><table class="data-table">
-    <thead><tr><th>Datum</th><th>Uhrzeit</th><th>Salon</th><th>Service</th><th>Kunde</th><th>Status</th><th>Aktion</th></tr></thead>
+    <thead><tr><th>Datum</th><th>Salon</th><th>Service</th><th>Kunde</th><th>Status</th><th>Aktion</th></tr></thead>
     <tbody>${data.map(b=>`<tr>
-      <td>${formatDate(b.booking_date)}</td>
-      <td>${b.booking_time||'—'}</td>
-      <td>${b.stores?.name||'—'}</td>
-      <td>${b.service_name||'—'}</td>
-      <td>${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Anonym'}</td>
+      <td>${formatDate(b.booking_date)}<br><span style="font-size:.75rem;color:var(--muted)">${b.booking_time||''}</span></td>
+      <td>${b.salon_name||b.stores?.name||'—'}</td>
+      <td>${b.service_name||'—'}<br><span style="font-size:.75rem;color:var(--muted)">CHF ${b.service_price||0}</span></td>
+      <td>${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Anonym'}<br><span style="font-size:.75rem;color:var(--muted)">${b.customer_email||''}</span></td>
       <td><span class="booking-status ${b.status==='confirmed'?'status-confirmed':b.status==='cancelled'?'status-cancelled':'status-pending'}">${b.status}</span></td>
       <td>
         ${b.status!=='cancelled'?`<button class="btn-danger" onclick="cancelBooking('${b.id}')">Stornieren</button>`:''}
@@ -1697,15 +1776,24 @@ async function loadAdminUsers(){
   el.innerHTML='<div class="spinner"></div>';
   const{data}=await sb.from('profiles').select('*').order('created_at',{ascending:false}).limit(50);
   el.innerHTML=data&&data.length?`<div class="table-wrap"><table class="data-table">
-    <thead><tr><th>Name</th><th>Rolle</th><th>Altersgruppe</th><th>Geschlecht</th><th>Haartyp</th></tr></thead>
-    <tbody>${data.map(u=>`<tr>
-      <td><strong>${u.display_name||'—'}</strong></td>
-      <td><span class="badge" style="background:${u.role==='salon_owner'?'var(--accent2)':u.role==='admin'?'var(--accent)':'var(--surfaceAlt)'};color:${u.role==='salon_owner'||u.role==='admin'?'white':'var(--text)'};padding:3px 10px;border-radius:50px;font-size:.75rem">${u.role||'customer'}</span></td>
-      <td>${u.age_range||'—'}</td>
+    <thead><tr><th>Name</th><th>Rolle</th><th>Registriert</th><th>Geschlecht</th><th>Aktionen</th></tr></thead>
+    <tbody>${data.map(u=>{
+      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'—';
+      return`<tr>
+      <td><strong>${u.display_name||u.name||'—'}</strong><br><span style="font-size:.75rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
+      <td><span class="badge" style="background:${u.role==='salon_owner'?'var(--accent2)':u.is_admin?'var(--accent)':'var(--surfaceAlt)'};color:${u.role==='salon_owner'||u.is_admin?'white':'var(--text)'};padding:3px 10px;border-radius:50px;font-size:.75rem">${u.is_admin?'Admin':u.role||'customer'}</span></td>
+      <td>${regDate}</td>
       <td>${u.gender||'—'}</td>
-      <td>${u.hair_type||'—'}</td>
-    </tr>`).join('')}</tbody>
+      <td><button class="btn-danger" onclick="deleteProfile('${u.id}','${(u.display_name||u.name||'').replace(/'/g,"\\'")}')">Löschen</button></td>
+    </tr>`;}).join('')}</tbody>
   </table></div>`:'<p class="text-muted" style="margin-top:20px">Noch keine Nutzerprofile.</p>';
+}
+
+async function deleteProfile(id,name){
+  if(!confirm('Profil von "'+name+'" wirklich löschen? (Nur Profildaten, nicht der Auth-Account)'))return;
+  const{error}=await sb.from('profiles').delete().eq('id',id);
+  if(error)toast('Fehler: '+error.message,'error');
+  else{toast('Profil gelöscht.','info');loadAdminUsers();}
 }
 
 // EDIT STORE MODAL
@@ -1872,7 +1960,7 @@ async function updateSalonBooking(id,status){
 }
 
 // KEYBOARD SHORTCUTS
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();document.getElementById('setupOverlay').classList.add('hidden');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();document.getElementById('setupOverlay').classList.add('hidden');}});
 </script>
 </body>
 </html>
