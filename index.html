@@ -547,6 +547,32 @@ html,body{overflow-x:hidden;max-width:100vw}
 /* GLOBAL POLISH */
 body{overflow-x:hidden}
 button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-primary{min-height:44px}
+/* STAFF MANAGEMENT */
+.dash-section-hd{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px}
+.dash-section-hd h3{font-size:1.05rem;font-weight:700}
+.staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:8px}
+.staff-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 10px;text-align:center;position:relative;transition:.2s}
+.s-avatar{width:56px;height:56px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;background:var(--accent);color:#fff;overflow:hidden}
+.s-avatar img{width:100%;height:100%;object-fit:cover}
+.staff-card .s-name{font-weight:600;font-size:.88rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.staff-card .s-role{font-size:.76rem;color:var(--muted)}
+.staff-card .s-del{position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;font-size:.78rem;color:var(--muted);padding:2px 5px;border-radius:4px;line-height:1}
+.staff-card .s-del:hover{background:var(--error);color:#fff}
+.sp-section{padding:16px 24px;border-bottom:1px solid var(--border)}
+.sp-section h4{font-size:.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.sp-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sp-chip{display:flex;align-items:center;gap:7px;padding:6px 12px;border:2px solid var(--border);border-radius:100px;cursor:pointer;font-size:.85rem;font-weight:500;background:var(--bg);transition:.2s;white-space:nowrap;user-select:none}
+.sp-chip:hover,.sp-chip.sel{border-color:var(--accent);background:rgba(78,205,196,.1);color:var(--accent)}
+.sp-chip .sp-av{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.sp-chip .sp-av img{width:100%;height:100%;object-fit:cover}
+#addStaffMdl{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:700;display:none;align-items:center;justify-content:center;padding:20px}
+#addStaffMdl.open{display:flex}
+.asm-wrap{background:var(--surface);border-radius:var(--r2);width:100%;max-width:380px;padding:24px;box-shadow:var(--shadow3)}
+.asm-wrap h3{font-size:1rem;font-weight:700;margin-bottom:16px}
+.asm-field{margin-bottom:12px}
+.asm-field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:4px}
+.asm-field input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-family:inherit;font-size:.9rem}
+.asm-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -2836,6 +2862,8 @@ async function renderSalonDashboard(){
         </div>
       </div>`;
     }).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}`;
+  // Load staff section below bookings
+  if(salon&&salon.id)setTimeout(()=>loadDashStaffSection(salon.id),80);
 }
 
 async function updateSalonBooking(id,status){
@@ -2912,6 +2940,7 @@ function openBookingModal(store,preselectedTime){
   document.getElementById('bmTitle').textContent=`${t('book_now')} — ${store.name}`;
   renderBookingModal();
   document.getElementById('bookingModal').classList.add('open');
+  if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
 }
 function closeBookingModal(){
   document.getElementById('bookingModal').classList.remove('open');
@@ -3337,6 +3366,130 @@ async function submitSalonReg(e){
 // Close on backdrop click
 document.getElementById('salonRegModal').addEventListener('click',function(e){
   if(e.target===this)closeSalonReg();
+});
+</script>
+
+<!-- ADD STAFF MODAL -->
+<div id="addStaffMdl">
+  <div class="asm-wrap">
+    <h3>👤 Personal hinzufügen</h3>
+    <form onsubmit="submitAddStaff(event)">
+      <div class="asm-field">
+        <label>Name *</label>
+        <input id="asmName" type="text" required placeholder="z.B. Maria Müller">
+      </div>
+      <div class="asm-field">
+        <label>Funktion / Rolle</label>
+        <input id="asmRole" type="text" placeholder="z.B. Friseurin, Kosmetikerin">
+      </div>
+      <div class="asm-field">
+        <label>Foto-URL (optional)</label>
+        <input id="asmPhoto" type="url" placeholder="https://...">
+      </div>
+      <input type="hidden" id="asmStoreId">
+      <div class="asm-actions">
+        <button type="button" class="btn-secondary btn-sm" onclick="closeAddStaffMdl()">Abbrechen</button>
+        <button type="submit" class="btn-primary btn-sm">Hinzufügen</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ── STAFF MANAGEMENT ──────────────────────────────────────────────
+let _dashStaffSid=null;
+
+async function loadDashStaffSection(salonId){
+  _dashStaffSid=salonId;
+  const el=document.getElementById('salonDashContent');
+  if(!el)return;
+  const existing=document.getElementById('dashStaffSection');
+  if(existing)existing.remove();
+  const sec=document.createElement('div');
+  sec.id='dashStaffSection';
+  sec.className='';
+  sec.innerHTML='<div class="dash-section-hd"><h3>👤 Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
+  el.appendChild(sec);
+  const{data,error}=await sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name');
+  const grid=document.getElementById('dashStaffGrid');
+  if(!grid)return;
+  if(error||!data||data.length===0){
+    grid.innerHTML='<p style="color:var(--muted);font-size:.88rem;padding:4px 0">Noch kein Personal eingetragen.</p>';
+    return;
+  }
+  grid.innerHTML=data.map(m=>{
+    const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+    const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
+    return '<div class="staff-card"><button class="s-del" onclick="deleteStaff(''+m.id+'',''+salonId+'')" title="Entfernen">✕</button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
+  }).join('');
+}
+
+function openAddStaffMdl(){
+  const el=document.getElementById('addStaffMdl');
+  if(el)el.classList.add('open');
+  document.getElementById('asmStoreId').value=_dashStaffSid||'';
+  ['asmName','asmRole','asmPhoto'].forEach(id=>{const f=document.getElementById(id);if(f)f.value='';});
+}
+
+function closeAddStaffMdl(){
+  const el=document.getElementById('addStaffMdl');
+  if(el)el.classList.remove('open');
+}
+
+async function submitAddStaff(e){
+  e.preventDefault();
+  const sId=document.getElementById('asmStoreId').value;
+  const name=(document.getElementById('asmName').value||'').trim();
+  const role=(document.getElementById('asmRole').value||'').trim();
+  const photo=(document.getElementById('asmPhoto').value||'').trim();
+  if(!name||!sId)return;
+  const{error}=await sb.from('store_staff').insert([{store_id:sId,name,role:role||null,photo_url:photo||null,active:true}]);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  closeAddStaffMdl();
+  toast('Personal hinzugefügt ✓','success');
+  loadDashStaffSection(sId);
+}
+
+async function deleteStaff(staffId,salonId){
+  if(!confirm('Mitarbeiter entfernen?'))return;
+  await sb.from('store_staff').update({active:false}).eq('id',staffId);
+  loadDashStaffSection(salonId);
+}
+
+// ── STAFF PICKER IN BOOKING MODAL ──────────────────────────────────
+let _selStaffId=null,_selStaffName=null;
+
+async function loadStaffPickerInBooking(storeId){
+  _selStaffId=null;_selStaffName=null;
+  const existing=document.getElementById('staffPickerSection');
+  if(existing)existing.remove();
+  if(!storeId)return;
+  const{data}=await sb.from('store_staff').select('*').eq('store_id',storeId).eq('active',true).order('name');
+  if(!data||data.length===0)return;
+  const sec=document.createElement('div');
+  sec.id='staffPickerSection';
+  sec.className='sp-section';
+  const chips=data.map(m=>{
+    const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+    const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
+    const first=m.name.split(' ')[0];
+    return '<div class="sp-chip" onclick="selectStaff(''+m.id+'',''+first+'',this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
+  }).join('');
+  sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av">✦</div><span>Egal</span></div>'+chips+'</div>';
+  const bmBody=document.getElementById('bmBody');
+  if(bmBody)bmBody.parentNode.insertBefore(sec,bmBody);
+}
+
+function selectStaff(id,name,el){
+  _selStaffId=id;_selStaffName=name;
+  document.querySelectorAll('.sp-chip').forEach(c=>c.classList.remove('sel'));
+  if(el)el.classList.add('sel');
+}
+
+// Close add-staff modal on backdrop click
+document.addEventListener('DOMContentLoaded',function(){
+  const m=document.getElementById('addStaffMdl');
+  if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
 </script>
 </body>
