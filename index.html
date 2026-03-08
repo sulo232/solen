@@ -397,6 +397,8 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
               <a href="#" onclick="showPage('admin');return false">Admin Panel</a>
             </div>
             <div class="sep"></div>
+            <button onclick="toggleTheme()" id="themeToggleBtn">Hell / Dunkel</button>
+            <div class="sep"></div>
             <button onclick="signOut()">Abmelden</button>
           </div>
         </div>
@@ -826,6 +828,23 @@ function toast(msg,type='info'){
   document.getElementById('toast').appendChild(d);
   setTimeout(()=>d.remove(),3500);
 }
+
+// THEME TOGGLE
+function toggleTheme(){
+  const html=document.documentElement;
+  const current=html.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+  const btn=document.getElementById('themeToggleBtn');
+  if(btn)btn.textContent=next==='dark'?'Hell':'Dunkel';
+}
+(function(){
+  const t=document.documentElement.getAttribute('data-theme')||
+    (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  const btn=document.getElementById('themeToggleBtn');
+  if(btn)btn.textContent=t==='dark'?'Hell':'Dunkel';
+})();
 
 // NAV MENU
 function toggleNavMenu(){document.getElementById('navDropdown').classList.toggle('open')}
