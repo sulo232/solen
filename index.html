@@ -942,7 +942,12 @@ async function doLogin(){
   btn.disabled=true;btn.textContent='Anmelden...';
   const{error}=await sb.auth.signInWithPassword({email,password:pw});
   btn.disabled=false;btn.textContent='Anmelden';
-  if(error)showAuthMsg(error.message==='Invalid login credentials'?'Falsche E-Mail oder Passwort.':error.message);
+  if(error){
+    let msg='Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
+    if(error.message==='Invalid login credentials')msg='E-Mail oder Passwort stimmen nicht. Bitte überprüfe deine Eingaben.';
+    else if(error.message.includes('Email not confirmed'))msg='Bitte bestätige zuerst deine E-Mail-Adresse.';
+    showAuthMsg(msg);
+  }
   else toast('Willkommen zurück!','success');
 }
 
@@ -958,7 +963,12 @@ async function doSignup(){
   btn.disabled=true;btn.textContent='Konto erstellen...';
   const{error,data}=await sb.auth.signUp({email,password:pw,options:{data:{full_name:name},emailRedirectTo:'https://www.solen.ch'}});
   btn.disabled=false;btn.textContent='Konto erstellen';
-  if(error)showAuthMsg(error.message);
+  if(error){
+    let msg='Registrierung fehlgeschlagen. Bitte versuche es erneut.';
+    if(error.message.includes('already registered'))msg='Diese E-Mail ist bereits registriert. Versuche dich anzumelden.';
+    else if(error.message.includes('valid email'))msg='Bitte gib eine gültige E-Mail-Adresse ein.';
+    showAuthMsg(msg);
+  }
   else{
     // Create profile
     if(data?.user){
@@ -1332,7 +1342,7 @@ function renderWizStep(step){
       <div class="summary-row"><span>Dauer</span><span>${s.duration} Min.</span></div>
       <div class="summary-row total"><span>Preis</span><span>CHF ${s.price}</span></div>
     </div>
-    <div class="wiz-btns"><button class="btn-secondary" onclick="wizNext(4)">Zurück</button><button class="btn-primary" onclick="confirmBooking()">Jetzt buchen</button></div>`;
+    <div class="wiz-btns"><button class="btn-secondary" onclick="wizNext(4)">Zurück</button><button class="btn-primary" onclick="confirmBooking()">Termin buchen</button></div>`;
   }
   document.getElementById('wizContent').innerHTML=html;
 }
@@ -1415,7 +1425,7 @@ async function confirmBooking(){
     status:'confirmed',
     reference:reference
   });
-  if(error){toast('Fehler beim Buchen: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Jetzt buchen';}}
+  if(error){toast('Buchung fehlgeschlagen. Bitte versuche es erneut.','error');if(btn){btn.disabled=false;btn.textContent='Termin buchen';}}
   else{
     closeBooking();
     toast(`Termin gebucht! Referenz: ${reference}`,'success');
@@ -1495,7 +1505,7 @@ async function renderBookings(){
   document.getElementById('bookingsContent').innerHTML='<div class="spinner"></div>';
   const{data,error}=await sb.from('bookings').select('*,stores(name,type)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
   if(error||!data||data.length===0){
-    document.getElementById('bookingsContent').innerHTML='<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">Noch keine Buchungen</h3><p>Buche jetzt deinen ersten Termin</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage(\'home\')">Salons entdecken</button></div>';
+    document.getElementById('bookingsContent').innerHTML='<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">Noch keine Buchungen</h3><p>Buche deinen ersten Termin</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage(\'home\')">Salons entdecken</button></div>';
     return;
   }
   const html=`<div class="booking-list">${data.map(b=>{
