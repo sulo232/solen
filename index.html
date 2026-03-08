@@ -769,7 +769,7 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 // STATE
 let currentUser=null, currentProfile=null, allStores=[], allServices=[];
-let activeCategory='all', bookingState={}, editingStore=null;
+let activeCategory='all', bookingState={}, editingStore=null, pendingBookingStoreId=null;
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 
@@ -847,6 +847,12 @@ async function onSignIn(user){
   }
   closeAuth();
   await loadProfile();
+  // Auto-open booking if user tried to book before login
+  if(pendingBookingStoreId){
+    const sid=pendingBookingStoreId;
+    pendingBookingStoreId=null;
+    setTimeout(()=>startBooking(sid),500);
+  }
   // Check if salon owner
   const{data:salonData}=await sb.from('salons').select('id').eq('owner_id',user.id).limit(1);
   if(salonData&&salonData.length>0){
@@ -1190,7 +1196,7 @@ function closeStoreDetail(){document.getElementById('storeOverlay').classList.ad
 
 // BOOKING WIZARD
 function startBooking(storeId){
-  if(!currentUser){openAuth('login');return;}
+  if(!currentUser){pendingBookingStoreId=storeId;openAuth('login');return;}
   const store=allStores.find(x=>x.id===storeId);
   if(!store)return;
   bookingState={storeId,store,step:1,service:null,date:null,time:null};
