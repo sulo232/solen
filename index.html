@@ -196,9 +196,9 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .wiz-step.active .wiz-num{background:var(--accent);border-color:var(--accent);color:white}
 .wiz-sep{flex:1;min-width:12px;height:1px;background:var(--border);margin:0 6px}
 .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:8px}
-.svc-card{padding:14px;border:1.5px solid var(--border2);border-radius:var(--r);cursor:pointer;transition:.15s;background:var(--surface)}
-.svc-card:hover{border-color:var(--text)}
-.svc-card.selected{border-color:var(--accent);background:var(--bg2)}
+.svc-card{padding:14px;border:1.5px solid var(--border2);border-radius:var(--r);cursor:pointer;transition:.15s;background:var(--surface);touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:44px;user-select:none}
+.svc-card:hover,.svc-card:active{border-color:var(--text)}
+.svc-card.selected{border-color:var(--accent);background:var(--surfaceAlt)}
 .svc-card.preferred{border-color:var(--success)}
 .svc-name{font-weight:700;font-size:.92rem;margin-bottom:4px;color:var(--text)}
 .svc-meta{font-size:.8rem;color:var(--muted);display:flex;gap:10px}
@@ -1227,7 +1227,7 @@ function renderWizStep(step){
       html+=`<div class="services-grid">${ordered.map(s=>{
         const isPreferred=preferred.includes(s);
         const sel=bookingState.service?.id===s.id;
-        return`<div class="svc-card ${sel?'selected':''} ${isPreferred?'preferred':''}" onclick="selectService('${s.id}')">
+        return`<div class="svc-card ${sel?'selected':''} ${isPreferred?'preferred':''}" data-svc-id="${s.id}" onclick="selectService('${s.id}')" role="button" tabindex="0">
           ${isPreferred?`<div class="svc-badge preferred-badge">Empfohlen</div>`:''}
           <div class="svc-name">${s.name}</div>
           <div class="svc-meta"><span>CHF ${s.price}</span><span>${s.duration} Min.</span></div>
@@ -1315,7 +1315,12 @@ function selectTime(t){bookingState.time=t;renderWizStep(3);}
 
 function selectService(id){
   bookingState.service=allServices.find(s=>s.id===id);
-  renderWizStep(1);
+  // Update selection visually without full re-render for snappier feel
+  document.querySelectorAll('.svc-card').forEach(c=>{
+    c.classList.toggle('selected',c.getAttribute('data-svc-id')===id);
+  });
+  const btn=document.getElementById('wizNext1');
+  if(btn)btn.disabled=false;
 }
 
 function wizNext(step){
