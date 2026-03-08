@@ -61,7 +61,7 @@ input,select,textarea{font-family:inherit}
 .theme-toggle{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;flex-shrink:0;margin-right:8px}
 .theme-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:white}
 .nav-actions{display:flex;gap:10px;align-items:center}
-.btn-nav-ghost{color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);background:transparent;padding:8px 20px;border-radius:100px;font-size:.9rem;cursor:pointer;transition:all .2s}
+.btn-nav-ghost{color:rgba(255,255,255,.95);border:1.5px solid rgba(255,255,255,.32);background:rgba(255,255,255,.07);padding:8px 20px;border-radius:100px;font-size:.9rem;cursor:pointer;transition:all .2s}
 .btn-nav-ghost:hover{background:rgba(255,255,255,.08);color:white}
 .btn-nav-primary{background:var(--gradient);color:#0D0D0D;border:none;padding:8px 20px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
 .btn-nav-primary:hover{opacity:.9;transform:scale(1.03)}
@@ -467,7 +467,7 @@ html,body{overflow-x:hidden;max-width:100vw}
 }
 
 /* NEIGHBOURHOOD CHIPS */
-.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 0 0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.neighbourhood-bar::before,.neighbourhood-bar::after{content:"";flex-shrink:0;min-width:20px;display:block}
+.neighbourhood-bar{max-width:1200px;margin:0 auto;padding:8px 0 0;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}.neighbourhood-bar::before,.neighbourhood-bar::after{content:"";flex-shrink:0;min-width:20px;display:block}
 .neighbourhood-bar::-webkit-scrollbar{display:none}
 .neighbourhood-chip{padding:6px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
 .neighbourhood-chip:hover{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.25)}
@@ -706,7 +706,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
       </div>
-      <div class="neighbourhood-bar" style="justify-content:center;padding:12px 0 0">
+      <div class="neighbourhood-bar" style="padding:12px 0 0">
         <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'')" data-i18n="neighbourhood_all">Alle Quartiere</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel')">Grossbasel</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel')">Kleinbasel</button>
@@ -1235,7 +1235,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Bitte E-Mail und Passwort eingeben.',err_fill_all:'Bitte alle Felder ausf\u00fcllen.',err_pw_min:'Passwort muss mindestens 6 Zeichen haben.',
     err_wrong_pw:'Falsches Passwort oder E-Mail. Bitte \u00fcberpr\u00fcfe deine Eingaben.',err_confirm_email:'Bitte best\u00e4tige zuerst deine E-Mail-Adresse.',
-    err_invalid_email:'Bitte gib eine g\u00fcltige E-Mail-Adresse ein.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
+    err_invalid_email:'Bitte gib eine g\u00fcltige E-Mail-Adresse ein.',err_email_not_registered:'Diese E-Mail-Adresse ist nicht registriert.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
     err_already_registered:'Diese E-Mail ist bereits registriert.',err_signup_failed:'Registrierung fehlgeschlagen. Bitte versuche es erneut.',
     confirm_email_sent:'Best\u00e4tigungs-E-Mail gesendet! Bitte pr\u00fcfe dein Postfach.',
     setup_title:'Profil einrichten',setup_welcome:'Willkommen! M\u00f6chtest du dein Profil einrichten?',setup_edit:'Profil bearbeiten',
@@ -1286,7 +1286,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Please enter email and password.',err_fill_all:'Please fill in all fields.',err_pw_min:'Password must be at least 6 characters.',
     err_wrong_pw:'Wrong password or email. Please check your input.',err_confirm_email:'Please confirm your email address first.',
-    err_invalid_email:'Please enter a valid email address.',err_generic:'An error occurred. Please try again.',
+    err_invalid_email:'Please enter a valid email address.',err_email_not_registered:'This email address is not registered.',err_generic:'An error occurred. Please try again.',
     err_already_registered:'This email is already registered.',err_signup_failed:'Registration failed. Please try again.',
     confirm_email_sent:'Confirmation email sent! Please check your inbox.',
     setup_title:'Set up profile',setup_welcome:'Welcome! Would you like to set up your profile?',setup_edit:'Edit profile',
@@ -1337,7 +1337,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Veuillez entrer e-mail et mot de passe.',err_fill_all:'Veuillez remplir tous les champs.',err_pw_min:'Le mot de passe doit contenir au moins 6 caract\u00e8res.',
     err_wrong_pw:'Mauvais mot de passe ou e-mail.',err_confirm_email:'Veuillez confirmer votre e-mail.',
-    err_invalid_email:'Veuillez entrer un e-mail valide.',err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
+    err_invalid_email:'Veuillez entrer un e-mail valide.',err_email_not_registered:"Cette adresse e-mail n'est pas enregistrée.",err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
     err_already_registered:'Cet e-mail est d\u00e9j\u00e0 inscrit.',err_signup_failed:'\u00c9chec de l\u2019inscription. Veuillez r\u00e9essayer.',
     confirm_email_sent:'E-mail de confirmation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
     setup_title:'Configurer le profil',setup_welcome:'Bienvenue ! Veux-tu configurer ton profil ?',setup_edit:'Modifier le profil',
@@ -1387,7 +1387,7 @@ const T={
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
     err_email_pw:'Lütfen e-posta ve şifre girin.',err_fill_all:'Lütfen tüm alanları doldurun.',err_pw_min:'Şifre en az 6 karakter olmalıdır.',
     err_wrong_pw:'Yanlış şifre veya e-posta.',err_confirm_email:'Lütfen önce e-posta adresinizi onaylayın.',
-    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_generic:'Bir hata oluştu. Lütfen tekrar deneyin.',
+    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayıtlı değil.',err_generic:'Bir hata oluştu. Lütfen tekrar deneyin.',
     err_already_registered:'Bu e-posta zaten kayıtlı.',err_signup_failed:'Kayıt başarısız. Lütfen tekrar deneyin.',
     confirm_email_sent:'Onay e-postası gönderildi! Lütfen gelen kutunuzu kontrol edin.',
     setup_title:'Profil Oluştur',setup_welcome:'Hoş geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili düzenle',
@@ -1830,7 +1830,8 @@ async function doPasswordReset(){
   if(!email)return showAuthMsg(t('err_invalid_email'));
   const btn=document.querySelector('#formPasswordReset .btn-primary');
   btn.disabled=true;btn.textContent='...';
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
+  const{data:emailCheck,error:checkErr}=await sb.from('user_profiles').select('id').eq('email',email.toLowerCase()).maybeSingle();if(!checkErr&&emailCheck===null){btn.disabled=false;btn.textContent='Reset senden';return showAuthMsg(t('err_email_not_registered'));}
+const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
   btn.disabled=false;btn.textContent='Reset senden';
   if(error){console.error('[Solen] Password reset error:',error);showAuthMsg(t('err_generic'));}
   else{showAuthMsg(t('reset_email_sent')||'Reset-Link gesendet! Prüfe dein Postfach.','success');}
