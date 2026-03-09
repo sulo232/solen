@@ -403,6 +403,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 
 /* LOADING */
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:40px auto}
+.btn-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* TOAST */
@@ -1252,6 +1253,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span data-i18n="bn_bookings">Termine</span>
     </button>
+    <button class="bottom-nav-item hidden" onclick="openMessagesTab()" id="bnMessages">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span data-i18n="bn_messages">Chat</span>
+    </button>
     <button class="bottom-nav-item" onclick="showPage('profile')" id="bnProfile">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span data-i18n="bn_profile">Profil</span>
@@ -1808,6 +1813,7 @@ async function onSignIn(user){
   // Sync mobile menu
   const mGuest=document.getElementById('mobileNavGuest');if(mGuest)mGuest.classList.add('hidden');
   const mUser=document.getElementById('mobileNavUser');if(mUser)mUser.classList.remove('hidden');
+  const bnMsg=document.getElementById('bnMessages');if(bnMsg)bnMsg.classList.remove('hidden');
   const initials=(user.user_metadata?.full_name||user.email||'?').substring(0,1).toUpperCase();
   document.getElementById('navAvatar').textContent=initials;
   // Admin check - email match OR metadata role
@@ -1821,12 +1827,16 @@ async function onSignIn(user){
     // Upsert profile with is_admin=true
     sb.from('profiles').upsert({id:user.id,is_admin:true,updated_at:new Date().toISOString()},{onConflict:'id'});
   }
+  const scrollY=window.scrollY;
   closeAuth();
   await loadProfile();
   const displayName=currentProfile?.full_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'';
-  // Welcome back toast for returning visitors
-  if(!sessionStorage.getItem('solenWelcomed')){sessionStorage.setItem('solenWelcomed','1');setTimeout(()=>toast(t('toast_welcome')+', '+displayName+'!','success'),500);}
-  loadStores();
+  // Welcome toast — show immediately so user knows login worked
+  if(!sessionStorage.getItem('solenWelcomed')){sessionStorage.setItem('solenWelcomed','1');toast(t('toast_welcome')+', '+displayName+'!','success');}
+  else{toast(t('toast_welcome')+', '+displayName+'!','success');}
+  await loadStores();
+  // Restore scroll position so user stays where they were
+  window.scrollTo(0,scrollY);
   // Auto-open booking if user tried to book before login
   if(pendingBookingStoreId){
     const sid=pendingBookingStoreId;
@@ -1842,7 +1852,6 @@ async function onSignIn(user){
     document.getElementById('salonDashLink').classList.remove('hidden');
     const mSalon=document.getElementById('mobileNavSalonBtn');if(mSalon)mSalon.classList.remove('hidden');
   }
-  loadStores();
 }
 
 function onSignOut(){
@@ -1858,6 +1867,7 @@ function onSignOut(){
   document.getElementById('salonDashLink').classList.add('hidden');
   const bnAdmin=document.getElementById('bnAdmin');
   if(bnAdmin)bnAdmin.classList.add('hidden');
+  const bnMsg=document.getElementById('bnMessages');if(bnMsg)bnMsg.classList.add('hidden');
   // Clear personalized localStorage
   try{localStorage.removeItem('solenViewed');localStorage.removeItem('lastViewedStore');}catch(e){}
   toast(t('toast_signedout'),'info');
@@ -1935,9 +1945,10 @@ async function doLogin(){
   const pw=document.getElementById('loginPw').value;
   if(!email||!pw)return showAuthMsg(t('err_email_pw'));
   const btn=document.querySelector('#formLogin .btn-primary');
-  btn.disabled=true;btn.textContent=t('btn_login')+'...';
+  const origText=btn.textContent;
+  btn.disabled=true;btn.innerHTML='<span class="btn-spinner"></span> '+t('btn_login')+'...';
   const{error,data:loginData}=await sb.auth.signInWithPassword({email,password:pw});
-  btn.disabled=false;btn.textContent=t('btn_login');
+  btn.disabled=false;btn.textContent=origText;
   if(error){
     console.error('[Solen Auth] Login error:', error.message, error);
     let msg=t('err_generic');
@@ -2650,7 +2661,7 @@ function resetSalonSEO(){
 function checkURLStore(){
   const p=new URLSearchParams(window.location.search).get('s');
   if(!p)return;
-  constfunction shareSalon(){
+function shareSalon(){
   const s=window._shareStore;
   if(!s)return;
   const url=window.location.origin+'/'+(s.slug||slugify(s.name));
@@ -3112,6 +3123,32 @@ function rebookBooking(storeId){showPage('home');setTimeout(()=>startBooking(sto
 
 // ── CHAT ──────────────────────────────────────────────────────────────────────
 let _chatBookingId=null,_chatChannel=null,_chatRole='customer';
+
+function openMessagesTab(){
+  if(!currentUser){openAuth('login');return;}
+  const el=document.getElementById('chatOverlay');
+  document.getElementById('chatTitle').textContent='\u{1F4AC} Nachrichten';
+  el.classList.add('active');
+  loadAllConversations();
+}
+
+async function loadAllConversations(){
+  const container=document.getElementById('chatMessages');
+  container.innerHTML='<div class="spinner"></div>';
+  if(!currentUser){container.innerHTML='<p class="chat-empty">Bitte anmelden um Nachrichten zu sehen.</p>';return;}
+  const{data:bookings}=await sb.from('bookings').select('id,salon_name,store_id,stores(name)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
+  if(!bookings||bookings.length===0){
+    container.innerHTML='<div class="chat-empty"><div style="font-size:2.5rem;margin-bottom:12px">&#128172;</div><p style="font-weight:600;margin-bottom:4px">Keine Nachrichten</p><p style="font-size:.82rem;color:var(--muted)">Buche einen Termin, um mit einem Salon zu chatten.</p></div>';
+    return;
+  }
+  // Show list of conversations
+  container.innerHTML=bookings.map(b=>{
+    const name=b.salon_name||b.stores?.name||'Salon';
+    return`<div onclick="_chatConvoClick('${b.id}','${name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s"><div style="width:40px;height:40px;border-radius:50%;background:var(--surfaceAlt);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">&#9986;</div><div><div style="font-weight:700;font-size:.92rem">${name}</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px">Tippen zum Öffnen</div></div></div>`;
+  }).join('');
+}
+
+function _chatConvoClick(bookingId,title){openChat(bookingId,'customer',title);}
 
 function openChat(bookingId,role,title){
   _chatBookingId=bookingId;
