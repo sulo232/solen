@@ -382,31 +382,173 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .branch-card:hover{border-color:var(--accent);background:rgba(224,122,154,.07);transform:translateY(-1px)}
 .other-filialen{margin:12px 0 16px;padding:12px 14px;background:var(--surfaceAlt);border-radius:var(--r);border:1px solid var(--border)}
 .other-filialen h4{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--text2)}
-.chat-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100;display:none;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.chat-overlay.active{display:flex}
-.chat-modal{background:var(--surface);width:100%;max-width:480px;height:70vh;max-height:600px;border-radius:20px 20px 0 0;display:flex;flex-direction:column;box-shadow:0 -4px 24px rgba(0,0,0,.15);overflow:hidden}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-@media(max-width:768px){.chat-modal{margin-bottom:64px}}
-@media(min-width:769px){.chat-modal{border-radius:20px;margin-bottom:24px;height:60vh}}
-.chat-msg{display:flex;flex-direction:column;max-width:78%}
-.chat-msg.mine{align-self:flex-end;align-items:flex-end}
-.chat-msg.theirs{align-self:flex-start;align-items:flex-start}
-.chat-bubble{padding:10px 14px;border-radius:18px;font-size:.92rem;line-height:1.45;word-break:break-word}
-.chat-msg.mine .chat-bubble{background:var(--accent);color:var(--accentFg);border-bottom-right-radius:4px}
-.chat-msg.theirs .chat-bubble{background:var(--surfaceAlt);color:var(--text);border-bottom-left-radius:4px}
-.chat-meta{font-size:.72rem;color:var(--muted);margin-top:3px;padding:0 4px}
-.chat-empty{text-align:center;color:var(--muted);font-size:.88rem;padding:32px 16px;margin:auto;display:flex;flex-direction:column;align-items:center;gap:8px}
-.chat-empty .empty-icon{font-size:2.5rem;opacity:.6}
-.chat-empty .empty-title{font-weight:700;font-size:.95rem;color:var(--text)}
-.chat-empty .empty-sub{font-size:.82rem;color:var(--muted);max-width:240px}
-.chat-input-area{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface)}
-.chat-input{flex:1;padding:10px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:.9rem;outline:none;font-family:inherit}
-.chat-input:focus{border-color:var(--accent)}
-.chat-send-btn{background:var(--accent);color:var(--accentFg);border:none;width:40px;height:40px;border-radius:50%;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s}
-.chat-send-btn:hover{opacity:.85}
-.chat-unread-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--accent2);color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:100px;padding:0 4px;margin-left:4px;vertical-align:middle}
+/* ── DM DESIGN SYSTEM (Instagram-style) ────────────────────────────── */
+:root{--dm-blue:#0095F6;--dm-blue-hover:#1AA1F7;--dm-sent:#3797F0;--dm-bubble-mine:var(--dm-blue);--dm-bubble-theirs:var(--surfaceAlt);--dm-unread:#0095F6;--dm-online:#44D62C;--dm-typing:var(--muted);--dm-fail:var(--error)}
+[data-theme="dark"]{--dm-bubble-theirs:#262626;--dm-sent:#3797F0}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--dm-bubble-theirs:#262626;--dm-sent:#3797F0}}
+
+/* DM overlay & container */
+.dm-overlay{position:fixed;inset:0;z-index:1100;display:none;background:var(--bg);flex-direction:column}
+.dm-overlay.active{display:flex}
+
+/* ── INBOX SCREEN ── */
+.dm-inbox{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.dm-inbox-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface);min-height:52px;position:sticky;top:0;z-index:2}
+.dm-inbox-title{font-size:1.05rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;cursor:pointer}
+.dm-inbox-title svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;margin-top:1px}
+.dm-inbox-actions{display:flex;gap:12px}
+.dm-inbox-actions button{background:none;border:none;cursor:pointer;padding:6px;color:var(--text);display:flex}
+.dm-inbox-actions svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* inbox tabs */
+.dm-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 16px}
+.dm-tab{flex:1;text-align:center;padding:12px 0;font-size:.87rem;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.dm-tab.active{color:var(--text);border-bottom-color:var(--text);font-weight:700}
+
+/* inbox search */
+.dm-search{padding:10px 16px;background:var(--surface)}
+.dm-search input{width:100%;padding:8px 14px 8px 36px;border-radius:10px;border:none;background:var(--surfaceAlt);color:var(--text);font-size:.88rem;outline:none;font-family:inherit}
+.dm-search{position:relative}
+.dm-search svg{position:absolute;left:28px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2}
+
+/* conversation list */
+.dm-convo-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.dm-convo{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .15s}
+.dm-convo:hover{background:var(--surfaceAlt)}
+.dm-convo:active{background:var(--bg2)}
+.dm-convo-avatar{width:56px;height:56px;border-radius:50%;background:var(--surfaceAlt);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;overflow:hidden;position:relative}
+.dm-convo-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.dm-convo-avatar .dm-online-dot{position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--dm-online);border:2.5px solid var(--surface)}
+.dm-convo-body{flex:1;min-width:0}
+.dm-convo-name{font-size:.93rem;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-convo.unread .dm-convo-name{font-weight:700}
+.dm-convo-preview{font-size:.82rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;line-height:1.3}
+.dm-convo.unread .dm-convo-preview{color:var(--text);font-weight:500}
+.dm-convo-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.dm-convo-time{font-size:.72rem;color:var(--muted);white-space:nowrap}
+.dm-convo.unread .dm-convo-time{color:var(--text);font-weight:600}
+.dm-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--dm-unread)}
+.dm-convo-camera{background:none;border:none;padding:4px;cursor:pointer;color:var(--muted);display:flex}
+.dm-convo-camera svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* ── CHAT SCREEN ── */
+.dm-chat{display:none;flex-direction:column;height:100%;overflow:hidden}
+.dm-chat.active{display:flex}
+.dm-chat-hdr{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface);min-height:52px;position:sticky;top:0;z-index:2}
+.dm-chat-back{background:none;border:none;cursor:pointer;padding:4px;color:var(--text);display:flex}
+.dm-chat-back svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2}
+.dm-chat-avatar{width:36px;height:36px;border-radius:50%;background:var(--surfaceAlt);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.dm-chat-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.dm-chat-hdr-info{flex:1;min-width:0}
+.dm-chat-hdr-name{font-size:.93rem;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-chat-hdr-status{font-size:.72rem;color:var(--muted)}
+.dm-chat-hdr-actions{display:flex;gap:8px}
+.dm-chat-hdr-actions button{background:none;border:none;cursor:pointer;padding:6px;color:var(--text);display:flex}
+.dm-chat-hdr-actions svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* booking context banner */
+.dm-booking-ctx{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surfaceAlt);border-bottom:1px solid var(--border);font-size:.82rem;color:var(--text2)}
+.dm-booking-ctx svg{width:16px;height:16px;stroke:var(--dm-blue);fill:none;stroke-width:2;flex-shrink:0}
+.dm-booking-ctx span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* message list */
+.dm-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
+
+/* date separator */
+.dm-date-sep{text-align:center;font-size:.72rem;color:var(--muted);padding:12px 0 8px;font-weight:500}
+
+/* message row */
+.dm-msg{display:flex;flex-direction:column;max-width:72%;margin-bottom:2px;position:relative}
+.dm-msg.mine{align-self:flex-end;align-items:flex-end}
+.dm-msg.theirs{align-self:flex-start;align-items:flex-start}
+.dm-msg.mine+.dm-msg.mine,.dm-msg.theirs+.dm-msg.theirs{margin-top:0}
+.dm-msg.mine+.dm-msg.theirs,.dm-msg.theirs+.dm-msg.mine{margin-top:10px}
+
+/* bubble */
+.dm-bubble{padding:8px 14px;border-radius:22px;font-size:.9rem;line-height:1.45;word-break:break-word;position:relative;max-width:100%}
+.dm-msg.mine .dm-bubble{background:var(--dm-bubble-mine);color:#fff;border-bottom-right-radius:4px}
+.dm-msg.theirs .dm-bubble{background:var(--dm-bubble-theirs);color:var(--text);border-bottom-left-radius:4px}
+
+/* bubble tail (subtle) */
+.dm-msg.mine .dm-bubble::after{content:'';position:absolute;bottom:0;right:-4px;width:12px;height:12px;background:var(--dm-bubble-mine);clip-path:polygon(0 0,0 100%,100% 100%);border-radius:0 0 0 4px;display:none}
+.dm-msg.theirs .dm-bubble::after{content:'';position:absolute;bottom:0;left:-4px;width:12px;height:12px;background:var(--dm-bubble-theirs);clip-path:polygon(100% 0,0 100%,100% 100%);border-radius:0 0 4px 0;display:none}
+
+/* show tail on last message in sequence */
+.dm-msg.mine:last-child .dm-bubble::after,.dm-msg.mine+.dm-msg.theirs .dm-bubble::after,.dm-msg.theirs:last-child .dm-bubble::after,.dm-msg.theirs+.dm-msg.mine .dm-bubble::after{display:block}
+
+/* message meta */
+.dm-msg-meta{font-size:.68rem;color:var(--muted);margin-top:2px;padding:0 6px;display:flex;align-items:center;gap:4px}
+.dm-msg-meta .dm-tick{font-size:.68rem;color:var(--muted)}
+.dm-msg-meta .dm-tick.read{color:var(--dm-blue)}
+.dm-msg-meta .dm-failed{color:var(--error);cursor:pointer}
+.dm-msg-meta .dm-pending{opacity:.5}
+
+/* attachment in bubble */
+.dm-attach{border-radius:18px;overflow:hidden;margin-bottom:2px;max-width:240px;cursor:pointer}
+.dm-attach img{width:100%;display:block;border-radius:18px}
+.dm-attach-file{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,255,255,.1);border-radius:14px}
+.dm-attach-file svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0}
+.dm-attach-file-info{flex:1;min-width:0}
+.dm-attach-file-name{font-size:.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-attach-file-size{font-size:.7rem;opacity:.7}
+
+/* reaction badge */
+.dm-reaction{position:absolute;bottom:-8px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:1px 6px;font-size:.72rem;cursor:pointer;display:flex;align-items:center;gap:2px;box-shadow:0 1px 3px rgba(0,0,0,.1);z-index:1}
+.dm-msg.mine .dm-reaction{left:4px}
+.dm-msg.theirs .dm-reaction{right:4px}
+
+/* typing indicator */
+.dm-typing{display:none;align-self:flex-start;align-items:center;gap:8px;padding:4px 0;margin-top:4px}
+.dm-typing.active{display:flex}
+.dm-typing-avatar{width:28px;height:28px;border-radius:50%;background:var(--surfaceAlt);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.7rem}
+.dm-typing-dots{display:flex;gap:3px;padding:8px 14px;background:var(--dm-bubble-theirs);border-radius:22px}
+.dm-typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:dmTypingBounce 1.4s infinite}
+.dm-typing-dots span:nth-child(2){animation-delay:.2s}
+.dm-typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dmTypingBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+
+/* ── INPUT BAR ── */
+.dm-input-bar{display:flex;align-items:flex-end;gap:8px;padding:8px 12px;border-top:1px solid var(--border);background:var(--surface);min-height:52px}
+.dm-input-bar button{background:none;border:none;cursor:pointer;padding:8px;color:var(--text);display:flex;flex-shrink:0}
+.dm-input-bar button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8}
+.dm-input-wrap{flex:1;display:flex;align-items:flex-end;border:1px solid var(--border);border-radius:22px;padding:4px 4px 4px 14px;background:var(--bg);min-height:38px;transition:border-color .2s}
+.dm-input-wrap:focus-within{border-color:var(--dm-blue)}
+.dm-input-field{flex:1;border:none;background:transparent;color:var(--text);font-size:.9rem;line-height:1.4;outline:none;resize:none;font-family:inherit;max-height:100px;min-height:22px;padding:4px 0;overflow-y:auto}
+.dm-input-field::placeholder{color:var(--muted)}
+.dm-input-emoji{background:none;border:none;cursor:pointer;padding:4px;color:var(--muted);font-size:1.2rem;display:flex;align-items:center}
+.dm-send-btn{background:none;border:none;cursor:pointer;padding:8px;color:var(--dm-blue);display:flex;flex-shrink:0;transition:transform .15s}
+.dm-send-btn:active{transform:scale(.9)}
+.dm-send-btn svg{width:24px;height:24px;fill:var(--dm-blue);stroke:none}
+.dm-send-btn.disabled{opacity:.3;pointer-events:none}
+
+/* quick reply templates (salon side) */
+.dm-quick-replies{display:flex;gap:6px;padding:4px 12px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dm-quick-reply{white-space:nowrap;padding:6px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.8rem;font-weight:500;cursor:pointer;transition:all .15s;flex-shrink:0}
+.dm-quick-reply:hover{border-color:var(--dm-blue);color:var(--dm-blue);background:rgba(0,149,246,.06)}
+
+/* ── EMPTY / ERROR STATES ── */
+.dm-empty{text-align:center;color:var(--muted);font-size:.88rem;padding:48px 24px;margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px}
+.dm-empty svg{width:56px;height:56px;stroke:var(--muted);fill:none;stroke-width:1;opacity:.5}
+.dm-empty-title{font-weight:700;font-size:1rem;color:var(--text)}
+.dm-empty-sub{font-size:.84rem;color:var(--muted);max-width:260px;line-height:1.4}
+
+/* ── NOTIFICATION DOT ON BOTTOM NAV ── */
+.bn-messages-badge{position:absolute;top:4px;right:12px;width:8px;height:8px;border-radius:50%;background:#FF3B30;display:none}
+.bn-messages-badge.active{display:block}
+#bnMessages{position:relative}
+
+/* btn-chat kept for booking page */
 .btn-chat{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;padding:5px 11px;border-radius:100px;border:1.5px solid var(--border);background:var(--surfaceAlt);color:var(--text);cursor:pointer;transition:all .2s}
-.btn-chat:hover{border-color:var(--accent);color:var(--accent);background:rgba(224,122,154,.08)}
+.btn-chat:hover{border-color:var(--dm-blue);color:var(--dm-blue);background:rgba(0,149,246,.06)}
+
+/* responsive adjustments */
+@media(min-width:769px){
+  .dm-overlay{max-width:480px;right:0;left:auto;border-left:1px solid var(--border);box-shadow:-4px 0 24px rgba(0,0,0,.08)}
+  .dm-convo-avatar{width:52px;height:52px}
+}
+@media(max-width:768px){
+  .dm-overlay{padding-bottom:64px}
+}
 
 /* ADMIN */
 .admin-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;overflow-x:auto}
@@ -917,19 +1059,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 /* === MESSAGING UI === */
 .msg-status{font-size:.68rem;color:var(--muted);display:inline-flex;align-items:center;gap:2px}
 .msg-status .tick{color:var(--muted)}
-.msg-status .tick.delivered{color:var(--accent2)}
-.msg-status .tick.read{color:var(--accent2)}
-.msg-status .failed{color:var(--error)}
-.chat-attachment-preview{background:var(--surfaceAlt);border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-top:6px;display:flex;align-items:center;gap:10px;max-width:260px}
-.chat-attachment-preview img{width:48px;height:48px;border-radius:6px;object-fit:cover}
-.chat-attachment-preview .att-info{flex:1;min-width:0}
-.chat-attachment-preview .att-name{font-size:.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.chat-attachment-preview .att-size{font-size:.72rem;color:var(--muted)}
-.chat-attach-btn{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:8px;transition:color .2s;display:flex;align-items:center}
-.chat-attach-btn:hover{color:var(--accent)}
-.whatsapp-hint{display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(37,211,102,.08);border-top:1px solid rgba(37,211,102,.15);font-size:.82rem;color:#25d366;font-weight:500}
-.whatsapp-hint a{color:#25d366;font-weight:700;text-decoration:underline}
-.bn-messages-badge{position:absolute;top:4px;right:12px;background:var(--accent);color:#fff;font-size:.6rem;font-weight:700;min-width:16px;height:16px;border-radius:100px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+/* legacy msg-status classes removed — replaced by dm- prefixed system */
 
 /* === RESPONSIVE ADJUSTMENTS FOR NEW FEATURES === */
 @media(max-width:768px){
@@ -1550,6 +1680,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
     <button class="bottom-nav-item" onclick="openMessagesTab()" id="bnMessages">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
       <span data-i18n="bn_messages">Chat</span>
+      <div class="bn-messages-badge" id="bnMsgBadge"></div>
     </button>
     <button class="bottom-nav-item" onclick="showPage('profile')" id="bnProfile">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -1601,23 +1732,65 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   </div>
 </div>
 <div id="toast"></div>
-<!-- CHAT MODAL -->
-<div class="chat-overlay" id="chatOverlay" onclick="if(event.target===this)closeChat()">
-  <div class="chat-modal">
-    <div class="modal-hd">
-      <h2 id="chatTitle" style="font-size:1rem">&#128172; Nachrichten</h2>
-      <button class="close-btn" onclick="closeChat()">&times;</button>
+<!-- DM OVERLAY (Instagram-style) -->
+<div class="dm-overlay" id="dmOverlay">
+  <!-- INBOX SCREEN -->
+  <div class="dm-inbox" id="dmInbox">
+    <div class="dm-inbox-hdr">
+      <div class="dm-inbox-title" id="dmInboxTitle">
+        <span data-i18n="dm_title">Messages</span>
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="dm-inbox-actions">
+        <button onclick="dmClose()" title="Close"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
     </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="chat-empty"><div class="empty-icon">&#128172;</div><div class="empty-title">Nachrichten</div><div class="empty-sub">Lade Konversationen...</div></div>
+    <div class="dm-tabs">
+      <button class="dm-tab active" id="dmTabMessages" onclick="dmSwitchTab('messages')" data-i18n="dm_tab_messages">Messages</button>
+      <button class="dm-tab" id="dmTabRequests" onclick="dmSwitchTab('requests')" data-i18n="dm_tab_requests">Requests</button>
     </div>
-    <div class="chat-input-area">
-      <input type="text" id="chatInput" class="chat-input" placeholder="Nachricht schreiben..."
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}">
-      <button class="chat-send-btn" onclick="sendChatMessage()" title="Senden">&#10148;</button>
+    <div class="dm-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="dmSearchInput" placeholder="Search" data-i18n-placeholder="dm_search_placeholder" oninput="dmFilterConvos(this.value)">
+    </div>
+    <div class="dm-convo-list" id="dmConvoList"></div>
+  </div>
+
+  <!-- CHAT SCREEN -->
+  <div class="dm-chat" id="dmChat">
+    <div class="dm-chat-hdr">
+      <button class="dm-chat-back" onclick="dmBackToInbox()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="dm-chat-avatar" id="dmChatAvatar"></div>
+      <div class="dm-chat-hdr-info">
+        <div class="dm-chat-hdr-name" id="dmChatName"></div>
+        <div class="dm-chat-hdr-status" id="dmChatStatus"></div>
+      </div>
+      <div class="dm-chat-hdr-actions">
+        <button onclick="dmShowInfo()" title="Info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></button>
+      </div>
+    </div>
+    <div class="dm-booking-ctx" id="dmBookingCtx" style="display:none">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span id="dmBookingCtxText"></span>
+    </div>
+    <div class="dm-messages" id="dmMessages"></div>
+    <div class="dm-typing" id="dmTyping">
+      <div class="dm-typing-avatar" id="dmTypingAvatar"></div>
+      <div class="dm-typing-dots"><span></span><span></span><span></span></div>
+    </div>
+    <div class="dm-quick-replies" id="dmQuickReplies" style="display:none"></div>
+    <div class="dm-input-bar">
+      <button onclick="dmAttachFile()" title="Attach"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
+      <div class="dm-input-wrap">
+        <textarea class="dm-input-field" id="dmInput" rows="1" placeholder="Message..." data-i18n-placeholder="dm_input_placeholder"
+          oninput="dmAutoGrow(this);dmHandleTyping()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dmSend();}"></textarea>
+        <button class="dm-input-emoji" onclick="dmToggleEmoji()" title="Emoji">&#128578;</button>
+      </div>
+      <button class="dm-send-btn" id="dmSendBtn" onclick="dmSend()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
     </div>
   </div>
 </div>
+<input type="file" id="dmFileInput" style="display:none" accept="image/*,.pdf,.doc,.docx" multiple onchange="dmHandleFiles(this.files)">
 
 
 <script>
@@ -1733,6 +1906,16 @@ const T={
     trust_actions_logged:'Alli Aktione werded protokolliert f\u00fcr d Sicherheit.',
     msg_delivered_tooltip:'Zuestellt = Carrier het d Nachricht agnoh (SMS). L\u00e4se-Best\u00e4tigung nur mit WhatsApp, wo unterst\u00fctzt.',
     msg_attachment_limit:'Max. 10 Dateie; Gr\u00f6sselimits gelte.',
+    dm_title:'Nachrichte',dm_tab_messages:'Nachrichte',dm_tab_requests:'Afrage',dm_search_placeholder:'Suche',
+    dm_input_placeholder:'Nachricht...',dm_time_now:'jetzt',dm_today:'H\u00fct',dm_yesterday:'Geschter',
+    dm_you:'Du',dm_sent_photo:'Foto gschickt',dm_sent_booking:'Buchigsbest\u00e4tigung gschickt',
+    dm_liked_message:'Nachricht gliked',dm_no_messages:'No kei Nachrichte',dm_retry:'Nomal',
+    dm_file_too_large:'Datei z gross (max 10MB)',
+    dm_qr_confirmed:'Dini Buchig isch best\u00e4tigt \u2705',dm_qr_running_late:'Mir sind 10 Min sp\u00f6ter',dm_qr_cancel_reschedule:'Absage oder verschiebe?',
+    dm_empty_inbox_title:'Kei Nachrichte',dm_empty_inbox_sub:'Buch en Termin zum mit emene Salon z chatte.',
+    dm_empty_chat_title:'No kei Nachrichte',dm_empty_chat_sub:'Schriib d erschti Nachricht!',
+    dm_empty_requests_title:'Kei Afrage',dm_empty_requests_sub:'Nachrichteafrage erschined da.',
+    dm_error_title:'Verbindigsfehler',dm_error_sub:'Nachrichte chend nid glade werde. Probiers nomal.',
     months:'Januar_Februar_M\u00e4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember',
     weekdays:'Mo_Di_Mi_Do_Fr_Sa_So',
   },
@@ -1829,6 +2012,16 @@ const T={
     trust_actions_logged:'Actions are logged for security.',
     msg_delivered_tooltip:'Delivered = carrier accepted (SMS). Read status available on WhatsApp where supported.',
     msg_attachment_limit:'Max 10 files; total size limits apply.',
+    dm_title:'Messages',dm_tab_messages:'Messages',dm_tab_requests:'Requests',dm_search_placeholder:'Search',
+    dm_input_placeholder:'Message...',dm_time_now:'now',dm_today:'Today',dm_yesterday:'Yesterday',
+    dm_you:'You',dm_sent_photo:'Sent a photo',dm_sent_booking:'Sent a booking confirmation',
+    dm_liked_message:'Liked a message',dm_no_messages:'No messages yet',dm_retry:'Retry',
+    dm_file_too_large:'File too large (max 10MB)',
+    dm_qr_confirmed:'Your booking is confirmed \u2705',dm_qr_running_late:'We\'re running 10 min late',dm_qr_cancel_reschedule:'Cancel or reschedule?',
+    dm_empty_inbox_title:'No messages',dm_empty_inbox_sub:'Book an appointment to start chatting with a salon.',
+    dm_empty_chat_title:'No messages yet',dm_empty_chat_sub:'Send the first message!',
+    dm_empty_requests_title:'No requests',dm_empty_requests_sub:'Message requests will appear here.',
+    dm_error_title:'Connection error',dm_error_sub:'Could not load messages. Please try again.',
     months:'January_February_March_April_May_June_July_August_September_October_November_December',
     weekdays:'Mo_Tu_We_Th_Fr_Sa_Su',
   },
@@ -1925,6 +2118,16 @@ const T={
     trust_actions_logged:'Les actions sont enregistr\u00e9es pour la s\u00e9curit\u00e9.',
     msg_delivered_tooltip:'Livr\u00e9 = l\'op\u00e9rateur a accept\u00e9 (SMS). Confirmation de lecture disponible sur WhatsApp si support\u00e9.',
     msg_attachment_limit:'Max 10 fichiers ; limites de taille applicables.',
+    dm_title:'Messages',dm_tab_messages:'Messages',dm_tab_requests:'Demandes',dm_search_placeholder:'Rechercher',
+    dm_input_placeholder:'Message...',dm_time_now:'maintenant',dm_today:'Aujourd\'hui',dm_yesterday:'Hier',
+    dm_you:'Toi',dm_sent_photo:'Photo envoy\u00e9e',dm_sent_booking:'Confirmation de r\u00e9servation envoy\u00e9e',
+    dm_liked_message:'A aim\u00e9 un message',dm_no_messages:'Pas encore de messages',dm_retry:'R\u00e9essayer',
+    dm_file_too_large:'Fichier trop volumineux (max 10 Mo)',
+    dm_qr_confirmed:'Ta r\u00e9servation est confirm\u00e9e \u2705',dm_qr_running_late:'On a 10 min de retard',dm_qr_cancel_reschedule:'Annuler ou reporter ?',
+    dm_empty_inbox_title:'Pas de messages',dm_empty_inbox_sub:'R\u00e9serve un rendez-vous pour chatter avec un salon.',
+    dm_empty_chat_title:'Pas encore de messages',dm_empty_chat_sub:'Envoie le premier message !',
+    dm_empty_requests_title:'Pas de demandes',dm_empty_requests_sub:'Les demandes de messages appara\u00eetront ici.',
+    dm_error_title:'Erreur de connexion',dm_error_sub:'Impossible de charger les messages. R\u00e9essaie.',
     months:'Janvier_F\u00e9vrier_Mars_Avril_Mai_Juin_Juillet_Ao\u00fbt_Septembre_Octobre_Novembre_D\u00e9cembre',
     weekdays:'Lu_Ma_Me_Je_Ve_Sa_Di',
   },
@@ -2020,6 +2223,16 @@ const T={
     trust_actions_logged:'\u0130\u015flemler g\u00fcvenlik i\u00e7in kaydedilir.',
     msg_delivered_tooltip:'\u0130letildi = operat\u00f6r kabul etti (SMS). Okundu bilgisi WhatsApp\'ta desteklendi\u011finde mevcuttur.',
     msg_attachment_limit:'Maks. 10 dosya; boyut s\u0131n\u0131rlar\u0131 ge\u00e7erlidir.',
+    dm_title:'Mesajlar',dm_tab_messages:'Mesajlar',dm_tab_requests:'Istekler',dm_search_placeholder:'Ara',
+    dm_input_placeholder:'Mesaj...',dm_time_now:'\u015fimdi',dm_today:'Bug\u00fcn',dm_yesterday:'D\u00fcn',
+    dm_you:'Sen',dm_sent_photo:'Foto\u011fraf g\u00f6nderildi',dm_sent_booking:'Rezervasyon onay\u0131 g\u00f6nderildi',
+    dm_liked_message:'Bir mesaj\u0131 be\u011fendi',dm_no_messages:'Hen\u00fcz mesaj yok',dm_retry:'Tekrar dene',
+    dm_file_too_large:'Dosya \u00e7ok b\u00fcy\u00fck (maks 10MB)',
+    dm_qr_confirmed:'Rezervasyonun onayland\u0131 \u2705',dm_qr_running_late:'10 dk ge\u00e7 kal\u0131yoruz',dm_qr_cancel_reschedule:'\u0130ptal mi erteleme mi?',
+    dm_empty_inbox_title:'Mesaj yok',dm_empty_inbox_sub:'Bir salonla sohbet etmek i\u00e7in randevu al.',
+    dm_empty_chat_title:'Hen\u00fcz mesaj yok',dm_empty_chat_sub:'\u0130lk mesaj\u0131 g\u00f6nder!',
+    dm_empty_requests_title:'\u0130stek yok',dm_empty_requests_sub:'Mesaj istekleri burada g\u00f6r\u00fcnecek.',
+    dm_error_title:'Ba\u011flant\u0131 hatas\u0131',dm_error_sub:'Mesajlar y\u00fcklenemedi. Tekrar dene.',
     months:'Ocak_\u015eubat_Mart_Nisan_May\u0131s_Haziran_Temmuz_A\u011fustos_Eyl\u00fcl_Ekim_Kas\u0131m_Aral\u0131k',
     weekdays:'Pt_Sa_\u00c7a_Pe_Cu_Ct_Pz',
   },
@@ -3604,148 +3817,636 @@ async function renderBookings(){
 
 function rebookBooking(storeId){showPage('home');setTimeout(()=>startBooking(storeId),300);}
 
-// ── CHAT ──────────────────────────────────────────────────────────────────────
-let _chatBookingId=null,_chatChannel=null,_chatRole='customer';
+// ── DM SYSTEM (Instagram-style) ──────────────────────────────────────────────
+const DM={
+  bookingId:null,channel:null,inboxChannel:null,role:'customer',
+  convos:[],filteredConvos:[],messageIds:new Set(),
+  typingTimer:null,isTyping:false,offlineQueue:[],
+  currentConvo:null
+};
 
+// ── Helpers ──
+function dmEsc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');}
+
+function dmTimeAgo(dateStr){
+  if(!dateStr)return'';
+  const now=Date.now(),d=new Date(dateStr).getTime(),diff=now-d;
+  if(diff<60000)return T('dm_time_now')||'now';
+  if(diff<3600000)return Math.floor(diff/60000)+'m';
+  if(diff<86400000)return Math.floor(diff/3600000)+'h';
+  if(diff<604800000)return Math.floor(diff/86400000)+'d';
+  return new Date(dateStr).toLocaleDateString('de-CH',{day:'numeric',month:'short'});
+}
+
+function dmTimeShort(dateStr){
+  if(!dateStr)return'';
+  return new Date(dateStr).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+}
+
+function dmDateLabel(dateStr){
+  if(!dateStr)return'';
+  const d=new Date(dateStr),now=new Date();
+  const isToday=d.toDateString()===now.toDateString();
+  const yesterday=new Date(now);yesterday.setDate(now.getDate()-1);
+  const isYesterday=d.toDateString()===yesterday.toDateString();
+  if(isToday)return T('dm_today')||'Today';
+  if(isYesterday)return T('dm_yesterday')||'Yesterday';
+  return d.toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function dmAvatar(name,imgUrl){
+  if(imgUrl)return`<img src="${dmEsc(imgUrl)}" alt="${dmEsc(name)}" loading="lazy">`;
+  const initials=(name||'?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  return`<span style="font-size:.85rem;font-weight:700;color:var(--text2)">${initials}</span>`;
+}
+
+function dmPreviewStr(msg){
+  if(!msg)return T('dm_no_messages')||'No messages yet';
+  let prefix='';
+  if(msg.sender_id===currentUser?.id)prefix=(T('dm_you')||'You')+': ';
+  if(msg.attachment_url)return prefix+(T('dm_sent_photo')||'Sent a photo');
+  if(msg.message_type==='booking_confirmation')return prefix+(T('dm_sent_booking')||'Sent a booking confirmation');
+  if(msg.reaction)return prefix+(T('dm_liked_message')||'Liked a message')+' \u2764\uFE0F';
+  const body=(msg.body||'').substring(0,60);
+  return prefix+body+(msg.body?.length>60?'\u2026':'');
+}
+
+// ── Open / Close ──
 function openMessagesTab(){
   if(!currentUser){openAuth('login');return;}
-  const el=document.getElementById('chatOverlay');
-  document.getElementById('chatTitle').textContent='\u{1F4AC} Nachrichten';
-  el.classList.add('active');
-  loadAllConversations();
+  document.getElementById('dmOverlay').classList.add('active');
+  dmShowInbox();
+  dmLoadConversations();
+  dmSubscribeInbox();
+}
+function dmClose(){
+  document.getElementById('dmOverlay').classList.remove('active');
+  dmUnsubscribe();
+  dmUnsubscribeInbox();
+  DM.bookingId=null;DM.currentConvo=null;
 }
 
-async function loadAllConversations(){
-  const container=document.getElementById('chatMessages');
-  container.innerHTML='<div class="spinner"></div>';
-  if(!currentUser){container.innerHTML='<div class="chat-empty"><div class="empty-icon">&#128274;</div><div class="empty-title">Bitte anmelden</div><div class="empty-sub">Melde dich an, um deine Nachrichten zu sehen.</div></div>';return;}
-  let bookings;
+function dmShowInbox(){
+  document.getElementById('dmInbox').style.display='flex';
+  document.getElementById('dmChat').classList.remove('active');
+}
+function dmBackToInbox(){
+  dmUnsubscribe();
+  DM.bookingId=null;DM.currentConvo=null;
+  dmShowInbox();
+  dmLoadConversations();
+}
+
+// ── Inbox ──
+async function dmLoadConversations(){
+  const list=document.getElementById('dmConvoList');
+  list.innerHTML='<div class="spinner" style="margin:40px auto"></div>';
   try{
-    const res=await Promise.race([
-      sb.from('bookings').select('id,salon_name,store_id,stores(name)').eq('user_id',currentUser.id).order('booking_date',{ascending:false}),
+    // Fetch bookings with latest message for each
+    const{data:bookings,error}=await Promise.race([
+      sb.from('bookings').select('id,salon_name,store_id,booking_date,booking_time,service_name,stores(name,logo_url)')
+        .eq('user_id',currentUser.id).order('booking_date',{ascending:false}),
       new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))
     ]);
-    bookings=res.data;
+    if(error)throw error;
+    if(!bookings||bookings.length===0){
+      list.innerHTML=dmEmptyHtml('inbox');return;
+    }
+    // Fetch latest message + unread count per booking
+    const bookingIds=bookings.map(b=>b.id);
+    const{data:messages}=await sb.from('messages').select('*')
+      .in('booking_id',bookingIds).order('created_at',{ascending:false});
+
+    const msgMap={};
+    const unreadMap={};
+    (messages||[]).forEach(m=>{
+      if(!msgMap[m.booking_id])msgMap[m.booking_id]=m;
+      if(!m.read_at&&m.sender_id!==currentUser.id){
+        unreadMap[m.booking_id]=(unreadMap[m.booking_id]||0)+1;
+      }
+    });
+
+    DM.convos=bookings.map(b=>{
+      const storeName=b.stores?.name||b.salon_name||'Salon';
+      const logoUrl=b.stores?.logo_url||null;
+      const lastMsg=msgMap[b.id]||null;
+      const unread=unreadMap[b.id]||0;
+      return{
+        bookingId:b.id,storeId:b.store_id,storeName,logoUrl,
+        bookingDate:b.booking_date,bookingTime:b.booking_time,serviceName:b.service_name,
+        lastMsg,unread,
+        lastActivity:lastMsg?.created_at||b.booking_date
+      };
+    }).sort((a,b)=>new Date(b.lastActivity)-new Date(a.lastActivity));
+
+    // Only show convos that have messages OR recent bookings (within 30 days)
+    const cutoff=new Date();cutoff.setDate(cutoff.getDate()-30);
+    DM.filteredConvos=DM.convos.filter(c=>c.lastMsg||new Date(c.bookingDate)>=cutoff);
+
+    dmRenderConvoList(DM.filteredConvos);
+    dmUpdateBadge();
   }catch(e){
-    container.innerHTML='<div class="chat-empty"><div class="empty-icon">&#9888;</div><div class="empty-title">Verbindungsfehler</div><div class="empty-sub">Nachrichten konnten nicht geladen werden. Bitte versuche es erneut.</div></div>';
-    return;
-  }
-  if(!bookings||bookings.length===0){
-    container.innerHTML='<div class="chat-empty"><div class="empty-icon">&#9993;</div><div class="empty-title">Keine Nachrichten</div><div class="empty-sub">Buche einen Termin, um mit einem Salon zu chatten.</div></div>';
-    return;
+    list.innerHTML=dmEmptyHtml('error');
   }
 }
 
-function _chatConvoClick(bookingId,title){openChat(bookingId,'customer',title);}
-
-function openChat(bookingId,role,title){
-  _chatBookingId=bookingId;
-  _chatRole=role||'customer';
-  const el=document.getElementById('chatOverlay');
-  document.getElementById('chatTitle').textContent='\u{1F4AC} '+(title||'Nachrichten');
-  el.classList.add('active');
-  loadMessages(bookingId);
-  subscribeToMessages(bookingId);
+function dmRenderConvoList(convos){
+  const list=document.getElementById('dmConvoList');
+  if(!convos||convos.length===0){list.innerHTML=dmEmptyHtml('inbox');return;}
+  list.innerHTML=convos.map(c=>{
+    const unreadCls=c.unread>0?'unread':'';
+    const preview=dmPreviewStr(c.lastMsg);
+    const timeStr=dmTimeAgo(c.lastMsg?.created_at||c.lastActivity);
+    return`<div class="dm-convo ${unreadCls}" onclick="dmOpenChat('${c.bookingId}')">
+      <div class="dm-convo-avatar">${dmAvatar(c.storeName,c.logoUrl)}</div>
+      <div class="dm-convo-body">
+        <div class="dm-convo-name">${dmEsc(c.storeName)}</div>
+        <div class="dm-convo-preview">${dmEsc(preview)}</div>
+      </div>
+      <div class="dm-convo-meta">
+        <div class="dm-convo-time">${timeStr}</div>
+        ${c.unread>0?'<div class="dm-unread-dot"></div>':''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function closeChat(){
-  document.getElementById('chatOverlay').classList.remove('active');
-  if(_chatChannel){sb.removeChannel(_chatChannel);_chatChannel=null;}
-  _chatBookingId=null;
+function dmFilterConvos(q){
+  q=(q||'').toLowerCase().trim();
+  if(!q){dmRenderConvoList(DM.filteredConvos);return;}
+  const filtered=DM.filteredConvos.filter(c=>c.storeName.toLowerCase().includes(q)||(c.serviceName||'').toLowerCase().includes(q));
+  dmRenderConvoList(filtered);
 }
 
-async function loadMessages(bookingId){
-  document.getElementById('chatMessages').innerHTML='<div class="spinner"></div>';
-  let data,error;
+function dmSwitchTab(tab){
+  document.getElementById('dmTabMessages').classList.toggle('active',tab==='messages');
+  document.getElementById('dmTabRequests').classList.toggle('active',tab==='requests');
+  if(tab==='requests'){
+    document.getElementById('dmConvoList').innerHTML=dmEmptyHtml('requests');
+  }else{
+    dmRenderConvoList(DM.filteredConvos);
+  }
+}
+
+// ── Open Chat ──
+async function dmOpenChat(bookingId,role){
+  DM.bookingId=bookingId;
+  DM.role=role||'customer';
+  DM.messageIds.clear();
+
+  const convo=DM.convos.find(c=>c.bookingId===bookingId);
+  DM.currentConvo=convo;
+
+  // Show chat screen
+  document.getElementById('dmInbox').style.display='none';
+  const chatEl=document.getElementById('dmChat');
+  chatEl.classList.add('active');
+
+  // Header
+  const name=convo?.storeName||'Chat';
+  document.getElementById('dmChatName').textContent=name;
+  document.getElementById('dmChatAvatar').innerHTML=dmAvatar(name,convo?.logoUrl);
+  document.getElementById('dmChatStatus').textContent='';
+  document.getElementById('dmTypingAvatar').innerHTML=dmAvatar(name,convo?.logoUrl);
+
+  // Booking context
+  const ctxEl=document.getElementById('dmBookingCtx');
+  if(convo?.serviceName){
+    ctxEl.style.display='flex';
+    const dateStr=convo.bookingDate?new Date(convo.bookingDate).toLocaleDateString('de-CH',{day:'numeric',month:'short'}):'';
+    document.getElementById('dmBookingCtxText').textContent=`${convo.serviceName}${dateStr?' \u00b7 '+dateStr:''}${convo.bookingTime?' \u00b7 '+convo.bookingTime:''}`;
+  }else{ctxEl.style.display='none';}
+
+  // Quick replies for salon role
+  const qr=document.getElementById('dmQuickReplies');
+  if(DM.role==='salon'){
+    qr.style.display='flex';
+    const templates=[
+      T('dm_qr_confirmed')||'Your booking is confirmed \u2705',
+      T('dm_qr_running_late')||'We\'re running 10 min late',
+      T('dm_qr_cancel_reschedule')||'Cancel or reschedule?'
+    ];
+    qr.innerHTML=templates.map(t=>`<button class="dm-quick-reply" onclick="dmSendQuickReply('${dmEsc(t)}')">${dmEsc(t)}</button>`).join('');
+  }else{qr.style.display='none';}
+
+  // Load messages
+  await dmLoadMessages(bookingId);
+  dmSubscribe(bookingId);
+}
+
+// ── Load Messages ──
+async function dmLoadMessages(bookingId){
+  const container=document.getElementById('dmMessages');
+  container.innerHTML='<div class="spinner" style="margin:40px auto"></div>';
   try{
-    const res=await Promise.race([
+    const{data,error}=await Promise.race([
       sb.from('messages').select('*').eq('booking_id',bookingId).order('created_at',{ascending:true}),
       new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))
     ]);
-    data=res.data;error=res.error;
+    if(error)throw error;
+    dmRenderMessages(data||[]);
+    // Mark as read
+    if(data&&data.length&&currentUser){
+      const unread=data.filter(m=>!m.read_at&&m.sender_id!==currentUser.id).map(m=>m.id);
+      if(unread.length)sb.from('messages').update({read_at:new Date().toISOString()}).in('id',unread).then(()=>{});
+    }
   }catch(e){
-    document.getElementById('chatMessages').innerHTML='<div class="chat-empty"><div class="empty-icon">&#9888;</div><div class="empty-title">Verbindungsfehler</div><div class="empty-sub">Nachrichten konnten nicht geladen werden.</div></div>';
-    return;
-  }
-  if(error){
-    document.getElementById('chatMessages').innerHTML='<div class="chat-empty"><div class="empty-icon">&#9888;</div><div class="empty-title">Fehler</div><div class="empty-sub">Fehler beim Laden der Nachrichten.</div></div>';
-    return;
-  }
-  renderChatPanel(data||[]);
-  // mark incoming messages as read
-  if(data&&data.length&&currentUser){
-    const unread=data.filter(m=>!m.read_at&&m.sender_id!==currentUser.id).map(m=>m.id);
-    if(unread.length)await sb.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);
+    container.innerHTML=dmEmptyHtml('error');
   }
 }
 
-function renderChatPanel(messages){
-  const container=document.getElementById('chatMessages');
+function dmRenderMessages(messages){
+  const container=document.getElementById('dmMessages');
+  DM.messageIds.clear();
   if(!messages||messages.length===0){
-    container.innerHTML='<div class="chat-empty"><div class="empty-icon">&#128172;</div><div class="empty-title">Noch keine Nachrichten</div><div class="empty-sub">Schreibe die erste Nachricht!</div></div>';
-    return;
+    container.innerHTML=dmEmptyHtml('chat');return;
   }
-  container.innerHTML=messages.map(m=>{
-    const isMine=currentUser&&m.sender_id===currentUser.id;
-    const timeStr=m.created_at?new Date(m.created_at).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}):'';
-    const senderLabel=m.sender_role==='salon'?'&#9986;\uFE0F Salon':'&#128134; Kunde';
-    const readMark=isMine&&m.read_at?' \u2713\u2713':'';
-    return`<div class="chat-msg ${isMine?'mine':'theirs'}">
-      <div class="chat-bubble">${escapeHtmlChat(m.body)}</div>
-      <div class="chat-meta">${senderLabel} &bull; ${timeStr}${readMark}</div>
-    </div>`;
-  }).join('');
+  let html='';
+  let lastDate='';
+  messages.forEach(m=>{
+    DM.messageIds.add(m.id);
+    const dateLabel=dmDateLabel(m.created_at);
+    if(dateLabel!==lastDate){html+=`<div class="dm-date-sep">${dateLabel}</div>`;lastDate=dateLabel;}
+    html+=dmMsgHtml(m);
+  });
+  container.innerHTML=html;
   container.scrollTop=container.scrollHeight;
 }
 
-async function sendMessage(bookingId,body){
-  if(!body.trim()||!currentUser)return false;
-  const{error}=await sb.from('messages').insert({
-    booking_id:bookingId,
-    sender_id:currentUser.id,
-    sender_role:_chatRole,
-    body:body.trim()
-  });
-  if(error){toast('Nachricht konnte nicht gesendet werden.','error');return false;}
-  return true;
+function dmMsgHtml(m,pending){
+  const isMine=currentUser&&m.sender_id===currentUser.id;
+  const timeStr=dmTimeShort(m.created_at);
+  const cls=isMine?'mine':'theirs';
+  let statusHtml='';
+  if(isMine){
+    if(pending)statusHtml='<span class="dm-pending">\u00b7\u00b7\u00b7</span>';
+    else if(m._failed)statusHtml=`<span class="dm-failed" onclick="dmRetry('${m._tempId}')">\u26A0 ${T('dm_retry')||'Retry'}</span>`;
+    else if(m.read_at)statusHtml='<span class="dm-tick read">\u2713\u2713</span>';
+    else statusHtml='<span class="dm-tick">\u2713</span>';
+  }
+  let bubbleContent='';
+  if(m.attachment_url){
+    if(m.attachment_type?.startsWith('image/')){
+      bubbleContent=`<div class="dm-attach"><img src="${dmEsc(m.attachment_url)}" alt="Photo" loading="lazy"></div>`;
+    }else{
+      bubbleContent=`<div class="dm-attach-file"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div class="dm-attach-file-info"><div class="dm-attach-file-name">${dmEsc(m.attachment_name||'File')}</div><div class="dm-attach-file-size">${m.attachment_size?Math.round(m.attachment_size/1024)+'KB':''}</div></div></div>`;
+    }
+    if(m.body)bubbleContent+=`<div style="margin-top:4px">${dmEsc(m.body)}</div>`;
+  }else{
+    bubbleContent=dmEsc(m.body||'');
+  }
+  const reactionHtml=m.reaction?`<div class="dm-reaction">${m.reaction}</div>`:'';
+  const id=m.id||m._tempId||'';
+  return`<div class="dm-msg ${cls}" data-msg-id="${id}" ${m._tempId?'data-temp-id="'+m._tempId+'"':''}>
+    <div class="dm-bubble" ondblclick="dmReact('${id}')">${bubbleContent}${reactionHtml}</div>
+    <div class="dm-msg-meta">${timeStr} ${statusHtml}</div>
+  </div>`;
 }
 
-async function sendChatMessage(){
-  const input=document.getElementById('chatInput');
+// ── Send Message (Optimistic) ──
+async function dmSend(){
+  const input=document.getElementById('dmInput');
   const body=(input.value||'').trim();
-  if(!body||!_chatBookingId)return;
-  input.value='';
-  input.focus();
-  await sendMessage(_chatBookingId,body);
+  if(!body||!DM.bookingId||!currentUser)return;
+  input.value='';input.style.height='auto';
+  dmAutoGrow(input);
+
+  const tempId='tmp_'+Date.now()+'_'+Math.random().toString(36).substring(2,7);
+  const optimistic={
+    _tempId:tempId,id:null,booking_id:DM.bookingId,
+    sender_id:currentUser.id,sender_role:DM.role,
+    body,created_at:new Date().toISOString(),read_at:null,
+    attachment_url:null,reaction:null,message_type:'text'
+  };
+
+  // Optimistic append
+  const container=document.getElementById('dmMessages');
+  const emptyEl=container.querySelector('.dm-empty');
+  if(emptyEl)emptyEl.remove();
+  container.insertAdjacentHTML('beforeend',dmMsgHtml(optimistic,true));
+  container.scrollTop=container.scrollHeight;
+
+  // Check online
+  if(!navigator.onLine){
+    DM.offlineQueue.push({...optimistic});
+    const el=container.querySelector(`[data-temp-id="${tempId}"]`);
+    if(el){const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(optimistic.created_at)+' <span class="dm-pending">\u231B offline</span>';}
+    return;
+  }
+
+  try{
+    const{data,error}=await sb.from('messages').insert({
+      booking_id:DM.bookingId,sender_id:currentUser.id,sender_role:DM.role,body
+    }).select().single();
+    if(error)throw error;
+    // Replace temp with real
+    const el=container.querySelector(`[data-temp-id="${tempId}"]`);
+    if(el){
+      DM.messageIds.add(data.id);
+      el.setAttribute('data-msg-id',data.id);
+      el.removeAttribute('data-temp-id');
+      const meta=el.querySelector('.dm-msg-meta');
+      if(meta)meta.innerHTML=dmTimeShort(data.created_at)+' <span class="dm-tick">\u2713</span>';
+    }
+    // Update inbox preview
+    dmUpdateConvoPreview(DM.bookingId,data);
+  }catch(e){
+    const el=container.querySelector(`[data-temp-id="${tempId}"]`);
+    if(el){
+      optimistic._failed=true;
+      const meta=el.querySelector('.dm-msg-meta');
+      if(meta)meta.innerHTML=dmTimeShort(optimistic.created_at)+` <span class="dm-failed" onclick="dmRetryMsg('${tempId}')">\u26A0 ${T('dm_retry')||'Retry'}</span>`;
+    }
+    DM.offlineQueue.push({...optimistic});
+  }
 }
 
-function subscribeToMessages(bookingId){
-  if(_chatChannel){sb.removeChannel(_chatChannel);_chatChannel=null;}
-  _chatChannel=sb.channel('chat-'+bookingId)
+function dmSendQuickReply(text){
+  document.getElementById('dmInput').value=text;
+  dmSend();
+}
+
+// ── Retry failed message ──
+async function dmRetryMsg(tempId){
+  const idx=DM.offlineQueue.findIndex(m=>m._tempId===tempId);
+  if(idx===-1)return;
+  const msg=DM.offlineQueue.splice(idx,1)[0];
+  const container=document.getElementById('dmMessages');
+  const el=container.querySelector(`[data-temp-id="${tempId}"]`);
+  if(el){const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(msg.created_at)+' <span class="dm-pending">\u00b7\u00b7\u00b7</span>';}
+  try{
+    const{data,error}=await sb.from('messages').insert({
+      booking_id:msg.booking_id,sender_id:currentUser.id,sender_role:DM.role,body:msg.body
+    }).select().single();
+    if(error)throw error;
+    if(el){
+      DM.messageIds.add(data.id);
+      el.setAttribute('data-msg-id',data.id);el.removeAttribute('data-temp-id');
+      const meta=el.querySelector('.dm-msg-meta');
+      if(meta)meta.innerHTML=dmTimeShort(data.created_at)+' <span class="dm-tick">\u2713</span>';
+    }
+  }catch(e){
+    DM.offlineQueue.push(msg);
+    if(el){const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(msg.created_at)+` <span class="dm-failed" onclick="dmRetryMsg('${tempId}')">\u26A0 ${T('dm_retry')||'Retry'}</span>`;}
+  }
+}
+
+// ── Offline queue sync ──
+window.addEventListener('online',async()=>{
+  if(!DM.offlineQueue.length)return;
+  const queue=[...DM.offlineQueue];DM.offlineQueue=[];
+  for(const msg of queue){
+    try{
+      const{data,error}=await sb.from('messages').insert({
+        booking_id:msg.booking_id,sender_id:currentUser.id,sender_role:msg.sender_role,body:msg.body
+      }).select().single();
+      if(error)throw error;
+      const el=document.querySelector(`[data-temp-id="${msg._tempId}"]`);
+      if(el){
+        DM.messageIds.add(data.id);
+        el.setAttribute('data-msg-id',data.id);el.removeAttribute('data-temp-id');
+        const meta=el.querySelector('.dm-msg-meta');
+        if(meta)meta.innerHTML=dmTimeShort(data.created_at)+' <span class="dm-tick">\u2713</span>';
+      }
+    }catch(e){DM.offlineQueue.push(msg);}
+  }
+});
+
+// ── Reactions ──
+async function dmReact(msgId){
+  if(!msgId||msgId.startsWith('tmp_'))return;
+  const{error}=await sb.from('messages').update({reaction:'\u2764\uFE0F'}).eq('id',msgId);
+  if(!error){
+    const el=document.querySelector(`[data-msg-id="${msgId}"] .dm-bubble`);
+    if(el){
+      let badge=el.querySelector('.dm-reaction');
+      if(!badge){badge=document.createElement('div');badge.className='dm-reaction';el.appendChild(badge);}
+      badge.textContent='\u2764\uFE0F';
+    }
+  }
+}
+
+// ── Attachments ──
+function dmAttachFile(){document.getElementById('dmFileInput').click();}
+async function dmHandleFiles(files){
+  if(!files||!files.length||!DM.bookingId||!currentUser)return;
+  for(const file of files){
+    if(file.size>10*1024*1024){toast(T('dm_file_too_large')||'File too large (max 10MB)','error');continue;}
+    const tempId='tmp_'+Date.now()+'_'+Math.random().toString(36).substring(2,7);
+    const isImage=file.type.startsWith('image/');
+
+    // Optimistic preview
+    const container=document.getElementById('dmMessages');
+    const emptyEl=container.querySelector('.dm-empty');if(emptyEl)emptyEl.remove();
+    const previewUrl=isImage?URL.createObjectURL(file):'';
+    const optMsg={
+      _tempId:tempId,sender_id:currentUser.id,sender_role:DM.role,
+      body:'',created_at:new Date().toISOString(),read_at:null,
+      attachment_url:previewUrl,attachment_type:file.type,
+      attachment_name:file.name,attachment_size:file.size,reaction:null
+    };
+    container.insertAdjacentHTML('beforeend',dmMsgHtml(optMsg,true));
+    container.scrollTop=container.scrollHeight;
+
+    // Upload to Supabase storage
+    try{
+      const ext=file.name.split('.').pop();
+      const path=`dm/${DM.bookingId}/${tempId}.${ext}`;
+      const{error:upErr}=await sb.storage.from('chat-attachments').upload(path,file);
+      if(upErr)throw upErr;
+      const{data:urlData}=sb.storage.from('chat-attachments').getPublicUrl(path);
+      const publicUrl=urlData?.publicUrl||'';
+
+      const{data,error}=await sb.from('messages').insert({
+        booking_id:DM.bookingId,sender_id:currentUser.id,sender_role:DM.role,
+        body:'',attachment_url:publicUrl,attachment_type:file.type,
+        attachment_name:file.name,attachment_size:file.size
+      }).select().single();
+      if(error)throw error;
+
+      const el=container.querySelector(`[data-temp-id="${tempId}"]`);
+      if(el){
+        DM.messageIds.add(data.id);
+        el.setAttribute('data-msg-id',data.id);el.removeAttribute('data-temp-id');
+        if(isImage){const img=el.querySelector('.dm-attach img');if(img)img.src=publicUrl;}
+        const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(data.created_at)+' <span class="dm-tick">\u2713</span>';
+      }
+    }catch(e){
+      const el=container.querySelector(`[data-temp-id="${tempId}"]`);
+      if(el){const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(optMsg.created_at)+` <span class="dm-failed">\u26A0</span>`;}
+    }
+  }
+  document.getElementById('dmFileInput').value='';
+}
+
+// ── Typing Indicator ──
+function dmHandleTyping(){
+  if(!DM.bookingId)return;
+  if(!DM.isTyping){
+    DM.isTyping=true;
+    sb.channel('typing-'+DM.bookingId).send({type:'broadcast',event:'typing',payload:{user_id:currentUser?.id}});
+  }
+  clearTimeout(DM.typingTimer);
+  DM.typingTimer=setTimeout(()=>{DM.isTyping=false;},2000);
+}
+
+// ── Realtime Subscriptions ──
+function dmSubscribe(bookingId){
+  dmUnsubscribe();
+  // Messages
+  DM.channel=sb.channel('dm-'+bookingId)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`booking_id=eq.${bookingId}`},payload=>{
-      const container=document.getElementById('chatMessages');
-      if(!container)return;
-      const empty=container.querySelector('.chat-empty');
-      if(empty)empty.remove();
       const m=payload.new;
+      if(DM.messageIds.has(m.id))return; // deduplicate
+      DM.messageIds.add(m.id);
+      // Remove temp if it's our own optimistic message (matched by body + timing)
       const isMine=currentUser&&m.sender_id===currentUser.id;
-      const timeStr=m.created_at?new Date(m.created_at).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}):'';
-      const senderLabel=m.sender_role==='salon'?'&#9986;\uFE0F Salon':'&#128134; Kunde';
-      const el=document.createElement('div');
-      el.className=`chat-msg ${isMine?'mine':'theirs'}`;
-      el.innerHTML=`<div class="chat-bubble">${escapeHtmlChat(m.body)}</div><div class="chat-meta">${senderLabel} &bull; ${timeStr}</div>`;
-      container.appendChild(el);
+      if(isMine){
+        const temps=document.querySelectorAll('#dmMessages [data-temp-id]');
+        for(const t of temps){
+          if(!t.getAttribute('data-msg-id')||t.getAttribute('data-msg-id')==='null'){
+            t.setAttribute('data-msg-id',m.id);t.removeAttribute('data-temp-id');
+            const meta=t.querySelector('.dm-msg-meta');
+            if(meta)meta.innerHTML=dmTimeShort(m.created_at)+' <span class="dm-tick">\u2713</span>';
+            return;
+          }
+        }
+      }
+      // Append incoming
+      const container=document.getElementById('dmMessages');
+      if(!container)return;
+      const emptyEl=container.querySelector('.dm-empty');if(emptyEl)emptyEl.remove();
+      container.insertAdjacentHTML('beforeend',dmMsgHtml(m));
       container.scrollTop=container.scrollHeight;
-      // mark as read if incoming and chat is open
+      // Mark read
       if(!isMine)sb.from('messages').update({read_at:new Date().toISOString()}).eq('id',m.id).then(()=>{});
+      // Hide typing
+      document.getElementById('dmTyping').classList.remove('active');
+    })
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:`booking_id=eq.${bookingId}`},payload=>{
+      const m=payload.new;
+      const el=document.querySelector(`[data-msg-id="${m.id}"]`);
+      if(!el)return;
+      // Update read receipt
+      if(m.read_at){
+        const tick=el.querySelector('.dm-tick');
+        if(tick){tick.className='dm-tick read';tick.textContent='\u2713\u2713';}
+      }
+      // Update reaction
+      if(m.reaction){
+        const bubble=el.querySelector('.dm-bubble');
+        let badge=bubble.querySelector('.dm-reaction');
+        if(!badge){badge=document.createElement('div');badge.className='dm-reaction';bubble.appendChild(badge);}
+        badge.textContent=m.reaction;
+      }
+    })
+    .subscribe();
+
+  // Typing channel
+  sb.channel('typing-'+bookingId).on('broadcast',{event:'typing'},payload=>{
+    if(payload.payload?.user_id===currentUser?.id)return;
+    document.getElementById('dmTyping').classList.add('active');
+    clearTimeout(DM._typingHideTimer);
+    DM._typingHideTimer=setTimeout(()=>{
+      document.getElementById('dmTyping').classList.remove('active');
+    },3000);
+  }).subscribe();
+}
+function dmUnsubscribe(){
+  if(DM.channel){sb.removeChannel(DM.channel);DM.channel=null;}
+  const typCh=sb.getChannels().find(c=>c.topic?.startsWith('typing-'));
+  if(typCh)sb.removeChannel(typCh);
+}
+
+// ── Inbox realtime (live unread updates) ──
+function dmSubscribeInbox(){
+  dmUnsubscribeInbox();
+  if(!currentUser)return;
+  DM.inboxChannel=sb.channel('dm-inbox-'+currentUser.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},payload=>{
+      const m=payload.new;
+      // Check if this message belongs to one of our conversations
+      const convo=DM.convos.find(c=>c.bookingId===m.booking_id);
+      if(!convo)return;
+      // Update convo preview
+      convo.lastMsg=m;
+      convo.lastActivity=m.created_at;
+      if(m.sender_id!==currentUser.id)convo.unread=(convo.unread||0)+1;
+      // Re-sort and re-render if inbox is visible
+      if(document.getElementById('dmInbox').style.display!=='none'){
+        DM.filteredConvos.sort((a,b)=>new Date(b.lastActivity)-new Date(a.lastActivity));
+        dmRenderConvoList(DM.filteredConvos);
+      }
+      dmUpdateBadge();
     })
     .subscribe();
 }
-
-function escapeHtmlChat(str){
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+function dmUnsubscribeInbox(){
+  if(DM.inboxChannel){sb.removeChannel(DM.inboxChannel);DM.inboxChannel=null;}
 }
-// ── END CHAT ──────────────────────────────────────────────────────────────────
+
+// ── Update convo preview after sending ──
+function dmUpdateConvoPreview(bookingId,msg){
+  const convo=DM.convos.find(c=>c.bookingId===bookingId);
+  if(convo){convo.lastMsg=msg;convo.lastActivity=msg.created_at;}
+}
+
+// ── Badge on bottom nav ──
+function dmUpdateBadge(){
+  const total=DM.convos.reduce((sum,c)=>sum+c.unread,0);
+  const badge=document.getElementById('bnMsgBadge');
+  if(badge)badge.classList.toggle('active',total>0);
+}
+
+// ── Input auto-grow ──
+function dmAutoGrow(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+
+// ── Emoji toggle (simple) ──
+function dmToggleEmoji(){
+  const input=document.getElementById('dmInput');
+  const emojis=['\u{1F44D}','\u2764\uFE0F','\u{1F602}','\u{1F525}','\u{1F389}','\u{1F60D}','\u{1F64F}','\u2728'];
+  input.value+=emojis[Math.floor(Math.random()*emojis.length)];
+  input.focus();dmAutoGrow(input);
+}
+
+// ── Info placeholder ──
+function dmShowInfo(){
+  if(!DM.currentConvo)return;
+  toast(DM.currentConvo.storeName+' \u00b7 '+(DM.currentConvo.serviceName||''),'');
+}
+
+// ── Empty state HTML ──
+function dmEmptyHtml(type){
+  if(type==='inbox')return`<div class="dm-empty">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <div class="dm-empty-title">${T('dm_empty_inbox_title')||'No messages'}</div>
+    <div class="dm-empty-sub">${T('dm_empty_inbox_sub')||'Book an appointment to start chatting with a salon.'}</div>
+  </div>`;
+  if(type==='chat')return`<div class="dm-empty">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <div class="dm-empty-title">${T('dm_empty_chat_title')||'No messages yet'}</div>
+    <div class="dm-empty-sub">${T('dm_empty_chat_sub')||'Send the first message!'}</div>
+  </div>`;
+  if(type==='requests')return`<div class="dm-empty">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <div class="dm-empty-title">${T('dm_empty_requests_title')||'No requests'}</div>
+    <div class="dm-empty-sub">${T('dm_empty_requests_sub')||'Message requests will appear here.'}</div>
+  </div>`;
+  return`<div class="dm-empty">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div class="dm-empty-title">${T('dm_error_title')||'Connection error'}</div>
+    <div class="dm-empty-sub">${T('dm_error_sub')||'Could not load messages. Please try again.'}</div>
+  </div>`;
+}
+
+// ── Legacy compat: openChat still works from booking page ──
+function openChat(bookingId,role,title){
+  openMessagesTab();
+  setTimeout(()=>dmOpenChat(bookingId,role||'customer'),300);
+}
+function closeChat(){dmClose();}
+function escapeHtmlChat(str){return dmEsc(str);}
+// ── END DM SYSTEM ────────────────────────────────────────────────────────────
 
 
 function cancelBookingConfirm(id){
