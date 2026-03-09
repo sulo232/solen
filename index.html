@@ -392,6 +392,33 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .chat-send-btn{background:var(--accent);color:var(--accentFg);border:none;width:40px;height:40px;border-radius:50%;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s}
 .chat-send-btn:hover{opacity:.85}
 .chat-unread-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--accent2);color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:100px;padding:0 4px;margin-left:4px;vertical-align:middle}
+.chat-modal-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.chat-modal-title{font-weight:700;font-size:1rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-modal-close{background:none;border:none;font-size:1.3rem;color:var(--muted);cursor:pointer;padding:2px;line-height:1}
+.chat-search-bar{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surfaceAlt);border-bottom:1px solid var(--border)}
+.chat-search-bar input{flex:1;border:none;background:transparent;color:var(--text);font-size:.88rem;outline:none;font-family:inherit}
+.chat-typing{display:none;align-self:flex-start;padding:8px 14px;background:var(--surfaceAlt);border-radius:18px 18px 18px 4px;font-size:.82rem;color:var(--muted);align-items:center;gap:3px;margin:0 16px 4px}
+.chat-typing.visible{display:flex}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typingBounce 1.2s infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.chat-quick-replies{display:flex;gap:6px;padding:6px 12px 0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chat-quick-replies::-webkit-scrollbar{display:none}
+.chat-qr-btn{padding:5px 10px;border-radius:100px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:.78rem;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s;flex-shrink:0}
+.chat-qr-btn:hover{background:var(--accent);color:var(--accentFg)}
+.chat-offer{background:linear-gradient(135deg,rgba(78,205,196,.15),rgba(255,107,107,.1));border:1.5px solid var(--accent);border-radius:14px;padding:12px 14px;max-width:260px}
+.chat-offer .offer-title{font-weight:700;font-size:.92rem;color:var(--accent);margin-bottom:4px}
+.chat-offer .offer-body{font-size:.85rem;color:var(--text);line-height:1.4}
+.chat-offer .offer-cta{display:inline-block;margin-top:8px;padding:5px 12px;background:var(--accent);color:var(--accentFg);border-radius:100px;font-size:.8rem;font-weight:700;cursor:pointer}
+.chat-img-preview{max-width:220px;border-radius:12px;cursor:pointer;display:block;margin-top:4px}
+.chat-read-status{font-size:.68rem;color:var(--muted);margin-left:4px}
+.chat-read-status.read{color:var(--accent)}
+.chat-media-btn{background:transparent;border:none;color:var(--muted);font-size:1.25rem;cursor:pointer;padding:0 4px;display:flex;align-items:center;flex-shrink:0;transition:color .15s}
+.chat-media-btn:hover{color:var(--accent)}
+.chat-report-btn{background:transparent;border:none;color:transparent;font-size:.75rem;cursor:pointer;padding:2px 4px;border-radius:4px;transition:all .15s;margin-left:4px}
+.chat-msg:hover .chat-report-btn{color:var(--muted)}
+.chat-report-btn:hover{color:#FF6B6B!important;background:rgba(255,107,107,.1)}
 .btn-chat{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;padding:5px 11px;border-radius:100px;border:1.5px solid var(--border);background:var(--surfaceAlt);color:var(--text);cursor:pointer;transition:all .2s}
 .btn-chat:hover{border-color:var(--accent);color:var(--accent);background:rgba(78,205,196,.08)}
 
@@ -1387,22 +1414,39 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <!-- CHAT MODAL -->
 <div class="chat-overlay" id="chatOverlay" onclick="if(event.target===this)closeChat()">
   <div class="chat-modal">
-    <div class="modal-hd">
-      <h2 id="chatTitle" style="font-size:1rem">&#128172; Nachrichten</h2>
-      <button class="close-btn" onclick="closeChat()">&times;</button>
+    <div class="chat-modal-header">
+      <span id="chatTitle" class="chat-modal-title"></span>
+      <button onclick="toggleChatSearch()" style="background:none;border:none;font-size:1rem;color:var(--muted);cursor:pointer;padding:2px 6px" title="Suchen">&#128269;</button>
+      <button class="chat-modal-close" onclick="closeChat()">&#10005;</button>
     </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="chat-empty"><div class="empty-icon">&#128172;</div><div class="empty-title">Nachrichten</div><div class="empty-sub">Lade Konversationen...</div></div>
+    <div class="chat-search-bar" id="chatSearchBar" style="display:none">
+      <span style="color:var(--muted);font-size:.9rem">&#128269;</span>
+      <input id="chatSearchInput" placeholder="Nachrichten durchsuchen&#8230;" oninput="filterChatMessages(this.value)">
+      <button onclick="clearChatSearch()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem">&#10005;</button>
     </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-typing" id="chatTyping"><span></span><span></span><span></span>&nbsp;tippt&#8230;</div>
+    <div class="chat-quick-replies" id="chatQuickReplies" style="display:none"></div>
     <div class="chat-input-area">
-      <input type="text" id="chatInput" class="chat-input" placeholder="Nachricht schreiben..."
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}">
-      <button class="chat-send-btn" onclick="sendChatMessage()" title="Senden">&#10148;</button>
+      <button class="chat-media-btn" onclick="triggerChatMedia()" title="Bild senden">&#128247;</button>
+      <input type="file" id="chatMediaInput" accept="image/*,video/mp4,video/webm" style="display:none" onchange="uploadChatMedia(this)">
+      <input class="chat-input" id="chatInput" placeholder="Nachricht&#8230;" onkeydown="if(event.key==='Enter'&amp;&amp;!event.shiftKey){event.preventDefault();sendMessage()}" oninput="sendTypingPresence()">
+      <button class="chat-send-btn" onclick="sendMessage()">&#10148;</button>
     </div>
   </div>
 </div>
-
-
+<div class="modal-overlay" id="reportModal" style="display:none;align-items:center;justify-content:center" onclick="if(event.target===this)closeReportModal()">
+  <div class="modal-box" style="max-width:340px;padding:24px">
+    <h3 style="margin:0 0 10px">Nachricht melden</h3>
+    <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px">Warum m&#246;chten Sie diese Nachricht melden?</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <button class="btn btn-secondary" onclick="submitReport('spam')">Spam</button>
+      <button class="btn btn-secondary" onclick="submitReport('unangemessen')">Unangemessener Inhalt</button>
+      <button class="btn btn-secondary" onclick="submitReport('belaestigung')">Bel&#228;stigung</button>
+    </div>
+    <button class="btn btn-secondary" onclick="closeReportModal()">Abbrechen</button>
+  </div>
+</div>
 <script>
 const SUPA_URL='https://tocfnsmxmdxkrcmjzzdw.supabase.co';
 const SUPA_KEY='sb_publishable_WG19p7vPb3bULi-kbaWo1g_cdW28SCu';
@@ -3315,108 +3359,164 @@ async function loadAllConversations(){
 
 function _chatConvoClick(bookingId,title){openChat(bookingId,'customer',title);}
 
-function openChat(bookingId,role,title){
-  _chatBookingId=bookingId;
-  _chatRole=role||'customer';
-  const el=document.getElementById('chatOverlay');
-  document.getElementById('chatTitle').textContent='\u{1F4AC} '+(title||'Nachrichten');
-  el.classList.add('active');
-  loadMessages(bookingId);
-  subscribeToMessages(bookingId);
+function openChat(bookingId, role, title) {
+  _chatBookingId = bookingId;
+  _chatRole = role || 'customer';
+  document.getElementById('chatTitle').textContent = title || 'Chat';
+  document.getElementById('chatOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  window._chatMessages = [];
+  loadMessages();
+  const qr = document.getElementById('chatQuickReplies');
+  if (_chatRole === 'salon') {
+    const tpls = ['Termin bestätigt ✅','+10 min 🕐','Bitte Foto schicken 📷','Danke für Ihren Besuch 🙏','Heute ausgebucht ❌'];
+    qr.innerHTML = tpls.map(t => '<button class="chat-qr-btn" onclick="setQuickReply('' + t.replace(/\/g,'\\').replace(/'/g,"\'") + '')">' + t + '</button>').join('');
+    qr.style.display = 'flex';
+  } else { qr.style.display = 'none'; }
+  subscribeToMessages();
 }
-
-function closeChat(){
+function closeChat() {
   document.getElementById('chatOverlay').classList.remove('active');
-  if(_chatChannel){sb.removeChannel(_chatChannel);_chatChannel=null;}
-  _chatBookingId=null;
+  document.body.style.overflow = '';
+  if (_chatChannel) { _chatChannel.unsubscribe(); _chatChannel = null; }
+  if (window._typingTimeout) clearTimeout(window._typingTimeout);
+  const ty = document.getElementById('chatTyping'); if (ty) ty.classList.remove('visible');
+  clearChatSearch();
 }
-
-async function loadMessages(bookingId){
-  document.getElementById('chatMessages').innerHTML='<div class="spinner"></div>';
-  let data,error;
-  try{
-    const res=await Promise.race([
-      sb.from('messages').select('*').eq('booking_id',bookingId).order('created_at',{ascending:true}),
-      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000))
-    ]);
-    data=res.data;error=res.error;
-  }catch(e){
-    document.getElementById('chatMessages').innerHTML='<div class="chat-empty"><div class="empty-icon">&#9888;</div><div class="empty-title">Verbindungsfehler</div><div class="empty-sub">Nachrichten konnten nicht geladen werden.</div></div>';
-    return;
-  }
-  if(error){
-    document.getElementById('chatMessages').innerHTML='<div class="chat-empty"><div class="empty-icon">&#9888;</div><div class="empty-title">Fehler</div><div class="empty-sub">Fehler beim Laden der Nachrichten.</div></div>';
-    return;
-  }
-  renderChatPanel(data||[]);
-  // mark incoming messages as read
-  if(data&&data.length&&currentUser){
-    const unread=data.filter(m=>!m.read_at&&m.sender_id!==currentUser.id).map(m=>m.id);
-    if(unread.length)await sb.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);
-  }
-}
-
-function renderChatPanel(messages){
-  const container=document.getElementById('chatMessages');
-  if(!messages||messages.length===0){
-    container.innerHTML='<div class="chat-empty"><div class="empty-icon">&#128172;</div><div class="empty-title">Noch keine Nachrichten</div><div class="empty-sub">Schreibe die erste Nachricht!</div></div>';
-    return;
-  }
-  container.innerHTML=messages.map(m=>{
-    const isMine=currentUser&&m.sender_id===currentUser.id;
-    const timeStr=m.created_at?new Date(m.created_at).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}):'';
-    const senderLabel=m.sender_role==='salon'?'&#9986;\uFE0F Salon':'&#128134; Kunde';
-    const readMark=isMine&&m.read_at?' \u2713\u2713':'';
-    return`<div class="chat-msg ${isMine?'mine':'theirs'}">
-      <div class="chat-bubble">${escapeHtmlChat(m.body)}</div>
-      <div class="chat-meta">${senderLabel} &bull; ${timeStr}${readMark}</div>
-    </div>`;
-  }).join('');
-  container.scrollTop=container.scrollHeight;
-}
-
-async function sendMessage(bookingId,body){
-  if(!body.trim()||!currentUser)return false;
-  const{error}=await sb.from('messages').insert({
-    booking_id:bookingId,
-    sender_id:currentUser.id,
-    sender_role:_chatRole,
-    body:body.trim()
+function loadMessages() {
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = '<div class="chat-empty">Lade…</div>';
+  supabase.from('messages').select('*').eq('booking_id', _chatBookingId).order('created_at', {ascending: true}).then(({data, error}) => {
+    if (error) { container.innerHTML = '<div class="chat-empty">Fehler beim Laden.</div>'; return; }
+    window._chatMessages = data || [];
+    renderAllChatMessages();
+    container.scrollTop = container.scrollHeight;
+    markMessagesRead();
+    const badge = document.querySelector('[data-booking-id="' + _chatBookingId + '"] .chat-unread-badge');
+    if (badge) badge.remove();
   });
-  if(error){toast('Nachricht konnte nicht gesendet werden.','error');return false;}
-  return true;
 }
-
-async function sendChatMessage(){
-  const input=document.getElementById('chatInput');
-  const body=(input.value||'').trim();
-  if(!body||!_chatBookingId)return;
-  input.value='';
-  input.focus();
-  await sendMessage(_chatBookingId,body);
+function renderAllChatMessages() {
+  const container = document.getElementById('chatMessages');
+  const msgs = window._chatMessages || [];
+  if (!msgs.length) { container.innerHTML = '<div class="chat-empty">Noch keine Nachrichten.</div>'; return; }
+  container.innerHTML = msgs.map(m => renderChatMsg(m)).join('');
 }
-
-function subscribeToMessages(bookingId){
-  if(_chatChannel){sb.removeChannel(_chatChannel);_chatChannel=null;}
-  _chatChannel=sb.channel('chat-'+bookingId)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`booking_id=eq.${bookingId}`},payload=>{
-      const container=document.getElementById('chatMessages');
-      if(!container)return;
-      const empty=container.querySelector('.chat-empty');
-      if(empty)empty.remove();
-      const m=payload.new;
-      const isMine=currentUser&&m.sender_id===currentUser.id;
-      const timeStr=m.created_at?new Date(m.created_at).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}):'';
-      const senderLabel=m.sender_role==='salon'?'&#9986;\uFE0F Salon':'&#128134; Kunde';
-      const el=document.createElement('div');
-      el.className=`chat-msg ${isMine?'mine':'theirs'}`;
-      el.innerHTML=`<div class="chat-bubble">${escapeHtmlChat(m.body)}</div><div class="chat-meta">${senderLabel} &bull; ${timeStr}</div>`;
-      container.appendChild(el);
-      container.scrollTop=container.scrollHeight;
-      // mark as read if incoming and chat is open
-      if(!isMine)sb.from('messages').update({read_at:new Date().toISOString()}).eq('id',m.id).then(()=>{});
-    })
-    .subscribe();
+function renderChatMsg(m) {
+  const mine = _chatRole === m.sender_role;
+  const cls = mine ? 'mine' : 'theirs';
+  const time = new Date(m.created_at).toLocaleTimeString('de-CH', {hour:'2-digit', minute:'2-digit'});
+  const readIcon = mine ? '<span class="chat-read-status' + (m.is_read ? ' read' : '') + '">✓✓</span>' : '';
+  let bubble = '';
+  if (m.message_type === 'image') {
+    bubble = '<img src="' + escHtmlChat(m.media_url||'') + '" class="chat-img-preview" onclick="window.open(this.src,'_blank')" loading="lazy">';
+  } else if (m.message_type === 'offer') {
+    let off = {}; try { off = JSON.parse(m.body); } catch(e) { off = {title:'Angebot', body: m.body}; }
+    bubble = '<div class="chat-offer"><div class="offer-title">🎁 ' + escHtmlChat(off.title||'Angebot') + '</div><div class="offer-body">' + escHtmlChat(off.body||'') + '</div><span class="offer-cta" onclick="alert('Angebot notiert!')">Annehmen</span></div>';
+  } else {
+    bubble = '<div class="chat-bubble">' + escHtmlChat(m.body||'') + '</div>';
+  }
+  const rptBtn = !mine ? '<button class="chat-report-btn" onclick="openReportModal(' + m.id + ')" title="Melden">⚑</button>' : '';
+  return '<div class="chat-msg ' + cls + '" data-msg-id="' + m.id + '">' + bubble + '<div class="chat-meta">' + time + readIcon + rptBtn + '</div></div>';
+}
+function markMessagesRead() {
+  const other = _chatRole === 'salon' ? 'customer' : 'salon';
+  supabase.from('messages').update({is_read: true}).eq('booking_id', _chatBookingId).eq('sender_role', other).eq('is_read', false).then(() => {});
+}
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const body = (input.value || '').trim(); if (!body) return;
+  input.value = '';
+  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
+  const {data, error} = await supabase.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body, message_type: 'text', is_read: false}).select().single();
+  if (!error && data) {
+    if (!window._chatMessages) window._chatMessages = [];
+    window._chatMessages.push(data); renderAllChatMessages();
+    const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight;
+    sendEmailFallback(data);
+  }
+}
+function subscribeToMessages() {
+  if (_chatChannel) _chatChannel.unsubscribe();
+  _chatChannel = supabase.channel('chat:' + _chatBookingId);
+  _chatChannel.on('postgres_changes', {event:'INSERT', schema:'public', table:'messages', filter:'booking_id=eq.' + _chatBookingId}, payload => {
+    const msg = payload.new;
+    if (!window._chatMessages) window._chatMessages = [];
+    if (!window._chatMessages.some(m => m.id === msg.id)) {
+      window._chatMessages.push(msg); renderAllChatMessages();
+      const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight;
+      if (msg.sender_role !== _chatRole) markMessagesRead();
+    }
+  }).on('postgres_changes', {event:'UPDATE', schema:'public', table:'messages', filter:'booking_id=eq.' + _chatBookingId}, payload => {
+    const u = payload.new;
+    if (window._chatMessages) { const i = window._chatMessages.findIndex(m => m.id === u.id); if (i !== -1) { window._chatMessages[i] = u; renderAllChatMessages(); } }
+  }).on('broadcast', {event:'typing'}, ({payload}) => {
+    if (payload.role !== _chatRole) {
+      const ty = document.getElementById('chatTyping'); if (!ty) return;
+      ty.classList.add('visible');
+      if (window._hideTypingTimer) clearTimeout(window._hideTypingTimer);
+      window._hideTypingTimer = setTimeout(() => ty.classList.remove('visible'), 2500);
+    }
+  }).subscribe();
+}
+function sendTypingPresence() {
+  if (!_chatChannel) return;
+  _chatChannel.send({type:'broadcast', event:'typing', payload:{role:_chatRole}});
+  if (window._typingTimeout) clearTimeout(window._typingTimeout);
+  window._typingTimeout = setTimeout(() => {}, 2000);
+}
+function setQuickReply(text) { const i = document.getElementById('chatInput'); i.value = text; i.focus(); }
+function toggleChatSearch() {
+  const bar = document.getElementById('chatSearchBar');
+  const vis = bar.style.display !== 'none';
+  bar.style.display = vis ? 'none' : 'flex';
+  if (!vis) document.getElementById('chatSearchInput').focus(); else clearChatSearch();
+}
+function filterChatMessages(q) {
+  if (!q) { renderAllChatMessages(); return; }
+  const lq = q.toLowerCase();
+  const all = window._chatMessages || [];
+  const filtered = all.filter(m => (m.body||'').toLowerCase().includes(lq));
+  const c = document.getElementById('chatMessages');
+  if (!filtered.length) { c.innerHTML = '<div class="chat-empty">Keine Treffer</div>'; return; }
+  const saved = window._chatMessages;
+  window._chatMessages = filtered; renderAllChatMessages(); window._chatMessages = saved;
+}
+function clearChatSearch() {
+  const b = document.getElementById('chatSearchBar'); if (b) b.style.display = 'none';
+  const i = document.getElementById('chatSearchInput'); if (i) i.value = '';
+  if (window._chatMessages) renderAllChatMessages();
+}
+function triggerChatMedia() { document.getElementById('chatMediaInput').click(); }
+async function uploadChatMedia(input) {
+  const file = input.files && input.files[0]; if (!file) return;
+  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
+  const ext = file.name.split('.').pop();
+  const path = user.id + '/' + _chatBookingId + '/' + Date.now() + '.' + ext;
+  const {error: upErr} = await supabase.storage.from('chat-media').upload(path, file, {upsert: true});
+  if (upErr) { alert('Upload fehlgeschlagen: ' + upErr.message); input.value = ''; return; }
+  const {data: {publicUrl}} = supabase.storage.from('chat-media').getPublicUrl(path);
+  const {data: msgData} = await supabase.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body: publicUrl, message_type: 'image', media_url: publicUrl, is_read: false}).select().single();
+  if (msgData) { if (!window._chatMessages) window._chatMessages = []; window._chatMessages.push(msgData); renderAllChatMessages(); const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight; }
+  input.value = '';
+}
+let _reportMsgId = null;
+function openReportModal(msgId) { _reportMsgId = msgId; const m = document.getElementById('reportModal'); if (m) m.style.display = 'flex'; }
+function closeReportModal() { const m = document.getElementById('reportModal'); if (m) m.style.display = 'none'; _reportMsgId = null; }
+async function submitReport(reason) {
+  if (!_reportMsgId) return;
+  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
+  await supabase.from('reports').insert({reporter_id: user.id, message_id: _reportMsgId, reason});
+  closeReportModal(); if (typeof showToast === 'function') showToast('Gemeldet. Wir prüfen die Nachricht.');
+}
+async function sendEmailFallback(msg) {
+  try {
+    const {data: bd} = await supabase.from('bookings').select('customer_id,store_id,stores(name,email),profiles(email)').eq('id', _chatBookingId).single();
+    if (!bd) return;
+    const recipientEmail = _chatRole === 'customer' ? (bd.stores && bd.stores.email) : (bd.profiles && bd.profiles.email);
+    if (!recipientEmail) return;
+    await fetch('/api/send-email', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({to: recipientEmail, subject: 'Neue Nachricht auf solen.ch', html: '<p>Neue Nachricht: <em>' + (msg.body||'').substring(0,200) + '</em></p><p><a href="https://solen.ch">Jetzt antworten</a></p>'})});
+  } catch(e) {}
 }
 
 function escapeHtmlChat(str){
