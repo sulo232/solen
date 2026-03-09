@@ -42,6 +42,16 @@
   --glow:0 0 24px rgba(155,29,48,0.25);
   /* ── MOTION TOKENS ── */
   --ease:cubic-bezier(.4,0,.2,1);
+  --ease-standard:cubic-bezier(.2,.8,.2,1);
+  --ease-emphasized:cubic-bezier(.2,0,0,1);
+  --motion-fast:120ms;
+  --motion-base:200ms;
+  --motion-slow:280ms;
+  /* ── ELEVATION TOKENS ── */
+  --elev-0:none;
+  --elev-1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --elev-2:0 6px 18px rgba(0,0,0,.08);
+  --elev-3:0 12px 36px rgba(0,0,0,.12);
   /* ── CATEGORY TOKENS ── */
   --cat-hair:#9B1D30;--cat-barbershop:#4A4A8A;--cat-nails:#C4587A;--cat-spa:#5B8F7B;--cat-makeup:#9B6BBF;--cat-cosmetik:#D4AF77;--cat-tattoo:#2D2D2D;
   /* ── SPACING ── */
@@ -66,6 +76,7 @@
   --glow:0 0 24px rgba(155,29,48,0.30);
   --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
 }}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0.01ms!important;animation-duration:0.01ms!important}}
 html,body{overflow-x:hidden;max-width:100vw}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:var(--lh-body);display:flex;flex-direction:column}
 h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:var(--font-display);line-height:var(--lh-heading)}
@@ -149,10 +160,28 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .hero p{font-size:1.15rem;color:rgba(255,255,255,.85);margin-bottom:36px;font-weight:500;line-height:var(--lh-body)}
 .hero-filter-chip{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:var(--r-pill);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s var(--ease)}
 .hero-filter-chip:hover{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4)}
-.hero-search{display:flex;gap:10px;max-width:700px;margin:0 auto 32px;background:rgba(255,255,255,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.4);border-radius:50px;padding:8px}
+.hero-search{display:flex;gap:0;max-width:700px;margin:0 auto 32px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:0;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.hero-search-field{flex:1;display:flex;align-items:center;gap:8px;padding:14px 16px;cursor:pointer;border-right:1px solid rgba(0,0,0,.08);transition:background var(--motion-fast) var(--ease-standard);position:relative;min-width:0}
+.hero-search-field:last-of-type{border-right:none}
+.hero-search-field:hover{background:rgba(0,0,0,.04)}
+.hero-search-field svg{width:18px;height:18px;stroke:var(--c-accent);fill:none;stroke-width:2;flex-shrink:0}
+.hero-search-field-label{font-size:.72rem;font-weight:700;color:rgba(0,0,0,.5);text-transform:uppercase;letter-spacing:.04em;line-height:1}
+.hero-search-field-value{font-size:.88rem;font-weight:600;color:#1F1F1F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.hero-search-field-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hero-search-submit{background:var(--c-accent);color:#fff;border:none;padding:14px 28px;font-weight:700;font-size:.95rem;cursor:pointer;transition:all var(--motion-fast) var(--ease-standard);white-space:nowrap;flex-shrink:0}
+.hero-search-submit:hover{background:var(--c-accent-hover)}
+/* Selection menu dropdown */
+.selection-dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:240px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:16px;box-shadow:var(--elev-3);z-index:100;padding:8px;display:none;max-height:320px;overflow-y:auto}
+.selection-dropdown.open{display:block}
+.selection-dropdown-item{padding:10px 14px;border-radius:10px;font-size:.88rem;font-weight:500;color:var(--c-text);cursor:pointer;transition:background var(--motion-fast) var(--ease-standard);display:flex;align-items:center;gap:8px}
+.selection-dropdown-item:hover{background:var(--c-surface-alt)}
+.selection-dropdown-item.selected{background:rgba(155,29,48,.08);color:var(--c-accent);font-weight:600}
+.selection-dropdown-search{width:100%;padding:10px 12px;border:1.5px solid var(--c-border);border-radius:10px;font-size:.88rem;background:var(--c-bg);color:var(--c-text);outline:none;margin-bottom:6px;font-family:inherit}
+.selection-dropdown-search:focus{border-color:var(--c-accent)}
+.selection-dropdown-group{font-size:.72rem;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 14px 4px;margin-top:4px}
 
-@media(max-width:640px){.hero-search{width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;margin:0 16px 24px!important}}
-@media(max-width:480px){.hero{min-height:auto;padding:88px 0 28px}.hero h1{font-size:1.7rem}.hero p{font-size:.95rem;margin-bottom:20px}.search-btn{border-radius:12px;font-size:.9rem}.btn-location{border-radius:10px;justify-content:center;width:100%}.hero-stats{gap:12px}.neighbourhood-bar{justify-content:flex-start!important}.hero-content{padding:0 16px}}
+@media(max-width:640px){.hero-search{width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;margin:0 16px 24px!important;flex-direction:column;border-radius:16px}.hero-search-field{border-right:none;border-bottom:1px solid rgba(0,0,0,.08);padding:12px 16px}.hero-search-field:last-of-type{border-bottom:none}.hero-search-submit{border-radius:0 0 16px 16px;padding:14px}.selection-dropdown{left:-16px;right:-16px;min-width:auto}}
+@media(max-width:480px){.hero{min-height:auto;padding:88px 0 28px}.hero h1{font-size:1.7rem}.hero p{font-size:.95rem;margin-bottom:20px}.btn-location{border-radius:10px;justify-content:center;width:100%}.hero-stats{gap:12px}.neighbourhood-bar{justify-content:flex-start!important}.hero-content{padding:0 16px}}
 .search-field{display:flex;align-items:center;gap:10px;flex:1;padding-left:16px}
 .search-field svg{width:20px;height:20px;stroke:rgba(0,0,0,.4);fill:none;stroke-width:2;flex-shrink:0}
 .hero-search input{flex:1;background:none;border:none;outline:none;color:#0D0D0D;font-size:.95rem;padding:10px 14px}
@@ -185,17 +214,17 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .page-title,.hero h1,.store-name,.profile-info h2{letter-spacing:.01em}
 
 /* STORES */
-.stores-section{max-width:1200px;margin:0 auto;padding:40px 20px 60px}
+.stores-section{max-width:1200px;margin:0 auto;padding:48px 24px 60px}
 .stores-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
-.stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:24px}
-.store-card{background:var(--c-surface);border-radius:var(--r-lg);overflow:hidden;border:none;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s var(--ease);position:relative;box-shadow:var(--shadow-card)}
-.store-card:hover{transform:translateY(-8px);box-shadow:var(--shadow2)}
+.stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:28px}
+.store-card{background:var(--c-surface);border-radius:var(--r2);overflow:hidden;border:1px solid var(--c-border);cursor:pointer;transition:transform var(--motion-base) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard),border-color var(--motion-base) var(--ease-standard);position:relative;box-shadow:var(--elev-1)}
+.store-card:hover{transform:translateY(-4px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
 .store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
 .store-card-photo{aspect-ratio:3/2;overflow:hidden;position:relative}
 .store-card-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s var(--ease)}
 .store-card:hover .store-card-photo img{transform:scale(1.03)}
-.store-card-body{padding:16px 20px 20px}
+.store-card-body{padding:16px 20px 14px}
 .store-card-tags{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .store-quartier-badge{display:inline-block;padding:3px 10px;border-radius:var(--r-pill);font-size:.72rem;font-weight:600;background:rgba(212,175,119,.15);color:#8B6914;white-space:nowrap}
 .store-cat-label{font-size:.75rem;color:var(--c-text-muted);font-weight:500}
@@ -224,6 +253,38 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .store-price{font-size:.85rem;color:var(--accent);font-weight:600}
 .no-stores{text-align:center;padding:60px 20px;color:var(--muted)}
 .no-stores h3{font-size:1.2rem;color:var(--text);margin-bottom:8px}
+
+/* QUERY SUMMARY BAR */
+.query-summary{background:var(--c-surface-alt);border-bottom:1px solid var(--c-border);padding:12px 0;margin-bottom:20px;border-radius:12px}
+.query-summary-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px}
+.query-summary-text{font-size:.88rem;font-weight:600;color:var(--c-text);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.query-summary-text .query-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-pill);font-size:.82rem;font-weight:600;color:var(--c-text-secondary)}
+.query-summary-text .query-sep{color:var(--c-text-muted);font-weight:400}
+.query-summary-clear{background:none;border:none;color:var(--c-accent);font-size:.82rem;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:var(--r-pill);transition:background var(--motion-fast) var(--ease-standard);white-space:nowrap}
+.query-summary-clear:hover{background:rgba(155,29,48,.08)}
+/* SORT DROPDOWN */
+.stores-header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.sort-dropdown{position:relative}
+.sort-trigger{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);background:var(--c-surface);color:var(--c-text-secondary);font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--motion-fast) var(--ease-standard);white-space:nowrap}
+.sort-trigger:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.sort-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;box-shadow:var(--elev-2);min-width:160px;padding:4px;z-index:50;display:none}
+.sort-menu.open{display:block}
+.sort-option{display:block;width:100%;padding:10px 14px;background:none;border:none;text-align:left;font-size:.85rem;font-weight:500;color:var(--c-text);cursor:pointer;border-radius:8px;transition:background var(--motion-fast) var(--ease-standard);font-family:inherit}
+.sort-option:hover{background:var(--c-surface-alt)}
+.sort-option.active{color:var(--c-accent);font-weight:600}
+/* ENHANCED STORE CARD (Fresha-style service previews) */
+.store-card-services{padding:0 20px 6px;display:flex;flex-direction:column;gap:0}
+.store-card-svc-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--c-border);font-size:.82rem}
+.store-card-svc-name{color:var(--c-text-secondary);font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.store-card-svc-meta{display:flex;align-items:center;gap:8px;flex-shrink:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.store-card-svc-dur{color:var(--c-text-muted);font-size:.78rem}
+.store-card-svc-price{color:var(--c-text);font-weight:600}
+.store-card-see-all{padding:8px 20px 16px}
+.store-card-see-all-btn{font-size:.8rem;font-weight:600;color:var(--c-accent);cursor:pointer;background:none;border:none;padding:0;display:flex;align-items:center;gap:4px;font-family:inherit}
+.store-card-see-all-btn:hover{text-decoration:underline}
+/* STORE CARD TAGS – featured/deals */
+.store-featured-tag{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:var(--r-pill);font-size:.72rem;font-weight:700;background:rgba(155,29,48,.1);color:var(--c-accent);letter-spacing:.02em}
+.store-deals-tag{display:inline-flex;align-items:center;gap:3px;padding:3px 10px;border-radius:var(--r-pill);font-size:.72rem;font-weight:700;background:rgba(212,175,119,.15);color:#8B6914;letter-spacing:.02em}
 
 /* SKELETON LOADING */
 .skeleton-card{background:var(--surface);border-radius:var(--r2);overflow:hidden;border:1px solid var(--border)}
@@ -363,12 +424,41 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .wiz-btns .btn-secondary{flex:1}
 .wiz-btns .btn-primary{flex:2}
 
-/* STORE DETAIL */
-.store-detail-img{width:100%;height:220px;object-fit:cover;border-radius:var(--r2) var(--r2) 0 0;display:block}
-.store-detail-img-placeholder{width:100%;height:220px;background:linear-gradient(135deg,var(--surfaceAlt),var(--bg2));border-radius:var(--r2) var(--r2) 0 0;display:flex;align-items:center;justify-content:center;font-size:4rem}
+/* STORE DETAIL (Enhanced Fresha-style) */
+.store-detail-img{width:100%;height:240px;object-fit:cover;border-radius:var(--r2) var(--r2) 0 0;display:block}
+.store-detail-img-placeholder{width:100%;height:240px;background:linear-gradient(135deg,var(--surfaceAlt),var(--bg2));border-radius:var(--r2) var(--r2) 0 0;display:flex;align-items:center;justify-content:center;font-size:4rem}
 .store-detail-img-wrap{position:relative;border-radius:var(--r2) var(--r2) 0 0;overflow:hidden}
 .store-detail-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to bottom,transparent,var(--surface));pointer-events:none}
-#storeOverlay .modal{overflow:hidden}
+#storeOverlay .modal{overflow:hidden;display:flex;flex-direction:column}
+/* Venue tabs */
+.venue-tabs{display:flex;gap:0;border-bottom:1px solid var(--c-border);padding:0 24px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.venue-tabs::-webkit-scrollbar{display:none}
+.venue-tab{padding:14px 20px;font-size:.88rem;font-weight:600;color:var(--c-text-muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all var(--motion-fast) var(--ease-standard);white-space:nowrap;font-family:inherit}
+.venue-tab:hover{color:var(--c-text)}
+.venue-tab.active{color:var(--c-accent);border-bottom-color:var(--c-accent)}
+.venue-tab-content{display:none;padding:24px}
+.venue-tab-content.active{display:block}
+/* Service rows (Fresha-style in venue detail) */
+.venue-svc-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--c-border);gap:12px}
+.venue-svc-row:last-child{border-bottom:none}
+.venue-svc-info{flex:1;min-width:0}
+.venue-svc-name{font-weight:600;font-size:.92rem;color:var(--c-text);margin-bottom:2px}
+.venue-svc-detail{font-size:.82rem;color:var(--c-text-muted);display:flex;align-items:center;gap:8px}
+.venue-svc-action{flex-shrink:0}
+.venue-svc-add{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--c-accent);background:transparent;color:var(--c-accent);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--motion-fast) var(--ease-standard);font-weight:600}
+.venue-svc-add:hover{background:var(--c-accent);color:#fff}
+.venue-svc-add.added{background:var(--c-accent);color:#fff}
+/* Sticky book CTA (venue detail) */
+.venue-sticky-cta{position:sticky;bottom:0;background:var(--c-surface);border-top:1px solid var(--c-border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:10}
+.venue-sticky-cta-info{font-size:.88rem;font-weight:600;color:var(--c-text)}
+.venue-sticky-cta-info span{font-family:var(--font-mono);color:var(--c-accent);font-weight:700}
+.venue-sticky-cta .btn-book{padding:12px 28px;font-size:.92rem}
+/* Service category chips (venue detail) */
+.venue-svc-cats{display:flex;gap:8px;padding:0 0 16px;overflow-x:auto;scrollbar-width:none}
+.venue-svc-cats::-webkit-scrollbar{display:none}
+.venue-svc-cat-chip{padding:8px 16px;border-radius:var(--r-pill);border:1.5px solid var(--c-border-strong);background:var(--c-surface);color:var(--c-text-secondary);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all var(--motion-fast) var(--ease-standard)}
+.venue-svc-cat-chip:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.venue-svc-cat-chip.active{background:var(--c-accent);color:#fff;border-color:var(--c-accent)}
 
 /* PAGES */
 .page{display:none;max-width:1200px;margin:0 auto;padding:32px 20px 60px}
@@ -394,6 +484,18 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .btn-sm:hover{background:var(--bg3);border-color:var(--text)}
 .btn-sm.solid{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn-sm.solid:hover{background:var(--accent-dark);border-color:var(--accent-dark)}
+
+/* BOOKING FLOW STICKY CTA */
+.wiz-sticky-bar{position:sticky;bottom:0;background:var(--c-surface);border-top:1px solid var(--c-border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -24px;width:calc(100% + 48px);z-index:5}
+.wiz-sticky-summary{font-size:.85rem;color:var(--c-text-secondary)}
+.wiz-sticky-summary strong{color:var(--c-text);font-family:var(--font-mono)}
+.wiz-sticky-bar .btn-primary{width:auto;padding:12px 28px;margin-top:0;flex-shrink:0}
+/* Booking step header improvement */
+.wiz-step-header{font-size:1.1rem;font-weight:700;font-family:var(--font-display);margin-bottom:20px;color:var(--c-text)}
+/* Loading slot indicator */
+.slot-loading{display:flex;align-items:center;justify-content:center;padding:10px;border:1.5px solid var(--c-border);border-radius:var(--r);background:var(--c-surface);color:var(--c-text-muted);font-size:.85rem}
+.slot-loading::after{content:'';width:16px;height:16px;border:2px solid var(--c-border-strong);border-top-color:var(--c-accent);border-radius:50%;animation:spin .6s linear infinite;margin-left:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* BOOKINGS */
 .booking-list{display:flex;flex-direction:column;gap:14px}
@@ -653,7 +755,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .empty-state button:hover{background:var(--accent-dark)}
 
 /* SALON SPOTLIGHT */
-.spotlight-section{max-width:1200px;margin:0 auto;padding:48px 24px 32px}
+.spotlight-section{max-width:1200px;margin:0 auto;padding:56px 24px 40px}
 .spotlight-header{text-align:center;margin-bottom:32px}
 .spotlight-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:700;margin-bottom:6px}
 .spotlight-header p{color:var(--muted);font-size:.92rem}
@@ -667,7 +769,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .spotlight-card .spotlight-cta{font-size:.82rem;font-weight:700;color:var(--accent);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 
 /* ABOUT / STORY SECTION */
-.about-section{max-width:800px;margin:0 auto;padding:32px 24px 48px;text-align:center}
+.about-section{max-width:800px;margin:0 auto;padding:48px 24px 56px;text-align:center}
 .about-section h2{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:12px}
 .about-section .about-text{color:var(--text2);font-size:.95rem;line-height:1.7;margin-bottom:16px}
 .about-section .about-sig{font-family:'Space Grotesk',sans-serif;color:var(--accent);font-weight:600;font-size:.9rem}
@@ -711,7 +813,7 @@ html,body{overflow-x:hidden;max-width:100vw}
 @media(max-width:768px){
   .hero h1{font-size:2rem}
   .hero-stats{gap:20px;flex-wrap:wrap}
-  .hero-search{flex-direction:column;border-radius:20px;align-items:stretch}
+  .hero-search{flex-direction:column;border-radius:16px;align-items:stretch}
   .stores-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .wiz-step span:not(.wiz-num){display:none}
@@ -1206,17 +1308,42 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
     <div class="hero-content">
       <h1 data-i18n-html="hero_title">Dein n&auml;chster<br><span class="hero-highlight">Lieblingsort wartet.</span></h1>
       <p data-i18n="hero_sub">Buche direkt bei Salons in deinem Quartier &ndash; ohne Umwege.</p>
-      <div class="hero-search">
-        <div class="search-field">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="Salon oder Quartier suchen..." oninput="debounceSearch()" aria-label="Salon suchen">
+      <!-- Structured Selection Menu (Fresha-inspired) -->
+      <div class="hero-search" id="selectionMenu">
+        <div class="hero-search-field" onclick="toggleSelectionDropdown('service')" id="selFieldService">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/></svg>
+          <div class="hero-search-field-text">
+            <span class="hero-search-field-label" data-i18n="sel_service_label">Service</span>
+            <span class="hero-search-field-value" id="selServiceValue" data-i18n="sel_service_placeholder">Service oder Salon</span>
+          </div>
+          <div class="selection-dropdown" id="selServiceDropdown"></div>
         </div>
-        <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
+        <div class="hero-search-field" onclick="toggleSelectionDropdown('quartier')" id="selFieldQuartier">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div class="hero-search-field-text">
+            <span class="hero-search-field-label" data-i18n="sel_quartier_label">Quartier</span>
+            <span class="hero-search-field-value" id="selQuartierValue" data-i18n="sel_quartier_placeholder">Quartier w&auml;hlen</span>
+          </div>
+          <div class="selection-dropdown" id="selQuartierDropdown"></div>
+        </div>
+        <div class="hero-search-field" onclick="toggleSelectionDropdown('time')" id="selFieldTime">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="hero-search-field-text">
+            <span class="hero-search-field-label" data-i18n="sel_time_label">Wann</span>
+            <span class="hero-search-field-value" id="selTimeValue" data-i18n="sel_time_placeholder">Beliebig</span>
+          </div>
+          <div class="selection-dropdown" id="selTimeDropdown"></div>
+        </div>
+        <button class="hero-search-submit" onclick="applySelectionSearch()" data-i18n="search_btn">Suchen</button>
       </div>
+      <!-- Hidden search input for JS compatibility -->
+      <input type="text" id="searchInput" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" oninput="debounceSearch()" aria-hidden="true">
       <div class="hero-quick-filters" style="padding:12px 0 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button class="hero-filter-chip" onclick="selectCat(document.querySelector('[data-cat=hairsalon]'),'hairsalon')">Coiffeur</button>
-        <button class="hero-filter-chip" onclick="selectCat(document.querySelector('[data-cat=barber]'),'barber')">Barbershop</button>
-        <button class="hero-filter-chip" onclick="selectCat(document.querySelector('[data-cat=nails]'),'nails')">Nails</button>
+        <button class="hero-filter-chip" onclick="selectServiceFromMenu('hairsalon','Coiffeur')">Coiffeur</button>
+        <button class="hero-filter-chip" onclick="selectServiceFromMenu('barber','Barbershop')">Barbershop</button>
+        <button class="hero-filter-chip" onclick="selectServiceFromMenu('nails','Nails')">Nails</button>
+        <button class="hero-filter-chip" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')">Spa</button>
+        <button class="hero-filter-chip" onclick="selectServiceFromMenu('makeup','Make-up')">Make-up</button>
       </div>
     </div>
   </section>
@@ -1236,9 +1363,30 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 
   <!-- STORES -->
   <div class="stores-section">
+    <!-- Query Summary Bar (Fresha-inspired) -->
+    <div class="query-summary" id="querySummary" style="display:none">
+      <div class="query-summary-inner">
+        <span class="query-summary-text" id="querySummaryText"></span>
+        <button class="query-summary-clear" onclick="clearAllSelections()" data-i18n="clear_all">Zur&uuml;cksetzen</button>
+      </div>
+    </div>
     <div class="stores-header">
       <div class="section-title" style="margin-bottom:0" data-i18n="stores_title">Salons in deiner N&auml;he</div>
       <div class="stores-count" id="storesCount"></div>
+      <div class="stores-header-actions">
+        <div class="sort-dropdown" id="sortDropdown">
+          <button class="sort-trigger" onclick="toggleSortDropdown()" id="sortTrigger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="8" y2="18"/></svg>
+            <span id="sortLabel">Empfohlen</span>
+          </button>
+          <div class="sort-menu" id="sortMenu">
+            <button class="sort-option active" onclick="selectSort('default','Empfohlen')">Empfohlen</button>
+            <button class="sort-option" onclick="selectSort('price_asc','G&#252;nstigste')">G&#252;nstigste</button>
+            <button class="sort-option" onclick="selectSort('popular','Beliebteste')">Beliebteste</button>
+            <button class="sort-option" onclick="selectSort('name_asc','A-Z')">A-Z</button>
+          </div>
+        </div>
+      </div>
       <!-- hidden elements for JS compatibility -->
       <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="display:none">
         <option value="default">Empfohlen</option>
@@ -1249,15 +1397,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <span id="priceLabelDesktop" style="display:none"></span>
     </div>
     <!-- FILTER PILLS: Category -->
-    <div class="filter-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+    <div class="filter-pills" id="catFilterPills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <button class="filter-pill active" onclick="selectCatPill(this,'')" data-i18n="cat_all">Alle</button>
       <button class="filter-pill" onclick="selectCatPill(this,'hairsalon')" data-i18n="cat_hairsalon">Coiffeur</button>
       <button class="filter-pill" onclick="selectCatPill(this,'barber')" data-i18n="cat_barber">Barbershop</button>
       <button class="filter-pill" onclick="selectCatPill(this,'nails')" data-i18n="cat_nails">Nails</button>
       <button class="filter-pill" onclick="selectCatPill(this,'spa')" data-i18n="cat_spa">Massage &amp; Spa</button>
+      <button class="filter-pill" onclick="selectCatPill(this,'makeup')" data-i18n="cat_makeup">Make-up</button>
+      <button class="filter-pill" onclick="selectCatPill(this,'cosmetik')" data-i18n="cat_cosmetik">Kosmetik</button>
     </div>
     <!-- FILTER PILLS: Quartier -->
-    <div class="filter-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+    <div class="filter-pills" id="quartierFilterPills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
       <button class="filter-pill active" onclick="selectQuartierPill(this,'')">Alle Quartiere</button>
       <button class="filter-pill" onclick="selectQuartierPill(this,'Grossbasel')">Grossbasel</button>
       <button class="filter-pill" onclick="selectQuartierPill(this,'Kleinbasel')">Kleinbasel</button>
@@ -1879,6 +2029,11 @@ const T={
     status_confirmed:'Best\u00e4tigt',status_pending:'Ausstehend',status_cancelled:'Storniert',cancel_booking:'Termin absagen',booking_cancelled:'Termin abgesagt.',
     rebook:'Erneut buchen',
     salon_count_one:'Salon',salon_count_other:'Salons',
+    see_all_services:'Alle Services',clear_all:'Zur\u00fccksetzen',
+    sel_service_label:'Service',sel_service_placeholder:'Service oder Salon',
+    sel_quartier_label:'Quartier',sel_quartier_placeholder:'Quartier w\u00e4hlen',
+    sel_time_label:'Wann',sel_time_placeholder:'Beliebig',
+    venue_tab_services:'Services',venue_tab_reviews:'Bewertungen',venue_tab_about:'\u00dcber',
     err_email_pw:'Bitte E-Mail und Passwort eingeben.',err_fill_all:'Bitte alle Felder ausf\u00fcllen.',err_pw_min:'Passwort muss mindestens 6 Zeichen haben.',
     err_wrong_pw:'Falsches Passwort oder E-Mail. Bitte \u00fcberpr\u00fcfe deine Eingaben.',err_confirm_email:'Bitte best\u00e4tige zuerst deine E-Mail-Adresse.',
     err_invalid_email:'Das sieht nicht ganz richtig aus \u2013 check mal das Format.',err_email_not_registered:'Diese E-Mail-Adresse ist nicht registriert.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
@@ -1984,6 +2139,11 @@ const T={
     status_confirmed:'Confirmed',status_pending:'Pending',status_cancelled:'Cancelled',
     rebook:'Book again',
     salon_count_one:'Salon',salon_count_other:'Salons',
+    see_all_services:'All services',clear_all:'Reset',
+    sel_service_label:'Service',sel_service_placeholder:'Service or salon',
+    sel_quartier_label:'Location',sel_quartier_placeholder:'Choose a quartier',
+    sel_time_label:'When',sel_time_placeholder:'Any time',
+    venue_tab_services:'Services',venue_tab_reviews:'Reviews',venue_tab_about:'About',
     err_email_pw:'Please enter email and password.',err_fill_all:'Please fill in all fields.',err_pw_min:'Password must be at least 6 characters.',
     err_wrong_pw:'Wrong password or email. Please check your input.',err_confirm_email:'Please confirm your email address first.',
     err_invalid_email:'Please enter a valid email address.',err_email_not_registered:'This email address is not registered.',err_generic:'An error occurred. Please try again.',
@@ -2089,6 +2249,11 @@ const T={
     status_confirmed:'Confirm\u00e9',status_pending:'En attente',status_cancelled:'Annul\u00e9',
     rebook:'R\u00e9server \u00e0 nouveau',
     salon_count_one:'Salon',salon_count_other:'Salons',
+    see_all_services:'Tous les services',clear_all:'R\u00e9initialiser',
+    sel_service_label:'Service',sel_service_placeholder:'Service ou salon',
+    sel_quartier_label:'Quartier',sel_quartier_placeholder:'Choisir un quartier',
+    sel_time_label:'Quand',sel_time_placeholder:'N\'importe quand',
+    venue_tab_services:'Services',venue_tab_reviews:'Avis',venue_tab_about:'\u00c0 propos',
     err_email_pw:'Veuillez entrer e-mail et mot de passe.',err_fill_all:'Veuillez remplir tous les champs.',err_pw_min:'Le mot de passe doit contenir au moins 6 caract\u00e8res.',
     err_wrong_pw:'Mauvais mot de passe ou e-mail.',err_confirm_email:'Veuillez confirmer votre e-mail.',
     err_invalid_email:'Veuillez entrer un e-mail valide.',err_email_not_registered:"Cette adresse e-mail n'est pas enregistrée.",err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
@@ -2193,6 +2358,11 @@ const T={
     recently_viewed:'Son görüntülenenler',resume_at:'Devam et',
     status_confirmed:'Onaylandı',status_pending:'Beklemede',status_cancelled:'İptal edildi',
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
+    see_all_services:'T\u00fcm hizmetler',clear_all:'S\u0131f\u0131rla',
+    sel_service_label:'Hizmet',sel_service_placeholder:'Hizmet veya salon',
+    sel_quartier_label:'Konum',sel_quartier_placeholder:'Semt se\u00e7in',
+    sel_time_label:'Ne zaman',sel_time_placeholder:'Herhangi bir zaman',
+    venue_tab_services:'Hizmetler',venue_tab_reviews:'Yorumlar',venue_tab_about:'Hakk\u0131nda',
     err_email_pw:'Lütfen e-posta ve Åifre girin.',err_fill_all:'Lütfen tüm alanları doldurun.',err_pw_min:'Åifre en az 6 karakter olmalıdır.',
     err_wrong_pw:'YanlıÅ Åifre veya e-posta.',err_confirm_email:'Lütfen önce e-posta adresinizi onaylayın.',
     err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayıtlı deÄil.',err_generic:'Bir hata oluÅtu. Lütfen tekrar deneyin.',
@@ -2578,7 +2748,149 @@ function debounceSearch(){
   clearTimeout(searchTimer);
   searchTimer=setTimeout(function(){applyFilters();var q=document.getElementById('searchInput').value;if(q.length>2)solenTrack('search_query',{query:q});},200);
 }
-function applyFilters(){renderStores();}
+function applyFilters(){renderStores();updateQuerySummary();}
+
+// ── STRUCTURED SELECTION MENU (Fresha-inspired) ──
+var selMenuState={service:'',serviceName:'',quartier:'',quartierName:'',time:'',timeName:''};
+
+function toggleSelectionDropdown(type){
+  // Close all other dropdowns first
+  document.querySelectorAll('.selection-dropdown').forEach(d=>d.classList.remove('open'));
+  var dropdown=document.getElementById('sel'+type.charAt(0).toUpperCase()+type.slice(1)+'Dropdown');
+  if(!dropdown)return;
+
+  if(type==='service'){
+    var cats=[{val:'',label:t('cat_all')},{val:'hairsalon',label:'Coiffeur'},{val:'barber',label:'Barbershop'},{val:'nails',label:'Nails'},{val:'spa',label:'Spa & Wellness'},{val:'makeup',label:'Make-up'},{val:'cosmetik',label:'Kosmetik'},{val:'eyebrows',label:'Augenbrauen'}];
+    dropdown.innerHTML='<input class="selection-dropdown-search" placeholder="'+t('search_placeholder')+'" oninput="filterSelDropdown(this,\'service\')" onclick="event.stopPropagation()">'+
+      cats.map(c=>'<div class="selection-dropdown-item'+(selMenuState.service===c.val?' selected':'')+'" onclick="event.stopPropagation();pickSelection(\'service\',\''+c.val+'\',\''+c.label+'\')">'+c.label+'</div>').join('');
+  } else if(type==='quartier'){
+    var quartiers=[{val:'',label:'Alle Quartiere'},{val:'Grossbasel',label:'Grossbasel'},{val:'Kleinbasel',label:'Kleinbasel'},{val:'Gundeldingen',label:'Gundeli'},{val:'St. Johann',label:'St. Johann'},{val:'Bruderholz',label:'Bruderholz'},{val:'Hirzbrunnen',label:'Hirzbrunnen'},{val:'Iselin',label:'Iselin'},{val:'Matthäus',label:'Matthäus'},{val:'Clara',label:'Clara'},{val:'Vorstädte',label:'Vorstädte'}];
+    dropdown.innerHTML='<input class="selection-dropdown-search" placeholder="Quartier suchen..." oninput="filterSelDropdown(this,\'quartier\')" onclick="event.stopPropagation()">'+
+      '<div class="selection-dropdown-group">Basel Quartiere</div>'+
+      quartiers.map(q=>'<div class="selection-dropdown-item'+(selMenuState.quartier===q.val?' selected':'')+'" onclick="event.stopPropagation();pickSelection(\'quartier\',\''+q.val+'\',\''+q.label+'\')">'+q.label+'</div>').join('');
+  } else if(type==='time'){
+    var times=[{val:'',label:'Beliebig'},{val:'today',label:'Heute'},{val:'tomorrow',label:'Morgen'},{val:'this-week',label:'Diese Woche'},{val:'next-week',label:'Nächste Woche'}];
+    dropdown.innerHTML=times.map(t=>'<div class="selection-dropdown-item'+(selMenuState.time===t.val?' selected':'')+'" onclick="event.stopPropagation();pickSelection(\'time\',\''+t.val+'\',\''+t.label+'\')">'+t.label+'</div>').join('');
+  }
+  dropdown.classList.toggle('open');
+}
+
+function filterSelDropdown(input,type){
+  var q=input.value.toLowerCase();
+  var items=input.parentElement.querySelectorAll('.selection-dropdown-item');
+  items.forEach(function(item){
+    item.style.display=item.textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+
+function pickSelection(type,val,label){
+  selMenuState[type]=val;
+  selMenuState[type+'Name']=label;
+  var el=document.getElementById('sel'+type.charAt(0).toUpperCase()+type.slice(1)+'Value');
+  if(el)el.textContent=label||getSelPlaceholder(type);
+  document.querySelectorAll('.selection-dropdown').forEach(d=>d.classList.remove('open'));
+
+  // Sync with existing filter system
+  if(type==='service'){
+    activeCategories.clear();
+    if(val)activeCategories.add(val);
+    syncCatPills(val);
+  } else if(type==='quartier'){
+    activeNeighbourhood=val;
+    syncQuartierPills(val);
+  }
+  applyFilters();
+}
+
+function getSelPlaceholder(type){
+  if(type==='service')return t('sel_service_placeholder')||'Service oder Salon';
+  if(type==='quartier')return t('sel_quartier_placeholder')||'Quartier wählen';
+  if(type==='time')return t('sel_time_placeholder')||'Beliebig';
+  return '';
+}
+
+function selectServiceFromMenu(cat,label){
+  pickSelection('service',cat,label);
+  scrollToStores();
+}
+
+function applySelectionSearch(){
+  applyFilters();
+  scrollToStores();
+}
+
+function scrollToStores(){
+  var el=document.querySelector('.stores-section');
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function syncCatPills(val){
+  document.querySelectorAll('#catFilterPills .filter-pill').forEach(function(p){
+    var isAll=!p.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+    var pillCat=p.getAttribute('onclick')?.match(/'([^']+)'/)?.[1]||'';
+    p.classList.toggle('active',val?pillCat===val:isAll||pillCat==='');
+  });
+}
+
+function syncQuartierPills(val){
+  document.querySelectorAll('#quartierFilterPills .filter-pill').forEach(function(p){
+    var pillQ=p.getAttribute('onclick')?.match(/'([^']+)'/)?.[1]||'';
+    p.classList.toggle('active',pillQ===val);
+  });
+}
+
+// Update query summary bar
+function updateQuerySummary(){
+  var el=document.getElementById('querySummary');
+  var textEl=document.getElementById('querySummaryText');
+  if(!el||!textEl)return;
+  var parts=[];
+  if(selMenuState.serviceName&&selMenuState.service)parts.push('<span class="query-chip">'+selMenuState.serviceName+'</span>');
+  if(selMenuState.quartierName&&selMenuState.quartier)parts.push('<span class="query-chip">'+selMenuState.quartierName+'</span>');
+  if(selMenuState.timeName&&selMenuState.time)parts.push('<span class="query-chip">'+selMenuState.timeName+'</span>');
+  if(parts.length>0){
+    textEl.innerHTML=parts.join(' <span class="query-sep">&middot;</span> ');
+    el.style.display='block';
+  } else {
+    el.style.display='none';
+  }
+}
+
+function clearAllSelections(){
+  selMenuState={service:'',serviceName:'',quartier:'',quartierName:'',time:'',timeName:''};
+  document.getElementById('selServiceValue').textContent=getSelPlaceholder('service');
+  document.getElementById('selQuartierValue').textContent=getSelPlaceholder('quartier');
+  document.getElementById('selTimeValue').textContent=getSelPlaceholder('time');
+  activeCategories.clear();
+  activeNeighbourhood='';
+  document.getElementById('searchInput').value='';
+  syncCatPills('');
+  syncQuartierPills('');
+  applyFilters();
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.hero-search-field'))document.querySelectorAll('.selection-dropdown').forEach(d=>d.classList.remove('open'));
+  if(!e.target.closest('.sort-dropdown')){var sm=document.getElementById('sortMenu');if(sm)sm.classList.remove('open');}
+});
+
+// Sort dropdown
+function toggleSortDropdown(){
+  var menu=document.getElementById('sortMenu');
+  if(menu)menu.classList.toggle('open');
+}
+
+function selectSort(val,label){
+  currentSort=val;
+  document.getElementById('sortLabel').textContent=label;
+  document.getElementById('sortMenu').classList.remove('open');
+  document.querySelectorAll('.sort-option').forEach(function(o){o.classList.toggle('active',o.textContent.trim()===label);});
+  // Sync hidden select
+  var sel=document.getElementById('sortSelect');
+  if(sel)sel.value=val;
+  changeSort(val);
+}
 
 // AUTH MODAL
 function openAuth(tab='login'){
@@ -3062,15 +3374,25 @@ function renderStoreCard(s){
   const revCount=parseInt(s.review_count)||0;
   const catName=getTypeName(s.cat||s.type||'');
   const quartier=extractQuartier(s.address||'Basel');
-  const ratingHtml=avgR>0?'<span class="card-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--c-highlight)" stroke="var(--c-highlight)" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> '+avgR.toFixed(1)+'</span>':'';
+  const ratingHtml=avgR>0?'<span class="card-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--c-highlight)" stroke="var(--c-highlight)" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> '+avgR.toFixed(1)+(revCount>0?' <span style="color:var(--c-text-muted);font-weight:500">('+revCount+')</span>':'')+'</span>':'';
+  // Featured/deals tags
+  const isEmpf=typeof isEmpfohlen==='function'&&isEmpfohlen(s);
+  const tagsHtml='<div class="store-card-tags">'+(isEmpf?'<span class="store-featured-tag">Empfohlen</span>':'')+'<span class="store-quartier-badge">'+quartier+'</span><span class="store-cat-label">'+catName+'</span></div>';
+  // Service preview rows (up to 3 services)
+  const previewSvcs=svcs.slice(0,3);
+  const svcPreviewHtml=previewSvcs.length?'<div class="store-card-services">'+previewSvcs.map(sv=>
+    '<div class="store-card-svc-row"><span class="store-card-svc-name">'+sv.name+'</span><span class="store-card-svc-meta"><span class="store-card-svc-dur">'+sv.duration+' Min.</span><span class="store-card-svc-price">CHF '+sv.price+'</span></span></div>'
+  ).join('')+'</div>'+(svcs.length>3?'<div class="store-card-see-all"><button class="store-card-see-all-btn" onclick="event.stopPropagation();openStore(\''+s.id+'\')">'+t('see_all_services')+' &rarr;</button></div>':''):'';
   return'<div class="store-card" onclick="openStore(\''+s.id+'\')" tabindex="0" role="link" aria-label="'+s.name+' besuchen">'+
     '<div class="store-card-photo"><img src="'+photoUrl+'" alt="'+s.name+'" loading="lazy" width="400" height="267"></div>'+
     '<div class="store-card-body">'+
-      '<div class="store-card-tags"><span class="store-quartier-badge">'+quartier+'</span><span class="store-cat-label">'+catName+'</span></div>'+
+      tagsHtml+
       '<div class="store-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+s.name+'</div>'+
       '<div class="store-card-meta">'+ratingHtml+'<span class="store-price-range">'+priceDisplay+'</span></div>'+
-      '<button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore(\''+s.id+'\'),null)">'+t('btn_book_appointment')+'</button>'+
-    '</div></div>';
+    '</div>'+
+    svcPreviewHtml+
+    '<div style="padding:0 20px 16px"><button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore(\''+s.id+'\'),null)" style="width:100%">'+t('btn_book_appointment')+'</button></div>'+
+  '</div>';
 }
 function findStore(id){return allStores.find(x=>x.id===id);}
 
@@ -3283,14 +3605,24 @@ function selectCatPill(btn,cat){
   document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
   const cpill=cat?document.querySelector('.cat-pill[data-cat="'+cat+'"]'):document.querySelector('.cat-pill[data-cat="all"]');
   if(cpill)cpill.classList.add('active');
-  saveCategoryFilter();renderStores();
+  // Sync selection menu
+  selMenuState.service=cat;
+  selMenuState.serviceName=cat?btn.textContent.trim():'';
+  var sEl=document.getElementById('selServiceValue');
+  if(sEl)sEl.textContent=cat?btn.textContent.trim():getSelPlaceholder('service');
+  saveCategoryFilter();renderStores();updateQuerySummary();
   solenTrack('filter_category',{category:cat||'all'});
 }
 function selectQuartierPill(btn,q){
   btn.parentElement.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   activeNeighbourhood=q;
-  renderStores();
+  // Sync selection menu
+  selMenuState.quartier=q;
+  selMenuState.quartierName=q?btn.textContent.trim():'';
+  var qEl=document.getElementById('selQuartierValue');
+  if(qEl)qEl.textContent=q?btn.textContent.trim():getSelPlaceholder('quartier');
+  renderStores();updateQuerySummary();
   solenTrack('filter_quartier',{quartier:q||'all'});
 }
 function extractQuartier(address){
@@ -3418,34 +3750,95 @@ async function openStore(storeId){
   const svcs=allServices.filter(x=>x.store_id===storeId||x.salon_id===storeId);
   const photoUrl=getSalonPhoto(s);
   const reviews=await loadReviews(storeId);
+  // Group services by category for Fresha-style display
+  const svcCategories=[...new Set(svcs.map(sv=>sv.category||getTypeName(s.cat||s.type||'')))];
+  const avgR=parseFloat(s.avg_rating)||0;
+  const revCount=parseInt(s.review_count)||0;
+
   document.getElementById('storeDetailContent').innerHTML=`
     <div class="store-detail-img-wrap">
       <img class="store-detail-img" src="${photoUrl}" alt="${s.name}">
-    </div>`+`
+    </div>
     <div style="padding:24px 24px 16px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:0">
           <div style="font-size:1.3rem;font-weight:900;margin-bottom:6px;font-family:var(--font-display);letter-spacing:-.01em">${s.name}${s.is_verified?' <span style="color:var(--accent);font-size:.9rem">&#10003; Verifiziert</span>':''}</div>
-          <div class="star-rating"><span class="stars">${renderStars(s.avg_rating)}</span> <span class="review-count">${(parseFloat(s.avg_rating)||0).toFixed(1)} (${s.review_count||0} Bewertungen)</span></div>
-          <div style="font-size:.85rem;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle;margin-right:2px" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${s.address||'Basel'}</span> <span style="width:3px;height:3px;border-radius:50%;background:var(--muted);display:inline-block"></span> <span>${getTypeName(s.cat||s.type||'')}</div>
+          <div class="star-rating"><span class="stars">${renderStars(s.avg_rating)}</span> <span class="review-count">${avgR.toFixed(1)} (${revCount} Bewertungen)</span></div>
+          <div style="font-size:.85rem;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle;margin-right:2px" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${s.address||'Basel'}</span> <span style="width:3px;height:3px;border-radius:50%;background:var(--muted);display:inline-block"></span> <span>${getTypeName(s.cat||s.type||'')}</span></div>
         </div>
         <button class="close-btn" style="font-size:1.6rem;flex-shrink:0" onclick="document.getElementById('storeOverlay').classList.remove('active')">&times;</button>
       </div>
-      <p id="storeDetailDesc" data-de="${(s.description||'').replace(/"/g,'&quot;')}" style="margin-top:12px;color:var(--text2);font-size:.92rem;line-height:1.6">${s.description||''}</p>
-      <div style="margin-top:24px">
-        <div class="section-hd"><h3>Angebot</h3><button class="btn-sm solid" onclick="closeStoreDetail();openBookingModal(findStore('${s.id}'),null)">${t('book_now')}</button></div>
-        ${svcs.length?`<div class="services-grid">${svcs.map(sv=>`
-          <div class="svc-card">
-            <div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div>
-            <div class="svc-meta"><span>CHF ${sv.price}</span><span>${sv.duration} Min.</span></div>
-          </div>`).join('')}</div>`:'<p class="text-muted" style="font-size:.88rem">Dieser Salon hat noch keine Behandlungen eingetragen.</p>'}
-      </div>
+    </div>
+    <!-- Venue Tabs (Fresha-style) -->
+    <div class="venue-tabs">
+      <button class="venue-tab active" onclick="switchVenueTab(this,'venueTabServices')">${t('venue_tab_services')}</button>
+      <button class="venue-tab" onclick="switchVenueTab(this,'venueTabReviews')">${t('venue_tab_reviews')}</button>
+      <button class="venue-tab" onclick="switchVenueTab(this,'venueTabAbout')">${t('venue_tab_about')}</button>
+    </div>
+    <!-- Services Tab -->
+    <div class="venue-tab-content active" id="venueTabServices">
+      ${svcs.length?`
+        <div class="venue-svc-cats">
+          <button class="venue-svc-cat-chip active" onclick="filterVenueSvcs(this,'all')">Alle</button>
+          ${svcCategories.slice(0,5).map(cat=>`<button class="venue-svc-cat-chip" onclick="filterVenueSvcs(this,'${cat}')">${cat}</button>`).join('')}
+        </div>
+        <div id="venueSvcList">
+          ${svcs.map(sv=>`<div class="venue-svc-row" data-svc-cat="${sv.category||getTypeName(s.cat||s.type||'')}">
+            <div class="venue-svc-info">
+              <div class="venue-svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div>
+              <div class="venue-svc-detail"><span>${sv.duration} Min.</span><span>&middot;</span><span>ab CHF ${sv.price}</span></div>
+            </div>
+            <div class="venue-svc-action">
+              <button class="venue-svc-add" onclick="event.stopPropagation();closeStoreDetail();openBookingModal(findStore('${s.id}'),'${sv.id}')" title="${t('btn_book')}" aria-label="${sv.name} buchen">+</button>
+            </div>
+          </div>`).join('')}
+        </div>
+      `:'<p class="text-muted" style="font-size:.88rem;padding:20px 0">Dieser Salon hat noch keine Behandlungen eingetragen.</p>'}
+    </div>
+    <!-- Reviews Tab -->
+    <div class="venue-tab-content" id="venueTabReviews">
       ${renderReviewsSection(storeId,reviews)}
+    </div>
+    <!-- About Tab -->
+    <div class="venue-tab-content" id="venueTabAbout">
+      <p id="storeDetailDesc" data-de="${(s.description||'').replace(/"/g,'&quot;')}" style="color:var(--text2);font-size:.92rem;line-height:1.7;margin-bottom:16px">${s.description||'Noch keine Beschreibung vorhanden.'}</p>
+      <div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem;margin-bottom:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${s.address||'Basel'}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ${s.opening_hours||'Kontaktiere den Salon f\u00fcr \u00d6ffnungszeiten'}
+      </div>
+    </div>
+    <!-- Sticky Book CTA -->
+    <div class="venue-sticky-cta">
+      <div class="venue-sticky-cta-info">${svcs.length?`<span>${svcs.length}</span> ${svcs.length===1?'Service':'Services'} ${svcs.length>0?'&middot; ab <span>CHF '+Math.min(...svcs.map(x=>x.price))+'</span>':''}`:''}
+      </div>
+      <button class="btn-book" onclick="closeStoreDetail();openBookingModal(findStore('${s.id}'),null)">${t('btn_book_now')}</button>
     </div>`;
   document.getElementById('storeOverlay').classList.add('active');
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
 function closeStoreDetail(){document.getElementById('storeOverlay').classList.remove('active');}
+
+// VENUE TABS
+function switchVenueTab(btn,tabId){
+  document.querySelectorAll('.venue-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.venue-tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  var el=document.getElementById(tabId);
+  if(el)el.classList.add('active');
+}
+
+function filterVenueSvcs(chip,cat){
+  document.querySelectorAll('.venue-svc-cat-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('.venue-svc-row').forEach(function(row){
+    if(cat==='all')row.style.display='';
+    else row.style.display=row.getAttribute('data-svc-cat')===cat?'':'none';
+  });
+}
 
 // BOOKING WIZARD
 async function startBooking(storeId){
@@ -3507,7 +3900,7 @@ function renderWizStep(step){
 
   let html='';
   if(step===1){
-    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_choose_service')}</h3>`;
+    html=`<h3 class="wiz-step-header">${t('wiz_choose_service')}</h3>`;
     if(ordered.length===0){html+='<p class="text-muted">Keine Services verfügbar.</p>';}
     else{
       const prefs=currentProfile?.preferred_services||[];
@@ -3526,12 +3919,12 @@ function renderWizStep(step){
     html+=`<div class="wiz-btns" style="margin-top:20px"><button class="btn-secondary" onclick="closeBooking()">${t('btn_cancel')}</button><button class="btn-primary" onclick="wizNext(2)" id="wizNext1" ${!bookingState.service?'disabled':''}>${t('btn_next')}</button></div>`;
   }
   else if(step===2){
-    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_choose_date')}</h3>`;
+    html=`<h3 class="wiz-step-header">${t('wiz_choose_date')}</h3>`;
     html+=renderCalendar();
     html+=`<div class="wiz-btns"><button class="btn-secondary" onclick="wizNext(1)">${t('btn_back')}</button><button class="btn-primary" onclick="wizNext(3)" ${!bookingState.date?'disabled':''}>${t('btn_next')}</button></div>`;
   }
   else if(step===3){
-    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_choose_time')}</h3>`;
+    html=`<h3 class="wiz-step-header">${t('wiz_choose_time')}</h3>`;
     html+=`<div class="text-muted" style="font-size:.85rem;margin-bottom:12px">${formatDate(bookingState.date)}</div>`;
     const times=['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
     html+=`<div class="slots-grid">${times.map(t=>`<div class="slot ${bookingState.time===t?'selected':''}" onclick="selectTime('${t}')">${t}</div>`).join('')}</div>`;
@@ -3543,7 +3936,7 @@ function renderWizStep(step){
     const _fn=_saved?.name?.split(' ')[0]||p?.display_name?.split(' ')[0]||'';
     const _ln=_saved?.name?.split(' ').slice(1).join(' ')||p?.display_name?.split(' ').slice(1).join(' ')||'';
     const _ph=_saved?.phone||'';
-    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_your_details')}</h3>
+    html=`<h3 class="wiz-step-header">${t('wiz_your_details')}</h3>
     <div class="form-row">
       <div class="form-group"><label>${t('lbl_firstname')}</label><input class="form-input" id="bkFirst" value="${_fn}" placeholder="Max"></div>
       <div class="form-group"><label>${t('lbl_lastname')}</label><input class="form-input" id="bkLast" value="${_ln}" placeholder="Muster"></div>
@@ -3558,7 +3951,7 @@ function renderWizStep(step){
   else if(step===5){
     const s=bookingState.service;
     const dateStr=formatDate(bookingState.date);
-    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_confirm_booking')}</h3>
+    html=`<h3 class="wiz-step-header">${t('wiz_confirm_booking')}</h3>
     <div class="booking-summary">
       <h4>${t('wiz_summary')}</h4>
       <div class="summary-row"><span>${t('wiz_salon')}</span><span>${bookingState.store.name}</span></div>
