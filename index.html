@@ -1365,6 +1365,83 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 /* ── SPOTLIGHT SECTION ENHANCEMENTS ── */
 .spotlight-section{padding:60px 24px 44px}
 .spotlight-header h2{font-size:1.6rem}
+
+/* === DISCOVERY / SEARCH === */
+.discovery-section{padding:16px 0 8px;}.search-bar-wrap{display:flex;gap:8px;align-items:center;background:var(--c-surface,#fff);border:1.5px solid var(--c-border,#e2e8f0);border-radius:16px;padding:10px 16px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.search-nlp{flex:1;border:none;outline:none;font-size:15px;background:transparent;color:var(--c-text);}
+.btn-geo,.btn-map-toggle{background:none;border:none;font-size:18px;cursor:pointer;padding:2px 4px;opacity:.7;transition:opacity .2s;}.btn-geo:hover,.btn-map-toggle:hover{opacity:1;}
+.search-suggestions{position:absolute;z-index:200;background:var(--c-surface,#fff);border:1px solid var(--c-border,#e2e8f0);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.12);padding:8px 0;min-width:280px;max-height:260px;overflow-y:auto;}
+.search-sug-item{padding:10px 16px;cursor:pointer;font-size:14px;}.search-sug-item:hover{background:var(--c-bg,#f8fafc);}
+.salon-map{height:360px;border-radius:16px;margin-top:12px;z-index:1;}
+/* === CALENDAR OVERLAY === */
+.cal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;}
+.cal-overlay.hidden{display:none!important;}
+.cal-overlay-inner{background:var(--c-surface,#fff);border-radius:20px;padding:24px;width:min(480px,96vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.cal-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;}.cal-header span{flex:1;text-align:center;font-weight:700;font-size:16px;}
+.cal-header button{background:none;border:1.5px solid var(--c-border,#e2e8f0);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:18px;}.cal-close{margin-left:auto;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px;}
+.cal-day{text-align:center;padding:8px 4px;border-radius:8px;cursor:pointer;font-size:13px;transition:background .15s;}.cal-day:hover{background:var(--c-bg,#f1f5f9);}
+.cal-day.today{font-weight:700;color:var(--c-accent,#4ECDC4);}
+.cal-day.selected{background:var(--c-cta,#FF6B6B);color:#fff!important;}
+.cal-day.disabled{opacity:.35;cursor:default;pointer-events:none;}
+.cal-day-header{font-size:11px;font-weight:600;text-align:center;color:var(--c-text-secondary,#94a3b8);padding:4px;}
+.cal-slots{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.cal-slot{padding:6px 14px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s;}
+.cal-slot.selected,.cal-slot:hover{background:var(--c-cta,#FF6B6B);color:#fff;border-color:var(--c-cta,#FF6B6B);}
+.cal-staff-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.cal-staff-chip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:12px;cursor:pointer;font-size:12px;transition:all .15s;}
+.cal-staff-chip.selected{border-color:var(--c-accent,#4ECDC4);background:rgba(78,205,196,.1);}
+.cal-addons{display:flex;flex-direction:column;gap:6px;margin:8px 0;}
+.cal-addon-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:10px;cursor:pointer;font-size:13px;transition:border-color .15s;}
+.cal-addon-item.selected{border-color:var(--c-cta,#FF6B6B);}
+.cal-recur-row,.cal-group-row{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px;}
+.cal-group-row button{width:28px;height:28px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:8px;background:none;cursor:pointer;font-size:16px;}
+.btn-confirm-cal{width:100%;padding:14px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:12px;}
+/* === WALK-IN MODAL === */
+.walkin-modal{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9100;background:var(--c-surface,#fff);border-radius:16px;padding:20px 24px;box-shadow:0 8px 32px rgba(0,0,0,.15);min-width:280px;text-align:center;}
+.walkin-modal.hidden{display:none!important;}
+.walkin-inner h3{margin:0 0 8px;font-size:16px;}
+.btn-leave-walkin{background:#FF6B6B;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;margin-right:8px;}
+.btn-close-walkin{background:none;border:none;font-size:18px;cursor:pointer;}
+/* === CHAT FAB & PANEL === */
+.chat-fab{position:fixed;bottom:24px;right:24px;z-index:8000;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#FF6B6B,#FF8E53);border:none;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,107,.4);transition:transform .2s;}
+.chat-fab:hover{transform:scale(1.08);}
+.chat-fab.hidden{display:none!important;}
+.chat-fab-badge{position:absolute;top:-4px;right:-4px;background:#e53e3e;color:#fff;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.chat-fab-badge.hidden{display:none!important;}
+.chat-panel{position:fixed;bottom:90px;right:24px;z-index:8001;width:340px;max-height:520px;background:var(--c-surface,#fff);border-radius:20px;box-shadow:0 12px 48px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow:hidden;}
+.chat-panel.hidden{display:none!important;}
+.chat-panel-header{display:flex;align-items:center;padding:14px 16px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;}
+.chat-panel-header span{flex:1;font-weight:600;font-size:14px;}
+.chat-header-actions button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer;padding:0 4px;}
+.chat-search-bar{padding:8px 12px;border-bottom:1px solid var(--c-border,#e2e8f0);}
+.chat-search-bar input{width:100%;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;padding:6px 10px;font-size:13px;outline:none;}
+.chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.chat-msg{display:flex;flex-direction:column;max-width:80%;}
+.chat-msg.mine{align-self:flex-end;align-items:flex-end;}
+.chat-msg.theirs{align-self:flex-start;}
+.chat-bubble{padding:8px 12px;border-radius:16px;font-size:13px;line-height:1.4;}
+.chat-msg.mine .chat-bubble{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;border-bottom-right-radius:4px;}
+.chat-msg.theirs .chat-bubble{background:var(--c-bg,#f1f5f9);border-bottom-left-radius:4px;}
+.chat-msg-time{font-size:10px;color:var(--c-text-secondary,#94a3b8);margin-top:2px;}
+.chat-quick-replies{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;border-top:1px solid var(--c-border,#e2e8f0);}
+.chat-quick-replies button{white-space:nowrap;padding:5px 10px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:16px;background:none;font-size:12px;cursor:pointer;transition:all .15s;}
+.chat-quick-replies button:hover{background:var(--c-cta,#FF6B6B);color:#fff;border-color:var(--c-cta,#FF6B6B);}
+.chat-input-row{display:flex;align-items:flex-end;gap:6px;padding:10px 12px;border-top:1px solid var(--c-border,#e2e8f0);}
+.chat-input-row textarea{flex:1;border:1.5px solid var(--c-border,#e2e8f0);border-radius:12px;padding:8px 10px;font-size:13px;resize:none;outline:none;max-height:80px;font-family:inherit;}
+.btn-send-chat{background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:10px;width:36px;height:36px;font-size:16px;cursor:pointer;}
+/* === OFFER PICKER & REPORT MODAL === */
+.offer-picker,.report-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9200;display:flex;align-items:center;justify-content:center;}
+.offer-picker.hidden,.report-modal.hidden{display:none!important;}
+.offer-picker-inner,.report-inner{background:var(--c-surface,#fff);border-radius:16px;padding:24px;min-width:280px;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+.offer-picker-inner h4,.report-inner h4{margin:0 0 12px;font-size:15px;}
+.offer-item{padding:10px 14px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:10px;cursor:pointer;margin-bottom:8px;font-size:13px;transition:border-color .15s;}
+.offer-item:hover{border-color:var(--c-cta,#FF6B6B);}
+/* === ADMIN PANEL === */
+.admin-panel{padding:16px;}.admin-store-item{display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:12px;margin-bottom:10px;}
+.admin-store-item .admin-actions{margin-left:auto;display:flex;gap:8px;}
+.btn-admin-approve{background:#48bb78;color:#fff;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;}
+.btn-admin-reject{background:#fc8181;color:#fff;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;}
 </style>
 
   <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -1373,7 +1450,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <meta property="og:title" id="ogTitle" content="solen.ch | Beauty &amp; Wellness Basel">
   <meta property="og:description" id="ogDesc" content="Salons &amp; Beauty-Studios in Basel entdecken und direkt buchen.">
   <meta property="og:image" id="ogImage" content="https://solen.ch/og-default.jpg">
-  <link rel="canonical" id="canonicalUrl" href="https://solen.ch/"></head>
+  <link rel="canonical" id="canonicalUrl" href="https://solen.ch/"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
 <body>
 <div id="scrollBar"></div>
 <div id="scrollBar"></div>
@@ -1518,6 +1596,20 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <span><span class="hero-proof-num" id="heroProofNum">124</span> Termine heute gebucht</span>
     </div>
   </section>
+
+<section id="discoverySection" class="discovery-section container">
+  <div style="position:relative">
+    <div class="search-bar-wrap">
+      <span style="font-size:18px;opacity:.5">&#128269;</span>
+      <input id="searchNlp" class="search-nlp" type="text" placeholder="Salon, Service oder Quartier suchen..." oninput="handleSearchInput(this.value)" onkeydown="if(event.key==='Enter')executeSearch()"/>
+      <button class="btn-geo" onclick="geoLocateMe()" title="Standort verwenden">&#128205;</button>
+      <button class="btn-map-toggle" onclick="toggleMapView()" title="Kartenansicht">&#128506;&#65039;</button>
+    </div>
+    <div id="searchSuggestions" class="search-suggestions hidden"></div>
+  </div>
+  <div id="salonMap" class="salon-map hidden"></div>
+</section>
+
 
   <!-- SOCIAL PROOF BAR -->
   <div class="social-proof-bar">
@@ -2158,7 +2250,84 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 </div>
 
 <!-- BOOKING MODAL (new) -->
-<div id="bookingModal">
+<div 
+<div id="calOverlay" class="cal-overlay hidden" onclick="if(event.target===this)closeCalendarOverlay()">
+  <div class="cal-overlay-inner">
+    <div class="cal-header">
+      <button onclick="calNav(-1)">&#8249;</button>
+      <span id="calMonthLabel"></span>
+      <button onclick="calNav(1)">&#8250;</button>
+      <button class="cal-close" onclick="closeCalendarOverlay()">&#10005;</button>
+    </div>
+    <div id="calGrid" class="cal-grid"></div>
+    <div id="calSlots" class="cal-slots"></div>
+    <div id="calStaff" class="cal-staff-row"></div>
+    <div id="calAddons" class="cal-addons"></div>
+    <div class="cal-recur-row">
+      <label><input type="checkbox" id="calRecurCheck" onchange="toggleCalRecurring(this.checked)"/> Wiederkehrend</label>
+      <div id="calRecurOptions" class="hidden" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+    <div class="cal-group-row">
+      <span>Personen:</span>
+      <button onclick="changeGroupSize(-1)">&#8722;</button>
+      <span id="calGroupSize">1</span>
+      <button onclick="changeGroupSize(1)">&#43;</button>
+    </div>
+    <button class="btn-confirm-cal" onclick="confirmCalendarBooking()">Termin best&#228;tigen &#10003;</button>
+  </div>
+</div>
+<div id="walkinModal" class="walkin-modal hidden">
+  <div class="walkin-inner">
+    <h3>Walk-in Warteliste</h3>
+    <p id="walkinStatus">Sie wurden zur Warteliste hinzugef&#252;gt.</p>
+    <button onclick="leaveWalkinQueue(window._walkinId)" class="btn-leave-walkin">Verlassen</button>
+    <button onclick="closeWalkinModal()" class="btn-close-walkin">&#10005;</button>
+  </div>
+</div>
+<button id="chatFab" class="chat-fab hidden" onclick="openLastChat()">&#128172;<span id="chatFabBadge" class="chat-fab-badge hidden">0</span></button>
+<div id="chatPanel" class="chat-panel hidden">
+  <div class="chat-panel-header">
+    <span id="chatPanelTitle">Chat</span>
+    <div class="chat-header-actions">
+      <button onclick="toggleChatSearch()" title="Suchen">&#128269;</button>
+      <button onclick="openOfferPicker()" title="Angebot senden">&#127991;&#65039;</button>
+      <button onclick="closeChat()">&#10005;</button>
+    </div>
+  </div>
+  <div id="chatSearchBar" class="chat-search-bar hidden">
+    <input type="text" placeholder="Nachrichten suchen..." oninput="filterChatMessages(this.value)"/>
+  </div>
+  <div id="chatMessages" class="chat-messages"></div>
+  <div class="chat-quick-replies" id="chatQuickReplies">
+    <button onclick="setQuickReply('Danke!')">Danke!</button>
+    <button onclick="setQuickReply('Kein Problem &#128522;')">Kein Problem</button>
+    <button onclick="setQuickReply('Termin best&#228;tigt &#10003;')">Best&#228;tigt &#10003;</button>
+  </div>
+  <div class="chat-input-row">
+    <button onclick="triggerChatMedia()" title="Bild senden">&#128206;</button>
+    <input type="file" id="chatMediaInput" class="hidden" onchange="uploadChatMedia(this)" accept="image/*"/>
+    <textarea id="chatInput" placeholder="Nachricht..." rows="1" oninput="autoResizeChatInput(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+    <button onclick="sendMessage()" class="btn-send-chat">&#10148;</button>
+  </div>
+</div>
+<div id="offerPicker" class="offer-picker hidden" onclick="if(event.target===this)closeOfferPicker()">
+  <div class="offer-picker-inner">
+    <h4>Angebot senden</h4>
+    <div id="offerList"></div>
+    <button onclick="closeOfferPicker()">Abbrechen</button>
+  </div>
+</div>
+<div id="reportModal" class="report-modal hidden" onclick="if(event.target===this)closeReportModal()">
+  <div class="report-inner">
+    <h4>Nachricht melden</h4>
+    <select id="reportReason"><option value="spam">Spam</option><option value="abusive">Beleidigend</option><option value="other">Sonstiges</option></select>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button onclick="submitReport(document.getElementById('reportReason').value)" style="flex:1;padding:8px;background:#FF6B6B;color:#fff;border:none;border-radius:8px;cursor:pointer;">Melden</button>
+      <button onclick="closeReportModal()" style="flex:1;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;background:none;">Abbrechen</button>
+    </div>
+  </div>
+</div>
+id="bookingModal">
   <div class="bm-content">
     <div class="bm-header">
       <h2 id="bmTitle">Termin buchen</h2>
@@ -8101,6 +8270,61 @@ document.addEventListener('click',function(e){
   }, 3000);
 
 })();
+
+/* === SEARCH === */
+let _searchTimer=null;
+function handleSearchInput(v){clearTimeout(_searchTimer);if(!v.trim()){var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');return;}_searchTimer=setTimeout(function(){showSearchSuggestions(v);},300);}
+function showSearchSuggestions(q){var box=document.getElementById('searchSuggestions');if(!box)return;var qL=q.toLowerCase();var cats=['Friseur','Kosmetik','Manik\u00fcre','Pedk\u00fcre','Massage','Barbershop','Nagelstudio','Waxing','Brauen & Wimpern'];var m=cats.filter(function(c){return c.toLowerCase().includes(qL);});var ss=(window.allStores||[]).filter(function(s){return((s.name||'').toLowerCase().includes(qL)||(s.neighbourhood||'').toLowerCase().includes(qL));}).slice(0,3);var items=m.map(function(c){return{label:c,type:'cat'};}).concat(ss.map(function(s){return{label:s.name,type:'store'};}));if(!items.length){box.classList.add('hidden');return;}box.innerHTML=items.map(function(it){return '<div class="search-sug-item" onclick="applySearch('+JSON.stringify(it.label)+')">'+(it.type==='cat'?'&#128269;':'&#128341;')+' '+it.label+'</div>';}).join('');box.classList.remove('hidden');}
+function applySearch(t){var inp=document.getElementById('searchNlp');if(inp)inp.value=t;var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');executeSearch();}
+function clearSearch(){var inp=document.getElementById('searchNlp');if(inp)inp.value='';var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');if(window.renderStores)renderStores(window.allStores||[]);}
+function executeSearch(){var q=(document.getElementById('searchNlp')||{}).value||'';q=q.toLowerCase().trim();var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');if(!q){if(window.renderStores)renderStores(window.allStores||[]);return;}var f=(window.allStores||[]).filter(function(s){var t=((s.name||'')+' '+(s.category||'')+' '+(s.neighbourhood||'')+' '+((s.services||[]).map(function(sv){return sv.name||sv;}).join(' '))).toLowerCase();return q.split(' ').every(function(w){return t.includes(w);});});if(window.renderStores)renderStores(f);}
+/* === GEO + MAP === */
+function geoLocateMe(){if(!navigator.geolocation){alert('Geolocation nicht verf\u00fcgbar');return;}navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude,lng=pos.coords.longitude;if(window._salonMap){window._salonMap.setView([lat,lng],14);L.circle([lat,lng],{radius:300,color:'#4ECDC4'}).addTo(window._salonMap);}var nb=(window.allStores||[]).filter(function(s){return s.lat&&s.lng&&Math.hypot(s.lat-lat,s.lng-lng)<0.05;});if(window.renderStores&&nb.length)renderStores(nb);},function(){alert('Standort konnte nicht ermittelt werden');});}
+function toggleMapView(){var el=document.getElementById('salonMap');if(!el)return;el.classList.toggle('hidden');if(!el.classList.contains('hidden'))initSalonMap();}
+function initSalonMap(){var el=document.getElementById('salonMap');if(!el||window._salonMap)return;window._salonMap=L.map('salonMap').setView([47.5596,7.5886],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap'}).addTo(window._salonMap);updateMapMarkers(window.allStores||[]);}
+function updateMapMarkers(stores){if(!window._salonMap)return;(window._mapMarkers||[]).forEach(function(m){m.remove();});window._mapMarkers=[];(stores||[]).filter(function(s){return s.lat&&s.lng;}).forEach(function(s){var m=L.marker([s.lat,s.lng]).addTo(window._salonMap).bindPopup('<strong>'+s.name+'</strong><br>'+(s.category||''));window._mapMarkers.push(m);});}
+/* === CALENDAR OVERLAY === */
+var calState={storeId:null,serviceName:'',year:0,month:0,selectedDate:null,selectedTime:null,staffId:null,addons:[],recurring:false,recurrenceWeeks:4,groupSize:1};
+function openCalendarOverlay(storeId,serviceName){var now=new Date();calState={storeId:storeId,serviceName:serviceName||'',year:now.getFullYear(),month:now.getMonth(),selectedDate:null,selectedTime:null,staffId:null,addons:[],recurring:false,recurrenceWeeks:4,groupSize:1};var ov=document.getElementById('calOverlay');if(ov)ov.classList.remove('hidden');renderCalGrid();loadCalStaff(storeId);loadCalAddons(storeId);var rc=document.getElementById('calRecurCheck');if(rc)rc.checked=false;var ro=document.getElementById('calRecurOptions');if(ro)ro.classList.add('hidden');var gs=document.getElementById('calGroupSize');if(gs)gs.textContent='1';}
+function closeCalendarOverlay(){var ov=document.getElementById('calOverlay');if(ov)ov.classList.add('hidden');}
+function calNav(dir){calState.month+=dir;if(calState.month>11){calState.month=0;calState.year++;}if(calState.month<0){calState.month=11;calState.year--;}renderCalGrid();}
+function renderCalGrid(){var ml=document.getElementById('calMonthLabel');var grid=document.getElementById('calGrid');if(!grid)return;var lbl=new Date(calState.year,calState.month,1).toLocaleDateString('de-CH',{month:'long',year:'numeric'});if(ml)ml.textContent=lbl;var days=['Mo','Di','Mi','Do','Fr','Sa','So'];var html=days.map(function(d){return '<div class="cal-day-header">'+d+'</div>';}).join('');var first=new Date(calState.year,calState.month,1);var startDow=first.getDay()-1;if(startDow<0)startDow=6;var dim=new Date(calState.year,calState.month+1,0).getDate();var today=new Date();today.setHours(0,0,0,0);for(var i=0;i<startDow;i++)html+='<div></div>';for(var d=1;d<=dim;d++){var dt=new Date(calState.year,calState.month,d);var ds=dt.toISOString().split('T')[0];var isPast=dt<today;var isSel=calState.selectedDate===ds;var isTod=dt.getTime()===today.getTime();var cls='cal-day'+(isPast?' disabled':'')+(isSel?' selected':'')+(isTod?' today':'');var oc=isPast?'':'selectCalDay(\''+ds+'\')';html+='<div class="'+cls+'" onclick="'+oc+'">'+d+'</div>';}grid.innerHTML=html;var slts=document.getElementById('calSlots');if(slts)slts.innerHTML='';}
+function selectCalDay(ds){calState.selectedDate=ds;renderCalGrid();renderAvailSlots();}
+function renderAvailSlots(){var slots=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];var box=document.getElementById('calSlots');if(!box)return;box.innerHTML=slots.map(function(t){var sel=calState.selectedTime===t?' selected':'';return '<div class="cal-slot'+sel+'" onclick="selectCalTime(\'' +t+ '\')">'+t+'</div>';}).join('');}
+function selectCalTime(t){calState.selectedTime=t;renderAvailSlots();}
+async function loadCalStaff(storeId){var box=document.getElementById('calStaff');if(!box)return;try{var r=await window._sb.from('staff').select('id,name,avatar_url').eq('store_id',storeId).order('name');var data=r.data;if(!data||!data.length){box.innerHTML='';return;}box.innerHTML='<div style="width:100%;font-size:12px;font-weight:600;margin-bottom:4px;">Mitarbeiter</div>'+data.map(function(m){var sel=calState.staffId===m.id?' selected':'';return '<div class="cal-staff-chip'+sel+'" onclick="selectCalStaff('+m.id+',this)"><span style="font-size:20px">&#128100;</span><span>'+m.name+'</span></div>';}).join('');}catch(e){box.innerHTML='';}}
+function selectCalStaff(id,el){calState.staffId=id;document.querySelectorAll('.cal-staff-chip').forEach(function(c){c.classList.toggle('selected',c===el);});}
+async function loadCalAddons(storeId){var box=document.getElementById('calAddons');if(!box)return;try{var r=await window._sb.from('addons').select('id,name,price').eq('store_id',storeId).eq('active',true);var data=r.data;if(!data||!data.length){box.innerHTML='';return;}box.innerHTML='<div style="width:100%;font-size:12px;font-weight:600;margin-bottom:4px;">Extras</div>'+data.map(function(a,i){var sel=calState.addons.includes(i)?' selected':'';return '<div class="cal-addon-item'+sel+'" onclick="toggleCalAddon('+i+',this)"><span style="flex:1">'+a.name+'</span><span>+'+(a.price||0)+' CHF</span></div>';}).join('');box._addons=data;}catch(e){box.innerHTML='';}}
+function toggleCalAddon(i,el){var idx=calState.addons.indexOf(i);if(idx>-1)calState.addons.splice(idx,1);else calState.addons.push(i);el.classList.toggle('selected');}
+function toggleCalRecurring(checked){calState.recurring=checked;var opt=document.getElementById('calRecurOptions');if(!opt)return;if(checked){opt.classList.remove('hidden');opt.style.display='flex';opt.innerHTML=[2,4,8,12].map(function(w){return '<div class="cal-slot'+(calState.recurrenceWeeks===w?' selected':'')+' " onclick="selectRecurrence('+w+',this)" style="cursor:pointer">'+w+'W</div>';}).join('');}else{opt.classList.add('hidden');opt.style.display='none';}}
+function selectRecurrence(weeks,el){calState.recurrenceWeeks=weeks;document.querySelectorAll('#calRecurOptions .cal-slot').forEach(function(c){c.classList.toggle('selected',c===el);});}
+function changeGroupSize(delta){calState.groupSize=Math.max(1,Math.min(10,(calState.groupSize||1)+delta));var gs=document.getElementById('calGroupSize');if(gs)gs.textContent=calState.groupSize;}
+async function confirmCalendarBooking(){if(!calState.selectedDate||!calState.selectedTime){alert('Bitte Datum und Uhrzeit w\u00e4hlen.');return;}var r=await window._sb.auth.getUser();var user=r&&r.data&&r.data.user;if(!user){alert('Bitte zuerst einloggen.');closeCalendarOverlay();return;}var payload={store_id:calState.storeId,customer_id:user.id,service_name:calState.serviceName||'Termin',date:calState.selectedDate,time:calState.selectedTime,staff_id:calState.staffId||null,group_size:calState.groupSize,is_recurring:calState.recurring,recurrence_weeks:calState.recurring?calState.recurrenceWeeks:null,status:'pending'};var res=await window._sb.from('bookings').insert([payload]);if(res.error){alert('Fehler: '+res.error.message);return;}closeCalendarOverlay();alert('Termin am '+calState.selectedDate+' um '+calState.selectedTime+' gebucht!');if(window.loadBookings)loadBookings();}
+/* === WALK-IN === */
+async function joinWalkinQueue(storeId){var r=await window._sb.auth.getUser();var user=r&&r.data&&r.data.user;if(!user){alert('Bitte zuerst einloggen.');return;}var res=await window._sb.from('walk_in_queue').insert([{store_id:storeId,customer_id:user.id,status:'waiting'}]).select().single();if(res.error){alert('Fehler: '+res.error.message);return;}window._walkinId=res.data.id;showWalkinStatus(res.data);}
+function showWalkinStatus(entry){var p=document.getElementById('walkinStatus');if(p)p.textContent='Position: #'+((entry&&entry.position)||1)+'. Gesch\u00e4tzte Wartezeit: ~'+(((entry&&entry.position)||1)*15)+' Min.';var m=document.getElementById('walkinModal');if(m)m.classList.remove('hidden');}
+function closeWalkinModal(){var m=document.getElementById('walkinModal');if(m)m.classList.add('hidden');}
+async function leaveWalkinQueue(id){if(!id)return;await window._sb.from('walk_in_queue').update({status:'left'}).eq('id',id);closeWalkinModal();window._walkinId=null;}
+/* === ADMIN PANEL === */
+async function loadAdminPanel(){var box=document.getElementById('adminPanelContent');if(!box)return;var r=await window._sb.from('stores').select('id,name,category,status').eq('status','pending').order('created_at');var data=r.data;if(!data||!data.length){box.innerHTML='<p style="text-align:center;color:#94a3b8;">Keine ausstehenden Salons.</p>';return;}box.innerHTML=data.map(function(s){return '<div class="admin-store-item"><div><strong>'+s.name+'</strong><br><span style="font-size:12px;color:#94a3b8;">'+( s.category||'')+'</span></div><div class="admin-actions"><button class="btn-admin-approve" onclick="adminApproveStore('+s.id+')">&#10003; Genehmigen</button><button class="btn-admin-reject" onclick="adminRejectStore('+s.id+')">&#10005; Ablehnen</button></div></div>';}).join('');}
+async function adminApproveStore(id){await window._sb.from('stores').update({status:'approved'}).eq('id',id);loadAdminPanel();}
+async function adminRejectStore(id){await window._sb.from('stores').update({status:'rejected'}).eq('id',id);loadAdminPanel();}
+/* === CHAT HELPERS === */
+function updateChatFab(unread){var fab=document.getElementById('chatFab');var badge=document.getElementById('chatFabBadge');if(!fab)return;if(unread>0){fab.classList.remove('hidden');if(badge){badge.classList.remove('hidden');badge.textContent=unread>9?'9+':unread;}}else{if(badge)badge.classList.add('hidden');}}
+function openLastChat(){var fab=document.getElementById('chatFab');if(fab)fab.classList.add('hidden');var panel=document.getElementById('chatPanel');if(panel)panel.classList.toggle('hidden');}
+function toggleChatSearch(){var bar=document.getElementById('chatSearchBar');if(bar)bar.classList.toggle('hidden');}
+function filterChatMessages(q){document.querySelectorAll('.chat-msg').forEach(function(m){var txt=(m.querySelector('.chat-bubble')||{}).textContent||'';m.style.display=txt.toLowerCase().includes(q.toLowerCase())?'':'none';});}
+function triggerChatMedia(){var inp=document.getElementById('chatMediaInput');if(inp)inp.click();}
+function uploadChatMedia(input){if(input&&input.files&&input.files[0])alert('Bild-Upload in K\u00fcrze verf\u00fcgbar.');}
+function openReportModal(msgId){window._reportMsgId=msgId;var m=document.getElementById('reportModal');if(m)m.classList.remove('hidden');}
+function closeReportModal(){var m=document.getElementById('reportModal');if(m)m.classList.add('hidden');}
+async function submitReport(reason){if(window._reportMsgId&&window._sb)await window._sb.from('reports').insert([{message_id:window._reportMsgId,reason:reason}]);closeReportModal();alert('Gemeldet. Danke!');}
+function translateMsg(msgId){alert('\u00dcbersetzung in K\u00fcrze verf\u00fcgbar.');}
+function setQuickReply(text){var inp=document.getElementById('chatInput');if(inp){inp.value=text;inp.focus();}}
+function openOfferPicker(){var box=document.getElementById('offerPicker');var list=document.getElementById('offerList');var offers=[{title:'10% Rabatt',desc:'Einmalig'},{title:'Gratis Beratung',desc:'30 Min'},{title:'Treue-Bonus',desc:'5. Besuch gratis'}];if(list)list.innerHTML=offers.map(function(o,i){return '<div class="offer-item" onclick="sendOffer('+i+')">'+o.title+'<br><span style="font-size:11px;color:#94a3b8">'+o.desc+'</span></div>';}).join('');if(box)box.classList.remove('hidden');}
+function closeOfferPicker(){var b=document.getElementById('offerPicker');if(b)b.classList.add('hidden');}
+function sendOffer(idx){var offers=[{title:'10% Rabatt',desc:'Einmalig'},{title:'Gratis Beratung',desc:'30 Min'},{title:'Treue-Bonus',desc:'5. Besuch gratis'}];var o=offers[idx];var inp=document.getElementById('chatInput');if(inp)inp.value='Spezialangebot: '+o.title+' ('+o.desc+')';closeOfferPicker();if(window.sendMessage)sendMessage();}
+function autoResizeChatInput(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
 </script>
 
 </body>
