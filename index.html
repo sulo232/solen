@@ -8,22 +8,43 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease,opacity .2s ease}
 :root{
-  --bg:#FAFAFA;--bg2:#FFFFFF;--surface:#FFFFFF;--surfaceAlt:#F5F5F5;
-  --text:#0D0D0D;--text2:#6B7280;--muted:#6B7280;--textMuted:#6B7280;--light:#9ca3af;
-  --accent:#4ECDC4;--accent2:#FF6B6B;--accent-dark:#3DBDB5;--accentFg:#FFFFFF;
-  --accent-lemon:#FFE66D;--accent-secondary:#A78BFA;
-  --border:#E5E7EB;--border2:#D1D5DB;
-  --success:#2d7a4f;--error:#c0392b;--warning:#d97706;
-  --r:16px;--r2:24px;--radius:16px;
-  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04),0 12px 24px rgba(0,0,0,.04);--shadow2:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
+  /* ── COLOR TOKENS ── */
+  --c-bg:#FAFAFA;--c-bg-elevated:#FFFFFF;--c-surface:#FFFFFF;--c-surface-alt:#F5F5F5;
+  --c-text:#0D0D0D;--c-text-secondary:#6B7280;--c-text-muted:#9ca3af;
+  --c-accent:#4ECDC4;--c-accent-hover:#3DBDB5;--c-accent-fg:#FFFFFF;
+  --c-cta:#FF6B6B;--c-cta-hover:#E55A5A;--c-cta-fg:#FFFFFF;
+  --c-highlight:#FFE66D;--c-accent-secondary:#A78BFA;
+  --c-border:#E5E7EB;--c-border-strong:#D1D5DB;
+  --c-success:#2d7a4f;--c-error:#c0392b;--c-warning:#d97706;
+  --c-focus:#4ECDC4;
+  /* ── LEGACY ALIASES ── */
+  --bg:var(--c-bg);--bg2:var(--c-bg-elevated);--surface:var(--c-surface);--surfaceAlt:var(--c-surface-alt);
+  --text:var(--c-text);--text2:var(--c-text-secondary);--muted:var(--c-text-secondary);--textMuted:var(--c-text-secondary);--light:var(--c-text-muted);
+  --accent:var(--c-accent);--accent2:var(--c-cta);--accent-dark:var(--c-accent-hover);--accentFg:var(--c-accent-fg);
+  --accent-lemon:var(--c-highlight);--accent-secondary:var(--c-accent-secondary);
+  --border:var(--c-border);--border2:var(--c-border-strong);
+  --success:var(--c-success);--error:var(--c-error);--warning:var(--c-warning);
+  /* ── TYPOGRAPHY TOKENS ── */
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','Space Grotesk',monospace;
+  --lh-body:1.55;--lh-heading:1.25;
+  /* ── RADIUS TOKENS ── */
+  --r:16px;--r2:24px;--r-lg:20px;--r-pill:100px;--radius:16px;
+  /* ── SHADOW TOKENS ── */
+  --shadow-card:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.04),0 12px 24px rgba(0,0,0,.04);
+  --shadow:var(--shadow-card);--shadow2:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
   --glow:0 0 24px rgba(78,205,196,0.25);
+  /* ── MOTION TOKENS ── */
+  --ease:cubic-bezier(.4,0,.2,1);
+  /* ── CATEGORY TOKENS ── */
   --cat-hair:#FF6B6B;--cat-barbershop:#4A4A8A;--cat-nails:#FF90BC;--cat-spa:#4ECDC4;--cat-makeup:#C77DFF;--cat-cosmetik:#FFB347;--cat-tattoo:#2D2D2D;
-
+  /* ── SPACING ── */
   --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;}
 [data-theme="dark"]{
   --bg:#0D0D0D;--bg2:#1A1A1A;--surface:#1A1A1A;--surfaceAlt:#252525;
@@ -46,13 +67,21 @@
   --cat-hair:#FF6B6B;--cat-barbershop:#7B7BCC;--cat-nails:#FF90BC;--cat-spa:#4ECDC4;--cat-makeup:#C77DFF;--cat-cosmetik:#FFB347;--cat-tattoo:#888;
 }}
 html,body{overflow-x:hidden;max-width:100vw}
-body{font-family:'DM Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;display:flex;flex-direction:column}
-h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:'Syne',sans-serif}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:var(--lh-body);display:flex;flex-direction:column}
+h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:var(--font-display);line-height:var(--lh-heading)}
+.store-price-range,.store-price,.price-label,.hero-stats .stat span,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:inherit}
 img{max-width:100%;display:block}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-input,select,textarea{font-family:inherit}
+/* ── SKIP LINK ── */
+.skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:12px 24px;background:var(--c-accent);color:var(--c-accent-fg);border-radius:var(--r);font-weight:700;font-size:.95rem;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:12px}
+/* ── FOCUS INDICATORS (5a) ── */
+*:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
+/* ── TOUCH TARGETS (5g, 5i) ── */
+button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
+input,select,textarea{font-family:inherit;min-height:44px}
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(13,13,13,0.82);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 1px 24px rgba(0,0,0,.25);}
@@ -81,7 +110,23 @@ input,select,textarea{font-family:inherit}
 .nav-dropdown a,.nav-dropdown button{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:.88rem;font-weight:500;color:var(--text);background:transparent;border:none;width:100%;text-align:left;transition:.15s}
 .nav-dropdown a:hover,.nav-dropdown button:hover{background:var(--surfaceAlt)}
 .nav-dropdown .sep{height:1px;background:var(--border);margin:4px 0}
-.lang-switcher{display:flex;gap:2px;align-items:center;margin-right:8px}
+/* NAV CENTER LINKS */
+.nav-center{display:flex;gap:28px;align-items:center;position:absolute;left:50%;transform:translateX(-50%)}
+.nav-link{color:rgba(255,255,255,.7);font-size:.9rem;font-weight:600;transition:color .2s;white-space:nowrap}
+.nav-link:hover{color:#fff}
+.nav-link-subtle{font-size:.82rem;color:rgba(255,255,255,.5)}
+.nav-link-subtle:hover{color:rgba(255,255,255,.8)}
+/* LANGUAGE DROPDOWN */
+.nav-lang-dropdown{position:relative}
+.nav-lang-trigger{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.nav-lang-trigger:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
+.lang-dropdown-menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow2);min-width:150px;overflow:hidden;z-index:500;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s,transform .2s,visibility .2s;padding:4px}
+.lang-dropdown-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
+.lang-option{display:block;width:100%;padding:10px 14px;background:none;border:none;text-align:left;font-size:.88rem;font-weight:500;color:var(--text);cursor:pointer;border-radius:8px;transition:background .15s}
+.lang-option:hover{background:var(--surfaceAlt)}
+.lang-option[aria-current="true"]{font-weight:700;color:var(--accent)}
+/* LEGACY LANG SWITCHER (hidden) */
+.lang-switcher{display:none}
 .lang-btn{background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-size:.7rem;font-weight:700;padding:4px 7px;border-radius:4px;cursor:pointer;transition:all .2s;letter-spacing:.03em}
 .lang-btn:hover{color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.25)}
 .lang-btn.active{background:var(--accent);color:var(--accentFg);border-color:var(--accent)}
@@ -95,14 +140,15 @@ input,select,textarea{font-family:inherit}
 
 /* HERO */
 .hero{position:relative;min-height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#FF6B6B 0%,#FFB347 40%,#FFE66D 100%);z-index:0}
-.hero-bg::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:32px 32px;z-index:1}
-.hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,0.15) 0%,transparent 55%);z-index:2}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg-img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,0.85) 0%,rgba(13,13,13,0.4) 50%,rgba(13,13,13,0.2) 100%);z-index:1}
 .hero-content{position:relative;z-index:3;max-width:720px;padding:0 24px;color:white}
-.hero-badge{display:inline-block;background:rgba(13,13,13,0.25);border:1px solid rgba(13,13,13,0.15);color:#fff;padding:6px 18px;border-radius:100px;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;backdrop-filter:blur(8px);font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.15)}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.8rem,7vw,4.5rem);font-weight:800;line-height:1.05;margin-bottom:16px;letter-spacing:-.03em;color:#fff}
-.hero-highlight{color:#0D0D0D;-webkit-text-fill-color:#0D0D0D;background:none}
-.hero p{font-size:1.15rem;color:rgba(255,255,255,.85);margin-bottom:36px;font-weight:500}
+.hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,7vw,4.5rem);font-weight:400;line-height:var(--lh-heading);margin-bottom:16px;letter-spacing:-.02em;color:#fff}
+.hero-highlight{color:var(--c-highlight);-webkit-text-fill-color:var(--c-highlight);background:none}
+.hero p{font-size:1.15rem;color:rgba(255,255,255,.85);margin-bottom:36px;font-weight:500;line-height:var(--lh-body)}
+.hero-filter-chip{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);color:#fff;padding:8px 20px;border-radius:var(--r-pill);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s var(--ease)}
+.hero-filter-chip:hover{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4)}
 .hero-search{display:flex;gap:10px;max-width:700px;margin:0 auto 32px;background:rgba(255,255,255,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.4);border-radius:50px;padding:8px}
 
 @media(max-width:640px){.hero-search{width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;margin:0 16px 24px!important}}
@@ -113,11 +159,7 @@ input,select,textarea{font-family:inherit}
 .hero-search input::placeholder{color:rgba(0,0,0,.4);font-size:.9rem}
 .search-btn{background:#0D0D0D;color:#fff;border:none;padding:12px 28px;border-radius:50px;font-weight:600;font-size:.95rem;cursor:pointer;white-space:nowrap;transition:all .2s}
 .search-btn:hover{background:#333;transform:translateY(-1px)}
-.hero-stats{display:flex;gap:40px;justify-content:center;border-top:1px solid rgba(255,255,255,.2);padding-top:24px}
-.hero-stats .stat{text-align:center}
-.hero-stats .stat span{display:block;font-size:1.5rem;font-weight:800;color:#0D0D0D;font-family:'Space Grotesk','DM Sans',sans-serif}
-.hero-stats .stat label{font-size:.75rem;color:rgba(0,0,0,.45);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Sans',sans-serif;font-weight:600}
-.hero-stats .stat+.stat{border-left:1px solid rgba(255,255,255,.2);padding-left:40px}
+/* hero-stats removed */
 
 /* CATEGORIES */
 .categories-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:64px;z-index:100;max-width:100%;box-sizing:border-box;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -135,6 +177,10 @@ input,select,textarea{font-family:inherit}
 .cat-pill[data-cat="makeup"].active{background:var(--cat-makeup);border-color:var(--cat-makeup)}
 .cat-pill[data-cat="cosmetik"].active{background:var(--cat-cosmetik);border-color:var(--cat-cosmetik)}
 .cat-pill[data-cat="eyebrows"].active{background:var(--cat-makeup);border-color:var(--cat-makeup)}
+/* FILTER PILLS */
+.filter-pill{display:inline-flex;align-items:center;padding:8px 18px;border-radius:var(--r-pill);border:1.5px solid var(--c-border-strong);background:var(--c-surface);color:var(--c-text-secondary);font-size:.875rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s var(--ease)}
+.filter-pill:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.filter-pill.active{background:var(--c-accent);color:var(--c-accent-fg);border-color:var(--c-accent)}
 .section-title{font-size:1.15rem;font-weight:800;margin-bottom:18px;color:var(--text);letter-spacing:.02em}
 .page-title,.hero h1,.store-name,.profile-info h2{letter-spacing:.01em}
 
@@ -143,14 +189,20 @@ input,select,textarea{font-family:inherit}
 .stores-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
 .stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:24px}
-.store-card{background:var(--surface);border-radius:var(--r2);overflow:hidden;border:none;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.06),0 16px 32px rgba(0,0,0,0.04)}
-.store-card:hover{transform:translateY(-6px) rotate(-0.5deg) scale(1.01);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
-.store-card:nth-child(odd):hover{transform:translateY(-4px) rotate(0.4deg);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
-.store-card:nth-child(even):hover{transform:translateY(-4px) rotate(-0.4deg);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
-.store-card-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,rgba(78,205,196,.15),#1a1a1a 60%);display:flex;align-items:center;justify-content:center;position:relative}
-.store-card-img .category-icon{font-size:3rem;opacity:.4}
-.store-card-body{padding:20px}
-.store-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.store-card{background:var(--c-surface);border-radius:var(--r-lg);overflow:hidden;border:none;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s var(--ease);position:relative;box-shadow:var(--shadow-card)}
+.store-card:hover{transform:translateY(-8px);box-shadow:var(--shadow2)}
+.store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
+.store-card-photo{aspect-ratio:3/2;overflow:hidden;position:relative}
+.store-card-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s var(--ease)}
+.store-card:hover .store-card-photo img{transform:scale(1.03)}
+.store-card-body{padding:16px 20px 20px}
+.store-card-tags{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.store-quartier-badge{display:inline-block;padding:3px 10px;border-radius:var(--r-pill);font-size:.72rem;font-weight:600;background:rgba(78,205,196,.12);color:var(--c-accent-hover);white-space:nowrap}
+.store-cat-label{font-size:.75rem;color:var(--c-text-muted);font-weight:500}
+.store-name{font-family:var(--font-display);font-size:1.1rem;font-weight:400;color:var(--text);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.store-card-meta{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.card-rating{display:inline-flex;align-items:center;gap:3px;font-size:.85rem;font-weight:600;color:var(--c-text);font-family:var(--font-mono)}
+.store-card .btn-book{width:100%}
 .store-type-badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:600;background:var(--surfaceAlt);color:var(--muted);margin-bottom:10px}
 .store-address{font-size:.85rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:5px}
 .store-services-preview{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
@@ -244,6 +296,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .msg{padding:12px 14px;border-radius:var(--r);font-size:.88rem;margin-bottom:16px;font-weight:500}
 .msg.success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
 .msg.error{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+.msg.error::before{content:'';display:inline-block;width:16px;height:16px;margin-right:6px;vertical-align:middle;background:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b91c1c' stroke-width='2'%3e%3ccircle cx='12' cy='12' r='10'/%3e%3cline x1='12' y1='8' x2='12' y2='12'/%3e%3cline x1='12' y1='16' x2='12.01' y2='16'/%3e%3c/svg%3e") no-repeat center/contain}
 .msg.info{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 @media(prefers-color-scheme:dark){
   .msg.success{background:#14532d;color:#86efac;border-color:#166534}
@@ -1077,114 +1130,107 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 </script>
 
 <!-- NAV -->
+<a class="skip-link" href="#mainContent">Zum Inhalt springen</a>
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a class="logo" href="#" onclick="showPage('home');return false"><span>&#9673;</span> solen</a>
-    <div class="lang-switcher" id="langSwitcher">
-      <button class="lang-btn active" onclick="switchLang('de')">DE</button>
-      <button class="lang-btn" onclick="switchLang('en')">EN</button>
-      <button class="lang-btn" onclick="switchLang('fr')">FR</button>
-      <button class="lang-btn" onclick="switchLang('tr')">TR</button>
+    <a class="logo" href="#" onclick="showPage('home');return false">solen</a>
+    <div class="nav-center nav-desktop">
+      <a href="#" class="nav-link" onclick="showPage('home');return false" data-i18n="nav_salons">Salons</a>
+      <a href="#" class="nav-link" onclick="scrollToQuartiere();return false" data-i18n="nav_quartiere">Quartiere</a>
+      <a href="#" class="nav-link" onclick="scrollToAbout();return false" data-i18n="nav_about">&#220;ber uns</a>
     </div>
     <button class="hamburger" onclick="toggleMobileMenu()" id="hamburgerBtn" aria-label="Menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-actions nav-desktop" id="navActions">
+      <a href="#" class="nav-link nav-link-subtle" onclick="openSalonRegistration();return false" id="navSalonBtn">Salon eintragen</a>
+      <div class="nav-lang-dropdown">
+        <button class="nav-lang-trigger" aria-label="Sprache wechseln" onclick="toggleLangDropdown()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </button>
+        <nav class="lang-dropdown-menu" id="langDropdownMenu" aria-label="Sprache">
+          <button class="lang-option" onclick="switchLang('de');toggleLangDropdown()" aria-current="true">Deutsch</button>
+          <button class="lang-option" onclick="switchLang('en');toggleLangDropdown()">English</button>
+          <button class="lang-option" onclick="switchLang('fr');toggleLangDropdown()">Fran&#231;ais</button>
+          <button class="lang-option" onclick="switchLang('tr');toggleLangDropdown()">T&#252;rk&#231;e</button>
+        </nav>
+      </div>
       <div id="navGuest" style="display:flex;gap:10px;align-items:center">
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
       </div>
-            <button id="navSalonBtn" class="btn-nav-ghost hidden" style="color:var(--accent-lemon);border-color:rgba(255,230,109,.55);background:rgba(255,230,109,.10)" onclick="openSalonRegistration()">&#10022; Solen-Partner werden</button>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
-          <div class="avatar" id="navAvatar" onclick="toggleNavMenu()">?</div>
-          <div class="nav-dropdown" id="navDropdown" data-dropdown="">
-            <a href="#" onclick="showPage('profile');return false" data-i18n="nav_my_profile">Mein Profil</a>
-            <a href="#" onclick="openProfileModal();return false" data-i18n="nav_edit_profile">Profil bearbeiten</a>
-            <a href="#" onclick="showPage('bookings');return false" data-i18n="nav_my_bookings">Meine Buchungen</a>
+          <div class="avatar" id="navAvatar" onclick="toggleNavMenu()" role="button" aria-label="Benutzermenü" tabindex="0">?</div>
+          <div class="nav-dropdown" id="navDropdown" data-dropdown="" role="menu">
+            <a href="#" onclick="showPage('profile');return false" data-i18n="nav_my_profile" role="menuitem">Mein Profil</a>
+            <a href="#" onclick="openProfileModal();return false" data-i18n="nav_edit_profile" role="menuitem">Profil bearbeiten</a>
+            <a href="#" onclick="showPage('bookings');return false" data-i18n="nav_my_bookings" role="menuitem">Meine Buchungen</a>
             <div id="salonDashLink" class="hidden">
-              <a href="#" onclick="showPage('salon-dashboard');return false" data-i18n="nav_salon_dash">Mein Salon</a>
+              <a href="#" onclick="showPage('salon-dashboard');return false" data-i18n="nav_salon_dash" role="menuitem">Mein Salon</a>
             </div>
             <div id="adminLink" class="hidden">
               <div class="sep"></div>
-              <a href="#" onclick="showPage('admin');return false" data-i18n="nav_admin">Verwaltung</a>
+              <a href="#" onclick="showPage('admin');return false" data-i18n="nav_admin" role="menuitem">Verwaltung</a>
             </div>
-            <button onclick="toggleTheme()" id="dropdownThemeBtn" data-i18n="nav_theme" style="width:100%;text-align:left;background:none;border:none;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:8px;transition:background .2s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg> Hell / Dunkel</button>
+            <button onclick="toggleTheme()" id="dropdownThemeBtn" data-i18n="nav_theme" role="menuitem" style="width:100%;text-align:left;background:none;border:none;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:8px;transition:background .2s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg> Hell / Dunkel</button>
             <div class="sep"></div>
-            <button onclick="signOut()" data-i18n="nav_logout">Abmelden</button>
+            <button onclick="signOut()" data-i18n="nav_logout" role="menuitem">Abmelden</button>
           </div>
         </div>
       </div>
     </div>
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
-      <div class="lang-switcher-mobile">
-        <button class="lang-btn active" onclick="switchLang('de')">DE</button>
-        <button class="lang-btn" onclick="switchLang('en')">EN</button>
-        <button class="lang-btn" onclick="switchLang('fr')">FR</button>
-        <button class="lang-btn" onclick="switchLang('tr')">TR</button>
-      </div>
       <div id="mobileNavGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
-      
-</div>
+      </div>
       <div id="mobileNavUser" class="hidden">
         <a href="#" class="btn-nav-ghost" onclick="showPage('profile');closeMobileMenu();return false" data-i18n="nav_my_profile" style="display:block;text-align:center;margin-bottom:8px">Mein Profil</a>
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
         <button class="btn-nav-ghost" onclick="signOut();closeMobileMenu()" data-i18n="nav_logout" style="width:100%">Abmelden</button>
       </div>
-<button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">&#10022; Solen-Partner werden</button>
     </div>
   </div>
 </nav>
 
 <!-- MAIN PAGE (HOME) -->
+<main id="mainContent">
 <div id="pageHome" class="active" style="display:block">
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg">
+      <img class="hero-bg-img" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=80" alt="" width="1600" height="900" loading="eager">
+    </div>
     <div class="hero-content">
-      <div class="hero-badge" data-i18n="hero_badge">Von Basel, f&uuml;r Basel</div>
-      <h1 data-i18n-html="hero_title">Finde deinen<br><span class="hero-highlight">Lieblings-Salon</span></h1>
-      <p data-i18n="hero_sub">Vom Coiffeur im Gundeli bis zum Nagelstudio in Kleinbasel &ndash; buche direkt bei lokalen Salons in deinem Quartier.</p>
+      <h1 data-i18n-html="hero_title">Dein n&auml;chster<br><span class="hero-highlight">Lieblingsort wartet.</span></h1>
+      <p data-i18n="hero_sub">Buche direkt bei Salons in deinem Quartier &ndash; ohne Umwege.</p>
       <div class="hero-search">
         <div class="search-field">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="z.B. Balayage, Maniküre, Massage..." oninput="debounceSearch()">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="Salon, Service oder Quartier suchen..." oninput="debounceSearch()" aria-label="Salon suchen">
         </div>
-        <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
       </div>
-      <div class="neighbourhood-bar" style="padding:12px 0 0">
-        <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'')" data-i18n="neighbourhood_all">Alle Quartiere</button>
-        <button class="neighbourhood-chip empfohlen-chip" onclick="toggleEmpfohlenFilter(this)">&#11088; Nur Empfohlene</button>
-    <button class="chip" id="favBtn" onclick="showOnlyFavs=!showOnlyFavs;this.classList.toggle('active',showOnlyFavs);renderStores()">❤️ Favoriten</button>
-        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel')">Grossbasel</button>
-        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel')">Kleinbasel</button>
-        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann')">St. Johann</button>
-        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Gundeldingen')">Gundeldingen</button>
-        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Bruderholz')">Bruderholz</button>
-        <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Hirzbrunnen')">Hirzbrunnen</button>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><span id="statSalons">12</span><label data-i18n="stat_salons">Lokale Salons</label></div>
-        <div class="stat"><span id="statServices">80+</span><label data-i18n="stat_services">Behandlungen</label></div>
-        <div class="stat"><span>Basel</span><label data-i18n="stat_location">Dein Quartier</label></div>
+      <div class="hero-quick-filters" style="padding:12px 0 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="hero-filter-chip" onclick="selectCat(document.querySelector('[data-cat=hairsalon]'),'hairsalon')">Coiffeur</button>
+        <button class="hero-filter-chip" onclick="selectCat(document.querySelector('[data-cat=barber]'),'barber')">Barbershop</button>
+        <button class="hero-filter-chip" onclick="selectCat(document.querySelector('[data-cat=nails]'),'nails')">Nails</button>
       </div>
     </div>
   </section>
 
-  <!-- CATEGORIES -->
-  <div class="categories-bar">
+  <!-- Categories bar replaced by inline filter pills in stores section -->
+  <div class="categories-bar" style="display:none">
     <div class="cat-scroll" id="catsGrid">
-      <button class="cat-pill active" data-cat="all" onclick="selectCat(this,'all')" data-i18n="cat_all">Alle</button>
-      <button class="cat-pill" data-cat="barber" onclick="selectCat(this,'barber')" data-i18n="cat_barber">Barbershop</button>
-      <button class="cat-pill" data-cat="hairsalon" onclick="selectCat(this,'hairsalon')" data-i18n="cat_hairsalon">Coiffeur</button>
-      <button class="cat-pill" data-cat="nails" onclick="selectCat(this,'nails')" data-i18n="cat_nails">Nagelstudio</button>
-      <button class="cat-pill" data-cat="spa" onclick="selectCat(this,'spa')" data-i18n="cat_spa">Spa &amp; Wellness</button>
-      <button class="cat-pill" data-cat="makeup" onclick="selectCat(this,'makeup')" data-i18n="cat_makeup">Make-up</button>
-      <button class="cat-pill" data-cat="eyebrows" onclick="selectCat(this,'eyebrows')" data-i18n="cat_eyebrows">Augenbrauen</button>
+      <button class="cat-pill active" data-cat="all">Alle</button>
+      <button class="cat-pill" data-cat="barber">Barbershop</button>
+      <button class="cat-pill" data-cat="hairsalon">Coiffeur</button>
+      <button class="cat-pill" data-cat="nails">Nagelstudio</button>
+      <button class="cat-pill" data-cat="spa">Spa &amp; Wellness</button>
+      <button class="cat-pill" data-cat="makeup">Make-up</button>
+      <button class="cat-pill" data-cat="eyebrows">Augenbrauen</button>
     </div>
   </div>
 
@@ -1193,27 +1239,32 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
     <div class="stores-header">
       <div class="section-title" style="margin-bottom:0" data-i18n="stores_title">Salons in deiner N&auml;he</div>
       <div class="stores-count" id="storesCount"></div>
-      <button class="filter-sheet-btn" onclick="openFilterSheet()" data-i18n="filter_sheet_btn">&#9881; Filter &amp; Sortierung</button>
-      <div style="margin-left:auto" class="desktop-filters">
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="padding:8px 36px 8px 12px;font-size:.82rem;border-radius:100px;min-width:140px">
-            <option value="default" data-i18n="sort_recommended">Empfohlen</option>
-            <option value="price_asc" data-i18n="sort_cheapest">G&uuml;nstigste zuerst</option>
-            <option value="popular" data-i18n="sort_popular">Beliebteste</option>
-          </select>
-          <div class="price-filter-wrap" id="priceFilterDesktop">
-            <span style="font-size:.8rem;font-weight:600;color:var(--muted)" data-i18n="filter_max_price">Max. Preis:</span>
-            <input type="range" class="price-slider" id="priceSliderDesktop" min="0" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'desktop')" style="--pct:100%">
-            <span class="price-label" id="priceLabelDesktop" data-i18n="filter_all">Alle</span>
-          </div>
-          <div class="rating-filter" id="ratingFilterDesktop">
-            <span style="font-size:.8rem;font-weight:600;color:var(--muted)" data-i18n="rating_filter">Min. Bewertung:</span>
-            <button class="rating-chip active" onclick="setMinRating(0,this)" data-i18n="filter_all">Alle</button>
-            <button class="rating-chip" onclick="setMinRating(4.0,this)">4.0+</button>
-            <button class="rating-chip" onclick="setMinRating(4.5,this)">4.5+</button>
-          </div>
-        </div>
-      </div>
+      <!-- hidden elements for JS compatibility -->
+      <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="display:none">
+        <option value="default">Empfohlen</option>
+        <option value="price_asc">G&#252;nstigste</option>
+        <option value="popular">Beliebteste</option>
+      </select>
+      <input type="hidden" id="priceSliderDesktop" value="300">
+      <span id="priceLabelDesktop" style="display:none"></span>
+    </div>
+    <!-- FILTER PILLS: Category -->
+    <div class="filter-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="filter-pill active" onclick="selectCatPill(this,'')" data-i18n="cat_all">Alle</button>
+      <button class="filter-pill" onclick="selectCatPill(this,'hairsalon')" data-i18n="cat_hairsalon">Coiffeur</button>
+      <button class="filter-pill" onclick="selectCatPill(this,'barber')" data-i18n="cat_barber">Barbershop</button>
+      <button class="filter-pill" onclick="selectCatPill(this,'nails')" data-i18n="cat_nails">Nails</button>
+      <button class="filter-pill" onclick="selectCatPill(this,'spa')" data-i18n="cat_spa">Massage &amp; Spa</button>
+    </div>
+    <!-- FILTER PILLS: Quartier -->
+    <div class="filter-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="filter-pill active" onclick="selectQuartierPill(this,'')">Alle Quartiere</button>
+      <button class="filter-pill" onclick="selectQuartierPill(this,'Grossbasel')">Grossbasel</button>
+      <button class="filter-pill" onclick="selectQuartierPill(this,'Kleinbasel')">Kleinbasel</button>
+      <button class="filter-pill" onclick="selectQuartierPill(this,'Gundeldingen')">Gundeli</button>
+      <button class="filter-pill" onclick="selectQuartierPill(this,'St. Johann')">St. Johann</button>
+      <button class="filter-pill" onclick="selectQuartierPill(this,'Bruderholz')">Bruderholz</button>
+      <button class="filter-pill" onclick="selectQuartierPill(this,'Hirzbrunnen')">Hirzbrunnen</button>
     </div>
     <div id="lastMinuteSection" class="lm-section hidden"></div>
     <div id="recentSection" style="display:none"></div>
@@ -1224,8 +1275,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <!-- SALON SPOTLIGHT -->
 <section class="spotlight-section" id="spotlightSection">
   <div class="spotlight-header">
-    <h2>Unsere Empfehlungen</h2>
-    <p>Handverlesen von der solen-Redaktion &ndash; Salons, die uns begeistern</p>
+    <h2>Unsere Empfehlungen diese Woche</h2>
+    <p>Entdecke Salons, die uns begeistern</p>
   </div>
   <div class="spotlight-grid" id="spotlightGrid">
     <!-- populated by JS -->
@@ -1235,8 +1286,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <!-- ABOUT / STORY -->
 <section class="about-section" id="aboutSection">
   <h2>Warum solen?</h2>
-  <p class="about-text">Wir sind ein kleines Team aus Basel und kennen das Problem: Man will einen guten Coiffeur, ein Nagelstudio oder eine Massage &ndash; aber endet immer beim gleichen Salon, weil man keine Alternative kennt. solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Keine Telefonwarteschleifen, keine veralteten Webseiten.</p>
-  <p class="about-text">Jeder Salon auf solen ist ein echtes, lokales Gesch&auml;ft in Basel. Keine Ketten, kein Franchise &ndash; nur Menschen, die ihren Beruf lieben.</p>
+  <p class="about-text">solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Jeder Salon hier ist echt. Kein Stock-Foto, kein Franchise.</p>
   <div class="about-sig">Gegr&uuml;ndet in Basel &middot; F&uuml;r unsere lokalen Beauty-Experten</div>
 </section>
 
@@ -1285,7 +1335,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <button class="close-btn" onclick="closeAuth()">&times;</button>
     </div>
     <div class="modal-body">
-      <div id="authMsg"></div>
+      <div id="authMsg" role="alert" aria-live="polite"></div>
 
       <!-- REGISTER CHOICE -->
       <div id="formRegChoice" class="hidden">
@@ -1306,7 +1356,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
               <span class="reg-choice-btn" data-i18n="auth_register_salon">Solen-Partner werden</span>
             </div>
           </div>
-          <div class="auth-switch" style="margin-top:20px"><span data-i18n="auth_already">Bereits registriert?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
+          <div class="auth-switch" style="margin-top:20px"><span data-i18n="auth_already">Du hast schon ein Konto?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
         </div>
       </div>
 
@@ -1318,11 +1368,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         </button>
         <div class="divider" data-i18n="auth_or">oder</div>
         <div class="form-group">
-          <label data-i18n="lbl_email">E-Mail</label>
+          <label for="loginEmail" data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="loginEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
         <div class="form-group">
-          <label data-i18n="lbl_password">Passwort</label>
+          <label for="loginPw" data-i18n="lbl_password">Passwort</label>
           <input class="form-input" type="password" id="loginPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password">
         </div>
         <div style="text-align:right;margin:-10px 0 12px"><a onclick="showPasswordReset()" style="font-size:.82rem;color:var(--accent);cursor:pointer;font-weight:600" data-i18n="forgot_password">Passwort vergessen?</a></div>
@@ -1387,11 +1437,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         </button>
         <div class="divider" data-i18n="auth_or">oder</div>
         <div class="form-row">
-          <div class="form-group"><label data-i18n="lbl_firstname">Vorname</label><input class="form-input" type="text" id="signupFirst" placeholder="Max" autocomplete="given-name"></div>
-          <div class="form-group"><label data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="signupLast" placeholder="Muster" autocomplete="family-name"></div>
+          <div class="form-group"><label for="signupFirst" data-i18n="lbl_firstname">Vorname</label><input class="form-input" type="text" id="signupFirst" placeholder="Max" autocomplete="given-name"></div>
+          <div class="form-group"><label for="signupLast" data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="signupLast" placeholder="Muster" autocomplete="family-name"></div>
         </div>
         <div class="form-group">
-          <label data-i18n="lbl_email">E-Mail</label>
+          <label for="signupEmail" data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="signupEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
         <div class="form-group">
@@ -1399,7 +1449,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
           <input class="form-input" type="password" id="signupPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="new-password">
         </div>
         <button class="btn-primary" onclick="doSignup()" data-i18n="btn_create_account">Konto erstellen</button>
-        <div class="auth-switch"><span data-i18n="auth_already">Bereits registriert?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
+        <div class="auth-switch"><span data-i18n="auth_already">Du hast schon ein Konto?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
       </div>
 
       <!-- SALON SIGNUP -->
@@ -1441,7 +1491,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
           </label>
         </div>
         <button class="btn-primary" onclick="doSalonSignup()" data-i18n="btn_register_salon_submit">Solen-Partner werden</button>
-        <div class="auth-switch"><span data-i18n="auth_already">Bereits registriert?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
+        <div class="auth-switch"><span data-i18n="auth_already">Du hast schon ein Konto?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
       </div>
     </div>
   </div>
@@ -1525,7 +1575,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <div class="overlay" id="storeOverlay">
   <div class="modal modal-wide">
     <div id="storeDetailContent"></div>
-    <button class="share-fab" id="storeShareBtn" onclick="shareSalon()" title="Link kopieren">🔗</button>
+    <button class="share-fab" id="storeShareBtn" onclick="shareSalon()" title="Link kopieren" aria-label="Link kopieren"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
   </div>
 </div>
 
@@ -1540,13 +1590,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <div class="wiz-steps" id="wizSteps">
         <div class="wiz-step active" id="ws1"><span class="wiz-num">1</span><span data-i18n="wiz_service">Service</span></div>
         <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws2"><span class="wiz-num">2</span><span data-i18n="wiz_date">Datum</span></div>
+        <div class="wiz-step" id="ws2"><span class="wiz-num">2</span><span data-i18n="wiz_datetime">Datum &amp; Zeit</span></div>
         <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws3"><span class="wiz-num">3</span><span data-i18n="wiz_time">Uhrzeit</span></div>
-        <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws4"><span class="wiz-num">4</span><span data-i18n="wiz_details">Details</span></div>
-        <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws5"><span class="wiz-num">5</span><span data-i18n="wiz_confirm">Best&auml;tigen</span></div>
+        <div class="wiz-step" id="ws3"><span class="wiz-num">3</span><span data-i18n="wiz_confirm">Best&auml;tigen</span></div>
       </div>
       <div id="wizContent"></div>
     </div>
@@ -1575,37 +1621,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   </div>
 </div>
 
-<!-- MOBILE FILTER BOTTOM SHEET -->
-<div id="filterSheetOverlay" onclick="closeFilterSheet()"></div>
-<div id="filterSheet">
-  <div class="sheet-handle"></div>
-  <h3 data-i18n="filter_sort">Sortierung</h3>
-  <select class="form-input" id="sortSelectMobile" onchange="changeSort(this.value)" style="margin-bottom:16px;padding:10px 36px 10px 12px;font-size:.88rem;border-radius:var(--r)">
-    <option value="default" data-i18n="sort_recommended">Empfohlen</option>
-    <option value="price_asc" data-i18n="sort_cheapest">G&uuml;nstigste zuerst</option>
-    <option value="popular" data-i18n="sort_popular">Beliebteste</option>
-  </select>
-  <h3 data-i18n="filter_max_price_chf">Max. Preis (CHF)</h3>
-  <div class="price-filter-mobile" style="margin-bottom:16px">
-    <input type="range" class="price-slider" id="priceSliderMobile" min="0" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'mobile')" style="--pct:100%;width:100%">
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.78rem;color:var(--muted)"><span>CHF 0</span><span class="price-label" id="priceLabelMobile" data-i18n="filter_all">Alle</span><span>CHF 300</span></div>
-  </div>
-  <h3 data-i18n="rating_filter">Min. Bewertung</h3>
-  <div class="rating-filter" style="margin-bottom:16px" id="ratingFilterMobile">
-    <button class="rating-chip active" onclick="setMinRating(0,this)" data-i18n="filter_all">Alle</button>
-    <button class="rating-chip" onclick="setMinRating(4.0,this)">4.0+</button>
-    <button class="rating-chip" onclick="setMinRating(4.5,this)">4.5+</button>
-  </div>
-  <h3 data-i18n="neighbourhood">Quartier</h3>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
-    <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'');closeFilterSheet()" data-i18n="neighbourhood_all">Alle Quartiere</button>
-    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel');closeFilterSheet()">Grossbasel</button>
-    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel');closeFilterSheet()">Kleinbasel</button>
-    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann');closeFilterSheet()">St. Johann</button>
-    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Gundeldingen');closeFilterSheet()">Gundeldingen</button>
-    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Bruderholz');closeFilterSheet()">Bruderholz</button>
-    <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Hirzbrunnen');closeFilterSheet()">Hirzbrunnen</button>
-  </div>
+<!-- Mobile filter sheet removed - using inline filter pills instead -->
+<div id="filterSheetOverlay" style="display:none"></div>
+<div id="filterSheet" style="display:none">
+  <select id="sortSelectMobile" style="display:none"><option value="default">Empfohlen</option></select>
+  <input type="hidden" id="priceSliderMobile" value="300">
+  <span id="priceLabelMobile" style="display:none"></span>
 </div>
 
 <!-- IMPRESSUM MODAL -->
@@ -1630,12 +1651,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   </div>
 </div>
 
+</main>
 <!-- SALON OWNER CTA -->
 <section class="partner-cta" id="partnerCta">
   <div class="partner-cta-inner">
     <h2>Du hast einen Salon in Basel?</h2>
     <p>Werde Teil von solen und erreiche neue Kunden in deinem Quartier. Kostenlos starten, keine Vertragsbindung.</p>
-    <button class="btn-partner-cta" onclick="openSalonRegistration()">Jetzt Solen-Partner werden</button>
+    <button class="btn-partner-cta" onclick="openSalonRegistration()">Deinen Salon eintragen</button>
   </div>
 </section>
 
@@ -1650,29 +1672,32 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   </div>
 </footer>
 
-<!-- BOTTOM NAV (mobile) -->
-<nav class="bottom-nav" id="bottomNav">
+<!-- BOTTOM NAV (mobile) - role-based -->
+<nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Mobile Navigation">
   <div class="bottom-nav-inner">
     <button class="bottom-nav-item active" onclick="showPage('home')" id="bnHome">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
       <span data-i18n="bn_home">Home</span>
     </button>
-    <button class="bottom-nav-item" onclick="showPage('bookings')" id="bnBookings">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span data-i18n="bn_bookings">Termine</span>
+    <button class="bottom-nav-item" onclick="showPage('home');setTimeout(function(){document.getElementById('searchInput').focus()},300)" id="bnDiscover">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span data-i18n="bn_discover">Entdecken</span>
     </button>
-    <button class="bottom-nav-item" onclick="openMessagesTab()" id="bnMessages">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span data-i18n="bn_messages">Chat</span>
-      <div class="bn-messages-badge" id="bnMsgBadge"></div>
+    <button class="bottom-nav-item bn-logged-in hidden" onclick="showPage('bookings')" id="bnBookings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span data-i18n="bn_bookings">Buchungen</span>
     </button>
-    <button class="bottom-nav-item" onclick="showPage('profile')" id="bnProfile">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <button class="bottom-nav-item bn-owner hidden" onclick="showPage('salon-dashboard')" id="bnDashboard">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="bottom-nav-item bn-guest" onclick="openAuth('login')" id="bnLogin">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      <span data-i18n="nav_login">Login</span>
+    </button>
+    <button class="bottom-nav-item bn-logged-in hidden" onclick="showPage('profile')" id="bnProfile">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span data-i18n="bn_profile">Profil</span>
-    </button>
-    <button class="bottom-nav-item hidden" onclick="showPage('admin')" id="bnAdmin">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      <span>Admin</span>
     </button>
   </div>
 </nav>
@@ -1778,6 +1803,28 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 
 
 <script>
+// ── ANALYTICS ──
+function solenTrack(event,data){
+  try{
+    var payload={event:event,data:data||{},ts:Date.now(),url:location.href,user:currentUser?.id||null};
+    if(window._solenEvents)window._solenEvents.push(payload);
+    else window._solenEvents=[payload];
+    // Send to console in dev
+    if(location.hostname==='localhost')console.log('[solen:track]',event,data);
+  }catch(e){}
+}
+// Scroll depth tracking
+(function(){
+  var maxDepth=0;
+  window.addEventListener('scroll',function(){
+    var depth=Math.round((window.scrollY+window.innerHeight)/document.documentElement.scrollHeight*100);
+    if(depth>maxDepth){maxDepth=depth;if(depth>=25&&depth<50)solenTrack('scroll_depth',{pct:25});
+    else if(depth>=50&&depth<75)solenTrack('scroll_depth',{pct:50});
+    else if(depth>=75&&depth<100)solenTrack('scroll_depth',{pct:75});
+    else if(depth>=100)solenTrack('scroll_depth',{pct:100});}
+  },{passive:true});
+})();
+
 const SUPA_URL='https://tocfnsmxmdxkrcmjzzdw.supabase.co';
 const SUPA_KEY='sb_publishable_WG19p7vPb3bULi-kbaWo1g_cdW28SCu';
 const ADMIN_EMAIL='habobi1238@proton.me';
@@ -1801,8 +1848,8 @@ const T={
     nav_login:'Anmelden',nav_register:'Registrieren',nav_logout:'Abmelden',nav_theme:'Hell / Dunkel',
     nav_my_profile:'Mein Profil',nav_edit_profile:'Profil bearbeiten',nav_my_bookings:'Meine Buchungen',
     nav_salon_dash:'Mein Salon',nav_admin:'Verwaltung',
-    hero_badge:'Von Basel, f\u00fcr Basel',hero_title:'Finde deinen<br><span class="hero-highlight">Lieblings-Salon</span>',
-    hero_sub:'Vom Coiffeur im Gundeli bis zum Nagelstudio in Kleinbasel \u2013 buche direkt bei lokalen Salons in deinem Quartier.',
+    hero_badge:'Von Basel, f\u00fcr Basel',hero_title:'Dein n\u00e4chster<br><span class="hero-highlight">Lieblingsort wartet.</span>',
+    hero_sub:'Buche direkt bei Salons in deinem Quartier \u2013 ohne Umwege.',
     search_placeholder:'z.B. Balayage, Maniküre, Massage...',search_btn:'Suchen',
     stat_salons:'Lokale Salons',stat_services:'Behandlungen',stat_location:'Dein Quartier',
     cat_all:'Alle',cat_hairsalon:'Coiffeur',stores_title:'Salons in deiner N\u00e4he',
@@ -1811,7 +1858,7 @@ const T={
     admin_title:'Verwaltung',admin_sub:'Salons, Services und Buchungen verwalten',
     salon_dash_title:'Mein Salon',salon_dash_sub:'Dein Salon auf einen Blick \u2013 Termine, Nachrichten und mehr',
     auth_login_title:'Anmelden',auth_register_title:'Registrieren',auth_customer_title:'Als Kunde registrieren',auth_salon_title:'Solen-Partner werden',
-    btn_login:'Anmelden',btn_create_account:'Konto erstellen',btn_book:'Buchen',btn_book_now:'Termin buchen',
+    btn_login:'Anmelden',btn_create_account:'Konto erstellen',btn_book:'Buchen',btn_book_now:'Termin buchen',btn_book_appointment:'Termin buchen',
     btn_confirm:'Termin buchen',btn_cancel:'Abbrechen',btn_back:'Zur\u00fcck',btn_next:'Weiter',btn_save:'Profil speichern',btn_skip:'\u00dcberspringen',
     lbl_email:'E-Mail',lbl_password:'Passwort',lbl_firstname:'Vorname',lbl_lastname:'Nachname',
     wiz_service:'Service',wiz_date:'Datum',wiz_time:'Uhrzeit',wiz_details:'Details',wiz_confirm:'Best\u00e4tigen',
@@ -1819,9 +1866,10 @@ const T={
     wiz_summary:'Zusammenfassung',wiz_salon:'Salon',wiz_service_lbl:'Service',wiz_date_lbl:'Datum',wiz_time_lbl:'Uhrzeit',wiz_duration:'Dauer',wiz_price:'Preis',
     toast_welcome:'Sch\u00f6n, dass du da bist',toast_signedout:'Bis bald!',toast_booked:'Dein Termin steht! Buchungsnummer:',toast_profile_saved:'Profil gespeichert!',
     toast_booking_failed:'Das hat leider nicht geklappt. Bitte versuch es nochmal.',
-    empty_no_salon:'Hier ist es noch leer',empty_try_other:'Versuch einen anderen Suchbegriff oder schau in einem anderen Quartier.',empty_show_all:'Alle Salons anzeigen',
-    empty_no_bookings:'Noch keine Termine',empty_book_first:'Entdecke Salons in Basel und buche deinen ersten Termin',empty_discover:'Salons entdecken',
-    auth_no_account:'Noch kein Konto?',auth_already:'Bereits registriert?',auth_register_now:'Jetzt registrieren',auth_login_now:'Anmelden',
+    empty_no_salon:'Keine Salons gefunden',empty_try_other:'Versuch einen anderen Filter oder entdecke alle Salons in Basel.',empty_show_all:'Alle Salons anzeigen',
+    empty_no_bookings:'Du hast noch keine Termine',empty_book_first:'Zeit, deinen n\u00e4chsten Lieblingssalon zu entdecken!',empty_discover:'Salons entdecken',
+    empty_no_reviews:'Noch keine Bewertungen \u2013 sei der/die Erste!',empty_search_no_results:'Wir haben nichts gefunden. Versuch einen anderen Begriff.',
+    auth_no_account:'Noch kein Konto?',auth_already:'Du hast schon ein Konto?',auth_register_now:'Jetzt registrieren',auth_login_now:'Anmelden',
     auth_google_login:'Mit Google anmelden',auth_google_register:'Mit Google registrieren',auth_or:'oder',
     auth_choose:'W\u00e4hle deinen Zugang',auth_customer_or_owner:'Bist du ein Kunde oder ein Salon-Besitzer?',
     auth_as_customer:'Ich suche einen Salon',auth_customer_desc:'Termin buchen, Salons in Basel entdecken, pers\u00f6nliches Profil',auth_free_register:'Kostenlos registrieren',
@@ -1833,7 +1881,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Bitte E-Mail und Passwort eingeben.',err_fill_all:'Bitte alle Felder ausf\u00fcllen.',err_pw_min:'Passwort muss mindestens 6 Zeichen haben.',
     err_wrong_pw:'Falsches Passwort oder E-Mail. Bitte \u00fcberpr\u00fcfe deine Eingaben.',err_confirm_email:'Bitte best\u00e4tige zuerst deine E-Mail-Adresse.',
-    err_invalid_email:'Bitte gib eine g\u00fcltige E-Mail-Adresse ein.',err_email_not_registered:'Diese E-Mail-Adresse ist nicht registriert.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
+    err_invalid_email:'Das sieht nicht ganz richtig aus \u2013 check mal das Format.',err_email_not_registered:'Diese E-Mail-Adresse ist nicht registriert.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
     err_already_registered:'Diese E-Mail ist bereits registriert.',err_signup_failed:'Registrierung fehlgeschlagen. Bitte versuche es erneut.',
     confirm_email_sent:'Best\u00e4tigungs-E-Mail gesendet! Bitte pr\u00fcfe dein Postfach.',
     setup_title:'Dein Profil',setup_welcome:'Sch\u00f6n, dass du da bist!',setup_edit:'Profil bearbeiten',
@@ -1906,8 +1954,8 @@ const T={
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
     nav_my_profile:'My Profile',nav_edit_profile:'Edit Profile',nav_my_bookings:'My Bookings',
     nav_salon_dash:'My Salon',nav_admin:'Management',
-    hero_badge:'From Basel, for Basel',hero_title:'Find your<br><span class="hero-highlight">favorite salon</span>',
-    hero_sub:'From your neighborhood hairdresser to the best nail studio in Kleinbasel \u2013 book directly with local salons in your area.',
+    hero_badge:'From Basel, for Basel',hero_title:'Your next<br><span class="hero-highlight">favorite place awaits.</span>',
+    hero_sub:'Book directly with salons in your neighborhood \u2013 no detours.',
     search_placeholder:'Service, salon or category...',search_btn:'Search',
     stat_salons:'Local salons',stat_services:'Treatments',stat_location:'Your area',
     cat_all:'All',cat_hairsalon:'Hairdresser',stores_title:'Salons near you',
@@ -1916,7 +1964,7 @@ const T={
     admin_title:'Management',admin_sub:'Manage salons, services and bookings',
     salon_dash_title:'My Salon',salon_dash_sub:'Your salon at a glance \u2013 appointments, messages and more',
     auth_login_title:'Sign in',auth_register_title:'Register',auth_customer_title:'Register as Customer',auth_salon_title:'Register Salon',
-    btn_login:'Sign in',btn_create_account:'Create account',btn_book:'Book',btn_book_now:'Book now',
+    btn_login:'Sign in',btn_create_account:'Create account',btn_book:'Book',btn_book_now:'Book now',btn_book_appointment:'Book appointment',
     btn_confirm:'Book appointment',btn_cancel:'Cancel',btn_back:'Back',btn_next:'Next',btn_save:'Save profile',btn_skip:'Skip',
     lbl_email:'Email',lbl_password:'Password',lbl_firstname:'First name',lbl_lastname:'Last name',
     wiz_service:'Service',wiz_date:'Date',wiz_time:'Time',wiz_details:'Details',wiz_confirm:'Confirm',
@@ -2528,21 +2576,24 @@ function toggleMobileNav(){toggleMobileMenu();}
 let searchTimer=null;
 function debounceSearch(){
   clearTimeout(searchTimer);
-  searchTimer=setTimeout(()=>applyFilters(),200);
+  searchTimer=setTimeout(function(){applyFilters();var q=document.getElementById('searchInput').value;if(q.length>2)solenTrack('search_query',{query:q});},200);
 }
 function applyFilters(){renderStores();}
 
 // AUTH MODAL
 function openAuth(tab='login'){
-  document.getElementById('authOverlay').classList.add('active');
+  var overlay=document.getElementById('authOverlay');
+  overlay._triggerEl=document.activeElement;
+  overlay.classList.add('active');
   switchAuthTab(tab);
   document.getElementById('authMsg').innerHTML='';
+  setTimeout(function(){trapFocus(document.getElementById('authModal'));},100);
   const modal=document.getElementById('authModal');
   if(tab==='salon-signup')modal.style.maxWidth='600px';
   else if(tab==='register-choice')modal.style.maxWidth='540px';
   else modal.style.maxWidth='480px';
 }
-function closeAuth(){document.getElementById('authOverlay').classList.remove('active');}
+function closeAuth(){var o=document.getElementById('authOverlay');releaseFocus(o);o.classList.remove('active');}
 function switchAuthTab(tab){
   const titleKeys={'login':'auth_login_title','register-choice':'auth_register_title','customer-signup':'auth_customer_title','salon-signup':'auth_salon_title','password-reset':'forgot_password','phone-auth':'Mit Telefon anmelden'};
   document.getElementById('authModalTitle').textContent=t(titleKeys[tab]||'auth_login_title');
@@ -2924,8 +2975,8 @@ async function loadStores(){
 }
 
 function getStoreEmoji(type){
-  const map={barber:'✂️',hairsalon:'💇',nails:'💅',spa:'🧖',makeup:'💄',eyebrows:'👁️'};
-  return map[type]||'✨';
+  const map={barber:'',hairsalon:'',nails:'',spa:'',makeup:'',eyebrows:''};
+  return map[type]||'';
 }
 
 function getNextTimeSlots(n){
@@ -3004,40 +3055,22 @@ function getOpenStatus(s){
 }
 function renderStoreCard(s){
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
-  const topSvcs=svcs.slice(0,3);
   const minPrice=svcs.length?Math.min(...svcs.map(x=>x.price)):null;
-  const priceDisplay=s.price_range?s.price_range:(minPrice?`ab CHF ${minPrice}`:'ab CHF 30');
-  const visited=userBookedStores.has(s.id);
+  const priceDisplay=s.price_range?s.price_range:(minPrice?'ab CHF '+minPrice:'ab CHF 30');
   const photoUrl=getSalonPhoto(s);
-  const dist=(userLat&&userLng&&s.lat&&s.lng)?haversine(userLat,userLng,s.lat,s.lng):null;
   const avgR=parseFloat(s.avg_rating)||0;
   const revCount=parseInt(s.review_count)||0;
-  const status=getOpenStatus(s);
   const catName=getTypeName(s.cat||s.type||'');
-  const hasChildren=allStores.some(x=>String(x.parent_store_id)===String(s.id)&&x.id!==s.id); return`<div class="store-card" onclick="openStore('${s.id}')">
-    <div class="store-img" style="height:220px;position:relative">
-      <img src="${photoUrl}" alt="${s.name}" loading="lazy" style="width:100%;height:220px;object-fit:cover">
-      <button class="fav-btn${isFav(s.id)?' is-fav':''}" data-sid="${s.id}" onclick="event.stopPropagation();toggleFav('${s.id}')">${isFav(s.id)?'❤️':'♡'}</button>
-      <div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(0,0,0,.6),transparent);pointer-events:none"></div>
-      <div style="position:absolute;bottom:12px;left:14px;right:14px;z-index:2;display:flex;align-items:flex-end;justify-content:space-between">
-        <span style="color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;text-shadow:0 1px 4px rgba(0,0,0,.3)">${s.name}</span>
-        <span class="status-${status.open?'open':'closed'}" style="font-size:.7rem">${status.open?'&#9679;':'&#9679;'} ${status.text}</span>
-      </div>
-      <span class="store-cat-badge">${catName}</span>
-      ${hasChildren?'<span class="filialen-badge">Mehrere Standorte</span>':''} ${isEmpfohlen(s)?'<span class="empfohlen-badge">Empfohlen</span>':s.is_verified?'<span class="verified-badge">&#10003; Verifiziert</span>':''}
-      ${visited?'<span class="visited-badge">Schon besucht</span>':''}
-      ${dist!==null?`<span class="distance-badge">${dist.toFixed(1)} km</span>`:''}
-    </div>
-    <div class="store-body">
-      <div class="star-rating"><span class="stars">${renderStars(avgR)}</span> <span class="review-count">${avgR.toFixed(1)} (${revCount})</span></div>
-      <div class="store-meta">&#128205; ${s.address||'Basel'}</div>
-      ${topSvcs.length?`<div class="store-services-preview">${topSvcs.map(sv=>`<span class="service-chip">${sv.name} &middot; CHF ${sv.price}</span>`).join('')}</div>`:''}
-      <div class="store-card-footer">
-        <span class="store-price-range">${priceDisplay}</span>${getOpenStatus(s)}
-        <button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore('${s.id}'),null)">${t('btn_book')}</button>
-      </div>
-    </div>
-  </div>`;
+  const quartier=extractQuartier(s.address||'Basel');
+  const ratingHtml=avgR>0?'<span class="card-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--c-highlight)" stroke="var(--c-highlight)" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> '+avgR.toFixed(1)+'</span>':'';
+  return'<div class="store-card" onclick="openStore(\''+s.id+'\')" tabindex="0" role="link" aria-label="'+s.name+' besuchen">'+
+    '<div class="store-card-photo"><img src="'+photoUrl+'" alt="'+s.name+'" loading="lazy" width="400" height="267"></div>'+
+    '<div class="store-card-body">'+
+      '<div class="store-card-tags"><span class="store-quartier-badge">'+quartier+'</span><span class="store-cat-label">'+catName+'</span></div>'+
+      '<div class="store-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+s.name+'</div>'+
+      '<div class="store-card-meta">'+ratingHtml+'<span class="store-price-range">'+priceDisplay+'</span></div>'+
+      '<button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore(\''+s.id+'\'),null)">'+t('btn_book_appointment')+'</button>'+
+    '</div></div>';
 }
 function findStore(id){return allStores.find(x=>x.id===id);}
 
@@ -3104,7 +3137,9 @@ renderRecentlyViewed();
   }
   document.getElementById('storesCount').textContent=`${filtered.length} ${filtered.length!==1?t('salon_count_other'):t('salon_count_one')}`;
   if(filtered.length===0){
-    document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128269;</div><h3>${t('no_results')}</h3><p>${t('try_other_filters')}</p><button onclick="resetAllFilters()">${t('reset_filters')}</button></div>`;
+    var searchQuery=document.getElementById('searchInput').value;
+    var emptyMsg=searchQuery?'Wir haben nichts zu \''+searchQuery+'\' gefunden. Versuch einen anderen Begriff.':t('empty_try_other');
+    document.getElementById('storesGrid').innerHTML='<div class="empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px"><h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px">'+t('empty_no_salon')+'</h3><p style="color:var(--c-text-secondary);margin-bottom:20px;line-height:var(--lh-body)">'+emptyMsg+'</p><button class="btn-primary" onclick="resetAllFilters()" style="max-width:240px;margin:0 auto">'+t('empty_show_all')+'</button></div>';
     return;
   }
   // Recently viewed section
@@ -3178,7 +3213,7 @@ async function renderLastMinute(){
   if(!html){section.classList.add('hidden');return;}
   const dow=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
   section.classList.remove('hidden');
-  section.innerHTML='<div class="lm-hd">⚡ <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="searchInput.focus()">Alle zeigen →</span></div><div class="lm-scroll">'+html+'</div>';
+  section.innerHTML='<div class="lm-hd"> <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="searchInput.focus()">Alle zeigen →</span></div><div class="lm-scroll">'+html+'</div>';
 }
 function dismissRecent(){
   localStorage.setItem('solenViewedDismissed','1');
@@ -3236,6 +3271,47 @@ function selectCat(btn,cat){
   }
   saveCategoryFilter();
   renderStores();
+}
+
+// ── FILTER PILL HELPERS ──
+function selectCatPill(btn,cat){
+  btn.parentElement.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCategories.clear();
+  if(cat)activeCategories.add(cat);
+  // Also sync cat-pill bar if present
+  document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
+  const cpill=cat?document.querySelector('.cat-pill[data-cat="'+cat+'"]'):document.querySelector('.cat-pill[data-cat="all"]');
+  if(cpill)cpill.classList.add('active');
+  saveCategoryFilter();renderStores();
+  solenTrack('filter_category',{category:cat||'all'});
+}
+function selectQuartierPill(btn,q){
+  btn.parentElement.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeNeighbourhood=q;
+  renderStores();
+  solenTrack('filter_quartier',{quartier:q||'all'});
+}
+function extractQuartier(address){
+  const quartiers=['Grossbasel','Kleinbasel','St. Johann','Gundeldingen','Gundeli','Bruderholz','Hirzbrunnen','Iselin','Bachletten','Breite','Klybeck','Matthäus','Clara','Wettstein','Riehen'];
+  for(const q of quartiers){if(address.toLowerCase().includes(q.toLowerCase()))return q;}
+  return'Basel';
+}
+
+// ── NAV HELPERS ──
+function toggleLangDropdown(){
+  var m=document.getElementById('langDropdownMenu');
+  if(m)m.classList.toggle('open');
+}
+function scrollToQuartiere(){showPage('home');setTimeout(function(){var el=document.querySelector('.stores-section');if(el)el.scrollIntoView({behavior:'smooth'});},200);}
+function scrollToAbout(){showPage('home');setTimeout(function(){var el=document.getElementById('aboutSection');if(el)el.scrollIntoView({behavior:'smooth'});},200);}
+function updateBottomNav(){
+  var isLoggedIn=!!currentUser;
+  var isOwner=!!(currentProfile&&(currentProfile.role==='salon_owner'||currentProfile.is_salon_owner));
+  document.querySelectorAll('.bn-guest').forEach(function(el){el.classList.toggle('hidden',isLoggedIn);});
+  document.querySelectorAll('.bn-logged-in').forEach(function(el){el.classList.toggle('hidden',!isLoggedIn);});
+  document.querySelectorAll('.bn-owner').forEach(function(el){el.classList.toggle('hidden',!isOwner);});
 }
 
 // BEHAVIOR TRACKING
@@ -3334,6 +3410,7 @@ function renderRecentlyViewed(){
 async function openStore(storeId){
   const s=allStores.find(x=>x.id===storeId);
   if(!s)return;
+  solenTrack('salon_card_click',{salon_id:storeId,salon_name:s.name});
   trackRecentView(s);
   window._shareStore=s;
   updateSalonSEO(s);
@@ -3663,6 +3740,26 @@ function formatDate(d){
   return`${parts[2]}.${parts[1]}.${parts[0]}`;
 }
 
+// ── FOCUS TRAP (5c) ──
+function trapFocus(modal){
+  var focusable=modal.querySelectorAll('button,a[href],input:not([type="hidden"]),select,textarea,[tabindex]:not([tabindex="-1"])');
+  if(!focusable.length)return;
+  var first=focusable[0],last=focusable[focusable.length-1];
+  first.focus();
+  modal._focusTrap=function(e){
+    if(e.key==='Tab'){
+      if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
+      else{if(document.activeElement===last){e.preventDefault();first.focus();}}
+    }
+    if(e.key==='Escape'){var closeBtn=modal.querySelector('.close-btn');if(closeBtn)closeBtn.click();}
+  };
+  modal.addEventListener('keydown',modal._focusTrap);
+}
+function releaseFocus(modal){
+  if(modal._focusTrap)modal.removeEventListener('keydown',modal._focusTrap);
+  if(modal._triggerEl){modal._triggerEl.focus();modal._triggerEl=null;}
+}
+
 // CLOSE ALL MODALS (used when switching tabs via bottom nav)
 function closeAllModals(){
   try{closeAuth();}catch(e){}
@@ -3678,28 +3775,40 @@ function closeAllModals(){
   document.body.style.overflow='';
 }
 
-// PAGE ROUTER
-function showPage(page){
+// PAGE ROUTER (hash-based)
+function showPage(page,skipHash){
   closeAllModals();
   document.getElementById('pageHome').style.display='none';
   ['pageProfile','pageBookings','pageAdmin','pageSalonDashboard'].forEach(p=>{const el=document.getElementById(p);if(el)el.classList.remove('active');});
-  document.getElementById('navDropdown').classList.remove('open');
+  var dd=document.getElementById('navDropdown');if(dd)dd.classList.remove('open');
   // close mobile nav
   document.getElementById('navActions')?.classList.remove('open');
   // Update bottom nav active state
   document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.remove('active'));
-  const bnMap={home:'bnHome',bookings:'bnBookings',profile:'bnProfile',admin:'bnAdmin'};
+  const bnMap={home:'bnHome',bookings:'bnBookings',profile:'bnProfile',admin:'bnAdmin','salon-dashboard':'bnDashboard'};
   const bnEl=document.getElementById(bnMap[page]||'');
   if(bnEl)bnEl.classList.add('active');
-
+  // Update URL hash
+  if(!skipHash)history.pushState(null,null,page==='home'?'#':'#/'+page);
   if(page==='home'){document.getElementById('pageHome').style.display='block';}
   else{
-    const pageMap={'salon-dashboard':'SalonDashboard','profile':'Profile','bookings':'Bookings','admin':'Admin'};
+    const pageMap={'salon-dashboard':'SalonDashboard','profile':'Profile','bookings':'Bookings','admin':'Admin','partner':'Admin','dashboard/analytics':'SalonDashboard','dashboard/staff':'SalonDashboard'};
     const pageName=pageMap[page]||(page.charAt(0).toUpperCase()+page.slice(1));
-    const el=document.getElementById(`page${pageName}`);
+    const el=document.getElementById('page'+pageName);
     if(el){el.classList.add('active');loadPageContent(page);}
   }
+  window.scrollTo(0,0);
+  solenTrack('page_view',{page:page});
 }
+// Hash router
+function handleHashRoute(){
+  var h=location.hash.replace('#/','').replace('#','');
+  if(!h||h==='/')showPage('home',true);
+  else if(h.startsWith('book/')){var sid=h.split('/')[1];if(sid){showPage('home',true);setTimeout(function(){var s=allStores.find(function(x){return String(x.id)===sid;});if(s)openBookingModal(s,null);},500);}}
+  else showPage(h,true);
+}
+window.addEventListener('hashchange',handleHashRoute);
+window.addEventListener('DOMContentLoaded',function(){if(location.hash.length>1)setTimeout(handleHashRoute,800);});
 
 function loadPageContent(page){
   if(page==='profile')renderProfile();
@@ -3744,7 +3853,7 @@ async function renderBookings(){
   document.getElementById('bookingsContent').innerHTML='<div class="spinner"></div>';
   const{data,error}=await sb.from('bookings').select('*,stores(name,type)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
   if(error||!data||data.length===0){
-    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
+    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem"></div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
     return;
   }
   const html=`<div class="booking-list">${data.map(b=>{
@@ -4418,7 +4527,7 @@ async function userCancelBooking(){
   if(card)card.remove();
   const list=document.querySelector('#bookingsContent .booking-list');
   if(list&&!list.children.length){
-    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
+    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem"></div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
   }
   toast('Termin wurde abgesagt.','success');
 }
@@ -5052,7 +5161,8 @@ async function openBookingModal(store,preselectedTime){
   // Set default date to today
   const today=new Date();
   bmState.date=today.toISOString().split('T')[0];
-  document.getElementById('bmTitle').textContent=`${t('book_now')} — ${store.name}`;
+  document.getElementById('bmTitle').textContent=t('book_now')+' \u2014 '+store.name;
+  solenTrack('booking_flow_start',{salon_id:store.id,salon_name:store.name});
   await loadBranchesForBooking();
   renderBookingModal();
   document.getElementById('bookingModal').classList.add('open');
@@ -5108,16 +5218,14 @@ function renderBookingModal(){
     document.getElementById('bmBody').innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
     return;
   }
-  // Step indicator
-  const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=hasDateTime?'active':'';
+  // Step indicator (3 steps: Service, Datum & Zeit, Bestätigen)
+  const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=(hasService&&hasDateTime)?'active':'';
   let html=`<div class="bm-steps">
     <div class="bm-step-item ${step1}"><div class="bm-step-dot">${hasService?'&#10003;':'1'}</div><span>Service</span></div>
     <div class="bm-step-line"></div>
-    <div class="bm-step-item ${step2}"><div class="bm-step-dot">${hasDateTime?'&#10003;':'2'}</div><span>Termin</span></div>
+    <div class="bm-step-item ${step2}"><div class="bm-step-dot">${hasDateTime?'&#10003;':'2'}</div><span>Datum &amp; Zeit</span></div>
     <div class="bm-step-line"></div>
-    <div class="bm-step-item ${step3}"><div class="bm-step-dot">3</div><span>Daten</span></div>
-    <div class="bm-step-line"></div>
-    <div class="bm-step-item"><div class="bm-step-dot">4</div><span>Buchen</span></div>
+    <div class="bm-step-item ${step3}"><div class="bm-step-dot">3</div><span>Best&auml;tigen</span></div>
   </div>`;
   // 1. Service picker
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_service')}</h4>`;
@@ -5164,7 +5272,7 @@ function renderBookingModal(){
   html+=`<div class="row"><span>Adresse</span><span>${s.address||'Basel'}</span></div>`;
   html+=`<div class="row"><span>Stornierung</span><span>${s.cancellation_policy||'24h Stornierungsfrist'}</span></div>`;
   html+=`</div>`;
-  const _parentId=s.parent_store_id||s.id;const _sisters=allStores.filter(x=>x.id!==s.id&&(String(x.parent_store_id)===String(_parentId)||String(x.id)===String(_parentId)||String(x.parent_store_id)===String(s.id)));if(_sisters.length){html+=`<div class="other-filialen"><h4>🏠 Andere Filialen</h4><select class="form-input" style="font-size:.88rem" onchange="if(this.value){closeBookingModal();openBookingModal(allStores.find(x=>String(x.id)===this.value),null)}"><option value="">Aktuell: ${s.name}</option>${_sisters.map(x=>`<option value="${x.id}">${x.name} — ${x.address||'Basel'}</option>`).join('')}</select></div>`;}
+  const _parentId=s.parent_store_id||s.id;const _sisters=allStores.filter(x=>x.id!==s.id&&(String(x.parent_store_id)===String(_parentId)||String(x.id)===String(_parentId)||String(x.parent_store_id)===String(s.id)));if(_sisters.length){html+=`<div class="other-filialen"><h4>Andere Filialen</h4><select class="form-input" style="font-size:.88rem" onchange="if(this.value){closeBookingModal();openBookingModal(allStores.find(x=>String(x.id)===this.value),null)}"><option value="">Aktuell: ${s.name}</option>${_sisters.map(x=>`<option value="${x.id}">${x.name} — ${x.address||'Basel'}</option>`).join('')}</select></div>`;}
   // 6. Book button or waiting list prompt
   if(bmState.slotConflict){
     html+=`<div style="background:var(--surfaceAlt);border:1.5px solid var(--border2);border-radius:var(--r);padding:16px;margin-top:4px;text-align:center">`;
@@ -5218,6 +5326,7 @@ async function insertBooking(){
   bmState.slotConflict=false;
   renderBookingModal();
   toast(t('booking_confirmed'),'success');
+  solenTrack('booking_completed',{salon_id:bmState.store.id,service:svc?.name||bmState.customSvc||''});
   if(bmState.wantsReminder!==false)scheduleReminders({bookingId:bkData?.id,userId:currentUser?.id,salonId:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,salonName:bmState.store.name,serviceName:svc?.name||bmState.customSvc||'',bookingDate:bmState.date,bookingTime:bmState.time,customerName:bmState.guestName,customerEmail:bmState.guestEmail||currentUser?.email||''});
 }
 
@@ -5527,7 +5636,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;o
         </div>
         <div class="salon-reg-footer">
           <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
-          <button type="submit" class="reg-btn-next" id="regSubmitBtn">✦ Jetzt eintragen</button>
+          <button type="submit" class="reg-btn-next" id="regSubmitBtn"> Jetzt eintragen</button>
         </div>
       </div>
     </form>
@@ -5794,7 +5903,7 @@ async function submitSalonReg(e){
     console.error('Reg error:',ex);
     btn.classList.remove('loading');
     btn.disabled=false;
-    btn.textContent='✦ Jetzt eintragen';
+    btn.textContent=' Jetzt eintragen';
     const msg=ex&&ex.message?ex.message:'';
     if(msg.includes('email')){
       regShowFieldError('field_reg_email');
@@ -5818,7 +5927,7 @@ document.getElementById('salonRegModal').addEventListener('click',function(e){
 <!-- ADD STAFF MODAL -->
 <div id="addStaffMdl">
   <div class="asm-wrap">
-    <h3>👤 Personal hinzufügen</h3>
+    <h3> Personal hinzufügen</h3>
     <form onsubmit="submitAddStaff(event)">
       <div class="asm-field">
         <label>Name *</label>
@@ -5854,7 +5963,7 @@ async function loadDashStaffSection(salonId){
   const sec=document.createElement('div');
   sec.id='dashStaffSection';
   sec.className='';
-  sec.innerHTML='<div class="dash-section-hd"><h3>👤 Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
+  sec.innerHTML='<div class="dash-section-hd"><h3> Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
   el.appendChild(sec);
   const{data,error}=await sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name');
   const grid=document.getElementById('dashStaffGrid');
@@ -5986,7 +6095,7 @@ async function loadStaffPickerInBooking(storeId){
     const first=m.name.split(' ')[0];
     return '<div class="sp-chip" data-id="'+m.id+'" data-name="'+first+'" onclick="selectStaff(this.dataset.id,this.dataset.name,this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
   }).join('');
-  sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av">✦</div><span>Egal</span></div>'+chips+'</div>';
+  sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av"></div><span>Egal</span></div>'+chips+'</div>';
   const bmBody=document.getElementById('bmBody');
   if(bmBody)bmBody.parentNode.insertBefore(sec,bmBody);
 }
@@ -6028,118 +6137,94 @@ document.addEventListener('DOMContentLoaded',function(){
     <h2 id="obTitle">Salon einrichten</h2>
     <div style="display:flex;align-items:center;gap:12px">
       <span class="onboard-save-status" id="obSaveStatus"></span>
-      <span class="onboard-step-label" id="obStepLabel">Schritt 1 von 8</span>
+      <span class="onboard-step-label" id="obStepLabel">Schritt 1 von 4</span>
       <button class="close-btn" onclick="closeOnboarding()" title="Schliessen">&times;</button>
     </div>
   </div>
   <div class="onboard-progress" id="obProgress"></div>
   <div class="onboard-body" id="obBody">
-    <!-- Step 1: Business Basics -->
+    <!-- Step 1: Basics (name, category, description, contact) -->
     <div class="ob-screen active" data-step="1">
       <h3 style="margin-bottom:16px">Grunddaten</h3>
       <div id="obErrors1" class="ob-error-summary" style="display:none"></div>
-      <div class="form-group"><label>Salon-Name *</label><input class="form-input ob-required" id="obName" placeholder="z.B. Salon Bella"></div>
-      <div class="form-group"><label>Typ *</label>
+      <div class="form-group"><label for="obName">Salon-Name (Pflichtfeld)</label><input class="form-input ob-required" id="obName" placeholder="z.B. Salon Bella"></div>
+      <div class="form-group"><label for="obType">Kategorie (Pflichtfeld)</label>
         <select class="form-input ob-required" id="obType">
-          <option value="">Wählen...</option>
+          <option value="">W&#228;hlen...</option>
           <option value="barber">Barbershop</option>
           <option value="hairsalon">Coiffeur / Friseur</option>
           <option value="nails">Nagelstudio</option>
-          <option value="spa">Spa & Wellness</option>
+          <option value="spa">Spa &amp; Wellness</option>
           <option value="makeup">Make-up / Kosmetik</option>
           <option value="eyebrows">Augenbrauen / Wimpern</option>
         </select>
       </div>
-      <div class="form-group"><label>E-Mail *</label><input class="form-input ob-required" id="obEmail" type="email" placeholder="salon@example.ch"></div>
-      <div class="form-group"><label>Telefon</label><input class="form-input" id="obPhone" type="tel" placeholder="+41 61 ..."></div>
-      <div class="form-group"><label>Beschreibung</label><textarea class="form-input" id="obDesc" rows="3" placeholder="Erzähle kurz, was euren Salon besonders macht..."></textarea></div>
+      <div class="form-group"><label for="obDesc">Beschreibung</label><textarea class="form-input" id="obDesc" rows="3" placeholder="Erz&#228;hle kurz, was euren Salon besonders macht..."></textarea></div>
+      <div class="form-group"><label for="obEmail">E-Mail (Pflichtfeld)</label><input class="form-input ob-required" id="obEmail" type="email" placeholder="salon@example.ch"></div>
+      <div class="form-group"><label for="obPhone">Telefon</label><input class="form-input" id="obPhone" type="tel" placeholder="+41 61 ..."></div>
     </div>
 
-    <!-- Step 2: Address & Map -->
+    <!-- Step 2: Location (address, quartier) -->
     <div class="ob-screen" data-step="2">
-      <h3 style="margin-bottom:16px">Adresse</h3>
+      <h3 style="margin-bottom:16px">Standort</h3>
       <div id="obErrors2" class="ob-error-summary" style="display:none"></div>
       <div class="form-group address-autocomplete">
-        <label>Adresse suchen *</label>
+        <label for="obAddressSearch">Adresse suchen (Pflichtfeld)</label>
         <input class="form-input ob-required" id="obAddressSearch" placeholder="Strasse, Hausnummer, PLZ Stadt..." oninput="obAddressAutocomplete(this.value)">
         <div class="address-suggestions" id="obAddrSuggestions"></div>
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
-        <div class="form-group"><label>Strasse</label><input class="form-input" id="obStreet" placeholder="Steinenvorstadt"></div>
-        <div class="form-group"><label>Nr.</label><input class="form-input" id="obStreetNr" placeholder="12"></div>
+        <div class="form-group"><label for="obStreet">Strasse</label><input class="form-input" id="obStreet" placeholder="Steinenvorstadt"></div>
+        <div class="form-group"><label for="obStreetNr">Nr.</label><input class="form-input" id="obStreetNr" placeholder="12"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:12px">
-        <div class="form-group"><label>PLZ</label><input class="form-input" id="obPLZ" placeholder="4051"></div>
-        <div class="form-group"><label>Stadt</label><input class="form-input" id="obCity" placeholder="Basel"></div>
-        <div class="form-group"><label>Kanton</label><input class="form-input" id="obCanton" placeholder="BS"></div>
+        <div class="form-group"><label for="obPLZ">PLZ</label><input class="form-input" id="obPLZ" placeholder="4051"></div>
+        <div class="form-group"><label for="obCity">Stadt</label><input class="form-input" id="obCity" placeholder="Basel"></div>
+        <div class="form-group"><label for="obCanton">Kanton</label><input class="form-input" id="obCanton" placeholder="BS"></div>
       </div>
       <div class="map-preview" id="obMapPreview"><span style="color:var(--muted);font-size:.88rem">Kartenvorschau nach Adresseingabe</span></div>
       <label class="manual-override-toggle"><input type="checkbox" id="obManualAddr" onchange="toggleManualAddr()"> Adresse manuell eingeben</label>
     </div>
 
-    <!-- Step 3: Categories -->
+    <!-- Step 3: Services (name, duration, price) -->
     <div class="ob-screen" data-step="3">
-      <h3 style="margin-bottom:16px">Kategorien</h3>
-      <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px">Wähle alle Kategorien, die zu deinem Salon passen.</p>
-      <div class="form-group cat-multi-wrap">
-        <div class="cat-multi-input" id="obCatInput" onclick="document.getElementById('obCatSearch').focus()">
-          <input class="cat-multi-search" id="obCatSearch" placeholder="Kategorie suchen..." oninput="obFilterCategories(this.value)" onfocus="document.getElementById('obCatDropdown').classList.add('open')" autocomplete="off">
-        </div>
-        <div class="cat-multi-dropdown" id="obCatDropdown"></div>
-      </div>
-    </div>
-
-    <!-- Step 4: Services -->
-    <div class="ob-screen" data-step="4">
       <h3 style="margin-bottom:16px">Services</h3>
-      <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px">Füge deine Dienstleistungen hinzu.</p>
+      <div id="obErrors3" class="ob-error-summary" style="display:none"></div>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px">F&#252;ge deine Dienstleistungen hinzu (Name, Dauer, Preis).</p>
       <div id="obServicesList"></div>
-      <button class="btn-secondary btn-sm" onclick="obAddService()" style="margin-top:12px">+ Service hinzufügen</button>
+      <button class="btn-secondary btn-sm" onclick="obAddService()" style="margin-top:12px">+ Service hinzuf&#252;gen</button>
     </div>
 
-    <!-- Step 5: Team -->
-    <div class="ob-screen" data-step="5">
-      <h3 style="margin-bottom:16px">Team</h3>
-      <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px">Füge dein Team hinzu.</p>
-      <div class="staff-setup-grid" id="obStaffGrid"></div>
-      <button class="btn-secondary btn-sm" onclick="obAddStaffCard()" style="margin-top:12px">+ Mitarbeiter hinzufügen</button>
-    </div>
-
-    <!-- Step 6: Availability -->
-    <div class="ob-screen" data-step="6">
-      <h3 style="margin-bottom:16px">Öffnungszeiten</h3>
-      <div class="avail-grid" id="obAvailGrid"></div>
-      <h4 style="margin-top:20px;font-size:.92rem">Ausnahmen</h4>
-      <div class="exception-list" id="obExceptions"></div>
-      <button class="btn-secondary btn-sm" onclick="obAddException()" style="margin-top:10px">+ Ausnahme hinzufügen</button>
-    </div>
-
-    <!-- Step 7: Media + Social + Policies -->
-    <div class="ob-screen" data-step="7">
-      <h3 style="margin-bottom:16px">Medien & Social Media</h3>
-      <div class="gallery-upload" id="obGalleryUpload" onclick="document.getElementById('obFileInput').click()">
-        <div class="gallery-upload-icon">📷</div>
-        <div class="gallery-upload-text">Fotos hochladen</div>
-        <div class="gallery-upload-hint">JPG, PNG, WebP – max. 5 MB pro Bild</div>
-      </div>
-      <input type="file" id="obFileInput" accept="image/*" multiple style="display:none" onchange="obHandleFiles(this.files)">
-      <div class="gallery-grid" id="obGalleryGrid"></div>
-      <h4 style="margin-top:24px;font-size:.92rem">Social Links</h4>
-      <div class="social-links-editor" id="obSocialLinks"></div>
-      <button class="btn-secondary btn-sm" onclick="obAddSocialLink()" style="margin-top:10px">+ Social Link</button>
-      <h4 style="margin-top:24px;font-size:.92rem">Stornierungsrichtlinie</h4>
-      <div class="form-group"><textarea class="form-input" id="obCancelPolicy" rows="2" placeholder="z.B. Kostenlose Stornierung bis 24h vor dem Termin">Kostenlose Stornierung bis 24h vor dem Termin.</textarea></div>
-    </div>
-
-    <!-- Step 8: Preview & Publish -->
-    <div class="ob-screen" data-step="8">
-      <h3 style="margin-bottom:16px">Vorschau & Veröffentlichen</h3>
+    <!-- Step 4: Review (live preview card) -->
+    <div class="ob-screen" data-step="4">
+      <h3 style="margin-bottom:16px">Vorschau &amp; Ver&#246;ffentlichen</h3>
       <p style="font-size:.88rem;color:var(--muted);margin-bottom:16px">So sieht dein Salon-Profil aus:</p>
       <div class="onboard-preview" id="obPreviewCard"></div>
+      <div style="background:rgba(78,205,196,.08);border:1.5px solid rgba(78,205,196,.3);border-radius:var(--r);padding:16px;margin-top:20px;text-align:center">
+        <p style="font-weight:600;color:var(--c-text);margin-bottom:4px">Wir melden uns innerhalb von 24 Stunden.</p>
+        <p style="font-size:.85rem;color:var(--c-text-secondary)">Unser Team pr&#252;ft dein Profil und schaltet es frei.</p>
+      </div>
     </div>
+
+    <!-- Hidden steps for compatibility (team, availability, media) -->
+    <div class="ob-screen" data-step="5" style="display:none!important">
+      <div class="staff-setup-grid" id="obStaffGrid"></div>
+    </div>
+    <div class="ob-screen" data-step="6" style="display:none!important">
+      <div class="avail-grid" id="obAvailGrid"></div>
+      <div class="exception-list" id="obExceptions"></div>
+    </div>
+    <div class="ob-screen" data-step="7" style="display:none!important">
+      <div class="gallery-upload" id="obGalleryUpload"></div>
+      <input type="file" id="obFileInput" accept="image/*" multiple style="display:none" onchange="obHandleFiles(this.files)">
+      <div class="gallery-grid" id="obGalleryGrid"></div>
+      <div class="social-links-editor" id="obSocialLinks"></div>
+      <div class="form-group"><textarea class="form-input" id="obCancelPolicy" rows="2">Kostenlose Stornierung bis 24h vor dem Termin.</textarea></div>
+    </div>
+    <div class="ob-screen" data-step="8" style="display:none!important"></div>
   </div>
   <div class="onboard-footer">
-    <button class="btn-secondary" id="obPrevBtn" onclick="obPrevStep()" style="display:none">Zurück</button>
+    <button class="btn-secondary" id="obPrevBtn" onclick="obPrevStep()" style="display:none">Zur&#252;ck</button>
     <button class="btn-primary" id="obNextBtn" onclick="obNextStep()">Weiter</button>
   </div>
 </div>
@@ -6172,8 +6257,8 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="chart-container"><h4 style="font-size:.88rem;font-weight:700;margin-bottom:12px">Top Mitarbeiter</h4><div id="topStaffChart"></div></div>
     </div>
     <div class="export-actions">
-      <button class="export-btn" onclick="exportAnalytics('csv')">📊 CSV Export</button>
-      <button class="export-btn" onclick="exportAnalytics('pdf')">📄 PDF Export</button>
+      <button class="export-btn" onclick="exportAnalytics('csv')"> CSV Export</button>
+      <button class="export-btn" onclick="exportAnalytics('pdf')"> PDF Export</button>
     </div>
   </div>
 </div>
@@ -6183,8 +6268,12 @@ document.addEventListener('DOMContentLoaded',function(){
      ═══════════════════════════════════════════════════════════════════ -->
 <script>
 // ── ONBOARDING WIZARD ──────────────────────────────────────────────
-const OB_STEPS=8;
+const OB_STEPS=4;
 let obStep=1, obData={categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}};
+// localStorage persistence for wizard state
+function obSaveProgress(){try{localStorage.setItem('solen_ob_data',JSON.stringify(obData));localStorage.setItem('solen_ob_step',String(obStep));}catch(e){}}
+function obRestoreProgress(){try{var d=localStorage.getItem('solen_ob_data');if(d){obData=JSON.parse(d);obStep=parseInt(localStorage.getItem('solen_ob_step'))||1;}}catch(e){}}
+function obClearProgress(){try{localStorage.removeItem('solen_ob_data');localStorage.removeItem('solen_ob_step');}catch(e){}}
 const OB_CATEGORIES=[
   {id:'barber',label:'Barbershop',color:'#c0392b'},
   {id:'hairsalon',label:'Coiffeur / Friseur',color:'#e07a9a'},
@@ -6199,15 +6288,16 @@ const OB_CATEGORIES=[
 ];
 const OB_DAYS=[{k:'Mo',l:'Montag'},{k:'Di',l:'Dienstag'},{k:'Mi',l:'Mittwoch'},{k:'Do',l:'Donnerstag'},{k:'Fr',l:'Freitag'},{k:'Sa',l:'Samstag'},{k:'So',l:'Sonntag'}];
 const OB_SOCIALS=[
-  {id:'instagram',label:'Instagram',icon:'📸',prefix:'https://instagram.com/'},
-  {id:'facebook',label:'Facebook',icon:'👤',prefix:'https://facebook.com/'},
-  {id:'tiktok',label:'TikTok',icon:'🎵',prefix:'https://tiktok.com/@'},
-  {id:'whatsapp',label:'WhatsApp',icon:'💬',prefix:'https://wa.me/'},
-  {id:'website',label:'Website',icon:'🌐',prefix:'https://'}
+  {id:'instagram',label:'Instagram',icon:'IG',prefix:'https://instagram.com/'},
+  {id:'facebook',label:'Facebook',icon:'FB',prefix:'https://facebook.com/'},
+  {id:'tiktok',label:'TikTok',icon:'TT',prefix:'https://tiktok.com/@'},
+  {id:'whatsapp',label:'WhatsApp',icon:'WA',prefix:'https://wa.me/'},
+  {id:'website',label:'Website',icon:'WEB',prefix:'https://'}
 ];
 
 function openOnboarding(){
-  obStep=1; obData={categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}};
+  obRestoreProgress();
+  if(!obData.categories)obData={categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}};
   // Prefill from current user
   if(currentUser){
     const el=document.getElementById('obEmail');
@@ -6237,14 +6327,15 @@ function obRenderStep(){
   // Buttons
   document.getElementById('obPrevBtn').style.display=obStep===1?'none':'';
   const nextBtn=document.getElementById('obNextBtn');
-  nextBtn.textContent=obStep===OB_STEPS?'Veröffentlichen':'Weiter';
-  // Render preview at step 8
+  nextBtn.textContent=obStep===OB_STEPS?'Ver\u00f6ffentlichen':'Weiter';
+  // Render preview at final step
   if(obStep===OB_STEPS)obRenderPreview();
 }
 
 function obNextStep(){
   if(!obValidateStep(obStep))return;
   obCollectStepData(obStep);
+  obSaveProgress();
   if(obStep===OB_STEPS){obPublish();return;}
   obStep++;
   obRenderStep();
@@ -6414,7 +6505,7 @@ function obSelectAddress(idx){
   box.classList.remove('open');
   // Map preview
   const mp=document.getElementById('obMapPreview');
-  mp.innerHTML='<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=7.57,47.54,7.62,47.57&layer=mapnik" loading="lazy"></iframe><div class="map-pin-hint">📍 Pin verschiebbar</div>';
+  mp.innerHTML='<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=7.57,47.54,7.62,47.57&layer=mapnik" loading="lazy"></iframe><div class="map-pin-hint"> Pin verschiebbar</div>';
 }
 function toggleManualAddr(){
   const manual=document.getElementById('obManualAddr').checked;
@@ -6457,7 +6548,7 @@ function obRenderStaffGrid(){
   if(!obData.staff.length){el.innerHTML='<p style="color:var(--muted);font-size:.88rem">Noch keine Mitarbeiter. Klicke "+ Mitarbeiter hinzufügen".</p>';return;}
   el.innerHTML=obData.staff.map((s,i)=>
     '<div class="staff-setup-card">'+
-    '<div class="staff-photo-upload" title="Foto wählen"><span style="font-size:1.5rem;color:var(--muted)">📷</span></div>'+
+    '<div class="staff-photo-upload" title="Foto wählen"><span style="font-size:1.5rem;color:var(--muted)"></span></div>'+
     '<input class="form-input" style="text-align:center;font-weight:600;margin-top:4px;padding:6px" value="'+(s.name||'')+'" onchange="obData.staff['+i+'].name=this.value" placeholder="Name">'+
     '<input class="form-input" style="text-align:center;font-size:.82rem;margin-top:4px;padding:6px" value="'+(s.role||'')+'" onchange="obData.staff['+i+'].role=this.value" placeholder="Rolle">'+
     '<div class="staff-bookable-toggle"><input type="checkbox" '+(s.bookable?'checked':'')+' onchange="obData.staff['+i+'].bookable=this.checked"> Online buchbar</div>'+
@@ -6548,8 +6639,8 @@ function obRenderGallery(){
     (m.cover?'<div class="gallery-cover-badge">Cover</div>':'')+
     '<img src="'+m.url+'" alt="'+m.name+'">'+
     '<div class="gallery-overlay">'+
-    '<button class="gallery-action-btn" onclick="event.stopPropagation();obSetCover('+i+')" title="Als Cover setzen">⭐</button>'+
-    '<button class="gallery-action-btn" onclick="event.stopPropagation();obData.media.splice('+i+',1);obRenderGallery()" title="Entfernen">🗑</button>'+
+    '<button class="gallery-action-btn" onclick="event.stopPropagation();obSetCover('+i+')" title="Als Cover setzen"></button>'+
+    '<button class="gallery-action-btn" onclick="event.stopPropagation();obData.media.splice('+i+',1);obRenderGallery()" title="Entfernen">X</button>'+
     '</div></div>'
   ).join('');
 }
@@ -6643,7 +6734,7 @@ async function obPublish(){
       })));
     }
     obShowSaveStatus('saved');
-    toast('Salon erfolgreich eingereicht! 🎉','success');
+    toast('Salon erfolgreich eingereicht! ','success');
     setTimeout(()=>{closeOnboarding();loadStores();},1200);
   }catch(ex){
     console.error('Onboarding publish error:',ex);
@@ -6769,7 +6860,7 @@ let _searchCity=null, _searchRadius=10;
   wrap.style.marginTop='10px';
   wrap.innerHTML=
     '<div class="location-search-input">'+
-    '<span>📍</span>'+
+    '<span></span>'+
     '<input type="text" id="citySearchInput" placeholder="Stadt / PLZ eingeben..." oninput="filterCitySuggestions(this.value)">'+
     '<button class="btn-location" onclick="requestGeolocation()" style="padding:4px 8px;font-size:.78rem">Standort nutzen</button>'+
     '</div>'+
@@ -6792,7 +6883,7 @@ function filterCitySuggestions(q){
   const matches=CH_CITIES.filter(c=>c.name.toLowerCase().includes(ql)||c.plz.startsWith(q)||c.canton.toLowerCase()===ql);
   if(!matches.length){box.classList.remove('open');return;}
   box.innerHTML=matches.slice(0,6).map((c,i)=>
-    '<div class="location-suggestion" onclick="selectSearchCity('+i+',this)"><span>📍</span><div><strong>'+c.name+'</strong> <small>'+c.canton+' · '+c.plz+'</small></div></div>'
+    '<div class="location-suggestion" onclick="selectSearchCity('+i+',this)"><span></span><div><strong>'+c.name+'</strong> <small>'+c.canton+' · '+c.plz+'</small></div></div>'
   ).join('');
   box._data=matches;
   box.classList.add('open');
@@ -6841,7 +6932,7 @@ document.addEventListener('click',function(e){
         if(dashHd&&!dashHd.querySelector('.analytics-btn')){
           const btn=document.createElement('button');
           btn.className='btn-secondary btn-sm analytics-btn';
-          btn.textContent='📊 Analytics';
+          btn.textContent=' Analytics';
           btn.onclick=function(){openAnalyticsDash(_dashStaffSid||null);};
           dashHd.appendChild(btn);
         }
