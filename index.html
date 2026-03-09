@@ -4109,15 +4109,29 @@ async function loadReviews(salonId){
   const{data}=await sb.from('reviews').select('*').eq('salon_id',salonId).order('created_at',{ascending:false});
   return data||[];
 }
+function renderReviewCard(r,salonId){
+  const d=new Date(r.created_at).toLocaleDateString('de-CH');
+  const isOwner=currentUser&&mySalons&&mySalons.find(s=>String(s.id)===String(salonId));
+  const replyHtml=r.owner_reply?'<div class="review-reply"><span class="reply-label">Salon-Antwort</span><p class="reply-text">'+r.owner_reply+'</p></div>':'';
+  const replyForm=isOwner?'<div class="reply-area"><textarea id="ra_'+r.id+'" class="form-input reply-input" placeholder="Antworten...">'+(r.owner_reply||'')+'</textarea><button class="btn-sm btn-teal" data-rid="'+r.id+'" data-sid="'+salonId+'" onclick="submitReviewReply(this.dataset.rid,this.dataset.sid)">Senden</button></div>':'';
+  return `<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${r.reviewer_name}</span><span class="review-date">${d}</span></div><div class="review-comment">${r.comment||''}</div>${replyHtml}${replyForm}</div>`;
+}
+async function submitReviewReply(reviewId,salonId){
+  const ta=document.getElementById('ra_'+reviewId);
+  if(!ta)return;
+  const reply=ta.value.trim();
+  if(!reply){toast('Bitte Text eingeben','info');return;}
+  const {error}=await supabase.from('reviews').update({owner_reply:reply,owner_reply_at:new Date().toISOString()}).eq('id',reviewId);
+  if(error){toast('Fehler','error');return;}
+  toast('Antwort gespeichert ✔','success');
+  loadReviews(salonId);
+}
 function renderReviewsSection(salonId,reviews){
   let html=`<div class="reviews-section"><div class="section-hd"><h3>Bewertungen (${reviews.length})</h3><button class="btn-sm" onclick="toggleReviewForm('${salonId}')">${t('write_review')}</button></div>`;
   html+=`<div id="reviewForm_${salonId}" class="hidden"><div class="review-form"><div class="star-input" id="starInput_${salonId}">`;
   for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}">&#9734;</span>`;
   html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Dein Kommentar..."></textarea></div><button class="btn-primary" onclick="submitReview('${salonId}')">Absenden</button></div></div>`;
-  reviews.forEach(r=>{
-    const d=new Date(r.created_at).toLocaleDateString('de-CH');
-    html+=`<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${r.reviewer_name}</span><span class="review-date">${d}</span></div><div class="review-comment">${r.comment||''}</div></div>`;
-  });
+    reviews.forEach(r=>{html+=renderReviewCard(r,salonId);});
   html+=`</div>`;
   return html;
 }
@@ -4263,6 +4277,12 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .hours-badge.open{background:rgba(37,197,94,.12);color:#15803d}
 .hours-badge.closed{background:rgba(239,68,68,.1);color:#b91c1c}
 .hours-editor-day{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.review-reply{background:rgba(78,205,196,.07);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0 0;font-size:13px;}
+.reply-label{font-weight:700;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;}
+.reply-text{margin:0;line-height:1.5;color:var(--text);}
+.reply-area{margin-top:10px;display:flex;flex-direction:column;gap:6px;padding:8px 0 0;}
+.reply-input{font-size:13px;min-height:58px;resize:vertical;}
+.btn-teal{background:linear-gradient(135deg,#4ECDC4,#26A69A);color:#fff;border:none;padding:6px 16px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;align-self:flex-end;}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
