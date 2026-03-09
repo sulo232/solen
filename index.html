@@ -3662,6 +3662,7 @@ async function renderSalonDashboard(){
     <div class="admin-tabs" id="dashTabs">
       <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabOeffnungszeiten','${salon.id}',null)">⏰ Öffnungszeiten</button>
     </div>
     <div id="dashTabBuchungen">
       ${allBookings.length>0?`<div class="bookings-list">${allBookings.map(b=>`<div class="booking-card">
@@ -3673,14 +3674,55 @@ async function renderSalonDashboard(){
     </div>
     <div id="dashTabStatistiken" class="hidden">
       <div id="analyticsContent"><div class="spinner"></div></div>
-    </div>`;
-  if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);}
+    <
+    <div id="dashTabOeffnungszeiten" class="hidden">
+      <div id="hoursEditorContent"><div class="spinner"></div></div>
+    </div>/div>`;
+  if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);
+  if(salon&&salon.id)loadDashHoursSection(salon.id);}
 }
 
+function loadDashHoursSection(salonId){
+  const sec=document.getElementById('hoursEditorContent');
+  if(!sec)return;
+  const days=['mon','tue','wed','thu','fri','sat','sun'];
+  const dayNames={mon:'Montag',tue:'Dienstag',wed:'Mittwoch',thu:'Donnerstag',fri:'Freitag',sat:'Samstag',sun:'Sonntag'};
+  const salon=allStores.find(s=>s.id==salonId)||mySalons.find(s=>s.id==salonId)||{};
+  let oh={};
+  if(salon.opening_hours){try{oh=typeof salon.opening_hours==='string'?JSON.parse(salon.opening_hours):salon.opening_hours;}catch(e){}}
+  sec.innerHTML='<div style="padding:16px 0"><p style="font-size:.85rem;color:var(--text2);margin-bottom:16px">Lege deine Öffnungszeiten fest:</p>'+
+    days.map(d=>{
+      const h=oh[d]||{};
+      const isClosed=h.closed||(!h.open&&!h.close);
+      return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)"><label style="width:90px;font-size:.85rem;font-weight:600">${dayNames[d]}</label><input type="checkbox" id="oh_${d}_open" ${!isClosed?'checked':''} onchange="ohToggle('${d}')" style="cursor:pointer"><span id="oh_${d}_times" style="${isClosed?'opacity:.3;pointer-events:none':''}"><input type="time" id="oh_${d}_from" value="${h.open||'09:00'}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.82rem"><span style="margin:0 6px;color:var(--text2)">bis</span><input type="time" id="oh_${d}_to" value="${h.close||'18:00'}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.82rem"></span></div>`;
+    }).join('')+
+    '<button class="btn btn-primary" style="margin-top:16px" onclick="saveDashHours('+salonId+')">Speichern</button></div>';
+}
+function ohToggle(day){
+  const cb=document.getElementById('oh_'+day+'_open');
+  const times=document.getElementById('oh_'+day+'_times');
+  if(times){times.style.opacity=cb.checked?'1':'0.3';times.style.pointerEvents=cb.checked?'auto':'none';}
+}
+async function saveDashHours(salonId){
+  const days=['mon','tue','wed','thu','fri','sat','sun'];
+  const oh={};
+  days.forEach(d=>{
+    const open=document.getElementById('oh_'+d+'_open')?.checked;
+    if(open){oh[d]={open:document.getElementById('oh_'+d+'_from')?.value||'09:00',close:document.getElementById('oh_'+d+'_to')?.value||'18:00'};}
+    else{oh[d]={closed:true};}
+  });
+  const {error}=await supabase.from('stores').update({opening_hours:oh}).eq('id',salonId);
+  if(error){toast('Fehler beim Speichern','error');return;}
+  const idx=allStores.findIndex(s=>s.id==salonId);
+  if(idx>=0)allStores[idx].opening_hours=oh;
+  const mi=mySalons.findIndex(s=>s.id==salonId);
+  if(mi>=0)mySalons[mi].opening_hours=oh;
+  toast('✔ Öffnungszeiten gespeichert','success');
+}
 function showDashTab(btn,tab,salonId,storeId){
   document.querySelectorAll('#dashTabs .admin-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['dashTabBuchungen','dashTabStatistiken'].forEach(id=>{
+  ['dashTabBuchungen','dashTabStatistiken','dashTabOeffnungszeiten'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.classList.toggle('hidden',id!==tab);
   });
@@ -4183,6 +4225,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .hours-badge{display:inline-flex;align-items:center;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px}
 .hours-badge.open{background:rgba(37,197,94,.12);color:#15803d}
 .hours-badge.closed{background:rgba(239,68,68,.1);color:#b91c1c}
+.hours-editor-day{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
