@@ -1761,6 +1761,7 @@ function closeAllDropdowns(){
   document.querySelectorAll('[data-dropdown="open"]').forEach(el=>{
     el.classList.remove('open');
     el.setAttribute('data-dropdown','');
+  });
   document.getElementById('navActions')?.classList.remove('open');
 }
 // Global outside-click listener for all dropdowns (click + touchstart for mobile)
