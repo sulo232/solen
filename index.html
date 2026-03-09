@@ -1183,6 +1183,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
     </div>
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
+      <div class="lang-switcher-mobile">
+        <button class="lang-btn active" onclick="switchLang('de')">DE</button>
+        <button class="lang-btn" onclick="switchLang('en')">EN</button>
+        <button class="lang-btn" onclick="switchLang('fr')">FR</button>
+        <button class="lang-btn" onclick="switchLang('tr')">TR</button>
+      </div>
       <div id="mobileNavGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
@@ -1192,6 +1198,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
         <button class="btn-nav-ghost" onclick="signOut();closeMobileMenu()" data-i18n="nav_logout" style="width:100%">Abmelden</button>
       </div>
+      <button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;margin-top:8px;min-height:44px" onclick="closeMobileMenu();openSalonRegistration()">&#10022; Solen-Partner werden</button>
     </div>
   </div>
 </nav>
@@ -2298,6 +2305,11 @@ function switchLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===lang);
   });
+  // Update dropdown lang-option active state
+  const langMap={de:'Deutsch',en:'English',fr:'Fran\u00e7ais',tr:'T\u00fcrk\u00e7e'};
+  document.querySelectorAll('.lang-option').forEach(b=>{
+    b.setAttribute('aria-current',b.textContent.trim()===langMap[lang]?'true':'false');
+  });
   applyTranslations();
   if(lang!=='de')translateVisibleDescriptions(lang);
 }
@@ -2309,6 +2321,11 @@ function setLang(lang){switchLang(lang);}
   document.documentElement.setAttribute('lang',currentLang);
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===currentLang);
+  });
+  // Init dropdown active state
+  const langMap={de:'Deutsch',en:'English',fr:'Fran\u00e7ais',tr:'T\u00fcrk\u00e7e'};
+  document.querySelectorAll('.lang-option').forEach(b=>{
+    b.setAttribute('aria-current',b.textContent.trim()===langMap[currentLang]?'true':'false');
   });
 })();
 
@@ -2429,6 +2446,7 @@ function closeAllDropdowns(){
     el.setAttribute('data-dropdown','');
   });
   document.getElementById('navActions')?.classList.remove('open');
+  document.getElementById('langDropdownMenu')?.classList.remove('open');
 }
 // Global outside-click listener for all dropdowns (click + touchstart for mobile)
 document.addEventListener('click',e=>{
