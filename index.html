@@ -2935,8 +2935,7 @@ function wizNext(step){
     const saveEl=document.getElementById('bkSaveInfo');
     if(saveEl&&saveEl.checked&&(bookingState.firstName||bookingState.phone)){
       localStorage.setItem('solen_guest_info',JSON.stringify({name:[bookingState.firstName,bookingState.lastName].filter(Boolean).join(' '),phone:bookingState.phone}));
-      const hint=document.getElementById('bkSavedHint');
-      if(hint){hint.style.display='block';setTimeout(()=>{hint.style.display='none';},2000);}
+      toast('\u2713 Gespeichert','success');
     }
   }
   renderWizStep(step);
