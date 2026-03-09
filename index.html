@@ -1215,6 +1215,156 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   .chart-bar-wrap{height:80px}
   .analytics-filters{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
 }
+
+/* ═══════════════════════════════════════════════
+   FRESHA-INSPIRED UI REDESIGN — WARM & OPEN
+   ═══════════════════════════════════════════════ */
+
+/* ── GLOBAL ENHANCEMENTS ── */
+/* Bigger section gaps, warmer feel */
+.stores-section{padding:52px 24px 64px}
+@media(max-width:768px){.stores-section{padding:28px 16px 80px}}
+
+/* Store card hover: Fresha-level lift */
+.store-card:hover{transform:translateY(-5px) scale(1.005);box-shadow:0 16px 48px rgba(0,0,0,.13);border-color:var(--c-border-strong)}
+.store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
+
+/* ── THEME TOGGLE ICON STATES ── */
+.theme-toggle .sun-icon{display:block}
+.theme-toggle .moon-icon{display:none}
+[data-theme="dark"] .theme-toggle .sun-icon{display:none}
+[data-theme="dark"] .theme-toggle .moon-icon{display:block}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .theme-toggle .sun-icon{display:none}:root:not([data-theme="light"]) .theme-toggle .moon-icon{display:block}}
+
+/* ── HERO PROOF BADGE ── */
+.hero-proof-badge{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.13);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.28);padding:10px 24px;border-radius:100px;color:#fff;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:10px;white-space:nowrap;z-index:4;pointer-events:none}
+.hero-proof-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:pulseDot 2s infinite}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.5)}}
+.hero-proof-num{font-family:var(--font-mono);font-weight:800;color:#fff}
+@media(max-width:640px){.hero-proof-badge{font-size:.78rem;padding:8px 18px;bottom:16px}}
+
+/* ── SOCIAL PROOF BAR (below hero) ── */
+.social-proof-bar{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:18px 24px}
+.social-proof-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
+.social-proof-item{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--c-text-secondary);white-space:nowrap}
+.social-proof-item svg{width:20px;height:20px;stroke:var(--c-accent);fill:none;stroke-width:1.8;flex-shrink:0}
+.social-proof-item strong{font-family:var(--font-mono);font-size:1.1rem;color:var(--c-accent);font-weight:800;font-variant-numeric:tabular-nums}
+.social-proof-divider{width:1px;height:28px;background:var(--c-border);flex-shrink:0}
+@media(max-width:640px){.social-proof-inner{gap:16px}.social-proof-divider{display:none}.social-proof-item{font-size:.8rem}}
+
+/* ── SECTION LABELS ── */
+.section-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(155,29,48,.07);border-radius:100px;font-size:.72rem;font-weight:700;color:var(--c-accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+[data-theme="dark"] .section-eyebrow{background:rgba(212,88,106,.15)}
+
+/* ── POPULAR SERVICES ICON GRID ── */
+.popular-services{max-width:1200px;margin:0 auto;padding:52px 24px 40px}
+.popular-services-header{margin-bottom:28px}
+.popular-services-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.popular-services-header p{font-size:.92rem;color:var(--c-text-muted)}
+.services-icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:12px}
+.service-icon-card{display:flex;flex-direction:column;align-items:center;padding:20px 12px 16px;background:var(--c-surface);border:1.5px solid var(--c-border);border-radius:20px;cursor:pointer;transition:all .2s var(--ease-standard);text-align:center;gap:10px}
+.service-icon-card:hover{border-color:var(--c-accent);box-shadow:var(--elev-2);transform:translateY(-3px)}
+.service-icon-card:hover .sic-icon{background:var(--c-accent);color:#fff;transform:scale(1.05)}
+.sic-icon{width:52px;height:52px;border-radius:50%;background:var(--c-surface-alt);display:flex;align-items:center;justify-content:center;font-size:1.4rem;transition:all .2s var(--ease-standard);flex-shrink:0}
+.sic-label{font-size:.82rem;font-weight:600;color:var(--c-text);line-height:1.3}
+.sic-count{font-size:.72rem;color:var(--c-text-muted)}
+@media(max-width:900px){.services-icon-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:540px){.services-icon-grid{grid-template-columns:repeat(4,1fr);gap:8px}.popular-services{padding:36px 16px 28px}.sic-icon{width:44px;height:44px;font-size:1.2rem}.sic-label{font-size:.75rem}.service-icon-card{padding:16px 8px 12px;border-radius:16px;gap:8px}}
+
+/* ── QUARTIER PHOTO CARDS ── */
+.quartier-discovery{max-width:1200px;margin:0 auto;padding:8px 24px 52px}
+.quartier-discovery-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.quartier-discovery-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--text)}
+.quartier-see-all{font-size:.85rem;font-weight:600;color:var(--c-accent);cursor:pointer;background:none;border:none;padding:0;font-family:inherit;display:flex;align-items:center;gap:5px;transition:opacity .15s}
+.quartier-see-all:hover{opacity:.7;text-decoration:underline}
+.quartier-cards-scroll{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:4px 0 12px}
+.quartier-cards-scroll::-webkit-scrollbar{display:none}
+.quartier-photo-card{position:relative;flex:0 0 190px;height:270px;border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .22s var(--ease-standard),box-shadow .22s var(--ease-standard)}
+.quartier-photo-card:hover{transform:scale(1.03);box-shadow:var(--elev-3)}
+.qpc-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .32s var(--ease)}
+.quartier-photo-card:hover .qpc-bg{transform:scale(1.07)}
+.qpc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.78) 0%,rgba(0,0,0,0.05) 65%)}
+.qpc-content{position:absolute;bottom:0;left:0;right:0;padding:18px 16px;color:#fff}
+.qpc-name{font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:3px;line-height:1.2}
+.qpc-count{font-size:.75rem;opacity:.88;display:flex;align-items:center;gap:4px}
+.qpc-badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:100px;letter-spacing:.04em}
+.qpc-heart{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);border:none;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px);font-size:.9rem;pointer-events:all}
+.qpc-heart:hover{background:rgba(155,29,48,.75);transform:scale(1.1)}
+.qpc-heart.fav{background:#9B1D30;color:#fff}
+@media(max-width:768px){.quartier-photo-card{flex:0 0 155px;height:220px}.quartier-discovery{padding:0 16px 40px}.quartier-discovery-header h2{font-size:1.35rem}}
+
+/* ── TRENDING / NEW ON SOLEN ── */
+.trending-section{max-width:1200px;margin:0 auto;padding:0 24px 52px}
+.trending-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.trending-header h2{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text)}
+.trending-see-all{font-size:.85rem;font-weight:600;color:var(--c-accent);cursor:pointer;background:none;border:none;padding:0;font-family:inherit;display:flex;align-items:center;gap:4px}
+.trending-see-all:hover{text-decoration:underline}
+.trending-scroll{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:4px 0 12px}
+.trending-scroll::-webkit-scrollbar{display:none}
+.trending-card{flex:0 0 250px;background:var(--c-surface);border:1.5px solid var(--c-border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .22s var(--ease-standard)}
+.trending-card:hover{transform:translateY(-4px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
+.trending-card-photo{height:155px;overflow:hidden;position:relative;background:var(--c-surface-alt)}
+.trending-card-photo img{width:100%;height:100%;object-fit:cover;transition:transform .3s var(--ease)}
+.trending-card:hover .trending-card-photo img{transform:scale(1.05)}
+.trending-card-body{padding:14px 16px}
+.trending-card-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.trending-card-title{font-weight:700;font-size:.9rem;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trending-card-rating{font-size:.78rem;font-family:var(--font-mono);color:var(--c-text-secondary);display:flex;align-items:center;gap:3px;flex-shrink:0;font-weight:600}
+.trending-card-sub{font-size:.78rem;color:var(--c-text-muted);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trending-card-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:700;letter-spacing:.03em}
+.trending-card-tag.new-tag{background:rgba(45,122,79,.1);color:#2d7a4f}
+.trending-card-tag.trending-tag{background:rgba(155,29,48,.1);color:var(--c-accent)}
+.trending-card-tag.featured-tag{background:rgba(212,175,119,.15);color:#8B6914}
+@media(max-width:768px){.trending-section{padding:0 16px 40px}.trending-card{flex:0 0 210px}}
+
+/* ── MAP/LIST TOGGLE ── */
+.view-toggle{display:flex;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);overflow:hidden;flex-shrink:0}
+.view-toggle-btn{padding:7px 14px;font-size:.82rem;font-weight:600;border:none;background:var(--c-surface);color:var(--c-text-secondary);cursor:pointer;transition:all .15s var(--ease-standard);display:flex;align-items:center;gap:5px;white-space:nowrap;min-height:36px}
+.view-toggle-btn:first-child{border-right:1.5px solid var(--c-border-strong)}
+.view-toggle-btn.active{background:var(--c-accent);color:#fff}
+.view-toggle-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.map-view-hint{display:none;background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:var(--r2);padding:40px 24px;text-align:center;margin-top:16px;color:var(--c-text-muted);font-size:.92rem}
+.map-view-hint.active{display:block}
+.map-view-hint svg{width:40px;height:40px;stroke:var(--c-text-muted);fill:none;stroke-width:1.5;margin-bottom:12px;opacity:.5}
+
+/* ── ENHANCED FOOTER ── */
+.footer-enhanced{background:var(--c-surface);border-top:1.5px solid var(--c-border);margin-top:auto}
+.footer-main{max-width:1200px;margin:0 auto;padding:52px 24px 36px;display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:40px;align-items:start}
+.footer-brand{display:flex;flex-direction:column;gap:14px}
+.footer-brand-logo{font-family:'Space Grotesk',sans-serif;font-size:1.45rem;font-weight:700;color:var(--text);letter-spacing:-.025em}
+.footer-brand-logo span{color:var(--c-highlight)}
+.footer-brand-desc{font-size:.875rem;color:var(--c-text-muted);line-height:1.65;max-width:280px}
+.footer-app-promo{margin-top:4px;display:flex;flex-direction:column;gap:8px}
+.footer-app-label{font-size:.75rem;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.05em}
+.footer-app-badges{display:flex;flex-wrap:wrap;gap:8px}
+.footer-app-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--c-text);color:var(--c-bg);border-radius:12px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:inherit}
+.footer-app-badge:hover{transform:translateY(-2px);box-shadow:var(--elev-2);opacity:.88}
+.footer-app-badge svg{width:18px;height:18px;flex-shrink:0;fill:currentColor}
+.footer-col-title{font-weight:700;font-size:.72rem;color:var(--c-text);margin-bottom:16px;letter-spacing:.07em;text-transform:uppercase}
+.footer-col-links{display:flex;flex-direction:column;gap:11px}
+.footer-col-link{font-size:.875rem;color:var(--c-text-muted);cursor:pointer;transition:color .15s;background:none;border:none;text-align:left;font-family:inherit;padding:0;line-height:1.4}
+.footer-col-link:hover{color:var(--c-accent)}
+.footer-bottom{border-top:1px solid var(--c-border);padding:16px 24px}
+.footer-bottom-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:.8rem;color:var(--c-text-muted)}
+.footer-bottom-links{display:flex;gap:16px}
+.footer-bottom-links button{background:none;border:none;color:var(--c-accent);font-size:.8rem;font-weight:600;cursor:pointer;padding:0;font-family:inherit}
+.footer-bottom-links button:hover{text-decoration:underline}
+@media(max-width:960px){.footer-main{grid-template-columns:1fr 1fr;gap:28px}}
+@media(max-width:580px){.footer-main{grid-template-columns:1fr;gap:24px;padding:36px 16px 24px}.footer-bottom-inner{flex-direction:column;text-align:center}.footer-brand-desc{max-width:100%}}
+
+/* ── SCROLL FADE-IN ANIMATIONS ── */
+.fade-in-up{opacity:0;transform:translateY(28px);transition:opacity .55s var(--ease-standard),transform .55s var(--ease-standard)}
+.fade-in-up.visible{opacity:1;transform:translateY(0)}
+.stagger-1{transition-delay:.05s}.stagger-2{transition-delay:.1s}.stagger-3{transition-delay:.15s}.stagger-4{transition-delay:.2s}.stagger-5{transition-delay:.25s}.stagger-6{transition-delay:.3s}.stagger-7{transition-delay:.35s}.stagger-8{transition-delay:.4s}
+@media(prefers-reduced-motion:reduce){.fade-in-up{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* ── SECTION SEPARATOR ── */
+.section-sep{max-width:1200px;margin:0 auto;padding:0 24px}
+.section-sep hr{border:none;border-top:1px solid var(--c-border)}
+
+/* ── SPOTLIGHT SECTION ENHANCEMENTS ── */
+.spotlight-section{padding:60px 24px 44px}
+.spotlight-header h2{font-size:1.6rem}
 </style>
 
   <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -1241,11 +1391,19 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <a href="#" class="nav-link" onclick="scrollToQuartiere();return false" data-i18n="nav_quartiere">Quartiere</a>
       <a href="#" class="nav-link" onclick="scrollToAbout();return false" data-i18n="nav_about">&#220;ber uns</a>
     </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" style="display:none" id="mobileThemeToggle">
+      <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+      <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
     <button class="hamburger" onclick="toggleMobileMenu()" id="hamburgerBtn" aria-label="Menu">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-actions nav-desktop" id="navActions">
       <a href="#" class="nav-link nav-link-subtle" onclick="openSalonRegistration();return false" id="navSalonBtn">Salon eintragen</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" title="Hell / Dunkel">
+        <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
       <div class="nav-lang-dropdown">
         <button class="nav-lang-trigger" aria-label="Sprache wechseln" onclick="toggleLangDropdown()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -1354,7 +1512,37 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <button class="hero-filter-chip" onclick="selectServiceFromMenu('makeup','Make-up')">Make-up</button>
       </div>
     </div>
+    <!-- SOCIAL PROOF BADGE — anchored inside hero -->
+    <div class="hero-proof-badge" id="heroProofBadge" aria-live="polite">
+      <span class="hero-proof-dot"></span>
+      <span><span class="hero-proof-num" id="heroProofNum">124</span> Termine heute gebucht</span>
+    </div>
   </section>
+
+  <!-- SOCIAL PROOF BAR -->
+  <div class="social-proof-bar">
+    <div class="social-proof-inner">
+      <div class="social-proof-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span><strong id="spSalons">40+</strong> Salons in Basel</span>
+      </div>
+      <div class="social-proof-divider"></div>
+      <div class="social-proof-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span><strong id="spBookings">1&thinsp;200+</strong> Buchungen diesen Monat</span>
+      </div>
+      <div class="social-proof-divider"></div>
+      <div class="social-proof-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span><strong>4.8</strong> / 5 Durchschnittsbewertung</span>
+      </div>
+      <div class="social-proof-divider"></div>
+      <div class="social-proof-item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Kostenlos &amp; sicher buchen</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Categories bar replaced by inline filter pills in stores section -->
   <div class="categories-bar" style="display:none">
@@ -1368,6 +1556,151 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <button class="cat-pill" data-cat="eyebrows">Augenbrauen</button>
     </div>
   </div>
+
+  <!-- ═══ POPULAR SERVICES ICON GRID ═══ -->
+  <section class="popular-services" id="popularServicesSection" aria-label="Beliebte Services">
+    <div class="popular-services-header fade-in-up">
+      <div class="section-eyebrow">✦ Services entdecken</div>
+      <h2>Was suchst du heute?</h2>
+      <p>Wähle direkt einen Service und finde Salons in deiner Nähe</p>
+    </div>
+    <div class="services-icon-grid">
+      <button class="service-icon-card fade-in-up stagger-1" onclick="selectServiceFromMenu('hairsalon','Coiffeur')" aria-label="Coiffeur Salons zeigen">
+        <div class="sic-icon">✂️</div>
+        <span class="sic-label">Coiffeur</span>
+        <span class="sic-count" id="sic-count-hair"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-2" onclick="selectServiceFromMenu('barber','Barbershop')" aria-label="Barbershops zeigen">
+        <div class="sic-icon">🪒</div>
+        <span class="sic-label">Barbershop</span>
+        <span class="sic-count" id="sic-count-barber"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-3" onclick="selectServiceFromMenu('nails','Nails')" aria-label="Nagelstudios zeigen">
+        <div class="sic-icon">💅</div>
+        <span class="sic-label">Nails</span>
+        <span class="sic-count" id="sic-count-nails"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-4" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')" aria-label="Spa und Wellness zeigen">
+        <div class="sic-icon">🧖</div>
+        <span class="sic-label">Spa &amp; Wellness</span>
+        <span class="sic-count" id="sic-count-spa"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-5" onclick="selectServiceFromMenu('makeup','Make-up')" aria-label="Make-up Salons zeigen">
+        <div class="sic-icon">💄</div>
+        <span class="sic-label">Make-up</span>
+        <span class="sic-count" id="sic-count-makeup"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-6" onclick="selectServiceFromMenu('cosmetik','Kosmetik')" aria-label="Kosmetik Salons zeigen">
+        <div class="sic-icon">🌸</div>
+        <span class="sic-label">Kosmetik</span>
+        <span class="sic-count" id="sic-count-cosmetik"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-7" onclick="selectServiceFromMenu('eyebrows','Augenbrauen')" aria-label="Augenbrauen Salons zeigen">
+        <div class="sic-icon">🪄</div>
+        <span class="sic-label">Augenbrauen</span>
+        <span class="sic-count" id="sic-count-eyebrows"></span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-8" onclick="selectServiceFromMenu('tattoo','Tattoo &amp; Piercing')" aria-label="Tattoo und Piercing zeigen">
+        <div class="sic-icon">🖋️</div>
+        <span class="sic-label">Tattoo</span>
+        <span class="sic-count" id="sic-count-tattoo"></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ QUARTIER PHOTO CARDS ═══ -->
+  <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
+    <div class="quartier-discovery-header fade-in-up">
+      <div>
+        <div class="section-eyebrow">📍 Dein Quartier</div>
+        <h2>Salons in deiner Nähe</h2>
+      </div>
+      <button class="quartier-see-all" onclick="scrollToStores()" aria-label="Alle Quartiere anzeigen">
+        Alle ansehen
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+    <div class="quartier-cards-scroll" role="list">
+      <div class="quartier-photo-card fade-in-up stagger-1" onclick="selectQuartierAndScroll('Grossbasel')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Grossbasel</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Grossbasel')" aria-label="Grossbasel als Favorit">♡</button>
+        <div class="qpc-content">
+          <div class="qpc-name">Grossbasel</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Grossbasel">Salons</span>
+          </div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-2" onclick="selectQuartierAndScroll('Kleinbasel')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Kleinbasel</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Kleinbasel')" aria-label="Kleinbasel als Favorit">♡</button>
+        <div class="qpc-content">
+          <div class="qpc-name">Kleinbasel</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Kleinbasel">Salons</span>
+          </div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-3" onclick="selectQuartierAndScroll('Gundeldingen')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Gundeli</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Gundeldingen')" aria-label="Gundeldingen als Favorit">♡</button>
+        <div class="qpc-content">
+          <div class="qpc-name">Gundeldingen</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Gundeldingen">Salons</span>
+          </div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-4" onclick="selectQuartierAndScroll('St. Johann')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">St. Johann</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'St. Johann')" aria-label="St. Johann als Favorit">♡</button>
+        <div class="qpc-content">
+          <div class="qpc-name">St. Johann</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-St. Johann">Salons</span>
+          </div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-5" onclick="selectQuartierAndScroll('Bruderholz')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Bruderholz</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Bruderholz')" aria-label="Bruderholz als Favorit">♡</button>
+        <div class="qpc-content">
+          <div class="qpc-name">Bruderholz</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Bruderholz">Salons</span>
+          </div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-6" onclick="selectQuartierAndScroll('Hirzbrunnen')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1470259078422-826894b933aa?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Hirzbrunnen</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Hirzbrunnen')" aria-label="Hirzbrunnen als Favorit">♡</button>
+        <div class="qpc-content">
+          <div class="qpc-name">Hirzbrunnen</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Hirzbrunnen">Salons</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- STORES -->
   <div class="stores-section">
@@ -1393,6 +1726,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
             <button class="sort-option" onclick="selectSort('popular','Beliebteste')">Beliebteste</button>
             <button class="sort-option" onclick="selectSort('name_asc','A-Z')">A-Z</button>
           </div>
+        </div>
+        <!-- Map / List toggle (Fresha-style) -->
+        <div class="view-toggle" role="group" aria-label="Ansicht wechseln">
+          <button class="view-toggle-btn active" id="viewListBtn" onclick="setView('list')" aria-pressed="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Liste
+          </button>
+          <button class="view-toggle-btn" id="viewMapBtn" onclick="setView('map')" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+            Karte
+          </button>
         </div>
       </div>
       <!-- hidden elements for JS compatibility -->
@@ -1429,6 +1773,51 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
     <div id="storesGrid" class="stores-grid"><div class="spinner"></div></div>
   </div>
 </div>
+
+<!-- ═══ TRENDING / NEW ON SOLEN CAROUSEL ═══ -->
+<section class="trending-section" id="trendingSection" aria-label="Neu und Trending auf solen">
+  <div class="trending-header fade-in-up">
+    <div>
+      <div class="section-eyebrow">🔥 Trending</div>
+      <h2>Neu auf solen</h2>
+    </div>
+    <button class="trending-see-all" onclick="scrollToStores()" aria-label="Alle Salons anzeigen">
+      Alle ansehen
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+  <div class="trending-scroll" id="trendingScroll" role="list">
+    <!-- Populated by JS from stores data — skeleton shown on load -->
+    <div class="trending-card fade-in-up stagger-1" role="listitem" style="pointer-events:none">
+      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
+      <div class="trending-card-body">
+        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
+        <div class="skeleton-line w60"></div>
+      </div>
+    </div>
+    <div class="trending-card fade-in-up stagger-2" role="listitem" style="pointer-events:none">
+      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
+      <div class="trending-card-body">
+        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
+        <div class="skeleton-line w60"></div>
+      </div>
+    </div>
+    <div class="trending-card fade-in-up stagger-3" role="listitem" style="pointer-events:none">
+      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
+      <div class="trending-card-body">
+        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
+        <div class="skeleton-line w60"></div>
+      </div>
+    </div>
+    <div class="trending-card fade-in-up stagger-4" role="listitem" style="pointer-events:none">
+      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
+      <div class="trending-card-body">
+        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
+        <div class="skeleton-line w60"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- SALON SPOTLIGHT -->
 <section class="spotlight-section" id="spotlightSection">
@@ -1819,13 +2208,75 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="site-footer" id="siteFooter">
-  <div class="footer-inner">
-    <span style="font-family:'Space Grotesk',sans-serif">&copy; 2026 solen &middot; Mit Liebe aus Basel</span>
-    <div class="footer-links">
-      <a onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</a>
-      <a onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</a>
+<!-- FOOTER — Enhanced Fresha-style multi-column -->
+<footer class="footer-enhanced" id="siteFooter">
+  <div class="footer-main">
+    <!-- Brand column -->
+    <div class="footer-brand">
+      <div class="footer-brand-logo">solen<span>.</span></div>
+      <p class="footer-brand-desc">Basel's Plattform für lokale Beauty &amp; Wellness. Buche Coiffeur, Nails, Spa und mehr — direkt, ohne Umwege.</p>
+      <div class="footer-app-promo">
+        <span class="footer-app-label">App bald verfügbar</span>
+        <div class="footer-app-badges">
+          <button class="footer-app-badge" onclick="showToast('App Store Version kommt bald! 🍎','info')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            App Store
+          </button>
+          <button class="footer-app-badge" onclick="showToast('Google Play Version kommt bald! 🤖','info')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5v-17c0-.83 1-1.3 1.7-.77L20 12l-15.3 9.27c-.7.52-1.7.06-1.7-.77z"/></svg>
+            Google Play
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entdecken column -->
+    <div class="footer-col">
+      <div class="footer-col-title">Entdecken</div>
+      <div class="footer-col-links">
+        <button class="footer-col-link" onclick="selectServiceFromMenu('hairsalon','Coiffeur')">Coiffeur in Basel</button>
+        <button class="footer-col-link" onclick="selectServiceFromMenu('barber','Barbershop')">Barbershops</button>
+        <button class="footer-col-link" onclick="selectServiceFromMenu('nails','Nails')">Nagelstudios</button>
+        <button class="footer-col-link" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')">Spa &amp; Massage</button>
+        <button class="footer-col-link" onclick="selectServiceFromMenu('makeup','Make-up')">Make-up</button>
+        <button class="footer-col-link" onclick="selectServiceFromMenu('cosmetik','Kosmetik')">Kosmetik</button>
+      </div>
+    </div>
+
+    <!-- Quartiere column -->
+    <div class="footer-col">
+      <div class="footer-col-title">Quartiere</div>
+      <div class="footer-col-links">
+        <button class="footer-col-link" onclick="selectQuartierAndScroll('Grossbasel')">Grossbasel</button>
+        <button class="footer-col-link" onclick="selectQuartierAndScroll('Kleinbasel')">Kleinbasel</button>
+        <button class="footer-col-link" onclick="selectQuartierAndScroll('Gundeldingen')">Gundeldingen</button>
+        <button class="footer-col-link" onclick="selectQuartierAndScroll('St. Johann')">St. Johann</button>
+        <button class="footer-col-link" onclick="selectQuartierAndScroll('Bruderholz')">Bruderholz</button>
+        <button class="footer-col-link" onclick="selectQuartierAndScroll('Hirzbrunnen')">Hirzbrunnen</button>
+      </div>
+    </div>
+
+    <!-- Über uns column -->
+    <div class="footer-col">
+      <div class="footer-col-title">solen</div>
+      <div class="footer-col-links">
+        <button class="footer-col-link" onclick="scrollToAbout()">Über uns</button>
+        <button class="footer-col-link" onclick="openSalonRegistration()">Salon eintragen</button>
+        <button class="footer-col-link" onclick="openAuth('login')">Anmelden</button>
+        <button class="footer-col-link" onclick="openAuth('register-choice')">Registrieren</button>
+        <button class="footer-col-link" onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</button>
+        <button class="footer-col-link" onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span style="font-family:'Space Grotesk',sans-serif" data-i18n="footer_text">&copy; 2026 solen &middot; Mit Liebe aus Basel &hearts;</span>
+      <div class="footer-bottom-links">
+        <button onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</button>
+        <button onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</button>
+      </div>
     </div>
   </div>
 </footer>
@@ -7364,5 +7815,293 @@ document.addEventListener('click',function(e){
 </script>
 
 <!-- duplicate bottom nav removed -->
+
+<!-- ═══ FRESHA-INSPIRED UI ENHANCEMENTS — JS ═══ -->
+<script>
+(function() {
+  'use strict';
+
+  /* ── SCROLL FADE-IN (IntersectionObserver) ── */
+  function initScrollFadeIn() {
+    if (!('IntersectionObserver' in window)) {
+      // fallback: show everything immediately
+      document.querySelectorAll('.fade-in-up').forEach(function(el) {
+        el.classList.add('visible');
+      });
+      return;
+    }
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+
+    // observe all current and future .fade-in-up elements
+    function observeAll() {
+      document.querySelectorAll('.fade-in-up:not(.visible)').forEach(function(el) {
+        observer.observe(el);
+      });
+    }
+    observeAll();
+    // re-observe when new content is added (e.g. trending cards load)
+    var mutObs = new MutationObserver(observeAll);
+    mutObs.observe(document.body, { childList: true, subtree: true });
+  }
+
+  /* ── SOCIAL PROOF COUNTER ANIMATION ── */
+  function animateCounter(el, target, duration) {
+    if (!el) return;
+    var start = 0;
+    var startTime = null;
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      var current = Math.floor(ease * target);
+      el.textContent = current.toLocaleString('de-CH');
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function initSocialProofAnimation() {
+    var heroNum = document.getElementById('heroProofNum');
+    // Start with a plausible number; in production, could fetch real count
+    var baseBookings = 98 + Math.floor(Math.random() * 60);
+    if (heroNum) {
+      // Animate up to the count
+      setTimeout(function() {
+        animateCounter(heroNum, baseBookings, 1800);
+      }, 400);
+      // Slowly tick up every 45–90 seconds to simulate live bookings
+      setInterval(function() {
+        baseBookings += Math.floor(Math.random() * 3) + 1;
+        heroNum.textContent = baseBookings.toLocaleString('de-CH');
+      }, 60000);
+    }
+  }
+
+  /* ── MAP / LIST VIEW TOGGLE ── */
+  window.setView = function(mode) {
+    var listBtn = document.getElementById('viewListBtn');
+    var mapBtn = document.getElementById('viewMapBtn');
+    var grid = document.getElementById('storesGrid');
+    var mapHint = document.getElementById('mapViewHint');
+    if (!listBtn || !mapBtn) return;
+    if (mode === 'map') {
+      listBtn.classList.remove('active');
+      listBtn.setAttribute('aria-pressed', 'false');
+      mapBtn.classList.add('active');
+      mapBtn.setAttribute('aria-pressed', 'true');
+      if (grid) grid.style.display = 'none';
+      // Create or show the map hint
+      if (!mapHint) {
+        var hint = document.createElement('div');
+        hint.id = 'mapViewHint';
+        hint.className = 'map-view-hint active';
+        hint.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg><br>Kartenansicht demnächst verfügbar<br><small style="font-size:.8rem;margin-top:8px;display:block">Momentan werden alle Salons als Liste angezeigt.</small>';
+        if (grid && grid.parentNode) grid.parentNode.insertBefore(hint, grid.nextSibling);
+      } else {
+        mapHint.classList.add('active');
+      }
+    } else {
+      listBtn.classList.add('active');
+      listBtn.setAttribute('aria-pressed', 'true');
+      mapBtn.classList.remove('active');
+      mapBtn.setAttribute('aria-pressed', 'false');
+      if (grid) grid.style.display = '';
+      var existingHint = document.getElementById('mapViewHint');
+      if (existingHint) existingHint.classList.remove('active');
+    }
+  };
+
+  /* ── QUARTIER CARD: SELECT + SCROLL ── */
+  window.selectQuartierAndScroll = function(quartier) {
+    // Use existing filter pill mechanism
+    var pills = document.querySelectorAll('#quartierFilterPills .filter-pill');
+    pills.forEach(function(pill) {
+      var fn = pill.getAttribute('onclick') || '';
+      if (fn.indexOf("'" + quartier + "'") !== -1 || fn.indexOf('"' + quartier + '"') !== -1) {
+        pill.click();
+      }
+    });
+    scrollToStores();
+  };
+
+  /* ── SCROLL TO STORES ── */
+  window.scrollToStores = function() {
+    var storesEl = document.querySelector('.stores-section');
+    if (storesEl) {
+      setTimeout(function() {
+        storesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
+
+  /* ── QUARTIER HEART FAVORITE ── */
+  var favQuartiers = JSON.parse(localStorage.getItem('solenFavQuartiers') || '[]');
+  window.toggleFavQuartier = function(btn, quartier) {
+    var idx = favQuartiers.indexOf(quartier);
+    if (idx === -1) {
+      favQuartiers.push(quartier);
+      btn.innerHTML = '♥';
+      btn.classList.add('fav');
+      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefügt ♥', 'success');
+    } else {
+      favQuartiers.splice(idx, 1);
+      btn.innerHTML = '♡';
+      btn.classList.remove('fav');
+    }
+    localStorage.setItem('solenFavQuartiers', JSON.stringify(favQuartiers));
+  };
+  // Restore heart states on load
+  function restoreFavHearts() {
+    favQuartiers.forEach(function(q) {
+      var selector = '[aria-label="' + q + ' als Favorit"]';
+      var btn = document.querySelector(selector);
+      if (btn) { btn.innerHTML = '♥'; btn.classList.add('fav'); }
+    });
+  }
+
+  /* ── TRENDING CAROUSEL: populate from stores data ── */
+  function populateTrendingCarousel() {
+    var scroll = document.getElementById('trendingScroll');
+    if (!scroll) return;
+    // Wait for stores to be loaded (poll window.allStores or use a callback)
+    var attempts = 0;
+    function tryPopulate() {
+      var stores = (typeof allStores !== 'undefined' ? allStores : []);
+      if (!stores.length && attempts < 20) {
+        attempts++;
+        setTimeout(tryPopulate, 600);
+        return;
+      }
+      if (!stores.length) return;
+      // Pick up to 6 stores for the carousel (newest / highest rated)
+      var sorted = stores.slice().sort(function(a, b) {
+        return (b.rating || 0) - (a.rating || 0);
+      }).slice(0, 6);
+
+      scroll.innerHTML = '';
+      sorted.forEach(function(store, i) {
+        var card = document.createElement('div');
+        card.className = 'trending-card fade-in-up stagger-' + (i + 1);
+        card.setAttribute('role', 'listitem');
+        var tag = i < 2
+          ? '<span class="trending-card-tag trending-tag">🔥 Trending</span>'
+          : (i < 4
+            ? '<span class="trending-card-tag featured-tag">⭐ Empfohlen</span>'
+            : '<span class="trending-card-tag new-tag">✦ Neu</span>');
+        var img = store.image_url || store.photo_url || '';
+        var photoHtml = img
+          ? '<img src="' + img + '" alt="' + (store.name || '') + '" loading="lazy">'
+          : '';
+        var rating = store.rating ? (Math.round(store.rating * 10) / 10).toFixed(1) : '';
+        card.innerHTML =
+          '<div class="trending-card-photo">' + photoHtml + '</div>' +
+          '<div class="trending-card-body">' +
+            '<div class="trending-card-meta">' +
+              '<div class="trending-card-title">' + (store.name || 'Salon') + '</div>' +
+              (rating ? '<div class="trending-card-rating">★ ' + rating + '</div>' : '') +
+            '</div>' +
+            '<div class="trending-card-sub">' + (store.neighbourhood || store.address || '') + '</div>' +
+            tag +
+          '</div>';
+        card.onclick = function() {
+          if (window.openStoreDetail) window.openStoreDetail(store);
+          else if (window.openStore) window.openStore(store);
+        };
+        scroll.appendChild(card);
+      });
+    }
+    tryPopulate();
+  }
+
+  /* ── QUARTIER COUNTS ── */
+  function populateQuartierCounts() {
+    var attempts = 0;
+    function tryPopulate() {
+      var stores = (typeof allStores !== 'undefined' ? allStores : []);
+      if (!stores.length && attempts < 20) {
+        attempts++;
+        setTimeout(tryPopulate, 600);
+        return;
+      }
+      if (!stores.length) return;
+      var counts = {};
+      stores.forEach(function(s) {
+        var q = s.neighbourhood || s.quartier || '';
+        if (q) counts[q] = (counts[q] || 0) + 1;
+      });
+      var quartiers = ['Grossbasel', 'Kleinbasel', 'Gundeldingen', 'St. Johann', 'Bruderholz', 'Hirzbrunnen'];
+      quartiers.forEach(function(q) {
+        var el = document.getElementById('qCount-' + q);
+        if (el) {
+          var c = counts[q] || 0;
+          el.textContent = c + (c === 1 ? ' Salon' : ' Salons');
+        }
+      });
+
+      // Also update service icon counts
+      var catCounts = {};
+      stores.forEach(function(s) {
+        var t = (s.type || s.category || '').toLowerCase();
+        catCounts[t] = (catCounts[t] || 0) + 1;
+      });
+      var catMap = {
+        'hairsalon': 'sic-count-hair', 'hair': 'sic-count-hair',
+        'barber': 'sic-count-barber', 'barbershop': 'sic-count-barber',
+        'nails': 'sic-count-nails',
+        'spa': 'sic-count-spa',
+        'makeup': 'sic-count-makeup',
+        'cosmetik': 'sic-count-cosmetik', 'cosmetik': 'sic-count-cosmetik',
+        'eyebrows': 'sic-count-eyebrows',
+        'tattoo': 'sic-count-tattoo'
+      };
+      Object.keys(catMap).forEach(function(cat) {
+        var el = document.getElementById(catMap[cat]);
+        if (el && catCounts[cat]) el.textContent = catCounts[cat] + ' Salons';
+      });
+    }
+    tryPopulate();
+  }
+
+  /* ── MOBILE THEME TOGGLE VISIBILITY ── */
+  function initMobileThemeToggle() {
+    var mobileToggle = document.getElementById('mobileThemeToggle');
+    if (!mobileToggle) return;
+    // Show on mobile (max-width 768px)
+    function updateVisibility() {
+      mobileToggle.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+    }
+    updateVisibility();
+    window.addEventListener('resize', updateVisibility);
+  }
+
+  /* ── INIT ── */
+  document.addEventListener('DOMContentLoaded', function() {
+    initScrollFadeIn();
+    initSocialProofAnimation();
+    restoreFavHearts();
+    initMobileThemeToggle();
+    // Trending and quartier counts need store data — trigger after stores load
+    setTimeout(function() {
+      populateTrendingCarousel();
+      populateQuartierCounts();
+    }, 1200);
+  });
+
+  // Also trigger if stores are loaded after DOMContentLoaded
+  setTimeout(function() {
+    populateTrendingCarousel();
+    populateQuartierCounts();
+  }, 3000);
+
+})();
+</script>
+
 </body>
 </html>
