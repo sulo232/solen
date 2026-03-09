@@ -3347,9 +3347,13 @@ let _chatBookingId=null,_chatChannel=null,_chatRole='customer';
 function openMessagesTab(){
   if(!currentUser){openAuth('login');return;}
   closeAllModals();
+  // Highlight messages in bottom nav
+  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.remove('active'));
+  const bnMsg=document.getElementById('bnMessages');if(bnMsg)bnMsg.classList.add('active');
   const el=document.getElementById('chatOverlay');
   document.getElementById('chatTitle').textContent='\u{1F4AC} Nachrichten';
   el.classList.add('active');
+  document.body.style.overflow='hidden';
   loadAllConversations();
 }
 
@@ -3372,6 +3376,43 @@ async function loadAllConversations(){
     container.innerHTML='<div class="chat-empty"><div class="empty-icon">&#9993;</div><div class="empty-title">Keine Nachrichten</div><div class="empty-sub">Buche einen Termin, um mit einem Salon zu chatten.</div></div>';
     return;
   }
+  // Fetch last message per booking for preview
+  const bookingIds=bookings.map(b=>b.id);
+  let lastMsgs=[];
+  try{
+    const{data}=await sb.from('messages').select('booking_id,body,created_at,sender_role,is_read').in('booking_id',bookingIds).order('created_at',{ascending:false});
+    lastMsgs=data||[];
+  }catch(e){}
+  // Group: one entry per booking with its latest message
+  const lastByBooking={};
+  const unreadByBooking={};
+  lastMsgs.forEach(m=>{
+    if(!lastByBooking[m.booking_id])lastByBooking[m.booking_id]=m;
+    if(!m.is_read&&m.sender_role!=='customer'){unreadByBooking[m.booking_id]=(unreadByBooking[m.booking_id]||0)+1;}
+  });
+  // Sort bookings: those with messages first (by latest message time), then the rest
+  bookings.sort((a,b)=>{
+    const la=lastByBooking[a.id],lb=lastByBooking[b.id];
+    if(la&&lb)return new Date(lb.created_at)-new Date(la.created_at);
+    if(la)return -1;if(lb)return 1;return 0;
+  });
+  container.innerHTML=bookings.map(b=>{
+    const name=b.salon_name||b.stores?.name||'Salon';
+    const last=lastByBooking[b.id];
+    const preview=last?escapeHtmlChat((last.body||'').substring(0,60))+(last.body&&last.body.length>60?'…':''):'Noch keine Nachrichten';
+    const timeStr=last?new Date(last.created_at).toLocaleDateString('de-CH',{day:'numeric',month:'short'}):'';
+    const unread=unreadByBooking[b.id]||0;
+    const initials=(name||'S').substring(0,2).toUpperCase();
+    return '<div class="chat-convo-item" data-booking-id="'+b.id+'" onclick="_chatConvoClick(\''+b.id+'\',\''+escapeHtmlChat(name.replace(/'/g,"\\'"))+'\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s"'+
+    ' onmouseenter="this.style.background=\'var(--surface2)\'" onmouseleave="this.style.background=\'\'">'+
+    '<div style="width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem;flex-shrink:0">'+initials+'</div>'+
+    '<div style="flex:1;min-width:0">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;font-size:.95rem">'+escapeHtmlChat(name)+'</span><span style="font-size:.75rem;color:var(--muted)">'+timeStr+'</span></div>'+
+    '<div style="font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">'+preview+'</div>'+
+    '</div>'+
+    (unread?'<div style="background:var(--accent);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;flex-shrink:0">'+unread+'</div>':'')+
+    '</div>';
+  }).join('');
 }
 
 function _chatConvoClick(bookingId,title){openChat(bookingId,'customer',title);}
@@ -3403,7 +3444,7 @@ function closeChat() {
 function loadMessages() {
   const container = document.getElementById('chatMessages');
   container.innerHTML = '<div class="chat-empty">Lade…</div>';
-  supabase.from('messages').select('*').eq('booking_id', _chatBookingId).order('created_at', {ascending: true}).then(({data, error}) => {
+  sb.from('messages').select('*').eq('booking_id', _chatBookingId).order('created_at', {ascending: true}).then(({data, error}) => {
     if (error) { container.innerHTML = '<div class="chat-empty">Fehler beim Laden.</div>'; return; }
     window._chatMessages = data || [];
     renderAllChatMessages();
@@ -3426,19 +3467,19 @@ function renderChatMsg(m) {
   const readIcon = mine ? '<span class="chat-read-status' + (m.is_read ? ' read' : '') + '">✓✓</span>' : '';
   let bubble = '';
   if (m.message_type === 'image') {
-    bubble = '<img src="' + escHtmlChat(m.media_url||'') + '" class="chat-img-preview" onclick="window.open(this.src,\'_blank\')" loading="lazy">';
+    bubble = '<img src="' + escapeHtmlChat(m.media_url||'') + '" class="chat-img-preview" onclick="window.open(this.src,\'_blank\')" loading="lazy">';
   } else if (m.message_type === 'offer') {
     let off = {}; try { off = JSON.parse(m.body); } catch(e) { off = {title:'Angebot', body: m.body}; }
-    bubble = '<div class="chat-offer"><div class="offer-title">🎁 ' + escHtmlChat(off.title||'Angebot') + '</div><div class="offer-body">' + escHtmlChat(off.body||'') + '</div><span class="offer-cta" onclick="alert(\'Angebot notiert!\')">Annehmen</span></div>';
+    bubble = '<div class="chat-offer"><div class="offer-title">🎁 ' + escapeHtmlChat(off.title||'Angebot') + '</div><div class="offer-body">' + escapeHtmlChat(off.body||'') + '</div><span class="offer-cta" onclick="alert(\'Angebot notiert!\')">Annehmen</span></div>';
   } else {
-    bubble = '<div class="chat-bubble">' + escHtmlChat(m.body||'') + '</div>';
+    bubble = '<div class="chat-bubble">' + escapeHtmlChat(m.body||'') + '</div>';
   }
   const rptBtn = !mine ? '<button class="chat-report-btn" onclick="openReportModal(' + m.id + ')" title="Melden">⚑</button>' : '';
   return '<div class="chat-msg ' + cls + '" data-msg-id="' + m.id + '">' + bubble + '<div class="chat-meta">' + time + readIcon + rptBtn + '</div></div>';
 }
 function markMessagesRead() {
   const other = _chatRole === 'salon' ? 'customer' : 'salon';
-  supabase.from('messages').update({is_read: true}).eq('booking_id', _chatBookingId).eq('sender_role', other).eq('is_read', false).then(() => {});
+  sb.from('messages').update({is_read: true}).eq('booking_id', _chatBookingId).eq('sender_role', other).eq('is_read', false).then(() => {});
 }
 let _chatSending=false;
 async function sendMessage() {
@@ -3450,7 +3491,7 @@ async function sendMessage() {
   if (sendBtn) { sendBtn.disabled = true; sendBtn.style.opacity = '.5'; }
   const clientId = crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
   input.value = '';
-  const {data: {user}} = await supabase.auth.getUser();
+  const {data: {user}} = await sb.auth.getUser();
   if (!user) { _chatSending = false; if (sendBtn) { sendBtn.disabled = false; sendBtn.style.opacity = ''; } input.value = body; return; }
   // Optimistic render
   const optimistic = { id: 'pending-' + clientId, booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body, message_type: 'text', created_at: new Date().toISOString(), is_read: false, client_id: clientId };
@@ -3459,7 +3500,7 @@ async function sendMessage() {
   renderAllChatMessages();
   const c = document.getElementById('chatMessages'); if (c) c.scrollTop = c.scrollHeight;
   try {
-    const {data, error} = await supabase.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body, message_type: 'text', is_read: false, client_id: clientId}).select().single();
+    const {data, error} = await sb.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body, message_type: 'text', is_read: false, client_id: clientId}).select().single();
     const idx = window._chatMessages.findIndex(m => m.id === optimistic.id);
     if (error) {
       if (idx >= 0) window._chatMessages.splice(idx, 1);
@@ -3486,7 +3527,7 @@ async function sendMessage() {
 }
 function subscribeToMessages() {
   if (_chatChannel) _chatChannel.unsubscribe();
-  _chatChannel = supabase.channel('chat:' + _chatBookingId);
+  _chatChannel = sb.channel('chat:' + _chatBookingId);
   _chatChannel.on('postgres_changes', {event:'INSERT', schema:'public', table:'messages', filter:'booking_id=eq.' + _chatBookingId}, payload => {
     const msg = payload.new;
     if (!window._chatMessages) window._chatMessages = [];
@@ -3542,13 +3583,13 @@ function clearChatSearch() {
 function triggerChatMedia() { document.getElementById('chatMediaInput').click(); }
 async function uploadChatMedia(input) {
   const file = input.files && input.files[0]; if (!file) return;
-  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
+  const {data: {user}} = await sb.auth.getUser(); if (!user) return;
   const ext = file.name.split('.').pop();
   const path = user.id + '/' + _chatBookingId + '/' + Date.now() + '.' + ext;
-  const {error: upErr} = await supabase.storage.from('chat-media').upload(path, file, {upsert: true});
+  const {error: upErr} = await sb.storage.from('chat-media').upload(path, file, {upsert: true});
   if (upErr) { alert('Upload fehlgeschlagen: ' + upErr.message); input.value = ''; return; }
-  const {data: {publicUrl}} = supabase.storage.from('chat-media').getPublicUrl(path);
-  const {data: msgData} = await supabase.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body: publicUrl, message_type: 'image', media_url: publicUrl, is_read: false}).select().single();
+  const {data: {publicUrl}} = sb.storage.from('chat-media').getPublicUrl(path);
+  const {data: msgData} = await sb.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body: publicUrl, message_type: 'image', media_url: publicUrl, is_read: false}).select().single();
   if (msgData) { if (!window._chatMessages) window._chatMessages = []; window._chatMessages.push(msgData); renderAllChatMessages(); const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight; }
   input.value = '';
 }
@@ -3557,13 +3598,13 @@ function openReportModal(msgId) { _reportMsgId = msgId; const m = document.getEl
 function closeReportModal() { const m = document.getElementById('reportModal'); if (m) m.style.display = 'none'; _reportMsgId = null; }
 async function submitReport(reason) {
   if (!_reportMsgId) return;
-  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
-  await supabase.from('reports').insert({reporter_id: user.id, message_id: _reportMsgId, reason});
+  const {data: {user}} = await sb.auth.getUser(); if (!user) return;
+  await sb.from('reports').insert({reporter_id: user.id, message_id: _reportMsgId, reason});
   closeReportModal(); if (typeof showToast === 'function') showToast('Gemeldet. Wir prüfen die Nachricht.');
 }
 async function sendEmailFallback(msg) {
   try {
-    const {data: bd} = await supabase.from('bookings').select('customer_id,store_id,stores(name,email),profiles(email)').eq('id', _chatBookingId).single();
+    const {data: bd} = await sb.from('bookings').select('customer_id,store_id,stores(name,email),profiles(email)').eq('id', _chatBookingId).single();
     if (!bd) return;
     const recipientEmail = _chatRole === 'customer' ? (bd.stores && bd.stores.email) : (bd.profiles && bd.profiles.email);
     if (!recipientEmail) return;
@@ -4052,7 +4093,7 @@ async function saveDashHours(salonId){
     if(open){oh[d]={open:document.getElementById('oh_'+d+'_from')?.value||'09:00',close:document.getElementById('oh_'+d+'_to')?.value||'18:00'};}
     else{oh[d]={closed:true};}
   });
-  const {error}=await supabase.from('stores').update({opening_hours:oh}).eq('id',salonId);
+  const {error}=await sb.from('stores').update({opening_hours:oh}).eq('id',salonId);
   if(error){toast('Fehler beim Speichern','error');return;}
   const idx=allStores.findIndex(s=>s.id==salonId);
   if(idx>=0)allStores[idx].opening_hours=oh;
@@ -4433,7 +4474,7 @@ async function submitReviewReply(reviewId,salonId){
   if(!ta)return;
   const reply=ta.value.trim();
   if(!reply){toast('Bitte Text eingeben','info');return;}
-  const {error}=await supabase.from('reviews').update({owner_reply:reply,owner_reply_at:new Date().toISOString()}).eq('id',reviewId);
+  const {error}=await sb.from('reviews').update({owner_reply:reply,owner_reply_at:new Date().toISOString()}).eq('id',reviewId);
   if(error){toast('Fehler','error');return;}
   toast('Antwort gespeichert ✔','success');
   loadReviews(salonId);
