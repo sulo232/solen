@@ -2814,9 +2814,7 @@ function renderWizStep(step){
           <div class="svc-name">${s.name}</div>
           <div class="svc-meta"><span>CHF ${s.price}</span><span>${s.duration} Min.</span></div>
         </div>`;
-      }).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}
-              }).join('')}</div>`;
-    }
+      }).join('')}</div>`    }
     html+=`<div class="wiz-btns" style="margin-top:20px"><button class="btn-secondary" onclick="closeBooking()">${t('btn_cancel')}</button><button class="btn-primary" onclick="wizNext(2)" id="wizNext1" ${!bookingState.service?'disabled':''}>${t('btn_next')}</button></div>`;
   }
   else if(step===2){
