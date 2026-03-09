@@ -831,6 +831,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       </div>
     </div>
     <div id="lastMinuteSection" class="lm-section hidden"></div>
+    <div id="recentSection" style="display:none"></div>
     <div id="storesGrid" class="stores-grid"><div class="spinner"></div></div>
   </div>
 </div>
@@ -1326,7 +1327,8 @@ let currentLang=localStorage.getItem('solen_lang')||'de';
 let userLat=null, userLng=null, activeNeighbourhood='', minRatingFilter=0, maxPriceFilter=0;
 let bmState={}
 let favSalons=new Set(JSON.parse(localStorage.getItem('solen_favs')||'[]')),showOnlyFavs=false;;
-let _dashActiveSalonIdx=0, mySalons=[];
+
+let recentViews=JSON.parse(localStorage.getItem('solen_recent')||'[]');let _dashActiveSalonIdx=0, mySalons=[];
 
 // TRANSLATIONS
 const T={
@@ -2422,7 +2424,8 @@ function restoreSort(){
 }
 
 function renderStores(){
-  const query=document.getElementById('searchInput').value.toLowerCase();
+renderRecentlyViewed();
+    const query=document.getElementById('searchInput').value.toLowerCase();
   let filtered=allStores.filter(s=>{
     const matchCat=activeCategories.size===0||activeCategories.has(s.cat)||activeCategories.has(s.type);
     const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
@@ -2645,9 +2648,27 @@ function checkURLStore(){
 
 
 // STORE DETAIL
-async function openStore(storeId){
+async function trackRecentView(store){
+  recentViews=recentViews.filter(x=>x.id!==store.id);
+  recentViews.unshift({id:store.id,name:store.name,img:store.image_url||''});
+  if(recentViews.length>6)recentViews=recentViews.slice(0,6);
+  localStorage.setItem('solen_recent',JSON.stringify(recentViews));
+  renderRecentlyViewed();
+}
+function renderRecentlyViewed(){
+  const sec=document.getElementById('recentSection');
+  if(!sec)return;
+  const visibles=recentViews.filter(x=>allStores.find(s=>s.id===x.id));
+  if(visibles.length<2){sec.style.display='none';return;}
+  sec.style.display='';
+  sec.innerHTML='<h3 class="recent-title">Zuletzt angesehen</h3><div class="recent-scroll">'+
+    visibles.map(x=>`<div class="recent-chip" onclick="openStore(${x.id})"><img src="${x.img||'https://placehold.co/60x60/eee/999?text=S'}" onerror="this.src='https://placehold.co/60x60/eee/999?text=S'" loading="lazy"><span>${x.name}</span></div>`).join('')+
+  '</div>';
+}
+function openStore(storeId){
   const s=allStores.find(x=>x.id===storeId);
   if(!s)return;
+  trackRecentView(s);
   updateSalonSEO(s);
   trackRecentStore(storeId);
   const svcs=allServices.filter(x=>x.store_id===storeId||x.salon_id===storeId);
@@ -4097,6 +4118,14 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .reg-success .reg-emoji{font-size:3.5rem;margin-bottom:16px}
 .reg-success h3{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:10px}
 .reg-success p{color:var(--text2);font-size:.92rem;line-height:1.6;margin-bottom:24px}
+#recentSection{padding:0 16px 8px}
+.recent-title{font-size:.85rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.recent-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.recent-scroll::-webkit-scrollbar{display:none}
+.recent-chip{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;background:var(--surface);border:1px solid var(--border);border-radius:50px;cursor:pointer;transition:.15s;font-size:.82rem;font-weight:500;color:var(--text);max-width:160px}
+.recent-chip:hover{border-color:var(--accent);background:rgba(78,205,196,.07);transform:translateY(-1px)}
+.recent-chip img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.recent-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
