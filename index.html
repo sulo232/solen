@@ -3269,12 +3269,16 @@ function formatDate(d){
 
 // CLOSE ALL MODALS (used when switching tabs via bottom nav)
 function closeAllModals(){
-  closeAuth();closeBooking();closeStoreDetail();closeChat();
-  document.getElementById('setupOverlay').classList.remove('active');
+  try{closeAuth();}catch(e){}
+  try{closeBooking();}catch(e){}
+  try{closeStoreDetail();}catch(e){}
+  try{closeChat();}catch(e){}
+  try{closeBookingModal();}catch(e){}
+  document.getElementById('setupOverlay')?.classList.remove('active');
   document.getElementById('impressumModal')?.classList.remove('open');
   document.getElementById('datenschutzModal')?.classList.remove('open');
-  document.getElementById('editStoreOverlay').classList.remove('active');
-  document.getElementById('profileEditModal').style.display='none';
+  document.getElementById('editStoreOverlay')?.classList.remove('active');
+  const pm=document.getElementById('profileEditModal');if(pm)pm.style.display='none';
   document.body.style.overflow='';
 }
 
