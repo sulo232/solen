@@ -2617,6 +2617,7 @@ function renderWizStep(step){
       <div class="summary-row"><span>${t('wiz_duration')}</span><span>${s.duration} Min.</span></div>
       <div class="summary-row total"><span>${t('wiz_price')}</span><span>CHF ${s.price}</span></div>
     </div>
+    ${bookingState.wantsReminder!==false?`<p style="font-size:.82rem;color:var(--muted);margin:12px 0 4px;text-align:center">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>`:''}
     <div class="wiz-btns"><button class="btn-secondary" onclick="wizNext(4)">${t('btn_back')}</button><button class="btn-primary" onclick="confirmBooking()">${t('btn_confirm')}</button></div>`;
   }
   document.getElementById('wizContent').innerHTML=html;
@@ -2673,6 +2674,8 @@ function wizNext(step){
     bookingState.lastName=document.getElementById('bkLast')?.value||'';
     bookingState.phone=document.getElementById('bkPhone')?.value||'';
     bookingState.note=document.getElementById('bkNote')?.value||'';
+    const reminderEl=document.getElementById('bkReminder');
+    if(reminderEl)bookingState.wantsReminder=reminderEl.checked;
   }
   renderWizStep(step);
 }
@@ -2684,7 +2687,7 @@ async function confirmBooking(){
   const s=bookingState.service;
   const reference='SOLEN-'+Math.random().toString(36).substring(2,8).toUpperCase();
   const recurGroupId=bmState.isRecurring?crypto.randomUUID():null;
-  const{error}=await sb.from('bookings').insert({
+  const{data:bkData,error}=await sb.from('bookings').insert({
     user_id:currentUser.id,
     store_id:bookingState.storeId,
     salon_id:bookingState.storeId,
@@ -2707,13 +2710,21 @@ async function confirmBooking(){
     ,recurrence_group_id:recurGroupId
     ,recurrence_index:0
     ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
-  });
+  }).select('id').single();
   if(error){toast(t('toast_booking_failed'),'error');if(btn){btn.disabled=false;btn.textContent=t('btn_confirm');}}
   else{
-    closeBooking();
-    toast(`${t('toast_booked')} ${reference}`,'success');
+    const wantsReminder=bookingState.wantsReminder!==false;
+    const wizContent=document.getElementById('wizContent');
+    if(wizContent)wizContent.innerHTML=`<div class="bm-confirmation">
+      <div style="font-size:3rem;margin-bottom:12px">&#10003;</div>
+      <h3 style="color:var(--success)">Buchung bestätigt!</h3>
+      <p>Referenz: ${reference}</p>
+      ${wantsReminder?'<p style="font-size:.85rem;color:var(--muted);margin-top:8px">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>':''}
+      <button class="btn-primary" style="margin-top:16px" onclick="closeBooking()">Schliessen</button>
+    </div>`;
     userBookedStores.add(bookingState.storeId);
     renderStores();
+    if(wantsReminder)scheduleReminders({bookingId:bkData?.id,userId:currentUser.id,salonId:bookingState.storeId,salonName:bookingState.store.name,serviceName:s?.name||'',bookingDate:bookingState.date,bookingTime:bookingState.time,customerName:[bookingState.firstName,bookingState.lastName].filter(Boolean).join(' '),customerEmail:currentUser.email});
     if(bmState.isRecurring&&bmState.recurrenceCount>1){
       const bDate=new Date(bookingState.date);
       for(let ri=1;ri<bmState.recurrenceCount;ri++){
@@ -2723,6 +2734,34 @@ async function confirmBooking(){
       }
     }
   }
+}
+
+/*
+-- Run this SQL once in Supabase SQL editor to create the reminders table:
+CREATE TABLE reminders (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  booking_id uuid REFERENCES bookings(id),
+  user_id uuid,
+  salon_name text,
+  service_name text,
+  booking_time timestamptz,
+  customer_name text,
+  customer_email text,
+  reminder_time timestamptz,
+  type text DEFAULT 'email',
+  sent bool DEFAULT false,
+  created_at timestamptz DEFAULT now()
+);
+*/
+async function scheduleReminders({bookingId,userId,salonId,salonName,serviceName,bookingDate,bookingTime,customerName,customerEmail}){
+  if(!customerEmail||!bookingDate||!bookingTime)return;
+  const bookingTs=new Date(`${bookingDate}T${bookingTime}:00`);
+  if(isNaN(bookingTs.getTime()))return;
+  const rows=[
+    {booking_id:bookingId||null,user_id:userId||null,salon_name:salonName||'',service_name:serviceName||'',booking_time:bookingTs.toISOString(),customer_name:customerName||'',customer_email:customerEmail,reminder_time:new Date(bookingTs.getTime()-48*60*60*1000).toISOString(),type:'email',sent:false},
+    {booking_id:bookingId||null,user_id:userId||null,salon_name:salonName||'',service_name:serviceName||'',booking_time:bookingTs.toISOString(),customer_name:customerName||'',customer_email:customerEmail,reminder_time:new Date(bookingTs.getTime()-2*60*60*1000).toISOString(),type:'email',sent:false}
+  ];
+  await sb.from('reminders').insert(rows);
 }
 
 function formatDate(d){
@@ -3466,6 +3505,7 @@ function renderBookingModal(){
         <p>${s.name} &mdash; ${formatDate(bmState.date)} um ${bmState.time}</p>
         <a href="${calUrl}" target="_blank" rel="noopener" class="bm-cal-link">&#128197; ${t('add_to_calendar')}</a>
         <button class="bm-cal-link" style="background:none;border:1px solid var(--primary);cursor:pointer" onclick="downloadIcs()">&#128192; Apple / Outlook (.ics)</button>
+        ${bmState.wantsReminder!==false?'<p style="font-size:.82rem;color:var(--muted);margin-top:12px">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>':''}
       </div>`;
     return;
   }
@@ -3514,6 +3554,7 @@ function renderBookingModal(){
   html+='<div class="recur-row"><label class="vt-opt" style="cursor:pointer;gap:8px"><input type="checkbox"'+(bmState.isRecurring?' checked':'')+' onchange="bmState.isRecurring=this.checked;renderBookingModal()"> ÃÂ¢ÃÂÃÂº Termin wiederholen</label>'+rOpts+'</div>';
   html+=`<div class="form-row"><div class="form-group"><label>Name *</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div><div class="form-group"><label>Telefon *</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="Telefon" required></div></div>`;
   html+=`<div class="form-row"><div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail}" type="email" placeholder="E-Mail"></div><div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes}" placeholder="Besondere W\u00fcnsche"></div></div>`;
+  html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:10px 0 4px;cursor:pointer"><input type="checkbox" id="bmReminder" ${bmState.wantsReminder===false?'':'checked'} onchange="bmState.wantsReminder=this.checked"> E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)</label>`;
   // 5. Summary
   const svc=bmState.service;
   html+=`<div class="bm-summary"><div class="row"><span>Salon</span><span>${s.name}</span></div>`;
@@ -3549,7 +3590,7 @@ async function insertBooking(){
   if(!bmState.guestName||!bmState.guestPhone){toast('Name und Telefon sind erforderlich.','error');return;}
   if(!bmState.date||!bmState.time){toast('Datum und Uhrzeit w\u00e4hlen.','error');return;}
   const svc=bmState.service;
-  const{error}=await sb.from('bookings').insert({
+  const{data:bkData,error}=await sb.from('bookings').insert({
     salon_id:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,
     user_id:currentUser?.id||null,
     guest_name:bmState.guestName,
@@ -3561,7 +3602,7 @@ async function insertBooking(){
     booking_time:bmState.time,
     status:'pending',
     notes:bmState.notes
-  });
+  }).select('id').single();
   if(error){
     bmState.slotConflict=true;
     renderBookingModal();
@@ -3571,6 +3612,7 @@ async function insertBooking(){
   bmState.slotConflict=false;
   renderBookingModal();
   toast(t('booking_confirmed'),'success');
+  if(bmState.wantsReminder!==false)scheduleReminders({bookingId:bkData?.id,userId:currentUser?.id,salonId:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,salonName:bmState.store.name,serviceName:svc?.name||bmState.customSvc||'',bookingDate:bmState.date,bookingTime:bmState.time,customerName:bmState.guestName,customerEmail:bmState.guestEmail||currentUser?.email||''});
 }
 
 async function joinWaitingList(){
@@ -3962,7 +4004,7 @@ let _dashStaffSid=null;
 
 async function loadDashStaffSection(salonId){
   _dashStaffSid=salonId;
-  const el=document.getElementById('salonDashContent');
+  const el=document.getElementById('dashTabBuchungen')||document.getElementById('salonDashContent');
   if(!el)return;
   const existing=document.getElementById('dashStaffSection');
   if(existing)existing.remove();
