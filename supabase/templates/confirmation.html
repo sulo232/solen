@@ -21,25 +21,25 @@
   <div style="padding:40px">
     <div style="text-align:center;margin-bottom:28px">
       <div style="width:64px;height:64px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px">✉</div>
-      <h1 style="font-size:22px;font-weight:800;color:#0d0d0d;margin:0 0 8px">E-Mail-Adresse bestätigen</h1>
-      <p style="color:#666;font-size:15px;margin:0">Fast geschafft! Bestätige deine E-Mail, um loszulegen.</p>
+      <h1 style="font-size:22px;font-weight:800;color:#0d0d0d;margin:0 0 8px">Kurz bestätige, dann loslege</h1>
+      <p style="color:#666;font-size:15px;margin:0">Fast gschafft! Eifach no d E-Mail bestätige und du bisch drin.</p>
     </div>
 
     <div style="background:white;border-radius:12px;padding:24px;border:1px solid #e8e5df;margin-bottom:28px;text-align:center">
       <p style="color:#444;font-size:14px;margin:0 0 20px;line-height:1.6">
-        Klicke auf den Button unten, um deine E-Mail-Adresse
-        <strong>{{ .Email }}</strong> zu bestätigen und dein Konto zu aktivieren.
+        Klick uf de Button und dini E-Mail
+        <strong>{{ .Email }}</strong> isch bestätigt. Fertig, easy.
       </p>
       <a href="{{ .ConfirmationURL }}"
          style="display:inline-block;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:white;text-decoration:none;padding:14px 36px;border-radius:100px;font-weight:700;font-size:15px;letter-spacing:0.01em;box-shadow:0 4px 16px rgba(255,107,107,0.35)">
-        E-Mail bestätigen →
+        Jetzt bestätige →
       </a>
     </div>
 
     <p style="color:#999;font-size:12px;text-align:center;line-height:1.6;margin:0">
-      Dieser Link ist <strong>24 Stunden</strong> gültig.<br>
-      Falls du kein Konto bei solen.ch erstellt hast, ignoriere diese E-Mail einfach.<br><br>
-      Oder kopiere diesen Link in deinen Browser:<br>
+      De Link gilt <strong>24 Stund</strong>.<br>
+      Falls du keis Konto bi solen.ch gmacht hesch, eifach ignoriere.<br><br>
+      Oder kopier de Link in din Browser:<br>
       <a href="{{ .ConfirmationURL }}" style="color:#FF6B6B;word-break:break-all;font-size:11px">{{ .ConfirmationURL }}</a>
     </p>
   </div>
