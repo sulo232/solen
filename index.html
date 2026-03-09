@@ -2314,11 +2314,12 @@ async function loadStores(){
   // Assign default Basel coords for stores without lat/lng
   allStores.forEach(s=>{
     if(!s.lat||!s.lng){s.lat=47.5596+(Math.random()-0.5)*0.02;s.lng=7.5886+(Math.random()-0.5)*0.02;}
+  });
   const{data:svcs}=await sb.from('services').select('*');
   allServices=svcs||[];
   if(allServices.length===0){
     allServices=Object.values(DEMO_SERVICES).flat();
-  });
+  }
   // Track visited stores
   userBookedStores=new Set();
   if(currentUser){
