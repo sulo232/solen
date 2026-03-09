@@ -4987,7 +4987,7 @@ async function saveDashHours(salonId){
     if(open){oh[d]={open:document.getElementById('oh_'+d+'_from')?.value||'09:00',close:document.getElementById('oh_'+d+'_to')?.value||'18:00'};}
     else{oh[d]={closed:true};}
   });
-  const {error}=await supabase.from('stores').update({opening_hours:oh}).eq('id',salonId);
+  const {error}=await sb.from('stores').update({opening_hours:oh}).eq('id',salonId);
   if(error){toast('Fehler beim Speichern','error');return;}
   const idx=allStores.findIndex(s=>s.id==salonId);
   if(idx>=0)allStores[idx].opening_hours=oh;
@@ -5368,7 +5368,7 @@ async function submitReviewReply(reviewId,salonId){
   if(!ta)return;
   const reply=ta.value.trim();
   if(!reply){toast('Bitte Text eingeben','info');return;}
-  const {error}=await supabase.from('reviews').update({owner_reply:reply,owner_reply_at:new Date().toISOString()}).eq('id',reviewId);
+  const {error}=await sb.from('reviews').update({owner_reply:reply,owner_reply_at:new Date().toISOString()}).eq('id',reviewId);
   if(error){toast('Fehler','error');return;}
   toast('Antwort gespeichert ✔','success');
   loadReviews(salonId);
