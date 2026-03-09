@@ -1658,6 +1658,7 @@ function setLang(lang){switchLang(lang);}
   document.documentElement.setAttribute('lang',currentLang);
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===currentLang);
+  });
 })();
 
 // DEMO DATA fallback
@@ -2311,7 +2312,7 @@ async function loadStores(){
   allServices=svcs||[];
   if(allServices.length===0){
     allServices=Object.values(DEMO_SERVICES).flat();
-  }
+  });
   // Track visited stores
   userBookedStores=new Set();
   if(currentUser){
