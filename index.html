@@ -2976,8 +2976,7 @@ async function confirmBooking(){
       ${wantsReminder?`<p style="font-size:.85rem;color:var(--muted);margin-top:8px">${t('wiz_reminder_text')}</p>`:''}
       <h3 style="color:var(--success)">${t('booking_confirmed_title')}</h3>
     `;
-    ,recurrence_index:0
-    ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
+
   }).select('id').single();
   if(error){toast(t('toast_booking_failed'),'error');if(btn){btn.disabled=false;btn.textContent=t('btn_confirm');}}
   else{
