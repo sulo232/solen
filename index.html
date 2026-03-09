@@ -369,56 +369,79 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .branch-card:hover{border-color:var(--accent);background:rgba(78,205,196,.07);transform:translateY(-1px)}
 .other-filialen{margin:12px 0 16px;padding:12px 14px;background:var(--surfaceAlt);border-radius:var(--r);border:1px solid var(--border)}
 .other-filialen h4{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--text2)}
-.chat-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100;display:none;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.chat-overlay.active{display:flex}
-.chat-modal{background:var(--surface);width:100%;max-width:480px;height:70vh;max-height:600px;border-radius:20px 20px 0 0;display:flex;flex-direction:column;box-shadow:0 -4px 24px rgba(0,0,0,.15);overflow:hidden}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-@media(max-width:768px){.chat-modal{margin-bottom:64px}}
-@media(min-width:769px){.chat-modal{border-radius:20px;margin-bottom:24px;height:60vh}}
-.chat-msg{display:flex;flex-direction:column;max-width:78%}
-.chat-msg.mine{align-self:flex-end;align-items:flex-end}
-.chat-msg.theirs{align-self:flex-start;align-items:flex-start}
-.chat-bubble{padding:10px 14px;border-radius:18px;font-size:.92rem;line-height:1.45;word-break:break-word}
-.chat-msg.mine .chat-bubble{background:var(--accent);color:var(--accentFg);border-bottom-right-radius:4px}
-.chat-msg.theirs .chat-bubble{background:var(--surfaceAlt);color:var(--text);border-bottom-left-radius:4px}
-.chat-meta{font-size:.72rem;color:var(--muted);margin-top:3px;padding:0 4px}
-.chat-empty{text-align:center;color:var(--muted);font-size:.88rem;padding:32px 16px;margin:auto;display:flex;flex-direction:column;align-items:center;gap:8px}
-.chat-empty .empty-icon{font-size:2.5rem;opacity:.6}
-.chat-empty .empty-title{font-weight:700;font-size:.95rem;color:var(--text)}
-.chat-empty .empty-sub{font-size:.82rem;color:var(--muted);max-width:240px}
-.chat-input-area{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface)}
-.chat-input{flex:1;padding:10px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:.9rem;outline:none;font-family:inherit}
-.chat-input:focus{border-color:var(--accent)}
-.chat-send-btn{background:var(--accent);color:var(--accentFg);border:none;width:40px;height:40px;border-radius:50%;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s}
-.chat-send-btn:hover{opacity:.85}
-.chat-unread-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--accent2);color:#fff;font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:100px;padding:0 4px;margin-left:4px;vertical-align:middle}
-.chat-modal-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.chat-modal-title{font-weight:700;font-size:1rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chat-modal-close{background:none;border:none;font-size:1.3rem;color:var(--muted);cursor:pointer;padding:2px;line-height:1}
-.chat-search-bar{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surfaceAlt);border-bottom:1px solid var(--border)}
-.chat-search-bar input{flex:1;border:none;background:transparent;color:var(--text);font-size:.88rem;outline:none;font-family:inherit}
-.chat-typing{display:none;align-self:flex-start;padding:8px 14px;background:var(--surfaceAlt);border-radius:18px 18px 18px 4px;font-size:.82rem;color:var(--muted);align-items:center;gap:3px;margin:0 16px 4px}
-.chat-typing.visible{display:flex}
-.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typingBounce 1.2s infinite}
-.chat-typing span:nth-child(2){animation-delay:.2s}
-.chat-typing span:nth-child(3){animation-delay:.4s}
-@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.chat-quick-replies{display:flex;gap:6px;padding:6px 12px 0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.chat-quick-replies::-webkit-scrollbar{display:none}
-.chat-qr-btn{padding:5px 10px;border-radius:100px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:.78rem;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s;flex-shrink:0}
-.chat-qr-btn:hover{background:var(--accent);color:var(--accentFg)}
-.chat-offer{background:linear-gradient(135deg,rgba(78,205,196,.15),rgba(255,107,107,.1));border:1.5px solid var(--accent);border-radius:14px;padding:12px 14px;max-width:260px}
-.chat-offer .offer-title{font-weight:700;font-size:.92rem;color:var(--accent);margin-bottom:4px}
-.chat-offer .offer-body{font-size:.85rem;color:var(--text);line-height:1.4}
-.chat-offer .offer-cta{display:inline-block;margin-top:8px;padding:5px 12px;background:var(--accent);color:var(--accentFg);border-radius:100px;font-size:.8rem;font-weight:700;cursor:pointer}
-.chat-img-preview{max-width:220px;border-radius:12px;cursor:pointer;display:block;margin-top:4px}
-.chat-read-status{font-size:.68rem;color:var(--muted);margin-left:4px}
-.chat-read-status.read{color:var(--accent)}
-.chat-media-btn{background:transparent;border:none;color:var(--muted);font-size:1.25rem;cursor:pointer;padding:0 4px;display:flex;align-items:center;flex-shrink:0;transition:color .15s}
-.chat-media-btn:hover{color:var(--accent)}
-.chat-report-btn{background:transparent;border:none;color:transparent;font-size:.75rem;cursor:pointer;padding:2px 4px;border-radius:4px;transition:all .15s;margin-left:4px}
-.chat-msg:hover .chat-report-btn{color:var(--muted)}
-.chat-report-btn:hover{color:#FF6B6B!important;background:rgba(255,107,107,.1)}
+.chat-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:stretch;justify-content:flex-end;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);}
+.chat-overlay.active{display:flex;}
+.chat-panel{width:420px;max-width:100vw;height:100vh;background:#0f0f0f;display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,0.6);animation:slideInRight 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes slideInRight{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@media(max-width:600px){.chat-panel{width:100vw;}}
+.chat-panel-header{padding:14px 16px;background:linear-gradient(135deg,#1a1a1a,#111);border-bottom:1px solid #222;display:flex;align-items:center;gap:12px;min-height:64px;}
+.chat-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#FF6B6B,#FF8E53);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chat-panel-info{flex:1;min-width:0;}
+.chat-panel-name{font-weight:700;font-size:15px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-panel-sub{font-size:12px;color:#888;margin-top:1px;}
+.chat-panel-actions{display:flex;gap:8px;align-items:center;}
+.chat-icon-btn{background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;padding:6px;border-radius:8px;transition:background 0.15s,color 0.15s;line-height:1;}
+.chat-icon-btn:hover{background:#222;color:#fff;}
+.chat-search-bar{padding:8px 16px;background:#111;border-bottom:1px solid #1e1e1e;}
+.chat-search-bar input{width:100%;background:#1e1e1e;border:1px solid #333;border-radius:20px;padding:8px 14px;color:#fff;font-size:13px;outline:none;box-sizing:border-box;}
+.chat-search-bar input:focus{border-color:#FF6B6B;}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:#333 transparent;}
+.chat-messages::-webkit-scrollbar{width:4px;}
+.chat-messages::-webkit-scrollbar-track{background:transparent;}
+.chat-messages::-webkit-scrollbar-thumb{background:#333;border-radius:2px;}
+.chat-day-divider{text-align:center;margin:12px 0 6px;font-size:11px;color:#555;}
+.chat-msg-row{display:flex;flex-direction:column;max-width:78%;gap:2px;}
+.chat-msg-row.sent{align-self:flex-end;align-items:flex-end;}
+.chat-msg-row.received{align-self:flex-start;align-items:flex-start;}
+.chat-bubble{padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;word-break:break-word;}
+.chat-msg-row.sent .chat-bubble{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;border-bottom-right-radius:4px;}
+.chat-msg-row.received .chat-bubble{background:#1e1e1e;color:#e8e8e8;border-bottom-left-radius:4px;}
+.chat-bubble-meta{font-size:11px;color:#666;display:flex;align-items:center;gap:4px;margin-top:2px;}
+.chat-read-tick{color:#4ECDC4;font-size:11px;}
+.chat-translate-btn{background:none;border:none;cursor:pointer;color:#555;font-size:10px;padding:0 4px;transition:color 0.15s;}
+.chat-translate-btn:hover{color:#FF6B6B;}
+.chat-translated-text{font-size:12px;color:#888;font-style:italic;margin-top:4px;padding-top:4px;border-top:1px solid #333;}
+.chat-img-msg{max-width:220px;max-height:200px;border-radius:12px;cursor:pointer;object-fit:cover;}
+.chat-offer-card{background:#1a1a2e;border:1px solid rgba(255,107,107,0.3);border-radius:14px;padding:12px;min-width:200px;}
+.chat-offer-card h4{color:#FF6B6B;font-size:14px;margin:0 0 6px;}
+.chat-offer-price{color:#4ECDC4;font-weight:700;font-size:16px;}
+.chat-offer-dur{color:#888;font-size:12px;margin-top:2px;}
+.chat-offer-book-btn{margin-top:8px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;border:none;border-radius:20px;padding:7px 18px;font-size:13px;cursor:pointer;width:100%;font-weight:600;}
+.chat-report-btn{background:none;border:none;cursor:pointer;color:#444;font-size:11px;padding:2px 6px;border-radius:6px;transition:color 0.15s;align-self:flex-end;}
+.chat-report-btn:hover{color:#FF6B6B;}
+.chat-typing{display:none;padding:8px 16px;align-items:center;gap:6px;color:#666;font-size:13px;}
+.chat-typing.visible{display:flex;}
+.chat-typing span{width:6px;height:6px;background:#555;border-radius:50%;animation:typingBounce 1.2s infinite;}
+.chat-typing span:nth-child(2){animation-delay:0.2s;}
+.chat-typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+.chat-quick-replies{display:flex;gap:8px;padding:8px 16px;overflow-x:auto;scrollbar-width:none;border-top:1px solid #1e1e1e;}
+.chat-quick-replies::-webkit-scrollbar{display:none;}
+.chat-qr-btn{flex-shrink:0;background:#1e1e1e;border:1px solid #333;color:#ccc;border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;white-space:nowrap;transition:border-color 0.15s,color 0.15s;}
+.chat-qr-btn:hover{border-color:#FF6B6B;color:#FF6B6B;}
+.chat-input-row{display:flex;align-items:flex-end;gap:10px;padding:12px 14px;background:#111;border-top:1px solid #1e1e1e;}
+.chat-attach-btn{background:none;border:none;cursor:pointer;color:#777;font-size:20px;padding:4px;flex-shrink:0;transition:color 0.15s;margin-bottom:4px;}
+.chat-attach-btn:hover{color:#FF6B6B;}
+.chat-text-input{flex:1;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:22px;padding:10px 16px;color:#fff;font-size:14px;outline:none;resize:none;max-height:100px;font-family:inherit;transition:border-color 0.2s;line-height:1.4;}
+.chat-text-input:focus{border-color:rgba(255,107,107,0.4);}
+.chat-send-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#FF6B6B,#FF8E53);border:none;cursor:pointer;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.15s,box-shadow 0.15s;}
+.chat-send-btn:hover{transform:scale(1.08);box-shadow:0 4px 16px rgba(255,107,107,0.4);}
+.chat-offer-btn{border:none;border-radius:20px;color:#fff;padding:6px 14px;font-size:12px;cursor:pointer;font-weight:600;flex-shrink:0;display:none;transition:transform 0.15s;align-items:center;gap:4px;background:linear-gradient(135deg,#4ECDC4,#45B7D1);}
+.chat-offer-btn:hover{transform:scale(1.05);}
+.chat-offer-btn.visible{display:flex;}
+.chat-fab{position:fixed;bottom:28px;right:28px;z-index:8888;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#FF6B6B,#FF8E53);border:none;cursor:pointer;box-shadow:0 4px 24px rgba(255,107,107,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform 0.2s,box-shadow 0.2s;}
+.chat-fab:hover{transform:scale(1.1);box-shadow:0 6px 32px rgba(255,107,107,0.6);}
+.chat-fab-badge{position:absolute;top:-4px;right:-4px;background:#FF3B30;color:#fff;font-size:10px;font-weight:700;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;}
+.chat-fab-badge.visible{display:flex;}
+.offer-picker-overlay{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;}
+.offer-picker-overlay.active{display:flex;}
+.offer-picker{background:#111;border-radius:20px;padding:20px;width:340px;max-width:90vw;max-height:70vh;overflow-y:auto;border:1px solid #222;}
+.offer-picker h3{color:#fff;margin:0 0 14px;font-size:16px;}
+.offer-item{padding:12px;border-radius:12px;background:#1a1a1a;margin-bottom:8px;cursor:pointer;border:1px solid #2a2a2a;transition:border-color 0.15s;}
+.offer-item:hover{border-color:#4ECDC4;}
+.offer-item-name{color:#fff;font-weight:600;font-size:14px;}
+.offer-item-meta{color:#888;font-size:12px;margin-top:4px;}
+.offer-item-price{color:#4ECDC4;font-weight:700;}
 .btn-chat{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;padding:5px 11px;border-radius:100px;border:1.5px solid var(--border);background:var(--surfaceAlt);color:var(--text);cursor:pointer;transition:all .2s}
 .btn-chat:hover{border-color:var(--accent);color:var(--accent);background:rgba(78,205,196,.08)}
 
@@ -1413,38 +1436,50 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <div id="toast"></div>
 <!-- CHAT MODAL -->
 <div class="chat-overlay" id="chatOverlay" onclick="if(event.target===this)closeChat()">
-  <div class="chat-modal">
-    <div class="chat-modal-header">
-      <span id="chatTitle" class="chat-modal-title"></span>
-      <button onclick="toggleChatSearch()" style="background:none;border:none;font-size:1rem;color:var(--muted);cursor:pointer;padding:2px 6px" title="Suchen">&#128269;</button>
-      <button class="chat-modal-close" onclick="closeChat()">&#10005;</button>
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-panel-header">
+      <div class="chat-avatar" id="chatAvatar">💬</div>
+      <div class="chat-panel-info">
+        <div class="chat-panel-name" id="chatTitle"></div>
+        <div class="chat-panel-sub">Salon</div>
+      </div>
+      <div class="chat-panel-actions">
+        <button class="chat-icon-btn" onclick="toggleChatSearch()" title="Suchen">🔍</button>
+        <button class="chat-offer-btn" id="chatOfferBtn" onclick="openOfferPicker()">🎁 Angebot</button>
+        <button class="chat-icon-btn" onclick="closeChat()">✕</button>
+      </div>
     </div>
     <div class="chat-search-bar" id="chatSearchBar" style="display:none">
-      <span style="color:var(--muted);font-size:.9rem">&#128269;</span>
-      <input id="chatSearchInput" placeholder="Nachrichten durchsuchen&#8230;" oninput="filterChatMessages(this.value)">
-      <button onclick="clearChatSearch()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem">&#10005;</button>
+      <input type="text" placeholder="Nachrichten durchsuchen…" oninput="filterChatMessages(this.value)" onblur="if(!this.value)clearChatSearch()">
     </div>
     <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-typing" id="chatTyping"><span></span><span></span><span></span>&nbsp;tippt&#8230;</div>
+    <div class="chat-typing" id="chatTyping"><span></span><span></span><span></span>&nbsp;tippt…</div>
     <div class="chat-quick-replies" id="chatQuickReplies" style="display:none"></div>
-    <div class="chat-input-area">
-      <button class="chat-media-btn" onclick="triggerChatMedia()" title="Bild senden">&#128247;</button>
+    <div class="chat-input-row">
+      <button class="chat-attach-btn" onclick="triggerChatMedia()" title="Bild senden">📎</button>
       <input type="file" id="chatMediaInput" accept="image/*,video/mp4,video/webm" style="display:none" onchange="uploadChatMedia(this)">
-      <input class="chat-input" id="chatInput" placeholder="Nachricht&#8230;" onkeydown="if(event.key==='Enter'&amp;&amp;!event.shiftKey){event.preventDefault();sendMessage()}" oninput="sendTypingPresence()">
-      <button class="chat-send-btn" onclick="sendMessage()">&#10148;</button>
+      <textarea class="chat-text-input" id="chatInput" placeholder="Nachricht…" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}" oninput="sendTypingPresence();this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px';"></textarea>
+      <button class="chat-send-btn" onclick="sendMessage()">➤</button>
     </div>
   </div>
 </div>
-<div class="modal-overlay" id="reportModal" style="display:none;align-items:center;justify-content:center" onclick="if(event.target===this)closeReportModal()">
-  <div class="modal-box" style="max-width:340px;padding:24px">
-    <h3 style="margin:0 0 10px">Nachricht melden</h3>
-    <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px">Warum m&#246;chten Sie diese Nachricht melden?</p>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-      <button class="btn btn-secondary" onclick="submitReport('spam')">Spam</button>
-      <button class="btn btn-secondary" onclick="submitReport('unangemessen')">Unangemessener Inhalt</button>
-      <button class="btn btn-secondary" onclick="submitReport('belaestigung')">Bel&#228;stigung</button>
+<button class="chat-fab" id="chatFab" style="display:none" onclick="openLastChat()">💬<span class="chat-fab-badge" id="chatFabBadge">0</span></button>
+<div class="modal-overlay" id="reportModal" style="display:none;position:fixed;inset:0;z-index:10001;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+  <div style="background:#111;border-radius:20px;padding:24px;width:320px;border:1px solid #222;">
+    <h3 style="color:#fff;margin:0 0 16px">Nachricht melden</h3>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button onclick="submitReport('spam')" style="padding:10px;background:#1e1e1e;border:1px solid #333;border-radius:10px;color:#ccc;cursor:pointer;text-align:left">🚫 Spam</button>
+      <button onclick="submitReport('unangemessen')" style="padding:10px;background:#1e1e1e;border:1px solid #333;border-radius:10px;color:#ccc;cursor:pointer;text-align:left">⚠️ Unangemessener Inhalt</button>
+      <button onclick="submitReport('belaestigung')" style="padding:10px;background:#1e1e1e;border:1px solid #333;border-radius:10px;color:#ccc;cursor:pointer;text-align:left">😠 Belästigung</button>
     </div>
-    <button class="btn btn-secondary" onclick="closeReportModal()">Abbrechen</button>
+    <button onclick="closeReportModal()" style="margin-top:14px;width:100%;padding:10px;background:#222;border:none;border-radius:10px;color:#888;cursor:pointer">Abbrechen</button>
+  </div>
+</div>
+<div class="offer-picker-overlay" id="offerPickerOverlay" onclick="if(event.target===this)closeOfferPicker()">
+  <div class="offer-picker">
+    <h3>Service als Angebot senden</h3>
+    <div id="offerPickerList"></div>
+    <button onclick="closeOfferPicker()" style="margin-top:8px;width:100%;padding:10px;background:#1e1e1e;border:1px solid #333;border-radius:10px;color:#888;cursor:pointer">Abbrechen</button>
   </div>
 </div>
 <script>
@@ -3372,170 +3407,289 @@ async function loadAllConversations(){
 function _chatConvoClick(bookingId,title){openChat(bookingId,'customer',title);}
 
 function openChat(bookingId, role, title) {
-  _chatBookingId = bookingId;
-  _chatRole = role || 'customer';
-  document.getElementById('chatTitle').textContent = title || 'Chat';
-  document.getElementById('chatOverlay').classList.add('active');
-  document.body.style.overflow = 'hidden';
+  window._chatBookingId = bookingId;
+  window._chatRole = role;
   window._chatMessages = [];
+  const overlay = document.getElementById('chatOverlay');
+  if (!overlay) return;
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  const titleEl = document.getElementById('chatTitle');
+  if (titleEl) titleEl.textContent = title || 'Chat';
+  const offerBtn = document.getElementById('chatOfferBtn');
+  if (offerBtn) offerBtn.className = 'chat-offer-btn' + (role === 'salon' ? ' visible' : '');
+  if (role === 'salon') {
+    const qr = document.getElementById('chatQuickReplies');
+    if (qr) {
+      const templates = ['Bestätigt ✓','Bitte Uhrzeit bestätigen','Termin verschoben','Kein Problem!','Wir freuen uns auf Sie'];
+      qr.innerHTML = templates.map(t => '<button class="chat-qr-btn" data-t="' + t + '" onclick="setQuickReply(this.getAttribute('data-t'))">' + t + '</button>').join('');
+      qr.style.display = 'flex';
+    }
+  } else {
+    const qr = document.getElementById('chatQuickReplies');
+    if (qr) qr.style.display = 'none';
+  }
   loadMessages();
-  const qr = document.getElementById('chatQuickReplies');
-  if (_chatRole === 'salon') {
-    const tpls = ['Termin bestätigt ✅','+10 min 🕐','Bitte Foto schicken 📷','Danke für Ihren Besuch 🙏','Heute ausgebucht ❌'];
-    qr.innerHTML = tpls.map(t => '<button class="chat-qr-btn" onclick="setQuickReply('' + t.replace(/\/g,'\\').replace(/'/g,"\'") + '')">' + t + '</button>').join('');
-    qr.style.display = 'flex';
-  } else { qr.style.display = 'none'; }
   subscribeToMessages();
 }
+
 function closeChat() {
-  document.getElementById('chatOverlay').classList.remove('active');
+  const overlay = document.getElementById('chatOverlay');
+  if (overlay) overlay.classList.remove('active');
   document.body.style.overflow = '';
-  if (_chatChannel) { _chatChannel.unsubscribe(); _chatChannel = null; }
-  if (window._typingTimeout) clearTimeout(window._typingTimeout);
-  const ty = document.getElementById('chatTyping'); if (ty) ty.classList.remove('visible');
-  clearChatSearch();
+  if (window._chatChannel) { window._chatChannel.unsubscribe(); window._chatChannel = null; }
+  const typing = document.getElementById('chatTyping');
+  if (typing) typing.classList.remove('visible');
+  window._chatBookingId = null;
 }
-function loadMessages() {
-  const container = document.getElementById('chatMessages');
-  container.innerHTML = '<div class="chat-empty">Lade…</div>';
-  supabase.from('messages').select('*').eq('booking_id', _chatBookingId).order('created_at', {ascending: true}).then(({data, error}) => {
-    if (error) { container.innerHTML = '<div class="chat-empty">Fehler beim Laden.</div>'; return; }
-    window._chatMessages = data || [];
-    renderAllChatMessages();
-    container.scrollTop = container.scrollHeight;
-    markMessagesRead();
-    const badge = document.querySelector('[data-booking-id="' + _chatBookingId + '"] .chat-unread-badge');
-    if (badge) badge.remove();
-  });
+
+async function loadMessages() {
+  const msgs = document.getElementById('chatMessages');
+  if (!msgs || !window._chatBookingId) return;
+  msgs.innerHTML = '<div style="color:#555;text-align:center;padding:40px 20px;font-size:13px">Lade Nachrichten…</div>';
+  const { data, error } = await supabase.from('messages').select('*').eq('booking_id', window._chatBookingId).order('created_at', { ascending: true });
+  if (error) { msgs.innerHTML = '<div style="color:#FF6B6B;text-align:center;padding:20px;font-size:13px">Fehler beim Laden</div>'; return; }
+  window._chatMessages = data || [];
+  renderAllChatMessages();
+  markMessagesRead();
+  const badge = document.querySelector('[data-booking-id="' + window._chatBookingId + '"] .chat-unread-badge');
+  if (badge) badge.style.display = 'none';
 }
+
 function renderAllChatMessages() {
-  const container = document.getElementById('chatMessages');
-  const msgs = window._chatMessages || [];
-  if (!msgs.length) { container.innerHTML = '<div class="chat-empty">Noch keine Nachrichten.</div>'; return; }
-  container.innerHTML = msgs.map(m => renderChatMsg(m)).join('');
-}
-function renderChatMsg(m) {
-  const mine = _chatRole === m.sender_role;
-  const cls = mine ? 'mine' : 'theirs';
-  const time = new Date(m.created_at).toLocaleTimeString('de-CH', {hour:'2-digit', minute:'2-digit'});
-  const readIcon = mine ? '<span class="chat-read-status' + (m.is_read ? ' read' : '') + '">✓✓</span>' : '';
-  let bubble = '';
-  if (m.message_type === 'image') {
-    bubble = '<img src="' + escHtmlChat(m.media_url||'') + '" class="chat-img-preview" onclick="window.open(this.src,'_blank')" loading="lazy">';
-  } else if (m.message_type === 'offer') {
-    let off = {}; try { off = JSON.parse(m.body); } catch(e) { off = {title:'Angebot', body: m.body}; }
-    bubble = '<div class="chat-offer"><div class="offer-title">🎁 ' + escHtmlChat(off.title||'Angebot') + '</div><div class="offer-body">' + escHtmlChat(off.body||'') + '</div><span class="offer-cta" onclick="alert('Angebot notiert!')">Annehmen</span></div>';
-  } else {
-    bubble = '<div class="chat-bubble">' + escHtmlChat(m.body||'') + '</div>';
+  const msgs = document.getElementById('chatMessages');
+  if (!msgs) return;
+  if (!window._chatMessages || !window._chatMessages.length) {
+    msgs.innerHTML = '<div style="color:#555;text-align:center;padding:40px 20px;font-size:13px">Noch keine Nachrichten.<br>Schreib etwas! ✉️</div>';
+    return;
   }
-  const rptBtn = !mine ? '<button class="chat-report-btn" onclick="openReportModal(' + m.id + ')" title="Melden">⚑</button>' : '';
-  return '<div class="chat-msg ' + cls + '" data-msg-id="' + m.id + '">' + bubble + '<div class="chat-meta">' + time + readIcon + rptBtn + '</div></div>';
+  let html = '';
+  let lastDay = '';
+  for (const m of window._chatMessages) {
+    const day = m.created_at ? m.created_at.slice(0, 10) : '';
+    if (day && day !== lastDay) {
+      const label = new Date(day).toLocaleDateString('de-CH', { weekday: 'long', day: 'numeric', month: 'long' });
+      html += '<div class="chat-day-divider">' + label + '</div>';
+      lastDay = day;
+    }
+    html += renderChatMsg(m);
+  }
+  msgs.innerHTML = html;
+  msgs.scrollTop = msgs.scrollHeight;
 }
-function markMessagesRead() {
-  const other = _chatRole === 'salon' ? 'customer' : 'salon';
-  supabase.from('messages').update({is_read: true}).eq('booking_id', _chatBookingId).eq('sender_role', other).eq('is_read', false).then(() => {});
+
+function renderChatMsg(m) {
+  const isSent = m.sender_id === (currentUser && currentUser.id);
+  const side = isSent ? 'sent' : 'received';
+  const time = m.created_at ? new Date(m.created_at).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' }) : '';
+  const tick = isSent ? '<span class="chat-read-tick">' + (m.is_read ? '✓✓' : '✓') + '</span>' : '';
+  let bodyHtml = '';
+  if (m.message_type === 'image' && m.media_url) {
+    bodyHtml = '<img src="' + escapeHtmlChat(m.media_url) + '" class="chat-img-msg" onclick="window.open(this.src,'_blank')" alt="Bild">';
+  } else if (m.message_type === 'offer') {
+    let offer = {};
+    try { offer = JSON.parse(m.body || '{}'); } catch(e) { offer = { name: m.body }; }
+    bodyHtml = '<div class="chat-offer-card"><h4>🎁 ' + escapeHtmlChat(offer.name || 'Angebot') + '</h4><div class="chat-offer-price">' + (offer.price ? escapeHtmlChat(String(offer.price)) + ' CHF' : '') + '</div><div class="chat-offer-dur">' + (offer.duration ? escapeHtmlChat(String(offer.duration)) + ' Min.' : '') + '</div><button class="chat-offer-book-btn" onclick="closeChat()">Jetzt buchen →</button></div>';
+  } else {
+    const bodyTxt = escapeHtmlChat(m.body || '');
+    const trHtml = m.translated_body ? '<div class="chat-translated-text" id="tr-' + m.id + '">' + escapeHtmlChat(m.translated_body) + '</div>' : '';
+    bodyHtml = '<div class="chat-bubble">' + bodyTxt + trHtml + '</div>';
+    if (!isSent && m.body) {
+      bodyHtml += '<button class="chat-translate-btn" onclick="translateMsg(' + m.id + ')">🌐 Übersetzen</button>';
+    }
+  }
+  const reportBtn = !isSent ? '<button class="chat-report-btn" onclick="openReportModal(' + m.id + ')">⚑</button>' : '';
+  return '<div class="chat-msg-row ' + side + '" data-msg-id="' + m.id + '">' + bodyHtml + '<div class="chat-bubble-meta"><span>' + time + '</span>' + tick + '</div>' + reportBtn + '</div>';
 }
+
+async function markMessagesRead() {
+  if (!window._chatBookingId || !currentUser) return;
+  const senderRole = window._chatRole === 'salon' ? 'customer' : 'salon';
+  await supabase.from('messages').update({ is_read: true }).eq('booking_id', window._chatBookingId).eq('sender_role', senderRole).eq('is_read', false);
+}
+
 async function sendMessage() {
   const input = document.getElementById('chatInput');
-  const body = (input.value || '').trim(); if (!body) return;
+  if (!input) return;
+  const body = input.value.trim();
+  if (!body || !window._chatBookingId || !currentUser) return;
   input.value = '';
-  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
-  const {data, error} = await supabase.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body, message_type: 'text', is_read: false}).select().single();
-  if (!error && data) {
-    if (!window._chatMessages) window._chatMessages = [];
-    window._chatMessages.push(data); renderAllChatMessages();
-    const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight;
-    sendEmailFallback(data);
-  }
+  input.style.height = 'auto';
+  const { data, error } = await supabase.from('messages').insert({ booking_id: window._chatBookingId, sender_id: currentUser.id, sender_role: window._chatRole || 'customer', body, message_type: 'text' }).select().single();
+  if (error) { if (typeof showToast === 'function') showToast('Fehler beim Senden'); return; }
+  window._chatMessages = window._chatMessages || [];
+  window._chatMessages.push(data);
+  renderAllChatMessages();
+  sendEmailFallback(data);
 }
+
 function subscribeToMessages() {
-  if (_chatChannel) _chatChannel.unsubscribe();
-  _chatChannel = supabase.channel('chat:' + _chatBookingId);
-  _chatChannel.on('postgres_changes', {event:'INSERT', schema:'public', table:'messages', filter:'booking_id=eq.' + _chatBookingId}, payload => {
-    const msg = payload.new;
-    if (!window._chatMessages) window._chatMessages = [];
-    if (!window._chatMessages.some(m => m.id === msg.id)) {
-      window._chatMessages.push(msg); renderAllChatMessages();
-      const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight;
-      if (msg.sender_role !== _chatRole) markMessagesRead();
-    }
-  }).on('postgres_changes', {event:'UPDATE', schema:'public', table:'messages', filter:'booking_id=eq.' + _chatBookingId}, payload => {
-    const u = payload.new;
-    if (window._chatMessages) { const i = window._chatMessages.findIndex(m => m.id === u.id); if (i !== -1) { window._chatMessages[i] = u; renderAllChatMessages(); } }
-  }).on('broadcast', {event:'typing'}, ({payload}) => {
-    if (payload.role !== _chatRole) {
-      const ty = document.getElementById('chatTyping'); if (!ty) return;
-      ty.classList.add('visible');
-      if (window._hideTypingTimer) clearTimeout(window._hideTypingTimer);
-      window._hideTypingTimer = setTimeout(() => ty.classList.remove('visible'), 2500);
-    }
-  }).subscribe();
+  if (window._chatChannel) { window._chatChannel.unsubscribe(); }
+  window._chatChannel = supabase.channel('chat-' + window._chatBookingId)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'booking_id=eq.' + window._chatBookingId }, payload => {
+      const m = payload.new;
+      if (m.sender_id === (currentUser && currentUser.id)) return;
+      window._chatMessages = window._chatMessages || [];
+      window._chatMessages.push(m);
+      renderAllChatMessages();
+      markMessagesRead();
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: 'booking_id=eq.' + window._chatBookingId }, payload => {
+      const idx = (window._chatMessages || []).findIndex(x => x.id === payload.new.id);
+      if (idx >= 0) window._chatMessages[idx] = payload.new;
+      renderAllChatMessages();
+    })
+    .on('broadcast', { event: 'typing' }, payload => {
+      if (payload.payload && payload.payload.sender !== (currentUser && currentUser.id)) {
+        const t = document.getElementById('chatTyping');
+        if (t) { t.classList.add('visible'); clearTimeout(window._typingTimer); window._typingTimer = setTimeout(() => t.classList.remove('visible'), 2500); }
+      }
+    })
+    .subscribe();
 }
+
 function sendTypingPresence() {
-  if (!_chatChannel) return;
-  _chatChannel.send({type:'broadcast', event:'typing', payload:{role:_chatRole}});
-  if (window._typingTimeout) clearTimeout(window._typingTimeout);
-  window._typingTimeout = setTimeout(() => {}, 2000);
+  if (!window._chatChannel || !currentUser) return;
+  clearTimeout(window._typingSendTimer);
+  window._typingSendTimer = setTimeout(() => {
+    window._chatChannel.send({ type: 'broadcast', event: 'typing', payload: { sender: currentUser.id } });
+  }, 300);
 }
-function setQuickReply(text) { const i = document.getElementById('chatInput'); i.value = text; i.focus(); }
+
+function setQuickReply(text) {
+  const input = document.getElementById('chatInput');
+  if (input) { input.value = text; input.focus(); }
+}
+
 function toggleChatSearch() {
   const bar = document.getElementById('chatSearchBar');
-  const vis = bar.style.display !== 'none';
-  bar.style.display = vis ? 'none' : 'flex';
-  if (!vis) document.getElementById('chatSearchInput').focus(); else clearChatSearch();
+  if (!bar) return;
+  const hidden = bar.style.display === 'none' || !bar.style.display;
+  bar.style.display = hidden ? 'block' : 'none';
+  if (hidden) { const inp = bar.querySelector('input'); if (inp) { inp.focus(); inp.value = ''; } }
 }
+
 function filterChatMessages(q) {
   if (!q) { renderAllChatMessages(); return; }
-  const lq = q.toLowerCase();
-  const all = window._chatMessages || [];
-  const filtered = all.filter(m => (m.body||'').toLowerCase().includes(lq));
-  const c = document.getElementById('chatMessages');
-  if (!filtered.length) { c.innerHTML = '<div class="chat-empty">Keine Treffer</div>'; return; }
-  const saved = window._chatMessages;
-  window._chatMessages = filtered; renderAllChatMessages(); window._chatMessages = saved;
+  const ql = q.toLowerCase();
+  const backup = window._chatMessages;
+  const filtered = (window._chatMessages || []).filter(m => m.body && m.body.toLowerCase().includes(ql));
+  window._chatMessages = filtered;
+  renderAllChatMessages();
+  window._chatMessages = backup;
 }
+
 function clearChatSearch() {
-  const b = document.getElementById('chatSearchBar'); if (b) b.style.display = 'none';
-  const i = document.getElementById('chatSearchInput'); if (i) i.value = '';
-  if (window._chatMessages) renderAllChatMessages();
+  const bar = document.getElementById('chatSearchBar');
+  if (bar) bar.style.display = 'none';
+  renderAllChatMessages();
 }
-function triggerChatMedia() { document.getElementById('chatMediaInput').click(); }
+
+function triggerChatMedia() {
+  const inp = document.getElementById('chatMediaInput');
+  if (inp) inp.click();
+}
+
 async function uploadChatMedia(input) {
-  const file = input.files && input.files[0]; if (!file) return;
-  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
-  const ext = file.name.split('.').pop();
-  const path = user.id + '/' + _chatBookingId + '/' + Date.now() + '.' + ext;
-  const {error: upErr} = await supabase.storage.from('chat-media').upload(path, file, {upsert: true});
-  if (upErr) { alert('Upload fehlgeschlagen: ' + upErr.message); input.value = ''; return; }
-  const {data: {publicUrl}} = supabase.storage.from('chat-media').getPublicUrl(path);
-  const {data: msgData} = await supabase.from('messages').insert({booking_id: _chatBookingId, sender_id: user.id, sender_role: _chatRole, body: publicUrl, message_type: 'image', media_url: publicUrl, is_read: false}).select().single();
-  if (msgData) { if (!window._chatMessages) window._chatMessages = []; window._chatMessages.push(msgData); renderAllChatMessages(); const c = document.getElementById('chatMessages'); c.scrollTop = c.scrollHeight; }
+  if (!input.files || !input.files.length || !currentUser || !window._chatBookingId) return;
+  const file = input.files[0];
+  const path = currentUser.id + '/' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  if (typeof showToast === 'function') showToast('Wird hochgeladen…');
+  const { data: upData, error: upErr } = await supabase.storage.from('chat-media').upload(path, file);
+  if (upErr) { if (typeof showToast === 'function') showToast('Upload fehlgeschlagen'); return; }
+  const { data: urlData } = supabase.storage.from('chat-media').getPublicUrl(path);
+  const { data, error } = await supabase.from('messages').insert({ booking_id: window._chatBookingId, sender_id: currentUser.id, sender_role: window._chatRole || 'customer', body: '', message_type: 'image', media_url: urlData.publicUrl }).select().single();
+  if (error) { if (typeof showToast === 'function') showToast('Fehler beim Senden'); return; }
+  window._chatMessages = window._chatMessages || [];
+  window._chatMessages.push(data);
+  renderAllChatMessages();
   input.value = '';
 }
+
 let _reportMsgId = null;
-function openReportModal(msgId) { _reportMsgId = msgId; const m = document.getElementById('reportModal'); if (m) m.style.display = 'flex'; }
+function openReportModal(msgId) { _reportMsgId = msgId; const m = document.getElementById('reportModal'); if (m) { m.style.display = 'flex'; } }
 function closeReportModal() { const m = document.getElementById('reportModal'); if (m) m.style.display = 'none'; _reportMsgId = null; }
 async function submitReport(reason) {
-  if (!_reportMsgId) return;
-  const {data: {user}} = await supabase.auth.getUser(); if (!user) return;
-  await supabase.from('reports').insert({reporter_id: user.id, message_id: _reportMsgId, reason});
-  closeReportModal(); if (typeof showToast === 'function') showToast('Gemeldet. Wir prüfen die Nachricht.');
+  if (!_reportMsgId || !currentUser) return;
+  await supabase.from('reports').insert({ reporter_id: currentUser.id, message_id: _reportMsgId, reason });
+  if (typeof showToast === 'function') showToast('Gemeldet. Danke!');
+  closeReportModal();
 }
+
 async function sendEmailFallback(msg) {
+  try { await fetch('/api/send-email', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ to: 'notifications@solen.ch', subject: 'Neue Chat-Nachricht', body: 'Buchung #' + msg.booking_id + ': ' + (msg.body || '[Bild]') }) }); } catch(e) {}
+}
+
+async function translateMsg(msgId) {
+  const msg = (window._chatMessages || []).find(m => m.id === msgId);
+  if (!msg || !msg.body) return;
+  const lang = localStorage.getItem('solen_lang') || 'de';
+  const btn = document.querySelector('[data-msg-id="' + msgId + '"] .chat-translate-btn');
+  if (btn) btn.textContent = '⏳';
   try {
-    const {data: bd} = await supabase.from('bookings').select('customer_id,store_id,stores(name,email),profiles(email)').eq('id', _chatBookingId).single();
-    if (!bd) return;
-    const recipientEmail = _chatRole === 'customer' ? (bd.stores && bd.stores.email) : (bd.profiles && bd.profiles.email);
-    if (!recipientEmail) return;
-    await fetch('/api/send-email', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({to: recipientEmail, subject: 'Neue Nachricht auf solen.ch', html: '<p>Neue Nachricht: <em>' + (msg.body||'').substring(0,200) + '</em></p><p><a href="https://solen.ch">Jetzt antworten</a></p>'})});
-  } catch(e) {}
+    const res = await fetch('https://api.mymemory.translated.net/get?q=' + encodeURIComponent(msg.body) + '&langpair=auto|' + lang);
+    const json = await res.json();
+    const translated = json.responseData && json.responseData.translatedText;
+    if (translated && translated !== msg.body) {
+      let trEl = document.getElementById('tr-' + msgId);
+      if (trEl) { trEl.textContent = translated; trEl.style.display = ''; }
+      else {
+        const bubble = document.querySelector('[data-msg-id="' + msgId + '"] .chat-bubble');
+        if (bubble) { const div = document.createElement('div'); div.className = 'chat-translated-text'; div.id = 'tr-' + msgId; div.textContent = translated; bubble.appendChild(div); }
+      }
+      await supabase.from('messages').update({ translated_body: translated }).eq('id', msgId);
+    }
+    if (btn) btn.textContent = '✓';
+  } catch(e) { if (btn) btn.textContent = '🌐'; if (typeof showToast === 'function') showToast('Übersetzung fehlgeschlagen'); }
+}
+
+function updateChatFab(unread) {
+  const fab = document.getElementById('chatFab');
+  const badge = document.getElementById('chatFabBadge');
+  if (!fab) return;
+  if (currentUser) fab.style.display = 'flex';
+  if (badge) { badge.textContent = unread; badge.className = 'chat-fab-badge' + (unread > 0 ? ' visible' : ''); }
+}
+
+function openLastChat() {
+  const btns = document.querySelectorAll('.btn-chat');
+  if (btns.length) btns[btns.length - 1].click();
+}
+
+async function openOfferPicker() {
+  const overlay = document.getElementById('offerPickerOverlay');
+  const list = document.getElementById('offerPickerList');
+  if (!overlay || !list || !window._chatBookingId) return;
+  overlay.classList.add('active');
+  list.innerHTML = '<div style="color:#555;text-align:center;padding:20px;font-size:13px">Lade Services…</div>';
+  const { data: booking } = await supabase.from('bookings').select('store_id').eq('id', window._chatBookingId).single();
+  if (!booking) { list.innerHTML = '<div style="color:#888;text-align:center;padding:16px">Kein Store gefunden.</div>'; return; }
+  const { data: store } = await supabase.from('stores').select('services,id').eq('id', booking.store_id).single();
+  const services = (store && Array.isArray(store.services)) ? store.services : [];
+  window._offerServices = services;
+  if (!services.length) { list.innerHTML = '<div style="color:#888;text-align:center;padding:16px;font-size:13px">Keine Services vorhanden.<br>Füge Services im Dashboard hinzu.</div>'; return; }
+  list.innerHTML = services.map((s, i) => '<div class="offer-item" onclick="sendOffer(' + i + ')"><div class="offer-item-name">' + escapeHtmlChat(s.name || 'Service') + '</div><div class="offer-item-meta"><span class="offer-item-price">' + escapeHtmlChat(String(s.price || '?')) + ' CHF</span> · ' + escapeHtmlChat(String(s.duration || '?')) + ' Min.</div></div>').join('');
+}
+
+function closeOfferPicker() {
+  const overlay = document.getElementById('offerPickerOverlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
+async function sendOffer(idx) {
+  closeOfferPicker();
+  const offer = window._offerServices && window._offerServices[idx];
+  if (!offer || !window._chatBookingId || !currentUser) return;
+  const { data, error } = await supabase.from('messages').insert({ booking_id: window._chatBookingId, sender_id: currentUser.id, sender_role: window._chatRole || 'salon', body: JSON.stringify(offer), message_type: 'offer' }).select().single();
+  if (error) { if (typeof showToast === 'function') showToast('Fehler beim Senden'); return; }
+  window._chatMessages = window._chatMessages || [];
+  window._chatMessages.push(data);
+  renderAllChatMessages();
 }
 
 function escapeHtmlChat(str){
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-// ── END CHAT ──────────────────────────────────────────────────────────────────
-
 
 function cancelBookingConfirm(id){
   window._cancelId=id;
