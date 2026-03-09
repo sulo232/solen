@@ -359,6 +359,9 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .dash-switcher{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .dash-switcher-btn{padding:8px 18px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s;color:var(--text)}
 .dash-switcher-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(78,205,196,.08)}
+.branch-picker-wrap{display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.branch-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);cursor:pointer;transition:.15s;font-size:.93rem}
+.branch-card:hover{border-color:var(--accent);background:rgba(78,205,196,.07);transform:translateY(-1px)}
 .other-filialen{margin:12px 0 16px;padding:12px 14px;background:var(--surfaceAlt);border-radius:var(--r);border:1px solid var(--border)}
 .other-filialen h4{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--text2)}
 .chat-msg{display:flex;flex-direction:column;max-width:78%}
@@ -1341,6 +1344,7 @@ let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 let currentLang=localStorage.getItem('solen_lang')||'de';
 let userLat=null, userLng=null, activeNeighbourhood='', minRatingFilter=0, maxPriceFilter=0;
 let bmState={};
+let _dashActiveSalonIdx=0, mySalons=[];
 
 // TRANSLATIONS
 const T={
@@ -3827,7 +3831,7 @@ function closeFilterSheet(){
 }
 
 // BOOKING MODAL (new simplified)
-function openBookingModal(store,preselectedTime){
+async function openBookingModal(store,preselectedTime){
   if(!store)return;
   bmState={store,service:null,date:'',time:preselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false};
   // Pre-fill from session
@@ -3839,6 +3843,7 @@ function openBookingModal(store,preselectedTime){
   const today=new Date();
   bmState.date=today.toISOString().split('T')[0];
   document.getElementById('bmTitle').textContent=`${t('book_now')} ÃÂ¢ÃÂÃÂ ${store.name}`;
+  await loadBranchesForBooking();
   renderBookingModal();
   document.getElementById('bookingModal').classList.add('open');
   if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
@@ -3847,6 +3852,22 @@ function closeBookingModal(){
   document.getElementById('bookingModal').classList.remove('open');
   bmState={};
 }
+async function loadBranchesForBooking(){
+  if(!bmState.store)return;
+  bmState.branches=null;
+  const{data}=await sb.from('stores').select('id,name,address,type').eq('parent_store_id',bmState.store.id).eq('status','approved');
+  if(data&&data.length>0)bmState.branches=data;
+}
+function selectBranch(branchId){
+  if(!bmState.branches)return;
+  const b=bmState.branches.find(x=>x.id===branchId);
+  if(!b)return;
+  bmState.selectedBranch=b; bmState.store=b;
+  bookingState.storeId=b.id;
+  renderBookingModal();
+  loadStaffPickerInBooking(b.id);
+}
+
 function renderBookingModal(){
   const s=bmState.store;
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
@@ -3872,6 +3893,10 @@ function renderBookingModal(){
     return;
   }
 
+  if(bmState.branches&&!bmState.selectedBranch){
+    document.getElementById('bmBody').innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
+    return;
+  }
   // Step indicator
   const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=hasDateTime?'active':'';
   let html=`<div class="bm-steps">
