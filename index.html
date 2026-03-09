@@ -3824,7 +3824,7 @@ function dmEsc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;'
 function dmTimeAgo(dateStr){
   if(!dateStr)return'';
   const now=Date.now(),d=new Date(dateStr).getTime(),diff=now-d;
-  if(diff<60000)return T('dm_time_now')||'now';
+  if(diff<60000)return t('dm_time_now')||'now';
   if(diff<3600000)return Math.floor(diff/60000)+'m';
   if(diff<86400000)return Math.floor(diff/3600000)+'h';
   if(diff<604800000)return Math.floor(diff/86400000)+'d';
@@ -3842,8 +3842,8 @@ function dmDateLabel(dateStr){
   const isToday=d.toDateString()===now.toDateString();
   const yesterday=new Date(now);yesterday.setDate(now.getDate()-1);
   const isYesterday=d.toDateString()===yesterday.toDateString();
-  if(isToday)return T('dm_today')||'Today';
-  if(isYesterday)return T('dm_yesterday')||'Yesterday';
+  if(isToday)return t('dm_today')||'Today';
+  if(isYesterday)return t('dm_yesterday')||'Yesterday';
   return d.toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'});
 }
 
@@ -3854,12 +3854,12 @@ function dmAvatar(name,imgUrl){
 }
 
 function dmPreviewStr(msg){
-  if(!msg)return T('dm_no_messages')||'No messages yet';
+  if(!msg)return t('dm_no_messages')||'No messages yet';
   let prefix='';
-  if(msg.sender_id===currentUser?.id)prefix=(T('dm_you')||'You')+': ';
-  if(msg.attachment_url)return prefix+(T('dm_sent_photo')||'Sent a photo');
-  if(msg.message_type==='booking_confirmation')return prefix+(T('dm_sent_booking')||'Sent a booking confirmation');
-  if(msg.reaction)return prefix+(T('dm_liked_message')||'Liked a message')+' \u2764\uFE0F';
+  if(msg.sender_id===currentUser?.id)prefix=(t('dm_you')||'You')+': ';
+  if(msg.attachment_url)return prefix+(t('dm_sent_photo')||'Sent a photo');
+  if(msg.message_type==='booking_confirmation')return prefix+(t('dm_sent_booking')||'Sent a booking confirmation');
+  if(msg.reaction)return prefix+(t('dm_liked_message')||'Liked a message')+' \u2764\uFE0F';
   const body=(msg.body||'').substring(0,60);
   return prefix+body+(msg.body?.length>60?'\u2026':'');
 }
@@ -4015,9 +4015,9 @@ async function dmOpenChat(bookingId,role){
   if(DM.role==='salon'){
     qr.style.display='flex';
     const templates=[
-      T('dm_qr_confirmed')||'Your booking is confirmed \u2705',
-      T('dm_qr_running_late')||'We\'re running 10 min late',
-      T('dm_qr_cancel_reschedule')||'Cancel or reschedule?'
+      t('dm_qr_confirmed')||'Your booking is confirmed \u2705',
+      t('dm_qr_running_late')||'We\'re running 10 min late',
+      t('dm_qr_cancel_reschedule')||'Cancel or reschedule?'
     ];
     qr.innerHTML=templates.map(t=>`<button class="dm-quick-reply" onclick="dmSendQuickReply('${dmEsc(t)}')">${dmEsc(t)}</button>`).join('');
   }else{qr.style.display='none';}
@@ -4073,7 +4073,7 @@ function dmMsgHtml(m,pending){
   let statusHtml='';
   if(isMine){
     if(pending)statusHtml='<span class="dm-pending">\u00b7\u00b7\u00b7</span>';
-    else if(m._failed)statusHtml=`<span class="dm-failed" onclick="dmRetry('${m._tempId}')">\u26A0 ${T('dm_retry')||'Retry'}</span>`;
+    else if(m._failed)statusHtml=`<span class="dm-failed" onclick="dmRetry('${m._tempId}')">\u26A0 ${t('dm_retry')||'Retry'}</span>`;
     else if(m.read_at)statusHtml='<span class="dm-tick read">\u2713\u2713</span>';
     else statusHtml='<span class="dm-tick">\u2713</span>';
   }
@@ -4148,7 +4148,7 @@ async function dmSend(){
     if(el){
       optimistic._failed=true;
       const meta=el.querySelector('.dm-msg-meta');
-      if(meta)meta.innerHTML=dmTimeShort(optimistic.created_at)+` <span class="dm-failed" onclick="dmRetryMsg('${tempId}')">\u26A0 ${T('dm_retry')||'Retry'}</span>`;
+      if(meta)meta.innerHTML=dmTimeShort(optimistic.created_at)+` <span class="dm-failed" onclick="dmRetryMsg('${tempId}')">\u26A0 ${t('dm_retry')||'Retry'}</span>`;
     }
     DM.offlineQueue.push({...optimistic});
   }
@@ -4180,7 +4180,7 @@ async function dmRetryMsg(tempId){
     }
   }catch(e){
     DM.offlineQueue.push(msg);
-    if(el){const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(msg.created_at)+` <span class="dm-failed" onclick="dmRetryMsg('${tempId}')">\u26A0 ${T('dm_retry')||'Retry'}</span>`;}
+    if(el){const meta=el.querySelector('.dm-msg-meta');if(meta)meta.innerHTML=dmTimeShort(msg.created_at)+` <span class="dm-failed" onclick="dmRetryMsg('${tempId}')">\u26A0 ${t('dm_retry')||'Retry'}</span>`;}
   }
 }
 
@@ -4224,7 +4224,7 @@ function dmAttachFile(){document.getElementById('dmFileInput').click();}
 async function dmHandleFiles(files){
   if(!files||!files.length||!DM.bookingId||!currentUser)return;
   for(const file of files){
-    if(file.size>10*1024*1024){toast(T('dm_file_too_large')||'File too large (max 10MB)','error');continue;}
+    if(file.size>10*1024*1024){toast(t('dm_file_too_large')||'File too large (max 10MB)','error');continue;}
     const tempId='tmp_'+Date.now()+'_'+Math.random().toString(36).substring(2,7);
     const isImage=file.type.startsWith('image/');
 
@@ -4412,23 +4412,23 @@ function dmShowInfo(){
 function dmEmptyHtml(type){
   if(type==='inbox')return`<div class="dm-empty">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    <div class="dm-empty-title">${T('dm_empty_inbox_title')||'No messages'}</div>
-    <div class="dm-empty-sub">${T('dm_empty_inbox_sub')||'Book an appointment to start chatting with a salon.'}</div>
+    <div class="dm-empty-title">${t('dm_empty_inbox_title')||'No messages'}</div>
+    <div class="dm-empty-sub">${t('dm_empty_inbox_sub')||'Book an appointment to start chatting with a salon.'}</div>
   </div>`;
   if(type==='chat')return`<div class="dm-empty">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    <div class="dm-empty-title">${T('dm_empty_chat_title')||'No messages yet'}</div>
-    <div class="dm-empty-sub">${T('dm_empty_chat_sub')||'Send the first message!'}</div>
+    <div class="dm-empty-title">${t('dm_empty_chat_title')||'No messages yet'}</div>
+    <div class="dm-empty-sub">${t('dm_empty_chat_sub')||'Send the first message!'}</div>
   </div>`;
   if(type==='requests')return`<div class="dm-empty">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    <div class="dm-empty-title">${T('dm_empty_requests_title')||'No requests'}</div>
-    <div class="dm-empty-sub">${T('dm_empty_requests_sub')||'Message requests will appear here.'}</div>
+    <div class="dm-empty-title">${t('dm_empty_requests_title')||'No requests'}</div>
+    <div class="dm-empty-sub">${t('dm_empty_requests_sub')||'Message requests will appear here.'}</div>
   </div>`;
   return`<div class="dm-empty">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <div class="dm-empty-title">${T('dm_error_title')||'Connection error'}</div>
-    <div class="dm-empty-sub">${T('dm_error_sub')||'Could not load messages. Please try again.'}</div>
+    <div class="dm-empty-title">${t('dm_error_title')||'Connection error'}</div>
+    <div class="dm-empty-sub">${t('dm_error_sub')||'Could not load messages. Please try again.'}</div>
   </div>`;
 }
 
@@ -6857,43 +6857,7 @@ document.addEventListener('click',function(e){
   if(box&&!e.target.closest('.location-search-wrap'))box.classList.remove('open');
 });
 
-// ── MESSAGING UI UPGRADE ──────────────────────────────────────────────
-function renderMsgStatus(status){
-  if(status==='read')return '<span class="msg-status"><span class="tick read">✓✓</span></span>';
-  if(status==='delivered')return '<span class="msg-status"><span class="tick delivered">✓✓</span></span>';
-  if(status==='sent')return '<span class="msg-status"><span class="tick">✓</span></span>';
-  if(status==='failed')return '<span class="msg-status"><span class="failed">⚠ Nicht gesendet</span></span>';
-  return '';
-}
-function renderChatAttachment(att){
-  if(!att)return '';
-  if(att.type&&att.type.startsWith('image/')){
-    return '<div class="chat-attachment-preview"><img src="'+att.url+'" alt="Bild"><div class="att-info"><div class="att-name">'+att.name+'</div><div class="att-size">'+(att.size?Math.round(att.size/1024)+'KB':'')+'</div></div></div>';
-  }
-  return '<div class="chat-attachment-preview"><div style="font-size:1.5rem">📎</div><div class="att-info"><div class="att-name">'+att.name+'</div><div class="att-size">'+(att.size?Math.round(att.size/1024)+'KB':'')+'</div></div></div>';
-}
-function renderWhatsAppHint(phone){
-  if(!phone)return '';
-  const clean=phone.replace(/\D/g,'');
-  return '<div class="whatsapp-hint"><span>💬</span> <a href="https://wa.me/'+clean+'" target="_blank" rel="noopener">Auf WhatsApp fortsetzen</a></div>';
-}
-
-// Enhance existing chat rendering if function exists
-const _origRenderChat=typeof renderChatMessages==='function'?renderChatMessages:null;
-if(_origRenderChat){
-  window.renderChatMessages=function(){
-    _origRenderChat.apply(this,arguments);
-    // Add WhatsApp hint and attachment button to chat footer
-    const chatFooter=document.querySelector('.chat-footer');
-    if(chatFooter&&!chatFooter.querySelector('.chat-attach-btn')){
-      const attachBtn=document.createElement('button');
-      attachBtn.className='chat-attach-btn';attachBtn.innerHTML='📎';
-      attachBtn.title='Datei anhängen';
-      attachBtn.onclick=function(){toast('Datei-Anhänge werden bald unterstützt.','info');};
-      chatFooter.prepend(attachBtn);
-    }
-  };
-}
+// ── MESSAGING UI UPGRADE (legacy helpers removed — now in DM system) ──
 
 // ── ENHANCED STORE DETAIL: Show categories, social icons, gallery ──
 const _origOpenStore=typeof openStore==='function'?openStore:null;
