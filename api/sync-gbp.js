@@ -86,6 +86,6 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ success: true, locationName });
   } catch (err) {
     console.error('[sync-gbp] GBP sync failed:', err.message);
-    return res.status(200).json({ success: false, error: err.message });
+    return res.status(500).json({ success: false, error: err.message });
   }
 };
