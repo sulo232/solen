@@ -219,7 +219,7 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
 .stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:28px}
 .store-card{background:var(--c-surface);border-radius:var(--r2);overflow:hidden;border:1px solid var(--c-border);cursor:pointer;transition:transform var(--motion-base) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard),border-color var(--motion-base) var(--ease-standard);position:relative;box-shadow:var(--elev-1)}
-.store-card:hover{transform:translateY(-4px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
+.store-card:hover{transform:translateY(-8px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
 .store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
 .store-card-photo{aspect-ratio:3/2;overflow:hidden;position:relative}
 .store-card-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s var(--ease)}
@@ -1458,7 +1458,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
         <button class="btn-nav-ghost" onclick="signOut();closeMobileMenu()" data-i18n="nav_logout" style="width:100%">Abmelden</button>
       </div>
-      <button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;margin-top:8px;min-height:44px" onclick="closeMobileMenu();openSalonRegistration()">&#10022; Solen-Partner werden</button>
+      <button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;margin-top:8px;min-height:44px" onclick="closeMobileMenu();openSalonRegistration()">Deinen Salon eintragen</button>
     </div>
   </div>
 </nav>
@@ -1560,48 +1560,48 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <!-- ═══ POPULAR SERVICES ICON GRID ═══ -->
   <section class="popular-services" id="popularServicesSection" aria-label="Beliebte Services">
     <div class="popular-services-header fade-in-up">
-      <div class="section-eyebrow">✦ Services entdecken</div>
+      <div class="section-eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Services entdecken</div>
       <h2>Was suchst du heute?</h2>
       <p>Wähle direkt einen Service und finde Salons in deiner Nähe</p>
     </div>
     <div class="services-icon-grid">
       <button class="service-icon-card fade-in-up stagger-1" onclick="selectServiceFromMenu('hairsalon','Coiffeur')" aria-label="Coiffeur Salons zeigen">
-        <div class="sic-icon">✂️</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Coiffeur"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
         <span class="sic-label">Coiffeur</span>
         <span class="sic-count" id="sic-count-hair"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-2" onclick="selectServiceFromMenu('barber','Barbershop')" aria-label="Barbershops zeigen">
-        <div class="sic-icon">🪒</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Barbershop"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><circle cx="6" cy="18" r="3"/></svg></div>
         <span class="sic-label">Barbershop</span>
         <span class="sic-count" id="sic-count-barber"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-3" onclick="selectServiceFromMenu('nails','Nails')" aria-label="Nagelstudios zeigen">
-        <div class="sic-icon">💅</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Nails"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
         <span class="sic-label">Nails</span>
         <span class="sic-count" id="sic-count-nails"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-4" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')" aria-label="Spa und Wellness zeigen">
-        <div class="sic-icon">🧖</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Spa"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <span class="sic-label">Spa &amp; Wellness</span>
         <span class="sic-count" id="sic-count-spa"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-5" onclick="selectServiceFromMenu('makeup','Make-up')" aria-label="Make-up Salons zeigen">
-        <div class="sic-icon">💄</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Make-up"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
         <span class="sic-label">Make-up</span>
         <span class="sic-count" id="sic-count-makeup"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-6" onclick="selectServiceFromMenu('cosmetik','Kosmetik')" aria-label="Kosmetik Salons zeigen">
-        <div class="sic-icon">🌸</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Kosmetik"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
         <span class="sic-label">Kosmetik</span>
         <span class="sic-count" id="sic-count-cosmetik"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-7" onclick="selectServiceFromMenu('eyebrows','Augenbrauen')" aria-label="Augenbrauen Salons zeigen">
-        <div class="sic-icon">🪄</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Augenbrauen"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
         <span class="sic-label">Augenbrauen</span>
         <span class="sic-count" id="sic-count-eyebrows"></span>
       </button>
       <button class="service-icon-card fade-in-up stagger-8" onclick="selectServiceFromMenu('tattoo','Tattoo &amp; Piercing')" aria-label="Tattoo und Piercing zeigen">
-        <div class="sic-icon">🖋️</div>
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Tattoo"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
         <span class="sic-label">Tattoo</span>
         <span class="sic-count" id="sic-count-tattoo"></span>
       </button>
@@ -1612,7 +1612,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
     <div class="quartier-discovery-header fade-in-up">
       <div>
-        <div class="section-eyebrow">📍 Dein Quartier</div>
+        <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Dein Quartier</div>
         <h2>Salons in deiner Nähe</h2>
       </div>
       <button class="quartier-see-all" onclick="scrollToStores()" aria-label="Alle Quartiere anzeigen">
@@ -1625,7 +1625,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75')"></div>
         <div class="qpc-overlay"></div>
         <div class="qpc-badge">Grossbasel</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Grossbasel')" aria-label="Grossbasel als Favorit">♡</button>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Grossbasel')" aria-label="Grossbasel als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
         <div class="qpc-content">
           <div class="qpc-name">Grossbasel</div>
           <div class="qpc-count">
@@ -1638,7 +1638,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=75')"></div>
         <div class="qpc-overlay"></div>
         <div class="qpc-badge">Kleinbasel</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Kleinbasel')" aria-label="Kleinbasel als Favorit">♡</button>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Kleinbasel')" aria-label="Kleinbasel als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
         <div class="qpc-content">
           <div class="qpc-name">Kleinbasel</div>
           <div class="qpc-count">
@@ -1651,7 +1651,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=75')"></div>
         <div class="qpc-overlay"></div>
         <div class="qpc-badge">Gundeli</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Gundeldingen')" aria-label="Gundeldingen als Favorit">♡</button>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Gundeldingen')" aria-label="Gundeldingen als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
         <div class="qpc-content">
           <div class="qpc-name">Gundeldingen</div>
           <div class="qpc-count">
@@ -1664,7 +1664,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=75')"></div>
         <div class="qpc-overlay"></div>
         <div class="qpc-badge">St. Johann</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'St. Johann')" aria-label="St. Johann als Favorit">♡</button>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'St. Johann')" aria-label="St. Johann als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
         <div class="qpc-content">
           <div class="qpc-name">St. Johann</div>
           <div class="qpc-count">
@@ -1677,7 +1677,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&q=75')"></div>
         <div class="qpc-overlay"></div>
         <div class="qpc-badge">Bruderholz</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Bruderholz')" aria-label="Bruderholz als Favorit">♡</button>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Bruderholz')" aria-label="Bruderholz als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
         <div class="qpc-content">
           <div class="qpc-name">Bruderholz</div>
           <div class="qpc-count">
@@ -1690,7 +1690,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
         <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1470259078422-826894b933aa?w=400&q=75')"></div>
         <div class="qpc-overlay"></div>
         <div class="qpc-badge">Hirzbrunnen</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Hirzbrunnen')" aria-label="Hirzbrunnen als Favorit">♡</button>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Hirzbrunnen')" aria-label="Hirzbrunnen als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
         <div class="qpc-content">
           <div class="qpc-name">Hirzbrunnen</div>
           <div class="qpc-count">
@@ -1778,7 +1778,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <section class="trending-section" id="trendingSection" aria-label="Neu und Trending auf solen">
   <div class="trending-header fade-in-up">
     <div>
-      <div class="section-eyebrow">🔥 Trending</div>
+      <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Trending</div>
       <h2>Neu auf solen</h2>
     </div>
     <button class="trending-see-all" onclick="scrollToStores()" aria-label="Alle Salons anzeigen">
@@ -2218,11 +2218,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <div class="footer-app-promo">
         <span class="footer-app-label">App bald verfügbar</span>
         <div class="footer-app-badges">
-          <button class="footer-app-badge" onclick="showToast('App Store Version kommt bald! 🍎','info')">
+          <button class="footer-app-badge" onclick="showToast('App Store Version kommt bald!','info')">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
             App Store
           </button>
-          <button class="footer-app-badge" onclick="showToast('Google Play Version kommt bald! 🤖','info')">
+          <button class="footer-app-badge" onclick="showToast('Google Play Version kommt bald!','info')">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5v-17c0-.83 1-1.3 1.7-.77L20 12l-15.3 9.27c-.7.52-1.7.06-1.7-.77z"/></svg>
             Google Play
           </button>
@@ -2296,11 +2296,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span data-i18n="bn_bookings">Buchungen</span>
     </button>
-    <button class="bottom-nav-item bn-logged-in hidden" onclick="openMessagesTab()" id="bnMessages">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span data-i18n="bn_messages">Nachrichten</span>
-      <span class="bn-messages-badge" id="bnMessagesBadge"></span>
-    </button>
+    <!-- Messages tab removed from bottom nav — accessible via profile dropdown -->
+    <span class="bn-messages-badge hidden" id="bnMessagesBadge"></span>
     <button class="bottom-nav-item bn-owner hidden" onclick="showPage('salon-dashboard')" id="bnDashboard">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       <span>Dashboard</span>
@@ -2525,7 +2522,7 @@ const T={
     pref_haircut:'Haarschnitt',pref_coloring:'F\u00e4rben',pref_styling:'Styling',pref_beard:'Bartpflege',pref_nails:'N\u00e4gel',pref_skincare:'Hautpflege',pref_massage:'Massage',pref_makeup_pref:'Make-up',pref_eyebrows_pref:'Augenbrauen',
     lbl_contact_person:'Kontaktperson',lbl_salon_info:'Salon-Info',lbl_services_section:'Services',
     lbl_salon_name:'Salon-Name',lbl_salon_type:'Kategorie',lbl_salon_address:'Adresse in Basel',lbl_phone_optional:'Telefon (optional)',lbl_salon_description:'Beschriibig',
-    btn_add_service:'+ Wiitere Service drzue',accept_agb:'Ich akzeptier d AGB',btn_register_salon_submit:'Solen-Partner werde',
+    btn_add_service:'+ Wiitere Service drzue',accept_agb:'Ich akzeptier d AGB',btn_register_salon_submit:'Salon eintragen',
     cancel_confirm_title:'Termin absage?',cancel_confirm_text:'Sicher, dass du de Termin absage willsch?',cancel_confirm_yes:'Ja, absage',cancel_confirm_no:'Nei',
     btn_reset_send:'Reset schicke',btn_close:'Schliesse',
     lbl_phone:'Telefon (optional)',lbl_note:'Notiz (optional)',note_placeholder:'Besonderi W\u00fcnsch...',
@@ -3466,7 +3463,7 @@ async function doSignup(){
         link.style.cssText='display:block;margin-top:8px;color:inherit;opacity:.75;cursor:pointer;font-size:.82rem;text-decoration:underline;font-weight:600';
         link.textContent='E-Mail nicht erhalten? Erneut senden';
         link.onclick=async()=>{
-          link.style.pointerEvents='none';link.textContent='Gesendet ✓';
+          link.style.pointerEvents='none';link.textContent='Gesendet';
           await sb.auth.resend({type:'signup',email:_email});
           setTimeout(()=>{link.style.pointerEvents='';link.textContent='E-Mail nicht erhalten? Erneut senden';},60000);
         };
@@ -3632,7 +3629,7 @@ async function resendPasswordReset(){
   const email=document.getElementById('resetEmail').value.trim();
   if(!email)return;
   const link=document.getElementById('resendResetLink');
-  if(link){link.style.pointerEvents='none';link.textContent='Gesendet ✓';}
+  if(link){link.style.pointerEvents='none';link.textContent='Gesendet';}
   await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
   setTimeout(()=>{if(link){link.style.pointerEvents='';link.textContent='Erneut senden';}},30000);
 }
@@ -3640,13 +3637,13 @@ async function doUpdatePassword(){
   const pw1=document.getElementById('newPw1').value;
   const pw2=document.getElementById('newPw2').value;
   const msgEl=document.getElementById('newPwMsg');
-  if(pw1.length<8){msgEl.innerHTML='<div class="msg error">Passwort muss mindestens 8 Zeichen haben.</div>';return;}
-  if(pw1!==pw2){msgEl.innerHTML='<div class="msg error">Passwörter stimmen nicht überein.</div>';return;}
+  if(pw1.length<8){msgEl.innerHTML='<div class="msg error" role="alert">Passwort muss mindestens 8 Zeichen haben.</div>';return;}
+  if(pw1!==pw2){msgEl.innerHTML='<div class="msg error" role="alert">Passwörter stimmen nicht überein.</div>';return;}
   const btn=document.querySelector('#newPasswordOverlay .btn-primary');
   btn.disabled=true;btn.textContent='...';
   const{error}=await sb.auth.updateUser({password:pw1});
   btn.disabled=false;btn.textContent='Passwort speichern';
-  if(error){console.error('[Solen] Update password error:',error);msgEl.innerHTML='<div class="msg error">'+t('err_generic')+'</div>';}
+  if(error){console.error('[Solen] Update password error:',error);msgEl.innerHTML='<div class="msg error" role="alert">'+t('err_generic')+'</div>';}
   else{document.getElementById('newPasswordOverlay').classList.remove('active');toast('Passwort erfolgreich geändert!','success');window.location.hash='';}
 }
 // Check for password recovery hash on load
@@ -3807,9 +3804,11 @@ function getPriceRange(s){const c=(s.cat||'').toLowerCase();if(c.includes('barbe
 function renderStars(rating){
   const r=Math.round((rating||0)*2)/2;
   let html='';
+  var filled='<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  var empty='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
   for(let i=1;i<=5;i++){
-    if(i<=Math.floor(r))html+='&#9733;';
-    else html+='&#9734;';
+    if(i<=Math.floor(r))html+=filled;
+    else html+=empty;
   }
   return html;
 }
@@ -3817,7 +3816,7 @@ function renderStars(rating){
 function isFav(id){return favSalons.has(String(id));}
 function toggleFav(id){const sid=String(id);if(favSalons.has(sid)){favSalons.delete(sid);}else{favSalons.add(sid);}
   localStorage.setItem('solen_favs',JSON.stringify([...favSalons]));
-  document.querySelectorAll('[data-sid="'+sid+'"]').forEach(b=>{b.className='fav-btn'+(isFav(sid)?' is-fav':'');b.textContent=isFav(sid)?'❤️':'♡';});
+  document.querySelectorAll('[data-sid="'+sid+'"]').forEach(b=>{b.className='fav-btn'+(isFav(sid)?' is-fav':'');b.innerHTML=isFav(sid)?'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';});
   if(showOnlyFavs&&!isFav(sid))renderStores();}
 function getOpenStatus(s){
   const oh=s.opening_hours;
@@ -4188,13 +4187,13 @@ function shareSalon(){
   if(!s)return;
   const url=window.location.origin+'/'+(s.slug||slugify(s.name));
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(()=>toast('Link kopiert ✔','success')).catch(()=>{fallbackCopy(url);});
+    navigator.clipboard.writeText(url).then(()=>toast('Link kopiert','success')).catch(()=>{fallbackCopy(url);});
   } else {fallbackCopy(url);}
 }
 function fallbackCopy(text){
   const ta=document.createElement('textarea');ta.value=text;
   document.body.appendChild(ta);ta.select();document.execCommand('copy');
-  document.body.removeChild(ta);toast('Link kopiert ✔','success');
+  document.body.removeChild(ta);toast('Link kopiert','success');
 }
 
 
@@ -4294,10 +4293,13 @@ async function openStore(storeId){
       </div>
       <button class="btn-book" onclick="closeStoreDetail();openBookingModal(findStore('${s.id}'),null)">${t('btn_book_now')}</button>
     </div>`;
-  document.getElementById('storeOverlay').classList.add('active');
+  var storeOv=document.getElementById('storeOverlay');
+  storeOv._triggerEl=document.activeElement;
+  storeOv.classList.add('active');
+  setTimeout(function(){trapFocus(storeOv);},100);
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
-function closeStoreDetail(){document.getElementById('storeOverlay').classList.remove('active');}
+function closeStoreDetail(){var o=document.getElementById('storeOverlay');releaseFocus(o);o.classList.remove('active');}
 
 // VENUE TABS
 function switchVenueTab(btn,tabId){
@@ -4331,11 +4333,14 @@ async function startBooking(storeId){
   if(!store)return;
   bookingState={storeId,store,step:1,service:null,date:null,time:null};
   document.getElementById('bookingTitle').textContent=`${t('btn_book_now')} — ${store.name}`;
-  document.getElementById('bookingOverlay').classList.add('active');
+  var bookOv=document.getElementById('bookingOverlay');
+  bookOv._triggerEl=document.activeElement;
+  bookOv.classList.add('active');
   renderWizStep(1);
+  setTimeout(function(){trapFocus(bookOv);},100);
 
   resetSalonSEO();}
-function closeBooking(){document.getElementById('bookingOverlay').classList.remove('active');bookingState={};}
+function closeBooking(){var o=document.getElementById('bookingOverlay');releaseFocus(o);o.classList.remove('active');bookingState={};}
 
 function setWizStep(n){
   [1,2,3,4,5].forEach(i=>{
@@ -4372,6 +4377,7 @@ function orderServicesByProfile(svcs){
 function renderWizStep(step){
   bookingState.step=step;
   setWizStep(step);
+  solenTrack('booking_step',{step:step,salon_id:bookingState.storeId});
   const svcs=allServices.filter(x=>x.store_id===bookingState.storeId||x.salon_id===bookingState.storeId);
   const ordered=orderServicesByProfile(svcs);
 
@@ -5741,8 +5747,8 @@ async function renderSalonDashboard(){
         <h3 style="margin-bottom:4px">Salon-Profil erstellen</h3>
         <p style="color:var(--muted);font-size:.9rem;margin-bottom:20px">Trage deinen Salon ein, damit Kunden dich finden können.</p>
         <form id="salonProfileForm" onsubmit="submitSalonProfile(event)" novalidate>
-          <div class="form-group"><label>Salonname *</label><input class="form-input" id="sp_name" placeholder="z.B. Studio Bella" required></div>
-          <div class="form-group"><label>Kategorie *</label>
+          <div class="form-group"><label>Salonname (Pflichtfeld)</label><input class="form-input" id="sp_name" placeholder="z.B. Studio Bella" required></div>
+          <div class="form-group"><label>Kategorie (Pflichtfeld)</label>
             <select class="form-input" id="sp_type" required>
               <option value="">Kategorie wählen...</option>
               <option value="hairsalon">Friseur</option>
@@ -5754,7 +5760,7 @@ async function renderSalonDashboard(){
               <option value="other">Sonstiges</option>
             </select>
           </div>
-          <div class="form-group"><label>Adresse *</label><input class="form-input" id="sp_address" placeholder="Hauptstrasse 12, Basel" required></div>
+          <div class="form-group"><label>Adresse (Pflichtfeld)</label><input class="form-input" id="sp_address" placeholder="Hauptstrasse 12, Basel" required></div>
           <div class="form-group"><label>Telefon</label><input class="form-input" type="tel" id="sp_phone" placeholder="+41 79 000 00 00"></div>
           <div class="form-group"><label>Beschreibung</label><textarea class="form-input" id="sp_desc" rows="3" placeholder="Beschreibe deinen Salon..."></textarea></div>
           <div class="form-group"><label>Öffnungszeiten</label><textarea class="form-input" id="sp_hours" rows="3" placeholder="Mo–Fr 09:00–19:00&#10;Sa 09:00–17:00"></textarea></div>
@@ -5808,7 +5814,7 @@ async function renderSalonDashboard(){
     <div class="admin-tabs" id="dashTabs">
       <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
-      <button class="admin-tab" onclick="showDashTab(this,'dashTabOeffnungszeiten','${salon.id}',null)">⏰ Öffnungszeiten</button>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabOeffnungszeiten','${salon.id}',null)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="display:inline;vertical-align:middle"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten</button>
     </div>
     <div id="dashTabBuchungen">
       ${allBookings.length>0?`<div class="bookings-list">${allBookings.map(b=>`<div class="booking-card">
@@ -5863,7 +5869,7 @@ async function saveDashHours(salonId){
   if(idx>=0)allStores[idx].opening_hours=oh;
   const mi=mySalons.findIndex(s=>s.id==salonId);
   if(mi>=0)mySalons[mi].opening_hours=oh;
-  toast('✔ Öffnungszeiten gespeichert','success');
+  toast('Öffnungszeiten gespeichert','success');
 }
 function showDashTab(btn,tab,salonId,storeId){
   document.querySelectorAll('#dashTabs .admin-tab').forEach(b=>b.classList.remove('active'));
@@ -6128,7 +6134,7 @@ function renderBookingModal(){
       +'</select>';
   }
   html+='<div class="recur-row"><label class="vt-opt" style="cursor:pointer;gap:8px"><input type="checkbox"'+(bmState.isRecurring?' checked':'')+' onchange="bmState.isRecurring=this.checked;renderBookingModal()"> ↺ Termin wiederholen</label>'+rOpts+'</div>';
-  html+=`<div class="form-row"><div class="form-group"><label>Name *</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div><div class="form-group"><label>Telefon *</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="Telefon" required></div></div>`;
+  html+=`<div class="form-row"><div class="form-group"><label>Name (Pflichtfeld)</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div><div class="form-group"><label>Telefon (Pflichtfeld)</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="Telefon" required></div></div>`;
   html+=`<div class="form-row"><div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail}" type="email" placeholder="E-Mail"></div><div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes}" placeholder="Besondere W\u00fcnsche"></div></div>`;
   html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:10px 0 4px;cursor:pointer"><input type="checkbox" id="bmReminder" ${bmState.wantsReminder===false?'':'checked'} onchange="bmState.wantsReminder=this.checked"> E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)</label>`;
   html+=`<label class="vt-opt" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.85rem;color:var(--text2);margin-top:6px"><input type="checkbox" id="bmSaveInfo"${bmState.saveInfo?' checked':''} onchange="bmState.saveInfo=this.checked"> Meine Daten speichern</label>`;
@@ -6240,13 +6246,13 @@ async function submitReviewReply(reviewId,salonId){
   if(!reply){toast('Bitte Text eingeben','info');return;}
   const {error}=await sb.from('reviews').update({owner_reply:reply,owner_reply_at:new Date().toISOString()}).eq('id',reviewId);
   if(error){toast('Fehler','error');return;}
-  toast('Antwort gespeichert ✔','success');
+  toast('Antwort gespeichert','success');
   loadReviews(salonId);
 }
 function renderReviewsSection(salonId,reviews){
   let html=`<div class="reviews-section"><div class="section-hd"><h3>Das sagen Kunden (${reviews.length})</h3><button class="btn-sm" onclick="toggleReviewForm('${salonId}')">${t('write_review')}</button></div>`;
   html+=`<div id="reviewForm_${salonId}" class="hidden"><div class="review-form"><div class="star-input" id="starInput_${salonId}">`;
-  for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}">&#9734;</span>`;
+  for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}" style="cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>`;
   html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Wie war dein Besuch?"></textarea></div><button class="btn-primary" onclick="submitReview('${salonId}')">Bewertung abgeben</button></div></div>`;
   reviews.forEach(r=>{
     const d=new Date(r.created_at).toLocaleDateString('de-CH');
@@ -6259,7 +6265,7 @@ let reviewStarVal={};
 function setReviewStar(salonId,val){
   reviewStarVal[salonId]=val;
   const container=document.getElementById('starInput_'+salonId);
-  if(container)container.querySelectorAll('span').forEach(s=>{s.classList.toggle('active',parseInt(s.dataset.star)<=val);s.innerHTML=parseInt(s.dataset.star)<=val?'&#9733;':'&#9734;';});
+  if(container)container.querySelectorAll('span').forEach(s=>{var isFilled=parseInt(s.dataset.star)<=val;s.classList.toggle('active',isFilled);s.innerHTML=isFilled?'<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>':'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';});
 }
 function toggleReviewForm(salonId){
   const el=document.getElementById('reviewForm_'+salonId);
@@ -6445,8 +6451,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;o
       <div class="reg-step active" id="regStep1">
         <div class="salon-reg-body">
           <p class="step-hint">Schritt 1 von 3 — Basis-Informationen</p>
-          <div class="reg-field" id="field_reg_name"><label>Salonname *</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization"><div class="reg-field-error">Bitte Salonnamen eingeben.</div></div>
-          <div class="reg-field" id="field_reg_cat"><label>Kategorie *</label>
+          <div class="reg-field" id="field_reg_name"><label>Salonname (Pflichtfeld)</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization"><div class="reg-field-error" role="alert">Bitte Salonnamen eingeben.</div></div>
+          <div class="reg-field" id="field_reg_cat"><label>Kategorie (Pflichtfeld)</label>
             <select id="reg_cat">
               <option value="">Kategorie wählen...</option>
               <option>Friseursalon / Coiffeur</option><option>Barbershop</option>
@@ -6455,10 +6461,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;o
               <option>Augenbrauen &amp; Wimpern</option><option>Massage</option>
               <option>Tattoo &amp; Piercing</option><option>Sonstiges</option>
             </select>
-            <div class="reg-field-error">Bitte Kategorie wählen.</div>
+            <div class="reg-field-error" role="alert">Bitte Kategorie wählen.</div>
           </div>
           <div class="reg-field"><label>Telefon</label><input type="tel" id="reg_phone" placeholder="+41 79 000 00 00" autocomplete="tel"></div>
-          <div class="reg-field" id="field_reg_email"><label>E-Mail des Salons *</label><input type="email" id="reg_email" placeholder="salon@example.com" autocomplete="email"><div class="reg-field-error">Bitte gültige E-Mail eingeben.</div></div>
+          <div class="reg-field" id="field_reg_email"><label>E-Mail des Salons (Pflichtfeld)</label><input type="email" id="reg_email" placeholder="salon@example.com" autocomplete="email"><div class="reg-field-error" role="alert">Das sieht nicht ganz richtig aus – check mal das Format.</div></div>
         </div>
         <div class="salon-reg-footer"><button type="button" class="reg-btn-next" onclick="regNext(1)">Weiter →</button></div>
       </div>
@@ -6466,8 +6472,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;o
       <div class="reg-step" id="regStep2">
         <div class="salon-reg-body">
           <p class="step-hint">Schritt 2 von 3 — Standort &amp; Online-Präsenz</p>
-          <div class="reg-field" id="field_reg_street"><label>Strasse &amp; Hausnummer *</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address"><div class="reg-field-error">Bitte Strasse eingeben.</div></div>
-          <div class="reg-field" id="field_reg_nb"><label>Quartier *</label>
+          <div class="reg-field" id="field_reg_street"><label>Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address"><div class="reg-field-error" role="alert">Bitte Strasse eingeben.</div></div>
+          <div class="reg-field" id="field_reg_nb"><label>Quartier (Pflichtfeld)</label>
             <select id="reg_nb">
               <option value="">Quartier wählen...</option>
               <option>Altstadt Grossbasel</option><option>Altstadt Kleinbasel</option>
@@ -6477,7 +6483,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;o
               <option>St. Alban</option><option>St. Johann</option><option>Vorstädte</option>
               <option>Wettstein</option>
             </select>
-            <div class="reg-field-error">Bitte Quartier wählen.</div>
+            <div class="reg-field-error" role="alert">Bitte Quartier wählen.</div>
           </div>
           <div class="reg-field"><label>Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
           <div class="reg-field"><label>Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
@@ -6501,7 +6507,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;o
               <input type="checkbox" id="reg_terms" style="margin-top:2px;accent-color:var(--accent2);flex-shrink:0;width:20px;height:20px;min-width:20px">
               <span>Ich akzeptiere die <a href="#" style="color:var(--accent2)" onclick="return false">Nutzungsbedingungen</a> und bestätige, dass ich berechtigt bin, diesen Salon einzutragen. *</span>
             </label>
-            <div class="reg-field-error">Bitte Nutzungsbedingungen akzeptieren.</div>
+            <div class="reg-field-error" role="alert">Bitte Nutzungsbedingungen akzeptieren.</div>
           </div>
         </div>
         <div class="salon-reg-footer">
@@ -6659,7 +6665,7 @@ function regValidateStep(step){
     if(!document.getElementById('reg_name').value.trim()){regShowFieldError('field_reg_name');errors.push('Salonname fehlt.');}
     if(!document.getElementById('reg_cat').value){regShowFieldError('field_reg_cat');errors.push('Kategorie fehlt.');}
     const e=document.getElementById('reg_email').value.trim();
-    if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){regShowFieldError('field_reg_email');errors.push('Gültige E-Mail fehlt.');}
+    if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){regShowFieldError('field_reg_email');errors.push('Bitte gib eine gültige E-Mail-Adresse ein.');}
   }
   if(step===2){
     if(!document.getElementById('reg_street').value.trim()){regShowFieldError('field_reg_street');errors.push('Strasse fehlt.');}
@@ -6709,6 +6715,7 @@ function closeSalonReg(){
 }
 function regGoTo(step){
   _regCurrentStep=step;
+  solenTrack('partner_reg_step',{step:step});
   regClearErrors();
   [1,2,3].forEach(i=>{
     const s=document.getElementById('regStep'+i);
@@ -6724,9 +6731,10 @@ function regNext(cur){
   regGoTo(cur+1);
 }
 function regPrev(cur){regGoTo(cur-1);}
-async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,user_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen ✓','success'); renderSalonDashboard(); }
+async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,user_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
   e.preventDefault();
+  solenTrack('partner_reg_submit',{});
   if(!regValidateStep(3))return;
   const btn=document.getElementById('regSubmitBtn');
   if(btn.classList.contains('loading'))return;
@@ -6800,7 +6808,7 @@ document.getElementById('salonRegModal').addEventListener('click',function(e){
     <h3> Personal hinzufügen</h3>
     <form onsubmit="submitAddStaff(event)">
       <div class="asm-field">
-        <label>Name *</label>
+        <label>Name (Pflichtfeld)</label>
         <input id="asmName" type="text" required placeholder="z.B. Maria Müller">
       </div>
       <div class="asm-field">
@@ -6845,7 +6853,7 @@ async function loadDashStaffSection(salonId){
   grid.innerHTML=data.map(m=>{
     const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
     const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
-    return '<div class="staff-card"><button class="s-del" data-id="'+m.id+'" data-sid="'+salonId+'" onclick="deleteStaff(this.dataset.id,this.dataset.sid)" title="Entfernen">✕</button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
+    return '<div class="staff-card"><button class="s-del" data-id="'+m.id+'" data-sid="'+salonId+'" onclick="deleteStaff(this.dataset.id,this.dataset.sid)" title="Entfernen" aria-label="Entfernen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
   }).join('');
 }
 
@@ -6871,7 +6879,7 @@ async function submitAddStaff(e){
   const{error}=await sb.from('store_staff').insert([{store_id:sId,name,role:role||null,photo_url:photo||null,active:true}]);
   if(error){toast('Fehler: '+error.message,'error');return;}
   closeAddStaffMdl();
-  toast('Personal hinzugefügt ✓','success');
+  toast('Personal hinzugefügt','success');
   loadDashStaffSection(sId);
 }
 
@@ -7217,8 +7225,8 @@ function obPrevStep(){if(obStep>1){obCollectStepData(obStep);obStep--;obRenderSt
 function obShowSaveStatus(status){
   const el=document.getElementById('obSaveStatus');
   if(status==='saving'){el.className='onboard-save-status saving';el.textContent='⟳ Speichert...';}
-  else if(status==='saved'){el.className='onboard-save-status saved';el.textContent='✓ Gespeichert';}
-  else if(status==='error'){el.className='onboard-save-status error';el.textContent='✕ Fehler';}
+  else if(status==='saved'){el.className='onboard-save-status saved';el.textContent='Gespeichert';}
+  else if(status==='error'){el.className='onboard-save-status error';el.textContent='Fehler';}
   else{el.className='onboard-save-status';el.textContent='';}
 }
 
@@ -7947,12 +7955,12 @@ document.addEventListener('click',function(e){
     var idx = favQuartiers.indexOf(quartier);
     if (idx === -1) {
       favQuartiers.push(quartier);
-      btn.innerHTML = '♥';
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
       btn.classList.add('fav');
-      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefügt ♥', 'success');
+      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefügt', 'success');
     } else {
       favQuartiers.splice(idx, 1);
-      btn.innerHTML = '♡';
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
       btn.classList.remove('fav');
     }
     localStorage.setItem('solenFavQuartiers', JSON.stringify(favQuartiers));
@@ -7962,7 +7970,7 @@ document.addEventListener('click',function(e){
     favQuartiers.forEach(function(q) {
       var selector = '[aria-label="' + q + ' als Favorit"]';
       var btn = document.querySelector(selector);
-      if (btn) { btn.innerHTML = '♥'; btn.classList.add('fav'); }
+      if (btn) { btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>'; btn.classList.add('fav'); }
     });
   }
 
@@ -7991,10 +7999,10 @@ document.addEventListener('click',function(e){
         card.className = 'trending-card fade-in-up stagger-' + (i + 1);
         card.setAttribute('role', 'listitem');
         var tag = i < 2
-          ? '<span class="trending-card-tag trending-tag">🔥 Trending</span>'
+          ? '<span class="trending-card-tag trending-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Trending</span>'
           : (i < 4
-            ? '<span class="trending-card-tag featured-tag">⭐ Empfohlen</span>'
-            : '<span class="trending-card-tag new-tag">✦ Neu</span>');
+            ? '<span class="trending-card-tag featured-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Empfohlen</span>'
+            : '<span class="trending-card-tag new-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Neu</span>');
         var img = store.image_url || store.photo_url || '';
         var photoHtml = img
           ? '<img src="' + img + '" alt="' + (store.name || '') + '" loading="lazy">'
@@ -8005,7 +8013,7 @@ document.addEventListener('click',function(e){
           '<div class="trending-card-body">' +
             '<div class="trending-card-meta">' +
               '<div class="trending-card-title">' + (store.name || 'Salon') + '</div>' +
-              (rating ? '<div class="trending-card-rating">★ ' + rating + '</div>' : '') +
+              (rating ? '<div class="trending-card-rating"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ' + rating + '</div>' : '') +
             '</div>' +
             '<div class="trending-card-sub">' + (store.neighbourhood || store.address || '') + '</div>' +
             tag +
