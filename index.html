@@ -1733,6 +1733,8 @@ function _trFetch(text,lang){
       }catch(e){}
       res(_trCache[key]=null); // cache failure ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ show original
       _trDrain();
+    });
+  });
 }
 async function autoTranslateElement(el,lang){
   if(!el||!lang||lang==='de')return;
