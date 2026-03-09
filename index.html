@@ -1646,6 +1646,7 @@ function switchLang(lang){
   document.documentElement.setAttribute('lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===lang);
+  });
   applyTranslations();
   if(lang!=='de')translateVisibleDescriptions(lang);
 }
