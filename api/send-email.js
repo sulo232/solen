@@ -36,8 +36,8 @@ module.exports = async function handler(req, res) {
     return true;
   };
 
-  const customerSubject = isDE ? `✅ Läuft – din Termin bi ${salonName} steht` : `✅ You're booked – ${salonName}`;
-  const salonSubject = isDE ? `📅 Neui Buchig vo ${customerName}` : `📅 New booking from ${customerName}`;
+  const customerSubject = isDE ? `Läuft – din Termin bi ${salonName} steht` : `You're booked – ${salonName}`;
+  const salonSubject = isDE ? `Neui Buchig vo ${customerName}` : `New booking from ${customerName}`;
 
   const row = (label, value) => `
     <tr>
@@ -62,7 +62,7 @@ module.exports = async function handler(req, res) {
     </div>`;
 
   const customerHtml = wrap(`
-    <h2 style="font-size:22px;font-weight:800;color:#0d0d0d;margin-bottom:8px">${isDE ? 'Läuft – din Termin steht! ✅' : 'You\'re all set! ✅'}</h2>
+    <h2 style="font-size:22px;font-weight:800;color:#0d0d0d;margin-bottom:8px">${isDE ? 'Läuft – din Termin steht!' : 'You\'re all set!'}</h2>
     <p style="color:#666;font-size:15px;margin-bottom:28px">${isDE ? `Hey ${customerName}, hier d Details zu dim Termin:` : `Hey ${customerName}, here's what's booked:`}</p>
     ${table(
       row(isDE ? 'Salon' : 'Salon', salonName) +
@@ -70,11 +70,11 @@ module.exports = async function handler(req, res) {
       row(isDE ? 'Datum' : 'Date', date) +
       row(isDE ? 'Uhrzeit' : 'Time', time)
     )}
-    <p style="color:#666;font-size:13px;line-height:1.6">${isDE ? 'Bitte pünktlich cho. Wenns nid gaat, meld dich direkt bim Salon, gäll.<br>Bis denn! 👋' : "Try to be on time. If something comes up, just let the salon know directly.<br>See you! 👋"}</p>
+    <p style="color:#666;font-size:13px;line-height:1.6">${isDE ? 'Bitte pünktlich cho. Wenns nid gaat, meld dich direkt bim Salon, gäll.<br>Bis denn!' : "Try to be on time. If something comes up, just let the salon know directly.<br>See you!"}</p>
   `);
 
   const salonHtml = wrap(`
-    <h2 style="font-size:22px;font-weight:800;color:#0d0d0d;margin-bottom:8px">${isDE ? 'Neui Buchig isch da! 📅' : 'New booking just came in! 📅'}</h2>
+    <h2 style="font-size:22px;font-weight:800;color:#0d0d0d;margin-bottom:8px">${isDE ? 'Neui Buchig isch da!' : 'New booking just came in!'}</h2>
     <p style="color:#666;font-size:15px;margin-bottom:28px">${isDE ? 'Öpper het über solen.ch buecht – hier d Details:' : 'Someone just booked through solen.ch – here are the details:'}</p>
     ${table(
       row(isDE ? 'Kunde' : 'Customer', customerName) +
