@@ -319,7 +319,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 /* PAGES */
 .page{display:none;max-width:1200px;margin:0 auto;padding:32px 20px 60px}
 .page.active{display:block}
-.page-title{font-size:1.8rem;font-weight:900;margin-bottom:8px;letter-spacing:-0.5px}
+.page-title{font-size:1.8rem;font-weight:900;margin-bottom:8px;letter-spacing:normal}
 .page-sub{color:var(--muted);margin-bottom:32px;font-size:.95rem}
 
 /* PROFILE PAGE */
@@ -725,7 +725,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
 .store-card.revealed,.card.revealed,.booking-card.revealed{opacity:1;transform:translateY(0);}
 .btn-book:active,.btn-primary:active{transform:scale(0.97)!important;}
 .btn-book:hover,.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
-.page-title{letter-spacing:-0.02em;} @media(max-width:640px){ .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15} .hero p{font-size:.95rem} .page-title{font-size:1.55rem;font-weight:900} .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em} } @media(max-width:480px){ .store-name{font-size:1rem;font-weight:700} .store-body .store-meta{font-size:.8rem} .section-title{font-size:.95rem} .bm-header h2{font-size:1rem} .modal-hd h2{font-size:1rem} }
+.page-title{letter-spacing:normal;} @media(max-width:640px){ .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15} .hero p{font-size:.95rem} .page-title{font-size:1.55rem;font-weight:900} .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em} } @media(max-width:480px){ .store-name{font-size:1rem;font-weight:700} .store-body .store-meta{font-size:.8rem} .section-title{font-size:.95rem} .bm-header h2{font-size:1rem} .modal-hd h2{font-size:1rem} }
 
 #scrollBar{position:fixed;top:0;left:0;height:3px;z-index:9999;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);width:0;transition:width .08s linear}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.65%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27300%27 height=%27300%27 filter=%27url(%23n)%27/%3E%3C/svg%3E");background-size:300px 300px}
@@ -947,7 +947,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 </div>
 
 <!-- AUTH MODAL -->
-<div class="overlay" id="authOverlay">
+<div class="overlay" id="authOverlay" onclick="if(event.target===this)closeAuth()">
   <div class="modal" id="authModal">
     <div class="modal-hd">
       <h2 id="authModalTitle" data-i18n="auth_login_title">Anmelden</h2>
@@ -1278,22 +1278,22 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 </div>
 
 <!-- IMPRESSUM MODAL -->
-<div class="legal-modal" id="impressumModal" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="legal-modal" id="impressumModal" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
   <div class="legal-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 style="margin:0" data-i18n="impressum">Impressum</h2>
-      <button class="close-btn" onclick="document.getElementById('impressumModal').classList.remove('open')">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('impressumModal').classList.remove('open');document.body.style.overflow=''">&times;</button>
     </div>
     <p>Solen GmbH, Basel, Schweiz.<br>E-Mail: info@solen.ch<br>Handelsregisternummer: CHE-XXX.XXX.XXX</p>
   </div>
 </div>
 
 <!-- DATENSCHUTZ MODAL -->
-<div class="legal-modal" id="datenschutzModal" onclick="if(event.target===this)this.classList.remove('open')">
+<div class="legal-modal" id="datenschutzModal" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
   <div class="legal-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 style="margin:0" data-i18n="privacy">Datenschutz</h2>
-      <button class="close-btn" onclick="document.getElementById('datenschutzModal').classList.remove('open')">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('datenschutzModal').classList.remove('open');document.body.style.overflow=''">&times;</button>
     </div>
     <p>Wir erheben nur Daten fuer die Buchung. Keine Weitergabe an Dritte. Gemaess DSG haben Sie Recht auf Auskunft, Berichtigung und Loeschung.</p>
   </div>
@@ -1313,8 +1313,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <div class="footer-inner">
     <span style="font-family:'Space Grotesk',sans-serif">&copy; 2026 solen &middot; Mit Liebe aus Basel</span>
     <div class="footer-links">
-      <a onclick="document.getElementById('impressumModal').classList.add('open')" data-i18n="impressum">Impressum</a>
-      <a onclick="document.getElementById('datenschutzModal').classList.add('open')" data-i18n="privacy">Datenschutz</a>
+      <a onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</a>
+      <a onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</a>
     </div>
   </div>
 </footer>
@@ -1452,7 +1452,7 @@ const T={
     auth_choose:'W\u00e4hle deinen Zugang',auth_customer_or_owner:'Bist du ein Kunde oder ein Salon-Besitzer?',
     auth_as_customer:'Ich suche einen Salon',auth_customer_desc:'Termin buchen, Salons in Basel entdecken, pers\u00f6nliches Profil',auth_free_register:'Kostenlos registrieren',
     auth_as_owner:'Ich bin Salonbesitzer/in',auth_owner_desc:'Werde sichtbar in Basel, erhalte Buchungen, wachse mit solen',auth_register_salon:'Solen-Partner werden',
-    bn_home:'Home',bn_bookings:'Termine',bn_profile:'Profil',
+    bn_home:'Home',bn_bookings:'Termine',bn_messages:'Nachrichten',bn_profile:'Profil',
     recently_viewed:'Zuletzt angesehen',resume_at:'Weiter bei',
     status_confirmed:'Best\u00e4tigt',status_pending:'Ausstehend',status_cancelled:'Storniert',cancel_booking:'Termin absagen',booking_cancelled:'Termin abgesagt.',
     rebook:'Erneut buchen',
@@ -1522,7 +1522,7 @@ const T={
     auth_choose:'Choose your access',auth_customer_or_owner:'Are you a customer or salon owner?',
     auth_as_customer:'I\'m looking for a salon',auth_customer_desc:'Book appointments, discover salons in Basel, personal profile',auth_free_register:'Register free',
     auth_as_owner:'I\'m a salon owner',auth_owner_desc:'Get visible in Basel, receive bookings, grow with solen',auth_register_salon:'Become a solen partner',
-    bn_home:'Home',bn_bookings:'Bookings',bn_profile:'Profile',
+    bn_home:'Home',bn_bookings:'Bookings',bn_messages:'Messages',bn_profile:'Profile',
     recently_viewed:'Recently viewed',resume_at:'Continue with',
     status_confirmed:'Confirmed',status_pending:'Pending',status_cancelled:'Cancelled',
     rebook:'Book again',
@@ -1592,7 +1592,7 @@ const T={
     auth_choose:'Choisis ton acc\u00e8s',auth_customer_or_owner:'Es-tu un client ou propri\u00e9taire de salon ?',
     auth_as_customer:'Je cherche un salon',auth_customer_desc:'R\u00e9server, d\u00e9couvrir des salons \u00e0 B\u00e2le, profil personnel',auth_free_register:'Inscription gratuite',
     auth_as_owner:'Je suis propri\u00e9taire',auth_owner_desc:'Deviens visible \u00e0 B\u00e2le, re\u00e7ois des r\u00e9servations, grandis avec solen',auth_register_salon:'Devenir partenaire solen',
-    bn_home:'Accueil',bn_bookings:'R\u00e9servations',bn_profile:'Profil',
+    bn_home:'Accueil',bn_bookings:'R\u00e9servations',bn_messages:'Messages',bn_profile:'Profil',
     recently_viewed:'Vus r\u00e9cemment',resume_at:'Continuer avec',
     status_confirmed:'Confirm\u00e9',status_pending:'En attente',status_cancelled:'Annul\u00e9',
     rebook:'R\u00e9server \u00e0 nouveau',
@@ -1662,7 +1662,7 @@ const T={
     auth_choose:'EriÅim türünü seçin',auth_customer_or_owner:'MüÅteri misiniz yoksa salon sahibi mi?',
     auth_as_customer:'MüÅteri Olarak',auth_customer_desc:'Randevu alın, salonları keÅfedin, profilinizi yönetin',auth_free_register:'Ücretsiz kayıt',
     auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonları yönetin, müÅteri kazanın',auth_register_salon:'Salon kaydı',
-    bn_home:'Ana Sayfa',bn_bookings:'Rezervasyonlar',bn_profile:'Profil',
+    bn_home:'Ana Sayfa',bn_bookings:'Rezervasyonlar',bn_messages:'Mesajlar',bn_profile:'Profil',
     recently_viewed:'Son görüntülenenler',resume_at:'Devam et',
     status_confirmed:'Onaylandı',status_pending:'Beklemede',status_cancelled:'İptal edildi',
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
@@ -1944,7 +1944,6 @@ async function onSignIn(user){
   const displayName=currentProfile?.full_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'';
   // Welcome toast — show immediately so user knows login worked
   if(!sessionStorage.getItem('solenWelcomed')){sessionStorage.setItem('solenWelcomed','1');toast(t('toast_welcome')+', '+displayName+'!','success');}
-  else{toast(t('toast_welcome')+', '+displayName+'!','success');}
   await loadStores();
   // Restore scroll position so user stays where they were
   window.scrollTo(0,scrollY);
@@ -3189,8 +3188,20 @@ function formatDate(d){
   return`${parts[2]}.${parts[1]}.${parts[0]}`;
 }
 
+// CLOSE ALL MODALS (used when switching tabs via bottom nav)
+function closeAllModals(){
+  closeAuth();closeBooking();closeStoreDetail();closeChat();
+  document.getElementById('setupOverlay').classList.remove('active');
+  document.getElementById('impressumModal')?.classList.remove('open');
+  document.getElementById('datenschutzModal')?.classList.remove('open');
+  document.getElementById('editStoreOverlay').classList.remove('active');
+  document.getElementById('profileEditModal').style.display='none';
+  document.body.style.overflow='';
+}
+
 // PAGE ROUTER
 function showPage(page){
+  closeAllModals();
   document.getElementById('pageHome').style.display='none';
   ['pageProfile','pageBookings','pageAdmin','pageSalonDashboard'].forEach(p=>{const el=document.getElementById(p);if(el)el.classList.remove('active');});
   document.getElementById('navDropdown').classList.remove('open');
@@ -3286,6 +3297,7 @@ let _chatBookingId=null,_chatChannel=null,_chatRole='customer';
 
 function openMessagesTab(){
   if(!currentUser){openAuth('login');return;}
+  closeAllModals();
   const el=document.getElementById('chatOverlay');
   document.getElementById('chatTitle').textContent='\u{1F4AC} Nachrichten';
   el.classList.add('active');
@@ -4327,7 +4339,7 @@ async function submitReview(salonId){
 }
 
 // KEYBOARD SHORTCUTS
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAuth();closeBooking();closeStoreDetail();closeEditStore();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('setupOverlay').classList.remove('active');document.getElementById('profileEditModal').style.display='none';document.body.style.overflow='';document.getElementById('profileSlideIn').style.display='none';document.getElementById('impressumModal')?.classList.remove('open');document.getElementById('datenschutzModal')?.classList.remove('open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAllModals();closeAllDropdowns();closeBookingModal();closeFilterSheet();document.getElementById('profileSlideIn').style.display='none';}});
 
 // PROFILE SLIDE-IN
 function showProfileSlideIn(){document.getElementById('profileSlideIn').style.display='block';}
