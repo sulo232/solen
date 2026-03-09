@@ -3747,6 +3747,7 @@ function closeFilterSheet(){
 async function openBookingModal(store,preselectedTime){
   if(!store)return;
   bmState={store,service:null,date:'',time:preselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false};
+  const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
   // Pre-fill from session
   if(currentUser){
     bmState.guestEmail=currentUser.email||'';
@@ -3856,6 +3857,7 @@ function renderBookingModal(){
   html+=`<div class="form-row"><div class="form-group"><label>Name *</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div><div class="form-group"><label>Telefon *</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="Telefon" required></div></div>`;
   html+=`<div class="form-row"><div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail}" type="email" placeholder="E-Mail"></div><div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes}" placeholder="Besondere W\u00fcnsche"></div></div>`;
   html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:10px 0 4px;cursor:pointer"><input type="checkbox" id="bmReminder" ${bmState.wantsReminder===false?'':'checked'} onchange="bmState.wantsReminder=this.checked"> E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)</label>`;
+  html+=`<label class="vt-opt" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.85rem;color:var(--text2);margin-top:6px"><input type="checkbox" id="bmSaveInfo"${bmState.saveInfo?' checked':''} onchange="bmState.saveInfo=this.checked"> Meine Daten speichern</label>`;
   // 5. Summary
   const svc=bmState.service;
   html+=`<div class="bm-summary"><div class="row"><span>Salon</span><span>${s.name}</span></div>`;
@@ -3887,6 +3889,7 @@ async function insertBooking(){
   bmState.guestName=document.getElementById('bmGuestName')?.value||'';
   bmState.guestPhone=document.getElementById('bmGuestPhone')?.value||'';
   bmState.guestEmail=document.getElementById('bmGuestEmail')?.value||'';
+  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked||false;if(bmState.saveInfo){localStorage.setItem('solen_guest',JSON.stringify({n:bmState.guestName,p:bmState.guestPhone,e:bmState.guestEmail}));}else{localStorage.removeItem('solen_guest');}
   bmState.notes=document.getElementById('bmNotes')?.value||'';
   bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
   bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
