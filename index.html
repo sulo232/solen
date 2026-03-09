@@ -364,10 +364,11 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .branch-card:hover{border-color:var(--accent);background:rgba(78,205,196,.07);transform:translateY(-1px)}
 .other-filialen{margin:12px 0 16px;padding:12px 14px;background:var(--surfaceAlt);border-radius:var(--r);border:1px solid var(--border)}
 .other-filialen h4{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--text2)}
-.chat-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.chat-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100;display:none;align-items:flex-end;justify-content:center;padding:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .chat-overlay.active{display:flex}
 .chat-modal{background:var(--surface);width:100%;max-width:480px;height:70vh;max-height:600px;border-radius:20px 20px 0 0;display:flex;flex-direction:column;box-shadow:0 -4px 24px rgba(0,0,0,.15);overflow:hidden}
 .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+@media(max-width:768px){.chat-modal{margin-bottom:64px}}
 @media(min-width:769px){.chat-modal{border-radius:20px;margin-bottom:24px;height:60vh}}
 .chat-msg{display:flex;flex-direction:column;max-width:78%}
 .chat-msg.mine{align-self:flex-end;align-items:flex-end}
@@ -1798,7 +1799,18 @@ applyTranslations();
   }catch(e){loadStores();}
 })();
 sb.auth.onAuthStateChange((event,session)=>{
-  if(event==='SIGNED_IN'&&session?.user){if(!currentUser){currentUser=session.user;onSignIn(session.user);}if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}}else if(event==='PASSWORD_RECOVERY'){
+  if(event==='SIGNED_IN'&&session?.user){
+    const wasLoggedOut=!currentUser;
+    currentUser=session.user;
+    if(wasLoggedOut){onSignIn(session.user);}
+    else{
+      // Already had a user but auth state changed (e.g. token refresh) — refresh UI
+      document.getElementById('navGuest').classList.add('hidden');
+      document.getElementById('navUser').classList.remove('hidden');
+      renderStores();
+    }
+    if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}
+  }else if(event==='PASSWORD_RECOVERY'){
     // User arrived via password-reset email link — show the reset form
     closeAuth();
     document.getElementById('newPasswordOverlay').classList.add('active');
@@ -1842,7 +1854,8 @@ async function onSignIn(user){
   if(pendingBookingStoreId){
     const sid=pendingBookingStoreId;
     pendingBookingStoreId=null;
-    setTimeout(()=>startBooking(sid),500);
+    const pendingStore=allStores.find(x=>x.id===sid);
+    setTimeout(()=>{if(pendingStore)openBookingModal(pendingStore,null);else startBooking(sid);},500);
   }
   // Check if salon owner (existing salon/store record or salon_owner/owner profile role)
   const[{data:salonData},{data:storeData}]=await Promise.all([
@@ -3160,16 +3173,22 @@ async function loadAllConversations(){
   const container=document.getElementById('chatMessages');
   container.innerHTML='<div class="spinner"></div>';
   if(!currentUser){container.innerHTML='<p class="chat-empty">Bitte anmelden um Nachrichten zu sehen.</p>';return;}
-  const{data:bookings}=await sb.from('bookings').select('id,salon_name,store_id,stores(name)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
-  if(!bookings||bookings.length===0){
-    container.innerHTML='<div class="chat-empty"><div style="font-size:2.5rem;margin-bottom:12px">&#128172;</div><p style="font-weight:600;margin-bottom:4px">Keine Nachrichten</p><p style="font-size:.82rem;color:var(--muted)">Buche einen Termin, um mit einem Salon zu chatten.</p></div>';
-    return;
+  try{
+    const{data:bookings,error}=await sb.from('bookings').select('id,salon_name,store_id,stores(name)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
+    if(error)throw error;
+    if(!bookings||bookings.length===0){
+      container.innerHTML='<div class="chat-empty"><div style="font-size:2.5rem;margin-bottom:12px">&#128172;</div><p style="font-weight:600;margin-bottom:4px">Keine Nachrichten</p><p style="font-size:.82rem;color:var(--muted)">Buche einen Termin, um mit einem Salon zu chatten.</p></div>';
+      return;
+    }
+    // Show list of conversations
+    container.innerHTML=bookings.map(b=>{
+      const name=b.salon_name||b.stores?.name||'Salon';
+      return`<div onclick="_chatConvoClick('${b.id}','${name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s"><div style="width:40px;height:40px;border-radius:50%;background:var(--surfaceAlt);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">&#9986;</div><div><div style="font-weight:700;font-size:.92rem">${name}</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px">Tippen zum Öffnen</div></div></div>`;
+    }).join('');
+  }catch(e){
+    console.error('[Solen Chat] Failed to load conversations:', e);
+    container.innerHTML='<div class="chat-empty"><p style="font-weight:600;margin-bottom:4px">Fehler beim Laden</p><p style="font-size:.82rem;color:var(--muted)">Bitte versuche es erneut.</p></div>';
   }
-  // Show list of conversations
-  container.innerHTML=bookings.map(b=>{
-    const name=b.salon_name||b.stores?.name||'Salon';
-    return`<div onclick="_chatConvoClick('${b.id}','${name.replace(/'/g,"\\'")}')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s"><div style="width:40px;height:40px;border-radius:50%;background:var(--surfaceAlt);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">&#9986;</div><div><div style="font-weight:700;font-size:.92rem">${name}</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px">Tippen zum Öffnen</div></div></div>`;
-  }).join('');
 }
 
 function _chatConvoClick(bookingId,title){openChat(bookingId,'customer',title);}
@@ -3192,16 +3211,21 @@ function closeChat(){
 
 async function loadMessages(bookingId){
   document.getElementById('chatMessages').innerHTML='<div class="spinner"></div>';
-  const{data,error}=await sb.from('messages').select('*').eq('booking_id',bookingId).order('created_at',{ascending:true});
-  if(error){
+  try{
+    const{data,error}=await sb.from('messages').select('*').eq('booking_id',bookingId).order('created_at',{ascending:true});
+    if(error){
+      document.getElementById('chatMessages').innerHTML='<p class="chat-empty">Fehler beim Laden der Nachrichten.</p>';
+      return;
+    }
+    renderChatPanel(data||[]);
+    // mark incoming messages as read
+    if(data&&data.length&&currentUser){
+      const unread=data.filter(m=>!m.read_at&&m.sender_id!==currentUser.id).map(m=>m.id);
+      if(unread.length)await sb.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);
+    }
+  }catch(e){
+    console.error('[Solen Chat] Failed to load messages:', e);
     document.getElementById('chatMessages').innerHTML='<p class="chat-empty">Fehler beim Laden der Nachrichten.</p>';
-    return;
-  }
-  renderChatPanel(data||[]);
-  // mark incoming messages as read
-  if(data&&data.length&&currentUser){
-    const unread=data.filter(m=>!m.read_at&&m.sender_id!==currentUser.id).map(m=>m.id);
-    if(unread.length)await sb.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);
   }
 }
 
@@ -3905,6 +3929,14 @@ function closeFilterSheet(){
 // BOOKING MODAL (new simplified)
 async function openBookingModal(store,preselectedTime){
   if(!store)return;
+  // Auth gate: require login before booking (mirrors startBooking logic)
+  if(!currentUser){
+    try{
+      const{data:{session}}=await sb.auth.getSession();
+      if(session?.user){currentUser=session.user;await loadProfile();}
+    }catch(e){}
+  }
+  if(!currentUser){pendingBookingStoreId=store.id;openAuth('login');return;}
   bmState={store,service:null,date:'',time:preselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false};
   const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
   // Pre-fill from session
