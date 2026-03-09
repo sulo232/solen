@@ -2381,6 +2381,29 @@ function toggleFav(id){const sid=String(id);if(favSalons.has(sid)){favSalons.del
   localStorage.setItem('solen_favs',JSON.stringify([...favSalons]));
   document.querySelectorAll('[data-sid="'+sid+'"]').forEach(b=>{b.className='fav-btn'+(isFav(sid)?' is-fav':'');b.textContent=isFav(sid)?'❤️':'♡';});
   if(showOnlyFavs&&!isFav(sid))renderStores();}
+function getOpenStatus(s){
+  const oh=s.opening_hours;
+  if(!oh)return '';
+  let parsed=oh;
+  if(typeof oh==='string'){try{parsed=JSON.parse(oh);}catch(e){return '';}}
+  const days=['sun','mon','tue','wed','thu','fri','sat'];
+  const today=days[new Date().getDay()];
+  const todayHours=parsed[today];
+  if(!todayHours||todayHours.closed)return '<span class="hours-badge closed">Geschlossen</span>';
+  const open=todayHours.open||todayHours.from;
+  const close=todayHours.close||todayHours.to;
+  if(!open||!close)return '';
+  const now=new Date();
+  const [oh2,om]=open.split(':').map(Number);
+  const [ch,cm]=close.split(':').map(Number);
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const openMin=oh2*60+om;
+  const closeMin=ch*60+cm;
+  const isOpen=nowMin>=openMin&&nowMin<closeMin;
+  return isOpen
+    ?'<span class="hours-badge open">Offen · bis '+close+'</span>'
+    :'<span class="hours-badge closed">Geschlossen · ab '+open+'</span>';
+}
 function renderStoreCard(s){
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
   const topSvcs=svcs.slice(0,3);
@@ -2412,7 +2435,7 @@ function renderStoreCard(s){
       <div class="store-meta">&#128205; ${s.address||'Basel'}</div>
       ${topSvcs.length?`<div class="store-services-preview">${topSvcs.map(sv=>`<span class="service-chip">${sv.name} &middot; CHF ${sv.price}</span>`).join('')}</div>`:''}
       <div class="store-card-footer">
-        <span class="store-price-range">${priceDisplay}</span>
+        <span class="store-price-range">${priceDisplay}</span>${getOpenStatus(s)}
         <button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore('${s.id}'),null)">${t('btn_book')}</button>
       </div>
     </div>
@@ -4157,6 +4180,9 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .bn-tab .bn-icon{font-size:1.25rem;line-height:1;display:block}
 .bn-tab.active,.bn-tab:hover{color:var(--accent)}
 @media(max-width:768px){.bottom-nav{display:flex}body{padding-bottom:64px}}
+.hours-badge{display:inline-flex;align-items:center;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px}
+.hours-badge.open{background:rgba(37,197,94,.12);color:#15803d}
+.hours-badge.closed{background:rgba(239,68,68,.1);color:#b91c1c}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
