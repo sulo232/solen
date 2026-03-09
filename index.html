@@ -143,7 +143,7 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .hamburger{display:none;background:none;border:none;color:white;font-size:1.5rem;padding:12px;cursor:pointer;position:relative;z-index:10;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 
 /* MOBILE NAV MENU */
-.mobile-menu{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(13,13,13,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,.1);gap:8px;z-index:999}
+.mobile-menu{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(13,13,13,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,.1);gap:8px;z-index:1001}
 .mobile-menu.open{display:flex}
 .mobile-menu .lang-switcher-mobile{display:flex;gap:6px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px}
 .mobile-menu .btn-nav-ghost,.mobile-menu .btn-nav-primary{width:100%;text-align:center;min-height:44px}
@@ -317,6 +317,8 @@ input,select,textarea{font-family:inherit;min-height:44px}
 input:focus,textarea:focus{border-color:rgba(155,29,48,0.5)!important;box-shadow:0 0 0 3px rgba(155,29,48,0.1)!important;outline:none}
 .form-input::placeholder{color:var(--muted)}
 select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:40px}
+[data-theme="dark"] select.form-input{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) select.form-input{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")}}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .visit-type-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding:8px 0;border-bottom:1px solid var(--border)}
 .visit-type-lbl{font-size:.8rem;font-weight:600;color:var(--muted);min-width:80px}
@@ -1554,7 +1556,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <p data-i18n="hero_sub">Buche direkt bei Salons in deinem Quartier &ndash; ohne Umwege.</p>
       <!-- Structured Selection Menu (Fresha-inspired) -->
       <div class="hero-search" id="selectionMenu">
-        <div class="hero-search-field" onclick="toggleSelectionDropdown('service')" id="selFieldService">
+        <div class="hero-search-field" onclick="toggleSelectionDropdown('service')" id="selFieldService" role="button" tabindex="0" aria-label="Service wählen" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSelectionDropdown('service');}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/></svg>
           <div class="hero-search-field-text">
             <span class="hero-search-field-label" data-i18n="sel_service_label">Service</span>
@@ -1562,7 +1564,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
           </div>
           <div class="selection-dropdown" id="selServiceDropdown"></div>
         </div>
-        <div class="hero-search-field" onclick="toggleSelectionDropdown('quartier')" id="selFieldQuartier">
+        <div class="hero-search-field" onclick="toggleSelectionDropdown('quartier')" id="selFieldQuartier" role="button" tabindex="0" aria-label="Quartier wählen" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSelectionDropdown('quartier');}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <div class="hero-search-field-text">
             <span class="hero-search-field-label" data-i18n="sel_quartier_label">Quartier</span>
@@ -1570,7 +1572,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
           </div>
           <div class="selection-dropdown" id="selQuartierDropdown"></div>
         </div>
-        <div class="hero-search-field" onclick="toggleSelectionDropdown('time')" id="selFieldTime">
+        <div class="hero-search-field" onclick="toggleSelectionDropdown('time')" id="selFieldTime" role="button" tabindex="0" aria-label="Zeit wählen" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSelectionDropdown('time');}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <div class="hero-search-field-text">
             <span class="hero-search-field-label" data-i18n="sel_time_label">Wann</span>
@@ -1601,7 +1603,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <div style="position:relative">
     <div class="search-bar-wrap">
       <span style="font-size:18px;opacity:.5">&#128269;</span>
-      <input id="searchNlp" class="search-nlp" type="text" placeholder="Salon, Service oder Quartier suchen..." oninput="handleSearchInput(this.value)" onkeydown="if(event.key==='Enter')executeSearch()"/>
+      <input id="searchNlp" class="search-nlp" type="text" placeholder="Salon, Service oder Quartier suchen..." aria-label="Salon, Service oder Quartier suchen" oninput="handleSearchInput(this.value)" onkeydown="if(event.key==='Enter')executeSearch()"/>
       <button class="btn-geo" onclick="geoLocateMe()" title="Standort verwenden">&#128205;</button>
       <button class="btn-map-toggle" onclick="toggleMapView()" title="Kartenansicht">&#128506;&#65039;</button>
     </div>
@@ -1971,7 +1973,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <div class="modal" id="authModal">
     <div class="modal-hd">
       <h2 id="authModalTitle" data-i18n="auth_login_title">Anmelden</h2>
-      <button class="close-btn" onclick="closeAuth()">&times;</button>
+      <button class="close-btn" onclick="closeAuth()" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-body">
       <div id="authMsg" role="alert" aria-live="polite"></div>
@@ -1982,13 +1984,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
           <h2 data-i18n="auth_choose">W&auml;hle deinen Zugang</h2>
           <p data-i18n="auth_reg_choice_sub">Suchst du einen Termin oder m&ouml;chtest du deinen Salon bei solen listen?</p>
           <div class="reg-choice-cards">
-            <div class="reg-choice-card" onclick="openAuth('customer-signup')">
+            <div class="reg-choice-card" onclick="openAuth('customer-signup')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAuth('customer-signup');}">
               <div class="reg-choice-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--c-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
               <h3 data-i18n="auth_as_customer">Ich suche einen Salon</h3>
               <p data-i18n="auth_customer_desc">Termin buchen, Salons in Basel entdecken, pers&ouml;nliches Profil</p>
               <span class="reg-choice-btn" data-i18n="auth_free_register">Kostenlos registrieren</span>
             </div>
-            <div class="reg-choice-card" onclick="closeAuth();openSalonRegistration()" style="border-color:var(--accent-gold);background:rgba(212,175,119,.06)">
+            <div class="reg-choice-card" onclick="closeAuth();openSalonRegistration()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeAuth();openSalonRegistration();}" style="border-color:var(--accent-gold);background:rgba(212,175,119,.06)">
               <div class="reg-choice-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--c-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><path d="M8.12 8.12L12 12"/></svg></div>
               <h3 data-i18n="auth_as_owner">Ich bin Salonbesitzer/in</h3>
               <p data-i18n="auth_owner_desc">Werde sichtbar in Basel, erhalte Buchungen, wachse mit solen</p>
@@ -2223,7 +2225,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <div class="modal modal-wide">
     <div class="modal-hd">
       <h2 id="bookingTitle" data-i18n="btn_book_now">Termin buchen</h2>
-      <button class="close-btn" onclick="closeBooking()">&times;</button>
+      <button class="close-btn" onclick="closeBooking()" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-body">
       <div class="wiz-steps" id="wizSteps">
@@ -2243,7 +2245,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
   <div class="modal">
     <div class="modal-hd">
       <h2 id="editStoreTitle">Salon bearbeiten</h2>
-      <button class="close-btn" onclick="closeEditStore()">&times;</button>
+      <button class="close-btn" onclick="closeEditStore()" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-body" id="editStoreBody"></div>
   </div>
@@ -2331,7 +2333,7 @@ id="bookingModal">
   <div class="bm-content">
     <div class="bm-header">
       <h2 id="bmTitle">Termin buchen</h2>
-      <button class="close-btn" onclick="closeBookingModal()">&times;</button>
+      <button class="close-btn" onclick="closeBookingModal()" aria-label="Schliessen">&times;</button>
     </div>
     <div class="bm-body" id="bmBody"></div>
   </div>
@@ -2350,7 +2352,7 @@ id="bookingModal">
   <div class="legal-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 style="margin:0" data-i18n="impressum">Impressum</h2>
-      <button class="close-btn" onclick="document.getElementById('impressumModal').classList.remove('open');document.body.style.overflow=''">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('impressumModal').classList.remove('open');document.body.style.overflow=''" aria-label="Schliessen">&times;</button>
     </div>
     <p>Solen GmbH, Basel, Schweiz.<br>E-Mail: info@solen.ch<br>Handelsregisternummer: CHE-XXX.XXX.XXX</p>
   </div>
@@ -2361,7 +2363,7 @@ id="bookingModal">
   <div class="legal-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 style="margin:0" data-i18n="privacy">Datenschutz</h2>
-      <button class="close-btn" onclick="document.getElementById('datenschutzModal').classList.remove('open');document.body.style.overflow=''">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('datenschutzModal').classList.remove('open');document.body.style.overflow=''" aria-label="Schliessen">&times;</button>
     </div>
     <p>Wir erheben nur Daten fuer die Buchung. Keine Weitergabe an Dritte. Gemaess DSG haben Sie Recht auf Auskunft, Berichtigung und Loeschung.</p>
   </div>
@@ -2487,7 +2489,7 @@ id="bookingModal">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="newPwTitle">Neues Passwort</h2>
-      <button class="close-btn" onclick="document.getElementById('newPasswordOverlay').classList.remove('active')">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('newPasswordOverlay').classList.remove('active')" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-body">
       <div id="newPwMsg"></div>
@@ -2509,7 +2511,7 @@ id="bookingModal">
   <div class="modal">
     <div class="modal-hd">
       <h2 data-i18n="cancel_confirm_title">Termin absagen?</h2>
-      <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">&times;</button>
+      <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-bd">
       <p style="color:#666;margin-bottom:20px" data-i18n="cancel_confirm_text">Sicher, dass du diesen Termin absagen m&ouml;chtest?</p>
@@ -2616,6 +2618,7 @@ let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBooki
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 let currentLang=localStorage.getItem('solen_lang')||'de';
+function getLocale(){return currentLang==='en'?'en-GB':currentLang==='fr'?'fr-CH':'de-CH';}
 let userLat=null, userLng=null, activeNeighbourhood='', minRatingFilter=0, maxPriceFilter=0;
 let bmState={}
 let favSalons=new Set(JSON.parse(localStorage.getItem('solen_favs')||'[]')),showOnlyFavs=false;;
@@ -4105,7 +4108,7 @@ renderRecentlyViewed();
   document.getElementById('storesCount').textContent=`${filtered.length} ${filtered.length!==1?t('salon_count_other'):t('salon_count_one')}`;
   if(filtered.length===0){
     var searchQuery=document.getElementById('searchInput').value;
-    var emptyMsg=searchQuery?'Wir haben nichts zu \''+searchQuery+'\' gefunden. Versuch einen anderen Begriff.':t('empty_try_other');
+    var emptyMsg=searchQuery?(t('empty_search_no_results')||'Wir haben nichts zu \''+searchQuery+'\' gefunden. Versuch einen anderen Begriff.'):t('empty_try_other');
     document.getElementById('storesGrid').innerHTML='<div class="empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px"><h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px">'+t('empty_no_salon')+'</h3><p style="color:var(--c-text-secondary);margin-bottom:20px;line-height:var(--lh-body)">'+emptyMsg+'</p><button class="btn-primary" onclick="resetAllFilters()" style="max-width:240px;margin:0 auto">'+t('empty_show_all')+'</button></div>';
     return;
   }
@@ -4178,7 +4181,7 @@ async function renderLastMinute(){
     html+='<div class="lm-card">'+(photo?'<img src="'+photo+'" class="lm-img" loading="lazy" alt="'+s.name+'">':'')+'<div class="lm-name">'+s.name+'</div><div class="lm-chips">'+avail.map(t=>`<button class="lm-chip" onclick="openBookingModal(allStores.find(x=>x.id==='${s.id}'),'${t}')">${t}</button>`).join('')+'</div></div>';
   }
   if(!html){section.classList.add('hidden');return;}
-  const dow=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+  const dow=new Date().toLocaleDateString(getLocale(),{weekday:'long',day:'numeric',month:'long'});
   section.classList.remove('hidden');
   section.innerHTML='<div class="lm-hd"> <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="searchInput.focus()">Alle zeigen →</span></div><div class="lm-scroll">'+html+'</div>';
 }
@@ -4223,7 +4226,8 @@ function selectCat(btn,cat){
     btn.classList.add('active');
   } else {
     // Toggle this category
-    document.querySelector('.cat-pill[data-cat="all"]').classList.remove('active');
+    const allPill=document.querySelector('.cat-pill[data-cat="all"]');
+    if(allPill)allPill.classList.remove('active');
     if(activeCategories.has(cat)){
       activeCategories.delete(cat);
       btn.classList.remove('active');
@@ -4233,7 +4237,7 @@ function selectCat(btn,cat){
     }
     // If none selected, revert to all
     if(activeCategories.size===0){
-      document.querySelector('.cat-pill[data-cat="all"]').classList.add('active');
+      if(allPill)allPill.classList.add('active');
     }
   }
   saveCategoryFilter();
@@ -4411,7 +4415,7 @@ async function openStore(storeId){
           <div class="star-rating"><span class="stars">${renderStars(s.avg_rating)}</span> <span class="review-count">${avgR.toFixed(1)} (${revCount} Bewertungen)</span></div>
           <div style="font-size:.85rem;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle;margin-right:2px" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${s.address||'Basel'}</span> <span style="width:3px;height:3px;border-radius:50%;background:var(--muted);display:inline-block"></span> <span>${getTypeName(s.cat||s.type||'')}</span></div>
         </div>
-        <button class="close-btn" style="font-size:1.6rem;flex-shrink:0" onclick="document.getElementById('storeOverlay').classList.remove('active')">&times;</button>
+        <button class="close-btn" style="font-size:1.6rem;flex-shrink:0" onclick="document.getElementById('storeOverlay').classList.remove('active')" aria-label="Schliessen">&times;</button>
       </div>
     </div>
     <!-- Venue Tabs (Fresha-style) -->
@@ -4505,11 +4509,12 @@ async function startBooking(storeId){
   var bookOv=document.getElementById('bookingOverlay');
   bookOv._triggerEl=document.activeElement;
   bookOv.classList.add('active');
+  document.body.style.overflow='hidden';
   renderWizStep(1);
   setTimeout(function(){trapFocus(bookOv);},100);
 
   resetSalonSEO();}
-function closeBooking(){var o=document.getElementById('bookingOverlay');releaseFocus(o);o.classList.remove('active');bookingState={};}
+function closeBooking(){var o=document.getElementById('bookingOverlay');releaseFocus(o);o.classList.remove('active');document.body.style.overflow='';bookingState={};}
 
 function setWizStep(n){
   [1,2,3,4,5].forEach(i=>{
@@ -4678,10 +4683,11 @@ function selectService(id){
 
 function wizNext(step){
   if(step===5){
-    bookingState.firstName=document.getElementById('bkFirst')?.value||'';
-    bookingState.lastName=document.getElementById('bkLast')?.value||'';
-    bookingState.phone=document.getElementById('bkPhone')?.value||'';
+    bookingState.firstName=(document.getElementById('bkFirst')?.value||'').trim();
+    bookingState.lastName=(document.getElementById('bkLast')?.value||'').trim();
+    bookingState.phone=(document.getElementById('bkPhone')?.value||'').trim();
     bookingState.note=document.getElementById('bkNote')?.value||'';
+    if(!bookingState.firstName||!bookingState.phone){toast(t('toast_name_phone_required')||'Name und Telefonnummer sind erforderlich','error');return;}
     const reminderEl=document.getElementById('bkReminder');
     if(reminderEl)bookingState.wantsReminder=reminderEl.checked;
     const saveEl=document.getElementById('bkSaveInfo');
@@ -4696,6 +4702,8 @@ function wizNext(step){
 
 async function confirmBooking(){
   if(!_rl.check('booking',3,60000)){toast('Please wait before making another booking','error');return;}
+  if(!bookingState.firstName?.trim()||!bookingState.phone?.trim()){toast(t('toast_name_phone_required')||'Name und Telefonnummer sind erforderlich','error');return;}
+  if(!bookingState.date||!bookingState.time||!bookingState.service){toast(t('toast_booking_incomplete')||'Bitte alle Felder ausfüllen','error');return;}
   const btn=document.querySelector('#wizContent .btn-primary');
   if(btn){btn.disabled=true;btn.textContent='Buchen...';}
   const s=bookingState.service;
@@ -4745,7 +4753,8 @@ async function confirmBooking(){
       for(let ri=1;ri<bmState.recurrenceCount;ri++){
         const rd=new Date(bDate.getTime());
         rd.setDate(rd.getDate()+ri*bmState.recurrenceWeeks*7);
-        await sb.from('bookings').insert({user_id:currentUser.id,store_id:bookingState.storeId,date:rd.toISOString().slice(0,10),time:bookingState.time,customer_name:bookingState.name,customer_email:bookingState.email||currentUser.email,customer_phone:bookingState.phone,note:bookingState.note,status:'confirmed',reference:reference+'-R'+ri,staff_id:_selStaffId||null,staff_name:_selStaffName||null,is_first_visit:bookingState.isFirstVisit!==false,recurrence_group_id:recurGroupId,recurrence_index:ri,recurrence_interval_weeks:bmState.recurrenceWeeks});
+        const{error:recErr}=await sb.from('bookings').insert({user_id:currentUser.id,store_id:bookingState.storeId,salon_id:bookingState.storeId,salon_name:bookingState.store.name,service_name:s?.name||'',service_price:s?.price||0,service_duration:s?.duration||0,booking_date:rd.toISOString().slice(0,10),booking_time:bookingState.time,customer_first:bookingState.firstName,customer_last:bookingState.lastName,customer_email:currentUser.email,customer_phone:bookingState.phone,note:bookingState.note,status:'confirmed',reference:reference+'-R'+ri,staff_id:_selStaffId||null,staff_name:_selStaffName||null,is_first_visit:bookingState.isFirstVisit!==false,recurrence_group_id:recurGroupId,recurrence_index:ri,recurrence_interval_weeks:bmState.recurrenceWeeks});
+        if(recErr){console.error('Recurring booking '+ri+' failed:',recErr);toast(t('toast_recurring_partial')||'Einige Folgetermine konnten nicht erstellt werden','warning');break;}
       }
     }
   }
@@ -4864,7 +4873,7 @@ function loadPageContent(page){
 
 // PROFILE PAGE
 async function renderProfile(){
-  if(!currentUser){document.getElementById('profileContent').innerHTML='<p class="text-muted">Bitte anmelden.</p>';return;}
+  if(!currentUser){document.getElementById('profileContent').innerHTML='<p class="text-muted">'+(t('auth_required')||'Bitte anmelden.')+'</p>';return;}
   await loadProfile();
   const p=currentProfile;
   if(!p){document.getElementById('profileContent').innerHTML='<div class="spinner"></div>';return;}
@@ -4894,7 +4903,7 @@ async function renderProfile(){
 
 // BOOKINGS PAGE
 async function renderBookings(){
-  if(!currentUser){document.getElementById('bookingsContent').innerHTML='<p class="text-muted">Bitte anmelden.</p>';return;}
+  if(!currentUser){document.getElementById('bookingsContent').innerHTML='<p class="text-muted">'+(t('auth_required')||'Bitte anmelden.')+'</p>';return;}
   document.getElementById('bookingsContent').innerHTML='<div class="spinner"></div>';
   const{data,error}=await sb.from('bookings').select('*,stores(name,type)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
   if(error||!data||data.length===0){
@@ -4909,7 +4918,7 @@ async function renderBookings(){
       <div class="booking-icon">${getStoreEmoji(storeType)}</div>
       <div class="booking-info">
         <div class="booking-store">${storeName}</div>
-        <div class="booking-details">${b.service_name||''} &bull; ${formatDate(b.booking_date)}${b.booking_time?' um '+b.booking_time+' Uhr':''}</div>
+        <div class="booking-details">${b.service_name||''} &bull; ${formatDate(b.booking_date)}${b.booking_time?' '+(t('at_time')||'um')+' '+b.booking_time+(currentLang==='de'?' Uhr':''):''}</div>
         ${b.service_price?`<div class="booking-details" style="margin-top:2px">CHF ${b.service_price}</div>`:''}
       </div>
       <span class="booking-status ${statusClass}">${b.status==='confirmed'?t('status_confirmed'):b.status==='cancelled'?t('status_cancelled'):t('status_pending')}</span>
@@ -4943,12 +4952,12 @@ function dmTimeAgo(dateStr){
   if(diff<3600000)return Math.floor(diff/60000)+'m';
   if(diff<86400000)return Math.floor(diff/3600000)+'h';
   if(diff<604800000)return Math.floor(diff/86400000)+'d';
-  return new Date(dateStr).toLocaleDateString('de-CH',{day:'numeric',month:'short'});
+  return new Date(dateStr).toLocaleDateString(getLocale(),{day:'numeric',month:'short'});
 }
 
 function dmTimeShort(dateStr){
   if(!dateStr)return'';
-  return new Date(dateStr).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+  return new Date(dateStr).toLocaleTimeString(getLocale(),{hour:'2-digit',minute:'2-digit'});
 }
 
 function dmDateLabel(dateStr){
@@ -4959,7 +4968,7 @@ function dmDateLabel(dateStr){
   const isYesterday=d.toDateString()===yesterday.toDateString();
   if(isToday)return t('dm_today')||'Today';
   if(isYesterday)return t('dm_yesterday')||'Yesterday';
-  return d.toLocaleDateString('de-CH',{weekday:'long',day:'numeric',month:'long'});
+  return d.toLocaleDateString(getLocale(),{weekday:'long',day:'numeric',month:'long'});
 }
 
 function dmAvatar(name,imgUrl){
@@ -5121,7 +5130,7 @@ async function dmOpenChat(bookingId,role){
   const ctxEl=document.getElementById('dmBookingCtx');
   if(convo?.serviceName){
     ctxEl.style.display='flex';
-    const dateStr=convo.bookingDate?new Date(convo.bookingDate).toLocaleDateString('de-CH',{day:'numeric',month:'short'}):'';
+    const dateStr=convo.bookingDate?new Date(convo.bookingDate).toLocaleDateString(getLocale(),{day:'numeric',month:'short'}):'';
     document.getElementById('dmBookingCtxText').textContent=`${convo.serviceName}${dateStr?' \u00b7 '+dateStr:''}${convo.bookingTime?' \u00b7 '+convo.bookingTime:''}`;
   }else{ctxEl.style.display='none';}
 
@@ -5760,7 +5769,7 @@ async function loadAdminUsers(){
     html+=data&&data.length?`<div class="table-wrap"><table class="data-table">
     <thead><tr><th>E-Mail</th><th>Registriert</th><th>Status</th><th>Aktionen</th></tr></thead>
     <tbody>${data.map(u=>{
-      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'—';
+      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString(getLocale()):'—';
       const banned=u.is_banned===true;
       return`<tr>
       <td><strong>${u.email||'—'}</strong><br><span style="font-size:.72rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
@@ -5777,7 +5786,7 @@ async function loadAdminUsers(){
     html+=data&&data.length?`<div class="table-wrap"><table class="data-table">
     <thead><tr><th>Name</th><th>Rolle</th><th>Registriert</th><th>Aktionen</th></tr></thead>
     <tbody>${data.map(u=>{
-      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'—';
+      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString(getLocale()):'—';
       return`<tr>
       <td><strong>${u.display_name||u.name||'—'}</strong><br><span style="font-size:.75rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
       <td><span class="badge" style="background:${u.role==='salon_owner'?'var(--accent2)':u.is_admin?'var(--accent)':'var(--surfaceAlt)'};color:${u.role==='salon_owner'||u.is_admin?'white':'var(--text)'};padding:3px 10px;border-radius:50px;font-size:.75rem">${u.is_admin?'Admin':u.role||'customer'}</span></td>
@@ -5905,7 +5914,7 @@ async function deleteService(id){
 // SALON OWNER DASHBOARD
 async function renderSalonDashboard(){
   const el=document.getElementById('dashTabBuchungen')||document.getElementById('salonDashContent');
-  if(!currentUser){el.innerHTML='<p class="text-muted">Bitte anmelden.</p>';return;}
+  if(!currentUser){el.innerHTML='<p class="text-muted">'+(t('auth_required')||'Bitte anmelden.')+'</p>';return;}
   el.innerHTML='<div class="spinner"></div>';
   const{data:mySalons}=await sb.from('salons').select('*').eq('owner_id',currentUser.id);
   if(!mySalons||mySalons.length===0){
@@ -6211,10 +6220,12 @@ async function openBookingModal(store,preselectedTime){
   await loadBranchesForBooking();
   renderBookingModal();
   document.getElementById('bookingModal').classList.add('open');
+  document.body.style.overflow='hidden';
   if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
 }
 function closeBookingModal(){
   document.getElementById('bookingModal').classList.remove('open');
+  document.body.style.overflow='';
   bmState={};
 }
 async function loadBranchesForBooking(){
@@ -6343,9 +6354,8 @@ async function insertBooking(){
   bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
   bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
   bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';
-  if(!bmState.guestName||!bmState.guestPhone){toast('Name und Telefon sind erforderlich.','error');return;}
-  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
-  if(!bmState.date||!bmState.time){toast('Datum und Uhrzeit w\u00e4hlen.','error');return;}
+  if(!bmState.guestName||!bmState.guestPhone){toast(t('toast_name_phone_required')||'Name und Telefon sind erforderlich.','error');return;}
+  if(!bmState.date||!bmState.time){toast(t('toast_select_datetime')||'Datum und Uhrzeit w\u00e4hlen.','error');return;}
   const svc=bmState.service;
   const{data:bkData,error}=await sb.from('bookings').insert({
     salon_id:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,
@@ -6402,11 +6412,11 @@ async function loadReviews(salonId){
   return data||[];
 }
 function renderReviewCard(r,salonId){
-  const d=new Date(r.created_at).toLocaleDateString('de-CH');
+  const d=new Date(r.created_at).toLocaleDateString(getLocale());
   const isOwner=currentUser&&mySalons&&mySalons.find(s=>String(s.id)===String(salonId));
-  const replyHtml=r.owner_reply?'<div class="review-reply"><span class="reply-label">Salon-Antwort</span><p class="reply-text">'+r.owner_reply+'</p></div>':'';
-  const replyForm=isOwner?'<div class="reply-area"><textarea id="ra_'+r.id+'" class="form-input reply-input" placeholder="Antworten...">'+(r.owner_reply||'')+'</textarea><button class="btn-sm btn-teal" data-rid="'+r.id+'" data-sid="'+salonId+'" onclick="submitReviewReply(this.dataset.rid,this.dataset.sid)">Senden</button></div>':'';
-  return `<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${r.reviewer_name}</span><span class="review-date">${d}</span></div><div class="review-comment">${r.comment||''}</div>${replyHtml}${replyForm}</div>`;
+  const replyHtml=r.owner_reply?'<div class="review-reply"><span class="reply-label">Salon-Antwort</span><p class="reply-text">'+dmEsc(r.owner_reply)+'</p></div>':'';
+  const replyForm=isOwner?'<div class="reply-area"><textarea id="ra_'+r.id+'" class="form-input reply-input" placeholder="Antworten...">'+dmEsc(r.owner_reply||'')+'</textarea><button class="btn-sm btn-teal" data-rid="'+r.id+'" data-sid="'+salonId+'" onclick="submitReviewReply(this.dataset.rid,this.dataset.sid)">Senden</button></div>':'';
+  return `<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${dmEsc(r.reviewer_name)}</span><span class="review-date">${d}</span></div><div class="review-comment">${dmEsc(r.comment||'')}</div>${replyHtml}${replyForm}</div>`;
 }
 async function submitReviewReply(reviewId,salonId){
   const ta=document.getElementById('ra_'+reviewId);
@@ -6424,8 +6434,8 @@ function renderReviewsSection(salonId,reviews){
   for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}" style="cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>`;
   html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Wie war dein Besuch?"></textarea></div><button class="btn-primary" onclick="submitReview('${salonId}')">Bewertung abgeben</button></div></div>`;
   reviews.forEach(r=>{
-    const d=new Date(r.created_at).toLocaleDateString('de-CH');
-    html+=`<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${r.reviewer_name}</span><span class="review-date">${d}</span></div><div class="review-comment">${r.comment||''}</div></div>`;
+    const d=new Date(r.created_at).toLocaleDateString(getLocale());
+    html+=`<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${dmEsc(r.reviewer_name)}</span><span class="review-date">${d}</span></div><div class="review-comment">${dmEsc(r.comment||'')}</div></div>`;
   });
   html+=`</div>`;
   return html;
@@ -6487,7 +6497,7 @@ document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.targe
 <select id="siGender" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:8px;box-sizing:border-box"><option value="">Geschlecht</option><option>Frau</option><option>Mann</option><option>Divers</option><option>Keine Angabe</option></select>
 <select id="siHairType" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:12px;box-sizing:border-box"><option value="">Haartyp</option><option>Glatt</option><option>Wellig</option><option>Lockig</option><option>Afro</option></select>
 <button onclick="saveProfileSlideIn()" style="width:100%;padding:10px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-weight:600;font-size:14px;cursor:pointer;margin-bottom:6px">Speichern</button>
-<button onclick="dismissProfileSlideIn()" style="width:100%;padding:6px;background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline">Uberspringen</button>
+<button onclick="dismissProfileSlideIn()" style="width:100%;padding:6px;background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;text-decoration:underline">Überspringen</button>
 </div>
 
 <!-- PROFILE EDIT MODAL -->
@@ -6745,7 +6755,7 @@ function regSaveDraft(){
     try{
       localStorage.setItem(REG_DRAFT_KEY,JSON.stringify(regCollectDraft()));
       if(ind){
-        const t=new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+        const t=new Date().toLocaleTimeString(getLocale(),{hour:'2-digit',minute:'2-digit'});
         ind.textContent='Entwurf gespeichert um '+t;
         ind.className='reg-draft-indicator saved';
       }
@@ -6787,7 +6797,7 @@ function regRestoreDraft(){
     if(d.step&&d.step>=1&&d.step<=3){_regCurrentStep=d.step;}
     const ind=document.getElementById('regDraftIndicator');
     if(ind&&d.savedAt){
-      const t=new Date(d.savedAt).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+      const t=new Date(d.savedAt).toLocaleTimeString(getLocale(),{hour:'2-digit',minute:'2-digit'});
       ind.textContent='Entwurf vom letzten Besuch ('+t+')';
       ind.className='reg-draft-indicator saved';
     }
@@ -6802,9 +6812,10 @@ function regClearDraft(){
 
 function regAttachAutosave(){
   const form=document.getElementById('salonRegForm');
-  if(!form)return;
+  if(!form||form._autosaveAttached)return;
   form.addEventListener('input',regSaveDraft);
   form.addEventListener('change',regSaveDraft);
+  form._autosaveAttached=true;
 }
 
 // ── REGISTRATION: Field validation ───────────────────────────────
@@ -7288,7 +7299,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <div class="onboard-wizard" id="analyticsDash" style="z-index:9998">
   <div class="onboard-header">
     <h2>Analytics Dashboard</h2>
-    <button class="close-btn" onclick="closeAnalyticsDash()">&times;</button>
+    <button class="close-btn" onclick="closeAnalyticsDash()" aria-label="Schliessen">&times;</button>
   </div>
   <div class="onboard-body" style="padding:24px;max-width:900px;margin:0 auto">
     <div class="analytics-filters" id="analyticsFilters">
@@ -8038,7 +8049,7 @@ document.addEventListener('click',function(e){
       var progress = Math.min((timestamp - startTime) / duration, 1);
       var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
       var current = Math.floor(ease * target);
-      el.textContent = current.toLocaleString('de-CH');
+      el.textContent = current.toLocaleString(getLocale());
       if (progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -8056,7 +8067,7 @@ document.addEventListener('click',function(e){
       // Slowly tick up every 45–90 seconds to simulate live bookings
       setInterval(function() {
         baseBookings += Math.floor(Math.random() * 3) + 1;
-        heroNum.textContent = baseBookings.toLocaleString('de-CH');
+        heroNum.textContent = baseBookings.toLocaleString(getLocale());
       }, 60000);
     }
   }
@@ -8296,7 +8307,7 @@ var calState={storeId:null,serviceName:'',year:0,month:0,selectedDate:null,selec
 function openCalendarOverlay(storeId,serviceName){var now=new Date();calState={storeId:storeId,serviceName:serviceName||'',year:now.getFullYear(),month:now.getMonth(),selectedDate:null,selectedTime:null,staffId:null,addons:[],recurring:false,recurrenceWeeks:4,groupSize:1};var ov=document.getElementById('calOverlay');if(ov)ov.classList.remove('hidden');renderCalGrid();loadCalStaff(storeId);loadCalAddons(storeId);var rc=document.getElementById('calRecurCheck');if(rc)rc.checked=false;var ro=document.getElementById('calRecurOptions');if(ro)ro.classList.add('hidden');var gs=document.getElementById('calGroupSize');if(gs)gs.textContent='1';}
 function closeCalendarOverlay(){var ov=document.getElementById('calOverlay');if(ov)ov.classList.add('hidden');}
 function calNav(dir){calState.month+=dir;if(calState.month>11){calState.month=0;calState.year++;}if(calState.month<0){calState.month=11;calState.year--;}renderCalGrid();}
-function renderCalGrid(){var ml=document.getElementById('calMonthLabel');var grid=document.getElementById('calGrid');if(!grid)return;var lbl=new Date(calState.year,calState.month,1).toLocaleDateString('de-CH',{month:'long',year:'numeric'});if(ml)ml.textContent=lbl;var days=['Mo','Di','Mi','Do','Fr','Sa','So'];var html=days.map(function(d){return '<div class="cal-day-header">'+d+'</div>';}).join('');var first=new Date(calState.year,calState.month,1);var startDow=first.getDay()-1;if(startDow<0)startDow=6;var dim=new Date(calState.year,calState.month+1,0).getDate();var today=new Date();today.setHours(0,0,0,0);for(var i=0;i<startDow;i++)html+='<div></div>';for(var d=1;d<=dim;d++){var dt=new Date(calState.year,calState.month,d);var ds=dt.toISOString().split('T')[0];var isPast=dt<today;var isSel=calState.selectedDate===ds;var isTod=dt.getTime()===today.getTime();var cls='cal-day'+(isPast?' disabled':'')+(isSel?' selected':'')+(isTod?' today':'');var oc=isPast?'':'selectCalDay(\''+ds+'\')';html+='<div class="'+cls+'" onclick="'+oc+'">'+d+'</div>';}grid.innerHTML=html;var slts=document.getElementById('calSlots');if(slts)slts.innerHTML='';}
+function renderCalGrid(){var ml=document.getElementById('calMonthLabel');var grid=document.getElementById('calGrid');if(!grid)return;var lbl=new Date(calState.year,calState.month,1).toLocaleDateString(getLocale(),{month:'long',year:'numeric'});if(ml)ml.textContent=lbl;var days=['Mo','Di','Mi','Do','Fr','Sa','So'];var html=days.map(function(d){return '<div class="cal-day-header">'+d+'</div>';}).join('');var first=new Date(calState.year,calState.month,1);var startDow=first.getDay()-1;if(startDow<0)startDow=6;var dim=new Date(calState.year,calState.month+1,0).getDate();var today=new Date();today.setHours(0,0,0,0);for(var i=0;i<startDow;i++)html+='<div></div>';for(var d=1;d<=dim;d++){var dt=new Date(calState.year,calState.month,d);var ds=dt.toISOString().split('T')[0];var isPast=dt<today;var isSel=calState.selectedDate===ds;var isTod=dt.getTime()===today.getTime();var cls='cal-day'+(isPast?' disabled':'')+(isSel?' selected':'')+(isTod?' today':'');var oc=isPast?'':'selectCalDay(\''+ds+'\')';html+='<div class="'+cls+'" onclick="'+oc+'">'+d+'</div>';}grid.innerHTML=html;var slts=document.getElementById('calSlots');if(slts)slts.innerHTML='';}
 function selectCalDay(ds){calState.selectedDate=ds;renderCalGrid();renderAvailSlots();}
 function renderAvailSlots(){var slots=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];var box=document.getElementById('calSlots');if(!box)return;box.innerHTML=slots.map(function(t){var sel=calState.selectedTime===t?' selected':'';return '<div class="cal-slot'+sel+'" onclick="selectCalTime(\'' +t+ '\')">'+t+'</div>';}).join('');}
 function selectCalTime(t){calState.selectedTime=t;renderAvailSlots();}

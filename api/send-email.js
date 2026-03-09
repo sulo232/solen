@@ -3,7 +3,7 @@
 // Env var required: RESEND_API_KEY
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://solen.ch');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -16,6 +16,9 @@ module.exports = async function handler(req, res) {
 
   if (!apiKey) return res.status(500).json({ error: 'RESEND_API_KEY not set in Vercel environment variables' });
   if (!customerEmail || !customerName) return res.status(400).json({ error: 'Missing customer details' });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) return res.status(400).json({ error: 'Invalid customer email format' });
+  if (salonEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(salonEmail)) return res.status(400).json({ error: 'Invalid salon email format' });
+  if (!salonName || !serviceName || !date || !time) return res.status(400).json({ error: 'Missing booking details' });
 
   const sendEmail = async (to, toName, subject, htmlContent) => {
     const r = await fetch('https://api.resend.com/emails', {
