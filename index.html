@@ -2706,7 +2706,7 @@ async function confirmBooking(){
     reference:reference,
     staff_id:_selStaffId||null,
     staff_name:_selStaffName||null,
-    is_new_customer:bmState.isNewCustome
+    is_first_visit:bookingState.isFirstVisit!==false
     ,recurrence_group_id:recurGroupId
     ,recurrence_index:0
     ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
@@ -2730,7 +2730,7 @@ async function confirmBooking(){
       for(let ri=1;ri<bmState.recurrenceCount;ri++){
         const rd=new Date(bDate.getTime());
         rd.setDate(rd.getDate()+ri*bmState.recurrenceWeeks*7);
-        await sb.from('bookings').insert({user_id:currentUser.id,store_id:bookingState.storeId,date:rd.toISOString().slice(0,10),time:bookingState.time,customer_name:bookingState.name,customer_email:bookingState.email||currentUser.email,customer_phone:bookingState.phone,note:bookingState.note,status:'confirmed',reference:reference+'-R'+ri,staff_id:_selStaffId||null,staff_name:_selStaffName||null,is_new_customer:bmState.isNewCustomer,recurrence_group_id:recurGroupId,recurrence_index:ri,recurrence_interval_weeks:bmState.recurrenceWeeks});
+        await sb.from('bookings').insert({user_id:currentUser.id,store_id:bookingState.storeId,date:rd.toISOString().slice(0,10),time:bookingState.time,customer_name:bookingState.name,customer_email:bookingState.email||currentUser.email,customer_phone:bookingState.phone,note:bookingState.note,status:'confirmed',reference:reference+'-R'+ri,staff_id:_selStaffId||null,staff_name:_selStaffName||null,is_first_visit:bookingState.isFirstVisit!==false,recurrence_group_id:recurGroupId,recurrence_index:ri,recurrence_interval_weeks:bmState.recurrenceWeeks});
       }
     }
   }
@@ -3585,6 +3585,7 @@ async function insertBooking(){
   bmState.guestPhone=document.getElementById('bmGuestPhone')?.value||'';
   bmState.guestEmail=document.getElementById('bmGuestEmail')?.value||'';
   bmState.notes=document.getElementById('bmNotes')?.value||'';
+  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
   bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
   bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';
   if(!bmState.guestName||!bmState.guestPhone){toast('Name und Telefon sind erforderlich.','error');return;}
