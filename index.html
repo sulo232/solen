@@ -62,7 +62,7 @@ input,select,textarea{font-family:inherit}
 .theme-toggle{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;flex-shrink:0;margin-right:8px}
 .theme-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:white}
 .nav-actions{display:flex;gap:10px;align-items:center}
-/* Login = teal outline pill, Register = coral solid pill ÃÂ¢ÃÂÃÂ always visible on dark nav */
+/* Login = teal outline pill, Register = coral solid pill — always visible on dark nav */
 .btn-nav-ghost{color:#4ECDC4;border:1.5px solid rgba(78,205,196,.55);background:rgba(78,205,196,.10);padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.01em}
 .btn-nav-ghost:hover{background:rgba(78,205,196,.20);border-color:#4ECDC4;color:#4ECDC4}
 .btn-nav-primary{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;border:none;padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 10px rgba(255,107,107,.40);letter-spacing:.01em;text-shadow:0 1px 2px rgba(0,0,0,.15)}
@@ -519,7 +519,8 @@ html,body{overflow-x:hidden;max-width:100vw}
 .neighbourhood-chip{padding:6px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
 .neighbourhood-chip:hover{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.25)}
 .neighbourhood-chip.active{background:rgba(255,255,255,.9);color:#0D0D0D;border-color:transparent;font-weight:700}
-.btn-nav-salon{display:none!important}}.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
+.btn-nav-salon{display:none!important}
+.btn-location{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;min-height:44px}
 .btn-location:hover{border-color:var(--accent);color:var(--accent)}
 
 /* VERIFIED BADGE */
@@ -676,7 +677,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
 .page-title{letter-spacing:-0.02em;} @media(max-width:640px){ .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15} .hero p{font-size:.95rem} .page-title{font-size:1.55rem;font-weight:900} .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em} } @media(max-width:480px){ .store-name{font-size:1rem;font-weight:700} .store-body .store-meta{font-size:.8rem} .section-title{font-size:.95rem} .bm-header h2{font-size:1rem} .modal-hd h2{font-size:1rem} }
 </style>
 
-  <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen ÃÂ¢ÃÂÃÂ Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
+  <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
   <meta property="og:site_name" content="solen.ch">
   <meta property="og:type" content="website">
   <meta property="og:title" id="ogTitle" content="solen.ch | Beauty &amp; Wellness Basel">
@@ -706,28 +707,6 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
       </div>
-  setTimeout(()=>renderSalonDashboard(),800);
-  toast('Salon erfolgreich eingetragen!','success');
-    if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}
-    toast('Fehler: '+error.message,'error');
-    website:website||null,
-    opening_hours:opening_hours||null,
-    description:description||null,
-    phone:phone||null,
-    name,type,address,
-  const{error}=await sb.from('stores').insert({
-  if(btn){btn.disabled=true;btn.textContent='Wird eingetragen...';}
-  const btn=document.getElementById('sp_submit');
-  if(!name||!type||!address){toast('Bitte Salonname, Kategorie und Adresse ausfüllen.','error');return;}
-  const website=(document.getElementById('sp_website').value||'').trim();
-  const opening_hours=(document.getElementById('sp_hours').value||'').trim();
-  const description=(document.getElementById('sp_desc').value||'').trim();
-  const phone=(document.getElementById('sp_phone').value||'').trim();
-  const address=(document.getElementById('sp_address').value||'').trim();
-  const type=document.getElementById('sp_type').value;
-  const name=(document.getElementById('sp_name').value||'').trim();
-  if(!currentUser){toast('Bitte anmelden.','error');return;}
-async function submitSalonProfile(e){
             <button id="navSalonBtn" class="btn-nav-ghost hidden" style="color:var(--accent-lemon);border-color:rgba(255,230,109,.55);background:rgba(255,230,109,.10)" onclick="openSalonRegistration()">&#10022; Salon eintragen</button>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
@@ -765,8 +744,8 @@ async function submitSalonProfile(e){
         <a href="#" class="btn-nav-ghost" onclick="showPage('profile');closeMobileMenu();return false" data-i18n="nav_my_profile" style="display:block;text-align:center;margin-bottom:8px">Mein Profil</a>
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
         <button class="btn-nav-ghost" onclick="signOut();closeMobileMenu()" data-i18n="nav_logout" style="width:100%">Abmelden</button>
-      </div
-<button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>>
+      </div>
+<button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>
     </div>
   </div>
 </nav>
@@ -784,6 +763,7 @@ async function submitSalonProfile(e){
         <div class="search-field">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="z.B. Balayage, Maniküre, Massage..." oninput="debounceSearch()">
+        </div>
         <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
       </div>
@@ -793,7 +773,6 @@ async function submitSalonProfile(e){
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel')">Grossbasel</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel')">Kleinbasel</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann')">St. Johann</button>
-        <button class="neighbourhood-chip empfohlen-chip" onclick="toggleEmpfohlenFilter(this)">&#11088; Nur Empfohlene</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Gundeldingen')">Gundeldingen</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Bruderholz')">Bruderholz</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Hirzbrunnen')">Hirzbrunnen</button>
@@ -854,7 +833,7 @@ async function submitSalonProfile(e){
 <!-- PROFILE PAGE -->
 <div id="pageProfile" class="page">
   <div class="page-title" data-i18n="profile_title">Mein Profil</div>
-  <div class="page-sub" data-i18n="profile_sub">Verwalte deine persÃÂÃÂ¶nlichen Daten und PrÃÂÃÂ¤ferenzen</div>
+  <div class="page-sub" data-i18n="profile_sub">Verwalte deine persönlichen Daten und Präferenzen</div>
   <div id="profileContent"><div class="spinner"></div></div>
 </div>
 
@@ -928,7 +907,7 @@ async function submitSalonProfile(e){
           Mit Google anmelden
         </button>
         <div class="divider" data-i18n="auth_or">oder</div>
-        <div class="form-group"><label>${t('lbl_phone')}</label><input class="form-input" id="bkPhone" type="tel" placeholder="Telefonnummer"></div>
+        <div class="form-group">
           <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="loginEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
@@ -944,7 +923,6 @@ async function submitSalonProfile(e){
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Mit Telefon anmelden
         </button>
-<div class="auth-switch">Noch kein Konto? <a onclick="openAuth('register-choice')">Jetzt registrieren</a></div>
       </div>
 
             <!-- PHONE AUTH -->
@@ -981,7 +959,7 @@ async function submitSalonProfile(e){
       </div>
 <!-- PASSWORD RESET -->
       <div id="formPasswordReset" class="hidden">
-        <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px" data-i18n="reset_desc">Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum ZurÃÂÃÂ¼cksetzen.</p>
+        <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px" data-i18n="reset_desc">Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen.</p>
         <div class="form-group">
           <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="resetEmail" placeholder="deine@email.com" autocomplete="email">
@@ -1092,7 +1070,7 @@ async function submitSalonProfile(e){
           <div class="form-group">
             <label data-i18n="lbl_gender">Geschlecht</label>
             <select class="form-input" id="setupGender">
-              <option value="">WÃÂÃÂ¤hlen...</option>
+              <option value="">Wählen...</option>
               <option value="M&auml;nnlich" data-i18n="gender_male">M&auml;nnlich</option>
               <option value="Weiblich" data-i18n="gender_female">Weiblich</option>
               <option value="Divers" data-i18n="gender_diverse">Divers</option>
@@ -1103,7 +1081,7 @@ async function submitSalonProfile(e){
         <div class="form-group">
           <label data-i18n="lbl_hairtype">Haartyp</label>
           <select class="form-input" id="setupHairType">
-            <option value="">WÃÂÃÂ¤hlen...</option>
+            <option value="">Wählen...</option>
             <option value="Glatt" data-i18n="hair_straight">Glatt</option>
             <option value="Wellig" data-i18n="hair_wavy">Wellig</option>
             <option value="Lockig" data-i18n="hair_curly">Lockig</option>
@@ -1158,8 +1136,6 @@ async function submitSalonProfile(e){
         <div class="wiz-step" id="ws4"><span class="wiz-num">4</span><span data-i18n="wiz_details">Details</span></div>
         <div class="wiz-sep"></div>
         <div class="wiz-step" id="ws5"><span class="wiz-num">5</span><span data-i18n="wiz_confirm">Best&auml;tigen</span></div>
-        <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws5"><span class="wiz-num">5</span><span>BestÃÂÃÂ¤tigen</span></div>
       </div>
       <div id="wizContent"></div>
     </div>
@@ -1286,7 +1262,7 @@ async function submitSalonProfile(e){
         <input class="form-input" type="password" id="newPw1" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="new-password">
       </div>
       <div class="form-group">
-        <label>Passwort bestÃÂÃÂ¤tigen</label>
+        <label>Passwort bestätigen</label>
         <input class="form-input" type="password" id="newPw2" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="new-password">
       </div>
       <button class="btn-primary" onclick="doUpdatePassword()">Passwort speichern</button>
@@ -1524,7 +1500,7 @@ const T={
     salon_count_one:'Salon',salon_count_other:'Salons',
     err_email_pw:'Veuillez entrer e-mail et mot de passe.',err_fill_all:'Veuillez remplir tous les champs.',err_pw_min:'Le mot de passe doit contenir au moins 6 caract\u00e8res.',
     err_wrong_pw:'Mauvais mot de passe ou e-mail.',err_confirm_email:'Veuillez confirmer votre e-mail.',
-    err_invalid_email:'Veuillez entrer un e-mail valide.',err_email_not_registered:"Cette adresse e-mail n'est pas enregistrÃÂÃÂ©e.",err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
+    err_invalid_email:'Veuillez entrer un e-mail valide.',err_email_not_registered:"Cette adresse e-mail n'est pas enregistrée.",err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
     err_already_registered:'Cet e-mail est d\u00e9j\u00e0 inscrit.',err_signup_failed:'\u00c9chec de l\u2019inscription. Veuillez r\u00e9essayer.',
     confirm_email_sent:'E-mail de confirmation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
     setup_title:'Configurer le profil',setup_welcome:'Bienvenue ! Veux-tu configurer ton profil ?',setup_edit:'Modifier le profil',
@@ -1559,52 +1535,52 @@ const T={
     location_unavailable:'Position non disponible',load_failed:'Impossible de charger les salons',reload:'Recharger',
   },
   tr:{
-    nav_login:'GiriÃÂÃÂ Yap',nav_register:'KayÃÂÃÂ±t Ol',nav_logout:'ÃÂÃÂÃÂÃÂ±kÃÂÃÂ±ÃÂÃÂ Yap',nav_theme:'AÃÂÃÂ§ÃÂÃÂ±k / Koyu',
-    nav_my_profile:'Profilim',nav_edit_profile:'Profili DÃÂÃÂ¼zenle',nav_my_bookings:'RezervasyonlarÃÂÃÂ±m',
-    nav_salon_dash:'Salon Paneli',nav_admin:'YÃÂÃÂ¶netici Paneli',
-    hero_badge:'Basel ÃÂÃÂ· ÃÂÃÂ°sviÃÂÃÂ§re',hero_title:'Basel\'de GÃÂÃÂ¼zellik &amp; Wellness<br><span class="hero-highlight">SalonlarÃÂÃÂ±</span>',
-    hero_sub:'Salonunuz. Randevunuz. Saniyeler iÃÂÃÂ§inde rezervasyon.',
+    nav_login:'GiriÅ Yap',nav_register:'KayÄ±t Ol',nav_logout:'ÇÄ±kÄ±Å Yap',nav_theme:'AçÄ±k / Koyu',
+    nav_my_profile:'Profilim',nav_edit_profile:'Profili Düzenle',nav_my_bookings:'RezervasyonlarÄ±m',
+    nav_salon_dash:'Salon Paneli',nav_admin:'Yönetici Paneli',
+    hero_badge:'Basel · Ä°sviçre',hero_title:'Basel\'de Güzellik &amp; Wellness<br><span class="hero-highlight">SalonlarÄ±</span>',
+    hero_sub:'Salonunuz. Randevunuz. Saniyeler içinde rezervasyon.',
     search_placeholder:'Hizmet, salon veya kategori...',search_btn:'Ara',
     stat_salons:'Salon',stat_services:'Hizmet',stat_location:'Konum',
-    cat_all:'TÃÂÃÂ¼mÃÂÃÂ¼',stores_title:'Basel\'de Salonlar',
-    profile_title:'Profilim',profile_sub:'KiÃÂÃÂisel bilgilerinizi ve tercihlerinizi yÃÂÃÂ¶netin',
-    bookings_title:'RezervasyonlarÃÂÃÂ±m',bookings_sub:'GeÃÂÃÂ§miÃÂÃÂ ve gelecek randevularÃÂÃÂ±nÃÂÃÂ±z',
-    admin_title:'YÃÂÃÂ¶netici Paneli',admin_sub:'SalonlarÃÂÃÂ±, hizmetleri ve rezervasyonlarÃÂÃÂ± yÃÂÃÂ¶netin',
-    salon_dash_title:'Salon Paneli',salon_dash_sub:'Salonunuzu ve rezervasyonlarÃÂÃÂ±nÃÂÃÂ±zÃÂÃÂ± yÃÂÃÂ¶netin',
-    auth_login_title:'GiriÃÂÃÂ Yap',auth_register_title:'KayÃÂÃÂ±t Ol',auth_customer_title:'MÃÂÃÂ¼ÃÂÃÂteri KaydÃÂÃÂ±',auth_salon_title:'Salon KaydÃÂÃÂ±',
-    btn_login:'GiriÃÂÃÂ Yap',btn_create_account:'Hesap OluÃÂÃÂtur',btn_book:'Rezervasyon',btn_book_now:'ÃÂÃÂimdi Rezervasyon',
-    btn_confirm:'Randevuyu Onayla',btn_cancel:'ÃÂÃÂ°ptal',btn_back:'Geri',btn_next:'ÃÂÃÂ°leri',btn_save:'Profili Kaydet',btn_skip:'Atla',
-    lbl_email:'E-posta',lbl_password:'ÃÂÃÂifre',lbl_firstname:'Ad',lbl_lastname:'Soyad',
+    cat_all:'Tümü',stores_title:'Basel\'de Salonlar',
+    profile_title:'Profilim',profile_sub:'KiÅisel bilgilerinizi ve tercihlerinizi yönetin',
+    bookings_title:'RezervasyonlarÄ±m',bookings_sub:'GeçmiÅ ve gelecek randevularÄ±nÄ±z',
+    admin_title:'Yönetici Paneli',admin_sub:'SalonlarÄ±, hizmetleri ve rezervasyonlarÄ± yönetin',
+    salon_dash_title:'Salon Paneli',salon_dash_sub:'Salonunuzu ve rezervasyonlarÄ±nÄ±zÄ± yönetin',
+    auth_login_title:'GiriÅ Yap',auth_register_title:'KayÄ±t Ol',auth_customer_title:'MüÅteri KaydÄ±',auth_salon_title:'Salon KaydÄ±',
+    btn_login:'GiriÅ Yap',btn_create_account:'Hesap OluÅtur',btn_book:'Rezervasyon',btn_book_now:'Åimdi Rezervasyon',
+    btn_confirm:'Randevuyu Onayla',btn_cancel:'Ä°ptal',btn_back:'Geri',btn_next:'Ä°leri',btn_save:'Profili Kaydet',btn_skip:'Atla',
+    lbl_email:'E-posta',lbl_password:'Åifre',lbl_firstname:'Ad',lbl_lastname:'Soyad',
     wiz_service:'Hizmet',wiz_date:'Tarih',wiz_time:'Saat',wiz_details:'Detaylar',wiz_confirm:'Onayla',
-    wiz_choose_service:'Hizmet SeÃÂÃÂ§',wiz_choose_date:'Tarih SeÃÂÃÂ§',wiz_choose_time:'Saat SeÃÂÃÂ§',wiz_your_details:'Bilgileriniz',wiz_confirm_booking:'Rezervasyonu Onayla',
-    wiz_summary:'ÃÂÃÂzet',wiz_salon:'Salon',wiz_service_lbl:'Hizmet',wiz_date_lbl:'Tarih',wiz_time_lbl:'Saat',wiz_duration:'SÃÂÃÂ¼re',wiz_price:'Fiyat',
-    toast_welcome:'Tekrar hoÃÂÃÂ geldiniz',toast_signedout:'ÃÂÃÂÃÂÃÂ±kÃÂÃÂ±ÃÂÃÂ yapÃÂÃÂ±ldÃÂÃÂ±',toast_booked:'Rezervasyon yapÃÂÃÂ±ldÃÂÃÂ±! Referans:',toast_profile_saved:'Profil kaydedildi!',
-    toast_booking_failed:'Rezervasyon baÃÂÃÂarÃÂÃÂ±sÃÂÃÂ±z. LÃÂÃÂ¼tfen tekrar deneyin.',
-    empty_no_salon:'Salon bulunamadÃÂÃÂ±',empty_try_other:'FarklÃÂÃÂ± bir arama terimi deneyin veya baÃÂÃÂka bir kategori seÃÂÃÂ§in.',empty_show_all:'TÃÂÃÂ¼m salonlarÃÂÃÂ± gÃÂÃÂ¶ster',
-    empty_no_bookings:'HenÃÂÃÂ¼z rezervasyon yok',empty_book_first:'ÃÂÃÂ°lk randevunuzu alÃÂÃÂ±n',empty_discover:'SalonlarÃÂÃÂ± KeÃÂÃÂfet',
-    auth_no_account:'HesabÃÂÃÂ±nÃÂÃÂ±z yok mu?',auth_already:'Zaten kayÃÂÃÂ±tlÃÂÃÂ± mÃÂÃÂ±sÃÂÃÂ±nÃÂÃÂ±z?',auth_register_now:'ÃÂÃÂimdi kayÃÂÃÂ±t ol',auth_login_now:'GiriÃÂÃÂ yap',
-    auth_google_login:'Google ile giriÃÂÃÂ yap',auth_google_register:'Google ile kayÃÂÃÂ±t ol',auth_or:'veya',
-    auth_choose:'EriÃÂÃÂim tÃÂÃÂ¼rÃÂÃÂ¼nÃÂÃÂ¼ seÃÂÃÂ§in',auth_customer_or_owner:'MÃÂÃÂ¼ÃÂÃÂteri misiniz yoksa salon sahibi mi?',
-    auth_as_customer:'MÃÂÃÂ¼ÃÂÃÂteri Olarak',auth_customer_desc:'Randevu alÃÂÃÂ±n, salonlarÃÂÃÂ± keÃÂÃÂfedin, profilinizi yÃÂÃÂ¶netin',auth_free_register:'ÃÂÃÂcretsiz kayÃÂÃÂ±t',
-    auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonlarÃÂÃÂ± yÃÂÃÂ¶netin, mÃÂÃÂ¼ÃÂÃÂteri kazanÃÂÃÂ±n',auth_register_salon:'Salon kaydÃÂÃÂ±',
+    wiz_choose_service:'Hizmet Seç',wiz_choose_date:'Tarih Seç',wiz_choose_time:'Saat Seç',wiz_your_details:'Bilgileriniz',wiz_confirm_booking:'Rezervasyonu Onayla',
+    wiz_summary:'Özet',wiz_salon:'Salon',wiz_service_lbl:'Hizmet',wiz_date_lbl:'Tarih',wiz_time_lbl:'Saat',wiz_duration:'Süre',wiz_price:'Fiyat',
+    toast_welcome:'Tekrar hoÅ geldiniz',toast_signedout:'ÇÄ±kÄ±Å yapÄ±ldÄ±',toast_booked:'Rezervasyon yapÄ±ldÄ±! Referans:',toast_profile_saved:'Profil kaydedildi!',
+    toast_booking_failed:'Rezervasyon baÅarÄ±sÄ±z. Lütfen tekrar deneyin.',
+    empty_no_salon:'Salon bulunamadÄ±',empty_try_other:'FarklÄ± bir arama terimi deneyin veya baÅka bir kategori seçin.',empty_show_all:'Tüm salonlarÄ± göster',
+    empty_no_bookings:'Henüz rezervasyon yok',empty_book_first:'Ä°lk randevunuzu alÄ±n',empty_discover:'SalonlarÄ± KeÅfet',
+    auth_no_account:'HesabÄ±nÄ±z yok mu?',auth_already:'Zaten kayÄ±tlÄ± mÄ±sÄ±nÄ±z?',auth_register_now:'Åimdi kayÄ±t ol',auth_login_now:'GiriÅ yap',
+    auth_google_login:'Google ile giriÅ yap',auth_google_register:'Google ile kayÄ±t ol',auth_or:'veya',
+    auth_choose:'EriÅim türünü seçin',auth_customer_or_owner:'MüÅteri misiniz yoksa salon sahibi mi?',
+    auth_as_customer:'MüÅteri Olarak',auth_customer_desc:'Randevu alÄ±n, salonlarÄ± keÅfedin, profilinizi yönetin',auth_free_register:'Ücretsiz kayÄ±t',
+    auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonlarÄ± yönetin, müÅteri kazanÄ±n',auth_register_salon:'Salon kaydÄ±',
     bn_home:'Ana Sayfa',bn_bookings:'Rezervasyonlar',bn_profile:'Profil',
-    recently_viewed:'Son gÃÂÃÂ¶rÃÂÃÂ¼ntÃÂÃÂ¼lenenler',resume_at:'Devam et',
-    status_confirmed:'OnaylandÃÂÃÂ±',status_pending:'Beklemede',status_cancelled:'ÃÂÃÂ°ptal edildi',
+    recently_viewed:'Son görüntülenenler',resume_at:'Devam et',
+    status_confirmed:'OnaylandÄ±',status_pending:'Beklemede',status_cancelled:'Ä°ptal edildi',
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
-    err_email_pw:'LÃÂÃÂ¼tfen e-posta ve ÃÂÃÂifre girin.',err_fill_all:'LÃÂÃÂ¼tfen tÃÂÃÂ¼m alanlarÃÂÃÂ± doldurun.',err_pw_min:'ÃÂÃÂifre en az 6 karakter olmalÃÂÃÂ±dÃÂÃÂ±r.',
-    err_wrong_pw:'YanlÃÂÃÂ±ÃÂÃÂ ÃÂÃÂifre veya e-posta.',err_confirm_email:'LÃÂÃÂ¼tfen ÃÂÃÂ¶nce e-posta adresinizi onaylayÃÂÃÂ±n.',
-    err_invalid_email:'LÃÂÃÂ¼tfen geÃÂÃÂ§erli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayÃÂÃÂ±tlÃÂÃÂ± deÃÂÃÂil.',err_generic:'Bir hata oluÃÂÃÂtu. LÃÂÃÂ¼tfen tekrar deneyin.',
-    err_already_registered:'Bu e-posta zaten kayÃÂÃÂ±tlÃÂÃÂ±.',err_signup_failed:'KayÃÂÃÂ±t baÃÂÃÂarÃÂÃÂ±sÃÂÃÂ±z. LÃÂÃÂ¼tfen tekrar deneyin.',
-    confirm_email_sent:'Onay e-postasÃÂÃÂ± gÃÂÃÂ¶nderildi! LÃÂÃÂ¼tfen gelen kutunuzu kontrol edin.',
-    setup_title:'Profil OluÃÂÃÂtur',setup_welcome:'HoÃÂÃÂ geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili dÃÂÃÂ¼zenle',
-    setup_desc:'Salonlar sizin iÃÂÃÂ§in daha iyi planlama yapabilsin',
-    forgot_password:'ÃÂÃÂifremi unuttum?',reset_desc:'E-posta adresinizi girin, size sÃÂÃÂ±fÃÂÃÂ±rlama baÃÂÃÂlantÃÂÃÂ±sÃÂÃÂ± gÃÂÃÂ¶nderelim.',
-    back_to_login:'GiriÃÂÃÂe geri dÃÂÃÂ¶n',reset_email_sent:'SÃÂÃÂ±fÃÂÃÂ±rlama baÃÂÃÂlantÃÂÃÂ±sÃÂÃÂ± gÃÂÃÂ¶nderildi!',
-    book_now:'ÃÂÃÂimdi Rezervasyon',select_service:'Hizmet SeÃÂÃÂ§in',select_date:'Tarih SeÃÂÃÂ§in',select_time:'Saat SeÃÂÃÂ§in',
-    guest_info:'Misafir bilgileri',booking_confirmed:'Rezervasyon onaylandÃÂÃÂ±!',write_review:'Yorum yaz',
-    rating_filter:'Min. puan',no_results:'Salon bulunamadÃÂÃÂ±',reset_filters:'Filtreleri sÃÂÃÂ±fÃÂÃÂ±rla',
-    use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'TÃÂÃÂ¼m mahalleler',
-    impressum:'KÃÂÃÂ¼nye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: YarÃÂÃÂ±n',
+    err_email_pw:'Lütfen e-posta ve Åifre girin.',err_fill_all:'Lütfen tüm alanlarÄ± doldurun.',err_pw_min:'Åifre en az 6 karakter olmalÄ±dÄ±r.',
+    err_wrong_pw:'YanlÄ±Å Åifre veya e-posta.',err_confirm_email:'Lütfen önce e-posta adresinizi onaylayÄ±n.',
+    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayÄ±tlÄ± deÄil.',err_generic:'Bir hata oluÅtu. Lütfen tekrar deneyin.',
+    err_already_registered:'Bu e-posta zaten kayÄ±tlÄ±.',err_signup_failed:'KayÄ±t baÅarÄ±sÄ±z. Lütfen tekrar deneyin.',
+    confirm_email_sent:'Onay e-postasÄ± gönderildi! Lütfen gelen kutunuzu kontrol edin.',
+    setup_title:'Profil OluÅtur',setup_welcome:'HoÅ geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili düzenle',
+    setup_desc:'Salonlar sizin için daha iyi planlama yapabilsin',
+    forgot_password:'Åifremi unuttum?',reset_desc:'E-posta adresinizi girin, size sÄ±fÄ±rlama baÄlantÄ±sÄ± gönderelim.',
+    back_to_login:'GiriÅe geri dön',reset_email_sent:'SÄ±fÄ±rlama baÄlantÄ±sÄ± gönderildi!',
+    book_now:'Åimdi Rezervasyon',select_service:'Hizmet Seçin',select_date:'Tarih Seçin',select_time:'Saat Seçin',
+    guest_info:'Misafir bilgileri',booking_confirmed:'Rezervasyon onaylandÄ±!',write_review:'Yorum yaz',
+    rating_filter:'Min. puan',no_results:'Salon bulunamadÄ±',reset_filters:'Filtreleri sÄ±fÄ±rla',
+    use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'Tüm mahalleler',
+    impressum:'Künye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: YarÄ±n',
     add_to_calendar:'Google Takvime Ekle',sort_distance:'Mesafe',
     location_unavailable:'Konum mevcut de\u011fil',load_failed:'Salonlar y\u00fcklenemedi',reload:'Yenile',
     cat_barber:'Berberhane',cat_hairsalon:'Kuaf\u00f6r',cat_nails:'T\u0131rnak St\u00fcdyosu',cat_spa:'Spa &amp; Wellness',cat_makeup:'Makyaj',cat_eyebrows:'Ka\u015f',
@@ -1672,16 +1648,16 @@ function setLang(lang){switchLang(lang);}
 // DEMO DATA fallback
 const DEMO_STORES=[
   {id:'d1',name:'Barber King',type:'barber',description:'Premium Barbershop in Basel Mitte. Klassische Schnitte, Rasuren und Bartpflege.',rating:4.8,image_url:'',address:'Freie Str. 14, Basel'},
-  {id:'d2',name:'Studio Elle',type:'hairsalon',description:'Moderner Friseursalon fÃÂÃÂ¼r Damen und Herren. Spezialisiert auf Colorationen.',rating:4.7,image_url:'',address:'Steinenvorstadt 22, Basel'},
+  {id:'d2',name:'Studio Elle',type:'hairsalon',description:'Moderner Friseursalon für Damen und Herren. Spezialisiert auf Colorationen.',rating:4.7,image_url:'',address:'Steinenvorstadt 22, Basel'},
   {id:'d3',name:'Nail Art Basel',type:'nails',description:'Professionelles Nagelstudio mit den neuesten Trends aus Japan und Korea.',rating:4.9,image_url:'',address:'Marktplatz 8, Basel'},
-  {id:'d4',name:'Hammam Spa',type:'spa',description:'Orientalisches Wellness-Erlebnis im Herzen von Basel. Massage, Dampfbad und mehr.',rating:4.6,image_url:'',address:'GÃÂÃÂ¼terstr. 89, Basel'},
-  {id:'d5',name:'Cut & Style',type:'hairsalon',description:'FamiliÃÂÃÂ¤rer Friseursalon ÃÂ¢ÃÂÃÂ Kinder, Teens und Erwachsene willkommen.',rating:4.5,image_url:'',address:'Dornacherstr. 12, Basel'},
+  {id:'d4',name:'Hammam Spa',type:'spa',description:'Orientalisches Wellness-Erlebnis im Herzen von Basel. Massage, Dampfbad und mehr.',rating:4.6,image_url:'',address:'Güterstr. 89, Basel'},
+  {id:'d5',name:'Cut & Style',type:'hairsalon',description:'Familiärer Friseursalon – Kinder, Teens und Erwachsene willkommen.',rating:4.5,image_url:'',address:'Dornacherstr. 12, Basel'},
   {id:'d6',name:'Brow Studio Basel',type:'eyebrows',description:'Augenbrauen-Shaping, Tinting und Lash-Lifting von echten Profis.',rating:4.8,image_url:'',address:'Feldbergstr. 55, Basel'}
 ];
 const DEMO_SERVICES={
   d1:[{id:'s1',store_id:'d1',name:'Herrenhaarschnitt',price:35,duration:30,category:'barber'},{id:'s2',store_id:'d1',name:'Kinderhaarschnitt',price:22,duration:25,category:'barber'},{id:'s3',store_id:'d1',name:'Bart trimmen',price:18,duration:20,category:'barber'},{id:'s4',store_id:'d1',name:'Rasur',price:28,duration:30,category:'barber'}],
   d2:[{id:'s5',store_id:'d2',name:'Damenhaarschnitt',price:55,duration:45,category:'hairsalon'},{id:'s6',store_id:'d2',name:'Herrenhaarschnitt',price:38,duration:35,category:'hairsalon'},{id:'s7',store_id:'d2',name:'Balayage',price:120,duration:120,category:'hairsalon'},{id:'s8',store_id:'d2',name:'Coloration',price:85,duration:90,category:'hairsalon'}],
-  d3:[{id:'s9',store_id:'d3',name:'Gel-NÃÂÃÂ¤gel',price:65,duration:60,category:'nails'},{id:'s10',store_id:'d3',name:'Nageldesign',price:45,duration:45,category:'nails'},{id:'s11',store_id:'d3',name:'ManikÃÂÃÂ¼re',price:35,duration:40,category:'nails'},{id:'s12',store_id:'d3',name:'PedikÃÂÃÂ¼re',price:40,duration:45,category:'nails'}],
+  d3:[{id:'s9',store_id:'d3',name:'Gel-Nägel',price:65,duration:60,category:'nails'},{id:'s10',store_id:'d3',name:'Nageldesign',price:45,duration:45,category:'nails'},{id:'s11',store_id:'d3',name:'Maniküre',price:35,duration:40,category:'nails'},{id:'s12',store_id:'d3',name:'Pediküre',price:40,duration:45,category:'nails'}],
   d4:[{id:'s13',store_id:'d4',name:'Klassische Massage',price:80,duration:60,category:'spa'},{id:'s14',store_id:'d4',name:'Dampfbad',price:30,duration:45,category:'spa'},{id:'s15',store_id:'d4',name:'Peeling',price:55,duration:45,category:'spa'}],
   d5:[{id:'s16',store_id:'d5',name:'Kinderhaarschnitt',price:20,duration:25,category:'hairsalon'},{id:'s17',store_id:'d5',name:'Teenager-Schnitt',price:30,duration:30,category:'hairsalon'},{id:'s18',store_id:'d5',name:'Damenhaarschnitt',price:50,duration:45,category:'hairsalon'},{id:'s19',store_id:'d5',name:'Herrenhaarschnitt',price:35,duration:35,category:'hairsalon'}],
   d6:[{id:'s20',store_id:'d6',name:'Brow Shaping',price:28,duration:30,category:'eyebrows'},{id:'s21',store_id:'d6',name:'Brow Tinting',price:22,duration:25,category:'eyebrows'},{id:'s22',store_id:'d6',name:'Lash Lifting',price:65,duration:60,category:'eyebrows'}]
@@ -1721,7 +1697,7 @@ function toggleTheme(){
 })();
 
 
-// AUTO-TRANSLATE DYNAMIC CONTENT (MyMemory API ÃÂ¢ÃÂÃÂ free, no key, 5000 req/day)
+// AUTO-TRANSLATE DYNAMIC CONTENT (MyMemory API – free, no key, 5000 req/day)
 const _trCache={};
 let _trQ=[],_trFlying=0;
 const _TR_MAX=2;
@@ -1739,7 +1715,7 @@ function _trFetch(text,lang){
         const j=await r.json();
         if(j.responseStatus===200&&j.responseData?.translatedText){res(_trCache[key]=j.responseData.translatedText);return;}
       }catch(e){}
-      res(_trCache[key]=null); // cache failure ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ show original
+      res(_trCache[key]=null); // cache failure → show original
       _trDrain();
     });
   });
@@ -1800,7 +1776,7 @@ applyTranslations();
 })();
 sb.auth.onAuthStateChange((event,session)=>{
   if(event==='SIGNED_IN'&&session?.user){if(!currentUser){currentUser=session.user;onSignIn(session.user);}if(!localStorage.getItem('solenProfileDone')){setTimeout(showProfileSlideIn,1500);}}else if(event==='PASSWORD_RECOVERY'){
-    // User arrived via password-reset email link ÃÂ¢ÃÂÃÂ show the reset form
+    // User arrived via password-reset email link — show the reset form
     closeAuth();
     document.getElementById('newPasswordOverlay').classList.add('active');
   }
@@ -1928,18 +1904,16 @@ function switchAuthTab(tab){
   if(phoneForm)phoneForm.classList.toggle('hidden',tab!=='phone-auth');
   document.getElementById('authMsg').innerHTML='';
 }
-  const phoneForm=document.getElementById('formPhoneAuth');
-  if(phoneForm)phoneForm.classList.toggle('hidden',tab!=='phone-auth');
 
 function showAuthMsg(msg,type='error'){
   document.getElementById('authMsg').innerHTML=`<div class="msg ${type}">${msg}</div>`;
 }
 
-// Rate limiter ÃÂ¢ÃÂÃÂ prevents brute-force and spam (in-memory, resets on page reload)
+// Rate limiter — prevents brute-force and spam (in-memory, resets on page reload)
 const _rl={counts:{},check(key,limit=5,windowMs=60000){const now=Date.now();if(!this.counts[key])this.counts[key]=[];this.counts[key]=this.counts[key].filter(t=>now-t<windowMs);if(this.counts[key].length>=limit)return false;this.counts[key].push(now);return true;}};
 
 async function doLogin(){
-  if(!_rl.check('auth',5,60000)){toast('Too many attempts ÃÂ¢ÃÂÃÂ please wait 60s','error');return;}
+  if(!_rl.check('auth',5,60000)){toast('Too many attempts — please wait 60s','error');return;}
   const email=document.getElementById('loginEmail').value.trim();
   const pw=document.getElementById('loginPw').value;
   if(!email||!pw)return showAuthMsg(t('err_email_pw'));
@@ -2030,7 +2004,7 @@ async function doSalonSignup(){
   const salonDesc=document.getElementById('salonDesc').value.trim();
   const agb=document.getElementById('salonAgb').checked;
 
-  if(!first||!email||!pw||!salonName)return showAuthMsg('Bitte alle Pflichtfelder ausfÃÂÃÂ¼llen.');
+  if(!first||!email||!pw||!salonName)return showAuthMsg('Bitte alle Pflichtfelder ausfüllen.');
   if(pw.length<6)return showAuthMsg('Passwort muss mindestens 6 Zeichen haben.');
   if(!agb)return showAuthMsg('Bitte die AGB akzeptieren.');
 
@@ -2074,11 +2048,11 @@ async function doSalonSignup(){
   }
 
   btn.disabled=false;btn.textContent='Salon anmelden';
-  showAuthMsg('Salon angemeldet! Dein Eintrag wird geprÃÂÃÂ¼ft und freigeschaltet. BestÃÂÃÂ¤tigungs-E-Mail gesendet.','success');
+  showAuthMsg('Salon angemeldet! Dein Eintrag wird geprüft und freigeschaltet. Bestätigungs-E-Mail gesendet.','success');
 }
 
 async function signInGoogle(){
-  if(!_rl.check('auth',5,60000)){toast('Too many attempts ÃÂ¢ÃÂÃÂ please wait 60s','error');return;}
+  if(!_rl.check('auth',5,60000)){toast('Too many attempts — please wait 60s','error');return;}
   const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://www.solen.ch'}});
   if(error)toast(error.message,'error');
 }
@@ -2172,64 +2146,15 @@ async function resendPasswordReset(){
 async function doUpdatePassword(){
   const pw1=document.getElementById('newPw1').value;
   const pw2=document.getElementById('newPw2').value;
-// PHONE AUTH
-let _phoneForOtp='';
-function openPhoneAuth(){
-  openAuth('phone-auth');
-  document.getElementById('phoneStep1').classList.remove('hidden');
-  document.getElementById('phoneStep2').classList.add('hidden');
-  document.getElementById('phoneNumber').value='';
-  document.getElementById('phoneOtpCode').value='';
-  _phoneForOtp='';
-}
-async function sendSmsOtp(){
-  if(!_rl.check('auth',5,60000)){toast('Too many attempts \u2013 please wait 60s','error');return;}
-  const prefix=document.getElementById('phonePrefix').value;
-  const raw=document.getElementById('phoneNumber').value.trim().replace(/\s/g,'');
-  if(!raw)return showAuthMsg('Bitte Handynummer eingeben.');
-  const digits=raw.startsWith('0')?raw.slice(1):raw;
-  const phone=prefix+digits;
-  const btn=document.querySelector('#phoneStep1 .btn-primary');
-  btn.disabled=true;btn.textContent='Sende...';
-  const{error}=await sb.auth.signInWithOtp({phone});
-  btn.disabled=false;btn.textContent='SMS-Code senden';
-  if(error){
-    console.error('[Solen] Phone OTP send error:',error);
-    showAuthMsg(error.message.includes('Invalid')?'Ung\u00fcltige Nummer. Bitte \u00fcberpr\u00fcfen.':t('err_generic'));
-    return;
-  }
-  _phoneForOtp=phone;
-  document.getElementById('phoneOtpHint').textContent='Code gesendet an '+phone+'. G\u00fcltig f\u00fcr 10 Minuten.';
-  document.getElementById('phoneStep1').classList.add('hidden');
-  document.getElementById('phoneStep2').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('phoneOtpCode').focus(),100);
-}
-async function verifyPhoneOtp(){
-  const token=document.getElementById('phoneOtpCode').value.trim();
-  if(token.length!==6||!/^\d+$/.test(token))return showAuthMsg('Bitte 6-stelligen Code eingeben.');
-  const btn=document.querySelector('#phoneStep2 .btn-primary');
-  btn.disabled=true;btn.textContent='Pr\u00fcfe...';
-  const{error,data}=await sb.auth.verifyOtp({phone:_phoneForOtp,token,type:'sms'});
-  btn.disabled=false;btn.textContent='Code best\u00e4tigen';
-  if(error){
-    console.error('[Solen] Phone OTP verify error:',error);
-    const msg=error.message.includes('expired')||error.message.includes('Invalid')?'Code ung\u00fcltig oder abgelaufen. Bitte erneut senden.':t('err_generic');
-    showAuthMsg(msg);
-    return;
-  }
-  closeAuth();
-  if(data?.user)await onSignIn(data.user);
-}
-
   const msgEl=document.getElementById('newPwMsg');
   if(pw1.length<8){msgEl.innerHTML='<div class="msg error">Passwort muss mindestens 8 Zeichen haben.</div>';return;}
-  if(pw1!==pw2){msgEl.innerHTML='<div class="msg error">PasswÃÂÃÂ¶rter stimmen nicht ÃÂÃÂ¼berein.</div>';return;}
+  if(pw1!==pw2){msgEl.innerHTML='<div class="msg error">Passwörter stimmen nicht überein.</div>';return;}
   const btn=document.querySelector('#newPasswordOverlay .btn-primary');
   btn.disabled=true;btn.textContent='...';
   const{error}=await sb.auth.updateUser({password:pw1});
   btn.disabled=false;btn.textContent='Passwort speichern';
   if(error){console.error('[Solen] Update password error:',error);msgEl.innerHTML='<div class="msg error">'+t('err_generic')+'</div>';}
-  else{document.getElementById('newPasswordOverlay').classList.remove('active');toast('Passwort erfolgreich geÃÂÃÂ¤ndert!','success');window.location.hash='';}
+  else{document.getElementById('newPasswordOverlay').classList.remove('active');toast('Passwort erfolgreich geändert!','success');window.location.hash='';}
 }
 // Check for password recovery hash on load
 (function checkPasswordRecovery(){
@@ -2252,7 +2177,7 @@ function openSetup(isWelcome){
   const heading=document.getElementById('setupWelcomeHeading');
   const title=document.getElementById('setupTitle');
   if(isWelcome){
-    heading.textContent='Willkommen! MÃÂÃÂ¶chtest du dein Profil einrichten?';
+    heading.textContent='Willkommen! Möchtest du dein Profil einrichten?';
     title.textContent='Profil einrichten';
   } else {
     heading.textContent='Profil bearbeiten';
@@ -2273,7 +2198,7 @@ function openSetup(isWelcome){
   document.getElementById('setupStepLabel').textContent='';
 }
 function closeSetup(){document.getElementById('setupOverlay').classList.remove('active');}
-function skipSetup(){closeSetup();toast('Du kannst dein Profil jederzeit vervollstÃÂÃÂ¤ndigen.','info');}
+function skipSetup(){closeSetup();toast('Du kannst dein Profil jederzeit vervollständigen.','info');}
 
 function toggleChip(el){el.classList.toggle('selected');}
 
@@ -2345,8 +2270,8 @@ async function loadStores(){
 }
 
 function getStoreEmoji(type){
-  const map={barber:'ÃÂ¢ÃÂÃÂÃÂ¯ÃÂ¸ÃÂ',hairsalon:'ÃÂ°ÃÂÃÂÃÂ',nails:'ÃÂ°ÃÂÃÂÃÂ',spa:'ÃÂ°ÃÂÃÂ§ÃÂ',makeup:'ÃÂ°ÃÂÃÂÃÂ',eyebrows:'ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ'};
-  return map[type]||'ÃÂ¢ÃÂÃÂ¨';
+  const map={barber:'✂️',hairsalon:'💇',nails:'💅',spa:'🧖',makeup:'💄',eyebrows:'👁️'};
+  return map[type]||'✨';
 }
 
 function getNextTimeSlots(n){
@@ -2385,7 +2310,7 @@ function getSalonPhoto(store){
 
 function getPriceRange(s){const c=(s.cat||'').toLowerCase();if(c.includes('barbershop'))return 'ab CHF 25';if(c.includes('friseursalon')||c.includes('coiffeur'))return 'ab CHF 45';if(c.includes('nagelstudio')||c.includes('nail'))return 'ab CHF 35';if(c.includes('make-up')||c.includes('kosmetik'))return 'ab CHF 80';if(c.includes('spa')||c.includes('wellness'))return 'ab CHF 60';if(c.includes('braids')||c.includes('afro'))return 'ab CHF 50';if(c.includes('augenbrauen')||c.includes('wimpern'))return 'ab CHF 30';return 'ab CHF 35';};
 
-// OPEN/CLOSED STATUS (BUG 4 ÃÂ¢ÃÂÃÂ FIXED)
+// OPEN/CLOSED STATUS (BUG 4 — FIXED)
 function getOpenStatus(store){
   const now=new Date();
   const days=['So','Mo','Di','Mi','Do','Fr','Sa'];
@@ -2407,7 +2332,7 @@ function getOpenStatus(store){
       }
     }
     if(!hoursStr){
-      // Today not found in hours object ÃÂ¢ÃÂÃÂ store is closed today
+      // Today not found in hours object — store is closed today
       const tomorrow=days[(now.getDay()+1)%7];
       return{open:false,text:'Geschlossen',hours:JSON.stringify(rawHours)};
     }
@@ -2419,9 +2344,9 @@ function getOpenStatus(store){
   const openH=parseInt(match[1])+parseInt(match[2])/60;
   const closeH=parseInt(match[3])+parseInt(match[4])/60;
   const isSunday=now.getDay()===0&&typeof hoursStr==='string'&&!hoursStr.toLowerCase().includes('so');
-  if(isSunday)return{open:false,text:`Geschlossen ÃÂÃÂ· ÃÂÃÂ¶ffnet ${match[1]}:${match[2]}`,hours:hoursStr};
+  if(isSunday)return{open:false,text:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hoursStr};
   const isOpen=currentHour>=openH&&currentHour<closeH;
-  return{open:isOpen,text:isOpen?`Offen ÃÂÃÂ· schliesst ${match[3]}:${match[4]}`:`Geschlossen ÃÂÃÂ· ÃÂÃÂ¶ffnet ${match[1]}:${match[2]}`,hours:hoursStr};
+  return{open:isOpen,text:isOpen?`Offen · schliesst ${match[3]}:${match[4]}`:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hoursStr};
 }
 
 function renderStars(rating){
@@ -2501,9 +2426,9 @@ function renderStores(){
   // Sort
   if(currentSort==='popular'){
     filtered=[...filtered].sort((a,b)=>{
-      const sa=(parseFloat(a.avg_rating)||0)*(parseInt(a.review_count)||0);
-      const sb=(parseFloat(b.avg_rating)||0)*(parseInt(b.review_count)||0);
-      return sb-sa;
+      const scoreA=(parseFloat(a.avg_rating)||0)*(parseInt(a.review_count)||0);
+      const scoreB=(parseFloat(b.avg_rating)||0)*(parseInt(b.review_count)||0);
+      return scoreB-scoreA;
     });
   } else if(currentSort==='price_asc'||currentSort==='price_desc'){
     filtered=[...filtered].sort((a,b)=>{
@@ -2585,7 +2510,7 @@ async function renderLastMinute(){
   if(!html){section.classList.add('hidden');return;}
   const dow=new Date().toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
   section.classList.remove('hidden');
-  section.innerHTML='<div class="lm-hd">ÃÂ¢ÃÂÃÂ¡ <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="searchInput.focus()">Alle zeigen ÃÂ¢ÃÂÃÂ</span></div><div class="lm-scroll">'+html+'</div>';
+  section.innerHTML='<div class="lm-hd">⚡ <strong>Last Minute</strong> &mdash; '+dow+'<span class="lm-all" onclick="searchInput.focus()">Alle zeigen →</span></div><div class="lm-scroll">'+html+'</div>';
 }
 function dismissRecent(){
   localStorage.setItem('solenViewedDismissed','1');
@@ -2595,7 +2520,7 @@ function dismissRecent(){
 function resetFilters(){
   activeCategories.clear();
   document.getElementById('searchInput').value='';
-  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.add('hidden');if(b.dataset.cat==='all')b.classList.remove('hidden');});
+  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
   renderStores();
 }
 function resetAllFilters(){
@@ -2606,9 +2531,9 @@ function resetAllFilters(){
   onlyEmpfohlen=false;
   document.querySelectorAll('.empfohlen-chip').forEach(b=>b.classList.remove('active'));
   document.getElementById('searchInput').value='';
-  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.add('hidden');if(b.dataset.cat==='all')b.classList.remove('hidden');});
-  document.querySelectorAll('.neighbourhood-chip:not(.empfohlen-chip)').forEach(b=>b.classList.add('hidden'));
-  document.querySelectorAll('.neighbourhood-chip:not(.empfohlen-chip)').forEach((b,i)=>{if(i===0)b.classList.remove('hidden');});
+  document.querySelectorAll('.cat-pill').forEach(b=>{b.classList.remove('active');if(b.dataset.cat==='all')b.classList.add('active');});
+  document.querySelectorAll('.neighbourhood-chip:not(.empfohlen-chip)').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.neighbourhood-chip:not(.empfohlen-chip)').forEach((b,i)=>{if(i===0)b.classList.add('active');});
   document.querySelectorAll('.rating-chip').forEach((b,i)=>{b.classList.toggle('active',i===0);});
   ['priceSliderDesktop','priceSliderMobile'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=300;el.style.setProperty('--pct','100%');}});
   ['priceLabelDesktop','priceLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='Alle';});
@@ -2624,7 +2549,7 @@ function getTypeName(type){
 function selectCat(btn,cat){
   if(cat==='all'){
     activeCategories.clear();
-    document.querySelectorAll('.cat-pill').forEach(b=>b.classList.add('hidden'));
+    document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
   } else {
     // Toggle this category
@@ -2674,12 +2599,12 @@ function restoreCategoryFilter(){
     }
   }catch(e){}
 }
-function slugify(str){return str.toLowerCase().replace(/[ÃÂÃÂ¤ÃÂÃÂ¶ÃÂÃÂ¼]/g,c=>({'ÃÂÃÂ¤':'ae','ÃÂÃÂ¶':'oe','ÃÂÃÂ¼':'ue'})[c]||c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function slugify(str){return str.toLowerCase().replace(/[äöü]/g,c=>({'ä':'ae','ö':'oe','ü':'ue'})[c]||c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 function updateSalonSEO(s){
   const slug=slugify(s.name);
   const url='/?s='+slug+'-'+s.id;
   history.pushState({salonId:s.id},'',url);
-  document.title=s.name+' ÃÂ¢ÃÂÃÂ solen.ch';
+  document.title=s.name+' — solen.ch';
   const desc=(s.description||s.desc||'').slice(0,155)||s.name+' in Basel buchen auf solen.ch';
   document.querySelector('meta[name="description"]')?.setAttribute('content',desc);
   document.getElementById('ogTitle')?.setAttribute('content',s.name+' | solen.ch');
@@ -2758,7 +2683,7 @@ async function startBooking(storeId){
   const store=allStores.find(x=>x.id===storeId);
   if(!store)return;
   bookingState={storeId,store,step:1,service:null,date:null,time:null};
-  document.getElementById('bookingTitle').textContent=`${t('btn_book_now')} ÃÂ¢ÃÂÃÂ ${store.name}`;
+  document.getElementById('bookingTitle').textContent=`${t('btn_book_now')} — ${store.name}`;
   document.getElementById('bookingOverlay').classList.add('active');
   renderWizStep(1);
 
@@ -2787,7 +2712,7 @@ function orderServicesByProfile(svcs){
     // User's preferred services always highest priority
     if(prefs.some(pref=>name(s).includes(pref.toLowerCase())))sc+=100;
     // Gender-based ordering
-    if(gender==='MÃÂÃÂ¤nnlich'&&(name(s).includes('herren')||name(s).includes('bart')))sc+=50;
+    if(gender==='Männlich'&&(name(s).includes('herren')||name(s).includes('bart')))sc+=50;
     if(gender==='Weiblich'&&(name(s).includes('damen')||name(s).includes('farb')||name(s).includes('color')))sc+=50;
     // Age-based ordering
     if((age==='Unter 12'||age==='12-17')&&name(s).includes('kinder'))sc+=60;
@@ -2806,11 +2731,11 @@ function renderWizStep(step){
   let html='';
   if(step===1){
     html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_choose_service')}</h3>`;
-    if(ordered.length===0){html+='<p class="text-muted">Keine Services verfÃÂÃÂ¼gbar.</p>';}
+    if(ordered.length===0){html+='<p class="text-muted">Keine Services verfügbar.</p>';}
     else{
       const prefs=currentProfile?.preferred_services||[];
       const hasPreferred=prefs.length>0&&ordered.some(s=>prefs.some(p=>s.name.toLowerCase().includes(p.toLowerCase())));
-      if(hasPreferred)html+=`<div class="text-muted" style="font-size:.8rem;margin-bottom:8px;font-weight:600">EMPFOHLEN FÃÂÃÂR DICH</div>`;
+      if(hasPreferred)html+=`<div class="text-muted" style="font-size:.8rem;margin-bottom:8px;font-weight:600">EMPFOHLEN FÜR DICH</div>`;
       html+=`<div class="services-grid">${ordered.map(s=>{
         const isPreferred=prefs.some(p=>s.name.toLowerCase().includes(p.toLowerCase()));
         const sel=bookingState.service?.id===s.id;
@@ -2819,7 +2744,8 @@ function renderWizStep(step){
           <div class="svc-name">${s.name}</div>
           <div class="svc-meta"><span>CHF ${s.price}</span><span>${s.duration} Min.</span></div>
         </div>`;
-      }).join('')}</div>`    }
+      }).join('')}</div>`;
+    }
     html+=`<div class="wiz-btns" style="margin-top:20px"><button class="btn-secondary" onclick="closeBooking()">${t('btn_cancel')}</button><button class="btn-primary" onclick="wizNext(2)" id="wizNext1" ${!bookingState.service?'disabled':''}>${t('btn_next')}</button></div>`;
   }
   else if(step===2){
@@ -2878,6 +2804,7 @@ function renderCalendar(){
   const startDay=first.getDay()||7;
   const daysInMonth=new Date(calendarYear,calendarMonth+1,0).getDate();
   const months=t('months').split('_');
+  const weekdays=t('weekdays').split('_');
   let html=`<div class="cal-header">
     <button class="cal-nav" onclick="prevMonth()">&#8592;</button>
     <span style="font-weight:700">${months[calendarMonth]} ${calendarYear}</span>
@@ -2885,7 +2812,6 @@ function renderCalendar(){
   </div>
   <div class="cal-weekdays">
     ${weekdays.map(d=>`<div class="cal-wd">${d}</div>`).join('')}
-  const weekdays=t('weekdays').split('_');
   </div>
   <div class="calendar-grid">`;
   for(let i=1;i<startDay;i++) html+=`<div></div>`;
@@ -2941,10 +2867,10 @@ function wizNext(step){
       localStorage.setItem('solen_guest_info',JSON.stringify({name:[bookingState.firstName,bookingState.lastName].filter(Boolean).join(' '),phone:bookingState.phone}));
       toast('\u2713 Gespeichert','success');
     }
+    bookingState.isFirstVisit=document.querySelector('input[name="bkVisitType"]:checked')?.value!=='returning';
   }
   renderWizStep(step);
 }
-    bookingState.isFirstVisit=document.querySelector('input[name="bkVisitType"]:checked')?.value!=='returning';
 
 async function confirmBooking(){
   if(!_rl.check('booking',3,60000)){toast('Please wait before making another booking','error');return;}
@@ -2972,15 +2898,11 @@ async function confirmBooking(){
     reference:reference,
     staff_id:_selStaffId||null,
     staff_name:_selStaffName||null,
-    is_first_visit:bookingState.isFirstVisit!==false
-    ,recurrence_group_id:recurGroupId
-    });
-    bmModal.innerHTML = `
-      <button class="btn-primary" style="margin-top:16px" onclick="closeBooking()">${t('btn_close')}</button>
-      ${wantsReminder?`<p style="font-size:.85rem;color:var(--muted);margin-top:8px">${t('wiz_reminder_text')}</p>`:''}
-      <h3 style="color:var(--success)">${t('booking_confirmed_title')}</h3>
-    `;
-
+    is_first_visit:bookingState.isFirstVisit!==false,
+    recurrence_group_id:recurGroupId,
+    recurrence_index:0,
+    recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
+  }).select('id').single();
   if(error){toast(t('toast_booking_failed'),'error');if(btn){btn.disabled=false;btn.textContent=t('btn_confirm');}}
   else{
     const wantsReminder=bookingState.wantsReminder!==false;
@@ -3048,7 +2970,7 @@ function showPage(page){
   // close mobile nav
   document.getElementById('navActions')?.classList.remove('open');
   // Update bottom nav active state
-  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.add('hidden'));
+  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.remove('active'));
   const bnMap={home:'bnHome',bookings:'bnBookings',profile:'bnProfile',admin:'bnAdmin'};
   const bnEl=document.getElementById(bnMap[page]||'');
   if(bnEl)bnEl.classList.add('active');
@@ -3105,7 +3027,7 @@ async function renderBookings(){
   document.getElementById('bookingsContent').innerHTML='<div class="spinner"></div>';
   const{data,error}=await sb.from('bookings').select('*,stores(name,type)').eq('user_id',currentUser.id).order('booking_date',{ascending:false});
   if(error||!data||data.length===0){
-    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">ÃÂ°ÃÂÃÂÃÂ</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
+    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
     return;
   }
   const html=`<div class="booking-list">${data.map(b=>{
@@ -3250,7 +3172,7 @@ async function userCancelBooking(){
   if(card)card.remove();
   const list=document.querySelector('#bookingsContent .booking-list');
   if(list&&!list.children.length){
-    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">ÃÂ°ÃÂÃÂÃÂ</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
+    document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="font-size:3rem">📅</div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
   }
   toast('Termin wurde abgesagt.','success');
 }
@@ -3283,7 +3205,7 @@ function downloadIcs(){
 // ADMIN
 let adminTab='adminStores';
 function showAdminTab(btn,tab){
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.add('hidden'));
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   ['adminStores','adminServices','adminBookings','adminUsers'].forEach(t=>{
     const el=document.getElementById(t);
@@ -3315,7 +3237,7 @@ async function loadAdminStores(){
   const stores=data||[];
   const pendingSalons=(salons||[]).filter(s=>s.status==='pending');
   const approvedSalons=(salons||[]).filter(s=>s.status!=='pending');
-  let html=`<button class="add-btn" onclick="openEditStore(null)">+ Salon hinzufÃÂÃÂ¼gen</button>`;
+  let html=`<button class="add-btn" onclick="openEditStore(null)">+ Salon hinzufügen</button>`;
   if(pendingSalons.length){
     html+=`<h3 style="margin:20px 0 12px;font-size:1rem;font-weight:700;color:var(--accent)">Ausstehende Genehmigungen (${pendingSalons.length})</h3>`;
     html+=`<div class="table-wrap"><table class="data-table">
@@ -3323,7 +3245,7 @@ async function loadAdminStores(){
       <tbody>${pendingSalons.map(s=>`<tr>
         <td><strong>${s.name}</strong></td>
         <td>${getTypeName(s.type||'')}</td>
-        <td>${s.address||'ÃÂ¢ÃÂÃÂ'}</td>
+        <td>${s.address||'—'}</td>
         <td><span class="booking-status status-pending">Ausstehend</span></td>
         <td style="display:flex;gap:8px">
           <button class="btn-sm solid" onclick="approveSalon('${s.id}')">Freigeben</button>
@@ -3338,10 +3260,10 @@ async function loadAdminStores(){
       <tbody>${stores.map(s=>`<tr>
         <td><strong>${s.name}</strong></td>
         <td>${getTypeName(s.type||'')}</td>
-        <td>${s.address||'ÃÂ¢ÃÂÃÂ'}</td>
+        <td>${s.address||'—'}</td>
         <td style="display:flex;gap:8px">
           <button class="btn-sm" onclick="openEditStore('${s.id}')">Bearbeiten</button>
-          <button class="btn-danger" onclick="deleteStore('${s.id}','${s.name.replace(/'/g,"\\'")}')">LÃÂÃÂ¶schen</button>
+          <button class="btn-danger" onclick="deleteStore('${s.id}','${s.name.replace(/'/g,"\\'")}')">Löschen</button>
         </td>
       </tr>`).join('')}</tbody>
     </table></div>`:'<p class="text-muted">Keine Stores.</p>';
@@ -3352,10 +3274,10 @@ async function loadAdminStores(){
       <tbody>${approvedSalons.map(s=>`<tr>
         <td><strong>${s.name}</strong></td>
         <td>${getTypeName(s.type||'')}</td>
-        <td>${s.address||'ÃÂ¢ÃÂÃÂ'}</td>
+        <td>${s.address||'—'}</td>
         <td><span class="booking-status status-confirmed">${s.status}</span></td>
         <td style="display:flex;gap:8px">
-          <button class="btn-danger" onclick="deleteSalon('${s.id}','${s.name.replace(/'/g,"\\'")}')">LÃÂÃÂ¶schen</button>
+          <button class="btn-danger" onclick="deleteSalon('${s.id}','${s.name.replace(/'/g,"\\'")}')">Löschen</button>
         </td>
       </tr>`).join('')}</tbody>
     </table></div>`;
@@ -3374,10 +3296,10 @@ async function rejectSalon(id){
   else{toast('Salon abgelehnt.','info');loadAdminStores();}
 }
 async function deleteSalon(id,name){
-  if(!confirm('Salon "'+name+'" wirklich lÃÂÃÂ¶schen?'))return;
+  if(!confirm('Salon "'+name+'" wirklich löschen?'))return;
   const{error}=await sb.from('salons').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Salon gelÃÂÃÂ¶scht.','info');loadAdminStores();loadStores();}
+  else{toast('Salon gelöscht.','info');loadAdminStores();loadStores();}
 }
 
 async function loadAdminServices(){
@@ -3386,15 +3308,15 @@ async function loadAdminServices(){
   const{data:stores}=await sb.from('stores').select('id,name').order('name');
   const{data:svcs}=await sb.from('services').select('*,stores(name)').order('name');
   el.innerHTML=`
-    <button class="add-btn" onclick="openAddService()">+ Service hinzufÃÂÃÂ¼gen</button>
+    <button class="add-btn" onclick="openAddService()">+ Service hinzufügen</button>
     ${svcs&&svcs.length?`<div class="table-wrap"><table class="data-table">
       <thead><tr><th>Name</th><th>Salon</th><th>Preis</th><th>Dauer</th><th>Aktionen</th></tr></thead>
       <tbody>${svcs.map(s=>`<tr>
         <td><strong>${s.name}</strong></td>
-        <td>${s.stores?.name||'ÃÂ¢ÃÂÃÂ'}</td>
+        <td>${s.stores?.name||'—'}</td>
         <td>CHF ${s.price}</td>
         <td>${s.duration} Min.</td>
-        <td><button class="btn-danger" onclick="deleteService('${s.id}')">LÃÂÃÂ¶schen</button></td>
+        <td><button class="btn-danger" onclick="deleteService('${s.id}')">Löschen</button></td>
       </tr>`).join('')}</tbody>
     </table></div>`:'<p class="text-muted" style="margin-top:20px">Noch keine Services in der Datenbank.</p>'}`;
 }
@@ -3407,8 +3329,8 @@ async function loadAdminBookings(){
     <thead><tr><th>Datum</th><th>Salon</th><th>Service</th><th>Kunde</th><th>Status</th><th>Aktion</th></tr></thead>
     <tbody>${data.map(b=>`<tr>
       <td>${formatDate(b.booking_date)}<br><span style="font-size:.75rem;color:var(--muted)">${b.booking_time||''}</span></td>
-      <td>${b.salon_name||b.stores?.name||'ÃÂ¢ÃÂÃÂ'}</td>
-      <td>${b.service_name||'ÃÂ¢ÃÂÃÂ'}<br><span style="font-size:.75rem;color:var(--muted)">CHF ${b.service_price||0}</span></td>
+      <td>${b.salon_name||b.stores?.name||'—'}</td>
+      <td>${b.service_name||'—'}<br><span style="font-size:.75rem;color:var(--muted)">CHF ${b.service_price||0}</span></td>
       <td>${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Anonym'}<br><span style="font-size:.75rem;color:var(--muted)">${b.customer_email||''}</span></td>
       <td><span class="booking-status ${b.status==='confirmed'?'status-confirmed':b.status==='cancelled'?'status-cancelled':'status-pending'}">${b.status}</span></td>
       <td>
@@ -3438,10 +3360,10 @@ async function loadAdminUsers(){
     html+=data&&data.length?`<div class="table-wrap"><table class="data-table">
     <thead><tr><th>E-Mail</th><th>Registriert</th><th>Status</th><th>Aktionen</th></tr></thead>
     <tbody>${data.map(u=>{
-      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'ÃÂ¢ÃÂÃÂ';
+      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'—';
       const banned=u.is_banned===true;
       return`<tr>
-      <td><strong>${u.email||'ÃÂ¢ÃÂÃÂ'}</strong><br><span style="font-size:.72rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
+      <td><strong>${u.email||'—'}</strong><br><span style="font-size:.72rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
       <td>${regDate}</td>
       <td><span class="booking-status ${banned?'status-cancelled':'status-confirmed'}">${banned?'Gesperrt':'Aktiv'}</span></td>
       <td style="display:flex;gap:8px">
@@ -3455,14 +3377,14 @@ async function loadAdminUsers(){
     html+=data&&data.length?`<div class="table-wrap"><table class="data-table">
     <thead><tr><th>Name</th><th>Rolle</th><th>Registriert</th><th>Aktionen</th></tr></thead>
     <tbody>${data.map(u=>{
-      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'ÃÂ¢ÃÂÃÂ';
+      const regDate=u.created_at?new Date(u.created_at).toLocaleDateString('de-CH'):'—';
       return`<tr>
-      <td><strong>${u.display_name||u.name||'ÃÂ¢ÃÂÃÂ'}</strong><br><span style="font-size:.75rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
+      <td><strong>${u.display_name||u.name||'—'}</strong><br><span style="font-size:.75rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
       <td><span class="badge" style="background:${u.role==='salon_owner'?'var(--accent2)':u.is_admin?'var(--accent)':'var(--surfaceAlt)'};color:${u.role==='salon_owner'||u.is_admin?'white':'var(--text)'};padding:3px 10px;border-radius:50px;font-size:.75rem">${u.is_admin?'Admin':u.role||'customer'}</span></td>
       <td>${regDate}</td>
-      <td><button class="btn-danger" onclick="deleteProfile('${u.id}','${(u.display_name||u.name||'').replace(/'/g,"\\'")}')">LÃÂÃÂ¶schen</button></td>
+      <td><button class="btn-danger" onclick="deleteProfile('${u.id}','${(u.display_name||u.name||'').replace(/'/g,"\\'")}')">Löschen</button></td>
     </tr>`;}).join('')}</tbody>
-  </table></div>`:'<p class="text-muted" style="margin-top:20px">Tabelle user_profiles nicht gefunden. Bitte SQL in Supabase ausfÃÂÃÂ¼hren (siehe Quellcode-Kommentar).</p>';
+  </table></div>`:'<p class="text-muted" style="margin-top:20px">Tabelle user_profiles nicht gefunden. Bitte SQL in Supabase ausführen (siehe Quellcode-Kommentar).</p>';
   }
   el.innerHTML=html;
 }
@@ -3473,10 +3395,10 @@ async function toggleBanUser(userId,ban){
 }
 
 async function deleteProfile(id,name){
-  if(!confirm('Profil von "'+name+'" wirklich lÃÂÃÂ¶schen? (Nur Profildaten, nicht der Auth-Account)'))return;
+  if(!confirm('Profil von "'+name+'" wirklich löschen? (Nur Profildaten, nicht der Auth-Account)'))return;
   const{error}=await sb.from('profiles').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Profil gelÃÂÃÂ¶scht.','info');loadAdminUsers();}
+  else{toast('Profil gelöscht.','info');loadAdminUsers();}
 }
 
 // EDIT STORE MODAL
@@ -3487,7 +3409,7 @@ async function openEditStore(storeId){
     const{data}=await sb.from('stores').select('*').eq('id',storeId).single();
     if(data)s=data;
   }
-  document.getElementById('editStoreTitle').textContent=storeId?'Salon bearbeiten':'Salon hinzufÃÂÃÂ¼gen';
+  document.getElementById('editStoreTitle').textContent=storeId?'Salon bearbeiten':'Salon hinzufügen';
   document.getElementById('editStoreBody').innerHTML=`
     <div class="form-group"><label>Name</label><input class="form-input" id="esName" value="${s.name||''}"></div>
     <div class="form-group"><label>Typ</label>
@@ -3521,10 +3443,10 @@ async function saveStore(){
 }
 
 async function deleteStore(id,name){
-  if(!confirm(`Salon "${name}" wirklich lÃÂÃÂ¶schen?`))return;
+  if(!confirm(`Salon "${name}" wirklich löschen?`))return;
   const{error}=await sb.from('stores').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Salon gelÃÂÃÂ¶scht.','info');loadStores();loadAdminTab('adminStores');}
+  else{toast('Salon gelöscht.','info');loadStores();loadAdminTab('adminStores');}
 }
 
 async function cancelBooking(id){
@@ -3535,7 +3457,7 @@ async function cancelBooking(id){
 }
 
 function openAddService(){
-  document.getElementById('editStoreTitle').textContent='Service hinzufÃÂÃÂ¼gen';
+  document.getElementById('editStoreTitle').textContent='Service hinzufügen';
   sb.from('stores').select('id,name').order('name').then(({data})=>{
     document.getElementById('editStoreBody').innerHTML=`
       <div class="form-group"><label>Salon</label>
@@ -3567,17 +3489,17 @@ async function saveService(){
     category:document.getElementById('asCat').value
   };
   if(!d.name)return toast('Service-Name ist erforderlich.','error');
-  if(!d.store_id)return toast('Bitte einen Salon wÃÂÃÂ¤hlen.','error');
+  if(!d.store_id)return toast('Bitte einen Salon wählen.','error');
   const{error}=await sb.from('services').insert(d);
   if(error)toast('Fehler: '+error.message,'error');
   else{toast('Service gespeichert!','success');closeEditStore();loadAdminTab('adminServices');}
 }
 
 async function deleteService(id){
-  if(!confirm('Diesen Service wirklich lÃÂÃÂ¶schen?'))return;
+  if(!confirm('Diesen Service wirklich löschen?'))return;
   const{error}=await sb.from('services').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Service gelÃÂÃÂ¶scht.','info');loadAdminTab('adminServices');}
+  else{toast('Service gelöscht.','info');loadAdminTab('adminServices');}
 }
 
 // SALON OWNER DASHBOARD
@@ -3592,12 +3514,12 @@ async function renderSalonDashboard(){
     if(!myStores||myStores.length===0){
       el.innerHTML=`<div class="profile-card">
         <h3 style="margin-bottom:4px">Salon-Profil erstellen</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin-bottom:20px">Trage deinen Salon ein, damit Kunden dich finden kÃÂ¶nnen.</p>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:20px">Trage deinen Salon ein, damit Kunden dich finden können.</p>
         <form id="salonProfileForm" onsubmit="submitSalonProfile(event)" novalidate>
           <div class="form-group"><label>Salonname *</label><input class="form-input" id="sp_name" placeholder="z.B. Studio Bella" required></div>
           <div class="form-group"><label>Kategorie *</label>
             <select class="form-input" id="sp_type" required>
-              <option value="">Kategorie wÃÂ¤hlen...</option>
+              <option value="">Kategorie wählen...</option>
               <option value="hairsalon">Friseur</option>
               <option value="nails" data-i18n="cat_nails">Nagelstudio</option>
               <option value="cosmetik">Kosmetik</option>
@@ -3610,13 +3532,13 @@ async function renderSalonDashboard(){
           <div class="form-group"><label>Adresse *</label><input class="form-input" id="sp_address" placeholder="Hauptstrasse 12, Basel" required></div>
           <div class="form-group"><label>Telefon</label><input class="form-input" type="tel" id="sp_phone" placeholder="+41 79 000 00 00"></div>
           <div class="form-group"><label>Beschreibung</label><textarea class="form-input" id="sp_desc" rows="3" placeholder="Beschreibe deinen Salon..."></textarea></div>
-          <div class="form-group"><label>ÃÂffnungszeiten</label><textarea class="form-input" id="sp_hours" rows="3" placeholder="MoÃ¢ÂÂFr 09:00Ã¢ÂÂ19:00&#10;Sa 09:00Ã¢ÂÂ17:00"></textarea></div>
+          <div class="form-group"><label>Öffnungszeiten</label><textarea class="form-input" id="sp_hours" rows="3" placeholder="Mo–Fr 09:00–19:00&#10;Sa 09:00–17:00"></textarea></div>
           <div class="form-group"><label>Website (optional)</label><input class="form-input" type="url" id="sp_website" placeholder="https://mein-salon.ch"></div>
           <div class="form-group"><label>Filiale von (optional)</label><select class="form-input" id="sp_parent_store_id"><option value="">— Hauptstandort —</option>${allStores.filter(x=>!x.parent_store_id).map(x=>`<option value="${x.id}">${x.name}</option>`).join('')}</select></div> <button class="btn-primary" type="submit" id="sp_submit">Salon eintragen</button>
-        </form>
-          return;
+        </form>`;
+      return;
     }
-    // Store exists Ã¢ÂÂ render basic owner view
+    // Store exists — render basic owner view
     const store=myStores[0];
     const statusLabel={pending:'Ausstehend',approved:'Freigegeben',rejected:'Abgelehnt'}[store.status]||store.status||'Ausstehend';
     const statusClass={pending:'status-pending',approved:'status-confirmed',rejected:'status-cancelled'}[store.status]||'status-pending';
@@ -3658,32 +3580,23 @@ async function renderSalonDashboard(){
       </div>
       ${salon.description?`<p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">${salon.description}</p>`:''}
     </div>
-        <div class="admin-tabs" id="dashTabs">
+    <div class="admin-tabs" id="dashTabs">
       <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+    </div>
     <div id="dashTabBuchungen">
-      <div class="admin-tabs" id="dashTabs">
-        <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
-        <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
-      <div id="dashTabBuchungen">
-      </div>
-        <div class="admin-tabs" id="dashTabs">
-          <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
-          <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
-        <div id="dashTabBuchungen">
-        </div>
-          <div class="admin-tabs" id="dashTabs">
-            <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
-            <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
-          <div id="dashTabBuchungen">
-          </div>
-                                          </div>
-              </div>
+      ${allBookings.length>0?`<div class="bookings-list">${allBookings.map(b=>`<div class="booking-card">
+        <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
+        <div class="booking-meta">${b.service_name||'–'} · ${b.booking_date} · ${b.booking_time||'–'}</div>
+        <div class="booking-meta">Ref: ${b.reference||'–'} · <span class="booking-status status-${b.status}">${b.status}</span></div>
+        ${b.status==='confirmed'?`<button class="btn-sm btn-danger" style="margin-top:8px" onclick="updateBookingStatus('${b.id}','cancelled')">Stornieren</button>`:''}
+      </div>`).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}
+    </div>
     <div id="dashTabStatistiken" class="hidden">
       <div id="analyticsContent"><div class="spinner"></div></div>
     </div>`;
-              if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);}
-}}
+  if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);}
+}
 
 function showDashTab(btn,tab,salonId,storeId){
   document.querySelectorAll('#dashTabs .admin-tab').forEach(b=>b.classList.remove('active'));
@@ -3757,7 +3670,7 @@ async function renderAnalytics(salonId,storeId){
 async function updateSalonBooking(id,status){
   const{error}=await sb.from('bookings').update({status}).eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast(status==='confirmed'?'BestÃÂÃÂ¤tigt':'Storniert','success');renderSalonDashboard();}
+  else{toast(status==='confirmed'?'Bestätigt':'Storniert','success');renderSalonDashboard();}
 }
 
 // HAVERSINE DISTANCE
@@ -3842,7 +3755,7 @@ async function openBookingModal(store,preselectedTime){
   // Set default date to today
   const today=new Date();
   bmState.date=today.toISOString().split('T')[0];
-  document.getElementById('bmTitle').textContent=`${t('book_now')} ÃÂ¢ÃÂÃÂ ${store.name}`;
+  document.getElementById('bmTitle').textContent=`${t('book_now')} — ${store.name}`;
   await loadBranchesForBooking();
   renderBookingModal();
   document.getElementById('bookingModal').classList.add('open');
@@ -3890,6 +3803,7 @@ function renderBookingModal(){
         <a href="${calUrl}" target="_blank" rel="noopener" class="bm-cal-link">&#128197; ${t('add_to_calendar')}</a>
         <button class="bm-cal-link" style="background:none;border:1px solid var(--primary);cursor:pointer" onclick="downloadIcs()">&#128192; Apple / Outlook (.ics)</button>
         ${bmState.wantsReminder!==false?'<p style="font-size:.82rem;color:var(--muted);margin-top:12px">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>':''}
+      </div>`;
     return;
   }
 
@@ -3938,7 +3852,7 @@ function renderBookingModal(){
       +'<option value="6"'+(bmState.recurrenceCount===6?' selected':'')+'>6x</option>'
       +'</select>';
   }
-  html+='<div class="recur-row"><label class="vt-opt" style="cursor:pointer;gap:8px"><input type="checkbox"'+(bmState.isRecurring?' checked':'')+' onchange="bmState.isRecurring=this.checked;renderBookingModal()"> ÃÂ¢ÃÂÃÂº Termin wiederholen</label>'+rOpts+'</div>';
+  html+='<div class="recur-row"><label class="vt-opt" style="cursor:pointer;gap:8px"><input type="checkbox"'+(bmState.isRecurring?' checked':'')+' onchange="bmState.isRecurring=this.checked;renderBookingModal()"> ↺ Termin wiederholen</label>'+rOpts+'</div>';
   html+=`<div class="form-row"><div class="form-group"><label>Name *</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div><div class="form-group"><label>Telefon *</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="Telefon" required></div></div>`;
   html+=`<div class="form-row"><div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail}" type="email" placeholder="E-Mail"></div><div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes}" placeholder="Besondere W\u00fcnsche"></div></div>`;
   html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:10px 0 4px;cursor:pointer"><input type="checkbox" id="bmReminder" ${bmState.wantsReminder===false?'':'checked'} onchange="bmState.wantsReminder=this.checked"> E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)</label>`;
@@ -4170,7 +4084,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 <div id="salonRegModal" role="dialog" aria-modal="true">
   <div class="salon-reg-wrap">
     <div class="salon-reg-header">
-      <h2>ÃÂ¢ÃÂÃÂ¦ Salon eintragen</h2>
+      <h2>✦ Salon eintragen</h2>
       <button class="salon-reg-close" onclick="closeSalonReg()" aria-label="Schliessen">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -4184,11 +4098,11 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
       <!-- STEP 1: Basics -->
       <div class="reg-step active" id="regStep1">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 1 von 3 ÃÂ¢ÃÂÃÂ Basis-Informationen</p>
+          <p class="step-hint">Schritt 1 von 3 — Basis-Informationen</p>
           <div class="reg-field"><label>Salonname *</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization"></div>
           <div class="reg-field"><label>Kategorie *</label>
             <select id="reg_cat">
-              <option value="">Kategorie wÃÂÃÂ¤hlen...</option>
+              <option value="">Kategorie wählen...</option>
               <option>Friseursalon / Coiffeur</option><option>Barbershop</option>
               <option>Nagelstudio</option><option>Make-up &amp; Kosmetik</option>
               <option>Spa &amp; Wellness</option><option>Braids &amp; Afro Hair</option>
@@ -4199,21 +4113,21 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
           <div class="reg-field"><label>Telefon</label><input type="tel" id="reg_phone" placeholder="+41 79 000 00 00" autocomplete="tel"></div>
           <div class="reg-field"><label>E-Mail des Salons *</label><input type="email" id="reg_email" placeholder="salon@example.com" autocomplete="email"></div>
         </div>
-        <div class="salon-reg-footer"><button type="button" class="reg-btn-next" onclick="regNext(1)">Weiter ÃÂ¢ÃÂÃÂ</button></div>
+        <div class="salon-reg-footer"><button type="button" class="reg-btn-next" onclick="regNext(1)">Weiter →</button></div>
       </div>
       <!-- STEP 2: Location -->
       <div class="reg-step" id="regStep2">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 2 von 3 ÃÂ¢ÃÂÃÂ Standort &amp; Online-PrÃÂÃÂ¤senz</p>
+          <p class="step-hint">Schritt 2 von 3 — Standort &amp; Online-Präsenz</p>
           <div class="reg-field"><label>Strasse &amp; Hausnummer *</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address"></div>
           <div class="reg-field"><label>Quartier *</label>
             <select id="reg_nb">
-              <option value="">Quartier wÃÂÃÂ¤hlen...</option>
+              <option value="">Quartier wählen...</option>
               <option>Altstadt Grossbasel</option><option>Altstadt Kleinbasel</option>
               <option>Am Ring</option><option>Bachletten</option><option>Bruderholz</option>
               <option>Clara</option><option>Gundeldingen</option><option>Hirzbrunnen</option>
-              <option>Iselin</option><option>MatthÃÂÃÂ¤us</option><option>Neubad</option>
-              <option>St. Alban</option><option>St. Johann</option><option>VorstÃÂÃÂ¤dte</option>
+              <option>Iselin</option><option>Matthäus</option><option>Neubad</option>
+              <option>St. Alban</option><option>St. Johann</option><option>Vorstädte</option>
               <option>Wettstein</option>
             </select>
           </div>
@@ -4221,38 +4135,38 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
           <div class="reg-field"><label>Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(2)">ÃÂ¢ÃÂÃÂ ZurÃÂÃÂ¼ck</button>
-          <button type="button" class="reg-btn-next" onclick="regNext(2)">Weiter ÃÂ¢ÃÂÃÂ</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zurück</button>
+          <button type="button" class="reg-btn-next" onclick="regNext(2)">Weiter →</button>
         </div>
       </div>
       <!-- STEP 3: Details -->
       <div class="reg-step" id="regStep3">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 3 von 3 ÃÂ¢ÃÂÃÂ Beschreibung &amp; ÃÂÃÂffnungszeiten</p>
-          <div class="reg-field"><label>Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon ÃÂ¢ÃÂÃÂ Spezialisierungen, AtmosphÃÂÃÂ¤re, Besonderheiten..."></textarea></div>
+          <p class="step-hint">Schritt 3 von 3 — Beschreibung &amp; Öffnungszeiten</p>
+          <div class="reg-field"><label>Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
           <div class="reg-field"><label>Filiale von (optional)</label><select id="reg_parent_store_id" class="form-input" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
-            <label>ÃÂÃÂffnungszeiten</label>
+            <label>Öffnungszeiten</label>
             <div class="reg-hours" id="regHoursGrid"></div>
           </div>
           <div class="reg-field" style="margin-top:18px">
             <label style="display:flex;align-items:flex-start;gap:10px;text-transform:none;letter-spacing:0;font-size:.85rem;color:var(--text);font-weight:400;cursor:pointer">
               <input type="checkbox" id="reg_terms" style="margin-top:2px;accent-color:var(--accent2);flex-shrink:0">
-              <span>Ich akzeptiere die <a href="#" style="color:var(--accent2)" onclick="return false">Nutzungsbedingungen</a> und bestÃÂÃÂ¤tige, dass ich berechtigt bin, diesen Salon einzutragen. *</span>
+              <span>Ich akzeptiere die <a href="#" style="color:var(--accent2)" onclick="return false">Nutzungsbedingungen</a> und bestätige, dass ich berechtigt bin, diesen Salon einzutragen. *</span>
             </label>
           </div>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(3)">ÃÂ¢ÃÂÃÂ ZurÃÂÃÂ¼ck</button>
-          <button type="submit" class="reg-btn-next" id="regSubmitBtn">ÃÂ¢ÃÂÃÂ¦ Jetzt eintragen</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
+          <button type="submit" class="reg-btn-next" id="regSubmitBtn">✦ Jetzt eintragen</button>
         </div>
       </div>
     </form>
     <!-- SUCCESS -->
     <div id="regSuccess" style="display:none">
       <div class="reg-success">
-        <div class="reg-emoji">ÃÂ°ÃÂÃÂÃÂ</div>
+        <div class="reg-emoji">🎉</div>
         <h3>Anfrage eingereicht!</h3>
-        <p>Vielen Dank! Wir prÃÂÃÂ¼fen deinen Salon und melden uns so bald wie mÃÂÃÂ¶glich per E-Mail bei dir.</p>
+        <p>Vielen Dank! Wir prüfen deinen Salon und melden uns so bald wie möglich per E-Mail bei dir.</p>
         <button onclick="closeSalonReg()" style="background:var(--accent2);color:white;border:none;padding:13px 32px;border-radius:100px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer">Schliessen</button>
       </div>
     </div>
@@ -4274,7 +4188,7 @@ function openSalonRegistration(){
         <span class="reg-day-lbl">${k}</span>
         <div class="reg-time-inputs">
           <input type="time" id="rh_${k}_f" value="09:00">
-          <span class="reg-time-dash">ÃÂ¢ÃÂÃÂ</span>
+          <span class="reg-time-dash">–</span>
           <input type="time" id="rh_${k}_t" value="19:00">
         </div>
       </div>`).join('');
@@ -4305,8 +4219,8 @@ function regNext(cur){
     const n=document.getElementById('reg_name').value.trim();
     const c=document.getElementById('reg_cat').value;
     const e=document.getElementById('reg_email').value.trim();
-    if(!n||!c||!e){toast('Bitte alle Pflichtfelder ausfÃÂÃÂ¼llen.','error');return;}
-    if(!/^[^s@]+@[^s@]+.[^s@]+$/.test(e)){toast('Bitte eine gÃÂÃÂ¼ltige E-Mail eingeben.','error');return;}
+    if(!n||!c||!e){toast('Bitte alle Pflichtfelder ausfüllen.','error');return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){toast('Bitte eine gültige E-Mail eingeben.','error');return;}
   }
   if(cur===2){
     const s=document.getElementById('reg_street').value.trim();
@@ -4359,7 +4273,7 @@ async function submitSalonReg(e){
   }catch(ex){
     console.error('Reg error:',ex);
     toast('Fehler beim Senden. Bitte erneut versuchen.','error');
-    btn.textContent='ÃÂ¢ÃÂÃÂ¦ Jetzt eintragen';btn.disabled=false;
+    btn.textContent='✦ Jetzt eintragen';btn.disabled=false;
   }
 }
 // Close on backdrop click
@@ -4371,11 +4285,11 @@ document.getElementById('salonRegModal').addEventListener('click',function(e){
 <!-- ADD STAFF MODAL -->
 <div id="addStaffMdl">
   <div class="asm-wrap">
-    <h3>ÃÂ°ÃÂÃÂÃÂ¤ Personal hinzufÃÂÃÂ¼gen</h3>
+    <h3>👤 Personal hinzufügen</h3>
     <form onsubmit="submitAddStaff(event)">
       <div class="asm-field">
         <label>Name *</label>
-        <input id="asmName" type="text" required placeholder="z.B. Maria MÃÂÃÂ¼ller">
+        <input id="asmName" type="text" required placeholder="z.B. Maria Müller">
       </div>
       <div class="asm-field">
         <label>Funktion / Rolle</label>
@@ -4388,14 +4302,14 @@ document.getElementById('salonRegModal').addEventListener('click',function(e){
       <input type="hidden" id="asmStoreId">
       <div class="asm-actions">
         <button type="button" class="btn-secondary btn-sm" onclick="closeAddStaffMdl()">Abbrechen</button>
-        <button type="submit" class="btn-primary btn-sm">HinzufÃÂÃÂ¼gen</button>
+        <button type="submit" class="btn-primary btn-sm">Hinzufügen</button>
       </div>
     </form>
   </div>
 </div>
 
 <script>
-// ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ STAFF MANAGEMENT ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
+// ── STAFF MANAGEMENT ──────────────────────────────────────────────
 let _dashStaffSid=null,_dashActiveSalonIdx=0;
 
 async function loadDashStaffSection(salonId){
@@ -4407,7 +4321,7 @@ async function loadDashStaffSection(salonId){
   const sec=document.createElement('div');
   sec.id='dashStaffSection';
   sec.className='';
-  sec.innerHTML='<div class="dash-section-hd"><h3>ÃÂ°ÃÂÃÂÃÂ¤ Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ HinzufÃÂÃÂ¼gen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
+  sec.innerHTML='<div class="dash-section-hd"><h3>👤 Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
   el.appendChild(sec);
   const{data,error}=await sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name');
   const grid=document.getElementById('dashStaffGrid');
@@ -4419,7 +4333,7 @@ async function loadDashStaffSection(salonId){
   grid.innerHTML=data.map(m=>{
     const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
     const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
-    return '<div class="staff-card"><button class="s-del" data-id="'+m.id+'" data-sid="'+salonId+'" onclick="deleteStaff(this.dataset.id,this.dataset.sid)" title="Entfernen">ÃÂ¢ÃÂÃÂ</button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
+    return '<div class="staff-card"><button class="s-del" data-id="'+m.id+'" data-sid="'+salonId+'" onclick="deleteStaff(this.dataset.id,this.dataset.sid)" title="Entfernen">✕</button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
   }).join('');
 }
 
@@ -4445,7 +4359,7 @@ async function submitAddStaff(e){
   const{error}=await sb.from('store_staff').insert([{store_id:sId,name,role:role||null,photo_url:photo||null,active:true}]);
   if(error){toast('Fehler: '+error.message,'error');return;}
   closeAddStaffMdl();
-  toast('Personal hinzugefÃÂÃÂ¼gt ÃÂ¢ÃÂÃÂ','success');
+  toast('Personal hinzugefügt ✓','success');
   loadDashStaffSection(sId);
 }
 
@@ -4455,7 +4369,7 @@ async function deleteStaff(staffId,salonId){
   loadDashStaffSection(salonId);
 }
 
-// ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ STAFF PICKER IN BOOKING MODAL ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
+// ── STAFF PICKER IN BOOKING MODAL ──────────────────────────────────
 let _selStaffId=null,_selStaffName=null;
 // ── VACATION / BLOCKED DATES ──────────────────────────────────────────────────
 // DDL: CREATE TABLE IF NOT EXISTS blocked_dates (
@@ -4468,6 +4382,7 @@ let _selStaffId=null,_selStaffName=null;
 // );
 
 async function loadDashVacationSection(salonId){
+  const el=document.getElementById('dashTabBuchungen')||document.getElementById('salonDashContent');
   if(!el)return;
   const existing=document.getElementById('dashVacationSection');
   if(existing)existing.remove();
@@ -4538,7 +4453,7 @@ async function loadStaffPickerInBooking(storeId){
     const first=m.name.split(' ')[0];
     return '<div class="sp-chip" data-id="'+m.id+'" data-name="'+first+'" onclick="selectStaff(this.dataset.id,this.dataset.name,this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
   }).join('');
-  sec.innerHTML='<h4>Von wem mÃÂÃÂ¶chten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av">ÃÂ¢ÃÂÃÂ¦</div><span>Egal</span></div>'+chips+'</div>';
+  sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av">✦</div><span>Egal</span></div>'+chips+'</div>';
   const bmBody=document.getElementById('bmBody');
   if(bmBody)bmBody.parentNode.insertBefore(sec,bmBody);
 }
