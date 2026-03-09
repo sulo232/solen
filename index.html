@@ -64,7 +64,7 @@ input,select,textarea{font-family:inherit}
 /* Login = teal outline pill, Register = coral solid pill ÃÂ¢ÃÂÃÂ always visible on dark nav */
 .btn-nav-ghost{color:#4ECDC4;border:1.5px solid rgba(78,205,196,.55);background:rgba(78,205,196,.10);padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.01em}
 .btn-nav-ghost:hover{background:rgba(78,205,196,.20);border-color:#4ECDC4;color:#4ECDC4}
-.btn-nav-primary{background:#FF6B6B;color:#fff;border:none;padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 10px rgba(255,107,107,.40);letter-spacing:.01em}
+.btn-nav-primary{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;border:none;padding:9px 22px;border-radius:100px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 10px rgba(255,107,107,.40);letter-spacing:.01em;text-shadow:0 1px 2px rgba(0,0,0,.15)}
 .btn-nav-primary:hover{background:#e55a5a;transform:scale(1.04);box-shadow:0 4px 16px rgba(255,107,107,.55)}
 .nav-user{display:flex;align-items:center;gap:10px}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;cursor:pointer;flex-shrink:0}
@@ -730,12 +730,13 @@ async function submitSalonProfile(e){
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
       
-        <button style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">ÃÂ¢ÃÂÃÂ¦ Salon eintragen</button></div>
+</div>
       <div id="mobileNavUser" class="hidden">
         <a href="#" class="btn-nav-ghost" onclick="showPage('profile');closeMobileMenu();return false" data-i18n="nav_my_profile" style="display:block;text-align:center;margin-bottom:8px">Mein Profil</a>
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
         <button class="btn-nav-ghost" onclick="signOut();closeMobileMenu()" data-i18n="nav_logout" style="width:100%">Abmelden</button>
-      </div>
+      </div
+<button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;min-height:44px" onclick="closeMobileMenu&&closeMobileMenu();openSalonRegistration()">✦ Salon eintragen</button>>
     </div>
   </div>
 </nav>
@@ -955,7 +956,8 @@ async function submitSalonProfile(e){
           <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="resetEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
-        <button class="btn-primary" onclick="doPasswordReset()" data-i18n="btn_reset_send">Reset senden</button>
+        <button class="btn-primary" id="btnPasswordReset" onclick="doPasswordReset()" data-i18n="btn_reset_send">Reset senden</button>
+          <div id="resetSentHint" class="hidden" style="background:rgba(78,205,196,.1);border:1px solid rgba(78,205,196,.3);border-radius:10px;padding:12px 16px;margin-top:12px;font-size:.84rem;color:var(--text2);line-height:1.5">&#10003; Link gesendet! Bitte prüfe deinen Posteingang (und Spam-Ordner).<br><a id="resendResetLink" onclick="resendPasswordReset()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline;margin-top:4px;display:inline-block">Erneut senden</a></div>
         <div class="auth-switch" style="margin-top:12px"><a onclick="openAuth('login')" style="cursor:pointer;font-weight:700;text-decoration:underline" data-i18n="back_to_login">Zur&uuml;ck zur Anmeldung</a></div>
       </div>
 
@@ -1933,6 +1935,22 @@ async function doSignup(){
       await sb.from('profiles').upsert({id:data.user.id,display_name:name,role:'customer'});
     }
     showAuthMsg(t('confirm_email_sent'),'success');
+    // Show resend confirmation link after 10s
+    setTimeout(()=>{
+      const m=document.getElementById('authMsg');
+      if(m&&m.classList.contains('success')){
+        const _email=email;
+        const link=document.createElement('a');
+        link.style.cssText='display:block;margin-top:8px;color:inherit;opacity:.75;cursor:pointer;font-size:.82rem;text-decoration:underline;font-weight:600';
+        link.textContent='E-Mail nicht erhalten? Erneut senden';
+        link.onclick=async()=>{
+          link.style.pointerEvents='none';link.textContent='Gesendet ✓';
+          await sb.auth.resend({type:'signup',email:_email});
+          setTimeout(()=>{link.style.pointerEvents='';link.textContent='E-Mail nicht erhalten? Erneut senden';},60000);
+        };
+        m.appendChild(link);
+      }
+    },10000);
   }
 }
 
@@ -2032,7 +2050,11 @@ async function doPasswordReset(){
   const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
   btn.disabled=false;btn.textContent='Reset senden';
   if(error){console.error('[Solen] Password reset error:',error);showAuthMsg(t('err_generic'));}
-  else{showAuthMsg(t('reset_email_sent')||'Reset-Link gesendet! PrÃÂÃÂ¼fe dein Postfach.','success');}
+  else{
+    const hint=document.getElementById('resetSentHint');
+    if(hint)hint.classList.remove('hidden');
+    showAuthMsg(t('reset_email_sent')||'Reset-Link gesendet! Prüfe dein Postfach.','success');
+  }
 }
 // PHONE AUTH
 let _phoneForOtp='';
@@ -2084,6 +2106,14 @@ async function verifyPhoneOtp(){
 }
 
 
+async function resendPasswordReset(){
+  const email=document.getElementById('resetEmail').value.trim();
+  if(!email)return;
+  const link=document.getElementById('resendResetLink');
+  if(link){link.style.pointerEvents='none';link.textContent='Gesendet ✓';}
+  await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/#reset-password'});
+  setTimeout(()=>{if(link){link.style.pointerEvents='';link.textContent='Erneut senden';}},30000);
+}
 async function doUpdatePassword(){
   const pw1=document.getElementById('newPw1').value;
   const pw2=document.getElementById('newPw2').value;
