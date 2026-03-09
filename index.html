@@ -1,3 +1,4 @@
+2971
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -2970,9 +2971,11 @@ async function confirmBooking(){
     is_first_visit:bookingState.isFirstVisit!==false
     ,recurrence_group_id:recurGroupId
     });
+    bmModal.innerHTML = `
       <button class="btn-primary" style="margin-top:16px" onclick="closeBooking()">${t('btn_close')}</button>
       ${wantsReminder?`<p style="font-size:.85rem;color:var(--muted);margin-top:8px">${t('wiz_reminder_text')}</p>`:''}
       <h3 style="color:var(--success)">${t('booking_confirmed_title')}</h3>
+    `;
     ,recurrence_index:0
     ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
   }).select('id').single();
