@@ -2977,7 +2977,6 @@ async function confirmBooking(){
       <h3 style="color:var(--success)">${t('booking_confirmed_title')}</h3>
     `;
 
-  }).select('id').single();
   if(error){toast(t('toast_booking_failed'),'error');if(btn){btn.disabled=false;btn.textContent=t('btn_confirm');}}
   else{
     const wantsReminder=bookingState.wantsReminder!==false;
