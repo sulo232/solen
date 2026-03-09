@@ -629,8 +629,8 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 body{line-height:1.6;}
 body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 #scrollProgress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .1s linear;pointer-events:none;}
-.store-card{opacity:0;transform:translateY(24px);transition:opacity 0.4s ease,transform 0.4s ease,box-shadow .25s ease!important;}
-.store-card.revealed{opacity:1;transform:translateY(0);}
+.store-card,.card,.booking-card{opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease,box-shadow .25s ease!important;}
+.store-card.revealed,.card.revealed,.booking-card.revealed{opacity:1;transform:translateY(0);}
 .btn-book:active,.btn-primary:active{transform:scale(0.97)!important;}
 .btn-book:hover,.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
 .page-title{letter-spacing:-0.02em;} @media(max-width:640px){ .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15} .hero p{font-size:.95rem} .page-title{font-size:1.55rem;font-weight:900} .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em} } @media(max-width:480px){ .store-name{font-size:1rem;font-weight:700} .store-body .store-meta{font-size:.8rem} .section-title{font-size:.95rem} .bm-header h2{font-size:1rem} .modal-hd h2{font-size:1rem} }
@@ -666,6 +666,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
       </div>
+      <button id="navSalonBtn" class="btn-nav-ghost hidden" style="color:var(--accent-lemon);border-color:rgba(255,230,109,.55);background:rgba(255,230,109,.10)" onclick="openSalonRegistration()">&#10022; Salon eintragen</button>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
           <div class="avatar" id="navAvatar" onclick="toggleNavMenu()">?</div>
@@ -1698,6 +1699,7 @@ function onSignOut(){
   const mGuest=document.getElementById('mobileNavGuest');if(mGuest)mGuest.classList.remove('hidden');
   const mUser=document.getElementById('mobileNavUser');if(mUser)mUser.classList.add('hidden');
   const mSalon=document.getElementById('mobileNavSalonBtn');if(mSalon)mSalon.classList.add('hidden');
+  const dSalon=document.getElementById('navSalonBtn');if(dSalon)dSalon.classList.add('hidden');
   document.getElementById('adminLink').classList.add('hidden');
   document.getElementById('salonDashLink').classList.add('hidden');
   const bnAdmin=document.getElementById('bnAdmin');
@@ -4102,10 +4104,10 @@ document.addEventListener('DOMContentLoaded',function(){
   var p=document.createElement('div'); p.id='scrollProgress';document.body.prepend(p);
   window.addEventListener('scroll',function(){var h=document.documentElement;p.style.width=((h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
   var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.08});
-  function revealCards(){document.querySelectorAll('.store-card:not(.revealed)').forEach(function(c,i){c.style.transitionDelay=(i*80)+'ms';obs.observe(c);});}
+  function revealCards(){document.querySelectorAll('.store-card:not(.revealed),.card:not(.revealed),.booking-card:not(.revealed)').forEach(function(c,i){c.style.transitionDelay=(i*80)+'ms';obs.observe(c);});}
   setTimeout(revealCards,300);
-  function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transition='none';el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*12)+'px,'+(((e.clientY-r.top)/r.height-.5)*12)+'px)';});el.addEventListener('mouseleave',function(){el.style.transition='transform 0.3s ease';el.style.transform='';});}
-  setTimeout(function(){document.querySelectorAll('.btn-primary').forEach(mag);},500);
+  function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transition='none';el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*6)+'px,'+(((e.clientY-r.top)/r.height-.5)*6)+'px)';});el.addEventListener('mouseleave',function(){el.style.transition='transform 0.3s ease';el.style.transform='';});}
+  setTimeout(function(){document.querySelectorAll('.btn-primary,.cta-btn').forEach(mag);},500);
 })();
 </script>
 </body>
