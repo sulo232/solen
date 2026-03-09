@@ -676,7 +676,29 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
       </div>
-      <button id="navSalonBtn" class="btn-nav-ghost hidden" style="color:var(--accent-lemon);border-color:rgba(255,230,109,.55);background:rgba(255,230,109,.10)" onclick="openSalonRegistration()">&#10022; Salon eintragen</button>
+  setTimeout(()=>renderSalonDashboard(),800);
+  toast('Salon erfolgreich eingetragen!','success');
+    if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}
+    toast('Fehler: '+error.message,'error');
+    website:website||null,
+    opening_hours:opening_hours||null,
+    description:description||null,
+    phone:phone||null,
+    name,type,address,
+  const{error}=await sb.from('stores').insert({
+  if(btn){btn.disabled=true;btn.textContent='Wird eingetragen...';}
+  const btn=document.getElementById('sp_submit');
+  if(!name||!type||!address){toast('Bitte Salonname, Kategorie und Adresse ausfüllen.','error');return;}
+  const website=(document.getElementById('sp_website').value||'').trim();
+  const opening_hours=(document.getElementById('sp_hours').value||'').trim();
+  const description=(document.getElementById('sp_desc').value||'').trim();
+  const phone=(document.getElementById('sp_phone').value||'').trim();
+  const address=(document.getElementById('sp_address').value||'').trim();
+  const type=document.getElementById('sp_type').value;
+  const name=(document.getElementById('sp_name').value||'').trim();
+  if(!currentUser){toast('Bitte anmelden.','error');return;}
+async function submitSalonProfile(e){
+            <button id="navSalonBtn" class="btn-nav-ghost hidden" style="color:var(--accent-lemon);border-color:rgba(255,230,109,.55);background:rgba(255,230,109,.10)" onclick="openSalonRegistration()">&#10022; Salon eintragen</button>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
           <div class="avatar" id="navAvatar" onclick="toggleNavMenu()">?</div>
@@ -686,16 +708,14 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
             <a href="#" onclick="showPage('bookings');return false" data-i18n="nav_my_bookings">Meine Buchungen</a>
             <div id="salonDashLink" class="hidden">
               <a href="#" onclick="showPage('salon-dashboard');return false" data-i18n="nav_salon_dash">Salon Dashboard</a>
-            </div>
-            <div id="adminLink" class="hidden">
+                  <div id="adminLink" class="hidden">
               <div class="sep"></div>
               <a href="#" onclick="showPage('admin');return false" data-i18n="nav_admin">Admin Panel</a>
-            </div>
+                  </div>
             <button onclick="toggleTheme()" id="dropdownThemeBtn" data-i18n="nav_theme" style="width:100%;text-align:left;background:none;border:none;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:8px;transition:background .2s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg> Hell / Dunkel</button>
             <div class="sep"></div>
             <button onclick="signOut()" data-i18n="nav_logout">Abmelden</button>
           </div>
-        </div>
       </div>
     </div>
     <!-- MOBILE MENU -->
@@ -733,7 +753,6 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <div class="search-field">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="Service, Salon oder Kategorie..." oninput="debounceSearch()">
-        </div>
         <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
       </div>
@@ -760,12 +779,12 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
   <div class="categories-bar">
     <div class="cat-scroll" id="catsGrid">
       <button class="cat-pill active" data-cat="all" onclick="selectCat(this,'all')" data-i18n="cat_all">Alle</button>
-      <button class="cat-pill" data-cat="barber" onclick="selectCat(this,'barber')">&#9986; Barbershop</button>
-      <button class="cat-pill" data-cat="hairsalon" onclick="selectCat(this,'hairsalon')">&#128135; Friseursalon</button>
-      <button class="cat-pill" data-cat="nails" onclick="selectCat(this,'nails')">&#128133; Nagelstudio</button>
-      <button class="cat-pill" data-cat="spa" onclick="selectCat(this,'spa')">&#129526; Spa &amp; Wellness</button>
-      <button class="cat-pill" data-cat="makeup" onclick="selectCat(this,'makeup')">&#128132; Make-up</button>
-      <button class="cat-pill" data-cat="eyebrows" onclick="selectCat(this,'eyebrows')">&#128065; Augenbrauen</button>
+      <button class="cat-pill" data-cat="barber" onclick="selectCat(this,'barber')" data-i18n="cat_barber">&#9986; Barbershop</button>
+      <button class="cat-pill" data-cat="hairsalon" onclick="selectCat(this,'hairsalon')" data-i18n="cat_hairsalon">&#128135; Friseursalon</button>
+      <button class="cat-pill" data-cat="nails" onclick="selectCat(this,'nails')" data-i18n="cat_nails">&#128133; Nagelstudio</button>
+      <button class="cat-pill" data-cat="spa" onclick="selectCat(this,'spa')" data-i18n="cat_spa">&#129526; Spa &amp; Wellness</button>
+      <button class="cat-pill" data-cat="makeup" onclick="selectCat(this,'makeup')" data-i18n="cat_makeup">&#128132; Make-up</button>
+      <button class="cat-pill" data-cat="eyebrows" onclick="selectCat(this,'eyebrows')" data-i18n="cat_eyebrows">&#128065; Augenbrauen</button>
     </div>
   </div>
 
@@ -774,22 +793,22 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
     <div class="stores-header">
       <div class="section-title" style="margin-bottom:0" data-i18n="stores_title">Salons in Basel</div>
       <div class="stores-count" id="storesCount"></div>
-      <button class="filter-sheet-btn" onclick="openFilterSheet()">&#9881; Filter &amp; Sortierung</button>
+      <button class="filter-sheet-btn" onclick="openFilterSheet()" data-i18n="filter_sheet_btn">&#9881; Filter &amp; Sortierung</button>
       <div style="margin-left:auto" class="desktop-filters">
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <select class="form-input" id="sortSelect" onchange="changeSort(this.value)" style="padding:8px 36px 8px 12px;font-size:.82rem;border-radius:100px;min-width:140px">
-            <option value="default">Empfohlen</option>
-            <option value="price_asc">GÃÂÃÂ¼nstigste zuerst</option>
-            <option value="popular">Beliebteste</option>
+            <option value="default" data-i18n="sort_recommended">Empfohlen</option>
+            <option value="price_asc" data-i18n="sort_cheapest">G&uuml;nstigste zuerst</option>
+            <option value="popular" data-i18n="sort_popular">Beliebteste</option>
           </select>
           <div class="price-filter-wrap" id="priceFilterDesktop">
-            <span style="font-size:.8rem;font-weight:600;color:var(--muted)">Max. Preis:</span>
+            <span style="font-size:.8rem;font-weight:600;color:var(--muted)" data-i18n="filter_max_price">Max. Preis:</span>
             <input type="range" class="price-slider" id="priceSliderDesktop" min="0" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'desktop')" style="--pct:100%">
-            <span class="price-label" id="priceLabelDesktop">Alle</span>
+            <span class="price-label" id="priceLabelDesktop" data-i18n="filter_all">Alle</span>
           </div>
           <div class="rating-filter" id="ratingFilterDesktop">
             <span style="font-size:.8rem;font-weight:600;color:var(--muted)" data-i18n="rating_filter">Min. Bewertung:</span>
-            <button class="rating-chip active" onclick="setMinRating(0,this)">Alle</button>
+            <button class="rating-chip active" onclick="setMinRating(0,this)" data-i18n="filter_all">Alle</button>
             <button class="rating-chip" onclick="setMinRating(4.0,this)">4.0+</button>
             <button class="rating-chip" onclick="setMinRating(4.5,this)">4.5+</button>
           </div>
@@ -851,43 +870,44 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <!-- REGISTER CHOICE -->
       <div id="formRegChoice" class="hidden">
         <div class="reg-choice">
-          <h2>WÃÂÃÂ¤hle deinen Zugang</h2>
-          <p>Bist du ein Kunde oder mÃÂÃÂ¶chtest du deinen Salon eintragen?</p>
+          <h2 data-i18n="auth_choose">W&auml;hle deinen Zugang</h2>
+          <p data-i18n="auth_reg_choice_sub">Bist du ein Kunde oder m&ouml;chtest du deinen Salon eintragen?</p>
           <div class="reg-choice-cards">
             <div class="reg-choice-card" onclick="openAuth('customer-signup')">
               <div class="reg-choice-icon">&#128134;</div>
-              <h3>Als Kunde</h3>
-              <p>Termin buchen, Salons entdecken, Profil verwalten</p>
-              <span class="reg-choice-btn">Kostenlos registrieren</span>
+              <h3 data-i18n="auth_as_customer">Als Kunde</h3>
+              <p data-i18n="auth_customer_desc">Termin buchen, Salons entdecken, Profil verwalten</p>
+              <span class="reg-choice-btn" data-i18n="auth_free_register">Kostenlos registrieren</span>
             </div>
             <div class="reg-choice-card" onclick="closeAuth();openSalonRegistration()" style="border-color:var(--accent-lemon);background:rgba(255,230,109,.06)">
               <div class="reg-choice-icon">&#9986;</div>
-              <h3>Salon eintragen</h3>
-              <p>Deinen Salon listen, Buchungen verwalten, Kunden gewinnen</p>
-              <span class="reg-choice-btn">Salon anmelden</span>
+              <h3 data-i18n="auth_as_owner">Salon eintragen</h3>
+              <p data-i18n="auth_owner_desc">Deinen Salon listen, Buchungen verwalten, Kunden gewinnen</p>
+              <span class="reg-choice-btn" data-i18n="auth_register_salon">Salon anmelden</span>
             </div>
           </div>
-          <div class="auth-switch" style="margin-top:20px">Bereits registriert? <a onclick="openAuth('login')">Anmelden</a></div>
+          <div class="auth-switch" style="margin-top:20px"><span data-i18n="auth_already">Bereits registriert?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
         </div>
       </div>
 
       <!-- LOGIN -->
       <div id="formLogin">
-        <button class="btn-google" onclick="signInGoogle()">
+        <button class="btn-google" onclick="signInGoogle()" data-i18n="auth_google_login">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
           Mit Google anmelden
         </button>
-        <div class="divider">oder</div>
-        <div class="form-group">
-          <label>E-Mail</label>
+        <div class="divider" data-i18n="auth_or">oder</div>
+        <div class="form-group"><label>${t('lbl_phone')}</label><input class="form-input" id="bkPhone" type="tel" placeholder="Telefonnummer"></div>
+          <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="loginEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
         <div class="form-group">
-          <label>Passwort</label>
+          <label data-i18n="lbl_password">Passwort</label>
           <input class="form-input" type="password" id="loginPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password">
         </div>
         <div style="text-align:right;margin:-10px 0 12px"><a onclick="showPasswordReset()" style="font-size:.82rem;color:var(--accent);cursor:pointer;font-weight:600" data-i18n="forgot_password">Passwort vergessen?</a></div>
-        <button class="btn-primary" onclick="doLogin()">Anmelden</button>
+        <button class="btn-primary" onclick="doLogin()" data-i18n="btn_login">Anmelden</button>
+        <div class="auth-switch"><span data-i18n="auth_no_account">Noch kein Konto?</span> <a onclick="openAuth('register-choice')" data-i18n="auth_register_now">Jetzt registrieren</a></div>
                 <div class="divider" style="margin:16px 0 12px">oder</div>
         <button class="btn-phone-toggle" onclick="openPhoneAuth()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -932,76 +952,76 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
       <div id="formPasswordReset" class="hidden">
         <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px" data-i18n="reset_desc">Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum ZurÃÂÃÂ¼cksetzen.</p>
         <div class="form-group">
-          <label>E-Mail</label>
+          <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="resetEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
-        <button class="btn-primary" onclick="doPasswordReset()">Reset senden</button>
-        <div class="auth-switch" style="margin-top:12px"><a onclick="openAuth('login')" style="cursor:pointer;font-weight:700;text-decoration:underline" data-i18n="back_to_login">ZurÃÂÃÂ¼ck zur Anmeldung</a></div>
+        <button class="btn-primary" onclick="doPasswordReset()" data-i18n="btn_reset_send">Reset senden</button>
+        <div class="auth-switch" style="margin-top:12px"><a onclick="openAuth('login')" style="cursor:pointer;font-weight:700;text-decoration:underline" data-i18n="back_to_login">Zur&uuml;ck zur Anmeldung</a></div>
       </div>
 
       <!-- CUSTOMER SIGNUP -->
       <div id="formSignup" class="hidden">
-        <button class="btn-google" onclick="signInGoogle()">
+        <button class="btn-google" onclick="signInGoogle()" data-i18n="auth_google_register">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
           Mit Google registrieren
         </button>
-        <div class="divider">oder</div>
+        <div class="divider" data-i18n="auth_or">oder</div>
         <div class="form-row">
-          <div class="form-group"><label>Vorname</label><input class="form-input" type="text" id="signupFirst" placeholder="Max" autocomplete="given-name"></div>
-          <div class="form-group"><label>Nachname</label><input class="form-input" type="text" id="signupLast" placeholder="Muster" autocomplete="family-name"></div>
+          <div class="form-group"><label data-i18n="lbl_firstname">Vorname</label><input class="form-input" type="text" id="signupFirst" placeholder="Max" autocomplete="given-name"></div>
+          <div class="form-group"><label data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="signupLast" placeholder="Muster" autocomplete="family-name"></div>
         </div>
         <div class="form-group">
-          <label>E-Mail</label>
+          <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="signupEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
         <div class="form-group">
-          <label>Passwort <span style="color:var(--muted);font-weight:400">(min. 6 Zeichen)</span></label>
+          <label><span data-i18n="lbl_password">Passwort</span> <span style="color:var(--muted);font-weight:400">(min. 6 Zeichen)</span></label>
           <input class="form-input" type="password" id="signupPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="new-password">
         </div>
-        <button class="btn-primary" onclick="doSignup()">Konto erstellen</button>
-        <div class="auth-switch">Bereits registriert? <a onclick="openAuth('login')">Anmelden</a></div>
+        <button class="btn-primary" onclick="doSignup()" data-i18n="btn_create_account">Konto erstellen</button>
+        <div class="auth-switch"><span data-i18n="auth_already">Bereits registriert?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
       </div>
 
       <!-- SALON SIGNUP -->
       <div id="formSalonSignup" class="hidden">
-        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Kontaktperson</h3>
+        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="lbl_contact_person">Kontaktperson</h3>
         <div class="form-row">
-          <div class="form-group"><label>Vorname</label><input class="form-input" type="text" id="salonFirst" placeholder="Max"></div>
-          <div class="form-group"><label>Nachname</label><input class="form-input" type="text" id="salonLast" placeholder="Muster"></div>
+          <div class="form-group"><label data-i18n="lbl_firstname">Vorname</label><input class="form-input" type="text" id="salonFirst" placeholder="Max"></div>
+          <div class="form-group"><label data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="salonLast" placeholder="Muster"></div>
         </div>
-        <div class="form-group"><label>E-Mail</label><input class="form-input" type="email" id="salonEmail" placeholder="salon@email.com"></div>
-        <div class="form-group"><label>Passwort</label><input class="form-input" type="password" id="salonPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div>
+        <div class="form-group"><label data-i18n="lbl_email">E-Mail</label><input class="form-input" type="email" id="salonEmail" placeholder="salon@email.com"></div>
+        <div class="form-group"><label data-i18n="lbl_password">Passwort</label><input class="form-input" type="password" id="salonPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div>
         <div style="height:1px;background:var(--border);margin:20px 0"></div>
-        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Salon-Info</h3>
-        <div class="form-group"><label>Salon-Name</label><input class="form-input" type="text" id="salonName" placeholder="Dein Salon"></div>
-        <div class="form-group"><label>Kategorie</label>
+        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="lbl_salon_info">Salon-Info</h3>
+        <div class="form-group"><label data-i18n="lbl_salon_name">Salon-Name</label><input class="form-input" type="text" id="salonName" placeholder="Dein Salon"></div>
+        <div class="form-group"><label data-i18n="lbl_salon_type">Kategorie</label>
           <select class="form-input" id="salonType">
-            <option value="hairsalon">Friseursalon</option>
-            <option value="barber">Barbershop</option>
-            <option value="nails">Nagelstudio</option>
-            <option value="spa">Spa &amp; Wellness</option>
-            <option value="makeup">Make-up</option>
-            <option value="eyebrows">Augenbrauen</option>
+            <option value="hairsalon" data-i18n="cat_hairsalon">Friseursalon</option>
+            <option value="barber" data-i18n="cat_barber">Barbershop</option>
+            <option value="nails" data-i18n="cat_nails">Nagelstudio</option>
+            <option value="spa" data-i18n="cat_spa">Spa &amp; Wellness</option>
+            <option value="makeup" data-i18n="cat_makeup">Make-up</option>
+            <option value="eyebrows" data-i18n="cat_eyebrows">Augenbrauen</option>
           </select>
         </div>
-        <div class="form-group"><label>Adresse in Basel</label><input class="form-input" type="text" id="salonAddress" placeholder="Strasse Nr., Basel"></div>
-        <div class="form-group"><label>Telefon (optional)</label><input class="form-input" type="tel" id="salonPhone" placeholder="Telefonnummer"></div>
-        <div class="form-group"><label>Beschreibung</label><textarea class="form-input" id="salonDesc" rows="3" placeholder="Beschreibe deinen Salon..."></textarea></div>
+        <div class="form-group"><label data-i18n="lbl_salon_address">Adresse in Basel</label><input class="form-input" type="text" id="salonAddress" placeholder="Strasse Nr., Basel"></div>
+        <div class="form-group"><label data-i18n="lbl_phone_optional">Telefon (optional)</label><input class="form-input" type="tel" id="salonPhone" placeholder="Telefonnummer"></div>
+        <div class="form-group"><label data-i18n="lbl_salon_description">Beschreibung</label><textarea class="form-input" id="salonDesc" rows="3" placeholder="Beschreibe deinen Salon..."></textarea></div>
         <div style="height:1px;background:var(--border);margin:20px 0"></div>
-        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Services</h3>
+        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="lbl_services_section">Services</h3>
         <div id="salonServicesContainer">
           <div class="salon-svc-row"><input type="text" placeholder="Service-Name"><input type="number" placeholder="CHF"><input type="number" placeholder="Min."><button class="remove-svc-btn" onclick="this.parentElement.remove()">&times;</button></div>
           <div class="salon-svc-row"><input type="text" placeholder="Service-Name"><input type="number" placeholder="CHF"><input type="number" placeholder="Min."><button class="remove-svc-btn" onclick="this.parentElement.remove()">&times;</button></div>
         </div>
-        <button class="add-svc-link" onclick="addSalonServiceRow()">+ Weiteren Service hinzufÃÂÃÂ¼gen</button>
+        <button class="add-svc-link" onclick="addSalonServiceRow()" data-i18n="btn_add_service">+ Weiteren Service hinzuf&uuml;gen</button>
         <div style="height:1px;background:var(--border);margin:20px 0"></div>
         <div class="form-group">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500">
-            <input type="checkbox" id="salonAgb"> Ich akzeptiere die AGB
+            <input type="checkbox" id="salonAgb"> <span data-i18n="accept_agb">Ich akzeptiere die AGB</span>
           </label>
         </div>
-        <button class="btn-primary" onclick="doSalonSignup()">Salon anmelden</button>
-        <div class="auth-switch">Bereits registriert? <a onclick="openAuth('login')">Anmelden</a></div>
+        <button class="btn-primary" onclick="doSalonSignup()" data-i18n="btn_register_salon_submit">Salon anmelden</button>
+        <div class="auth-switch"><span data-i18n="auth_already">Bereits registriert?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
       </div>
     </div>
   </div>
@@ -1011,7 +1031,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 <div class="overlay" id="setupOverlay">
   <div class="modal">
     <div class="modal-hd">
-      <h2 id="setupTitle">Profil einrichten</h2>
+      <h2 id="setupTitle" data-i18n="setup_title">Profil einrichten</h2>
       <span style="font-size:.82rem;color:var(--muted)" id="setupStepLabel">Schritt 1 von 3</span>
     </div>
     <div class="modal-body">
@@ -1019,61 +1039,61 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 
       <!-- Step 1: Basic info -->
       <div class="setup-step active" id="setupStep1">
-        <h3 style="margin-bottom:6px;font-size:1rem" id="setupWelcomeHeading">Willkommen! MÃÂÃÂ¶chtest du dein Profil einrichten?</h3>
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px">Damit Salons besser fÃÂÃÂ¼r dich planen kÃÂÃÂ¶nnen</p>
+        <h3 style="margin-bottom:6px;font-size:1rem" id="setupWelcomeHeading" data-i18n="setup_welcome">Willkommen! M&ouml;chtest du dein Profil einrichten?</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px" data-i18n="setup_desc">Damit Salons besser f&uuml;r dich planen k&ouml;nnen</p>
         <div class="form-group">
-          <label>Name</label>
+          <label data-i18n="lbl_name">Name</label>
           <input class="form-input" type="text" id="setupName" placeholder="Dein Name">
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Alter</label>
+            <label data-i18n="lbl_age">Alter</label>
             <select class="form-input" id="setupAge">
-              <option value="">WÃÂÃÂ¤hlen...</option>
-              <option value="Unter 12">Unter 12</option>
-              <option value="12-17">12ÃÂ¢ÃÂÃÂ17</option>
-              <option value="18-29">18ÃÂ¢ÃÂÃÂ29</option>
-              <option value="30-49">30ÃÂ¢ÃÂÃÂ49</option>
-              <option value="50+">50+</option>
+              <option value="" data-i18n="setup_select">W&auml;hlen...</option>
+              <option value="Unter 12" data-i18n="age_under12">Unter 12</option>
+              <option value="12-17" data-i18n="age_12_17">12&ndash;17</option>
+              <option value="18-29" data-i18n="age_18_29">18&ndash;29</option>
+              <option value="30-49" data-i18n="age_30_49">30&ndash;49</option>
+              <option value="50+" data-i18n="age_50plus">50+</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Geschlecht</label>
+            <label data-i18n="lbl_gender">Geschlecht</label>
             <select class="form-input" id="setupGender">
               <option value="">WÃÂÃÂ¤hlen...</option>
-              <option value="MÃÂÃÂ¤nnlich">MÃÂÃÂ¤nnlich</option>
-              <option value="Weiblich">Weiblich</option>
-              <option value="Divers">Divers</option>
-              <option value="Keine Angabe">Keine Angabe</option>
+              <option value="M&auml;nnlich" data-i18n="gender_male">M&auml;nnlich</option>
+              <option value="Weiblich" data-i18n="gender_female">Weiblich</option>
+              <option value="Divers" data-i18n="gender_diverse">Divers</option>
+              <option value="Keine Angabe" data-i18n="gender_none">Keine Angabe</option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label>Haartyp</label>
+          <label data-i18n="lbl_hairtype">Haartyp</label>
           <select class="form-input" id="setupHairType">
             <option value="">WÃÂÃÂ¤hlen...</option>
-            <option value="Glatt">Glatt</option>
-            <option value="Wellig">Wellig</option>
-            <option value="Lockig">Lockig</option>
-            <option value="Sehr lockig">Sehr lockig</option>
+            <option value="Glatt" data-i18n="hair_straight">Glatt</option>
+            <option value="Wellig" data-i18n="hair_wavy">Wellig</option>
+            <option value="Lockig" data-i18n="hair_curly">Lockig</option>
+            <option value="Sehr lockig" data-i18n="hair_very_curly">Sehr lockig</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Bevorzugte Leistungen</label>
+          <label data-i18n="lbl_preferred_services">Bevorzugte Leistungen</label>
           <div class="chip-group" id="prefServicesChips">
-            <button class="chip" data-val="Haarschnitt" onclick="toggleChip(this)">Haarschnitt</button>
-            <button class="chip" data-val="FÃÂÃÂ¤rben" onclick="toggleChip(this)">FÃÂÃÂ¤rben</button>
-            <button class="chip" data-val="Styling" onclick="toggleChip(this)">Styling</button>
-            <button class="chip" data-val="Bartpflege" onclick="toggleChip(this)">Bartpflege</button>
-            <button class="chip" data-val="NÃÂÃÂ¤gel" onclick="toggleChip(this)">NÃÂÃÂ¤gel</button>
-            <button class="chip" data-val="Hautpflege" onclick="toggleChip(this)">Hautpflege</button>
-            <button class="chip" data-val="Massage" onclick="toggleChip(this)">Massage</button>
-            <button class="chip" data-val="Make-up" onclick="toggleChip(this)">Make-up</button>
-            <button class="chip" data-val="Augenbrauen" onclick="toggleChip(this)">Augenbrauen</button>
+            <button class="chip" data-val="Haarschnitt" onclick="toggleChip(this)" data-i18n="pref_haircut">Haarschnitt</button>
+            <button class="chip" data-val="F&auml;rben" onclick="toggleChip(this)" data-i18n="pref_coloring">F&auml;rben</button>
+            <button class="chip" data-val="Styling" onclick="toggleChip(this)" data-i18n="pref_styling">Styling</button>
+            <button class="chip" data-val="Bartpflege" onclick="toggleChip(this)" data-i18n="pref_beard">Bartpflege</button>
+            <button class="chip" data-val="N&auml;gel" onclick="toggleChip(this)" data-i18n="pref_nails">N&auml;gel</button>
+            <button class="chip" data-val="Hautpflege" onclick="toggleChip(this)" data-i18n="pref_skincare">Hautpflege</button>
+            <button class="chip" data-val="Massage" onclick="toggleChip(this)" data-i18n="pref_massage">Massage</button>
+            <button class="chip" data-val="Make-up" onclick="toggleChip(this)" data-i18n="pref_makeup_pref">Make-up</button>
+            <button class="chip" data-val="Augenbrauen" onclick="toggleChip(this)" data-i18n="pref_eyebrows_pref">Augenbrauen</button>
           </div>
         </div>
-        <button class="btn-primary" onclick="finishSetup()">Profil speichern</button>
-        <button class="btn-secondary mt-12" onclick="skipSetup()">ÃÂÃÂberspringen</button>
+        <button class="btn-primary" onclick="finishSetup()" data-i18n="btn_save">Profil speichern</button>
+        <button class="btn-secondary mt-12" onclick="skipSetup()" data-i18n="btn_skip">&Uuml;berspringen</button>
       </div>
 
       <!-- Steps 2 & 3 removed - single-page profile setup -->
@@ -1092,18 +1112,20 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 <div class="overlay" id="bookingOverlay">
   <div class="modal modal-wide">
     <div class="modal-hd">
-      <h2 id="bookingTitle">Termin buchen</h2>
+      <h2 id="bookingTitle" data-i18n="btn_book_now">Termin buchen</h2>
       <button class="close-btn" onclick="closeBooking()">&times;</button>
     </div>
     <div class="modal-body">
       <div class="wiz-steps" id="wizSteps">
-        <div class="wiz-step active" id="ws1"><span class="wiz-num">1</span><span>Service</span></div>
+        <div class="wiz-step active" id="ws1"><span class="wiz-num">1</span><span data-i18n="wiz_service">Service</span></div>
         <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws2"><span class="wiz-num">2</span><span>Datum</span></div>
+        <div class="wiz-step" id="ws2"><span class="wiz-num">2</span><span data-i18n="wiz_date">Datum</span></div>
         <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws3"><span class="wiz-num">3</span><span>Uhrzeit</span></div>
+        <div class="wiz-step" id="ws3"><span class="wiz-num">3</span><span data-i18n="wiz_time">Uhrzeit</span></div>
         <div class="wiz-sep"></div>
-        <div class="wiz-step" id="ws4"><span class="wiz-num">4</span><span>Details</span></div>
+        <div class="wiz-step" id="ws4"><span class="wiz-num">4</span><span data-i18n="wiz_details">Details</span></div>
+        <div class="wiz-sep"></div>
+        <div class="wiz-step" id="ws5"><span class="wiz-num">5</span><span data-i18n="wiz_confirm">Best&auml;tigen</span></div>
         <div class="wiz-sep"></div>
         <div class="wiz-step" id="ws5"><span class="wiz-num">5</span><span>BestÃÂÃÂ¤tigen</span></div>
       </div>
@@ -1138,26 +1160,26 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 <div id="filterSheetOverlay" onclick="closeFilterSheet()"></div>
 <div id="filterSheet">
   <div class="sheet-handle"></div>
-  <h3>Sortierung</h3>
+  <h3 data-i18n="filter_sort">Sortierung</h3>
   <select class="form-input" id="sortSelectMobile" onchange="changeSort(this.value)" style="margin-bottom:16px;padding:10px 36px 10px 12px;font-size:.88rem;border-radius:var(--r)">
-    <option value="default">Empfohlen</option>
-    <option value="price_asc">GÃÂÃÂ¼nstigste zuerst</option>
-    <option value="popular">Beliebteste</option>
+    <option value="default" data-i18n="sort_recommended">Empfohlen</option>
+    <option value="price_asc" data-i18n="sort_cheapest">G&uuml;nstigste zuerst</option>
+    <option value="popular" data-i18n="sort_popular">Beliebteste</option>
   </select>
-  <h3>Max. Preis (CHF)</h3>
+  <h3 data-i18n="filter_max_price_chf">Max. Preis (CHF)</h3>
   <div class="price-filter-mobile" style="margin-bottom:16px">
     <input type="range" class="price-slider" id="priceSliderMobile" min="0" max="300" step="10" value="300" oninput="setMaxPrice(this.value,'mobile')" style="--pct:100%;width:100%">
-    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.78rem;color:var(--muted)"><span>CHF 0</span><span class="price-label" id="priceLabelMobile">Alle</span><span>CHF 300</span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.78rem;color:var(--muted)"><span>CHF 0</span><span class="price-label" id="priceLabelMobile" data-i18n="filter_all">Alle</span><span>CHF 300</span></div>
   </div>
   <h3 data-i18n="rating_filter">Min. Bewertung</h3>
   <div class="rating-filter" style="margin-bottom:16px" id="ratingFilterMobile">
-    <button class="rating-chip active" onclick="setMinRating(0,this)">Alle</button>
+    <button class="rating-chip active" onclick="setMinRating(0,this)" data-i18n="filter_all">Alle</button>
     <button class="rating-chip" onclick="setMinRating(4.0,this)">4.0+</button>
     <button class="rating-chip" onclick="setMinRating(4.5,this)">4.5+</button>
   </div>
   <h3 data-i18n="neighbourhood">Quartier</h3>
   <div style="display:flex;gap:6px;flex-wrap:wrap">
-    <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'');closeFilterSheet()">Alle</button>
+    <button class="neighbourhood-chip active" onclick="selectNeighbourhood(this,'');closeFilterSheet()" data-i18n="neighbourhood_all">Alle Quartiere</button>
     <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel');closeFilterSheet()">Grossbasel</button>
     <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel');closeFilterSheet()">Kleinbasel</button>
     <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann');closeFilterSheet()">St. Johann</button>
@@ -1244,14 +1266,14 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
 <div class="overlay" id="cancelBookingOverlay">
   <div class="modal">
     <div class="modal-hd">
-      <h2>Termin absagen?</h2>
+      <h2 data-i18n="cancel_confirm_title">Termin absagen?</h2>
       <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">&times;</button>
     </div>
     <div class="modal-bd">
-      <p style="color:#666;margin-bottom:20px">Sicher, dass du diesen Termin absagen mÃÂÃÂ¶chtest?</p>
+      <p style="color:#666;margin-bottom:20px" data-i18n="cancel_confirm_text">Sicher, dass du diesen Termin absagen m&ouml;chtest?</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="userCancelBooking()">Ja, absagen</button>
-        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')">Nein</button>
+        <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="userCancelBooking()" data-i18n="cancel_confirm_yes">Ja, absagen</button>
+        <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')" data-i18n="cancel_confirm_no">Nein</button>
       </div>
     </div>
   </div>
@@ -1325,6 +1347,25 @@ const T={
     impressum:'Impressum',privacy:'Datenschutz',nearest_slot_tomorrow:'N\u00e4chster: Morgen',
     add_to_calendar:'Zu Google Kalender hinzuf\u00fcgen',sort_distance:'Entfernung',
     location_unavailable:'Standort nicht verf\u00fcgbar',load_failed:'Salons konnten nicht geladen werden',reload:'Neu laden',
+    cat_barber:'Barbershop',cat_hairsalon:'Friseursalon',cat_nails:'Nagelstudio',cat_spa:'Spa &amp; Wellness',cat_makeup:'Make-up',cat_eyebrows:'Augenbrauen',
+    sort_recommended:'Empfohlen',sort_cheapest:'G\u00fcnstigste zuerst',sort_popular:'Beliebteste',
+    filter_sheet_btn:'Filter &amp; Sortierung',filter_sort:'Sortierung',filter_max_price:'Max. Preis:',filter_max_price_chf:'Max. Preis (CHF)',filter_all:'Alle',
+    auth_reg_choice_sub:'Bist du ein Kunde oder m\u00f6chtest du deinen Salon eintragen?',
+    lbl_name:'Name',lbl_age:'Alter',lbl_gender:'Geschlecht',lbl_hairtype:'Haartyp',lbl_preferred_services:'Bevorzugte Leistungen',
+    setup_select:'W\u00e4hlen...',age_under12:'Unter 12',age_12_17:'12\u201317',age_18_29:'18\u201329',age_30_49:'30\u201349',age_50plus:'50+',
+    gender_male:'M\u00e4nnlich',gender_female:'Weiblich',gender_diverse:'Divers',gender_none:'Keine Angabe',
+    hair_straight:'Glatt',hair_wavy:'Wellig',hair_curly:'Lockig',hair_very_curly:'Sehr lockig',
+    pref_haircut:'Haarschnitt',pref_coloring:'F\u00e4rben',pref_styling:'Styling',pref_beard:'Bartpflege',pref_nails:'N\u00e4gel',pref_skincare:'Hautpflege',pref_massage:'Massage',pref_makeup_pref:'Make-up',pref_eyebrows_pref:'Augenbrauen',
+    lbl_contact_person:'Kontaktperson',lbl_salon_info:'Salon-Info',lbl_services_section:'Services',
+    lbl_salon_name:'Salon-Name',lbl_salon_type:'Kategorie',lbl_salon_address:'Adresse in Basel',lbl_phone_optional:'Telefon (optional)',lbl_salon_description:'Beschreibung',
+    btn_add_service:'+ Weiteren Service hinzuf\u00fcgen',accept_agb:'Ich akzeptiere die AGB',btn_register_salon_submit:'Salon anmelden',
+    cancel_confirm_title:'Termin absagen?',cancel_confirm_text:'Sicher, dass du diesen Termin absagen m\u00f6chtest?',cancel_confirm_yes:'Ja, absagen',cancel_confirm_no:'Nein',
+    btn_reset_send:'Reset senden',btn_close:'Schliessen',
+    lbl_phone:'Telefon (optional)',lbl_note:'Notiz (optional)',note_placeholder:'Besondere W\u00fcnsche...',
+    wiz_reminder_label:'E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)',wiz_reminder_text:'Du erh\u00e4ltst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.',
+    booking_confirmed_title:'Buchung best\u00e4tigt!',try_other_filters:'Versuche andere Filter.',preferred_badge:'Empfohlen',
+    months:'Januar_Februar_M\u00e4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember',
+    weekdays:'Mo_Di_Mi_Do_Fr_Sa_So',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
@@ -1376,6 +1417,25 @@ const T={
     impressum:'Imprint',privacy:'Privacy',nearest_slot_tomorrow:'Next: Tomorrow',
     add_to_calendar:'Add to Google Calendar',sort_distance:'Distance',
     location_unavailable:'Location not available',load_failed:'Could not load salons',reload:'Reload',
+    cat_barber:'Barbershop',cat_hairsalon:'Hair Salon',cat_nails:'Nail Studio',cat_spa:'Spa &amp; Wellness',cat_makeup:'Make-up',cat_eyebrows:'Eyebrows',
+    sort_recommended:'Recommended',sort_cheapest:'Cheapest first',sort_popular:'Most popular',
+    filter_sheet_btn:'Filter &amp; Sort',filter_sort:'Sort',filter_max_price:'Max. Price:',filter_max_price_chf:'Max. Price (CHF)',filter_all:'All',
+    auth_reg_choice_sub:'Are you a customer or would you like to list your salon?',
+    lbl_name:'Name',lbl_age:'Age',lbl_gender:'Gender',lbl_hairtype:'Hair type',lbl_preferred_services:'Preferred services',
+    setup_select:'Select...',age_under12:'Under 12',age_12_17:'12\u201317',age_18_29:'18\u201329',age_30_49:'30\u201349',age_50plus:'50+',
+    gender_male:'Male',gender_female:'Female',gender_diverse:'Non-binary',gender_none:'Prefer not to say',
+    hair_straight:'Straight',hair_wavy:'Wavy',hair_curly:'Curly',hair_very_curly:'Very curly',
+    pref_haircut:'Haircut',pref_coloring:'Coloring',pref_styling:'Styling',pref_beard:'Beard care',pref_nails:'Nails',pref_skincare:'Skincare',pref_massage:'Massage',pref_makeup_pref:'Make-up',pref_eyebrows_pref:'Eyebrows',
+    lbl_contact_person:'Contact person',lbl_salon_info:'Salon info',lbl_services_section:'Services',
+    lbl_salon_name:'Salon name',lbl_salon_type:'Category',lbl_salon_address:'Address in Basel',lbl_phone_optional:'Phone (optional)',lbl_salon_description:'Description',
+    btn_add_service:'+ Add another service',accept_agb:'I accept the terms',btn_register_salon_submit:'Register salon',
+    cancel_confirm_title:'Cancel appointment?',cancel_confirm_text:'Are you sure you want to cancel this appointment?',cancel_confirm_yes:'Yes, cancel',cancel_confirm_no:'No',
+    btn_reset_send:'Send reset link',btn_close:'Close',
+    lbl_phone:'Phone (optional)',lbl_note:'Note (optional)',note_placeholder:'Special requests...',
+    wiz_reminder_label:'Email reminder (48h &amp; 2h before appointment)',wiz_reminder_text:'You will receive a reminder 48h and 2h before your appointment by email.',
+    booking_confirmed_title:'Booking confirmed!',try_other_filters:'Try different filters.',preferred_badge:'Recommended',
+    months:'January_February_March_April_May_June_July_August_September_October_November_December',
+    weekdays:'Mo_Tu_We_Th_Fr_Sa_Su',
   },
   fr:{
     nav_login:'Se connecter',nav_register:"S'inscrire",nav_logout:'Se d\u00e9connecter',nav_theme:'Clair / Sombre',
@@ -1425,6 +1485,25 @@ const T={
     rating_filter:'Note min.',no_results:'Aucun salon trouv\u00e9',reset_filters:'R\u00e9initialiser les filtres',
     use_location:'Position',neighbourhood:'Quartier',neighbourhood_all:'Tous les quartiers',
     impressum:'Mentions l\u00e9gales',privacy:'Confidentialit\u00e9',nearest_slot_tomorrow:'Prochain : demain',
+    cat_barber:'Barbershop',cat_hairsalon:'Salon de coiffure',cat_nails:'Institut ongles',cat_spa:'Spa &amp; Bien-\u00eatre',cat_makeup:'Maquillage',cat_eyebrows:'Sourcils',
+    sort_recommended:'Recommand\u00e9',sort_cheapest:'Moins cher',sort_popular:'Plus populaire',
+    filter_sheet_btn:'Filtres &amp; Tri',filter_sort:'Tri',filter_max_price:'Prix max\u00a0:',filter_max_price_chf:'Prix max (CHF)',filter_all:'Tous',
+    auth_reg_choice_sub:'Es-tu un client ou souhaites-tu inscrire ton salon\u00a0?',
+    lbl_name:'Nom',lbl_age:'\u00c2ge',lbl_gender:'Sexe',lbl_hairtype:'Type de cheveux',lbl_preferred_services:'Services pr\u00e9f\u00e9r\u00e9s',
+    setup_select:'Choisir...',age_under12:'Moins de 12',age_12_17:'12\u201317',age_18_29:'18\u201329',age_30_49:'30\u201349',age_50plus:'50+',
+    gender_male:'Homme',gender_female:'Femme',gender_diverse:'Non-binaire',gender_none:'Ne pas pr\u00e9ciser',
+    hair_straight:'Lisse',hair_wavy:'Ondul\u00e9',hair_curly:'Boucl\u00e9',hair_very_curly:'Tr\u00e8s boucl\u00e9',
+    pref_haircut:'Coupe',pref_coloring:'Coloration',pref_styling:'Coiffage',pref_beard:'Soin barbe',pref_nails:'Ongles',pref_skincare:'Soins de peau',pref_massage:'Massage',pref_makeup_pref:'Maquillage',pref_eyebrows_pref:'Sourcils',
+    lbl_contact_person:'Personne de contact',lbl_salon_info:'Infos salon',lbl_services_section:'Services',
+    lbl_salon_name:'Nom du salon',lbl_salon_type:'Cat\u00e9gorie',lbl_salon_address:'Adresse \u00e0 B\u00e2le',lbl_phone_optional:'T\u00e9l\u00e9phone (optionnel)',lbl_salon_description:'Description',
+    btn_add_service:'+ Ajouter un service',accept_agb:"J'accepte les conditions",btn_register_salon_submit:'Inscrire le salon',
+    cancel_confirm_title:'Annuler le rendez-vous\u00a0?',cancel_confirm_text:'Veux-tu vraiment annuler ce rendez-vous\u00a0?',cancel_confirm_yes:'Oui, annuler',cancel_confirm_no:'Non',
+    btn_reset_send:'Envoyer le lien',btn_close:'Fermer',
+    lbl_phone:'T\u00e9l\u00e9phone (optionnel)',lbl_note:'Note (optionnel)',note_placeholder:'Demandes sp\u00e9ciales...',
+    wiz_reminder_label:'Rappel par e-mail (48h &amp; 2h avant)',wiz_reminder_text:'Tu recevras un rappel 48h et 2h avant ton rendez-vous par e-mail.',
+    booking_confirmed_title:'R\u00e9servation confirm\u00e9e\u00a0!',try_other_filters:"Essaie d'autres filtres.",preferred_badge:'Recommand\u00e9',
+    months:'Janvier_F\u00e9vrier_Mars_Avril_Mai_Juin_Juillet_Ao\u00fbt_Septembre_Octobre_Novembre_D\u00e9cembre',
+    weekdays:'Lu_Ma_Me_Je_Ve_Sa_Di',
     add_to_calendar:'Ajouter \u00e0 Google Agenda',sort_distance:'Distance',
     location_unavailable:'Position non disponible',load_failed:'Impossible de charger les salons',reload:'Recharger',
   },
@@ -1476,7 +1555,26 @@ const T={
     use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'TÃÂÃÂ¼m mahalleler',
     impressum:'KÃÂÃÂ¼nye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: YarÃÂÃÂ±n',
     add_to_calendar:'Google Takvime Ekle',sort_distance:'Mesafe',
-    location_unavailable:'Konum mevcut deÃÂÃÂil',load_failed:'Salonlar yÃÂÃÂ¼klenemedi',reload:'Yenile',
+    location_unavailable:'Konum mevcut de\u011fil',load_failed:'Salonlar y\u00fcklenemedi',reload:'Yenile',
+    cat_barber:'Berberhane',cat_hairsalon:'Kuaf\u00f6r',cat_nails:'T\u0131rnak St\u00fcdyosu',cat_spa:'Spa &amp; Wellness',cat_makeup:'Makyaj',cat_eyebrows:'Ka\u015f',
+    sort_recommended:'\u00d6nerilen',sort_cheapest:'En ucuz',sort_popular:'En pop\u00fcler',
+    filter_sheet_btn:'Filtre &amp; S\u0131ralama',filter_sort:'S\u0131ralama',filter_max_price:'Maks. Fiyat:',filter_max_price_chf:'Maks. Fiyat (CHF)',filter_all:'T\u00fcm\u00fc',
+    auth_reg_choice_sub:'M\u00fc\u015fteri misiniz yoksa salonunuzu listelemek ister misiniz?',
+    lbl_name:'Ad',lbl_age:'Ya\u015f',lbl_gender:'Cinsiyet',lbl_hairtype:'Sa\u00e7 tipi',lbl_preferred_services:'Tercih edilen hizmetler',
+    setup_select:'Se\u00e7...',age_under12:'12 alt\u0131',age_12_17:'12\u201317',age_18_29:'18\u201329',age_30_49:'30\u201349',age_50plus:'50+',
+    gender_male:'Erkek',gender_female:'Kad\u0131n',gender_diverse:'Di\u011fer',gender_none:'Belirtmek istemiyorum',
+    hair_straight:'D\u00fcz',hair_wavy:'Dalgal\u0131',hair_curly:'K\u0131v\u0131rc\u0131k',hair_very_curly:'\u00c7ok k\u0131v\u0131rc\u0131k',
+    pref_haircut:'Sa\u00e7 kesimi',pref_coloring:'Boyama',pref_styling:'\u015eekillendirme',pref_beard:'Sakal bak\u0131m\u0131',pref_nails:'T\u0131rnak',pref_skincare:'Cilt bak\u0131m\u0131',pref_massage:'Masaj',pref_makeup_pref:'Makyaj',pref_eyebrows_pref:'Ka\u015f',
+    lbl_contact_person:'\u0130leti\u015fim ki\u015fisi',lbl_salon_info:'Salon bilgisi',lbl_services_section:'Hizmetler',
+    lbl_salon_name:'Salon ad\u0131',lbl_salon_type:'Kategori',lbl_salon_address:"Basel'deki adres",lbl_phone_optional:'Telefon (iste\u011fe ba\u011fl\u0131)',lbl_salon_description:'A\u00e7\u0131klama',
+    btn_add_service:'+ Ba\u015fka hizmet ekle',accept_agb:'\u015eartlar\u0131 kabul ediyorum',btn_register_salon_submit:'Salonu kaydet',
+    cancel_confirm_title:'Randevuyu iptal et?',cancel_confirm_text:'Bu randevuyu iptal etmek istedi\u011finizden emin misiniz?',cancel_confirm_yes:'Evet, iptal et',cancel_confirm_no:'Hay\u0131r',
+    btn_reset_send:'S\u0131f\u0131rlama g\u00f6nder',btn_close:'Kapat',
+    lbl_phone:'Telefon (iste\u011fe ba\u011fl\u0131)',lbl_note:'Not (iste\u011fe ba\u011fl\u0131)',note_placeholder:'\u00d6zel istekler...',
+    wiz_reminder_label:'E-posta hat\u0131rlat\u0131c\u0131 (48s &amp; 2s \u00f6nce)',wiz_reminder_text:'Randevunuzdan 48s ve 2s \u00f6nce e-posta ile hat\u0131rlatma alacaks\u0131n\u0131z.',
+    booking_confirmed_title:'Rezervasyon onayand\u0131!',try_other_filters:'Ba\u015fka filtreler deneyin.',preferred_badge:'\u00d6nerilen',
+    months:'Ocak_\u015eubat_Mart_Nisan_May\u0131s_Haziran_Temmuz_A\u011fustos_Eyl\u00fcl_Ekim_Kas\u0131m_Aral\u0131k',
+    weekdays:'Pt_Sa_\u00c7a_Pe_Cu_Ct_Pz',
   },
 };
 
@@ -1487,17 +1585,15 @@ function applyTranslations(){
     const key=el.getAttribute('data-i18n');
     const val=t(key);
     if(val)el.textContent=val;
-  });
+  }).select('id').single();
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{
     const key=el.getAttribute('data-i18n-html');
     const val=t(key);
     if(val)el.innerHTML=val;
-  });
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
     const key=el.getAttribute('data-i18n-ph');
     const val=t(key);
     if(val)el.placeholder=val;
-  });
 }
 
 function switchLang(lang){
@@ -1506,17 +1602,17 @@ function switchLang(lang){
   document.documentElement.setAttribute('lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===lang);
-  });
   applyTranslations();
   if(lang!=='de')translateVisibleDescriptions(lang);
 }
+// Alias so both switchLang() and setLang() work
+function setLang(lang){switchLang(lang);}
 
 // Init language on load
 (function(){
   document.documentElement.setAttribute('lang',currentLang);
   document.querySelectorAll('.lang-btn').forEach(b=>{
     b.classList.toggle('active',b.textContent.trim().toLowerCase()===currentLang);
-  });
 })();
 
 // DEMO DATA fallback
@@ -1590,9 +1686,7 @@ function _trFetch(text,lang){
         if(j.responseStatus===200&&j.responseData?.translatedText){res(_trCache[key]=j.responseData.translatedText);return;}
       }catch(e){}
       res(_trCache[key]=null); // cache failure ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ show original
-    });
-    _trDrain();
-  });
+      _trDrain();
 }
 async function autoTranslateElement(el,lang){
   if(!el||!lang||lang==='de')return;
@@ -1619,7 +1713,6 @@ function closeAllDropdowns(){
   document.querySelectorAll('[data-dropdown="open"]').forEach(el=>{
     el.classList.remove('open');
     el.setAttribute('data-dropdown','');
-  });
   document.getElementById('navActions')?.classList.remove('open');
 }
 // Global outside-click listener for all dropdowns (click + touchstart for mobile)
@@ -2141,7 +2234,6 @@ async function loadStores(){
   // Assign default Basel coords for stores without lat/lng
   allStores.forEach(s=>{
     if(!s.lat||!s.lng){s.lat=47.5596+(Math.random()-0.5)*0.02;s.lng=7.5886+(Math.random()-0.5)*0.02;}
-  });
   const{data:svcs}=await sb.from('services').select('*');
   allServices=svcs||[];
   if(allServices.length===0){
@@ -2356,7 +2448,7 @@ function renderStores(){
   }
   document.getElementById('storesCount').textContent=`${filtered.length} ${filtered.length!==1?t('salon_count_other'):t('salon_count_one')}`;
   if(filtered.length===0){
-    document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128269;</div><h3>${t('no_results')}</h3><p>Versuche andere Filter.</p><button onclick="resetAllFilters()">${t('reset_filters')}</button></div>`;
+    document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128269;</div><h3>${t('no_results')}</h3><p>${t('try_other_filters')}</p><button onclick="resetAllFilters()">${t('reset_filters')}</button></div>`;
     return;
   }
   // Recently viewed section
@@ -2371,7 +2463,7 @@ function renderStores(){
   // Reset filter button
   let resetHtml='';
   if(activeCategories.size>0||query){
-    resetHtml=`<div style="grid-column:1/-1;margin-bottom:8px"><button onclick="resetFilters()" style="background:none;border:1px solid var(--border);color:var(--text2);padding:6px 16px;border-radius:100px;font-size:.82rem;font-weight:600;cursor:pointer">Filter zurÃÂÃÂ¼cksetzen</button></div>`;
+    resetHtml=`<div style="grid-column:1/-1;margin-bottom:8px"><button onclick="resetFilters()" style="background:none;border:1px solid var(--border);color:var(--text2);padding:6px 16px;border-radius:100px;font-size:.82rem;font-weight:600;cursor:pointer">${t('reset_filters')}</button></div>`;
   }
   document.getElementById('storesGrid').innerHTML=resetHtml+recentHtml+filtered.map(s=>renderStoreCard(s)).join('');
 }
@@ -2637,11 +2729,12 @@ function renderWizStep(step){
         const isPreferred=prefs.some(p=>s.name.toLowerCase().includes(p.toLowerCase()));
         const sel=bookingState.service?.id===s.id;
         return`<div class="svc-card ${sel?'selected':''} ${isPreferred?'preferred':''}" data-svc-id="${s.id}" onclick="selectService('${s.id}')" role="button" tabindex="0">
-          ${isPreferred?`<div class="svc-badge preferred-badge">Empfohlen</div>`:''}
+          ${isPreferred?`<div class="svc-badge preferred-badge">${t('preferred_badge')}</div>`:''}
           <div class="svc-name">${s.name}</div>
           <div class="svc-meta"><span>CHF ${s.price}</span><span>${s.duration} Min.</span></div>
         </div>`;
-      }).join('')}</div>`;
+      }).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}
+              }).join('')}</div>`;
     }
     html+=`<div class="wiz-btns" style="margin-top:20px"><button class="btn-secondary" onclick="closeBooking()">${t('btn_cancel')}</button><button class="btn-primary" onclick="wizNext(2)" id="wizNext1" ${!bookingState.service?'disabled':''}>${t('btn_next')}</button></div>`;
   }
@@ -2661,11 +2754,11 @@ function renderWizStep(step){
     const p=currentProfile;
     html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_your_details')}</h3>`;
     html+=`<div class="form-row">
-      <div class="form-group"><label>Vorname</label><input class="form-input" id="bkFirst" value="${p?.display_name?.split(' ')[0]||''}" placeholder="Max"></div>
-      <div class="form-group"><label>Nachname</label><input class="form-input" id="bkLast" value="${p?.display_name?.split(' ').slice(1).join(' ')||''}" placeholder="Muster"></div>
-    </div>
-    <div class="form-group"><label>Telefon (optional)</label><input class="form-input" id="bkPhone" type="tel" placeholder="Telefonnummer"></div>
-    <div class="form-group"><label>Notiz (optional)</label><textarea class="form-input" id="bkNote" rows="2" placeholder="Besondere WÃÂÃÂ¼nsche...">${p?.stylist_notes||''}</textarea></div>`;
+      <div class="form-group"><label>${t('lbl_firstname')}</label><input class="form-input" id="bkFirst" value="${p?.display_name?.split(' ')[0]||''}" placeholder="Max"></div>
+      <div class="form-group"><label>${t('lbl_lastname')}</label><input class="form-input" id="bkLast" value="${p?.display_name?.split(' ').slice(1).join(' ')||''}" placeholder="Muster"></div>
+ rows="2" placeholder="${t('note_placeholder')}">${p?.stylist_notes||''}</textarea></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:12px 0 4px;cursor:pointer"><input type="checkbox" id="bkReminder" ${bookingState.wantsReminder===false?'':'checked'}> ${t('wiz_reminder_label')}</label>`;
+    <div class="form-group"><label>${t('lbl_note')}</label><textarea class="form-input" id="bkNote" rows="2" placeholder="${t('note_placeholder')}">${p?.stylist_notes||''}</textarea></div>
     html+=`<div class="wiz-btns"><button class="btn-secondary" onclick="wizNext(3)">${t('btn_back')}</button><button class="btn-primary" onclick="wizNext(5)">${t('btn_next')}</button></div>`;
   }
   else if(step===5){
@@ -2679,6 +2772,7 @@ function renderWizStep(step){
       <div class="summary-row"><span>${t('wiz_date_lbl')}</span><span>${dateStr}</span></div>
       <div class="summary-row"><span>${t('wiz_time_lbl')}</span><span>${bookingState.time}</span></div>
       <div class="summary-row"><span>${t('wiz_duration')}</span><span>${s.duration} Min.</span></div>
+    ${bookingState.wantsReminder!==false?`<p style="font-size:.82rem;color:var(--muted);margin:12px 0 4px;text-align:center">${t('wiz_reminder_text')}</p>`:''}
       <div class="summary-row total"><span>${t('wiz_price')}</span><span>CHF ${s.price}</span></div>
     </div>
     ${bookingState.wantsReminder!==false?`<p style="font-size:.82rem;color:var(--muted);margin:12px 0 4px;text-align:center">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>`:''}
@@ -2692,14 +2786,15 @@ function renderCalendar(){
   const first=new Date(calendarYear,calendarMonth,1);
   const startDay=first.getDay()||7;
   const daysInMonth=new Date(calendarYear,calendarMonth+1,0).getDate();
-  const months=['Januar','Februar','MÃÂÃÂ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const months=t('months').split('_');
   let html=`<div class="cal-header">
     <button class="cal-nav" onclick="prevMonth()">&#8592;</button>
     <span style="font-weight:700">${months[calendarMonth]} ${calendarYear}</span>
     <button class="cal-nav" onclick="nextMonth()">&#8594;</button>
   </div>
   <div class="cal-weekdays">
-    ${['Mo','Di','Mi','Do','Fr','Sa','So'].map(d=>`<div class="cal-wd">${d}</div>`).join('')}
+    ${weekdays.map(d=>`<div class="cal-wd">${d}</div>`).join('')}
+  const weekdays=t('weekdays').split('_');
   </div>
   <div class="calendar-grid">`;
   for(let i=1;i<startDay;i++) html+=`<div></div>`;
@@ -2783,6 +2878,9 @@ async function confirmBooking(){
     staff_name:_selStaffName||null,
     is_first_visit:bookingState.isFirstVisit!==false
     ,recurrence_group_id:recurGroupId
+      <button class="btn-primary" style="margin-top:16px" onclick="closeBooking()">${t('btn_close')}</button>
+      ${wantsReminder?`<p style="font-size:.85rem;color:var(--muted);margin-top:8px">${t('wiz_reminder_text')}</p>`:''}
+      <h3 style="color:var(--success)">${t('booking_confirmed_title')}</h3>
     ,recurrence_index:0
     ,recurrence_interval_weeks:bmState.isRecurring?bmState.recurrenceWeeks:0
   }).select('id').single();
@@ -3300,7 +3398,7 @@ async function renderSalonDashboard(){
             <select class="form-input" id="sp_type" required>
               <option value="">Kategorie wÃÂ¤hlen...</option>
               <option value="hairsalon">Friseur</option>
-              <option value="nails">Nagelstudio</option>
+              <option value="nails" data-i18n="cat_nails">Nagelstudio</option>
               <option value="cosmetik">Kosmetik</option>
               <option value="massage">Massage</option>
               <option value="spa">Spa</option>
@@ -3315,8 +3413,7 @@ async function renderSalonDashboard(){
           <div class="form-group"><label>Website (optional)</label><input class="form-input" type="url" id="sp_website" placeholder="https://mein-salon.ch"></div>
           <button class="btn-primary" type="submit" id="sp_submit">Salon eintragen</button>
         </form>
-      </div>`;
-      return;
+          return;
     }
     // Store exists Ã¢ÂÂ render basic owner view
     const store=myStores[0];
@@ -3362,35 +3459,27 @@ async function renderSalonDashboard(){
       <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
     <div id="dashTabBuchungen">
-      <div class="dashboard-stats">
-        <div class="dash-stat"><span class="dash-stat-num">${thisWeek.length}</span><span class="dash-stat-label">Diese Woche</span></div>
-        <div class="dash-stat"><span class="dash-stat-num">${allBookings.length}</span><span class="dash-stat-label">Total Buchungen</span></div>
-        <div class="dash-stat"><span class="dash-stat-num">${confirmedCount}</span><span class="dash-stat-label">BestÃ¤tigt</span></div>
+      <div class="admin-tabs" id="dashTabs">
+        <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
+        <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+      <div id="dashTabBuchungen">
       </div>
-      <div class="section-hd"><h3>Eingehende Buchungen</h3></div>
-      ${allBookings.length?`<div class="booking-list">${allBookings.map(b=>{
-        const sc=b.status==='confirmed'?'status-confirmed':b.status==='cancelled'?'status-cancelled':'status-pending';
-        return`<div class="booking-item" data-booking-id="${b.id}">
-          <div class="booking-icon">&#128197;</div>
-          <div class="booking-info">
+        <div class="admin-tabs" id="dashTabs">
+          <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
+          <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+        <div id="dashTabBuchungen">
+        </div>
+          <div class="admin-tabs" id="dashTabs">
             <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(78,205,196,.15);color:#4ECDC4;border:1px solid rgba(78,205,196,.3)">Erstbesuch</span>':''}</div>
-            <div class="booking-details">${b.service_name||''} &bull; ${formatDate(b.booking_date)} ${b.booking_time?'um '+b.booking_time+' Uhr':''}</div>
-            ${b.reference?`<div class="booking-details" style="margin-top:2px;font-weight:600">Ref: ${b.reference}</div>`:''}
+            <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+          <div id="dashTabBuchungen">
           </div>
-          <span class="booking-status ${sc}">${b.status==='confirmed'?'BestÃ¤tigt':b.status==='cancelled'?'Storniert':'Ausstehend'}</span>
-          <div class="booking-actions">
-            ${b.status==='confirmed'?`<button class="btn-danger" onclick="updateSalonBooking('${b.id}','cancelled')">Stornieren</button>`:''}
-            ${b.status==='cancelled'?`<button class="btn-sm solid" onclick="updateSalonBooking('${b.id}','confirmed')">BestÃ¤tigen</button>`:''}
-          </div>
-        </div>`;
-      }).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}
-    </div>
+                                          </div>
+              </div>
     <div id="dashTabStatistiken" class="hidden">
       <div id="analyticsContent"><div class="spinner"></div></div>
     </div>`;
-    }).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}`;
-  // Load staff section below bookings
-  if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);}
+              if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);}
 }}
 
 function showDashTab(btn,tab,salonId,storeId){
@@ -3581,7 +3670,6 @@ function renderBookingModal(){
         <a href="${calUrl}" target="_blank" rel="noopener" class="bm-cal-link">&#128197; ${t('add_to_calendar')}</a>
         <button class="bm-cal-link" style="background:none;border:1px solid var(--primary);cursor:pointer" onclick="downloadIcs()">&#128192; Apple / Outlook (.ics)</button>
         ${bmState.wantsReminder!==false?'<p style="font-size:.82rem;color:var(--muted);margin-top:12px">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>':''}
-      </div>`;
     return;
   }
 
@@ -4152,7 +4240,6 @@ let _selStaffId=null,_selStaffName=null;
 // );
 
 async function loadDashVacationSection(salonId){
-  const el=document.getElementById('salonDashContent');
   if(!el)return;
   const existing=document.getElementById('dashVacationSection');
   if(existing)existing.remove();
