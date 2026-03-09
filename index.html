@@ -228,6 +228,8 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:.83rem}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 .auth-switch{text-align:center;margin-top:16px;font-size:.88rem;color:var(--muted)}
+.btn-phone-toggle{width:100%;padding:12px;background:var(--bg);color:var(--text2);border:1.5px solid var(--border2);border-radius:var(--r);font-size:.92rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;cursor:pointer;margin-bottom:4px}
+.btn-phone-toggle:hover{background:var(--bg3);color:var(--text)}
 .auth-switch a{color:var(--text);font-weight:700;text-decoration:underline;cursor:pointer}
 .msg{padding:12px 14px;border-radius:var(--r);font-size:.88rem;margin-bottom:16px;font-weight:500}
 .msg.success{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
@@ -433,6 +435,12 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 
 /* RESPONSIVE */
 /* Ensure no horizontal overflow */
+.vacation-form{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px}
+.vacation-form .form-group{margin-bottom:0}
+.vacation-list{display:flex;flex-direction:column;gap:8px}
+.vacation-item{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;font-size:.88rem}
+.vacation-item-dates{flex:1;font-weight:600}
+.vacation-item-reason{color:var(--muted);font-size:.82rem;flex-shrink:0}
 html,body{overflow-x:hidden;max-width:100vw}
 
 @media(max-width:768px){
@@ -513,6 +521,8 @@ html,body{overflow-x:hidden;max-width:100vw}
 
 /* BOOKING MODAL */
 #bookingModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+/* EMPFOHLEN BADGE */
+.empfohlen-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#FF6B6B,#4ECDC4);color:#fff;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px);z-index:3;letter-spacing:.02em;box-shadow:0 2px 8px rgba(255,107,107,.35)}
 #bookingModal.open{display:flex}
 #bookingModal .bm-content{background:var(--surface);border-radius:var(--r2);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);border:1px solid var(--border);padding:0}
 #bookingModal .bm-header{padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
@@ -733,6 +743,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;point
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Grossbasel')">Grossbasel</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Kleinbasel')">Kleinbasel</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'St. Johann')">St. Johann</button>
+        <button class="neighbourhood-chip empfohlen-chip" onclick="toggleEmpfohlenFilter(this)">&#11088; Nur Empfohlene</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Gundeldingen')">Gundeldingen</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Bruderholz')">Bruderholz</button>
         <button class="neighbourhood-chip" onclick="selectNeighbourhood(this,'Hirzbrunnen')">Hirzbrunnen</button>
@@ -1767,6 +1778,8 @@ function switchAuthTab(tab){
   if(phoneForm)phoneForm.classList.toggle('hidden',tab!=='phone-auth');
   document.getElementById('authMsg').innerHTML='';
 }
+  const phoneForm=document.getElementById('formPhoneAuth');
+  if(phoneForm)phoneForm.classList.toggle('hidden',tab!=='phone-auth');
 
 function showAuthMsg(msg,type='error'){
   document.getElementById('authMsg').innerHTML=`<div class="msg ${type}">${msg}</div>`;
@@ -1981,6 +1994,55 @@ async function verifyPhoneOtp(){
 async function doUpdatePassword(){
   const pw1=document.getElementById('newPw1').value;
   const pw2=document.getElementById('newPw2').value;
+// PHONE AUTH
+let _phoneForOtp='';
+function openPhoneAuth(){
+  openAuth('phone-auth');
+  document.getElementById('phoneStep1').classList.remove('hidden');
+  document.getElementById('phoneStep2').classList.add('hidden');
+  document.getElementById('phoneNumber').value='';
+  document.getElementById('phoneOtpCode').value='';
+  _phoneForOtp='';
+}
+async function sendSmsOtp(){
+  if(!_rl.check('auth',5,60000)){toast('Too many attempts \u2013 please wait 60s','error');return;}
+  const prefix=document.getElementById('phonePrefix').value;
+  const raw=document.getElementById('phoneNumber').value.trim().replace(/\s/g,'');
+  if(!raw)return showAuthMsg('Bitte Handynummer eingeben.');
+  const digits=raw.startsWith('0')?raw.slice(1):raw;
+  const phone=prefix+digits;
+  const btn=document.querySelector('#phoneStep1 .btn-primary');
+  btn.disabled=true;btn.textContent='Sende...';
+  const{error}=await sb.auth.signInWithOtp({phone});
+  btn.disabled=false;btn.textContent='SMS-Code senden';
+  if(error){
+    console.error('[Solen] Phone OTP send error:',error);
+    showAuthMsg(error.message.includes('Invalid')?'Ung\u00fcltige Nummer. Bitte \u00fcberpr\u00fcfen.':t('err_generic'));
+    return;
+  }
+  _phoneForOtp=phone;
+  document.getElementById('phoneOtpHint').textContent='Code gesendet an '+phone+'. G\u00fcltig f\u00fcr 10 Minuten.';
+  document.getElementById('phoneStep1').classList.add('hidden');
+  document.getElementById('phoneStep2').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('phoneOtpCode').focus(),100);
+}
+async function verifyPhoneOtp(){
+  const token=document.getElementById('phoneOtpCode').value.trim();
+  if(token.length!==6||!/^\d+$/.test(token))return showAuthMsg('Bitte 6-stelligen Code eingeben.');
+  const btn=document.querySelector('#phoneStep2 .btn-primary');
+  btn.disabled=true;btn.textContent='Pr\u00fcfe...';
+  const{error,data}=await sb.auth.verifyOtp({phone:_phoneForOtp,token,type:'sms'});
+  btn.disabled=false;btn.textContent='Code best\u00e4tigen';
+  if(error){
+    console.error('[Solen] Phone OTP verify error:',error);
+    const msg=error.message.includes('expired')||error.message.includes('Invalid')?'Code ung\u00fcltig oder abgelaufen. Bitte erneut senden.':t('err_generic');
+    showAuthMsg(msg);
+    return;
+  }
+  closeAuth();
+  if(data?.user)await onSignIn(data.user);
+}
+
   const msgEl=document.getElementById('newPwMsg');
   if(pw1.length<8){msgEl.innerHTML='<div class="msg error">Passwort muss mindestens 8 Zeichen haben.</div>';return;}
   if(pw1!==pw2){msgEl.innerHTML='<div class="msg error">PasswÃÂÃÂ¶rter stimmen nicht ÃÂÃÂ¼berein.</div>';return;}
@@ -2657,7 +2719,17 @@ function renderCalendar(){
 function prevMonth(){calendarMonth--;if(calendarMonth<0){calendarMonth=11;calendarYear--;}renderWizStep(2);}
 function nextMonth(){calendarMonth++;if(calendarMonth>11){calendarMonth=0;calendarYear++;}renderWizStep(2);}
 
-function selectDate(d){bookingState.date=d;renderWizStep(2);}
+async function selectDate(d){
+  if(!bookingState.blockedRanges&&bookingState.storeId){
+    const{data}=await sb.from('blocked_dates').select().eq('store_id',bookingState.storeId);
+    bookingState.blockedRanges=data||[];
+  }
+  if((bookingState.blockedRanges||[]).some(b=>d>=b.start_date&&d<=b.end_date)){
+    toast('Dieser Salon hat in diesem Zeitraum Urlaub. Bitte wähle ein anderes Datum.','error');
+    return;
+  }
+  bookingState.date=d;renderWizStep(2);
+}
 function selectTime(t){bookingState.time=t;renderWizStep(3);}
 
 function selectService(id){
@@ -2681,6 +2753,7 @@ function wizNext(step){
   }
   renderWizStep(step);
 }
+    bookingState.isFirstVisit=document.querySelector('input[name="bkVisitType"]:checked')?.value!=='returning';
 
 async function confirmBooking(){
   if(!_rl.check('booking',3,60000)){toast('Please wait before making another booking','error');return;}
@@ -3300,7 +3373,7 @@ async function renderSalonDashboard(){
         return`<div class="booking-item" data-booking-id="${b.id}">
           <div class="booking-icon">&#128197;</div>
           <div class="booking-info">
-            <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}</div>
+            <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(78,205,196,.15);color:#4ECDC4;border:1px solid rgba(78,205,196,.3)">Erstbesuch</span>':''}</div>
             <div class="booking-details">${b.service_name||''} &bull; ${formatDate(b.booking_date)} ${b.booking_time?'um '+b.booking_time+' Uhr':''}</div>
             ${b.reference?`<div class="booking-details" style="margin-top:2px;font-weight:600">Ref: ${b.reference}</div>`:''}
           </div>
@@ -3317,7 +3390,7 @@ async function renderSalonDashboard(){
     </div>`;
     }).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}`;
   // Load staff section below bookings
-  if(salon&&salon.id)setTimeout(()=>loadDashStaffSection(salon.id),80);
+  if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);}
 }}
 
 function showDashTab(btn,tab,salonId,storeId){
@@ -3560,6 +3633,7 @@ function renderBookingModal(){
   // 5. Summary
   const svc=bmState.service;
   html+=`<div class="bm-summary"><div class="row"><span>Salon</span><span>${s.name}</span></div>`;
+  html+=`<div class="form-group" style="margin-bottom:4px"><label style="margin-bottom:8px;display:block">Erstbesuch?</label><div style="display:flex;gap:16px"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:500"><input type="radio" name="bmVisitType" value="first" ${bmState.isFirstVisit!==false?'checked':''}> Erstbesuch</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:500"><input type="radio" name="bmVisitType" value="returning" ${bmState.isFirstVisit===false?'checked':''}> Wiederbesuch</label></div></div>`;
   if(svc)html+=`<div class="row"><span>Service</span><span>${svc.name}</span></div><div class="row"><span>Preis</span><span>CHF ${svc.price}</span></div>`;
   html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
   html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
@@ -3591,6 +3665,7 @@ async function insertBooking(){
   bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
   bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';
   if(!bmState.guestName||!bmState.guestPhone){toast('Name und Telefon sind erforderlich.','error');return;}
+  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
   if(!bmState.date||!bmState.time){toast('Datum und Uhrzeit w\u00e4hlen.','error');return;}
   const svc=bmState.service;
   const{data:bkData,error}=await sb.from('bookings').insert({
@@ -3604,7 +3679,9 @@ async function insertBooking(){
     booking_date:bmState.date,
     booking_time:bmState.time,
     status:'pending',
-    notes:bmState.notes
+    notes:bmState.notes,
+    is_first_visit:bmState.isFirstVisit!==false
+  // ALTER TABLE bookings ADD COLUMN is_first_visit boolean DEFAULT false;
   }).select('id').single();
   if(error){
     bmState.slotConflict=true;
@@ -4064,6 +4141,71 @@ async function deleteStaff(staffId,salonId){
 
 // ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ STAFF PICKER IN BOOKING MODAL ÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂÃÂ¢ÃÂÃÂ
 let _selStaffId=null,_selStaffName=null;
+// ── VACATION / BLOCKED DATES ──────────────────────────────────────────────────
+// DDL: CREATE TABLE IF NOT EXISTS blocked_dates (
+//   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+//   store_id text NOT NULL,
+//   start_date date NOT NULL,
+//   end_date date NOT NULL,
+//   reason text,
+//   created_at timestamptz DEFAULT now()
+// );
+
+async function loadDashVacationSection(salonId){
+  const el=document.getElementById('salonDashContent');
+  if(!el)return;
+  const existing=document.getElementById('dashVacationSection');
+  if(existing)existing.remove();
+  const sec=document.createElement('div');
+  sec.id='dashVacationSection';
+  sec.innerHTML=`<div class="dash-section-hd"><h3>&#127965; Urlaub / Auszeit</h3></div>
+    <div class="vacation-form">
+      <div class="form-group"><label style="font-size:.82rem;font-weight:600;margin-bottom:4px;display:block">Von</label><input class="form-input" type="date" id="vacFrom" style="min-width:150px"></div>
+      <div class="form-group"><label style="font-size:.82rem;font-weight:600;margin-bottom:4px;display:block">Bis</label><input class="form-input" type="date" id="vacTo" style="min-width:150px"></div>
+      <div class="form-group"><label style="font-size:.82rem;font-weight:600;margin-bottom:4px;display:block">Grund (optional)</label><input class="form-input" type="text" id="vacReason" placeholder="z.B. Sommerferien" style="min-width:160px"></div>
+      <button class="btn-primary" onclick="addVacationBlock('${salonId}')">Sperren</button>
+    </div>
+    <div id="vacationList"><div class="spinner"></div></div>`;
+  el.appendChild(sec);
+  await renderVacationList(salonId);
+}
+
+async function renderVacationList(salonId){
+  const el=document.getElementById('vacationList');
+  if(!el)return;
+  const{data,error}=await sb.from('blocked_dates').select().eq('store_id',salonId).order('start_date');
+  if(error||!data||data.length===0){
+    el.innerHTML='<p style="color:var(--muted);font-size:.88rem">Keine Sperrzeiten eingetragen.</p>';
+    return;
+  }
+  el.innerHTML='<div class="vacation-list">'+data.map(b=>`
+    <div class="vacation-item">
+      <div class="vacation-item-dates">${formatDate(b.start_date)} &ndash; ${formatDate(b.end_date)}</div>
+      ${b.reason?`<div class="vacation-item-reason">${b.reason}</div>`:''}
+      <button class="btn-danger" onclick="deleteVacationBlock('${b.id}','${salonId}')">L&ouml;schen</button>
+    </div>`).join('')+'</div>';
+}
+
+async function addVacationBlock(salonId){
+  const from=(document.getElementById('vacFrom')?.value||'').trim();
+  const to=(document.getElementById('vacTo')?.value||'').trim();
+  const reason=(document.getElementById('vacReason')?.value||'').trim();
+  if(!from||!to){toast('Bitte Von- und Bis-Datum angeben.','error');return;}
+  if(from>to){toast('Das Von-Datum muss vor dem Bis-Datum liegen.','error');return;}
+  const{error}=await sb.from('blocked_dates').insert([{store_id:salonId,start_date:from,end_date:to,reason:reason||null}]);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  toast('Sperrzeit eingetragen \u2713','success');
+  await renderVacationList(salonId);
+}
+
+async function deleteVacationBlock(blockId,salonId){
+  if(!confirm('Sperrzeit l\u00f6schen?'))return;
+  const{error}=await sb.from('blocked_dates').delete().eq('id',blockId);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  toast('Gel\u00f6scht','success');
+  await renderVacationList(salonId);
+}
+
 
 async function loadStaffPickerInBooking(storeId){
   _selStaffId=null;_selStaffName=null;
