@@ -1166,6 +1166,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
             <a href="#" onclick="showPage('profile');return false" data-i18n="nav_my_profile" role="menuitem">Mein Profil</a>
             <a href="#" onclick="openProfileModal();return false" data-i18n="nav_edit_profile" role="menuitem">Profil bearbeiten</a>
             <a href="#" onclick="showPage('bookings');return false" data-i18n="nav_my_bookings" role="menuitem">Meine Buchungen</a>
+            <a href="#" onclick="openMessagesTab();return false" data-i18n="bn_messages" role="menuitem">Nachrichten</a>
             <div id="salonDashLink" class="hidden">
               <a href="#" onclick="showPage('salon-dashboard');return false" data-i18n="nav_salon_dash" role="menuitem">Mein Salon</a>
             </div>
@@ -1686,6 +1687,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
     <button class="bottom-nav-item bn-logged-in hidden" onclick="showPage('bookings')" id="bnBookings">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span data-i18n="bn_bookings">Buchungen</span>
+    </button>
+    <button class="bottom-nav-item bn-logged-in hidden" onclick="openMessagesTab()" id="bnMessages">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span data-i18n="bn_messages">Nachrichten</span>
+      <span class="bn-messages-badge" id="bnMessagesBadge"></span>
     </button>
     <button class="bottom-nav-item bn-owner hidden" onclick="showPage('salon-dashboard')" id="bnDashboard">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -2503,6 +2509,7 @@ async function onSignIn(user){
   const scrollY=window.scrollY;
   closeAuth();
   await loadProfile();
+  updateBottomNav();
   const displayName=currentProfile?.full_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'';
   // Welcome toast — show immediately so user knows login worked
   if(!sessionStorage.getItem('solenWelcomed')){sessionStorage.setItem('solenWelcomed','1');toast(t('toast_welcome')+', '+displayName+'!','success');}
@@ -2544,6 +2551,7 @@ function onSignOut(){
   // Clear personalized localStorage
   try{localStorage.removeItem('solenViewed');localStorage.removeItem('lastViewedStore');}catch(e){}
   toast(t('toast_signedout'),'info');
+  updateBottomNav();
   showPage('home');loadStores();
 }
 
