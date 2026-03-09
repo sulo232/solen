@@ -15,7 +15,7 @@
   --bg:#FAFAFA;--bg2:#FFFFFF;--surface:#FFFFFF;--surfaceAlt:#F5F5F5;
   --text:#0D0D0D;--text2:#6B7280;--muted:#6B7280;--textMuted:#6B7280;--light:#9ca3af;
   --accent:#4ECDC4;--accent2:#FF6B6B;--accent-dark:#3DBDB5;--accentFg:#FFFFFF;
-  --accent-lemon:#FFE66D;
+  --accent-lemon:#FFE66D;--accent-secondary:#A78BFA;
   --border:#E5E7EB;--border2:#D1D5DB;
   --success:#2d7a4f;--error:#c0392b;--warning:#d97706;
   --r:16px;--r2:24px;--radius:16px;
@@ -136,8 +136,10 @@ input,select,textarea{font-family:inherit}
 .stores-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
 .stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:24px}
-.store-card{background:var(--surface);border-radius:var(--r2);overflow:hidden;border:none;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;box-shadow:var(--shadow)}
+.store-card{background:var(--surface);border-radius:var(--r2);overflow:hidden;border:none;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);position:relative;box-shadow:0 1px 2px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.06),0 16px 32px rgba(0,0,0,0.04)}
 .store-card:hover{transform:translateY(-6px);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
+.store-card:nth-child(odd):hover{transform:translateY(-4px) rotate(0.4deg);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
+.store-card:nth-child(even):hover{transform:translateY(-4px) rotate(-0.4deg);box-shadow:0 2px 4px rgba(0,0,0,.06),0 8px 20px rgba(0,0,0,.06),0 20px 40px rgba(0,0,0,.06);}
 .store-card-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,rgba(78,205,196,.15),#1a1a1a 60%);display:flex;align-items:center;justify-content:center;position:relative}
 .store-card-img .category-icon{font-size:3rem;opacity:.4}
 .store-card-body{padding:20px}
@@ -192,7 +194,8 @@ input,select,textarea{font-family:inherit}
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:var(--text2)}
 .form-input{width:100%;padding:11px 14px;border:1.5px solid var(--border2);border-radius:var(--r);font-size:.95rem;background:var(--bg);color:var(--text);outline:none;transition:.15s}
-.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(78,205,196,.15)}
+.form-input:focus{border-color:rgba(255,107,107,0.5)!important;box-shadow:0 0 0 3px rgba(255,107,107,0.1)!important;outline:none}
+input:focus,textarea:focus{border-color:rgba(255,107,107,0.5)!important;box-shadow:0 0 0 3px rgba(255,107,107,0.1)!important;outline:none}
 .form-input::placeholder{color:var(--muted)}
 select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:40px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -660,7 +663,7 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 
 /* === UI POLISH === */
 body{line-height:1.6;}
-body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 #scrollProgress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .1s linear;pointer-events:none;}
 .store-card,.card,.booking-card{opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease,box-shadow .25s ease!important;}
 .store-card.revealed,.card.revealed,.booking-card.revealed{opacity:1;transform:translateY(0);}
@@ -776,7 +779,7 @@ async function submitSalonProfile(e){
       <div class="hero-search">
         <div class="search-field">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="Service, Salon oder Kategorie..." oninput="debounceSearch()">
+          <input type="text" id="searchInput" data-i18n-ph="search_placeholder" placeholder="z.B. Balayage, Maniküre, Massage..." oninput="debounceSearch()">
         <button class="btn-location" onclick="requestGeolocation()" title="Mein Standort" data-i18n="use_location">&#128205; Standort</button>
         <button class="search-btn" onclick="applyFilters()" data-i18n="search_btn">Suchen</button>
       </div>
@@ -1346,7 +1349,7 @@ const T={
     nav_salon_dash:'Salon Dashboard',nav_admin:'Admin Panel',
     hero_badge:'Basel \u00b7 Schweiz',hero_title:'Beauty &amp; Wellness<br><span class="hero-highlight">in Basel</span>',
     hero_sub:'Dein Salon. Dein Termin. In Sekunden gebucht.',
-    search_placeholder:'Service, Salon oder Kategorie...',search_btn:'Suchen',
+    search_placeholder:'z.B. Balayage, Maniküre, Massage...',search_btn:'Suchen',
     stat_salons:'Salons',stat_services:'Services',stat_location:'Standort',
     cat_all:'Alle',stores_title:'Salons in Basel',
     profile_title:'Mein Profil',profile_sub:'Verwalte deine pers\u00f6nlichen Daten und Pr\u00e4ferenzen',
@@ -1385,7 +1388,7 @@ const T={
     back_to_login:'Zur\u00fcck zur Anmeldung',reset_email_sent:'Reset-Link gesendet! Pr\u00fcfe dein Postfach.',
     book_now:'Jetzt buchen',select_service:'Service w\u00e4hlen',select_date:'Datum w\u00e4hlen',select_time:'Uhrzeit w\u00e4hlen',
     guest_info:'Gastinformationen',booking_confirmed:'Buchung best\u00e4tigt!',write_review:'Bewertung schreiben',
-    rating_filter:'Min. Bewertung',no_results:'Keine Salons gefunden',reset_filters:'Filter zur\u00fccksetzen',
+    rating_filter:'Min. Bewertung',no_results:'Hmm, nichts gefunden \uD83E\uDD14',reset_filters:'Filter zurücksetzen',
     use_location:'Standort',neighbourhood:'Quartier',neighbourhood_all:'Alle Quartiere',
     impressum:'Impressum',privacy:'Datenschutz',nearest_slot_tomorrow:'N\u00e4chster: Morgen',
     add_to_calendar:'Zu Google Kalender hinzuf\u00fcgen',sort_distance:'Entfernung',
@@ -2829,13 +2832,20 @@ function renderWizStep(step){
   }
   else if(step===4){
     const p=currentProfile;
-    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_your_details')}</h3>`;
-    html+=`<div class="form-row">
-      <div class="form-group"><label>${t('lbl_firstname')}</label><input class="form-input" id="bkFirst" value="${p?.display_name?.split(' ')[0]||''}" placeholder="Max"></div>
-      <div class="form-group"><label>${t('lbl_lastname')}</label><input class="form-input" id="bkLast" value="${p?.display_name?.split(' ').slice(1).join(' ')||''}" placeholder="Muster"></div>
- rows="2" placeholder="${t('note_placeholder')}">${p?.stylist_notes||''}</textarea></div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:12px 0 4px;cursor:pointer"><input type="checkbox" id="bkReminder" ${bookingState.wantsReminder===false?'':'checked'}> ${t('wiz_reminder_label')}</label>`;
+    const _saved=JSON.parse(localStorage.getItem('solen_guest_info')||'null');
+    const _fn=_saved?.name?.split(' ')[0]||p?.display_name?.split(' ')[0]||'';
+    const _ln=_saved?.name?.split(' ').slice(1).join(' ')||p?.display_name?.split(' ').slice(1).join(' ')||'';
+    const _ph=_saved?.phone||'';
+    html=`<h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">${t('wiz_your_details')}</h3>
+    <div class="form-row">
+      <div class="form-group"><label>${t('lbl_firstname')}</label><input class="form-input" id="bkFirst" value="${_fn}" placeholder="Max"></div>
+      <div class="form-group"><label>${t('lbl_lastname')}</label><input class="form-input" id="bkLast" value="${_ln}" placeholder="Muster"></div>
+    </div>
+    <div class="form-group"><label>${t('lbl_phone')}</label><input class="form-input" id="bkPhone" type="tel" value="${_ph}" placeholder="+41 79 123 45 67"></div>
     <div class="form-group"><label>${t('lbl_note')}</label><textarea class="form-input" id="bkNote" rows="2" placeholder="${t('note_placeholder')}">${p?.stylist_notes||''}</textarea></div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:12px 0 4px;cursor:pointer"><input type="checkbox" id="bkReminder" ${bookingState.wantsReminder===false?'':'checked'}> ${t('wiz_reminder_label')}</label>
+    <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin:6px 0 4px;cursor:pointer"><input type="checkbox" id="bkSaveInfo" checked> Meine Daten speichern</label>
+    <div id="bkSavedHint" style="display:none;color:#15803d;font-size:.82rem;font-weight:600;margin:4px 0">&#10003; Gespeichert</div>`;
     html+=`<div class="wiz-btns"><button class="btn-secondary" onclick="wizNext(3)">${t('btn_back')}</button><button class="btn-primary" onclick="wizNext(5)">${t('btn_next')}</button></div>`;
   }
   else if(step===5){
@@ -2922,6 +2932,12 @@ function wizNext(step){
     bookingState.note=document.getElementById('bkNote')?.value||'';
     const reminderEl=document.getElementById('bkReminder');
     if(reminderEl)bookingState.wantsReminder=reminderEl.checked;
+    const saveEl=document.getElementById('bkSaveInfo');
+    if(saveEl&&saveEl.checked&&(bookingState.firstName||bookingState.phone)){
+      localStorage.setItem('solen_guest_info',JSON.stringify({name:[bookingState.firstName,bookingState.lastName].filter(Boolean).join(' '),phone:bookingState.phone}));
+      const hint=document.getElementById('bkSavedHint');
+      if(hint){hint.style.display='block';setTimeout(()=>{hint.style.display='none';},2000);}
+    }
   }
   renderWizStep(step);
 }
@@ -3917,7 +3933,7 @@ function renderBookingModal(){
     html+=`<div style="background:var(--surfaceAlt);border:1.5px solid var(--border2);border-radius:var(--r);padding:16px;margin-top:4px;text-align:center">`;
     html+=`<p style="font-weight:700;margin-bottom:6px;color:var(--text)">Dieser Termin ist leider vergeben.</p>`;
     html+=`<p style="font-size:.9rem;color:var(--text-muted);margin-bottom:14px">Auf die Warteliste setzen?</p>`;
-    html+=`<button class="btn-primary" onclick="joinWaitingList()" style="min-height:44px;background:var(--accent-secondary,#f97316)">Auf Warteliste setzen</button>`;
+    html+=`<button class="btn-primary" onclick="joinWaitingList()" style="min-height:44px;background:var(--accent-secondary)">Auf Warteliste setzen</button>`;
     html+=`</div>`;
   } else {
     html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
