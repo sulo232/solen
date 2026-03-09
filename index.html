@@ -2969,6 +2969,7 @@ async function confirmBooking(){
     staff_name:_selStaffName||null,
     is_first_visit:bookingState.isFirstVisit!==false
     ,recurrence_group_id:recurGroupId
+    });
       <button class="btn-primary" style="margin-top:16px" onclick="closeBooking()">${t('btn_close')}</button>
       ${wantsReminder?`<p style="font-size:.85rem;color:var(--muted);margin-top:8px">${t('wiz_reminder_text')}</p>`:''}
       <h3 style="color:var(--success)">${t('booking_confirmed_title')}</h3>
