@@ -3668,7 +3668,7 @@ async function renderSalonDashboard(){
         <div id="dashTabBuchungen">
         </div>
           <div class="admin-tabs" id="dashTabs">
-            <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(78,205,196,.15);color:#4ECDC4;border:1px solid rgba(78,205,196,.3)">Erstbesuch</span>':''}</div>
+            <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
             <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
           <div id="dashTabBuchungen">
           </div>
