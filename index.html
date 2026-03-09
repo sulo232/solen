@@ -2450,7 +2450,7 @@ function renderStoreCard(s){
         <span class="status-${status.open?'open':'closed'}" style="font-size:.7rem">${status.open?'&#9679;':'&#9679;'} ${status.text}</span>
       </div>
       <span class="store-cat-badge">${catName}</span>
-      ${hasChildren?'<span class="filialen-badge">🏠 Filialen</span>':''} ${isEmpfohlen(s)?'<span class="empfohlen-badge">'&#11088; Empfohlen</span>':s.is_verified?'<span class="verified-badge">&#10003; Verifiziert</span>':''}
+      ${hasChildren?'<span class="filialen-badge">🏠 Filialen</span>':''} ${isEmpfohlen(s)?'<span class="empfohlen-badge">&#11088; Empfohlen</span>':s.is_verified?'<span class="verified-badge">&#10003; Verifiziert</span>':''}
       ${visited?'<span class="visited-badge">Bereits besucht</span>':''}
       ${dist!==null?`<span class="distance-badge">${dist.toFixed(1)} km</span>`:''}
     </div>
