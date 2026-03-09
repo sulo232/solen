@@ -2964,45 +2964,6 @@ function getSalonPhoto(store){
 
 function getPriceRange(s){const c=(s.cat||'').toLowerCase();if(c.includes('barbershop'))return 'ab CHF 25';if(c.includes('friseursalon')||c.includes('coiffeur'))return 'ab CHF 45';if(c.includes('nagelstudio')||c.includes('nail'))return 'ab CHF 35';if(c.includes('make-up')||c.includes('kosmetik'))return 'ab CHF 80';if(c.includes('spa')||c.includes('wellness'))return 'ab CHF 60';if(c.includes('braids')||c.includes('afro'))return 'ab CHF 50';if(c.includes('augenbrauen')||c.includes('wimpern'))return 'ab CHF 30';return 'ab CHF 35';};
 
-// OPEN/CLOSED STATUS (BUG 4 — FIXED)
-function getOpenStatus(store){
-  const now=new Date();
-  const days=['So','Mo','Di','Mi','Do','Fr','Sa'];
-  const today=days[now.getDay()];
-  const currentHour=now.getHours()+now.getMinutes()/60;
-  const rawHours=store.hours;
-  let hoursStr='';
-  if(rawHours&&typeof rawHours==='object'){
-    // JSON object like {"Mo":"09:00-19:00","Di":"09:00-19:00",...}
-    // Try keys: full German day abbreviations and common variants
-    const keyVariants=[today,today.charAt(0).toUpperCase()+today.slice(1).toLowerCase(),
-      {'So':'Sun','Mo':'Mon','Di':'Tue','Mi':'Wed','Do':'Thu','Fr':'Fri','Sa':'Sat'}[today]];
-    for(const k of keyVariants){if(rawHours[k]){hoursStr=rawHours[k];break;}}
-    // Also try case-insensitive match on all keys
-    if(!hoursStr){
-      const todayLower=today.toLowerCase();
-      for(const k of Object.keys(rawHours)){
-        if(k.toLowerCase().startsWith(todayLower)){hoursStr=rawHours[k];break;}
-      }
-    }
-    if(!hoursStr){
-      // Today not found in hours object — store is closed today
-      const tomorrow=days[(now.getDay()+1)%7];
-      return{open:false,text:'Geschlossen',hours:JSON.stringify(rawHours)};
-    }
-  }else{
-    hoursStr=typeof rawHours==='string'?rawHours:'Mo-Sa 9:00-19:00';
-  }
-  const match=hoursStr.match(/(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})/);
-  if(!match)return{open:false,text:'Geschlossen',hours:hoursStr};
-  const openH=parseInt(match[1])+parseInt(match[2])/60;
-  const closeH=parseInt(match[3])+parseInt(match[4])/60;
-  const isSunday=now.getDay()===0&&typeof hoursStr==='string'&&!hoursStr.toLowerCase().includes('so');
-  if(isSunday)return{open:false,text:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hoursStr};
-  const isOpen=currentHour>=openH&&currentHour<closeH;
-  return{open:isOpen,text:isOpen?`Offen · schliesst ${match[3]}:${match[4]}`:`Geschlossen · öffnet ${match[1]}:${match[2]}`,hours:hoursStr};
-}
-
 function renderStars(rating){
   const r=Math.round((rating||0)*2)/2;
   let html='';
@@ -6859,15 +6820,7 @@ document.addEventListener('click',function(e){
 
 // ── MESSAGING UI UPGRADE (legacy helpers removed — now in DM system) ──
 
-// ── ENHANCED STORE DETAIL: Show categories, social icons, gallery ──
-const _origOpenStore=typeof openStore==='function'?openStore:null;
-if(_origOpenStore){
-  const _origFunc=_origOpenStore;
-  // We won't override openStore entirely, but enhance store detail rendering
-  // by adding category chips and social links display to store detail content
-}
-
-// ── Wire up "Salon einrichten" button to new onboarding wizard ──
+/// ── Wire up "Salon einrichten" button to new onboarding wizard ──
 // Add analytics dashboard button to salon dashboard
 (function wireUpButtons(){
   // Override openSalonReg to open new onboarding wizard instead
@@ -6884,7 +6837,7 @@ if(_origOpenStore){
       m.addedNodes.forEach(function(node){
         if(node.nodeType!==1)return;
         // If salon dashboard is rendered, add analytics button
-        const dashHd=node.querySelector?.('.dash-section-hd');
+        const dashHd=node.querySelector('.dash-section-hd');
         if(dashHd&&!dashHd.querySelector('.analytics-btn')){
           const btn=document.createElement('button');
           btn.className='btn-secondary btn-sm analytics-btn';
@@ -6898,9 +6851,6 @@ if(_origOpenStore){
   observer.observe(document.body,{childList:true,subtree:true});
 })();
 
-// ── CATEGORY CHIPS ON STORE CARDS ──
-// Enhance store card rendering to show category chips
-const _origRenderStoreCard=typeof renderStoreCard==='function'?renderStoreCard:null;
 </script>
 
 <!-- duplicate bottom nav removed -->
