@@ -1534,6 +1534,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <div id="mobileNavUser" class="hidden">
         <a href="#" class="btn-nav-ghost" onclick="showPage('profile');closeMobileMenu();return false" data-i18n="nav_my_profile" style="display:block;text-align:center;margin-bottom:8px">Mein Profil</a>
         <a href="#" class="btn-nav-ghost" onclick="showPage('bookings');closeMobileMenu();return false" data-i18n="nav_my_bookings" style="display:block;text-align:center;margin-bottom:8px">Meine Buchungen</a>
+        <a href="#" id="mobileAdminLink" class="btn-nav-ghost hidden" onclick="showPage('admin');closeMobileMenu();return false" data-i18n="nav_admin" style="display:block;text-align:center;margin-bottom:8px">Verwaltung</a>
         <button class="btn-nav-ghost" onclick="signOut();closeMobileMenu()" data-i18n="nav_logout" style="width:100%">Abmelden</button>
       </div>
       <button id="mobileNavSalonBtn" class="hidden" style="display:block;width:100%;text-align:center;background:none;color:var(--accent-lemon);border:1.5px solid var(--accent-lemon);padding:11px;border-radius:100px;font-weight:700;font-size:.88rem;cursor:pointer;margin-top:8px;min-height:44px" onclick="closeMobileMenu();openSalonRegistration()">Deinen Salon eintragen</button>
@@ -3301,13 +3302,13 @@ async function onSignIn(user){
   const initials=nameParts.length>=2?(nameParts[0][0]+nameParts[1][0]).toUpperCase():fullName.substring(0,1).toUpperCase();
   document.getElementById('navAvatar').textContent=initials;
   // Admin check - email match OR metadata role
-  const isAdmin=user.email===ADMIN_EMAIL||user.user_metadata?.role==='admin'||user.app_metadata?.role==='admin';
+  const isAdmin=user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()||user.user_metadata?.role==='admin'||user.app_metadata?.role==='admin';
   console.log('[Solen Auth] Admin check:', {email:user.email, isAdmin, metadata:user.user_metadata, appMeta:user.app_metadata});
   if(isAdmin){
     window._isAdmin=true;
     document.getElementById('adminLink').classList.remove('hidden');
-    const bnAdmin=document.getElementById('bnAdmin');
-    if(bnAdmin)bnAdmin.classList.remove('hidden');
+    const mAdminLink=document.getElementById('mobileAdminLink');
+    if(mAdminLink)mAdminLink.classList.remove('hidden');
     // Upsert profile with is_admin=true
     sb.from('profiles').upsert({id:user.id,is_admin:true,updated_at:new Date().toISOString()},{onConflict:'id'});
   }
@@ -3350,8 +3351,8 @@ function onSignOut(){
   const dSalon=document.getElementById('navSalonBtn');if(dSalon)dSalon.classList.add('hidden');
   document.getElementById('adminLink').classList.add('hidden');
   document.getElementById('salonDashLink').classList.add('hidden');
-  const bnAdmin=document.getElementById('bnAdmin');
-  if(bnAdmin)bnAdmin.classList.add('hidden');
+  const mAdminLink=document.getElementById('mobileAdminLink');
+  if(mAdminLink)mAdminLink.classList.add('hidden');
   // bnMessages stays visible — openMessagesTab() handles auth check
   // Clear personalized localStorage
   try{localStorage.removeItem('solenViewed');localStorage.removeItem('lastViewedStore');}catch(e){}
