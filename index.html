@@ -3426,7 +3426,7 @@ function openChat(bookingId, role, title) {
     const qr = document.getElementById('chatQuickReplies');
     if (qr) {
       const templates = ['Bestätigt ✓','Bitte Uhrzeit bestätigen','Termin verschoben','Kein Problem!','Wir freuen uns auf Sie'];
-      qr.innerHTML = templates.map(t => '<button class="chat-qr-btn" data-t="' + t + '" onclick="setQuickReply(this.getAttribute('data-t'))">' + t + '</button>').join('');
+      qr.innerHTML = templates.map(t => '<button class="chat-qr-btn" data-t="' + t + '" onclick="setQuickReply(this.getAttribute(\'data-t\'))">' + t + '</button>').join('');
       qr.style.display = 'flex';
     }
   } else {
@@ -3489,7 +3489,7 @@ function renderChatMsg(m) {
   const tick = isSent ? '<span class="chat-read-tick">' + (m.is_read ? '✓✓' : '✓') + '</span>' : '';
   let bodyHtml = '';
   if (m.message_type === 'image' && m.media_url) {
-    bodyHtml = '<img src="' + escapeHtmlChat(m.media_url) + '" class="chat-img-msg" onclick="window.open(this.src,'_blank')" alt="Bild">';
+    bodyHtml = '<img src="' + escapeHtmlChat(m.media_url) + '" class="chat-img-msg" onclick="window.open(this.src,\'_blank\')" alt="Bild">';
   } else if (m.message_type === 'offer') {
     let offer = {};
     try { offer = JSON.parse(m.body || '{}'); } catch(e) { offer = { name: m.body }; }
