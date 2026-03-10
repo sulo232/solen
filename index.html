@@ -1014,6 +1014,50 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-cal-link{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:1.5px solid var(--border2);border-radius:var(--r);font-size:.88rem;font-weight:600;color:var(--text);text-decoration:none;transition:.15s;min-height:44px}
 .bm-cal-link:hover{border-color:var(--accent);color:var(--accent)}
 
+/* ── NEW BOOKING PAGE (bp-) ──────────────────────────────────────────────── */
+.bp-page{padding:0!important;max-width:100%!important;background:var(--c-bg)}
+.bp-hero{position:relative;min-height:140px;background:var(--c-surface-alt);overflow:hidden;display:flex;align-items:flex-end}
+.bp-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center top;transition:opacity .4s var(--ease)}
+.bp-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,.72) 100%)}
+.bp-hero-content{position:relative;z-index:1;padding:16px 20px;display:flex;align-items:center;gap:12px;width:100%}
+.bp-back-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:.2s var(--ease);min-height:unset}
+.bp-back-btn:hover{background:rgba(255,255,255,.28);transform:scale(1.06)}
+.bp-salon-name{font-size:1.25rem;font-weight:800;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5);line-height:1.2}
+.bp-salon-addr{font-size:.78rem;color:rgba(255,255,255,.76);margin-top:3px}
+/* Progress bar */
+.bp-progress{padding:20px 20px 0;max-width:600px;margin:0 auto}
+.bp-progress-inner{display:flex;align-items:flex-start}
+.bp-step-ind{display:flex;flex-direction:column;align-items:center;gap:5px;flex:0 0 auto;min-width:72px}
+.bp-step-circle{width:34px;height:34px;border-radius:50%;border:2px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:var(--c-text-muted);transition:all .35s var(--ease);background:var(--c-surface)}
+.bp-step-label{font-size:.65rem;font-weight:600;color:var(--c-text-muted);text-align:center;line-height:1.3;max-width:72px;transition:color .3s var(--ease)}
+.bp-step-ind.active .bp-step-circle{border-color:#E8850A;color:#E8850A;background:var(--c-surface);box-shadow:0 0 0 5px rgba(232,133,10,.12),0 0 16px rgba(232,133,10,.22)}
+.bp-step-ind.active .bp-step-label{color:var(--c-text);font-weight:700}
+.bp-step-ind.done .bp-step-circle{border-color:var(--c-success);background:var(--c-success);color:#fff;box-shadow:none}
+.bp-step-ind.done .bp-step-label{color:var(--c-success)}
+.bp-step-connector{flex:1;height:2px;background:var(--c-border);margin-top:16px;transition:background .4s var(--ease)}
+.bp-step-connector.done{background:var(--c-success)}
+/* Step body */
+.bp-body{max-width:600px;margin:0 auto;padding:24px 20px 80px}
+.bp-step-title{font-size:1.08rem;font-weight:800;margin-bottom:18px;color:var(--c-text);letter-spacing:-.01em}
+/* Summary card */
+.bp-summary-card{background:var(--c-surface-alt);border-radius:var(--r2);padding:16px;margin-bottom:20px;border:1px solid var(--c-border)}
+.bp-summary-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--c-border);font-size:.88rem;gap:12px}
+.bp-summary-row:last-child{border-bottom:none}
+.bp-summary-row span:first-child{color:var(--c-text-secondary);white-space:nowrap;flex-shrink:0}
+.bp-summary-row strong{color:var(--c-text);text-align:right}
+/* Slots loading */
+.bp-slots-loading{display:flex;align-items:center;gap:12px;padding:20px 0;color:var(--c-text-muted);font-size:.88rem}
+/* Conflict box */
+.bp-conflict-box{background:var(--c-surface-alt);border:1.5px solid var(--c-border-strong);border-radius:var(--r2);padding:20px;text-align:center;margin-top:4px}
+/* Service duration chip */
+.svc-duration{font-size:.75rem;color:var(--c-text-muted);margin-bottom:4px}
+/* Staff picker inside step */
+#staffPickerTarget .sp-section{margin-top:4px;padding-top:0;border-top:none!important}
+/* Date input styling */
+.bp-date-input{font-size:1rem;padding:12px 14px;border-radius:var(--r2)!important}
+@media(max-width:640px){.bp-hero{min-height:120px}.bp-salon-name{font-size:1.1rem}.bp-step-ind{min-width:60px}.bp-step-label{font-size:.6rem}}
+@media(min-width:768px){.bp-body,.bp-progress{max-width:640px}.bp-hero{min-height:190px}}
+
 /* REVIEWS */
 .reviews-section{margin-top:24px;border-top:1px solid var(--border);padding-top:20px}
 .review-item{padding:14px 0;border-bottom:1px solid var(--border)}
@@ -3017,10 +3061,44 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 <!-- BOOKING PAGE -->
-<div id="pageBook" class="page">
-  <button class="btn-sm" onclick="history.back()" style="margin-bottom:16px">← Zurück</button>
-  <h2 id="bookPageTitle" class="page-title">Termin buchen</h2>
-  <div id="bookPageBody"></div>
+<div id="pageBook" class="page bp-page">
+  <!-- Salon hero image strip -->
+  <div class="bp-hero" id="bpHero">
+    <div class="bp-hero-bg" id="bpHeroBg"></div>
+    <div class="bp-hero-overlay"></div>
+    <div class="bp-hero-content">
+      <button class="bp-back-btn" id="bpBackBtn" onclick="bpGoBack()" style="display:none" aria-label="Zurück">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div>
+        <div class="bp-salon-name" id="bpSalonName">Termin buchen</div>
+        <div class="bp-salon-addr" id="bpSalonAddr"></div>
+      </div>
+    </div>
+  </div>
+  <!-- 3-step progress bar -->
+  <div class="bp-progress" id="bpProgress">
+    <div class="bp-progress-inner">
+      <div class="bp-step-ind active" data-step="1">
+        <div class="bp-step-circle" id="bpCircle1">1</div>
+        <div class="bp-step-label">Service &amp; Details</div>
+      </div>
+      <div class="bp-step-connector" id="bpConn1"></div>
+      <div class="bp-step-ind" data-step="2">
+        <div class="bp-step-circle" id="bpCircle2">2</div>
+        <div class="bp-step-label">Termin</div>
+      </div>
+      <div class="bp-step-connector" id="bpConn2"></div>
+      <div class="bp-step-ind" data-step="3">
+        <div class="bp-step-circle" id="bpCircle3">3</div>
+        <div class="bp-step-label">Best&auml;tigen</div>
+      </div>
+    </div>
+  </div>
+  <!-- Step content -->
+  <div class="bp-body">
+    <div id="bookPageBody"></div>
+  </div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -6544,33 +6622,215 @@ async function renderStaffPage(){
 }
 
 // BOOKING PAGE
+let _bpCurrentStep=1;
+let _bpSlotLoading=false;
+
 async function renderBookPage(salonId){
-  const titleEl=document.getElementById('bookPageTitle');
   const bodyEl=document.getElementById('bookPageBody');
   if(!bodyEl)return;
   // Auth gate
   if(!currentUser){
     try{const{data:{session}}=await sb.auth.getSession();if(session?.user){currentUser=session.user;await loadProfile();}}catch(e){}
   }
-  if(!currentUser){
-    pendingBookingStoreId=salonId;
-    openAuth('login');
-    return;
-  }
+  if(!currentUser){pendingBookingStoreId=salonId;openAuth('login');return;}
   const store=allStores.find(x=>String(x.id)===String(salonId));
   if(!store){bodyEl.innerHTML='<p class="text-muted">Salon nicht gefunden.</p>';return;}
+
+  // Setup hero
+  const heroName=document.getElementById('bpSalonName');
+  const heroAddr=document.getElementById('bpSalonAddr');
+  const heroBg=document.getElementById('bpHeroBg');
+  if(heroName)heroName.textContent=store.name;
+  if(heroAddr)heroAddr.textContent=store.address||'';
+  if(heroBg){const ph=store.photo_url||store.cover_url||'';heroBg.style.backgroundImage=ph?`url(${ph})`:'';heroBg.style.opacity=ph?'1':'0';}
+
+  // Init booking state — merged fields from both branches
   const _now=new Date();
-  bmState={store,service:null,date:'',time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null};
+  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null};
   _pendingBookPreselectedTime=null;
+  _bpCurrentStep=1;
+  _bpSlotLoading=false;
   const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');
   if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
   if(currentUser){bmState.guestEmail=currentUser.email||'';bmState.guestName=currentProfile?.display_name||currentUser.user_metadata?.full_name||'';}
-  bmState.date=new Date().toISOString().split('T')[0];
-  if(titleEl)titleEl.textContent=store.name;
+
+  bpUpdateProgress(1);
   solenTrack('booking_flow_start',{salon_id:store.id,salon_name:store.name});
   await loadBranchesForBooking();
-  renderBookingModal();
-  if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
+  if(bmState.branches&&!bmState.selectedBranch){
+    renderBookingModal(); // branch picker uses old renderer
+  } else {
+    bpGoStep(1,true);
+  }
+}
+
+// ── BOOK PAGE: step navigation ──────────────────────────────────────────────
+
+function bpUpdateProgress(step){
+  document.querySelectorAll('.bp-step-ind').forEach(el=>{
+    const n=+el.dataset.step;
+    el.classList.toggle('active',n===step);
+    el.classList.toggle('done',n<step);
+    const circle=el.querySelector('.bp-step-circle');
+    if(circle){
+      if(n<step){circle.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';}
+      else{circle.textContent=n;}
+    }
+  });
+  const conn1=document.getElementById('bpConn1');
+  const conn2=document.getElementById('bpConn2');
+  if(conn1)conn1.classList.toggle('done',step>1);
+  if(conn2)conn2.classList.toggle('done',step>2);
+  const backBtn=document.getElementById('bpBackBtn');
+  if(backBtn)backBtn.style.display=step>1?'flex':'none';
+}
+
+function bpGoBack(){
+  if(_bpCurrentStep>1)bpGoStep(_bpCurrentStep-1,false);
+  else history.back();
+}
+
+function bpGoStep(step,forward){
+  const isForward=forward!==false&&(step>_bpCurrentStep||forward===true);
+  const content=document.getElementById('bookPageBody');
+  const doAnim=content&&_bpCurrentStep!==step;
+
+  if(doAnim){
+    content.style.transition='opacity .18s var(--ease),transform .18s var(--ease)';
+    content.style.opacity='0';
+    content.style.transform=isForward?'translateX(-18px)':'translateX(18px)';
+  }
+
+  setTimeout(()=>{
+    _bpCurrentStep=step;
+    bpUpdateProgress(step);
+    renderBPStep(step);
+    if(content){
+      content.style.transition='none';
+      content.style.opacity='0';
+      content.style.transform=isForward?'translateX(20px)':'translateX(-20px)';
+      requestAnimationFrame(()=>{
+        content.style.transition='opacity .28s var(--ease-standard),transform .28s var(--ease-emphasized)';
+        content.style.opacity='1';
+        content.style.transform='translateX(0)';
+      });
+    }
+    const progressEl=document.getElementById('bpProgress');
+    if(progressEl)window.scrollTo({top:Math.max(0,progressEl.offsetTop-8),behavior:'smooth'});
+  },doAnim?185:0);
+}
+
+function bpValidateStep2(){
+  if(!bmState.time){toast('Bitte eine Uhrzeit wählen.','error');return;}
+  bpGoStep(3);
+}
+
+// ── BOOK PAGE: step renderers ───────────────────────────────────────────────
+
+function renderBPStep(step){
+  const s=bmState.store||{};
+  const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
+  const content=document.getElementById('bookPageBody');
+  if(!content)return;
+
+  if(step===1){
+    let html=`<h3 class="bp-step-title">Service wählen</h3>`;
+    if(svcs.length){
+      html+=`<div class="bm-service-grid">`+svcs.map(sv=>`
+        <div class="bm-svc-card${bmState.service?.id===sv.id?' selected':''}"
+             onclick="bmSelectService('${sv.id}')"
+             role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter'||event.key===' ')bmSelectService('${sv.id}')"
+             aria-label="${sv.name.replace(/"/g,'')}, CHF ${sv.price}">
+          <div class="svc-name">${sv.name}</div>
+          ${sv.duration?`<div class="svc-duration">${sv.duration} Min.</div>`:''}
+          <div class="svc-price">CHF ${sv.price}</div>
+        </div>`).join('')+`</div>`;
+    } else {
+      html+=`<div class="form-row" style="margin-bottom:20px">
+        <div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div>
+        <div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div>
+      </div>
+      <button class="btn-primary" onclick="bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';if(bmState.customSvc)bpGoStep(2);">Weiter →</button>`;
+    }
+    // Stylist picker — same structure as main expects
+    const _egalSel=!bmState.staffId;
+    html+=`<div class="stylist-picker-section">
+      <h4 class="stylist-picker-title">Wer schneidet? <span style="font-size:.74rem;font-weight:400;color:var(--text2);margin-left:5px">optional</span></h4>
+      <p class="stylist-picker-sub">Wähle deinen Wunsch-Stylisten – oder lass uns den Besten für dich auswählen.</p>
+      <div class="stylist-card-grid" id="stylistPickerCards">
+        <div class="stylist-card${_egalSel?' selected':''}" onclick="selectStylistCard(null,null,this)">
+          <div class="sc-photo"><div class="sc-photo-placeholder" style="background:linear-gradient(135deg,#9B1D30,#c4384d)">✂</div></div>
+          <div class="sc-body"><div class="sc-name">Egal</div><div class="sc-stars">★★★★★</div><div class="sc-count">Bester Verfügbarer</div></div>
+          <span class="sc-badge">Empfohlen</span>
+        </div>
+      </div>
+    </div>`;
+    content.innerHTML=html;
+    if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
+
+  } else if(step===2){
+    const today=new Date().toISOString().split('T')[0];
+    const maxDate=new Date(Date.now()+60*24*60*60*1000).toISOString().split('T')[0];
+    const slots=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+    let html=`<h3 class="bp-step-title">Datum &amp; Zeit</h3>`;
+    html+=`<div class="form-group" style="margin-bottom:22px">
+      <label style="font-size:.85rem;font-weight:700;margin-bottom:8px;display:block">Datum</label>
+      <input type="date" class="form-input bp-date-input" value="${bmState.date||today}" min="${today}" max="${maxDate}" onchange="bmState.date=this.value">
+    </div>`;
+    html+=`<div style="margin-bottom:24px">
+      <label style="font-size:.85rem;font-weight:700;margin-bottom:10px;display:block">Uhrzeit</label>`;
+    if(_bpSlotLoading){
+      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:20px;height:20px;border-width:2px;flex-shrink:0"></div><span>Verfügbarkeit wird geladen…</span></div>`;
+    } else {
+      html+=`<div class="bm-time-grid">`+slots.map(sl=>`<button class="bm-time-btn${bmState.time===sl?' selected':''}" onclick="bmState.time='${sl}';document.querySelectorAll('.bm-time-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected')">${sl}</button>`).join('')+`</div>`;
+    }
+    html+=`</div>`;
+    html+=`<button class="btn-primary" style="min-height:48px" onclick="bpValidateStep2()">Weiter →</button>`;
+    content.innerHTML=html;
+
+  } else if(step===3){
+    const svc=bmState.service;
+    let html=`<h3 class="bp-step-title">Buchung bestätigen</h3>`;
+    html+=`<div class="bp-summary-card">
+      <div class="bp-summary-row"><span>Salon</span><strong>${s.name}</strong></div>`;
+    if(svc){
+      html+=`<div class="bp-summary-row"><span>Service</span><strong>${svc.name}</strong></div>`;
+      html+=`<div class="bp-summary-row"><span>Preis</span><strong>CHF ${svc.price}</strong></div>`;
+      if(svc.duration)html+=`<div class="bp-summary-row"><span>Dauer</span><strong>${svc.duration} Min.</strong></div>`;
+    }
+    html+=`<div class="bp-summary-row"><span>Datum</span><strong>${bmState.date?formatDate(bmState.date):'-'}</strong></div>`;
+    html+=`<div class="bp-summary-row"><span>Uhrzeit</span><strong>${bmState.time||'-'}</strong></div>`;
+    html+=`<div class="bp-summary-row"><span>Adresse</span><strong>${s.address||'Basel'}</strong></div>`;
+    html+=`</div>`;
+    html+=`<div class="form-row">
+      <div class="form-group"><label>Name *</label><input class="form-input" id="bmGuestName" value="${bmState.guestName}" placeholder="Name" required></div>
+      <div class="form-group"><label>Telefon *</label><input class="form-input" id="bmGuestPhone" value="${bmState.guestPhone}" type="tel" placeholder="+41…" required></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail||''}" type="email" placeholder="E-Mail"></div>
+      <div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes||''}" placeholder="Besondere Wünsche"></div>
+    </div>`;
+    html+=`<div class="form-group" style="margin-bottom:14px">
+      <label style="font-size:.85rem;font-weight:700;margin-bottom:8px;display:block">Besuchstyp</label>
+      <div style="display:flex;gap:20px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.88rem"><input type="radio" name="bmVisitType" value="first" ${bmState.isFirstVisit!==false?'checked':''}> Erstbesuch</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:.88rem"><input type="radio" name="bmVisitType" value="returning" ${bmState.isFirstVisit===false?'checked':''}> Wiederbesuch</label>
+      </div>
+    </div>`;
+    html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin-bottom:8px;cursor:pointer"><input type="checkbox" id="bmReminder" ${bmState.wantsReminder===false?'':'checked'} onchange="bmState.wantsReminder=this.checked"> E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)</label>`;
+    html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--c-text-secondary);margin-bottom:20px;cursor:pointer"><input type="checkbox" id="bmSaveInfo"${bmState.saveInfo?' checked':''} onchange="bmState.saveInfo=this.checked"> Meine Daten speichern</label>`;
+    if(bmState.slotConflict){
+      html+=`<div class="bp-conflict-box">
+        <p style="font-weight:700;margin-bottom:6px;color:var(--c-text)">Dieser Termin ist leider vergeben.</p>
+        <p style="font-size:.88rem;color:var(--c-text-secondary);margin-bottom:14px">Auf die Warteliste setzen?</p>
+        <button class="btn-primary" onclick="joinWaitingList()" style="background:var(--accent-secondary)">Auf Warteliste setzen</button>
+      </div>`;
+    } else {
+      html+=`<button class="btn-primary" style="min-height:50px;font-size:1rem;letter-spacing:-.01em" onclick="insertBooking()">${t('book_now')||'Jetzt buchen'}</button>`;
+    }
+    content.innerHTML=html;
+  }
 }
 
 // PROFILE PAGE
@@ -7980,6 +8240,12 @@ function selectBranch(branchId){
 
 function _bmBody(){return document.getElementById('bookPageBody')||document.getElementById('bmBody');}
 function renderBookingModal(){
+  // On the new book page, delegate to step renderer (except confirmed + branch picker)
+  if(document.getElementById('bpProgress')&&!bmState.confirmed&&!(bmState.branches&&!bmState.selectedBranch)){
+    renderBPStep(_bpCurrentStep);
+    return;
+  }
+
   const s=bmState.store;
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
   const today=new Date().toISOString().split('T')[0];
@@ -8122,7 +8388,12 @@ function renderBookingModal(){
   _bmBody().innerHTML=html;
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
-function bmSelectService(id){bmState.service=allServices.find(s=>s.id===id);renderBookingModal();}
+function bmSelectService(id){
+  bmState.service=allServices.find(s=>s.id===id);
+  // On new book page: auto-advance to step 2 when service selected
+  if(document.getElementById('bpProgress')&&_bpCurrentStep===1){bpGoStep(2);}
+  else{renderBookingModal();}
+}
 function bmSelectTime(t){bmState.time=t;renderBookingModal();}
 
 // ── ENHANCED CALENDAR (Step 2) ──
