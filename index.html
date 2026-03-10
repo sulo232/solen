@@ -2184,6 +2184,44 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   <link rel="canonical" id="canonicalUrl" href="https://solen.ch/"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
+<script>
+/* AUTO-BUG-TRACKER: captures JS errors + unhandled rejections -> Supabase error_logs */
+(function(){
+  var _buf=[],_seen=new Set();
+  function _sbPost(d){
+    if(window.supabase){
+      window.supabase.from('error_logs').insert(d).catch(function(){});
+      return true;
+    }
+    return false;
+  }
+  function _capture(msg,src,line,col,stack){
+    var key=String(msg).substring(0,80)+':'+line+':'+col;
+    if(_seen.has(key))return;
+    _seen.add(key);
+    var d={
+      message:String(msg).substring(0,500),
+      source:String(src||'').substring(0,200),
+      line_no:line||0,col_no:col||0,
+      stack:String(stack||'').substring(0,2000),
+      url_path:location.pathname,
+      user_agent:navigator.userAgent.substring(0,300)
+    };
+    if(!_sbPost(d))_buf.push(d);
+  }
+  function _flush(){
+    var pending=_buf.splice(0);
+    pending.forEach(function(d){_sbPost(d);});
+  }
+  window.onerror=function(m,s,l,c,e){_capture(m,s,l,c,e&&e.stack);return false;};
+  window.addEventListener('unhandledrejection',function(e){
+    var r=e.reason;
+    _capture('Rejection:'+(r&&r.message||String(r).substring(0,100)),'promise',0,0,r&&r.stack);
+  });
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(_flush,3000);});
+  window._bugTrackerFlush=_flush;
+})();
+</script>
 <div id="scrollBar"></div>
 <script>
 (function(){
