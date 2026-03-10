@@ -89,8 +89,10 @@
 }}
 @media(prefers-reduced-motion:reduce){*{transition-duration:0.01ms!important;animation-duration:0.01ms!important}}
 html,body{overflow-x:hidden;max-width:100vw}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:var(--lh-body);display:flex;flex-direction:column}
-h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:var(--font-display);line-height:var(--lh-heading)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:var(--lh-body);display:flex;flex-direction:column;overflow-wrap:break-word;word-break:break-word;-webkit-hyphens:auto;hyphens:auto}
+@media(max-width:768px){body{padding-bottom:68px}}
+h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:var(--font-display);line-height:var(--lh-heading);hyphens:none}
+.nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title{hyphens:none;word-break:normal;overflow-wrap:normal}
 .store-price-range,.store-price,.price-label,.hero-stats .stat span,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:inherit}
@@ -1478,8 +1480,6 @@ body{font-family:var(--font-body,system-ui);}
   color-scheme:dark;
 }}
 /* Dark mode toggle button */
-.btn-dark-toggle{background:none;border:1px solid var(--c-border,#e2dcd5);border-radius:var(--r-pill,999px);padding:6px 10px;cursor:pointer;font-size:16px;color:var(--c-text,#1f1f1f);display:flex;align-items:center;gap:4px;transition:all .2s var(--ease);}
-.btn-dark-toggle:hover{background:var(--c-surface,#f5f5f5);}
 /* Verified salon badge */
 .badge-verified{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#4ECDC4,#26a69a);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill,999px);letter-spacing:.04em;}
 .badge-verified::before{content:"✓";}
@@ -1820,13 +1820,6 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 .partner-cta h2{font-size:1.6rem}
 .partner-cta p{font-size:1rem;line-height:1.7;max-width:520px;margin:0 auto 28px}
 
-/* ── FOOTER ENHANCED ── */
-.footer-enhanced{background:var(--c-surface);border-top:1px solid var(--c-border);padding:48px 24px 24px;margin-top:auto}
-.footer-inner-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-bottom:32px}
-.footer-col h4{font-family:var(--font-display);font-size:1rem;margin-bottom:14px;font-weight:400}
-.footer-col a{display:block;color:var(--c-text-secondary);font-size:.88rem;padding:4px 0;transition:color .15s}
-.footer-col a:hover{color:var(--c-accent)}
-.footer-bottom{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--c-border);font-size:.82rem;color:var(--c-text-muted)}
 
 /* ── IMAGE LIGHTBOX ── */
 .lightbox{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
@@ -1896,7 +1889,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-actions nav-desktop" id="navActions">
-      <a href="#" class="nav-link nav-link-subtle" onclick="openSalonRegistration();return false" id="navSalonBtn">Salon eintragen</a>
+      <a href="#" class="nav-link nav-link-subtle" onclick="openSalonRegistration();return false" id="navSalonBtn" data-i18n="nav_register_salon">Salon eintragen</a>
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" title="Hell / Dunkel">
         <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -1910,8 +1903,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
           <button class="lang-option" onclick="switchLang('en');toggleLangDropdown()">English</button>
           <button class="lang-option" onclick="switchLang('fr');toggleLangDropdown()">Fran&#231;ais</button>
           <button class="lang-option" onclick="switchLang('tr');toggleLangDropdown()">T&#252;rk&#231;e</button>
-        
-        <button class="btn-dark-toggle theme-toggle" id="darkModeToggle" onclick="toggleDarkMode()" aria-label="Dark mode umschalten" title="Dark / Light Mode">&#9790;</button></nav>
+        </nav>
       </div>
       <div id="navGuest" style="display:flex;gap:10px;align-items:center">
         <button class="btn-nav-ghost" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
@@ -2802,9 +2794,9 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     <!-- Brand column -->
     <div class="footer-brand">
       <div class="footer-brand-logo">solen<span>.</span></div>
-      <p class="footer-brand-desc">Lokale Beauty- und Wellness-Salons in Basel. Coiffeur, Nails, Spa und mehr online buchen.</p>
+      <p class="footer-brand-desc" data-i18n="footer_brand_desc">Lokale Beauty- und Wellness-Salons in Basel. Coiffeur, Nails, Spa und mehr online buchen.</p>
       <div class="footer-app-promo">
-        <span class="footer-app-label">App bald verfügbar</span>
+        <span class="footer-app-label" data-i18n="footer_app_soon">App bald verfügbar</span>
         <div class="footer-app-badges">
           <button class="footer-app-badge" onclick="showToast('App Store Version kommt bald!','info')">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
@@ -2820,7 +2812,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 
     <!-- Entdecken column -->
     <div class="footer-col">
-      <div class="footer-col-title">Entdecken</div>
+      <div class="footer-col-title" data-i18n="footer_discover">Entdecken</div>
       <div class="footer-col-links">
         <button class="footer-col-link" onclick="selectServiceFromMenu('hairsalon','Coiffeur')">Coiffeur in Basel</button>
         <button class="footer-col-link" onclick="selectServiceFromMenu('barber','Barbershop')">Barbershops</button>
@@ -2833,7 +2825,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 
     <!-- Quartiere column -->
     <div class="footer-col">
-      <div class="footer-col-title">Quartiere</div>
+      <div class="footer-col-title" data-i18n="footer_quartiere">Quartiere</div>
       <div class="footer-col-links">
         <button class="footer-col-link" onclick="selectQuartierAndScroll('Grossbasel')">Grossbasel</button>
         <button class="footer-col-link" onclick="selectQuartierAndScroll('Kleinbasel')">Kleinbasel</button>
@@ -2848,10 +2840,10 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     <div class="footer-col">
       <div class="footer-col-title">solen</div>
       <div class="footer-col-links">
-        <button class="footer-col-link" onclick="scrollToAbout()">Über uns</button>
-        <button class="footer-col-link" onclick="openSalonRegistration()">Salon eintragen</button>
-        <button class="footer-col-link" onclick="openAuth('login')">Anmelden</button>
-        <button class="footer-col-link" onclick="openAuth('register-choice')">Registrieren</button>
+        <button class="footer-col-link" onclick="scrollToAbout()" data-i18n="nav_about">Über uns</button>
+        <button class="footer-col-link" onclick="openSalonRegistration()" data-i18n="nav_register_salon">Salon eintragen</button>
+        <button class="footer-col-link" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
+        <button class="footer-col-link" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
         <button class="footer-col-link" onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</button>
         <button class="footer-col-link" onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</button>
       </div>
@@ -3047,12 +3039,13 @@ const T={
   de:{
     nav_login:'Anmelden',nav_register:'Registrieren',nav_logout:'Abmelden',nav_theme:'Hell / Dunkel',
     nav_my_profile:'Mein Profil',nav_edit_profile:'Profil bearbeiten',nav_my_bookings:'Meine Buchungen',
-    nav_salon_dash:'Mein Salon',nav_admin:'Verwaltung',
+    nav_salon_dash:'Mein Salon',nav_admin:'Verwaltung',nav_register_salon:'Salon eintragen',
     hero_badge:'Von Basel, f\u00fcr Basel',hero_title:'Beauty & Wellness<br><span class="hero-highlight">in Basel buchen</span>',
     hero_sub:'Finde Coiffeure, Kosmetik und Spa in deinem Quartier. Direkt online buchen.',
     search_placeholder:'z.B. Balayage, Maniküre, Massage...',search_btn:'Suchen',
     stat_salons:'Lokale Salons',stat_services:'Behandlungen',stat_location:'Dein Quartier',
-    cat_all:'Alle',cat_hairsalon:'Coiffeur',stores_title:'Salons in deiner N\u00e4he',
+    nav_salons:'Salons',nav_quartiere:'Quartiere',nav_about:'\u00dcber uns',
+    cat_all:'Alle',cat_hairsalon:'Coiffeur',cat_cosmetik:'Kosmetik',stores_title:'Salons in deiner N\u00e4he',
     profile_title:'Mein Profil',profile_sub:'Verwalte deine pers\u00f6nlichen Daten und Pr\u00e4ferenzen',
     bookings_title:'Meine Buchungen',bookings_sub:'Deine vergangenen und kommenden Termine',
     admin_title:'Verwaltung',admin_sub:'Salons, Services und Buchungen verwalten',
@@ -3074,7 +3067,7 @@ const T={
     auth_choose:'W\u00e4hle deinen Zugang',auth_customer_or_owner:'Bist du ein Kunde oder ein Salon-Besitzer?',
     auth_as_customer:'Ich suche einen Salon',auth_customer_desc:'Termin buchen, Salons in Basel entdecken, pers\u00f6nliches Profil',auth_free_register:'Kostenlos registrieren',
     auth_as_owner:'Ich bin Salonbesitzer/in',auth_owner_desc:'Werde sichtbar in Basel, erhalte Buchungen, wachse mit solen',auth_register_salon:'Deinen Salon eintragen',
-    bn_home:'Home',bn_bookings:'Termine',bn_messages:'Nachrichten',bn_profile:'Profil',
+    bn_home:'Home',bn_discover:'Entdecken',bn_bookings:'Termine',bn_messages:'Nachrichten',bn_profile:'Profil',
     recently_viewed:'Zuletzt angesehen',resume_at:'Weiter bei',
     status_confirmed:'Best\u00e4tigt',status_pending:'Ausstehend',status_cancelled:'Storniert',cancel_booking:'Termin absagen',booking_cancelled:'Termin abgesagt.',
     rebook:'Erneut buchen',
@@ -3118,6 +3111,8 @@ const T={
     wiz_reminder_label:'E-Mail-Erinnerig (48h & 2h vor em Termin)',wiz_reminder_text:'Du berchunsch 48h und 2h vor dim Termin e Erinnerig per Mail.',
     booking_confirmed_title:'Din Termin steht!',try_other_filters:'Probier anderi Filter oder es anders Quartier.',preferred_badge:'Empfohle',
     footer_text:'\u00a9 2026 solen \u00b7 Made with \u2665 in Basel \u2013 nur f\u00fcr uns Basler*innen',
+    footer_brand_desc:'Lokale Beauty- und Wellness-Salons in Basel. Coiffeur, Nails, Spa und mehr online buchen.',
+    footer_discover:'Entdecken',footer_quartiere:'Quartiere',footer_app_soon:'App bald verf\u00fcgbar',
     badge_multi_location:'Mehreri Standort',badge_verified:'Verifiziert',badge_visited:'Scho gsi',
     onboarding_why_name:'Damit dini Chunde dich finde. De Name erschint uf dim Profil und in de Suchresultat.',
     onboarding_why_address:'Mir bruuched dini Adresse zum dich uf de Charte zeige. Nur Basel-Adresse.',
@@ -3142,28 +3137,29 @@ const T={
     trust_actions_logged:'Alli Aktione werded protokolliert f\u00fcr d Sicherheit.',
     msg_delivered_tooltip:'Zuestellt = Carrier het d Nachricht agnoh (SMS). L\u00e4se-Best\u00e4tigung nur mit WhatsApp, wo unterst\u00fctzt.',
     msg_attachment_limit:'Max. 10 Dateie; Gr\u00f6sselimits gelte.',
-    dm_title:'Nachrichte',dm_tab_messages:'Nachrichte',dm_tab_requests:'Afrage',dm_search_placeholder:'Suche',
+    dm_title:'Nachrichten',dm_tab_messages:'Nachrichten',dm_tab_requests:'Anfragen',dm_search_placeholder:'Suche',
     dm_input_placeholder:'Nachricht...',dm_time_now:'jetzt',dm_today:'H\u00fct',dm_yesterday:'Geschter',
     dm_you:'Du',dm_sent_photo:'Foto gschickt',dm_sent_booking:'Buchigsbest\u00e4tigung gschickt',
-    dm_liked_message:'Nachricht gliked',dm_no_messages:'No kei Nachrichte',dm_retry:'Nomal',
+    dm_liked_message:'Nachricht geliked',dm_no_messages:'Noch keine Nachrichten',dm_retry:'Nochmal',
     dm_file_too_large:'Datei z gross (max 10MB)',
     dm_qr_confirmed:'Dini Buchig isch best\u00e4tigt \u2705',dm_qr_running_late:'Mir sind 10 Min sp\u00f6ter',dm_qr_cancel_reschedule:'Absage oder verschiebe?',
-    dm_empty_inbox_title:'Kei Nachrichte',dm_empty_inbox_sub:'Buch en Termin zum mit emene Salon z chatte.',
-    dm_empty_chat_title:'No kei Nachrichte',dm_empty_chat_sub:'Schriib d erschti Nachricht!',
-    dm_empty_requests_title:'Kei Afrage',dm_empty_requests_sub:'Nachrichteafrage erschined da.',
-    dm_error_title:'Verbindigsfehler',dm_error_sub:'Nachrichte chend nid glade werde. Probiers nomal.',
+    dm_empty_inbox_title:'Keine Nachrichten',dm_empty_inbox_sub:'Buche einen Termin, um mit einem Salon zu chatten.',
+    dm_empty_chat_title:'Noch keine Nachrichten',dm_empty_chat_sub:'Schreibe die erste Nachricht!',
+    dm_empty_requests_title:'Keine Anfragen',dm_empty_requests_sub:'Nachrichtenanfragen erscheinen hier.',
+    dm_error_title:'Verbindungsfehler',dm_error_sub:'Nachrichten konnten nicht geladen werden. Bitte nochmal versuchen.',
     months:'Januar_Februar_M\u00e4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember',
     weekdays:'Mo_Di_Mi_Do_Fr_Sa_So',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
     nav_my_profile:'My Profile',nav_edit_profile:'Edit Profile',nav_my_bookings:'My Bookings',
-    nav_salon_dash:'My Salon',nav_admin:'Management',
+    nav_salon_dash:'My Salon',nav_admin:'Management',nav_register_salon:'List your salon',
     hero_badge:'From Basel, for Basel',hero_title:'Beauty & Wellness<br><span class="hero-highlight">in Basel</span>',
     hero_sub:'Find hairdressers, cosmetics and spa in your neighborhood. Book online.',
     search_placeholder:'Service, salon or category...',search_btn:'Search',
     stat_salons:'Local salons',stat_services:'Treatments',stat_location:'Your area',
-    cat_all:'All',cat_hairsalon:'Hairdresser',stores_title:'Salons near you',
+    nav_salons:'Salons',nav_quartiere:'Neighbourhoods',nav_about:'About us',
+    cat_all:'All',cat_hairsalon:'Hairdresser',cat_cosmetik:'Cosmetics',stores_title:'Salons near you',
     profile_title:'My Profile',profile_sub:'Manage your personal data and preferences',
     bookings_title:'My Bookings',bookings_sub:'Your past and upcoming appointments',
     admin_title:'Management',admin_sub:'Manage salons, services and bookings',
@@ -3184,7 +3180,7 @@ const T={
     auth_choose:'Choose your access',auth_customer_or_owner:'Are you a customer or salon owner?',
     auth_as_customer:'I\'m looking for a salon',auth_customer_desc:'Book appointments, discover salons in Basel, personal profile',auth_free_register:'Register free',
     auth_as_owner:'I\'m a salon owner',auth_owner_desc:'Get visible in Basel, receive bookings, grow with solen',auth_register_salon:'Become a solen partner',
-    bn_home:'Home',bn_bookings:'Bookings',bn_messages:'Messages',bn_profile:'Profile',
+    bn_home:'Home',bn_discover:'Discover',bn_bookings:'Bookings',bn_messages:'Messages',bn_profile:'Profile',
     recently_viewed:'Recently viewed',resume_at:'Continue with',
     status_confirmed:'Confirmed',status_pending:'Pending',status_cancelled:'Cancelled',
     rebook:'Book again',
@@ -3228,6 +3224,8 @@ const T={
     wiz_reminder_label:'Email reminder (48h & 2h before)',wiz_reminder_text:'You\'ll get a reminder 48h and 2h before your appointment.',
     booking_confirmed_title:'You\'re booked!',try_other_filters:'Try different filters or another neighborhood.',preferred_badge:'Recommended',
     footer_text:'\u00a9 2026 solen \u00b7 Made with \u2665 in Basel',
+    footer_brand_desc:'Local beauty and wellness salons in Basel. Book hairdressers, nails, spa and more online.',
+    footer_discover:'Discover',footer_quartiere:'Neighbourhoods',footer_app_soon:'App coming soon',
     badge_multi_location:'Multiple locations',badge_verified:'Verified',badge_visited:'Been here',
     onboarding_why_name:'So your customers can find you. This name shows on your profile and in search results.',
     onboarding_why_address:'We need your address to show you on the map. Basel addresses only.',
@@ -3268,12 +3266,13 @@ const T={
   fr:{
     nav_login:'Se connecter',nav_register:"S'inscrire",nav_logout:'Se d\u00e9connecter',nav_theme:'Clair / Sombre',
     nav_my_profile:'Mon profil',nav_edit_profile:'Modifier le profil',nav_my_bookings:'Mes r\u00e9servations',
-    nav_salon_dash:'Mon salon',nav_admin:'Gestion',
+    nav_salon_dash:'Mon salon',nav_admin:'Gestion',nav_register_salon:'Inscrire un salon',
     hero_badge:'De B\u00e2le, pour B\u00e2le',hero_title:'Beaut\u00e9 & Bien-\u00eatre<br><span class="hero-highlight">\u00e0 B\u00e2le</span>',
     hero_sub:'Trouvez coiffeurs, cosm\u00e9tique et spa dans votre quartier. R\u00e9servez en ligne.',
     search_placeholder:'Service, salon ou cat\u00e9gorie...',search_btn:'Rechercher',
     stat_salons:'Salons locaux',stat_services:'Soins',stat_location:'Ton quartier',
-    cat_all:'Tous',cat_hairsalon:'Coiffeur',stores_title:'Salons pr\u00e8s de toi',
+    nav_salons:'Salons',nav_quartiere:'Quartiers',nav_about:'\u00c0 propos',
+    cat_all:'Tous',cat_hairsalon:'Coiffeur',cat_cosmetik:'Cosm\u00e9tique',stores_title:'Salons pr\u00e8s de toi',
     profile_title:'Mon profil',profile_sub:'G\u00e8re tes donn\u00e9es personnelles et pr\u00e9f\u00e9rences',
     bookings_title:'Mes r\u00e9servations',bookings_sub:'Tes rendez-vous pass\u00e9s et \u00e0 venir',
     admin_title:'Gestion',admin_sub:'G\u00e9rer les salons, services et r\u00e9servations',
@@ -3294,7 +3293,7 @@ const T={
     auth_choose:'Choisis ton acc\u00e8s',auth_customer_or_owner:'Es-tu un client ou propri\u00e9taire de salon ?',
     auth_as_customer:'Je cherche un salon',auth_customer_desc:'R\u00e9server, d\u00e9couvrir des salons \u00e0 B\u00e2le, profil personnel',auth_free_register:'Inscription gratuite',
     auth_as_owner:'Je suis propri\u00e9taire',auth_owner_desc:'Deviens visible \u00e0 B\u00e2le, re\u00e7ois des r\u00e9servations, grandis avec solen',auth_register_salon:'Devenir partenaire solen',
-    bn_home:'Accueil',bn_bookings:'R\u00e9servations',bn_messages:'Messages',bn_profile:'Profil',
+    bn_home:'Accueil',bn_discover:'D\u00e9couvrir',bn_bookings:'R\u00e9servations',bn_messages:'Messages',bn_profile:'Profil',
     recently_viewed:'Vus r\u00e9cemment',resume_at:'Continuer avec',
     status_confirmed:'Confirm\u00e9',status_pending:'En attente',status_cancelled:'Annul\u00e9',
     rebook:'R\u00e9server \u00e0 nouveau',
@@ -3336,6 +3335,8 @@ const T={
     wiz_reminder_label:'Rappel par e-mail (48h & 2h avant)',wiz_reminder_text:'Tu recevras un rappel 48h et 2h avant ton rendez-vous.',
     booking_confirmed_title:'C\'est r\u00e9serv\u00e9 !',try_other_filters:'Essaie d\'autres filtres ou un autre quartier.',preferred_badge:'Recommand\u00e9',
     footer_text:'\u00a9 2026 solen \u00b7 Fait avec \u2665 \u00e0 B\u00e2le',
+    footer_brand_desc:'Salons de beaut\u00e9 et bien-\u00eatre locaux \u00e0 B\u00e2le. Coiffeur, ongles, spa et plus en ligne.',
+    footer_discover:'D\u00e9couvrir',footer_quartiere:'Quartiers',footer_app_soon:'Appli bient\u00f4t disponible',
     badge_multi_location:'Plusieurs sites',badge_verified:'V\u00e9rifi\u00e9',badge_visited:'D\u00e9j\u00e0 visit\u00e9',
     onboarding_why_name:'Pour que tes clients te trouvent. Ce nom appara\u00eet sur ton profil et dans les r\u00e9sultats.',
     onboarding_why_address:'On a besoin de ton adresse pour te montrer sur la carte. Adresses b\u00e2loises uniquement.',
@@ -3378,12 +3379,13 @@ const T={
   tr:{
     nav_login:'GiriÅ Yap',nav_register:'Kayıt Ol',nav_logout:'ÇıkıÅ Yap',nav_theme:'Açık / Koyu',
     nav_my_profile:'Profilim',nav_edit_profile:'Profili Düzenle',nav_my_bookings:'Rezervasyonlarım',
-    nav_salon_dash:'Salonum',nav_admin:'Y\u00f6netim',
+    nav_salon_dash:'Salonum',nav_admin:'Y\u00f6netim',nav_register_salon:'Salon kaydet',
     hero_badge:'Basel\'den, Basel i\u00e7in',hero_title:'G\u00fczellik & Bak\u0131m<br><span class="hero-highlight">Basel\'de</span>',
     hero_sub:'Mahallenizde kuaf\u00f6r, kozmetik ve spa bulun. Online randevu al\u0131n.',
     search_placeholder:'Hizmet, salon veya kategori...',search_btn:'Ara',
     stat_salons:'Yerel Salon',stat_services:'Hizmet',stat_location:'Senin B\u00f6lgen',
-    cat_all:'T\u00fcm\u00fc',cat_hairsalon:'Kuaf\u00f6r',stores_title:'Yak\u0131n\u0131ndaki Salonlar',
+    nav_salons:'Salonlar',nav_quartiere:'Mahalleler',nav_about:'Hakk\u0131m\u0131zda',
+    cat_all:'T\u00fcm\u00fc',cat_hairsalon:'Kuaf\u00f6r',cat_cosmetik:'Kozmetik',stores_title:'Yak\u0131n\u0131ndaki Salonlar',
     profile_title:'Profilim',profile_sub:'KiÅisel bilgilerinizi ve tercihlerinizi yönetin',
     bookings_title:'Rezervasyonlarım',bookings_sub:'GeçmiÅ ve gelecek randevularınız',
     admin_title:'Y\u00f6netim',admin_sub:'Salonlar\u0131, hizmetleri ve rezervasyonlar\u0131 y\u00f6netin',
@@ -3404,7 +3406,7 @@ const T={
     auth_choose:'EriÅim türünü seçin',auth_customer_or_owner:'MüÅteri misiniz yoksa salon sahibi mi?',
     auth_as_customer:'MüÅteri Olarak',auth_customer_desc:'Randevu alın, salonları keÅfedin, profilinizi yönetin',auth_free_register:'Ücretsiz kayıt',
     auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonları yönetin, müÅteri kazanın',auth_register_salon:'Salon kaydı',
-    bn_home:'Ana Sayfa',bn_bookings:'Rezervasyonlar',bn_messages:'Mesajlar',bn_profile:'Profil',
+    bn_home:'Ana Sayfa',bn_discover:'Ke\u015ffet',bn_bookings:'Rezervasyonlar',bn_messages:'Mesajlar',bn_profile:'Profil',
     recently_viewed:'Son görüntülenenler',resume_at:'Devam et',
     status_confirmed:'Onaylandı',status_pending:'Beklemede',status_cancelled:'İptal edildi',
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
@@ -3447,6 +3449,8 @@ const T={
     wiz_reminder_label:'E-posta hat\u0131rlat\u0131c\u0131 (48s & 2s \u00f6nce)',wiz_reminder_text:'Randevundan 48s ve 2s \u00f6nce hat\u0131rlatma alacaks\u0131n.',
     booking_confirmed_title:'Randevun haz\u0131r!',try_other_filters:'Ba\u015fka filtreler dene.',preferred_badge:'\u00d6nerilen',
     footer_text:'\u00a9 2026 solen \u00b7 Basel\'de \u2665 ile yap\u0131ld\u0131',
+    footer_brand_desc:'Basel\'deki yerel g\u00fczellik ve bak\u0131m salonlar\u0131. Kuaf\u00f6r, t\u0131rnak, spa ve daha fazlas\u0131n\u0131 online rezerve edin.',
+    footer_discover:'Ke\u015ffet',footer_quartiere:'Mahalleler',footer_app_soon:'Uygulama yak\u0131nda',
     badge_multi_location:'Birden fazla \u015fube',badge_verified:'Do\u011frulanm\u0131\u015f',badge_visited:'Daha \u00f6nce gittim',
     onboarding_why_name:'M\u00fc\u015fterilerin seni bulsun diye. Bu isim profilinde ve arama sonu\u00e7lar\u0131nda g\u00f6r\u00fcn\u00fcr.',
     onboarding_why_address:'Seni haritada g\u00f6stermek i\u00e7in adresine ihtiyac\u0131m\u0131z var. Sadece Basel adresleri.',
@@ -3823,7 +3827,7 @@ function toggleSelectionDropdown(type){
   if(!dropdown)return;
 
   if(type==='service'){
-    var cats=[{val:'',label:t('cat_all')},{val:'hairsalon',label:'Coiffeur'},{val:'barber',label:'Barbershop'},{val:'nails',label:'Nails'},{val:'spa',label:'Spa & Wellness'},{val:'makeup',label:'Make-up'},{val:'cosmetik',label:'Kosmetik'},{val:'eyebrows',label:'Augenbrauen'}];
+    var cats=[{val:'',label:t('cat_all')},{val:'hairsalon',label:t('cat_hairsalon')},{val:'barber',label:t('cat_barber')},{val:'nails',label:t('cat_nails')},{val:'spa',label:t('cat_spa')},{val:'makeup',label:t('cat_makeup')},{val:'cosmetik',label:t('cat_cosmetik')},{val:'eyebrows',label:t('cat_eyebrows')}];
     dropdown.innerHTML='<input class="selection-dropdown-search" placeholder="'+t('search_placeholder')+'" oninput="filterSelDropdown(this,\'service\')" onclick="event.stopPropagation()">'+
       cats.map(c=>'<div class="selection-dropdown-item'+(selMenuState.service===c.val?' selected':'')+'" onclick="event.stopPropagation();pickSelection(\'service\',\''+c.val+'\',\''+c.label+'\')">'+c.label+'</div>').join('');
   } else if(type==='quartier'){
@@ -7525,8 +7529,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 /* Scroll progress */
 #scrollProgress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:10000;width:0;transition:width .08s linear;pointer-events:none}
 /* Dark mode toggle */
-.dark-toggle{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:6px 8px;border-radius:8px;color:inherit;line-height:1;transition:background .2s;display:inline-flex;align-items:center}
-.dark-toggle:hover{background:rgba(128,128,128,.15)}
 /* Toast notifications */
 #toastContainer{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:9500;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
 .toast{background:rgba(26,26,26,.95);color:#fff;padding:10px 22px;border-radius:24px;font-size:.875rem;box-shadow:0 4px 16px rgba(0,0,0,.3);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none;max-width:320px;text-align:center}
@@ -7542,21 +7544,13 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--c-bg:#0F0F0F;--c-surface:#1A1A1A;--c-surface2:#242424;--c-border:#2E2E2E;--c-text:#EFEFEF;--c-text-muted:#999}}
 
 /* ── PREMIUM UI v2 ── */
-#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .12s linear;pointer-events:none}
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--c-accent,#9B1D30),var(--c-highlight,#D4AF77));z-index:9999;transition:width .12s linear;pointer-events:none}
 .store-card{transition:box-shadow .25s ease,transform .25s ease;box-shadow:0 1px 3px rgba(31,31,31,.06),0 4px 16px rgba(31,31,31,.07),0 20px 40px rgba(31,31,31,.04)}
 .store-card:hover{box-shadow:0 2px 6px rgba(31,31,31,.08),0 10px 28px rgba(31,31,31,.11),0 30px 60px rgba(31,31,31,.06)}
 .booking-card{box-shadow:0 1px 3px rgba(31,31,31,.05),0 4px 12px rgba(31,31,31,.07)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:#4ECDC4 !important;box-shadow:0 0 0 3px rgba(78,205,196,.18) !important}
 
 /* ── MOBILE BOTTOM NAV ── */
-#mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid rgba(31,31,31,.09);box-shadow:0 -2px 16px rgba(31,31,31,.07);z-index:8000;padding-bottom:env(safe-area-inset-bottom)}
-#mobile-nav .mnav-inner{display:flex;height:60px;align-items:stretch}
-#mobile-nav .mnav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#9E8E7F;font-size:10px;font-weight:600;cursor:pointer;border:none;background:none;font-family:inherit;letter-spacing:.3px;transition:color .15s}
-#mobile-nav .mnav-tab.active{color:#FF6B6B}
-#mobile-nav .mnav-tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-#mobile-nav .mnav-tab:active{opacity:.7}
-@media(min-width:769px){#mobile-nav{display:none!important}}
-@media(max-width:768px){#mobile-nav{display:block}body{padding-bottom:68px}}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
@@ -9302,8 +9296,6 @@ function sendOffer(idx){var offers=[{title:'10% Rabatt',desc:'Einmalig'},{title:
 function autoResizeChatInput(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
 
 // === BATCH1: NEW FEATURES ===
-function toggleDarkMode(){var cur=document.documentElement.getAttribute("data-theme"),next=cur==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",next);localStorage.setItem("solen_theme",next);var btn=document.getElementById("darkToggleBtn");if(btn)btn.textContent=next==="dark"?"☀":"🌙";}
-function initDarkMode(){var saved=localStorage.getItem("solen_theme"),sys=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light",theme=saved||sys;document.documentElement.setAttribute("data-theme",theme);var btn=document.getElementById("darkToggleBtn");if(btn)btn.textContent=theme==="dark"?"☀":"🌙";}
 document.addEventListener("DOMContentLoaded",initDarkMode);
 var _pwaPrompt=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();_pwaPrompt=e;var b=document.getElementById("pwaBanner");if(b)setTimeout(function(){b.classList.add("visible");},3000);});
 function installPWA(){if(!_pwaPrompt)return;_pwaPrompt.prompt();_pwaPrompt.userChoice.then(function(){dismissPWABanner();});}
@@ -9453,11 +9445,10 @@ document.addEventListener('DOMContentLoaded',function(){loadWeatherWidget();});
 if(document.readyState!=='loading')loadWeatherWidget();
 
 // ===== Scroll progress bar =====
-(function(){const bar=document.createElement('div');bar.id='scrollProgress';document.body.prepend(bar);window.addEventListener('scroll',function(){const s=document.documentElement;bar.style.width=(s.scrollTop/(s.scrollHeight-s.clientHeight)*100)+'%';},{passive:true});})();
 // ===== Dark mode =====
-function toggleDarkMode(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('solen_theme',n);document.querySelectorAll('.dark-toggle').forEach(b=>{b.textContent=n==='dark'?'☀️':'🌙';b.setAttribute('aria-pressed',n==='dark'?'true':'false');});}
+function toggleDarkMode(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('solen_theme',n);}
 function initDarkMode(){const saved=localStorage.getItem('solen_theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',saved);}
-document.addEventListener('DOMContentLoaded',function(){initDarkMode();const nav=document.querySelector('.nav-actions,.nav-links,.nav');if(nav){const btn=document.createElement('button');btn.className='dark-toggle';btn.setAttribute('aria-label','Erscheinungsbild umschalten');const isDark=document.documentElement.getAttribute('data-theme')==='dark';btn.setAttribute('aria-pressed',isDark?'true':'false');btn.textContent=isDark?'☀️':'🌙';btn.onclick=toggleDarkMode;nav.appendChild(btn);}});
+document.addEventListener('DOMContentLoaded',function(){initDarkMode();});
 // ===== Toast notifications =====
 function showToast(msg,duration){duration=duration||2800;let tc=document.getElementById('toastContainer');if(!tc){tc=document.createElement('div');tc.id='toastContainer';document.body.appendChild(tc);}const t=document.createElement('div');t.className='toast';t.textContent=msg;tc.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},duration);}
 
@@ -9477,16 +9468,6 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   document.body.appendChild(svg);
 })();
 
-// Mobile bottom nav
-function mnavGo(tab){
-  document.querySelectorAll('#mobile-nav .mnav-tab').forEach(function(b){b.classList.remove('active')});
-  var btn=document.getElementById('mnav-'+tab);
-  if(btn)btn.classList.add('active');
-  if(tab==='home'){window.scrollTo({top:0,behavior:'smooth'});}
-  else if(tab==='search'){var s=document.getElementById('search-input');if(s){s.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){s.focus()},350);}}
-  else if(tab==='bookings'){var bl=document.querySelector('.booking-list,.my-bookings,.bookings-container');if(bl){bl.scrollIntoView({behavior:'smooth',block:'start'});}else if(typeof openAuth==='function'){openAuth();}}
-  else if(tab==='profil'){if(typeof openProfile==='function')openProfile();else if(typeof openAuth==='function')openAuth();}
-}
 </script>
 
 <!-- PWA Install Banner -->
@@ -9586,22 +9567,5 @@ function mnavGo(tab){
   </div>
 </div>
 
-<!-- Mobile Bottom Nav -->
-<nav id="mobile-nav" aria-label="Navigation">
-<div class="mnav-inner">
-<button class="mnav-tab active" id="mnav-home" onclick="mnavGo('home')">
-<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Entdecken</span>
-</button>
-<button class="mnav-tab" id="mnav-search" onclick="mnavGo('search')">
-<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Suche</span>
-</button>
-<button class="mnav-tab" id="mnav-bookings" onclick="mnavGo('bookings')">
-<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Buchungen</span>
-</button>
-<button class="mnav-tab" id="mnav-profil" onclick="mnavGo('profil')">
-<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profil</span>
-</button>
-</div>
-</nav>
 </body>
 </html>
