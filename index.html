@@ -9286,7 +9286,7 @@ async function renderCRM(storeId){
       +(allergy?'<div class="crm-allergy-warning"><span style="color:#e74c3c;font-weight:600">&#9888; Allergie:</span> '+allergy+'</div>':'')
       +'<div class="crm-notes-row">'
       +'<textarea class="crm-notes-input" placeholder="Notizen (Vorlieben, Haartyp...)" onchange="saveCRMNote(\''+storeId+'\',\''+key+'\',this.value)">'+notes+'</textarea>'
-      +'<input class="crm-allergy-input" placeholder="Allergien/Hinweise" value="'+allergy+'" onchange="saveCRMAllergy(''+storeId+'',''+key+'',this.value)">'
+      +'<input class="crm-allergy-input" placeholder="Allergien/Hinweise" value="'+allergy+'" onchange="saveCRMAllergy(\''+storeId+'\',\''+key+'\',this.value)">'
       +'</div>'
       +'<div class="crm-services">'+c.visits.slice(0,3).map(v=>'<span class="crm-service-chip">'+(v.service_name||'Service')+'</span>').join('')+'</div>'
       +'</div>';
@@ -9299,7 +9299,7 @@ function saveCRMAllergy(sid,key,val){if(!window._crmAllergies[sid])window._crmAl
 async function renderStaffCommission(storeId){
   const panel=document.getElementById('dashTabMitarbeiter');
   if(!panel)return;
-  panel.innerHTML='<div class="staff-comm-container"><div class="panel-header"><h3>Mitarbeiter &amp; Provisionen</h3><button class="btn-add-staff-comm" onclick="openAddStaffComm(''+storeId+'')">+ Mitarbeiter</button></div><div id="staffCommList"></div><hr style="margin:1.5rem 0"><h4 style="margin-bottom:1rem">Abrechnungsübersicht</h4><div id="staffCommSummary"></div></div>';
+  panel.innerHTML='<div class="staff-comm-container"><div class="panel-header"><h3>Mitarbeiter &amp; Provisionen</h3><button class="btn-add-staff-comm" onclick="openAddStaffComm(\''+storeId+'\')">+ Mitarbeiter</button></div><div id="staffCommList"></div><hr style="margin:1.5rem 0"><h4 style="margin-bottom:1rem">Abrechnungsübersicht</h4><div id="staffCommSummary"></div></div>';
   await renderStaffCommList(storeId);
 }
 async function renderStaffCommList(sid){
@@ -9321,7 +9321,7 @@ async function updateStaffCommission(sid,idx,val){const {data:store}=await windo
 async function renderMarketingBlast(storeId){
   const panel=document.getElementById('dashTabMarketing');
   if(!panel)return;
-  panel.innerHTML='<div class="marketing-container"><div class="panel-header"><h3>Marketing &amp; Aktionen</h3></div><div class="marketing-compose"><h4 style="margin:0 0 1rem">Nachricht an Kunden senden</h4><div class="marketing-form"><label>Zielgruppe</label><select id="mktTarget" class="mkt-select"><option value="all">Alle Kunden</option><option value="recent">Letzte 30 Tage</option><option value="inactive">Inaktiv 60+ Tage</option></select><label>Betreff</label><input id="mktSubject" class="mkt-input" placeholder="z.B. Frühlingsangebot – 20% auf alle Services!" maxlength="80"><label>Nachricht</label><textarea id="mktMessage" class="mkt-textarea" rows="4" maxlength="320" placeholder="Deine Nachricht..."></textarea><div class="mkt-preview-hint" id="mktPreviewHint"></div><div class="mkt-actions"><button class="btn-mkt-preview" onclick="previewMarketingBlast(''+storeId+'')">Vorschau</button><button class="btn-mkt-send" onclick="sendMarketingBlast(''+storeId+'')">Kampagne starten</button></div></div></div><hr style="margin:1.5rem 0"><h4>Gesendete Kampagnen</h4><div id="mktHistory"></div></div>';
+  panel.innerHTML='<div class="marketing-container"><div class="panel-header"><h3>Marketing &amp; Aktionen</h3></div><div class="marketing-compose"><h4 style="margin:0 0 1rem">Nachricht an Kunden senden</h4><div class="marketing-form"><label>Zielgruppe</label><select id="mktTarget" class="mkt-select"><option value="all">Alle Kunden</option><option value="recent">Letzte 30 Tage</option><option value="inactive">Inaktiv 60+ Tage</option></select><label>Betreff</label><input id="mktSubject" class="mkt-input" placeholder="z.B. Frühlingsangebot – 20% auf alle Services!" maxlength="80"><label>Nachricht</label><textarea id="mktMessage" class="mkt-textarea" rows="4" maxlength="320" placeholder="Deine Nachricht..."></textarea><div class="mkt-preview-hint" id="mktPreviewHint"></div><div class="mkt-actions"><button class="btn-mkt-preview" onclick="previewMarketingBlast(\''+storeId+'\')">Vorschau</button><button class="btn-mkt-send" onclick="sendMarketingBlast(\''+storeId+'\')">Kampagne starten</button></div></div></div><hr style="margin:1.5rem 0"><h4>Gesendete Kampagnen</h4><div id="mktHistory"></div></div>';
   loadMarketingHistory(storeId);
 }
 async function previewMarketingBlast(sid){const target=document.getElementById('mktTarget')?.value;const {data:b}=await window._sb.from('bookings').select('customer_name,customer_phone,booking_date').eq('store_id',sid);if(!b)return;const now=Date.now();let f=b;if(target==='recent')f=b.filter(x=>(now-new Date(x.booking_date))<30*86400000);if(target==='inactive')f=b.filter(x=>(now-new Date(x.booking_date))>60*86400000);const u=[...new Map(f.map(x=>[x.customer_phone||x.customer_name,x])).values()];const hint=document.getElementById('mktPreviewHint');if(hint)hint.innerHTML='<span style="color:var(--c-accent,#4ECDC4)">&#10003; '+u.length+' Kunden werden erreicht</span>';}
