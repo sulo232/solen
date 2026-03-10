@@ -1015,6 +1015,27 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-dt-bar-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
 /* Availability loading indicator */
 .bm-slots-loading{text-align:center;padding:12px;font-size:.82rem;color:var(--muted)}
+/* STEP 3 CONFIRMATION */
+.bm-confirm-step{padding:4px 0}
+.bm-confirm-summary{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2,16px);padding:20px;margin-bottom:20px}
+.bm-confirm-summary h4{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.bm-confirm-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.bm-confirm-row:last-child{border-bottom:none}
+.bm-confirm-row .lbl{font-size:.85rem;color:var(--text2)}
+.bm-confirm-row .val{font-size:.88rem;font-weight:600;color:var(--text);text-align:right;max-width:60%}
+.bm-confirm-total{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:var(--accent);border-radius:var(--r,8px);margin-bottom:20px;color:#fff}
+.bm-confirm-total .total-lbl{font-size:.82rem;font-weight:600;opacity:.85}
+.bm-confirm-total .total-dur{font-size:.78rem;opacity:.75;margin-top:3px}
+.bm-confirm-total .total-val{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.bm-salon-note{margin-bottom:20px}
+.bm-salon-note label{display:block;font-size:.88rem;font-weight:600;margin-bottom:8px;color:var(--text)}
+.bm-salon-note textarea{width:100%;border:1.5px solid var(--border2);border-radius:var(--r,8px);padding:12px;font-size:.88rem;color:var(--text);background:var(--surface);resize:vertical;min-height:84px;font-family:inherit;box-sizing:border-box;transition:border-color .15s}
+.bm-salon-note textarea:focus{border-color:var(--accent);outline:none}
+.bm-cancel-policy{font-size:.78rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.55;padding:0 4px}
+.btn-book-glass{width:100%;padding:16px;border-radius:50px;font-size:1rem;font-weight:800;letter-spacing:.01em;cursor:pointer;border:none;position:relative;overflow:hidden;min-height:52px;background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(155,29,48,.28);transition:all .2s;display:block}
+.btn-book-glass::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,0) 55%);pointer-events:none;border-radius:50px}
+.btn-book-glass:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(155,29,48,.38)}
+.btn-book-glass:active{transform:translateY(0);box-shadow:0 2px 12px rgba(155,29,48,.28)}
 .bm-confirmation{text-align:center;padding:20px 0}
 .bm-confirmation h3{font-size:1.2rem;font-weight:800;margin-bottom:8px;color:var(--success)}
 .bm-confirmation p{font-size:.9rem;color:var(--text2);margin-bottom:16px}
@@ -8454,6 +8475,46 @@ function renderBookingModal(){
     _bmBody().innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
     return;
   }
+  // ── STEP 3: Confirmation & Final Note ──────────────────────────────────────
+  if(bmState.step==='confirm'){
+    const svc=bmState.service;
+    const durMin=svc?.duration||0;
+    const price=svc?.price??parseFloat(bmState.customPrice)||0;
+    const serviceName=svc?.name||bmState.customSvc||'-';
+    const cancelPolicy=s.cancellation_policy||'Kostenlose Stornierung bis 24 Stunden vor dem Termin';
+    let html=`<div class="bm-steps">
+      <div class="bm-step-item done"><div class="bm-step-dot">&#10003;</div><span>Service</span></div>
+      <div class="bm-step-line"></div>
+      <div class="bm-step-item done"><div class="bm-step-dot">&#10003;</div><span>Datum &amp; Zeit</span></div>
+      <div class="bm-step-line"></div>
+      <div class="bm-step-item active"><div class="bm-step-dot">3</div><span>Best&auml;tigen</span></div>
+    </div>`;
+    html+=`<div class="bm-confirm-step">`;
+    // 1. Big summary box
+    html+=`<div class="bm-confirm-summary"><h4>Zusammenfassung</h4>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Salon</span><span class="val">${s.name}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Service</span><span class="val">${serviceName}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Datum</span><span class="val">${formatDate(bmState.date)}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Uhrzeit</span><span class="val">${bmState.time} Uhr</span></div>`;
+    if(durMin)html+=`<div class="bm-confirm-row"><span class="lbl">Dauer</span><span class="val">${durMin} Min.</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Name</span><span class="val">${bmState.guestName}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Telefon</span><span class="val">${bmState.guestPhone}</span></div>`;
+    if(bmState.guestEmail)html+=`<div class="bm-confirm-row"><span class="lbl">E-Mail</span><span class="val">${bmState.guestEmail}</span></div>`;
+    html+=`</div>`;
+    // 2. Total price & time — big bold
+    html+=`<div class="bm-confirm-total"><div><div class="total-lbl">Gesamtpreis</div>${durMin?`<div class="total-dur">${durMin} Min. Behandlung</div>`:''}</div><div class="total-val">CHF ${price}</div></div>`;
+    // 3. Optional note textarea
+    html+=`<div class="bm-salon-note"><label>Notiz an den Salon <span style="font-weight:400;color:var(--muted)">(optional)</span></label><textarea id="bmConfirmNote" placeholder="z.B. &quot;Bitte Curtain Bangs wie im Foto&quot;">${bmState.notes||''}</textarea></div>`;
+    // 4. "Termin jetzt buchen" button with glass effect
+    html+=`<button class="btn-book-glass" onclick="insertBooking()">Termin jetzt buchen</button>`;
+    // 5. Cancellation policy
+    html+=`<p class="bm-cancel-policy">&#128274; ${cancelPolicy}</p>`;
+    html+=`<button class="btn-secondary" style="width:100%;margin-top:12px;min-height:40px;font-size:.88rem" onclick="bmState.step='service';renderBookingModal()">&#8592; Zurück bearbeiten</button>`;
+    html+=`</div>`;
+    _bmBody().innerHTML=html;
+    return;
+  }
+  // ── STEP 1 + 2 (Service, Date/Time, Guest Info) ─────────────────────────────
   // Step indicator (3 steps: Service, Datum & Zeit, Bestätigen)
   const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=(hasService&&hasDateTime)?'active':'';
   const _dur=calcBmDuration();
@@ -8570,13 +8631,14 @@ function renderBookingModal(){
     html+=`<button class="btn-primary" onclick="joinWaitingList()" style="min-height:44px;background:var(--accent-secondary)">Auf Warteliste setzen</button>`;
     html+=`</div>`;
   } else {
-    html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
+    html+=`<button class="btn-primary" onclick="bmGoToConfirm()" style="min-height:44px">Weiter zur Best&auml;tigung &#8594;</button>`;
   }
   _bmBody().innerHTML=html;
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
 function bmSelectService(id){
   bmState.service=allServices.find(s=>s.id===id);
+  bmState.step='service';
   // On new book page: auto-advance to step 2 when service selected
   if(document.getElementById('bpProgress')&&_bpCurrentStep===1){bpGoStep(2);}
   else{renderBookingModal();}
@@ -8684,16 +8746,31 @@ function renderBmTimeSlots(){
   h+=`</div>`;
   return h;
 }
-async function insertBooking(){
-  // Read current form values
+function bmGoToConfirm(){
   bmState.guestName=document.getElementById('bmGuestName')?.value||'';
   bmState.guestPhone=document.getElementById('bmGuestPhone')?.value||'';
   bmState.guestEmail=document.getElementById('bmGuestEmail')?.value||'';
-  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked||false;if(bmState.saveInfo){localStorage.setItem('solen_guest',JSON.stringify({n:bmState.guestName,p:bmState.guestPhone,e:bmState.guestEmail}));}else{localStorage.removeItem('solen_guest');}
   bmState.notes=document.getElementById('bmNotes')?.value||'';
-  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
+  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked||false;
   bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
   bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';
+  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
+  if(!bmState.guestName||!bmState.guestPhone){toast(t('toast_name_phone_required')||'Name und Telefon sind erforderlich.','error');return;}
+  if(!bmState.date||!bmState.time){toast(t('toast_select_datetime')||'Datum und Uhrzeit w\u00e4hlen.','error');return;}
+  if(!bmState.service&&!bmState.customSvc){toast('Bitte w\u00e4hle einen Service.','error');return;}
+  bmState.step='confirm';
+  renderBookingModal();
+}
+async function insertBooking(){
+  // Read note from confirm step if present, otherwise from main form
+  bmState.notes=document.getElementById('bmConfirmNote')?.value??document.getElementById('bmNotes')?.value??bmState.notes??'';
+  bmState.guestName=bmState.guestName||document.getElementById('bmGuestName')?.value||'';
+  bmState.guestPhone=bmState.guestPhone||document.getElementById('bmGuestPhone')?.value||'';
+  bmState.guestEmail=bmState.guestEmail||document.getElementById('bmGuestEmail')?.value||'';
+  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked??bmState.saveInfo??false;if(bmState.saveInfo){localStorage.setItem('solen_guest',JSON.stringify({n:bmState.guestName,p:bmState.guestPhone,e:bmState.guestEmail}));}else{localStorage.removeItem('solen_guest');}
+  bmState.isFirstVisit=bmState.isFirstVisit??true;
+  const _cSvc=document.getElementById('bmCustomSvc');if(_cSvc)bmState.customSvc=_cSvc.value;
+  const _cPrice=document.getElementById('bmCustomPrice');if(_cPrice)bmState.customPrice=_cPrice.value;
   if(!bmState.guestName||!bmState.guestPhone){toast(t('toast_name_phone_required')||'Name und Telefon sind erforderlich.','error');return;}
   if(!bmState.date||!bmState.time){toast(t('toast_select_datetime')||'Datum und Uhrzeit w\u00e4hlen.','error');return;}
   const svc=bmState.service;
