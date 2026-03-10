@@ -98,7 +98,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 @media(max-width:768px){body{padding-bottom:68px}}
 h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:var(--font-display);line-height:var(--lh-heading);hyphens:none}
 .nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title{hyphens:none;word-break:normal;overflow-wrap:normal}
-.store-price-range,.store-price,.price-label,.hero-stats .stat span,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.store-price-range,.store-price,.price-label,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:inherit}
 img{max-width:100%;display:block}
@@ -107,7 +107,7 @@ img{max-width:100%;display:block}
 .skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:12px 24px;background:#9B1D30;color:#fff;border-radius:var(--r);font-weight:700;font-size:.95rem;text-decoration:none;transition:top .2s}
 .skip-link:focus{top:12px}
 /* ── FOCUS INDICATORS (5a) ── */
-*:focus-visible{outline:3px solid #7C3AED;outline-offset:2px}
+*:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
 /* ── TOUCH TARGETS (5g, 5i) ── */
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
 input,select,textarea{font-family:inherit;min-height:44px}
@@ -218,7 +218,7 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .selection-dropdown-group{font-size:.72rem;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 14px 4px;margin-top:4px}
 
 @media(max-width:640px){.hero-search{width:calc(100% - 32px)!important;max-width:calc(100% - 32px)!important;margin:0 16px 24px!important;flex-direction:column;border-radius:16px}.hero-search-field{border-right:none;border-bottom:1px solid rgba(0,0,0,.08);padding:12px 16px}.hero-search-field:last-of-type{border-bottom:none}.hero-search-submit{border-radius:0 0 16px 16px;padding:14px}.selection-dropdown{left:-16px;right:-16px;min-width:auto}}
-@media(max-width:480px){.hero{min-height:auto;padding:88px 0 28px}.hero h1{font-size:1.7rem}.hero p{font-size:.95rem;margin-bottom:20px}.btn-location{border-radius:10px;justify-content:center;width:100%}.hero-stats{gap:12px}.neighbourhood-bar{justify-content:flex-start!important}.hero-content{padding:0 16px}}
+@media(max-width:480px){.hero{min-height:auto;padding:88px 0 28px}.hero h1{font-size:1.7rem}.hero p{font-size:.95rem;margin-bottom:20px}.btn-location{border-radius:10px;justify-content:center;width:100%}.neighbourhood-bar{justify-content:flex-start!important}.hero-content{padding:0 16px}}
 .search-field{display:flex;align-items:center;gap:10px;flex:1;padding-left:16px}
 .search-field svg{width:20px;height:20px;stroke:rgba(0,0,0,.4);fill:none;stroke-width:2;flex-shrink:0}
 .hero-search input{flex:1;background:none;border:none;outline:none;color:#0D0D0D;font-size:.95rem;padding:10px 14px}
@@ -875,7 +875,6 @@ html,body{overflow-x:hidden;max-width:100vw}
 
 @media(max-width:768px){
   .hero h1{font-size:2rem}
-  .hero-stats{gap:20px;flex-wrap:wrap}
   .hero-search{flex-direction:column;border-radius:16px;align-items:stretch}
   .stores-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
@@ -904,7 +903,6 @@ html,body{overflow-x:hidden;max-width:100vw}
   .hero h1{font-size:1.5rem;line-height:1.2}
   .hero p{font-size:.88rem;margin-bottom:14px}
   .hero-content{padding:0 12px;width:100%;max-width:100%;box-sizing:border-box}
-  .hero-stats{gap:10px}
   .hero-badge{font-size:.7rem;padding:5px 14px}
   .btn-location{border-radius:10px;justify-content:center;width:100%}
 }
@@ -2301,12 +2299,12 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </div>
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
-      <div class="lang-switcher-mobile">
-        <button class="lang-btn active" onclick="switchLang('de')">DE</button>
+      <nav class="lang-switcher-mobile" aria-label="Sprache">
+        <button class="lang-btn active" onclick="switchLang('de')" aria-current="true">DE</button>
         <button class="lang-btn" onclick="switchLang('en')">EN</button>
         <button class="lang-btn" onclick="switchLang('fr')">FR</button>
         <button class="lang-btn" onclick="switchLang('tr')">TR</button>
-      </div>
+      </nav>
       <div id="mobileNavGuest">
         <button class="btn-nav-ghost" onclick="openAuth('login');closeMobileMenu()" data-i18n="nav_login">Anmelden</button>
         <button class="btn-nav-primary" onclick="openAuth('register-choice');closeMobileMenu()" data-i18n="nav_register" style="margin-top:8px">Registrieren</button>
@@ -2884,8 +2882,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <div id="formSalonSignup" class="hidden">
         <h3 style="font-size:.95rem;font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em" data-i18n="lbl_contact_person">Kontaktperson</h3>
         <div class="form-row">
-          <div class="form-group"><label data-i18n="lbl_firstname">Vorname</label><input class="form-input" type="text" id="salonFirst" placeholder="Max"></div>
-          <div class="form-group"><label data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="salonLast" placeholder="Muster"></div>
+          <div class="form-group"><label for="salonFirst" data-i18n="lbl_firstname">Vorname</label><input class="form-input" type="text" id="salonFirst" placeholder="Max"></div>
+          <div class="form-group"><label for="salonLast" data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="salonLast" placeholder="Muster"></div>
         </div>
         <div class="form-group"><label for="salonEmail" data-i18n="lbl_email">E-Mail <span style="font-weight:400;color:var(--c-text-muted);font-size:.78rem">(Pflichtfeld)</span></label><input class="form-input" type="email" id="salonEmail" placeholder="salon@email.com" required aria-required="true"></div>
         <div class="form-group"><label for="salonPw" data-i18n="lbl_password">Passwort <span style="font-weight:400;color:var(--c-text-muted);font-size:.78rem">(Pflichtfeld)</span></label><input class="form-input" type="password" id="salonPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required aria-required="true"></div>
@@ -3892,7 +3890,9 @@ function switchLang(lang){
   localStorage.setItem('solen_lang',lang);
   document.documentElement.setAttribute('lang',lang);
   document.querySelectorAll('.lang-btn').forEach(b=>{
-    b.classList.toggle('active',b.textContent.trim().toLowerCase()===lang);
+    const isActive=b.textContent.trim().toLowerCase()===lang;
+    b.classList.toggle('active',isActive);
+    b.setAttribute('aria-current',isActive?'true':'false');
   });
   // Update dropdown lang-option active state
   const langMap={de:'Deutsch',en:'English',fr:'Fran\u00e7ais',tr:'T\u00fcrk\u00e7e'};
@@ -7990,9 +7990,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="reg-step active" id="regStep1">
         <div class="salon-reg-body">
           <p class="step-hint">Schritt 1 von 3: Basis-Informationen</p>
-          <div class="reg-field" id="field_reg_name"><label>Salonname (Pflichtfeld)</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization"><div class="reg-field-error" role="alert">Bitte Salonnamen eingeben.</div></div>
-          <div class="reg-field" id="field_reg_cat"><label>Kategorie (Pflichtfeld)</label>
-            <select id="reg_cat">
+          <div class="reg-field" id="field_reg_name"><label for="reg_name">Salonname (Pflichtfeld)</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization" aria-describedby="err_reg_name"><div class="reg-field-error" id="err_reg_name" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Salonnamen eingeben.</div></div>
+          <div class="reg-field" id="field_reg_cat"><label for="reg_cat">Kategorie (Pflichtfeld)</label>
+            <select id="reg_cat" aria-describedby="err_reg_cat">
               <option value="">Kategorie wählen...</option>
               <option>Friseursalon / Coiffeur</option><option>Barbershop</option>
               <option>Nagelstudio</option><option>Make-up &amp; Kosmetik</option>
@@ -8000,10 +8000,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
               <option>Augenbrauen &amp; Wimpern</option><option>Massage</option>
               <option>Tattoo &amp; Piercing</option><option>Sonstiges</option>
             </select>
-            <div class="reg-field-error" role="alert">Bitte Kategorie wählen.</div>
+            <div class="reg-field-error" id="err_reg_cat" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Kategorie wählen.</div>
           </div>
-          <div class="reg-field"><label>Telefon</label><input type="tel" id="reg_phone" placeholder="+41 79 000 00 00" autocomplete="tel"></div>
-          <div class="reg-field" id="field_reg_email"><label>E-Mail des Salons (Pflichtfeld)</label><input type="email" id="reg_email" placeholder="salon@example.com" autocomplete="email"><div class="reg-field-error" role="alert">Das sieht nicht ganz richtig aus – check mal das Format.</div></div>
+          <div class="reg-field"><label for="reg_phone">Telefon</label><input type="tel" id="reg_phone" placeholder="+41 79 000 00 00" autocomplete="tel"></div>
+          <div class="reg-field" id="field_reg_email"><label for="reg_email">E-Mail des Salons (Pflichtfeld)</label><input type="email" id="reg_email" placeholder="salon@example.com" autocomplete="email" aria-describedby="err_reg_email"><div class="reg-field-error" id="err_reg_email" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Das sieht nicht ganz richtig aus – check mal das Format.</div></div>
         </div>
         <div class="salon-reg-footer"><button type="button" class="reg-btn-next" onclick="regNext(1)">Weiter →</button></div>
       </div>
@@ -8011,9 +8011,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="reg-step" id="regStep2">
         <div class="salon-reg-body">
           <p class="step-hint">Schritt 2 von 3: Standort und Online-Präsenz</p>
-          <div class="reg-field" id="field_reg_street"><label>Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address"><div class="reg-field-error" role="alert">Bitte Strasse eingeben.</div></div>
-          <div class="reg-field" id="field_reg_nb"><label>Quartier (Pflichtfeld)</label>
-            <select id="reg_nb">
+          <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
+          <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
+            <select id="reg_nb" aria-describedby="err_reg_nb">
               <option value="">Quartier wählen...</option>
               <option>Altstadt Grossbasel</option><option>Altstadt Kleinbasel</option>
               <option>Am Ring</option><option>Bachletten</option><option>Bruderholz</option>
@@ -8022,10 +8022,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
               <option>St. Alban</option><option>St. Johann</option><option>Vorstädte</option>
               <option>Wettstein</option>
             </select>
-            <div class="reg-field-error" role="alert">Bitte Quartier wählen.</div>
+            <div class="reg-field-error" id="err_reg_nb" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Quartier wählen.</div>
           </div>
-          <div class="reg-field"><label>Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
-          <div class="reg-field"><label>Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
+          <div class="reg-field"><label for="reg_web">Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
+          <div class="reg-field"><label for="reg_ig">Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
         </div>
         <div class="salon-reg-footer">
           <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zurück</button>
@@ -8036,17 +8036,17 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="reg-step" id="regStep3">
         <div class="salon-reg-body">
           <p class="step-hint">Schritt 3 von 3: Beschreibung und Öffnungszeiten</p>
-          <div class="reg-field"><label>Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
-          <div class="reg-field"><label>Filiale von (optional)</label><select id="reg_parent_store_id" class="form-input" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
+          <div class="reg-field"><label for="reg_desc">Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
+          <div class="reg-field"><label for="reg_parent_store_id">Filiale von (optional)</label><select id="reg_parent_store_id" class="form-input" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
             <label>Öffnungszeiten</label>
             <div class="reg-hours" id="regHoursGrid"></div>
           </div>
           <div class="reg-field" id="field_reg_terms" style="margin-top:18px">
             <label style="display:flex;align-items:flex-start;gap:10px;text-transform:none;letter-spacing:0;font-size:.85rem;color:var(--text);font-weight:400;cursor:pointer">
-              <input type="checkbox" id="reg_terms" style="margin-top:2px;accent-color:var(--accent2);flex-shrink:0;width:20px;height:20px;min-width:20px">
-              <span>Ich akzeptiere die <a href="#" style="color:var(--accent2)" onclick="return false">Nutzungsbedingungen</a> und bestätige, dass ich berechtigt bin, diesen Salon einzutragen. *</span>
+              <input type="checkbox" id="reg_terms" aria-describedby="err_reg_terms" style="margin-top:2px;accent-color:var(--accent2);flex-shrink:0;width:20px;height:20px;min-width:20px">
+              <span>Ich akzeptiere die <a href="#" style="color:var(--accent2)" onclick="return false">Nutzungsbedingungen</a> und bestätige, dass ich berechtigt bin, diesen Salon einzutragen. (Pflichtfeld)</span>
             </label>
-            <div class="reg-field-error" role="alert">Bitte Nutzungsbedingungen akzeptieren.</div>
+            <div class="reg-field-error" id="err_reg_terms" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Nutzungsbedingungen akzeptieren.</div>
           </div>
         </div>
         <div class="salon-reg-footer">
@@ -8779,7 +8779,7 @@ function obValidateStep(step){
     if(!f.value.trim()){
       errors.push((f.previousElementSibling?.textContent||'Feld')+' ist erforderlich');
       f.classList.add('ob-field-error');
-      const msg=document.createElement('div');msg.className='ob-field-error-msg';msg.textContent='Pflichtfeld';
+      const msg=document.createElement('div');msg.className='ob-field-error-msg';msg.setAttribute('role','alert');msg.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Pflichtfeld';
       f.parentNode.insertBefore(msg,f.nextSibling);
     }
   });
