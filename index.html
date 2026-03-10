@@ -6819,7 +6819,7 @@ async function renderBookPage(salonId){
 
   // Init booking state
   const _now=new Date();
-  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[]};
+  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[],availDates:{},availLoaded:false,availLoadedFor:null};
   // Smart gender-based haircut tab default
   const _pg=currentProfile?.gender||'';
   bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
@@ -6906,6 +6906,43 @@ function bpValidateStep2(){
   bpGoStep(3);
 }
 
+// ── Helper: render the right booking view (modal or book page) ───────────────
+function _bmRender(){
+  if(document.getElementById('bpProgress')){renderBPStep(_bpCurrentStep);}
+  else{renderBookingModal();}
+}
+
+// ── BOOK PAGE: fetch stylist availability from staff_calendars ───────────────
+async function bpLoadStepAvailability(){
+  const salonId=bmState.store?.id;
+  if(!salonId||String(salonId).startsWith('d'))return;
+  bmState.availDates={};
+  bmState.availLoaded=false;
+  bmState.availLoadedFor=bmState.staffId||'egal';
+  try{
+    let q=sb.from('staff_calendars')
+      .select('date,start_time,end_time,staff_name')
+      .eq('salon_id',salonId)
+      .eq('block_type','working');
+    // Filter by selected stylist name if one is chosen
+    if(bmState.staffId&&bmState.staffName){
+      q=q.eq('staff_name',bmState.staffName);
+    }
+    const{data}=await q;
+    const avail={};
+    (data||[]).forEach(r=>{
+      const d=String(r.date).slice(0,10);
+      if(!avail[d])avail[d]=[];
+      avail[d].push({start:(r.start_time||'').slice(0,5),end:(r.end_time||'').slice(0,5)});
+    });
+    bmState.availDates=avail;
+    bmState.availLoaded=true;
+  }catch(e){
+    bmState.availLoaded=true; // don't block on error
+  }
+  if(_bpCurrentStep===2)renderBPStep(2);
+}
+
 // ── BOOK PAGE: step renderers ───────────────────────────────────────────────
 
 function renderBPStep(step){
@@ -6951,24 +6988,25 @@ function renderBPStep(step){
     if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
 
   } else if(step===2){
-    const today=new Date().toISOString().split('T')[0];
-    const maxDate=new Date(Date.now()+60*24*60*60*1000).toISOString().split('T')[0];
-    const slots=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
     let html=`<h3 class="bp-step-title">Datum &amp; Zeit</h3>`;
-    html+=`<div class="form-group" style="margin-bottom:22px">
-      <label style="font-size:.85rem;font-weight:700;margin-bottom:8px;display:block">Datum</label>
-      <input type="date" class="form-input bp-date-input" value="${bmState.date||today}" min="${today}" max="${maxDate}" onchange="bmState.date=this.value">
-    </div>`;
-    html+=`<div style="margin-bottom:24px">
-      <label style="font-size:.85rem;font-weight:700;margin-bottom:10px;display:block">Uhrzeit</label>`;
-    if(_bpSlotLoading){
-      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:20px;height:20px;border-width:2px;flex-shrink:0"></div><span>Verfügbarkeit wird geladen…</span></div>`;
-    } else {
-      html+=`<div class="bm-time-grid">`+slots.map(sl=>`<button class="bm-time-btn${bmState.time===sl?' selected':''}" onclick="bmState.time='${sl}';document.querySelectorAll('.bm-time-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected')">${sl}</button>`).join('')+`</div>`;
+    // Stylist-specific banner
+    if(bmState.staffId&&bmState.staffName){
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(45,122,79,.08);border:1.5px solid rgba(45,122,79,.3);border-radius:var(--r);margin-bottom:16px;font-size:.85rem;color:var(--c-success)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Zeige Verfügbarkeit von <strong>${bmState.staffName}</strong></span></div>`;
     }
-    html+=`</div>`;
-    html+=`<button class="btn-primary" style="min-height:48px" onclick="bpValidateStep2()">Weiter →</button>`;
+    // Inline calendar with availability dots
+    html+=renderBmCal();
+    // Loading indicator while availability is being fetched
+    if(!bmState.availLoaded){
+      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:16px;height:16px;border-width:2px;flex-shrink:0"></div><span style="font-size:.82rem">Verfügbarkeit wird geladen…</span></div>`;
+    }
+    // Time slots (duration auto-calculated from service + add-ons)
+    html+=renderBmTimeSlots();
+    html+=`<button class="btn-primary" style="min-height:48px;margin-top:8px" onclick="bpValidateStep2()">Weiter →</button>`;
     content.innerHTML=html;
+    // Fetch availability if not yet loaded for current staff selection
+    if(!bmState.availLoaded||bmState.availLoadedFor!==(bmState.staffId||'egal')){
+      bpLoadStepAvailability();
+    }
 
   } else if(step===3){
     const svc=bmState.service;
@@ -8745,7 +8783,7 @@ function bmCalNav(dir){
   bmState.bmCalMonth=(bmState.bmCalMonth||0)+dir;
   if(bmState.bmCalMonth>11){bmState.bmCalMonth=0;bmState.bmCalYear++;}
   if(bmState.bmCalMonth<0){bmState.bmCalMonth=11;bmState.bmCalYear--;}
-  renderBookingModal();
+  _bmRender();
 }
 
 function renderBmCal(){
@@ -8766,19 +8804,24 @@ function renderBmCal(){
   h+=`<div class="bm-cal-days-row">${days.map(d=>`<div class="bm-cal-day-hd">${d}</div>`).join('')}</div>`;
   h+=`<div class="bm-cal-grid">`;
   for(let i=0;i<startDow;i++)h+='<div></div>';
+  const availDates=bmState.availDates||null;
+  const availLoaded=bmState.availLoaded||false;
+  const hasAnyAvailData=availLoaded&&availDates&&Object.keys(availDates).length>0;
   for(let d=1;d<=dim;d++){
     const dt=new Date(yr,mo,d);
     const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isPast=dt<today;
     const isSel=bmState.date===ds;
     const isTod=dt.getTime()===today.getTime();
+    const dayHasAvail=!hasAnyAvailData||!!(availDates[ds]&&availDates[ds].length);
     let cls='bm-cal-day';
     if(isPast)cls+=' disabled';
     else if(isSel)cls+=' selected';
+    else if(!dayHasAvail)cls+=' disabled';
     else if(isTod)cls+=' today available';
     else cls+=' available';
-    const oc=isPast?'':`bmSelectDate('${ds}')`;
-    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${isPast?-1:0}">${d}</div>`;
+    const oc=(isPast||!dayHasAvail)?'':`bmSelectDate('${ds}')`;
+    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${(isPast||!dayHasAvail)?-1:0}">${d}</div>`;
   }
   h+=`</div></div>`;
   return h;
@@ -8788,22 +8831,32 @@ async function bmSelectDate(ds){
   bmState.date=ds;
   bmState.time='';
   bmState.bookedSlots=[];
-  bmState.staffWorkStart=null;
-  bmState.staffWorkEnd=null;
-  renderBookingModal();
+  // Use preloaded availability for working hours if available
+  const preAvail=(bmState.availDates||{})[ds];
+  if(preAvail&&preAvail.length){
+    const starts=preAvail.map(a=>a.start).filter(Boolean).sort();
+    const ends=preAvail.map(a=>a.end).filter(Boolean).sort();
+    bmState.staffWorkStart=starts[0]||null;
+    bmState.staffWorkEnd=ends[ends.length-1]||null;
+  }else{
+    bmState.staffWorkStart=null;
+    bmState.staffWorkEnd=null;
+  }
+  _bmRender();
   try{
     const sid=typeof bmState.store?.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store?.id;
     if(sid){
       const{data:bkd}=await sb.from('bookings').select('booking_time').eq('salon_id',sid).eq('booking_date',ds).neq('status','cancelled');
       bmState.bookedSlots=(bkd||[]).map(r=>(r.booking_time||'').slice(0,5)).filter(Boolean);
-      if(_selStaffId){
+      // Fallback: fetch staff_calendars directly if no preloaded availability
+      if(!preAvail&&_selStaffId){
         const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time,staff_name').eq('salon_id',sid).eq('date',ds).eq('block_type','working');
         const wday=scd&&scd.find(r=>!_selStaffId||r.staff_id===_selStaffId||true);
         if(wday){bmState.staffWorkStart=(wday.start_time||'').slice(0,5);bmState.staffWorkEnd=(wday.end_time||'').slice(0,5);}
       }
     }
   }catch(e){}
-  renderBookingModal();
+  _bmRender();
 }
 
 function calcBmDuration(){
@@ -9770,6 +9823,7 @@ async function loadStaffPickerInBooking(storeId){
         <div class="sc-stars">${stars}</div>
         <div class="sc-count">124 Termine</div>
       </div>
+      ${isSelected?'<span class="sc-badge sc-badge-eigener">Eigener Kalender</span>':''}
     </div>`;
   }).join('');
   // Replace grid content: keep Egal card first, append staff cards
@@ -9795,10 +9849,26 @@ function selectStylistCard(id,name,el){
   bmState.staffId=id||null;
   bmState.staffName=name||null;
   _selStaffId=id||null;_selStaffName=name||null;
-  document.querySelectorAll('#stylistPickerCards .stylist-card').forEach(c=>c.classList.remove('selected'));
-  if(el)el.classList.add('selected');
+  // Invalidate preloaded availability so step 2 re-fetches for new selection
+  bmState.availLoaded=false;
+  bmState.availDates={};
+  document.querySelectorAll('#stylistPickerCards .stylist-card').forEach(c=>{
+    c.classList.remove('selected');
+    const eb=c.querySelector('.sc-badge-eigener');
+    if(eb)eb.remove();
+  });
+  if(el){
+    el.classList.add('selected');
+    if(id){
+      const badge=document.createElement('span');
+      badge.className='sc-badge sc-badge-eigener';
+      badge.textContent='Eigener Kalender';
+      el.appendChild(badge);
+    }
+  }
   const summaryVal=document.getElementById('summaryStylstVal');
   if(summaryVal)summaryVal.textContent=name||'Bester Verfügbarer';
+  updateBookingSummary();
 }
 
 // Close add-staff modal on backdrop click
