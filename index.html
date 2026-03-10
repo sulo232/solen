@@ -2253,6 +2253,66 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   .cal-overlay{align-items:center}
   .bottom-nav{display:none}
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   THEME 11 — DARK GLASS DESIGN SYSTEM
+   #0f0f0f base · quartier card style · selective glass · accent = selected only
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. TRUE #0f0f0f BACKGROUND ── */
+[data-theme="dark"]{--bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121}}
+
+/* ── 2. QUARTIER CARD STYLE — 20px radius everywhere, photo-first ── */
+.store-card,.salon-card{border-radius:20px}
+[data-theme="dark"] .store-card{border-color:rgba(255,255,255,0.08);background:#1a1a1a}
+[data-theme="dark"] .store-card:hover{border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .store-card{border-color:rgba(255,255,255,0.08);background:#1a1a1a}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .store-card:hover{border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05)}}
+
+/* Heart / fav button → dark glass style matching .qpc-heart */
+[data-theme="dark"] .fav-btn{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}
+[data-theme="dark"] .fav-btn:hover{background:rgba(0,0,0,0.65);transform:scale(1.1)}
+[data-theme="dark"] .fav-btn.is-fav{background:rgba(212,88,106,0.65);color:#fff}
+[data-theme="dark"] .fav-btn.is-fav svg{fill:#fff;stroke:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn.is-fav{background:rgba(212,88,106,0.65);color:#fff}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn.is-fav svg{fill:#fff;stroke:#fff}}
+
+/* ── 3. GLASS FORMULA: rgba(255,255,255,0.08) + blur(16px) + 1px rgba(255,255,255,0.1) border ── */
+
+/* A. Booking summary sidebar */
+[data-theme="dark"] .booking-summary,
+[data-theme="dark"] .bm-summary{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:16px}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-summary,:root:not([data-theme="light"]) .bm-summary{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:16px}}
+
+/* B. Mobile bottom bar */
+[data-theme="dark"] .bottom-nav{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-top:1px solid rgba(255,255,255,0.08)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .bottom-nav{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-top:1px solid rgba(255,255,255,0.08)}}
+
+/* C. Tab headers — venue tabs & dashboard pill bar */
+[data-theme="dark"] .venue-tabs{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1)}
+[data-theme="dark"] .dash-tab-bar{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}
+[data-theme="dark"] .dash-tab-btn.active{background:rgba(255,255,255,0.12);color:var(--c-text,#f0f0f0);box-shadow:0 1px 4px rgba(0,0,0,0.3);font-weight:600}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .venue-tabs{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .dash-tab-bar{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .dash-tab-btn.active{background:rgba(255,255,255,0.12);color:var(--c-text,#f0f0f0);box-shadow:0 1px 4px rgba(0,0,0,0.3)}}
+
+/* D. Hovered stylist & haircut cards — glass on hover, no accent color until selected */
+[data-theme="dark"] .booking-staff-card:hover:not(.selected),
+[data-theme="dark"] .svc-card:hover:not(.selected),
+[data-theme="dark"] .bm-svc-card:hover:not(.selected){background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,0.15);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-staff-card:hover:not(.selected),:root:not([data-theme="light"]) .svc-card:hover:not(.selected),:root:not([data-theme="light"]) .bm-svc-card:hover:not(.selected){background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,0.15);box-shadow:0 4px 16px rgba(0,0,0,0.2)}}
+
+/* ── 4. ORANGE ACCENT = SELECTED ONLY ── */
+/* Selected stylist card — accent ring + glow */
+[data-theme="dark"] .booking-staff-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.12);box-shadow:0 0 0 1px var(--c-accent,#D4586A),0 4px 16px rgba(212,88,106,0.15)}
+/* Selected service / haircut cards */
+[data-theme="dark"] .svc-card.selected,
+[data-theme="dark"] .bm-svc-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.1)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-staff-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.12);box-shadow:0 0 0 1px var(--c-accent,#D4586A),0 4px 16px rgba(212,88,106,0.15)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .svc-card.selected,:root:not([data-theme="light"]) .bm-svc-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.1)}}
+/* ── END THEME 11 ── */
 </style>
 
   <meta name="description" content="Salons und Beauty-Studios in Basel buchen. Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
