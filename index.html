@@ -1560,6 +1560,32 @@ body{font-family:var(--font-body,system-ui);}
 .dash-tab-btn{flex:1;min-width:80px;padding:10px 14px;background:transparent;border:none;border-radius:var(--r-md,12px);cursor:pointer;font-size:.85rem;font-weight:500;color:var(--c-text-muted,#888);white-space:nowrap;transition:all .15s;}
 .dash-tab-btn.active{background:var(--c-bg,#fff);color:var(--c-text,#1f1f1f);box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:600;}
 /* === END BATCH1 CSS === */
+
+/* ═══ CRM TAB ═══ */
+.crm-container{padding:1.5rem}.crm-search{width:100%;padding:.65rem 1rem;border:1px solid var(--c-border,#E2DCD3);border-radius:var(--r-md,12px);background:var(--c-surface,#fff);color:var(--c-text,#1F1F1F);font-size:.95rem;margin-bottom:1rem}
+.crm-list{display:flex;flex-direction:column;gap:1rem}.crm-card{background:var(--c-surface,#fff);border:1px solid var(--c-border,#E2DCD3);border-radius:var(--r-lg,16px);padding:1.25rem;transition:box-shadow .2s}.crm-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.crm-card-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}.crm-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--c-cta,#FF6B6B),var(--c-accent,#4ECDC4));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;flex-shrink:0}
+.crm-info{flex:1;min-width:0}.crm-info strong{display:block;font-weight:600}.crm-phone{font-size:.85rem;color:var(--c-text-muted,#8C7E6F)}.crm-stats{display:flex;flex-direction:column;align-items:flex-end;gap:.2rem}.crm-badge{background:var(--c-accent,#4ECDC4);color:#fff;font-size:.75rem;padding:.2rem .6rem;border-radius:20px;font-weight:600}.crm-last{font-size:.78rem;color:var(--c-text-muted)}
+.crm-allergy-warning{background:#fff3f3;border:1px solid #f5c6c6;border-radius:8px;padding:.5rem .75rem;margin-bottom:.5rem;font-size:.88rem}.crm-notes-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem}
+.crm-notes-input,.crm-allergy-input{width:100%;padding:.5rem .75rem;border:1px solid var(--c-border,#E2DCD3);border-radius:8px;background:var(--c-bg,#F8F4ED);font-size:.85rem;resize:vertical;font-family:inherit}.crm-services{display:flex;flex-wrap:wrap;gap:.35rem}.crm-service-chip{background:var(--c-surface-alt,#F3EEE6);border-radius:20px;padding:.2rem .7rem;font-size:.78rem;color:var(--c-text-secondary,#6B5E4F)}
+/* ═══ STAFF COMMISSION ═══ */
+.staff-comm-container{padding:1.5rem}.staff-comm-row{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--c-surface,#fff);border:1px solid var(--c-border,#E2DCD3);border-radius:12px;margin-bottom:.5rem}.staff-avatar-sm{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--c-cta,#FF6B6B),var(--c-accent,#4ECDC4));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem;flex-shrink:0}
+.staff-comm-info{flex:1}.staff-comm-info strong{display:block;font-size:.9rem}.staff-comm-info span{font-size:.8rem;color:var(--c-text-muted)}.staff-comm-rate{display:flex;align-items:center;gap:.4rem;font-size:.85rem}.comm-input{width:56px;padding:.3rem .5rem;border:1px solid var(--c-border);border-radius:6px;text-align:center;font-size:.85rem}.btn-remove-staff-sm{padding:.3rem .7rem;border:1px solid #e74c3c;color:#e74c3c;background:none;border-radius:6px;cursor:pointer;font-size:.8rem}
+.staff-comm-summary{display:flex;flex-direction:column;gap:.5rem}.comm-summary-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;padding:.65rem 1rem;background:var(--c-surface-alt,#F3EEE6);border-radius:10px;font-size:.88rem}.comm-amount{color:var(--c-success,#2d7a4f);font-weight:600}.btn-add-staff-comm{padding:.5rem 1rem;background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.88rem}
+/* ═══ MARKETING ═══ */
+.marketing-container{padding:1.5rem}.marketing-compose{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem}.marketing-form label{display:block;font-size:.85rem;font-weight:600;margin:.75rem 0 .25rem}.mkt-select,.mkt-input{width:100%;padding:.6rem .9rem;border:1px solid var(--c-border,#E2DCD3);border-radius:8px;background:var(--c-bg,#F8F4ED);font-size:.9rem;margin-bottom:.25rem}.mkt-textarea{width:100%;padding:.6rem .9rem;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.9rem;resize:vertical;font-family:inherit}.mkt-preview-hint{min-height:1.2rem;font-size:.85rem;margin:.4rem 0}.mkt-actions{display:flex;gap:.75rem;margin-top:.75rem}.btn-mkt-preview{padding:.55rem 1.1rem;border:1px solid var(--c-accent,#4ECDC4);color:var(--c-accent);background:none;border-radius:8px;cursor:pointer}.btn-mkt-send{padding:.55rem 1.1rem;background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600}.mkt-history{display:flex;flex-direction:column;gap:.5rem}.mkt-hist-row{background:var(--c-surface-alt,#F3EEE6);border-radius:10px;padding:.75rem 1rem}.mkt-hist-info strong{display:block;font-size:.9rem}.mkt-hist-preview{font-size:.82rem;color:var(--c-text-muted);margin-top:.2rem}
+/* ═══ WEATHER ═══ */
+.weather-bar{background:var(--c-surface,#fff);border-bottom:1px solid var(--c-border,#E2DCD3);padding:.5rem 1rem;text-align:center}.weather-pill{display:inline-flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--c-text-secondary,#6B5E4F);background:var(--c-surface-alt,#F3EEE6);padding:.35rem .9rem;border-radius:20px}.weather-pill.weather-deal{background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0369a1;font-weight:500}.weather-icon{font-size:1.1rem}.weather-deal-text{font-size:.8rem;color:#0369a1;margin-left:.25rem}
+/* ═══ AI HELPER ═══ */
+.ai-helper-fab{position:fixed;bottom:90px;right:20px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--c-cta,#FF6B6B),#f39c12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 16px rgba(255,107,107,.35);z-index:900;transition:transform .2s}.ai-helper-fab:hover{transform:scale(1.1)}
+#aiHelperModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:1rem}.ai-helper-box{background:var(--c-bg,#F8F4ED);border-radius:20px;padding:1.5rem;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.ai-helper-box h3{margin:0 0 .25rem;font-size:1.2rem}.ai-helper-box p{color:var(--c-text-muted);font-size:.88rem;margin:0 0 1rem}.ai-helper-input-row{display:flex;gap:.5rem;margin-bottom:1rem}
+#aiHelperInput{flex:1;padding:.65rem 1rem;border:1.5px solid var(--c-border,#E2DCD3);border-radius:10px;font-size:.95rem;background:var(--c-surface,#fff)}#aiHelperInput:focus{outline:none;border-color:var(--c-cta,#FF6B6B)}.btn-ai-search{padding:.65rem 1.1rem;background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:.9rem}.ai-result-card{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}.ai-result-card:hover{background:var(--c-surface-alt,#F3EEE6)}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}.ai-suggestion-chip{background:var(--c-surface-alt,#F3EEE6);border:1px solid var(--c-border);border-radius:20px;padding:.3rem .75rem;font-size:.82rem;cursor:pointer;color:var(--c-text-secondary)}.ai-suggestion-chip:hover{background:var(--c-border)}
+/* ═══ PANEL HEADER ═══ */
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}.panel-header h3{margin:0;font-size:1.1rem;font-weight:700}
+/* ═══ ADMIN APPROVAL ═══ */
+.admin-pending-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1rem}.admin-salon-row{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:1rem}.admin-salon-row .salon-meta{flex:1}.admin-salon-row .salon-meta strong{display:block}.admin-salon-row .salon-meta span{font-size:.82rem;color:var(--c-text-muted)}.btn-approve{padding:.4rem .9rem;background:#2d7a4f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;margin-right:.35rem}.btn-reject{padding:.4rem .9rem;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+.approved-notice{background:#e8f5e9;color:#2d7a4f;border-radius:8px;padding:.5rem .9rem;font-size:.85rem;margin-top:.5rem}
 </style>
 
   <meta name="description" content="Salons &amp; Beauty-Studios in Basel buchen — Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -1718,6 +1744,7 @@ body{font-family:var(--font-body,system-ui);}
   </section>
 
 <section id="discoverySection" class="discovery-section container">
+<div id="weatherWidget" class="weather-bar"></div>
   <div style="position:relative">
     <div class="search-bar-wrap">
       <span style="font-size:18px;opacity:.5">&#128269;</span>
@@ -8512,6 +8539,118 @@ function initFilterPills(){document.querySelectorAll(".filter-pill[data-cat]").f
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});
 function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="empty-state"><div class="empty-state-icon">'+icon+'</div><h3>'+title+'</h3><p>'+text+'</p>'+(lbl?'<button class="btn btn-primary" onclick="'+fn+'">'+lbl+'</button>':"")+"</div>";}
 // === END BATCH1 JS ===
+
+// ═══════════════════════════════
+// DASHBOARD TAB RENDER FUNCTIONS
+// ═══════════════════════════════
+// Load persisted CRM data
+try{window._crmNotes=JSON.parse(localStorage.getItem('solen_crm_notes')||'{}');}catch(e){window._crmNotes={};}
+try{window._crmAllergies=JSON.parse(localStorage.getItem('solen_crm_allergies')||'{}');}catch(e){window._crmAllergies={};}
+
+async function renderCRM(storeId){
+  const panel=document.getElementById('dashTabCRM');
+  if(!panel)return;
+  panel.innerHTML='<div class="crm-container"><div class="panel-header"><h3>Kundenkartei</h3></div><input id="crmSearch" class="crm-search" placeholder="Kunden suchen..." oninput="filterCRMClients()"><div id="crmClientList" class="crm-list"><div style="padding:2rem;text-align:center;color:var(--c-text-muted)">Lade Kunden...</div></div></div>';
+  const {data:bookings}=await window._sb.from('bookings').select('id,customer_name,customer_phone,service_name,booking_date,status').eq('store_id',storeId).order('booking_date',{ascending:false});
+  const list=document.getElementById('crmClientList');
+  if(!list)return;
+  if(!bookings||!bookings.length){list.innerHTML='<div class="empty-state" style="padding:2rem;text-align:center;color:var(--c-text-muted)">Noch keine Kunden vorhanden.</div>';return;}
+  const clients={};
+  bookings.forEach(b=>{const key=b.customer_phone||b.customer_name||'unbekannt';if(!clients[key])clients[key]={name:b.customer_name,phone:b.customer_phone,visits:[]};clients[key].visits.push(b);});
+  list.innerHTML=Object.entries(clients).map(([key,c])=>{
+    const notes=(window._crmNotes[storeId]||{})[key]||'';
+    const allergy=(window._crmAllergies[storeId]||{})[key]||'';
+    const lastDate=c.visits[0]?new Date(c.visits[0].booking_date).toLocaleDateString('de-CH'):'';
+    return '<div class="crm-card" id="crmCard_'+encodeURIComponent(key)+'">'
+      +'<div class="crm-card-header"><div class="crm-avatar">'+(c.name||'?').charAt(0).toUpperCase()+'</div>'
+      +'<div class="crm-info"><strong>'+(c.name||'Unbekannt')+'</strong><span class="crm-phone">'+(c.phone||'')+'</span></div>'
+      +'<div class="crm-stats"><span class="crm-badge">'+c.visits.length+' Besuche</span><span class="crm-last">'+lastDate+'</span></div></div>'
+      +(allergy?'<div class="crm-allergy-warning"><span style="color:#e74c3c;font-weight:600">&#9888; Allergie:</span> '+allergy+'</div>':'')
+      +'<div class="crm-notes-row">'
+      +'<textarea class="crm-notes-input" placeholder="Notizen (Vorlieben, Haartyp...)" onchange="saveCRMNote(''+storeId+'',''+key+'',this.value)">'+notes+'</textarea>'
+      +'<input class="crm-allergy-input" placeholder="Allergien/Hinweise" value="'+allergy+'" onchange="saveCRMAllergy(''+storeId+'',''+key+'',this.value)">'
+      +'</div>'
+      +'<div class="crm-services">'+c.visits.slice(0,3).map(v=>'<span class="crm-service-chip">'+(v.service_name||'Service')+'</span>').join('')+'</div>'
+      +'</div>';
+  }).join('');
+}
+function filterCRMClients(){const q=(document.getElementById('crmSearch')?.value||'').toLowerCase();document.querySelectorAll('.crm-card').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q)?'':'none';});}
+function saveCRMNote(sid,key,val){if(!window._crmNotes[sid])window._crmNotes[sid]={};window._crmNotes[sid][key]=val;try{localStorage.setItem('solen_crm_notes',JSON.stringify(window._crmNotes));}catch(e){}}
+function saveCRMAllergy(sid,key,val){if(!window._crmAllergies[sid])window._crmAllergies[sid]={};window._crmAllergies[sid][key]=val;try{localStorage.setItem('solen_crm_allergies',JSON.stringify(window._crmAllergies));}catch(e){}}
+
+async function renderStaffCommission(storeId){
+  const panel=document.getElementById('dashTabMitarbeiter');
+  if(!panel)return;
+  panel.innerHTML='<div class="staff-comm-container"><div class="panel-header"><h3>Mitarbeiter &amp; Provisionen</h3><button class="btn-add-staff-comm" onclick="openAddStaffComm(''+storeId+'')">+ Mitarbeiter</button></div><div id="staffCommList"></div><hr style="margin:1.5rem 0"><h4 style="margin-bottom:1rem">Abrechnungsübersicht</h4><div id="staffCommSummary"></div></div>';
+  await renderStaffCommList(storeId);
+}
+async function renderStaffCommList(sid){
+  const list=document.getElementById('staffCommList');if(!list)return;
+  const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();
+  const staffList=store?.staff_list||[];
+  if(!staffList.length){list.innerHTML='<div style="padding:1rem;color:var(--c-text-muted)">Noch keine Mitarbeiter. Klicke "+ Mitarbeiter" um zu beginnen.</div>';}
+  else{list.innerHTML=staffList.map((s,i)=>'<div class="staff-comm-row"><div class="staff-avatar-sm">'+s.name.charAt(0)+'</div><div class="staff-comm-info"><strong>'+s.name+'</strong><span>'+(s.role||'Stylist')+'</span></div><div class="staff-comm-rate"><label>Provision %</label><input type="number" class="comm-input" value="'+(s.commission||0)+'" min="0" max="100" onchange="updateStaffCommission(''+sid+'','+i+',this.value)"></div><button class="btn-remove-staff-sm" onclick="removeStaffMember(''+sid+'','+i+')">Entfernen</button></div>').join('');}
+  const {data:bookings}=await window._sb.from('bookings').select('staff_name,service_price').eq('store_id',sid).eq('status','confirmed');
+  const summary=document.getElementById('staffCommSummary');
+  if(summary&&bookings?.length){const byStaff={};bookings.forEach(b=>{const k=b.staff_name||'Unzugewiesen';if(!byStaff[k])byStaff[k]={n:0,rev:0};byStaff[k].n++;byStaff[k].rev+=parseFloat(b.service_price||0);});const sc={};staffList.forEach(s=>{sc[s.name]=s.commission||0;});summary.innerHTML=Object.entries(byStaff).map(([name,d])=>{const rate=sc[name]||0;const comm=(d.rev*rate/100).toFixed(2);return'<div class="comm-summary-row"><span>'+name+'</span><span>'+d.n+' Buchungen</span><span>CHF '+d.rev.toFixed(2)+'</span><span class="comm-amount">CHF '+comm+' ('+rate+'%)</span></div>';}).join('');}
+  else if(summary)summary.innerHTML='<div style="color:var(--c-text-muted)">Noch keine Buchungen.</div>';
+}
+function openAddStaffComm(sid){const name=prompt('Name des Mitarbeiters:');if(!name?.trim())return;const role=prompt('Rolle (z.B. Stylistin, Barbier):')||'Stylist';const comm=parseInt(prompt('Provision % (0-100):')||'0');addStaffToStore(sid,{name:name.trim(),role,commission:Math.min(100,Math.max(0,comm))});}
+async function addStaffToStore(sid,sm){const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();const list=store?.staff_list||[];list.push(sm);await window._sb.from('stores').update({staff_list:list}).eq('id',sid);renderStaffCommList(sid);}
+async function removeStaffMember(sid,idx){if(!confirm('Mitarbeiter entfernen?'))return;const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();const list=store?.staff_list||[];list.splice(idx,1);await window._sb.from('stores').update({staff_list:list}).eq('id',sid);renderStaffCommList(sid);}
+async function updateStaffCommission(sid,idx,val){const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();const list=store?.staff_list||[];if(list[idx])list[idx].commission=parseInt(val)||0;await window._sb.from('stores').update({staff_list:list}).eq('id',sid);}
+
+async function renderMarketingBlast(storeId){
+  const panel=document.getElementById('dashTabMarketing');
+  if(!panel)return;
+  panel.innerHTML='<div class="marketing-container"><div class="panel-header"><h3>Marketing &amp; Aktionen</h3></div><div class="marketing-compose"><h4 style="margin:0 0 1rem">Nachricht an Kunden senden</h4><div class="marketing-form"><label>Zielgruppe</label><select id="mktTarget" class="mkt-select"><option value="all">Alle Kunden</option><option value="recent">Letzte 30 Tage</option><option value="inactive">Inaktiv 60+ Tage</option></select><label>Betreff</label><input id="mktSubject" class="mkt-input" placeholder="z.B. Frühlingsangebot – 20% auf alle Services!" maxlength="80"><label>Nachricht</label><textarea id="mktMessage" class="mkt-textarea" rows="4" maxlength="320" placeholder="Deine Nachricht..."></textarea><div class="mkt-preview-hint" id="mktPreviewHint"></div><div class="mkt-actions"><button class="btn-mkt-preview" onclick="previewMarketingBlast(''+storeId+'')">Vorschau</button><button class="btn-mkt-send" onclick="sendMarketingBlast(''+storeId+'')">Kampagne starten</button></div></div></div><hr style="margin:1.5rem 0"><h4>Gesendete Kampagnen</h4><div id="mktHistory"></div></div>';
+  loadMarketingHistory(storeId);
+}
+async function previewMarketingBlast(sid){const target=document.getElementById('mktTarget')?.value;const {data:b}=await window._sb.from('bookings').select('customer_name,customer_phone,booking_date').eq('store_id',sid);if(!b)return;const now=Date.now();let f=b;if(target==='recent')f=b.filter(x=>(now-new Date(x.booking_date))<30*86400000);if(target==='inactive')f=b.filter(x=>(now-new Date(x.booking_date))>60*86400000);const u=[...new Map(f.map(x=>[x.customer_phone||x.customer_name,x])).values()];const hint=document.getElementById('mktPreviewHint');if(hint)hint.innerHTML='<span style="color:var(--c-accent,#4ECDC4)">&#10003; '+u.length+' Kunden werden erreicht</span>';}
+function sendMarketingBlast(sid){const subject=document.getElementById('mktSubject')?.value?.trim();const message=document.getElementById('mktMessage')?.value?.trim();if(!subject||!message){alert('Bitte Betreff und Nachricht ausfüllen.');return;}const key='solen_mkt_'+sid;let h=[];try{h=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}h.unshift({subject,message,sentAt:new Date().toISOString(),target:document.getElementById('mktTarget')?.value});localStorage.setItem(key,JSON.stringify(h.slice(0,20)));alert('Kampagne gespeichert! SMS/E-Mail Versand wird in Kürze integriert.');loadMarketingHistory(sid);document.getElementById('mktSubject').value='';document.getElementById('mktMessage').value='';}
+function loadMarketingHistory(sid){const hist=document.getElementById('mktHistory');if(!hist)return;let h=[];try{h=JSON.parse(localStorage.getItem('solen_mkt_'+sid)||'[]');}catch(e){}if(!h.length){hist.innerHTML='<div style="color:var(--c-text-muted);padding:1rem">Noch keine Kampagnen gesendet.</div>';return;}hist.innerHTML=h.map(x=>'<div class="mkt-hist-row"><div class="mkt-hist-info"><strong>'+x.subject+'</strong><span style="color:var(--c-text-muted)">'+new Date(x.sentAt).toLocaleDateString('de-CH')+' &bull; '+(x.target==='all'?'Alle':x.target==='recent'?'30 Tage':'Inaktiv')+'</span></div><div class="mkt-hist-preview">'+x.message.substring(0,60)+'&hellip;</div></div>').join('');}
+
+function renderGallery(storeId){window._currentGalleryStore=storeId;if(typeof renderGalleryGrid==='function')renderGalleryGrid();}
+
+async function loadWeatherWidget(){
+  const w=document.getElementById('weatherWidget');if(!w)return;
+  try{
+    const base='https://api.open-meteo.com/v1/forecast';
+    const params='?latitude=47.5596&longitude=7.5886&current_weather=true&timezone=Europe%2FZurich&forecast_days=1';
+    const r=await fetch(base+params);const d=await r.json();
+    const cw=d.current_weather;const code=cw?.weathercode;const temp=cw?.temperature;
+    const isRainy=code>=51&&code<70;const isSnowy=code>=71&&code<=77;
+    let icon='☀',label='Schönes Wetter',deal=null;
+    if(isSnowy){icon='❄';label='Schnee in Basel';deal='Perfekt für Indoor-Wellness! Wärme dich auf.';}
+    else if(isRainy){icon='⛆';label='Regentag in Basel';deal='Ideal für eine Massage – jetzt buchen!';}
+    else if(code>=2){icon='☁';label='Bewölkt';}
+    w.innerHTML='<div class="weather-pill'+(isRainy||isSnowy?' weather-deal':'')+'"><span class="weather-icon">'+icon+'</span><span class="weather-temp">'+Math.round(temp)+'°C</span><span class="weather-label">'+label+'</span>'+(deal?'<span class="weather-deal-text">'+deal+'</span>':'')+'</div>';
+    if(isRainy)window._weatherBoostCat='massage';
+  }catch(e){if(document.getElementById('weatherWidget'))document.getElementById('weatherWidget').innerHTML='';}
+}
+function openAIHelper(){const m=document.getElementById('aiHelperModal');if(m){m.style.display='flex';document.getElementById('aiHelperInput')?.focus();}}
+function closeAIHelper(){const m=document.getElementById('aiHelperModal');if(m)m.style.display='none';}
+async function submitAIHelperQuery(){
+  const input=document.getElementById('aiHelperInput');const resultsEl=document.getElementById('aiHelperResults');
+  if(!input||!resultsEl)return;const query=input.value.trim();if(!query)return;
+  resultsEl.innerHTML='<div style="color:var(--c-text-muted);padding:1rem">Suche...</div>';
+  const priceMatch=query.match(/(d+)s*(?:chf|fr.?)/i);const maxPrice=priceMatch?parseInt(priceMatch[1]):null;
+  const catMap={'maniküre':'nails','nagel':'nails','nails':'nails','coiffeur':'coiffeur','haarschnitt':'coiffeur','massage':'massage','spa':'wellness','barbier':'barbershop','wimpern':'beauty','kosmetik':'beauty','beauty':'beauty'};
+  let detectedCat=null;const qL=query.toLowerCase();
+  for(const[kw,cat] of Object.entries(catMap)){if(qL.includes(kw)){detectedCat=cat;break;}}
+  const allStores=window._allStores||window.allStores||[];let filtered=[...allStores];
+  if(detectedCat)filtered=filtered.filter(s=>(s.category||'').toLowerCase().includes(detectedCat));
+  if(maxPrice)filtered=filtered.filter(s=>{const svcs=window.allServices?.filter(x=>x.store_id===s.id)||[];return svcs.some(sv=>parseFloat(sv.price||0)<=maxPrice)||(s.min_price&&parseFloat(s.min_price)<=maxPrice);});
+  if(qL.includes('diese woche')||qL.includes('this week'))filtered=filtered.filter(s=>s.available_today||s.slots_available);
+  if(!filtered.length){resultsEl.innerHTML='<div style="padding:1rem"><p>Keine Salons für &ldquo;'+query+'&rdquo; gefunden.</p><p style="color:var(--c-text-muted)">Versuche einen anderen Begriff.</p></div>';return;}
+  resultsEl.innerHTML='<p style="color:var(--c-text-muted);font-size:.85rem;margin-bottom:.75rem">'+filtered.length+' Salon'+(filtered.length>1?'s':'')+' gefunden:</p>'+filtered.slice(0,6).map(s=>'<div class="ai-result-card" onclick="'+(typeof openBookingForStore==='function'?'openBookingForStore('+s.id+');':'')+'closeAIHelper()"><div><strong>'+(s.name||'Salon')+'</strong><br><span style="font-size:.8rem;color:var(--c-text-muted)">'+(s.neighbourhood||s.quartier||'Basel')+'</span></div><span style="color:var(--c-cta,#FF6B6B);font-weight:600">'+(s.min_price?'ab CHF '+s.min_price:'')+'</span></div>').join('');
+}
+async function checkAndSetVerified(storeId){
+  try{const {count}=await window._sb.from('bookings').select('id',{count:'exact',head:true}).eq('store_id',storeId).eq('status','confirmed');if(count>=10){await window._sb.from('stores').update({is_verified:true}).eq('id',storeId).is('is_verified',null);}}catch(e){}
+}
+// Init weather on page load
+document.addEventListener('DOMContentLoaded',function(){loadWeatherWidget();});
+if(document.readyState!=='loading')loadWeatherWidget();
 </script>
 
 <!-- PWA Install Banner -->
@@ -8589,5 +8728,26 @@ function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementB
 </div>
 <!-- Dark mode toggle + skip link (appended to body) -->
 <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
+
+<button class="ai-helper-fab" onclick="openAIHelper()" title="KI-Assistent" aria-label="KI-Salonsuche">&#129302;</button>
+<div id="aiHelperModal" role="dialog" aria-modal="true" aria-labelledby="aiHelperTitle">
+  <div class="ai-helper-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">
+      <div><h3 id="aiHelperTitle">KI-Salonsuche</h3><p>Beschreib was du suchst – ich finde den passenden Salon.</p></div>
+      <button onclick="closeAIHelper()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--c-text-muted,#888)" aria-label="Schliessen">&#10005;</button>
+    </div>
+    <div class="ai-suggestions">
+      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Maniküre unter 80 CHF</span>
+      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Massage Kleinbasel</span>
+      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Coiffeur diese Woche</span>
+      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Günstiger Barbier</span>
+    </div>
+    <div class="ai-helper-input-row">
+      <input id="aiHelperInput" type="text" placeholder="z.B. Maniküre unter 80 CHF" onkeydown="if(event.key==='Enter')submitAIHelperQuery()">
+      <button class="btn-ai-search" onclick="submitAIHelperQuery()">Suchen</button>
+    </div>
+    <div id="aiHelperResults"></div>
+  </div>
+</div>
 </body>
 </html>
