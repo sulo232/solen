@@ -1120,6 +1120,26 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 .sp-chip:hover,.sp-chip.sel{border-color:var(--accent);background:rgba(155,29,48,.1);color:var(--accent)}
 .sp-chip .sp-av{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
 .sp-chip .sp-av img{width:100%;height:100%;object-fit:cover}
+/* === STYLIST PICKER CARDS ("Wer schneidet?") === */
+.stylist-picker-section{margin:20px 0 4px}
+.stylist-picker-title{font-size:.92rem;font-weight:700;margin-bottom:2px;color:var(--text)}
+.stylist-picker-sub{font-size:.8rem;color:var(--text2);margin-bottom:12px}
+.stylist-card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:480px){.stylist-card-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:900px){.stylist-card-grid{grid-template-columns:repeat(4,1fr)}}
+.stylist-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;border:2px solid var(--border);background:var(--surface);transition:transform .22s var(--ease-standard),box-shadow .22s var(--ease-standard),border-color .15s;user-select:none}
+.stylist-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 32px -8px rgba(0,0,0,.18);border-color:var(--accent)}
+.stylist-card:hover .sc-photo-inner,.stylist-card:hover .sc-photo-placeholder{transform:scale(1.05)}
+.stylist-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(155,29,48,.13)}
+.stylist-card.selected::after{content:'✓';position:absolute;top:7px;right:7px;background:var(--accent);color:#fff;width:18px;height:18px;border-radius:50%;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sc-photo{width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--surfaceAlt)}
+.sc-photo-inner{width:100%;height:100%;object-fit:cover;transition:transform .32s var(--ease);display:block}
+.sc-photo-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;transition:transform .32s var(--ease)}
+.sc-body{padding:8px 10px 10px}
+.sc-name{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-stars{color:#f5a623;font-size:.68rem;letter-spacing:.05em;margin-bottom:2px}
+.sc-count{font-size:.68rem;color:var(--text2)}
+.sc-badge{position:absolute;top:7px;left:7px;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--accent);font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:100px;letter-spacing:.04em;text-transform:uppercase}
 #addStaffMdl{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:700;display:none;align-items:center;justify-content:center;padding:20px}
 #addStaffMdl.open{display:flex}
 .asm-wrap{background:var(--surface);border-radius:var(--r2);width:100%;max-width:380px;padding:24px;box-shadow:var(--shadow3)}
@@ -6464,7 +6484,7 @@ async function renderBookPage(salonId){
   const store=allStores.find(x=>String(x.id)===String(salonId));
   if(!store){bodyEl.innerHTML='<p class="text-muted">Salon nicht gefunden.</p>';return;}
   const _now=new Date();
-  bmState={store,service:null,date:'',time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null};
+  bmState={store,service:null,date:'',time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null};
   _pendingBookPreselectedTime=null;
   const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');
   if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
@@ -7961,6 +7981,23 @@ function renderBookingModal(){
   html+=renderBmCal();
   // 3. Time slot grid with availability
   html+=renderBmTimeSlots();
+  // Wer schneidet? – stylist picker sub-tab
+  const egalSelected=!bmState.staffId;
+  html+=`<div class="stylist-picker-section">
+    <h4 class="stylist-picker-title">Wer schneidet? <span style="font-size:.74rem;font-weight:400;color:var(--text2);margin-left:5px">optional</span></h4>
+    <p class="stylist-picker-sub">Wähle deinen Wunsch-Stylisten – oder lass uns den Besten für dich auswählen.</p>
+    <div class="stylist-card-grid" id="stylistPickerCards">
+      <div class="stylist-card${egalSelected?' selected':''}" onclick="selectStylistCard(null,null,this)">
+        <div class="sc-photo"><div class="sc-photo-placeholder" style="background:linear-gradient(135deg,#9B1D30,#c4384d)">✂</div></div>
+        <div class="sc-body">
+          <div class="sc-name">Egal</div>
+          <div class="sc-stars">★★★★★</div>
+          <div class="sc-count">Bester Verfügbarer</div>
+        </div>
+        <span class="sc-badge">Empfohlen</span>
+      </div>
+    </div>
+  </div>`;
   // 4. Guest form
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin:8px 0 10px">${t('guest_info')}</h4>`;
   html+=`<div class="visit-type-row"><span class="visit-type-lbl">Besuchstyp</span><label class="vt-opt"><input type="radio" name="visitType" onchange="bmState.isNewCustomer=true"> Erstbesuch</label><label class="vt-opt"><input type="radio" name="visitType" onchange="bmState.isNewCustomer=false"> Stammkunde/in</label></div>`;
@@ -7991,6 +8028,7 @@ function renderBookingModal(){
   if(_dur)html+=`<div class="row"><span>Dauer</span><span>${_dur}&thinsp;Min.</span></div>`;
   html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
   html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
+  html+=`<div class="row" id="summaryStylstRow"><span>Stylist</span><span id="summaryStylstVal">${bmState.staffName||'Bester Verfügbarer'}</span></div>`;
   html+=`<div class="row"><span>Adresse</span><span>${s.address||'Basel'}</span></div>`;
   html+=`<div class="row"><span>Stornierung</span><span>${s.cancellation_policy||'24h Stornierungsfrist'}</span></div>`;
   html+=`</div>`;
@@ -8136,7 +8174,9 @@ async function insertBooking(){
     booking_time:bmState.time,
     status:'pending',
     notes:bmState.notes,
-    is_first_visit:bmState.isFirstVisit!==false
+    is_first_visit:bmState.isFirstVisit!==false,
+    staff_id:bmState.staffId||null,
+    staff_name:bmState.staffName||null
   // ALTER TABLE bookings ADD COLUMN is_first_visit boolean DEFAULT false;
   }).select('id').single();
   if(error){
@@ -9003,30 +9043,54 @@ async function deleteVacationBlock(blockId,salonId){
 
 
 async function loadStaffPickerInBooking(storeId){
-  _selStaffId=null;_selStaffName=null;
-  const existing=document.getElementById('staffPickerSection');
-  if(existing)existing.remove();
   if(!storeId)return;
+  const grid=document.getElementById('stylistPickerCards');
+  if(!grid)return;
   const{data}=await sb.from('store_staff').select('*').eq('store_id',storeId).eq('active',true).order('name');
   if(!data||data.length===0)return;
-  const sec=document.createElement('div');
-  sec.id='staffPickerSection';
-  sec.className='sp-section';
-  const chips=data.map(m=>{
+  const egalSelected=!bmState.staffId;
+  const staffCards=data.map(m=>{
     const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
-    const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
-    const first=m.name.split(' ')[0];
-    return '<div class="sp-chip" data-id="'+m.id+'" data-name="'+first+'" onclick="selectStaff(this.dataset.id,this.dataset.name,this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
+    const photoInner=m.photo_url
+      ?`<img class="sc-photo-inner" src="${m.photo_url}" alt="${m.name}" loading="lazy">`
+      :`<div class="sc-photo-placeholder" style="background:linear-gradient(135deg,#4A4A8A,#7070c4)">${initials}</div>`;
+    const isSelected=bmState.staffId===String(m.id);
+    const stars='★★★★★';
+    return `<div class="stylist-card${isSelected?' selected':''}" data-id="${m.id}" data-name="${m.name}" onclick="selectStylistCard(this.dataset.id,this.dataset.name,this)">
+      <div class="sc-photo">${photoInner}</div>
+      <div class="sc-body">
+        <div class="sc-name">${m.name}</div>
+        <div class="sc-stars">${stars}</div>
+        <div class="sc-count">124 Termine</div>
+      </div>
+    </div>`;
   }).join('');
-  sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av"></div><span>Egal</span></div>'+chips+'</div>';
-  const bmBody=_bmBody();
-  if(bmBody)bmBody.parentNode.insertBefore(sec,bmBody);
+  // Replace grid content: keep Egal card first, append staff cards
+  const egalCard=`<div class="stylist-card${egalSelected?' selected':''}" onclick="selectStylistCard(null,null,this)">
+    <div class="sc-photo"><div class="sc-photo-placeholder" style="background:linear-gradient(135deg,#9B1D30,#c4384d)">✂</div></div>
+    <div class="sc-body">
+      <div class="sc-name">Egal</div>
+      <div class="sc-stars">★★★★★</div>
+      <div class="sc-count">Bester Verfügbarer</div>
+    </div>
+    <span class="sc-badge">Empfohlen</span>
+  </div>`;
+  grid.innerHTML=egalCard+staffCards;
 }
 
 function selectStaff(id,name,el){
   _selStaffId=id;_selStaffName=name;
   document.querySelectorAll('.sp-chip').forEach(c=>c.classList.remove('sel'));
   if(el)el.classList.add('sel');
+}
+function selectStylistCard(id,name,el){
+  bmState.staffId=id||null;
+  bmState.staffName=name||null;
+  _selStaffId=id||null;_selStaffName=name||null;
+  document.querySelectorAll('#stylistPickerCards .stylist-card').forEach(c=>c.classList.remove('selected'));
+  if(el)el.classList.add('selected');
+  const summaryVal=document.getElementById('summaryStylstVal');
+  if(summaryVal)summaryVal.textContent=name||'Bester Verfügbarer';
 }
 
 // Close add-staff modal on backdrop click
