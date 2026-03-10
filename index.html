@@ -7484,6 +7484,13 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 [data-theme=dark] .category-chip{background:var(--c-surface2,#242424);border-color:var(--c-border,#2E2E2E);color:var(--c-text,#EFEFEF)}
 [data-theme=dark] .bottom-nav{background:rgba(15,15,15,.96);border-top:1px solid var(--c-border,#2E2E2E)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--c-bg:#0F0F0F;--c-surface:#1A1A1A;--c-surface2:#242424;--c-border:#2E2E2E;--c-text:#EFEFEF;--c-text-muted:#999}}
+
+/* ── PREMIUM UI v2 ── */
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:9999;transition:width .12s linear;pointer-events:none}
+.store-card{transition:box-shadow .25s ease,transform .25s ease;box-shadow:0 1px 3px rgba(31,31,31,.06),0 4px 16px rgba(31,31,31,.07),0 20px 40px rgba(31,31,31,.04)}
+.store-card:hover{box-shadow:0 2px 6px rgba(31,31,31,.08),0 10px 28px rgba(31,31,31,.11),0 30px 60px rgba(31,31,31,.06)}
+.booking-card{box-shadow:0 1px 3px rgba(31,31,31,.05),0 4px 12px rgba(31,31,31,.07)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4ECDC4 !important;box-shadow:0 0 0 3px rgba(78,205,196,.18) !important}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
@@ -9378,6 +9385,22 @@ function initDarkMode(){const saved=localStorage.getItem('solen_theme')||(window
 document.addEventListener('DOMContentLoaded',function(){initDarkMode();const nav=document.querySelector('.nav-actions,.nav-links,.nav');if(nav){const btn=document.createElement('button');btn.className='dark-toggle';btn.setAttribute('aria-label','Erscheinungsbild umschalten');const isDark=document.documentElement.getAttribute('data-theme')==='dark';btn.setAttribute('aria-pressed',isDark?'true':'false');btn.textContent=isDark?'☀️':'🌙';btn.onclick=toggleDarkMode;nav.appendChild(btn);}});
 // ===== Toast notifications =====
 function showToast(msg,duration){duration=duration||2800;let tc=document.getElementById('toastContainer');if(!tc){tc=document.createElement('div');tc.id='toastContainer';document.body.appendChild(tc);}const t=document.createElement('div');t.className='toast';t.textContent=msg;tc.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},duration);}
+
+// Scroll progress bar + SVG noise overlay
+(function(){
+  var p=document.createElement('div');p.id='scroll-progress';document.body.prepend(p);
+  window.addEventListener('scroll',function(){var d=document.documentElement;p.style.width=Math.min(d.scrollTop/(d.scrollHeight-d.clientHeight)*100,100).toFixed(1)+'%'},{passive:true});
+  var ns=['http','//www.w3.org/2000/svg'].join(':'),
+    svg=document.createElementNS(ns,'svg'),f=document.createElementNS(ns,'filter'),
+    t=document.createElementNS(ns,'feTurbulence'),r=document.createElementNS(ns,'rect'),
+    d=document.createElementNS(ns,'defs');
+  f.id='nf';t.setAttribute('type','fractalNoise');t.setAttribute('baseFrequency','0.65');
+  t.setAttribute('numOctaves','3');t.setAttribute('stitchTiles','stitch');
+  r.setAttribute('width','100%');r.setAttribute('height','100%');r.setAttribute('filter','url(#nf)');
+  d.appendChild(f);f.appendChild(t);svg.appendChild(d);svg.appendChild(r);
+  Object.assign(svg.style,{position:'fixed',top:'0',left:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'9997',opacity:'.04'});
+  document.body.appendChild(svg);
+})();
 </script>
 
 <!-- PWA Install Banner -->
