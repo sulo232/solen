@@ -1749,6 +1749,42 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 /* ── SMOOTH SECTION SEPARATORS ── */
 .section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--c-border),transparent);max-width:1200px;margin:0 auto}
 
+/* ── HOMEPAGE SECTION SPACING FIX ── */
+.popular-services{padding-top:60px;padding-bottom:48px}
+.quartier-discovery{padding-top:16px;padding-bottom:60px}
+.stores-section{padding-top:56px;padding-bottom:64px}
+.carousel-section{padding-top:60px;padding-bottom:56px}
+.spotlight-section{padding-top:64px;padding-bottom:48px}
+.about-section{padding-top:56px;padding-bottom:64px}
+
+/* ── ENHANCED STORE CARD HOVER ── */
+.store-card{box-shadow:0 1px 4px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);transition:transform .28s var(--ease-standard),box-shadow .28s var(--ease-standard),border-color .28s var(--ease-standard)}
+.store-card:hover{transform:translateY(-6px);box-shadow:0 12px 32px -8px rgba(155,29,48,.15),0 4px 12px rgba(0,0,0,.06);border-color:var(--c-border-strong)}
+.store-card:hover .store-card-photo img{transform:scale(1.04)}
+
+/* ── ENHANCED SERVICE ICON CARDS ── */
+.service-icon-card{box-shadow:0 1px 3px rgba(0,0,0,.03);transition:all .25s var(--ease-standard)}
+.service-icon-card:hover{border-color:var(--c-accent);box-shadow:0 8px 24px -4px rgba(155,29,48,.12);transform:translateY(-4px)}
+
+/* ── ENHANCED QUARTIER CARDS ── */
+.quartier-photo-card{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.quartier-photo-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 40px -8px rgba(0,0,0,.2)}
+
+/* ── ENHANCED SPOTLIGHT CARDS ── */
+.spotlight-card{box-shadow:0 1px 4px rgba(0,0,0,.04);transition:all .25s var(--ease-standard)}
+.spotlight-card:hover{border-color:var(--c-accent);box-shadow:0 12px 32px -8px rgba(155,29,48,.12);transform:translateY(-4px)}
+
+/* ── BEAUTIFUL EMPTY STATE ── */
+.empty-state-beautiful{animation:fadeInUp .5s var(--ease-standard)}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CAROUSEL EMPTY STATE ── */
+.carousel-empty{display:flex;align-items:center;justify-content:center;min-height:200px;background:linear-gradient(135deg,var(--c-surface-alt),var(--c-surface));border-radius:var(--r2);border:1.5px dashed var(--c-border);text-align:center;padding:40px 24px}
+.carousel-empty-inner{max-width:300px}
+.carousel-empty-icon{font-size:2rem;margin-bottom:12px;opacity:.5}
+.carousel-empty h4{font-family:var(--font-display);font-size:1.05rem;margin-bottom:6px;color:var(--c-text)}
+.carousel-empty p{font-size:.85rem;color:var(--c-text-muted);line-height:1.5}
+
 /* ── MOBILE TOUCH IMPROVEMENTS ── */
 @media(max-width:768px){
   .stores-section{padding:32px 16px 80px}
@@ -1760,6 +1796,11 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
   .photo-manager{padding:20px 16px}
   .salon-detail-gallery{padding:8px 16px}
   .filter-pill{padding:8px 16px;font-size:.82rem}
+  .popular-services{padding-top:40px;padding-bottom:32px}
+  .quartier-discovery{padding-top:8px;padding-bottom:40px}
+  .stores-section{padding-top:36px}
+  .carousel-section{padding-top:40px;padding-bottom:40px}
+  .spotlight-section{padding-top:44px;padding-bottom:36px}
 }
 
 /* ── BUTTONS ENHANCED ── */
@@ -2042,42 +2083,42 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
       <button class="service-icon-card fade-in-up stagger-1" onclick="selectServiceFromMenu('hairsalon','Coiffeur')" aria-label="Coiffeur Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Coiffeur"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
         <span class="sic-label">Coiffeur</span>
-        <span class="sic-count" id="sic-count-hair"></span>
+        <span class="sic-count" id="sic-count-hair">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-2" onclick="selectServiceFromMenu('barber','Barbershop')" aria-label="Barbershops zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Barbershop"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><circle cx="6" cy="18" r="3"/></svg></div>
         <span class="sic-label">Barbershop</span>
-        <span class="sic-count" id="sic-count-barber"></span>
+        <span class="sic-count" id="sic-count-barber">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-3" onclick="selectServiceFromMenu('nails','Nails')" aria-label="Nagelstudios zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Nails"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
         <span class="sic-label">Nails</span>
-        <span class="sic-count" id="sic-count-nails"></span>
+        <span class="sic-count" id="sic-count-nails">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-4" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')" aria-label="Spa und Wellness zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Spa"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <span class="sic-label">Spa &amp; Wellness</span>
-        <span class="sic-count" id="sic-count-spa"></span>
+        <span class="sic-count" id="sic-count-spa">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-5" onclick="selectServiceFromMenu('makeup','Make-up')" aria-label="Make-up Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Make-up"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
         <span class="sic-label">Make-up</span>
-        <span class="sic-count" id="sic-count-makeup"></span>
+        <span class="sic-count" id="sic-count-makeup">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-6" onclick="selectServiceFromMenu('cosmetik','Kosmetik')" aria-label="Kosmetik Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Kosmetik"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
         <span class="sic-label">Kosmetik</span>
-        <span class="sic-count" id="sic-count-cosmetik"></span>
+        <span class="sic-count" id="sic-count-cosmetik">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-7" onclick="selectServiceFromMenu('eyebrows','Augenbrauen')" aria-label="Augenbrauen Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Augenbrauen"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
         <span class="sic-label">Augenbrauen</span>
-        <span class="sic-count" id="sic-count-eyebrows"></span>
+        <span class="sic-count" id="sic-count-eyebrows">Entdecken</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-8" onclick="selectServiceFromMenu('tattoo','Tattoo &amp; Piercing')" aria-label="Tattoo und Piercing zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Tattoo"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
         <span class="sic-label">Tattoo</span>
-        <span class="sic-count" id="sic-count-tattoo"></span>
+        <span class="sic-count" id="sic-count-tattoo">Entdecken</span>
       </button>
     </div>
   </section>
@@ -2087,7 +2128,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     <div class="quartier-discovery-header fade-in-up">
       <div>
         <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Dein Quartier</div>
-        <h2>Salons in deiner Nähe</h2>
+        <h2>Entdecke dein Quartier</h2>
       </div>
       <button class="quartier-see-all" onclick="scrollToStores()" aria-label="Alle Quartiere anzeigen">
         Alle ansehen
@@ -2186,7 +2227,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
       </div>
     </div>
     <div class="stores-header">
-      <div class="section-title" style="margin-bottom:0" data-i18n="stores_title">Salons in deiner N&auml;he</div>
+      <div class="section-title" style="margin-bottom:0" data-i18n="stores_title">Alle Salons</div>
       <div class="stores-count" id="storesCount"></div>
       <div class="stores-header-actions">
         <div class="sort-dropdown" id="sortDropdown">
@@ -2232,9 +2273,9 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
       <button class="filter-pill" onclick="selectCatPill(this,'makeup')" data-i18n="cat_makeup">Make-up</button>
       <button class="filter-pill" onclick="selectCatPill(this,'cosmetik')" data-i18n="cat_cosmetik">Kosmetik</button>
     </div>
-    <!-- FILTER PILLS: Quartier -->
-    <div class="filter-pills" id="quartierFilterPills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
-      <button class="filter-pill active" onclick="selectQuartierPill(this,'')">Alle Quartiere</button>
+    <!-- FILTER PILLS: Quartier (compact row, no label duplication with photo cards above) -->
+    <div class="filter-pills" id="quartierFilterPills" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="filter-pill active" onclick="selectQuartierPill(this,'')">📍 Alle</button>
       <button class="filter-pill" onclick="selectQuartierPill(this,'Grossbasel')">Grossbasel</button>
       <button class="filter-pill" onclick="selectQuartierPill(this,'Kleinbasel')">Kleinbasel</button>
       <button class="filter-pill" onclick="selectQuartierPill(this,'Gundeldingen')">Gundeli</button>
@@ -2271,8 +2312,8 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 <section class="carousel-section reveal" id="inDeinerNaeheSection" aria-label="In deiner Nähe">
   <div class="carousel-header">
     <div>
-      <h2>In deiner Nähe</h2>
-      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px">Salons in deinem Quartier</p>
+      <h2>Salons in deiner Nähe</h2>
+      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px">Basierend auf deinem Standort</p>
     </div>
     <div class="carousel-nav">
       <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -4749,9 +4790,11 @@ function scrollCarousel(trackId, direction) {
 function renderNeuAufSolen() {
   const track = document.getElementById('neuTrack');
   if (!track) return;
-  // Sort by most recently added (assuming higher ID = newer, or use created_at if available)
   const newest = [...allStores].sort((a, b) => (b.id || 0) - (a.id || 0)).slice(0, 8);
-  if (newest.length === 0) { document.getElementById('neuAufSolenSection')?.style.setProperty('display', 'none'); return; }
+  if (newest.length === 0) {
+    track.innerHTML = '<div class="carousel-empty"><div class="carousel-empty-inner"><div class="carousel-empty-icon">🌟</div><h4>Neue Salons kommen bald</h4><p>Wir arbeiten daran, die besten Salons in Basel für dich zu finden.</p></div></div>';
+    return;
+  }
   track.innerHTML = newest.map(s => renderStoreCard(s)).join('');
 }
 
@@ -4767,10 +4810,12 @@ function renderInDeinerNaehe() {
       return da - db;
     }).slice(0, 8);
   } else {
-    // Random selection if no location
     nearby = [...allStores].sort(() => Math.random() - 0.5).slice(0, 8);
   }
-  if (nearby.length === 0) { document.getElementById('inDeinerNaeheSection')?.style.setProperty('display', 'none'); return; }
+  if (nearby.length === 0) {
+    track.innerHTML = '<div class="carousel-empty"><div class="carousel-empty-inner"><div class="carousel-empty-icon">📍</div><h4>Salons in deiner Nähe</h4><p>Aktiviere deinen Standort, um Salons in deinem Quartier zu entdecken.</p></div></div>';
+    return;
+  }
   track.innerHTML = nearby.map(s => renderStoreCard(s)).join('');
 }
 
@@ -4940,7 +4985,12 @@ renderRecentlyViewed();
   if(filtered.length===0){
     var searchQuery=document.getElementById('searchInput').value;
     var emptyMsg=searchQuery?(t('empty_search_no_results')||'Wir haben nichts zu \''+searchQuery+'\' gefunden. Versuch einen anderen Begriff.'):t('empty_try_other');
-    document.getElementById('storesGrid').innerHTML='<div class="empty-state" style="grid-column:1/-1;text-align:center;padding:60px 20px"><h3 style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px">'+t('empty_no_salon')+'</h3><p style="color:var(--c-text-secondary);margin-bottom:20px;line-height:var(--lh-body)">'+emptyMsg+'</p><button class="btn-primary" onclick="resetAllFilters()" style="max-width:240px;margin:0 auto">'+t('empty_show_all')+'</button></div>';
+    document.getElementById('storesGrid').innerHTML='<div class="empty-state-beautiful" style="grid-column:1/-1;text-align:center;padding:80px 24px;background:linear-gradient(135deg,var(--c-surface-alt),var(--c-surface));border-radius:var(--r2);border:1.5px dashed var(--c-border)">' +
+      '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(155,29,48,.08),rgba(212,175,119,.12));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem">✨</div>' +
+      '<h3 style="font-family:var(--font-display);font-size:1.35rem;margin-bottom:10px;color:var(--c-text)">'+t('empty_no_salon')+'</h3>' +
+      '<p style="color:var(--c-text-secondary);margin-bottom:24px;line-height:1.6;max-width:380px;margin-left:auto;margin-right:auto;font-size:.95rem">'+emptyMsg+'</p>' +
+      '<button class="btn-book" onclick="resetAllFilters()" style="max-width:260px;margin:0 auto;padding:12px 32px;font-size:.95rem">'+t('empty_show_all')+'</button>' +
+      '</div>';
     return;
   }
   // Recently viewed section
@@ -4973,7 +5023,13 @@ function getLMSlots(){
 
 function renderSpotlight(){
   const grid=document.getElementById('spotlightGrid');
-  if(!grid||!allStores||allStores.length===0)return;
+  const section=document.getElementById('spotlightSection');
+  if(!grid)return;
+  if(!allStores||allStores.length===0){
+    if(section) section.style.display='none';
+    return;
+  }
+  if(section) section.style.display='';
   // Pick top-rated stores or first few with good ratings as "spotlight"
   const rated=allStores.filter(s=>parseFloat(s.avg_rating)>=4).sort((a,b)=>(parseFloat(b.avg_rating)||0)-(parseFloat(a.avg_rating)||0));
   const picks=rated.length>=3?rated.slice(0,3):allStores.slice(0,3);
@@ -4984,12 +5040,12 @@ function renderSpotlight(){
   ];
   grid.innerHTML=picks.map((s,i)=>{
     const neighbourhood=(s.address||'').split(',').pop()?.trim()||'Basel';
-    return`<div class="spotlight-card" onclick="openBooking&&openBooking('${s.id}')" style="cursor:pointer">
-      <div class="spotlight-badge">Empfehlung</div>
+    return`<div class="spotlight-card fade-in-up stagger-${i+1}" onclick="openBooking&&openBooking('${s.id}')" style="cursor:pointer">
+      <div class="spotlight-badge">⭐ Empfehlung</div>
       <div class="spotlight-name">${s.name}</div>
-      <div class="spotlight-location">${neighbourhood}</div>
+      <div class="spotlight-location">📍 ${neighbourhood}</div>
       <div class="spotlight-why">${whyTexts[i%whyTexts.length]}</div>
-      <span class="spotlight-cta">Termin buchen &rarr;</span>
+      <span class="spotlight-cta">Termin buchen →</span>
     </div>`;
   }).join('');
 }
@@ -9120,7 +9176,12 @@ document.addEventListener('click',function(e){
         var el = document.getElementById('qCount-' + q);
         if (el) {
           var c = counts[q] || 0;
-          el.textContent = c + (c === 1 ? ' Salon' : ' Salons');
+          if (c > 0) {
+            el.textContent = c + (c === 1 ? ' Salon' : ' Salons');
+          } else {
+            el.textContent = 'Bald verfügbar';
+            el.style.fontStyle = 'italic';
+          }
         }
       });
 
@@ -9142,7 +9203,11 @@ document.addEventListener('click',function(e){
       };
       Object.keys(catMap).forEach(function(cat) {
         var el = document.getElementById(catMap[cat]);
-        if (el && catCounts[cat]) el.textContent = catCounts[cat] + ' Salons';
+        if (el) {
+          var cnt = catCounts[cat] || 0;
+          el.textContent = cnt > 0 ? cnt + ' Salons' : 'Entdecken';
+          if (cnt === 0) el.style.opacity = '0.6';
+        }
       });
     }
     tryPopulate();
@@ -9272,7 +9337,7 @@ function trackEvent(name,props){try{if(typeof gtag==="function")gtag("event",nam
 document.addEventListener("click",function(e){var card=e.target.closest(".card");if(card&&card.dataset.storeId)trackEvent("salon_card_click",{store_id:card.dataset.storeId});});
 function initFilterPills(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});document.querySelectorAll(".filter-pill[data-q]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-q]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});}
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});
-function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="empty-state"><div class="empty-state-icon">'+icon+'</div><h3>'+title+'</h3><p>'+text+'</p>'+(lbl?'<button class="btn btn-primary" onclick="'+fn+'">'+lbl+'</button>':"")+"</div>";}
+function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="empty-state" style="background:linear-gradient(135deg,var(--c-surface-alt),var(--c-surface));border-radius:var(--r2);border:1.5px dashed var(--c-border);padding:56px 24px"><div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(155,29,48,.06),rgba(212,175,119,.1));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem">'+icon+'</div><h3>'+title+'</h3><p style="max-width:320px;margin-left:auto;margin-right:auto">'+text+'</p>'+(lbl?'<button class="btn-book" onclick="'+fn+'" style="margin:0 auto;padding:10px 28px">'+lbl+'</button>':"")+"</div>";}
 // === END BATCH1 JS ===
 
 // ═══════════════════════════════
