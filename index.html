@@ -9285,7 +9285,7 @@ async function renderCRM(storeId){
       +'<div class="crm-stats"><span class="crm-badge">'+c.visits.length+' Besuche</span><span class="crm-last">'+lastDate+'</span></div></div>'
       +(allergy?'<div class="crm-allergy-warning"><span style="color:#e74c3c;font-weight:600">&#9888; Allergie:</span> '+allergy+'</div>':'')
       +'<div class="crm-notes-row">'
-      +'<textarea class="crm-notes-input" placeholder="Notizen (Vorlieben, Haartyp...)" onchange="saveCRMNote(''+storeId+'',''+key+'',this.value)">'+notes+'</textarea>'
+      +'<textarea class="crm-notes-input" placeholder="Notizen (Vorlieben, Haartyp...)" onchange="saveCRMNote(\''+storeId+'\',\''+key+'\',this.value)">'+notes+'</textarea>'
       +'<input class="crm-allergy-input" placeholder="Allergien/Hinweise" value="'+allergy+'" onchange="saveCRMAllergy(''+storeId+'',''+key+'',this.value)">'
       +'</div>'
       +'<div class="crm-services">'+c.visits.slice(0,3).map(v=>'<span class="crm-service-chip">'+(v.service_name||'Service')+'</span>').join('')+'</div>'
