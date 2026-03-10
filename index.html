@@ -971,6 +971,13 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-time-btn{padding:10px;border:1.5px solid var(--border2);border-radius:var(--r);text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;background:var(--surface);min-height:44px}
 .bm-time-btn:hover{border-color:var(--accent)}
 .bm-time-btn.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* ── HAIRCUT GENDER TABS ── */
+.bm-haircut-tabs{display:flex;gap:0;margin-bottom:4px;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden}
+.bm-haircut-tab{flex:1;padding:12px 16px;border:none;background:var(--surface);font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s;min-height:52px;color:var(--text2);letter-spacing:.01em}
+.bm-haircut-tab:first-child{border-right:1px solid var(--border2)}
+.bm-haircut-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bm-haircut-tab:hover:not(.active){background:var(--surfaceAlt);color:var(--text)}
+.bm-haircut-tab-hint{font-size:.75rem;color:var(--muted);margin:0 0 14px;text-align:center;padding:3px 8px;line-height:1.4}
 .bm-summary{background:var(--bg2);border-radius:var(--r);padding:16px;margin:16px 0}
 .bm-summary .row{display:flex;justify-content:space-between;font-size:.85rem;padding:3px 0;color:var(--text2)}
 .bm-summary .row.total{font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
@@ -1064,6 +1071,27 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-dt-bar-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
 /* Availability loading indicator */
 .bm-slots-loading{text-align:center;padding:12px;font-size:.82rem;color:var(--muted)}
+/* STEP 3 CONFIRMATION */
+.bm-confirm-step{padding:4px 0}
+.bm-confirm-summary{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r2,16px);padding:20px;margin-bottom:20px}
+.bm-confirm-summary h4{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.bm-confirm-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.bm-confirm-row:last-child{border-bottom:none}
+.bm-confirm-row .lbl{font-size:.85rem;color:var(--text2)}
+.bm-confirm-row .val{font-size:.88rem;font-weight:600;color:var(--text);text-align:right;max-width:60%}
+.bm-confirm-total{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:var(--accent);border-radius:var(--r,8px);margin-bottom:20px;color:#fff}
+.bm-confirm-total .total-lbl{font-size:.82rem;font-weight:600;opacity:.85}
+.bm-confirm-total .total-dur{font-size:.78rem;opacity:.75;margin-top:3px}
+.bm-confirm-total .total-val{font-size:1.75rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.bm-salon-note{margin-bottom:20px}
+.bm-salon-note label{display:block;font-size:.88rem;font-weight:600;margin-bottom:8px;color:var(--text)}
+.bm-salon-note textarea{width:100%;border:1.5px solid var(--border2);border-radius:var(--r,8px);padding:12px;font-size:.88rem;color:var(--text);background:var(--surface);resize:vertical;min-height:84px;font-family:inherit;box-sizing:border-box;transition:border-color .15s}
+.bm-salon-note textarea:focus{border-color:var(--accent);outline:none}
+.bm-cancel-policy{font-size:.78rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.55;padding:0 4px}
+.btn-book-glass{width:100%;padding:16px;border-radius:50px;font-size:1rem;font-weight:800;letter-spacing:.01em;cursor:pointer;border:none;position:relative;overflow:hidden;min-height:52px;background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(155,29,48,.28);transition:all .2s;display:block}
+.btn-book-glass::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,0) 55%);pointer-events:none;border-radius:50px}
+.btn-book-glass:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(155,29,48,.38)}
+.btn-book-glass:active{transform:translateY(0);box-shadow:0 2px 12px rgba(155,29,48,.28)}
 .bm-confirmation{text-align:center;padding:20px 0}
 .bm-confirmation h3{font-size:1.2rem;font-weight:800;margin-bottom:8px;color:var(--success)}
 .bm-confirmation p{font-size:.9rem;color:var(--text2);margin-bottom:16px}
@@ -6792,6 +6820,10 @@ async function renderBookPage(salonId){
   // Init booking state
   const _now=new Date();
   bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[]};
+  // Smart gender-based haircut tab default
+  const _pg=currentProfile?.gender||'';
+  bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
+  bmState.haircutTabFromProfile=(_pg==='Männlich'||_pg==='Weiblich');
   _pendingBookPreselectedTime=null;
   _bpCurrentStep=1;
   _bpSlotLoading=false;
@@ -8534,6 +8566,46 @@ function renderBookingModal(){
     _bmBody().innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
     return;
   }
+  // ── STEP 3: Confirmation & Final Note ──────────────────────────────────────
+  if(bmState.step==='confirm'){
+    const svc=bmState.service;
+    const durMin=svc?.duration||0;
+    const price=svc?.price??parseFloat(bmState.customPrice)||0;
+    const serviceName=svc?.name||bmState.customSvc||'-';
+    const cancelPolicy=s.cancellation_policy||'Kostenlose Stornierung bis 24 Stunden vor dem Termin';
+    let html=`<div class="bm-steps">
+      <div class="bm-step-item done"><div class="bm-step-dot">&#10003;</div><span>Service</span></div>
+      <div class="bm-step-line"></div>
+      <div class="bm-step-item done"><div class="bm-step-dot">&#10003;</div><span>Datum &amp; Zeit</span></div>
+      <div class="bm-step-line"></div>
+      <div class="bm-step-item active"><div class="bm-step-dot">3</div><span>Best&auml;tigen</span></div>
+    </div>`;
+    html+=`<div class="bm-confirm-step">`;
+    // 1. Big summary box
+    html+=`<div class="bm-confirm-summary"><h4>Zusammenfassung</h4>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Salon</span><span class="val">${s.name}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Service</span><span class="val">${serviceName}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Datum</span><span class="val">${formatDate(bmState.date)}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Uhrzeit</span><span class="val">${bmState.time} Uhr</span></div>`;
+    if(durMin)html+=`<div class="bm-confirm-row"><span class="lbl">Dauer</span><span class="val">${durMin} Min.</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Name</span><span class="val">${bmState.guestName}</span></div>`;
+    html+=`<div class="bm-confirm-row"><span class="lbl">Telefon</span><span class="val">${bmState.guestPhone}</span></div>`;
+    if(bmState.guestEmail)html+=`<div class="bm-confirm-row"><span class="lbl">E-Mail</span><span class="val">${bmState.guestEmail}</span></div>`;
+    html+=`</div>`;
+    // 2. Total price & time — big bold
+    html+=`<div class="bm-confirm-total"><div><div class="total-lbl">Gesamtpreis</div>${durMin?`<div class="total-dur">${durMin} Min. Behandlung</div>`:''}</div><div class="total-val">CHF ${price}</div></div>`;
+    // 3. Optional note textarea
+    html+=`<div class="bm-salon-note"><label>Notiz an den Salon <span style="font-weight:400;color:var(--muted)">(optional)</span></label><textarea id="bmConfirmNote" placeholder="z.B. &quot;Bitte Curtain Bangs wie im Foto&quot;">${bmState.notes||''}</textarea></div>`;
+    // 4. "Termin jetzt buchen" button with glass effect
+    html+=`<button class="btn-book-glass" onclick="insertBooking()">Termin jetzt buchen</button>`;
+    // 5. Cancellation policy
+    html+=`<p class="bm-cancel-policy">&#128274; ${cancelPolicy}</p>`;
+    html+=`<button class="btn-secondary" style="width:100%;margin-top:12px;min-height:40px;font-size:.88rem" onclick="bmState.step='service';renderBookingModal()">&#8592; Zurück bearbeiten</button>`;
+    html+=`</div>`;
+    _bmBody().innerHTML=html;
+    return;
+  }
+  // ── STEP 1 + 2 (Service, Date/Time, Guest Info) ─────────────────────────────
   // Step indicator (3 steps: Service, Datum & Zeit, Bestätigen)
   const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=(hasService&&hasDateTime)?'active':'';
   const _dur=calcBmDuration();
@@ -8554,8 +8626,21 @@ function renderBookingModal(){
   html+=`</div>`;
   // 1. Service picker
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_service')}</h4>`;
+  const _storeType=(s.type||s.cat||'').toLowerCase();
+  const _isHairStore=_storeType==='hairsalon'||_storeType==='barber'||_storeType==='hair';
   if(svcs.length){
-    html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    if(_isHairStore){
+      // ── Herren / Damen tabs ──
+      const _tab=bmState.activeHaircutTab||'herren';
+      html+=`<div class="bm-haircut-tabs"><button class="bm-haircut-tab${_tab==='herren'?' active':''}" onclick="bmSetHaircutTab('herren')">✂ Herren</button><button class="bm-haircut-tab${_tab==='damen'?' active':''}" onclick="bmSetHaircutTab('damen')">✂ Damen</button></div>`;
+      if(bmState.haircutTabFromProfile){html+=`<p class="bm-haircut-tab-hint">Basierend auf deinem Profil – du kannst jederzeit wechseln</p>`;}
+      // Filter services by active tab; neutral services (no gender keyword) show in both tabs
+      const _filteredSvcs=svcs.filter(sv=>{const n=sv.name.toLowerCase();const _isH=n.includes('herren')||n.includes('bart')||n.includes('rasur')||n.includes('männer');const _isD=n.includes('damen')||n.includes('farb')||n.includes('color')||n.includes('balayage')||n.includes('tönung')||n.includes('highlights')||n.includes('strähnen');if(_tab==='herren')return _isH||!_isD;return _isD||!_isH;});
+      const _displaySvcs=_filteredSvcs.length?_filteredSvcs:svcs;
+      html+=`<div class="bm-service-grid">${_displaySvcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    } else {
+      html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    }
   } else {
     html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
   }
@@ -8621,6 +8706,7 @@ function renderBookingModal(){
   const _hspDur=(_dur||0)+(_selHsp?20:0);
   if(_hspDur)html+=`<div class="row"><span>Dauer</span><span>${_hspDur}&thinsp;Min.${_selHsp?' <small style="color:var(--c-text-muted);font-size:.78rem">(inkl. +20 Min)</small>':''}</span></div>`;
   if(_selHsp)html+=`<div class="row"><span>Stil</span><span>${_selHsp.name}</span></div>`;
+  if(_isHairStore&&bmState.activeHaircutTab)html+=`<div class="row"><span>Kategorie</span><span>${bmState.activeHaircutTab==='damen'?'Damen':'Herren'}</span></div>`;
   html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
   html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
   html+=`<div class="row" id="summaryStylstRow"><span>Stylist</span><span id="summaryStylstVal">${bmState.staffName||'Bester Verfügbarer'}</span></div>`;
@@ -8636,7 +8722,7 @@ function renderBookingModal(){
     html+=`<button class="btn-primary" onclick="joinWaitingList()" style="min-height:44px;background:var(--accent-secondary)">Auf Warteliste setzen</button>`;
     html+=`</div>`;
   } else {
-    html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
+    html+=`<button class="btn-primary" onclick="bmGoToConfirm()" style="min-height:44px">Weiter zur Best&auml;tigung &#8594;</button>`;
   }
   _bmBody().innerHTML=html;
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
@@ -8646,11 +8732,13 @@ function renderBookingModal(){
 }
 function bmSelectService(id){
   bmState.service=allServices.find(s=>s.id===id);
+  bmState.step='service';
   // On new book page: auto-advance to step 2 when service selected
   if(document.getElementById('bpProgress')&&_bpCurrentStep===1){bpGoStep(2);}
   else{renderBookingModal();}
 }
 function bmSelectTime(t){bmState.time=t;renderBookingModal();}
+function bmSetHaircutTab(tab){bmState.activeHaircutTab=tab;bmState.haircutTabFromProfile=false;renderBookingModal();}
 
 // ── ENHANCED CALENDAR (Step 2) ──
 function bmCalNav(dir){
@@ -8752,16 +8840,31 @@ function renderBmTimeSlots(){
   h+=`</div>`;
   return h;
 }
-async function insertBooking(){
-  // Read current form values
+function bmGoToConfirm(){
   bmState.guestName=document.getElementById('bmGuestName')?.value||'';
   bmState.guestPhone=document.getElementById('bmGuestPhone')?.value||'';
   bmState.guestEmail=document.getElementById('bmGuestEmail')?.value||'';
-  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked||false;if(bmState.saveInfo){localStorage.setItem('solen_guest',JSON.stringify({n:bmState.guestName,p:bmState.guestPhone,e:bmState.guestEmail}));}else{localStorage.removeItem('solen_guest');}
   bmState.notes=document.getElementById('bmNotes')?.value||'';
-  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
+  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked||false;
   bmState.customSvc=document.getElementById('bmCustomSvc')?.value||'';
   bmState.customPrice=document.getElementById('bmCustomPrice')?.value||'';
+  bmState.isFirstVisit=document.querySelector('input[name="bmVisitType"]:checked')?.value!=='returning';
+  if(!bmState.guestName||!bmState.guestPhone){toast(t('toast_name_phone_required')||'Name und Telefon sind erforderlich.','error');return;}
+  if(!bmState.date||!bmState.time){toast(t('toast_select_datetime')||'Datum und Uhrzeit w\u00e4hlen.','error');return;}
+  if(!bmState.service&&!bmState.customSvc){toast('Bitte w\u00e4hle einen Service.','error');return;}
+  bmState.step='confirm';
+  renderBookingModal();
+}
+async function insertBooking(){
+  // Read note from confirm step if present, otherwise from main form
+  bmState.notes=document.getElementById('bmConfirmNote')?.value??document.getElementById('bmNotes')?.value??bmState.notes??'';
+  bmState.guestName=bmState.guestName||document.getElementById('bmGuestName')?.value||'';
+  bmState.guestPhone=bmState.guestPhone||document.getElementById('bmGuestPhone')?.value||'';
+  bmState.guestEmail=bmState.guestEmail||document.getElementById('bmGuestEmail')?.value||'';
+  bmState.saveInfo=document.getElementById('bmSaveInfo')?.checked??bmState.saveInfo??false;if(bmState.saveInfo){localStorage.setItem('solen_guest',JSON.stringify({n:bmState.guestName,p:bmState.guestPhone,e:bmState.guestEmail}));}else{localStorage.removeItem('solen_guest');}
+  bmState.isFirstVisit=bmState.isFirstVisit??true;
+  const _cSvc=document.getElementById('bmCustomSvc');if(_cSvc)bmState.customSvc=_cSvc.value;
+  const _cPrice=document.getElementById('bmCustomPrice');if(_cPrice)bmState.customPrice=_cPrice.value;
   if(!bmState.guestName||!bmState.guestPhone){toast(t('toast_name_phone_required')||'Name und Telefon sind erforderlich.','error');return;}
   if(!bmState.date||!bmState.time){toast(t('toast_select_datetime')||'Datum und Uhrzeit w\u00e4hlen.','error');return;}
   const svc=bmState.service;
