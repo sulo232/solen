@@ -971,6 +971,13 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-time-btn{padding:10px;border:1.5px solid var(--border2);border-radius:var(--r);text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;background:var(--surface);min-height:44px}
 .bm-time-btn:hover{border-color:var(--accent)}
 .bm-time-btn.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* ── HAIRCUT GENDER TABS ── */
+.bm-haircut-tabs{display:flex;gap:0;margin-bottom:4px;border:1.5px solid var(--border2);border-radius:var(--r);overflow:hidden}
+.bm-haircut-tab{flex:1;padding:12px 16px;border:none;background:var(--surface);font-size:.95rem;font-weight:700;cursor:pointer;transition:.15s;min-height:52px;color:var(--text2);letter-spacing:.01em}
+.bm-haircut-tab:first-child{border-right:1px solid var(--border2)}
+.bm-haircut-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.bm-haircut-tab:hover:not(.active){background:var(--surfaceAlt);color:var(--text)}
+.bm-haircut-tab-hint{font-size:.75rem;color:var(--muted);margin:0 0 14px;text-align:center;padding:3px 8px;line-height:1.4}
 .bm-summary{background:var(--bg2);border-radius:var(--r);padding:16px;margin:16px 0}
 .bm-summary .row{display:flex;justify-content:space-between;font-size:.85rem;padding:3px 0;color:var(--text2)}
 .bm-summary .row.total{font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
@@ -6710,6 +6717,10 @@ async function renderBookPage(salonId){
   // Init booking state — merged fields from both branches
   const _now=new Date();
   bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null};
+  // Smart gender-based haircut tab default
+  const _pg=currentProfile?.gender||'';
+  bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
+  bmState.haircutTabFromProfile=(_pg==='Männlich'||_pg==='Weiblich');
   _pendingBookPreselectedTime=null;
   _bpCurrentStep=1;
   _bpSlotLoading=false;
@@ -8463,8 +8474,21 @@ function renderBookingModal(){
   html+=`</div>`;
   // 1. Service picker
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_service')}</h4>`;
+  const _storeType=(s.type||s.cat||'').toLowerCase();
+  const _isHairStore=_storeType==='hairsalon'||_storeType==='barber'||_storeType==='hair';
   if(svcs.length){
-    html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    if(_isHairStore){
+      // ── Herren / Damen tabs ──
+      const _tab=bmState.activeHaircutTab||'herren';
+      html+=`<div class="bm-haircut-tabs"><button class="bm-haircut-tab${_tab==='herren'?' active':''}" onclick="bmSetHaircutTab('herren')">✂ Herren</button><button class="bm-haircut-tab${_tab==='damen'?' active':''}" onclick="bmSetHaircutTab('damen')">✂ Damen</button></div>`;
+      if(bmState.haircutTabFromProfile){html+=`<p class="bm-haircut-tab-hint">Basierend auf deinem Profil – du kannst jederzeit wechseln</p>`;}
+      // Filter services by active tab; neutral services (no gender keyword) show in both tabs
+      const _filteredSvcs=svcs.filter(sv=>{const n=sv.name.toLowerCase();const _isH=n.includes('herren')||n.includes('bart')||n.includes('rasur')||n.includes('männer');const _isD=n.includes('damen')||n.includes('farb')||n.includes('color')||n.includes('balayage')||n.includes('tönung')||n.includes('highlights')||n.includes('strähnen');if(_tab==='herren')return _isH||!_isD;return _isD||!_isH;});
+      const _displaySvcs=_filteredSvcs.length?_filteredSvcs:svcs;
+      html+=`<div class="bm-service-grid">${_displaySvcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    } else {
+      html+=`<div class="bm-service-grid">${svcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
+    }
   } else {
     html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
   }
@@ -8530,6 +8554,7 @@ function renderBookingModal(){
   const _hspDur=(_dur||0)+(_selHsp?20:0);
   if(_hspDur)html+=`<div class="row"><span>Dauer</span><span>${_hspDur}&thinsp;Min.${_selHsp?' <small style="color:var(--c-text-muted);font-size:.78rem">(inkl. +20 Min)</small>':''}</span></div>`;
   if(_selHsp)html+=`<div class="row"><span>Stil</span><span>${_selHsp.name}</span></div>`;
+  if(_isHairStore&&bmState.activeHaircutTab)html+=`<div class="row"><span>Kategorie</span><span>${bmState.activeHaircutTab==='damen'?'Damen':'Herren'}</span></div>`;
   html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
   html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
   html+=`<div class="row" id="summaryStylstRow"><span>Stylist</span><span id="summaryStylstVal">${bmState.staffName||'Bester Verfügbarer'}</span></div>`;
@@ -8557,6 +8582,7 @@ function bmSelectService(id){
   else{renderBookingModal();}
 }
 function bmSelectTime(t){bmState.time=t;renderBookingModal();}
+function bmSetHaircutTab(tab){bmState.activeHaircutTab=tab;bmState.haircutTabFromProfile=false;renderBookingModal();}
 
 // ── ENHANCED CALENDAR (Step 2) ──
 function bmCalNav(dir){
