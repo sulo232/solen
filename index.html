@@ -1605,6 +1605,7 @@ body{font-family:var(--font-body,system-ui);}
 
 <!-- NAV -->
 <a class="skip-link" href="#mainContent">Zum Inhalt springen</a>
+<a href="#mainContent" class="skip-link">Zum Inhalt springen</a>
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
     <a class="logo" href="#" onclick="showPage('home');return false">solen</a>
@@ -4037,7 +4038,7 @@ async function loadStores(){
   renderSkeletons();
   let data,error;
   try{
-    ({data,error}=await sb.from('stores').select('*').order('name'));
+    ({data,error}=await sb.from('stores').select('*').neq('status','pending').neq('status','rejected').order('name'));
   }catch(e){error=e;}
   if(error&&!data){
     document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><h3>${t('load_failed')}</h3><button onclick="loadStores()" style="margin-top:12px">${t('reload')}</button></div>`;
@@ -6764,6 +6765,30 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .btn-teal{background:#9B1D30;color:#fff;border:none;padding:6px 16px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;align-self:flex-end;}
 #scrollBar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#9B1D30,#D4AF77);z-index:99999;width:0;pointer-events:none;}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.035;background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');background-size:150px;}
+
+/* ===== Accessibility & UX Enhancements ===== */
+.skip-link{position:absolute;left:-9999px;top:8px;z-index:9999;padding:8px 18px;background:#FF6B6B;color:#fff;border-radius:0 0 8px 8px;font-weight:600;text-decoration:none;font-size:.9rem}
+.skip-link:focus{left:8px}
+:focus-visible{outline:2px solid #4ECDC4;outline-offset:2px;border-radius:4px}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid #4ECDC4;outline-offset:2px;border-radius:4px}
+/* Scroll progress */
+#scrollProgress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#FF6B6B,#4ECDC4);z-index:10000;width:0;transition:width .08s linear;pointer-events:none}
+/* Dark mode toggle */
+.dark-toggle{background:none;border:none;cursor:pointer;font-size:1.1rem;padding:6px 8px;border-radius:8px;color:inherit;line-height:1;transition:background .2s;display:inline-flex;align-items:center}
+.dark-toggle:hover{background:rgba(128,128,128,.15)}
+/* Toast notifications */
+#toastContainer{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:9500;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.toast{background:rgba(26,26,26,.95);color:#fff;padding:10px 22px;border-radius:24px;font-size:.875rem;box-shadow:0 4px 16px rgba(0,0,0,.3);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none;max-width:320px;text-align:center}
+.toast.show{opacity:1;transform:translateY(0)}
+/* Dark mode */
+[data-theme=dark]{--c-bg:#0F0F0F;--c-surface:#1A1A1A;--c-surface2:#242424;--c-border:#2E2E2E;--c-text:#EFEFEF;--c-text-muted:#999}
+[data-theme=dark] body{background:var(--c-bg,#0F0F0F);color:var(--c-text,#EFEFEF)}
+[data-theme=dark] .nav{background:rgba(15,15,15,.96);border-bottom:1px solid var(--c-border,#2E2E2E)}
+[data-theme=dark] .store-card,[data-theme=dark] .booking-card,[data-theme=dark] .modal-box,[data-theme=dark] .modal-content,[data-theme=dark] .dash-panel,[data-theme=dark] .crm-card,[data-theme=dark] .page-section{background:var(--c-surface,#1A1A1A);border-color:var(--c-border,#2E2E2E)}
+[data-theme=dark] .form-input,[data-theme=dark] .filter-input,[data-theme=dark] select{background:var(--c-surface2,#242424);color:var(--c-text,#EFEFEF);border-color:var(--c-border,#2E2E2E)}
+[data-theme=dark] .category-chip{background:var(--c-surface2,#242424);border-color:var(--c-border,#2E2E2E);color:var(--c-text,#EFEFEF)}
+[data-theme=dark] .bottom-nav{background:rgba(15,15,15,.96);border-top:1px solid var(--c-border,#2E2E2E)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--c-bg:#0F0F0F;--c-surface:#1A1A1A;--c-surface2:#242424;--c-border:#2E2E2E;--c-text:#EFEFEF;--c-text-muted:#999}}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
@@ -8651,6 +8676,15 @@ async function checkAndSetVerified(storeId){
 // Init weather on page load
 document.addEventListener('DOMContentLoaded',function(){loadWeatherWidget();});
 if(document.readyState!=='loading')loadWeatherWidget();
+
+// ===== Scroll progress bar =====
+(function(){const bar=document.createElement('div');bar.id='scrollProgress';document.body.prepend(bar);window.addEventListener('scroll',function(){const s=document.documentElement;bar.style.width=(s.scrollTop/(s.scrollHeight-s.clientHeight)*100)+'%';},{passive:true});})();
+// ===== Dark mode =====
+function toggleDarkMode(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('solen_theme',n);document.querySelectorAll('.dark-toggle').forEach(b=>b.textContent=n==='dark'?'☀️':'🌙');}
+function initDarkMode(){const saved=localStorage.getItem('solen_theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',saved);}
+document.addEventListener('DOMContentLoaded',function(){initDarkMode();const nav=document.querySelector('.nav-actions,.nav-links,.nav');if(nav){const btn=document.createElement('button');btn.className='dark-toggle';btn.setAttribute('aria-label','Erscheinungsbild umschalten');btn.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';btn.onclick=toggleDarkMode;nav.appendChild(btn);}});
+// ===== Toast notifications =====
+function showToast(msg,duration){duration=duration||2800;let tc=document.getElementById('toastContainer');if(!tc){tc=document.createElement('div');tc.id='toastContainer';document.body.appendChild(tc);}const t=document.createElement('div');t.className='toast';t.textContent=msg;tc.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},duration);}
 </script>
 
 <!-- PWA Install Banner -->
