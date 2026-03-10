@@ -251,7 +251,7 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .store-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
 .store-price-range{font-size:.85rem;color:var(--accent2);font-weight:700;font-family:'Space Grotesk',sans-serif}
 .btn-book{background:#9B1D30;color:#fff;border:none;padding:9px 22px;border-radius:50px;font-size:.875rem;font-weight:700;cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);text-shadow:0 1px 2px rgba(0,0,0,.15);box-shadow:0 2px 8px rgba(155,29,48,.35);}
-.btn-book:hover{background:var(--accent-dark);transform:scale(1.05);box-shadow:var(--glow)}
+.btn-book:hover{background:var(--accent-dark);transform:scale(1.05);box-shadow:var(--glow);filter:brightness(1.05)}
 .visited-badge{position:absolute;top:12px;left:12px;background:rgba(45,122,79,0.9);color:white;font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px)}
 .store-img{height:220px;background:linear-gradient(135deg,rgba(212,175,119,.12),#1a1a1a 60%);position:relative;overflow:hidden}
 .store-img img{width:100%;height:100%;object-fit:cover}
@@ -903,8 +903,6 @@ html,body{overflow-x:hidden;max-width:100vw}
 
 /* BOOKING MODAL */
 #bookingModal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-/* EMPFOHLEN BADGE */
-.empfohlen-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#9B1D30,#D4AF77);color:#fff;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px);z-index:3;letter-spacing:.02em;box-shadow:0 2px 8px rgba(155,29,48,.35)}
 #bookingModal.open{display:flex}
 #bookingModal .bm-content{background:var(--surface);border-radius:var(--r2);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);border:1px solid var(--border);padding:0}
 #bookingModal .bm-header{padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
@@ -1031,12 +1029,11 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 
 /* === UI POLISH === */
 body{line-height:1.6;}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 #scrollProgress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,#9B1D30,#D4AF77);z-index:9999;transition:width .1s linear;pointer-events:none;}
 .store-card,.card,.booking-card{opacity:0;transform:translateY(20px);transition:opacity 0.4s ease,transform 0.4s ease,box-shadow .25s ease!important;}
 .store-card.revealed,.card.revealed,.booking-card.revealed{opacity:1;transform:translateY(0);}
 .btn-book:active,.btn-primary:active{transform:scale(0.97)!important;}
-.btn-book:hover,.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
+.btn-primary:hover{filter:brightness(1.08);box-shadow:0 4px 16px rgba(0,0,0,.2)!important;}
 .page-title{letter-spacing:normal;} @media(max-width:640px){ .hero h1{font-size:clamp(1.55rem,5.5vw,2.1rem)!important;line-height:1.15} .hero p{font-size:.95rem} .page-title{font-size:1.55rem;font-weight:900} .section-title{font-size:1rem;font-weight:800;letter-spacing:.01em} } @media(max-width:480px){ .store-name{font-size:1rem;font-weight:700} .store-body .store-meta{font-size:.8rem} .section-title{font-size:.95rem} .bm-header h2{font-size:1rem} .modal-hd h2{font-size:1rem} }
 
 #scrollBar{position:fixed;top:0;left:0;height:3px;z-index:9999;background:linear-gradient(90deg,#9B1D30,#D4AF77);width:0;transition:width .08s linear}
@@ -2646,7 +2643,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     <div id="calAddons" class="cal-addons"></div>
     <div class="cal-recur-row">
       <label><input type="checkbox" id="calRecurCheck" onchange="toggleCalRecurring(this.checked)"/> Wiederkehrend</label>
-      <div id="calRecurOptions" class="hidden" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+      <div id="calRecurOptions" class="hidden" style="gap:6px;flex-wrap:wrap;"></div>
     </div>
     <div class="cal-group-row">
       <span>Personen:</span>
@@ -2703,12 +2700,12 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     <h4>Nachricht melden</h4>
     <select id="reportReason"><option value="spam">Spam</option><option value="abusive">Beleidigend</option><option value="other">Sonstiges</option></select>
     <div style="display:flex;gap:8px;margin-top:12px;">
-      <button onclick="submitReport(document.getElementById('reportReason').value)" style="flex:1;padding:8px;background:#FF6B6B;color:#fff;border:none;border-radius:8px;cursor:pointer;">Melden</button>
-      <button onclick="closeReportModal()" style="flex:1;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;cursor:pointer;background:none;">Abbrechen</button>
+      <button onclick="submitReport(document.getElementById('reportReason').value)" style="flex:1;padding:8px;background:var(--c-error);color:#fff;border:none;border-radius:8px;cursor:pointer;">Melden</button>
+      <button onclick="closeReportModal()" style="flex:1;padding:8px;border:1.5px solid var(--c-border);border-radius:8px;cursor:pointer;background:none;">Abbrechen</button>
     </div>
   </div>
 </div>
-id="bookingModal">
+<div id="bookingModal">
   <div class="bm-content">
     <div class="bm-header">
       <h2 id="bmTitle">Termin buchen</h2>
@@ -2893,9 +2890,9 @@ id="bookingModal">
       <button class="close-btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-bd">
-      <p style="color:#666;margin-bottom:20px" data-i18n="cancel_confirm_text">Sicher, dass du diesen Termin absagen m&ouml;chtest?</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <button class="btn solid" style="background:#dc2626;border-color:#dc2626" onclick="userCancelBooking()" data-i18n="cancel_confirm_yes">Ja, absagen</button>
+      <p style="color:var(--c-text-secondary);margin-bottom:20px" data-i18n="cancel_confirm_text">Sicher, dass du diesen Termin absagen m&ouml;chtest?</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button class="btn solid" style="background:var(--c-error);border-color:var(--c-error);color:#fff" onclick="userCancelBooking()" data-i18n="cancel_confirm_yes">Ja, absagen</button>
         <button class="btn" onclick="document.getElementById('cancelBookingOverlay').classList.remove('active')" data-i18n="cancel_confirm_no">Nein</button>
       </div>
     </div>
@@ -6851,7 +6848,7 @@ async function renderSalonDashboard(){
     </div>
     <div id="dashTabStatistiken" class="hidden">
       <div id="analyticsContent"><div class="spinner"></div></div>
-    <
+    </div>
     <div id="dashTabOeffnungszeiten" class="hidden">
       <div id="hoursEditorContent"><div class="spinner"></div></div>
     </div>
@@ -7840,7 +7837,7 @@ async function submitSalonReg(e){
     console.error('Reg error:',ex);
     btn.classList.remove('loading');
     btn.disabled=false;
-    btn.textContent=' Jetzt eintragen';
+    btn.textContent='Jetzt eintragen';
     const msg=ex&&ex.message?ex.message:'';
     if(msg.includes('email')){
       regShowFieldError('field_reg_email');
@@ -8045,10 +8042,8 @@ function selectStaff(id,name,el){
 
 // Close add-staff modal on backdrop click
 document.addEventListener('DOMContentLoaded',function(){
-  window.addEventListener('scroll',function(){const h=document.body.scrollHeight-window.innerHeight;if(h>0){const sb=document.getElementById('scrollBar');if(sb)sb.style.width=(window.scrollY/h*100)+'%';}},{passive:true});
+  window.addEventListener('scroll',function(){const h=document.body.scrollHeight-window.innerHeight;if(h>0){const sb=document.getElementById('scrollBar');if(sb)sb.style.width=(Math.min(window.scrollY/h*100,100))+'%';}},{passive:true});
   window.bnGo=function(id){document.querySelectorAll('.bn-tab').forEach(t=>t.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');};
-
-  window.addEventListener('scroll',function(){var sb=document.getElementById('scrollBar');if(sb){var p=window.scrollY/(document.body.scrollHeight-window.innerHeight);sb.style.width=(Math.min(p*100,100))+'%';}},{passive:true});
   window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.remove('active');});
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
@@ -9016,7 +9011,7 @@ document.addEventListener('click',function(e){
       favQuartiers.push(quartier);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
       btn.classList.add('fav');
-      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefügt', 'success');
+      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefügt');
     } else {
       favQuartiers.splice(idx, 1);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
@@ -9378,9 +9373,9 @@ if(document.readyState!=='loading')loadWeatherWidget();
 // ===== Scroll progress bar =====
 (function(){const bar=document.createElement('div');bar.id='scrollProgress';document.body.prepend(bar);window.addEventListener('scroll',function(){const s=document.documentElement;bar.style.width=(s.scrollTop/(s.scrollHeight-s.clientHeight)*100)+'%';},{passive:true});})();
 // ===== Dark mode =====
-function toggleDarkMode(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('solen_theme',n);document.querySelectorAll('.dark-toggle').forEach(b=>b.textContent=n==='dark'?'☀️':'🌙');}
+function toggleDarkMode(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('solen_theme',n);document.querySelectorAll('.dark-toggle').forEach(b=>{b.textContent=n==='dark'?'☀️':'🌙';b.setAttribute('aria-pressed',n==='dark'?'true':'false');});}
 function initDarkMode(){const saved=localStorage.getItem('solen_theme')||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',saved);}
-document.addEventListener('DOMContentLoaded',function(){initDarkMode();const nav=document.querySelector('.nav-actions,.nav-links,.nav');if(nav){const btn=document.createElement('button');btn.className='dark-toggle';btn.setAttribute('aria-label','Erscheinungsbild umschalten');btn.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';btn.onclick=toggleDarkMode;nav.appendChild(btn);}});
+document.addEventListener('DOMContentLoaded',function(){initDarkMode();const nav=document.querySelector('.nav-actions,.nav-links,.nav');if(nav){const btn=document.createElement('button');btn.className='dark-toggle';btn.setAttribute('aria-label','Erscheinungsbild umschalten');const isDark=document.documentElement.getAttribute('data-theme')==='dark';btn.setAttribute('aria-pressed',isDark?'true':'false');btn.textContent=isDark?'☀️':'🌙';btn.onclick=toggleDarkMode;nav.appendChild(btn);}});
 // ===== Toast notifications =====
 function showToast(msg,duration){duration=duration||2800;let tc=document.getElementById('toastContainer');if(!tc){tc=document.createElement('div');tc.id='toastContainer';document.body.appendChild(tc);}const t=document.createElement('div');t.className='toast';t.textContent=msg;tc.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},duration);}
 </script>
