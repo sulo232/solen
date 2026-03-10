@@ -7491,6 +7491,16 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 .store-card:hover{box-shadow:0 2px 6px rgba(31,31,31,.08),0 10px 28px rgba(31,31,31,.11),0 30px 60px rgba(31,31,31,.06)}
 .booking-card{box-shadow:0 1px 3px rgba(31,31,31,.05),0 4px 12px rgba(31,31,31,.07)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:#4ECDC4 !important;box-shadow:0 0 0 3px rgba(78,205,196,.18) !important}
+
+/* ── MOBILE BOTTOM NAV ── */
+#mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:#fff;border-top:1px solid rgba(31,31,31,.09);box-shadow:0 -2px 16px rgba(31,31,31,.07);z-index:8000;padding-bottom:env(safe-area-inset-bottom)}
+#mobile-nav .mnav-inner{display:flex;height:60px;align-items:stretch}
+#mobile-nav .mnav-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#9E8E7F;font-size:10px;font-weight:600;cursor:pointer;border:none;background:none;font-family:inherit;letter-spacing:.3px;transition:color .15s}
+#mobile-nav .mnav-tab.active{color:#FF6B6B}
+#mobile-nav .mnav-tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+#mobile-nav .mnav-tab:active{opacity:.7}
+@media(min-width:769px){#mobile-nav{display:none!important}}
+@media(max-width:768px){#mobile-nav{display:block}body{padding-bottom:68px}}
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
@@ -9401,6 +9411,17 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   Object.assign(svg.style,{position:'fixed',top:'0',left:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'9997',opacity:'.04'});
   document.body.appendChild(svg);
 })();
+
+// Mobile bottom nav
+function mnavGo(tab){
+  document.querySelectorAll('#mobile-nav .mnav-tab').forEach(function(b){b.classList.remove('active')});
+  var btn=document.getElementById('mnav-'+tab);
+  if(btn)btn.classList.add('active');
+  if(tab==='home'){window.scrollTo({top:0,behavior:'smooth'});}
+  else if(tab==='search'){var s=document.getElementById('search-input');if(s){s.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){s.focus()},350);}}
+  else if(tab==='bookings'){var bl=document.querySelector('.booking-list,.my-bookings,.bookings-container');if(bl){bl.scrollIntoView({behavior:'smooth',block:'start'});}else if(typeof openAuth==='function'){openAuth();}}
+  else if(tab==='profil'){if(typeof openProfile==='function')openProfile();else if(typeof openAuth==='function')openAuth();}
+}
 </script>
 
 <!-- PWA Install Banner -->
@@ -9499,5 +9520,23 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
     <div id="aiHelperResults"></div>
   </div>
 </div>
+
+<!-- Mobile Bottom Nav -->
+<nav id="mobile-nav" aria-label="Navigation">
+<div class="mnav-inner">
+<button class="mnav-tab active" id="mnav-home" onclick="mnavGo('home')">
+<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Entdecken</span>
+</button>
+<button class="mnav-tab" id="mnav-search" onclick="mnavGo('search')">
+<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Suche</span>
+</button>
+<button class="mnav-tab" id="mnav-bookings" onclick="mnavGo('bookings')">
+<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Buchungen</span>
+</button>
+<button class="mnav-tab" id="mnav-profil" onclick="mnavGo('profil')">
+<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profil</span>
+</button>
+</div>
+</nav>
 </body>
 </html>
