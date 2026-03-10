@@ -335,10 +335,12 @@ input,select,textarea{font-family:inherit;min-height:44px}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
 /* MODAL BASE — Liquid Glassmorphism */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);max-width:100vw;overflow-x:hidden;overflow-y:auto;opacity:0;transition:opacity .3s var(--ease-standard);will-change:opacity}
-.overlay.active{display:flex;opacity:1}
-.overlay .modal{transform:translateY(20px) scale(.95);opacity:0;transition:transform .4s var(--ease-emphasized),opacity .3s var(--ease-standard);will-change:transform,opacity}
-.overlay.active .modal{transform:translateY(0) scale(1);opacity:1}
+@keyframes overlayFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalSlideIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);max-width:100vw;overflow-x:hidden;overflow-y:auto;opacity:0;will-change:opacity}
+.overlay.active{display:flex;opacity:1;animation:overlayFadeIn .3s var(--ease-standard) both}
+.overlay .modal{transform:translateY(16px) scale(.97);opacity:0;will-change:transform,opacity}
+.overlay.active .modal{transform:translateY(0) scale(1);opacity:1;animation:modalSlideIn .4s var(--ease-emphasized) both}
 .modal{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;width:100%;max-width:min(480px,calc(100vw - 32px));max-height:90vh;overflow-y:auto;overflow-x:hidden;box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18);position:relative}
 [data-theme="dark"] .modal{background:rgba(var(--surface-rgb,31,31,31),.78);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 80px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.06)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .modal{background:rgba(var(--surface-rgb,31,31,31),.78);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 80px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.06)}}
@@ -1021,8 +1023,8 @@ html,body{overflow-x:hidden;max-width:100vw}
 }
 
 /* IMPRESSUM/DATENSCHUTZ MODAL */
-.legal-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);opacity:0;transition:opacity .3s var(--ease-standard);will-change:opacity}
-.legal-modal.open{display:flex;opacity:1}
+.legal-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);opacity:0;will-change:opacity}
+.legal-modal.open{display:flex;opacity:1;animation:overlayFadeIn .3s var(--ease-standard) both}
 .legal-modal .legal-content{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;width:100%;max-width:min(520px,calc(100vw - 32px));max-height:80vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18);padding:24px;transform:translateY(20px) scale(.95);opacity:0;transition:transform .4s var(--ease-emphasized),opacity .3s var(--ease-standard);will-change:transform,opacity}
 .legal-modal.open .legal-content{transform:translateY(0) scale(1);opacity:1}
 .legal-modal h2{font-size:1.2rem;font-weight:800;margin-bottom:16px}
@@ -1088,8 +1090,8 @@ body{line-height:1.6;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.65%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27300%27 height=%27300%27 filter=%27url(%23n)%27/%3E%3C/svg%3E");background-size:300px 300px}
 
 /* === ONBOARDING WIZARD === */
-.onboard-wizard{position:fixed;inset:0;z-index:9999;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
-.onboard-wizard.active{display:flex}
+.onboard-wizard{position:fixed;inset:0;z-index:9999;background:rgba(var(--bg-rgb,248,244,237),.92);backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%);display:none;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(12px);transition:opacity .35s var(--ease-standard),transform .4s var(--ease-emphasized)}
+.onboard-wizard.active{display:flex;opacity:1;transform:translateY(0)}
 .onboard-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .onboard-header h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin:0}
 .onboard-step-label{font-size:.82rem;color:var(--muted);font-weight:600}
@@ -1949,9 +1951,9 @@ body{font-family:var(--font-body,system-ui);}
 .bottom-nav-item:active{transform:scale(.9);transition-duration:.1s}
 /* Smooth form interactions */
 .form-input:focus{transform:translateY(-1px);box-shadow:0 0 0 3px rgba(155,29,48,.18),0 4px 12px rgba(155,29,48,.08)!important}
-/* Analytics auth-only visibility */
+/* Analytics auth-only visibility — only show when explicitly opened via .active class */
 .analytics-auth-only{display:none!important}
-body.is-authenticated .analytics-auth-only{display:block!important}
+body.is-authenticated .analytics-auth-only.active{display:flex!important}
 /* Analytics tab in dashboard - hidden for non-auth */
 .analytics-tab-auth{display:none!important}
 body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
@@ -2884,11 +2886,11 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 <!-- PROFILE SETUP MODAL -->
-<div class="overlay" id="setupOverlay">
+<div class="overlay" id="setupOverlay" onclick="if(event.target===this)closeSetup()">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="setupTitle" data-i18n="setup_title">Profil einrichten</h2>
-      <span style="font-size:.82rem;color:var(--muted)" id="setupStepLabel">Schritt 1 von 3</span>
+      <button class="close-btn" onclick="closeSetup()" aria-label="Schliessen">&times;</button>
     </div>
     <div class="modal-body">
       <!-- single-page setup -->
@@ -2986,7 +2988,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 <!-- EDIT STORE MODAL (ADMIN) -->
-<div class="overlay" id="editStoreOverlay" role="dialog" aria-modal="true" aria-label="Salon bearbeiten">
+<div class="overlay" id="editStoreOverlay" role="dialog" aria-modal="true" aria-label="Salon bearbeiten" onclick="if(event.target===this)closeEditStore()">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="editStoreTitle">Salon bearbeiten</h2>
@@ -3230,7 +3232,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </nav>
 
 <!-- NEW PASSWORD MODAL (for reset link) -->
-<div class="overlay" id="newPasswordOverlay" role="dialog" aria-modal="true" aria-label="Neues Passwort">
+<div class="overlay" id="newPasswordOverlay" role="dialog" aria-modal="true" aria-label="Neues Passwort" onclick="if(event.target===this){this.classList.remove('active');_checkModalOpen()}">
   <div class="modal">
     <div class="modal-hd">
       <h2 id="newPwTitle">Neues Passwort</h2>
@@ -3252,7 +3254,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 <!-- TOAST -->
-<div class="overlay" id="cancelBookingOverlay" role="dialog" aria-modal="true" aria-label="Termin absagen">
+<div class="overlay" id="cancelBookingOverlay" role="dialog" aria-modal="true" aria-label="Termin absagen" onclick="if(event.target===this){this.classList.remove('active');_checkModalOpen()}">
   <div class="modal">
     <div class="modal-hd">
       <h2 data-i18n="cancel_confirm_title">Termin absagen?</h2>
@@ -3269,7 +3271,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 <div id="toast"></div>
 <!-- DM OVERLAY (Instagram-style) -->
-<div class="dm-overlay" id="dmOverlay" role="dialog" aria-modal="true" aria-label="Nachrichten">
+<div class="dm-overlay" id="dmOverlay" role="dialog" aria-modal="true" aria-label="Nachrichten" onclick="if(event.target===this)dmClose()">
   <!-- INBOX SCREEN -->
   <div class="dm-inbox" id="dmInbox">
     <div class="dm-inbox-hdr">
@@ -4620,7 +4622,7 @@ function openSetup(isWelcome){
   }
   document.getElementById('setupStepLabel').textContent='';
 }
-function closeSetup(){document.getElementById('setupOverlay').classList.remove('active');}
+function closeSetup(){document.getElementById('setupOverlay').classList.remove('active');_checkModalOpen();}
 function skipSetup(){closeSetup();toast('Du kannst dein Profil jederzeit vervollständigen.','info');}
 
 function toggleChip(el){el.classList.toggle('selected');}
@@ -6079,10 +6081,14 @@ function closeAllModals(){
   try{closeBookingModal();}catch(e){}
   try{closeAnalyticsDash();}catch(e){}
   try{closeAIHelper();}catch(e){}
+  try{dmClose();}catch(e){}
+  try{closeOnboarding();}catch(e){}
   document.getElementById('setupOverlay')?.classList.remove('active');
   document.getElementById('impressumModal')?.classList.remove('open');
   document.getElementById('datenschutzModal')?.classList.remove('open');
   document.getElementById('editStoreOverlay')?.classList.remove('active');
+  document.getElementById('cancelBookingOverlay')?.classList.remove('active');
+  document.getElementById('newPasswordOverlay')?.classList.remove('active');
   const pm=document.getElementById('profileEditModal');if(pm)pm.style.display='none';
   document.getElementById('reportModal')?.classList.add('hidden');
   document.getElementById('offerPicker')?.classList.add('hidden');
@@ -6266,6 +6272,7 @@ function dmClose(){
   dmUnsubscribe();
   dmUnsubscribeInbox();
   DM.bookingId=null;DM.currentConvo=null;
+  _checkModalOpen();
 }
 
 function dmShowInbox(){
@@ -7753,7 +7760,7 @@ async function submitReview(salonId){
 }
 
 // KEYBOARD SHORTCUTS
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAllModals();closeAllDropdowns();closeBookingModal();closeFilterSheet();try{closeCalendarOverlay();}catch(ex){}try{closeReportModal();}catch(ex){}try{closeAnalyticsDash();}catch(ex){}try{closeWalkinModal();}catch(ex){}document.getElementById('profileSlideIn').style.display='none';}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAllModals();closeAllDropdowns();closeBookingModal();closeFilterSheet();try{closeCalendarOverlay();}catch(ex){}try{closeReportModal();}catch(ex){}try{closeAnalyticsDash();}catch(ex){}try{closeWalkinModal();}catch(ex){}try{closeOnboarding();}catch(ex){}try{dmClose();}catch(ex){}try{document.getElementById('cancelBookingOverlay').classList.remove('active');}catch(ex){}try{document.getElementById('newPasswordOverlay').classList.remove('active');}catch(ex){}document.getElementById('profileSlideIn').style.display='none';_checkModalOpen();}});
 
 // PROFILE SLIDE-IN
 function showProfileSlideIn(){document.getElementById('profileSlideIn').style.display='block';}
@@ -9713,7 +9720,7 @@ async function rejectStoreAdmin(btn,sid){var reason=prompt("Ablehnungsgrund:")||
 async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await supabase.from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veröffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
 async function checkVerifiedStatus(storeId){var r=await supabase.from("bookings").select("id",{count:"exact"}).eq("store_id",storeId).eq("status","confirmed"),isVerified=(r.count||0)>=10;if(isVerified)await supabase.from("stores").update({is_verified:true}).eq("id",storeId);return isVerified;}
 async function exportIcal(storeId){var r=await supabase.from("bookings").select("*").eq("store_id",storeId).eq("status","confirmed"),data=r.data;if(!data||!data.length){showToast&&showToast("Keine Termine.");return;}var lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Solen.ch//DE"];data.forEach(function(b){var dt=(b.date||"20260101").replace(/-/g,""),tm=((b.time||"10:00").replace(/:/g,""))+"00";lines.push("BEGIN:VEVENT","UID:solen-"+b.id,"DTSTART:"+dt+"T"+tm,"SUMMARY:"+(b.service||"Termin")+" - "+(b.customer_name||"Kunde"),"END:VEVENT");});lines.push("END:VCALENDAR");var blob=new Blob([lines.join("\r\n")],{type:"text/calendar"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="solen-termine.ics";a.click();}
-function trackEvent(name,props){try{if(typeof gtag==="function")gtag("event",name,props||{});supabase.from("analytics_events").insert({event:name,props:JSON.stringify(props||{}),ts:new Date().toISOString()}).then(function(){}).catch(function(){});}catch(e){}}
+function trackEvent(name,props){try{if(!currentUser)return;if(typeof gtag==="function")gtag("event",name,props||{});supabase.from("analytics_events").insert({event:name,props:JSON.stringify(props||{}),ts:new Date().toISOString()}).then(function(){}).catch(function(){});}catch(e){}}
 document.addEventListener("click",function(e){var card=e.target.closest(".card");if(card&&card.dataset.storeId)trackEvent("salon_card_click",{store_id:card.dataset.storeId});});
 function initFilterPills(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});document.querySelectorAll(".filter-pill[data-q]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-q]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});}
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});
