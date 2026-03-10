@@ -2833,6 +2833,41 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   <div id="salonDashContent"><div class="spinner"></div></div>
 </div>
 
+<!-- PARTNER REGISTRATION PAGE -->
+<div id="pagePartner" class="page">
+  <div class="page-title">Salon eintragen</div>
+  <div class="page-sub">Trage deinen Salon kostenlos bei solen ein</div>
+  <div id="partnerPageContent"></div>
+</div>
+
+<!-- SALON SETUP PAGE -->
+<div id="pageSalonSetup" class="page">
+  <div id="setupPageContent"></div>
+</div>
+
+<!-- ANALYTICS PAGE -->
+<div id="pageDashboardAnalytics" class="page">
+  <div class="page-title">Statistiken</div>
+  <div class="page-sub">Buchungsübersicht für deinen Salon</div>
+  <button class="btn-sm" onclick="showPage('salon-dashboard')" style="margin-bottom:16px">← Dashboard</button>
+  <div id="analyticsPageContent"><div class="spinner"></div></div>
+</div>
+
+<!-- STAFF MANAGEMENT PAGE -->
+<div id="pageDashboardStaff" class="page">
+  <div class="page-title">Personal</div>
+  <div class="page-sub">Mitarbeiter und Provisionen verwalten</div>
+  <button class="btn-sm" onclick="showPage('salon-dashboard')" style="margin-bottom:16px">← Dashboard</button>
+  <div id="staffPageContent"><div class="spinner"></div></div>
+</div>
+
+<!-- BOOKING PAGE -->
+<div id="pageBook" class="page">
+  <button class="btn-sm" onclick="history.back()" style="margin-bottom:16px">← Zurück</button>
+  <h2 id="bookPageTitle" class="page-title">Termin buchen</h2>
+  <div id="bookPageBody"></div>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="overlay" id="authOverlay" onclick="if(event.target===this)closeAuth()" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
   <div class="modal" id="authModal">
@@ -3003,79 +3038,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   </div>
 </div>
 
-<!-- PROFILE SETUP MODAL -->
-<div class="overlay" id="setupOverlay" onclick="if(event.target===this)closeSetup()">
-  <div class="modal">
-    <div class="modal-hd">
-      <h2 id="setupTitle" data-i18n="setup_title">Profil einrichten</h2>
-      <button class="close-btn" onclick="closeSetup()" aria-label="Schliessen">&times;</button>
-    </div>
-    <div class="modal-body">
-      <!-- single-page setup -->
-
-      <!-- Step 1: Basic info -->
-      <div class="setup-step active" id="setupStep1">
-        <h3 style="margin-bottom:6px;font-size:1rem" id="setupWelcomeHeading" data-i18n="setup_welcome">Sch&ouml;n, dass du da bist!</h3>
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px" data-i18n="setup_desc">Ein kurzes Profil hilft deinem Salon, sich auf deinen Besuch vorzubereiten</p>
-        <div class="form-group">
-          <label data-i18n="lbl_name">Name</label>
-          <input class="form-input" type="text" id="setupName" placeholder="Dein Name">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label data-i18n="lbl_age">Alter</label>
-            <select class="form-input" id="setupAge">
-              <option value="" data-i18n="setup_select">W&auml;hlen...</option>
-              <option value="Unter 12" data-i18n="age_under12">Unter 12</option>
-              <option value="12-17" data-i18n="age_12_17">12&ndash;17</option>
-              <option value="18-29" data-i18n="age_18_29">18&ndash;29</option>
-              <option value="30-49" data-i18n="age_30_49">30&ndash;49</option>
-              <option value="50+" data-i18n="age_50plus">50+</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label data-i18n="lbl_gender">Geschlecht</label>
-            <select class="form-input" id="setupGender">
-              <option value="">Wählen...</option>
-              <option value="M&auml;nnlich" data-i18n="gender_male">M&auml;nnlich</option>
-              <option value="Weiblich" data-i18n="gender_female">Weiblich</option>
-              <option value="Divers" data-i18n="gender_diverse">Divers</option>
-              <option value="Keine Angabe" data-i18n="gender_none">Keine Angabe</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label data-i18n="lbl_hairtype">Haartyp</label>
-          <select class="form-input" id="setupHairType">
-            <option value="">Wählen...</option>
-            <option value="Glatt" data-i18n="hair_straight">Glatt</option>
-            <option value="Wellig" data-i18n="hair_wavy">Wellig</option>
-            <option value="Lockig" data-i18n="hair_curly">Lockig</option>
-            <option value="Sehr lockig" data-i18n="hair_very_curly">Sehr lockig</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label data-i18n="lbl_preferred_services">Bevorzugte Leistungen</label>
-          <div class="chip-group" id="prefServicesChips">
-            <button class="chip" data-val="Haarschnitt" onclick="toggleChip(this)" data-i18n="pref_haircut">Haarschnitt</button>
-            <button class="chip" data-val="F&auml;rben" onclick="toggleChip(this)" data-i18n="pref_coloring">F&auml;rben</button>
-            <button class="chip" data-val="Styling" onclick="toggleChip(this)" data-i18n="pref_styling">Styling</button>
-            <button class="chip" data-val="Bartpflege" onclick="toggleChip(this)" data-i18n="pref_beard">Bartpflege</button>
-            <button class="chip" data-val="N&auml;gel" onclick="toggleChip(this)" data-i18n="pref_nails">N&auml;gel</button>
-            <button class="chip" data-val="Hautpflege" onclick="toggleChip(this)" data-i18n="pref_skincare">Hautpflege</button>
-            <button class="chip" data-val="Massage" onclick="toggleChip(this)" data-i18n="pref_massage">Massage</button>
-            <button class="chip" data-val="Make-up" onclick="toggleChip(this)" data-i18n="pref_makeup_pref">Make-up</button>
-            <button class="chip" data-val="Augenbrauen" onclick="toggleChip(this)" data-i18n="pref_eyebrows_pref">Augenbrauen</button>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="finishSetup()" data-i18n="btn_save">Profil speichern</button>
-        <button class="btn-secondary mt-12" onclick="skipSetup()" data-i18n="btn_skip">&Uuml;berspringen</button>
-      </div>
-
-      <!-- Steps 2 & 3 removed - single-page profile setup -->
-    </div>
-  </div>
-</div>
+<!-- PROFILE SETUP: content rendered into #setupPageContent by renderSalonSetupPage() -->
 
 <!-- STORE DETAIL MODAL -->
 <div class="overlay" id="storeOverlay" role="dialog" aria-modal="true" aria-label="Salon Details" onclick="if(event.target===this)closeStoreDetail()">
@@ -4210,7 +4173,7 @@ async function onSignIn(user){
     const sid=pendingBookingStoreId;
     pendingBookingStoreId=null;
     const pendingStore=allStores.find(x=>x.id===sid);
-    setTimeout(()=>{if(pendingStore)openBookingModal(pendingStore,null);else startBooking(sid);},500);
+    setTimeout(()=>showPage('book/'+sid),500);
   }
   // Check if salon owner (existing salon/store record or salon_owner/owner profile role)
   const[{data:salonData},{data:storeData}]=await Promise.all([
@@ -4716,34 +4679,13 @@ async function doUpdatePassword(){
 })();
 
 // PROFILE SETUP
+let _setupIsWelcome=false;
 function openSetup(isWelcome){
-  const el=document.getElementById('setupOverlay');
-  el.classList.add('active');
-  const heading=document.getElementById('setupWelcomeHeading');
-  const title=document.getElementById('setupTitle');
-  if(isWelcome){
-    heading.textContent='Willkommen! Möchtest du dein Profil einrichten?';
-    title.textContent='Profil einrichten';
-  } else {
-    heading.textContent='Profil bearbeiten';
-    title.textContent='Profil bearbeiten';
-  }
-  // Pre-fill from existing profile
-  if(currentProfile){
-    const n=document.getElementById('setupName');if(n)n.value=currentProfile.name||currentProfile.display_name||'';
-    const a=document.getElementById('setupAge');if(a)a.value=currentProfile.age_range||'';
-    const g=document.getElementById('setupGender');if(g)g.value=currentProfile.gender||'';
-    const h=document.getElementById('setupHairType');if(h)h.value=currentProfile.hair_type||'';
-    // Pre-select preferred services chips
-    const prefs=currentProfile.preferred_services||[];
-    document.querySelectorAll('#prefServicesChips .chip').forEach(c=>{
-      c.classList.toggle('selected',prefs.includes(c.dataset.val));
-    });
-  }
-  document.getElementById('setupStepLabel').textContent='';
+  _setupIsWelcome=!!isWelcome;
+  showPage('salon/setup');
 }
-function closeSetup(){document.getElementById('setupOverlay').classList.remove('active');_checkModalOpen();}
-function skipSetup(){closeSetup();toast('Du kannst dein Profil jederzeit vervollständigen.','info');}
+function closeSetup(){showPage('home');}
+function skipSetup(){showPage('home');toast('Du kannst dein Profil jederzeit vervollständigen.','info');}
 
 function toggleChip(el){el.classList.toggle('selected');}
 
@@ -5865,19 +5807,9 @@ async function startBooking(storeId){
     }catch(e){}
   }
   if(!currentUser){pendingBookingStoreId=storeId;openAuth('login');return;}
-  const store=allStores.find(x=>x.id===storeId);
-  if(!store)return;
-  bookingState={storeId,store,step:1,service:null,date:null,time:null};
-  document.getElementById('bookingTitle').textContent=`${t('btn_book_now')} | ${store.name}`;
-  var bookOv=document.getElementById('bookingOverlay');
-  bookOv._triggerEl=document.activeElement;
-  bookOv.classList.add('active');
-  document.body.classList.add('modal-open');
-  renderWizStep(1);
-  setTimeout(function(){trapFocus(bookOv);},100);
-
-  resetSalonSEO();}
-function closeBooking(){var o=document.getElementById('bookingOverlay');releaseFocus(o);o.classList.remove('active');_checkModalOpen();bookingState={};}
+  showPage('book/'+storeId);
+}
+function closeBooking(){var o=document.getElementById('bookingOverlay');if(o){releaseFocus(o);o.classList.remove('active');}bookingState={};}
 
 function setWizStep(n){
   [1,2,3,4,5].forEach(i=>{
@@ -6205,7 +6137,7 @@ function closeAllModals(){
   try{closeAIHelper();}catch(e){}
   try{dmClose();}catch(e){}
   try{closeOnboarding();}catch(e){}
-  document.getElementById('setupOverlay')?.classList.remove('active');
+  // setupOverlay converted to /salon/setup page route
   document.getElementById('impressumModal')?.classList.remove('open');
   document.getElementById('datenschutzModal')?.classList.remove('open');
   document.getElementById('editStoreOverlay')?.classList.remove('active');
@@ -6226,7 +6158,7 @@ function _checkModalOpen(){
 function showPage(page,skipHash){
   closeAllModals();
   document.getElementById('pageHome').style.display='none';
-  ['pageProfile','pageBookings','pageAdmin','pageSalonDashboard'].forEach(p=>{const el=document.getElementById(p);if(el)el.classList.remove('active');});
+  ['pageProfile','pageBookings','pageAdmin','pageSalonDashboard','pagePartner','pageSalonSetup','pageDashboardAnalytics','pageDashboardStaff','pageBook'].forEach(p=>{const el=document.getElementById(p);if(el)el.classList.remove('active');});
   var dd=document.getElementById('navDropdown');if(dd)dd.classList.remove('open');
   // close mobile nav
   document.getElementById('navActions')?.classList.remove('open');
@@ -6238,8 +6170,12 @@ function showPage(page,skipHash){
   // Update URL hash
   if(!skipHash)history.pushState(null,null,page==='home'?'#':'#/'+page);
   if(page==='home'){document.getElementById('pageHome').style.display='block';}
+  else if(page.startsWith('book/')){
+    const bpEl=document.getElementById('pageBook');
+    if(bpEl){bpEl.classList.add('active');loadPageContent(page);}
+  }
   else{
-    const pageMap={'salon-dashboard':'SalonDashboard','profile':'Profile','bookings':'Bookings','admin':'Admin','partner':'Admin','dashboard/analytics':'SalonDashboard','dashboard/staff':'SalonDashboard'};
+    const pageMap={'salon-dashboard':'SalonDashboard','profile':'Profile','bookings':'Bookings','admin':'Admin','partner':'Partner','salon/setup':'SalonSetup','dashboard/analytics':'DashboardAnalytics','dashboard/staff':'DashboardStaff'};
     const pageName=pageMap[page]||(page.charAt(0).toUpperCase()+page.slice(1));
     const el=document.getElementById('page'+pageName);
     if(el){el.classList.add('active');loadPageContent(page);}
@@ -6251,7 +6187,7 @@ function showPage(page,skipHash){
 function handleHashRoute(){
   var h=location.hash.replace('#/','').replace('#','');
   if(!h||h==='/')showPage('home',true);
-  else if(h.startsWith('book/')){var sid=h.split('/')[1];if(sid){showPage('home',true);setTimeout(function(){var s=allStores.find(function(x){return String(x.id)===sid;});if(s)openBookingModal(s,null);},500);}}
+  else if(h.startsWith('book/')){var sid=h.split('/')[1];if(sid)showPage('book/'+sid,true);}
   else showPage(h,true);
 }
 window.addEventListener('hashchange',handleHashRoute);
@@ -6262,6 +6198,188 @@ function loadPageContent(page){
   else if(page==='bookings')renderBookings();
   else if(page==='admin')renderAdmin();
   else if(page==='salon-dashboard')renderSalonDashboard();
+  else if(page==='partner')renderPartnerPage();
+  else if(page==='salon/setup')renderSalonSetupPage();
+  else if(page==='dashboard/analytics')renderAnalyticsPage();
+  else if(page==='dashboard/staff')renderStaffPage();
+  else if(page.startsWith('book/'))renderBookPage(page.split('/')[1]);
+}
+
+// ── NEW PAGE RENDER FUNCTIONS ────────────────────────────────────────────────
+
+// PARTNER PAGE: move .salon-reg-wrap from hidden #salonRegModal into page and init
+function renderPartnerPage(){
+  const target=document.getElementById('partnerPageContent');
+  if(!target)return;
+  // Move form into page container if not already there
+  const wrap=document.querySelector('#salonRegModal .salon-reg-wrap')||document.querySelector('#partnerPageContent .salon-reg-wrap');
+  if(wrap&&wrap.parentElement.id!=='partnerPageContent'){
+    target.innerHTML='';
+    target.appendChild(wrap);
+  }
+  // Build hours grid if not yet built
+  const grid=document.getElementById('regHoursGrid');
+  if(grid&&!grid.dataset.built){
+    const days=[['Mo','Montag'],['Di','Dienstag'],['Mi','Mittwoch'],['Do','Donnerstag'],['Fr','Freitag'],['Sa','Samstag'],['So','Sonntag']];
+    grid.innerHTML=days.map(([k,label])=>`<div class="reg-day-row"><input type="checkbox" id="rh_${k}" checked aria-label="${label} geöffnet"><label class="reg-day-lbl" for="rh_${k}">${k}</label><div class="reg-time-inputs"><label class="sr-only" for="rh_${k}_f">${label} von</label><input type="time" id="rh_${k}_f" value="09:00" aria-label="${label} Öffnungszeit von"><span class="reg-time-dash" aria-hidden="true">–</span><label class="sr-only" for="rh_${k}_t">${label} bis</label><input type="time" id="rh_${k}_t" value="19:00" aria-label="${label} Öffnungszeit bis"></div></div>`).join('');
+    grid.dataset.built='1';
+  }
+  // Populate parent store dropdown
+  const pSel=document.getElementById('reg_parent_store_id');
+  if(pSel&&pSel.options.length<=1){allStores.filter(x=>!x.parent_store_id).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;pSel.appendChild(o);});}
+  // Restore draft and go to saved step
+  const hadDraft=regRestoreDraft();
+  regGoTo(hadDraft?_regCurrentStep:1);
+  regAttachAutosave();
+  // Reset success screen
+  const form=document.getElementById('salonRegForm');
+  const success=document.getElementById('regSuccess');
+  if(form)form.style.display='';
+  if(success)success.style.display='none';
+}
+
+// SALON SETUP PAGE: render setup form into #setupPageContent
+function renderSalonSetupPage(){
+  const target=document.getElementById('setupPageContent');
+  if(!target)return;
+  const isWelcome=_setupIsWelcome;
+  const headingTxt=isWelcome?'Willkommen! Möchtest du dein Profil einrichten?':'Profil bearbeiten';
+  const titleTxt=isWelcome?'Profil einrichten':'Profil bearbeiten';
+  const prefs=currentProfile?.preferred_services||[];
+  const chips=['Haarschnitt','Färben','Styling','Bartpflege','Nägel','Hautpflege','Massage','Make-up','Augenbrauen'];
+  target.innerHTML=`
+    <div class="modal-hd" style="padding:0 0 16px">
+      <h2 id="setupTitle">${titleTxt}</h2>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div class="setup-step active" id="setupStep1">
+        <h3 style="margin-bottom:6px;font-size:1rem" id="setupWelcomeHeading">${headingTxt}</h3>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:18px">Ein kurzes Profil hilft deinem Salon, sich auf deinen Besuch vorzubereiten</p>
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-input" type="text" id="setupName" placeholder="Dein Name" value="${currentProfile?.display_name||currentProfile?.name||''}">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Alter</label>
+            <select class="form-input" id="setupAge">
+              <option value="">Wählen...</option>
+              <option value="Unter 12"${currentProfile?.age_range==='Unter 12'?' selected':''}>Unter 12</option>
+              <option value="12-17"${currentProfile?.age_range==='12-17'?' selected':''}>12–17</option>
+              <option value="18-29"${currentProfile?.age_range==='18-29'?' selected':''}>18–29</option>
+              <option value="30-49"${currentProfile?.age_range==='30-49'?' selected':''}>30–49</option>
+              <option value="50+"${currentProfile?.age_range==='50+'?' selected':''}>50+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Geschlecht</label>
+            <select class="form-input" id="setupGender">
+              <option value="">Wählen...</option>
+              <option value="Männlich"${currentProfile?.gender==='Männlich'?' selected':''}>Männlich</option>
+              <option value="Weiblich"${currentProfile?.gender==='Weiblich'?' selected':''}>Weiblich</option>
+              <option value="Divers"${currentProfile?.gender==='Divers'?' selected':''}>Divers</option>
+              <option value="Keine Angabe"${currentProfile?.gender==='Keine Angabe'?' selected':''}>Keine Angabe</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Haartyp</label>
+          <select class="form-input" id="setupHairType">
+            <option value="">Wählen...</option>
+            <option value="Glatt"${currentProfile?.hair_type==='Glatt'?' selected':''}>Glatt</option>
+            <option value="Wellig"${currentProfile?.hair_type==='Wellig'?' selected':''}>Wellig</option>
+            <option value="Lockig"${currentProfile?.hair_type==='Lockig'?' selected':''}>Lockig</option>
+            <option value="Sehr lockig"${currentProfile?.hair_type==='Sehr lockig'?' selected':''}>Sehr lockig</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bevorzugte Leistungen</label>
+          <div class="chip-group" id="prefServicesChips">
+            ${chips.map(c=>`<button class="chip${prefs.includes(c)?' selected':''}" data-val="${c}" onclick="toggleChip(this)">${c}</button>`).join('')}
+          </div>
+        </div>
+        <button class="btn-primary" onclick="finishSetup()">Profil speichern</button>
+        <button class="btn-secondary mt-12" onclick="skipSetup()">Überspringen</button>
+      </div>
+    </div>`;
+}
+
+// ANALYTICS PAGE
+let _currentDashSalonId=null;
+async function renderAnalyticsPage(){
+  const el=document.getElementById('analyticsPageContent');
+  if(!el)return;
+  if(!_currentDashSalonId){el.innerHTML='<p class="text-muted">Kein Salon ausgewählt.</p>';return;}
+  // Swap analyticsContent → analyticsPageContent for renderAnalytics
+  const orig=document.getElementById('analyticsContent');
+  if(orig)orig.id='_analyticsContent_bak';
+  el.id='analyticsContent';
+  await renderAnalytics(_currentDashSalonId,_currentDashSalonId);
+  el.id='analyticsPageContent';
+  if(orig)orig.id='analyticsContent';
+}
+
+// STAFF PAGE
+async function renderStaffPage(){
+  const el=document.getElementById('staffPageContent');
+  if(!el)return;
+  if(!_currentDashSalonId){el.innerHTML='<p class="text-muted">Kein Salon ausgewählt.</p>';return;}
+  el.innerHTML='<div class="spinner"></div>';
+  const salonId=_currentDashSalonId;
+  // Staff section (store_staff table)
+  const{data,error}=await sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name');
+  let staffHtml='<div class="dash-section-hd" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h3>Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div>';
+  if(!error&&data&&data.length>0){
+    staffHtml+='<div class="staff-grid">'+data.map(m=>{
+      const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+      const av=m.photo_url?'<img src="'+m.photo_url+'" alt="'+m.name+'">':initials;
+      return '<div class="staff-card"><button class="s-del" onclick="deleteStaff(\''+m.id+'\',\''+salonId+'\')" title="Entfernen" aria-label="Entfernen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="s-avatar">'+av+'</div><div class="s-name">'+m.name+'</div>'+(m.role?'<div class="s-role">'+m.role+'</div>':'')+'</div>';
+    }).join('')+'</div>';
+  } else {
+    staffHtml+='<p style="color:var(--muted);font-size:.88rem">Noch kein Personal eingetragen.</p>';
+  }
+  // Staff commission section
+  const{data:store}=await sb.from('stores').select('staff_list').eq('id',salonId).single();
+  const staffList=store?.staff_list||[];
+  staffHtml+='<hr style="margin:1.5rem 0"><div class="dash-section-hd" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h4>Provisionen</h4><button class="btn-primary btn-sm" onclick="openAddStaffComm(\''+salonId+'\')">+ Mitarbeiter</button></div>';
+  if(staffList.length){
+    staffHtml+='<div id="staffCommList">'+staffList.map((s,i)=>'<div class="staff-comm-row"><div class="staff-avatar-sm">'+s.name.charAt(0)+'</div><div class="staff-comm-info"><strong>'+s.name+'</strong><span>'+(s.role||'Stylist')+'</span></div><div class="staff-comm-rate"><label>Provision %</label><input type="number" class="comm-input" value="'+(s.commission||0)+'" min="0" max="100" onchange="updateStaffCommission(\''+salonId+'\','+i+',this.value)"></div><button class="btn-remove-staff-sm" onclick="removeStaffMember(\''+salonId+'\','+i+')">Entfernen</button></div>').join('')+'</div>';
+  } else {
+    staffHtml+='<p style="color:var(--muted);font-size:.88rem">Noch keine Provisionen eingetragen.</p>';
+  }
+  el.innerHTML=staffHtml;
+  // Update addStaffMdl store id
+  _dashStaffSid=salonId;
+  document.getElementById('asmStoreId').value=salonId;
+}
+
+// BOOKING PAGE
+async function renderBookPage(salonId){
+  const titleEl=document.getElementById('bookPageTitle');
+  const bodyEl=document.getElementById('bookPageBody');
+  if(!bodyEl)return;
+  // Auth gate
+  if(!currentUser){
+    try{const{data:{session}}=await sb.auth.getSession();if(session?.user){currentUser=session.user;await loadProfile();}}catch(e){}
+  }
+  if(!currentUser){
+    pendingBookingStoreId=salonId;
+    openAuth('login');
+    return;
+  }
+  const store=allStores.find(x=>String(x.id)===String(salonId));
+  if(!store){bodyEl.innerHTML='<p class="text-muted">Salon nicht gefunden.</p>';return;}
+  bmState={store,service:null,date:'',time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false};
+  _pendingBookPreselectedTime=null;
+  const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');
+  if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
+  if(currentUser){bmState.guestEmail=currentUser.email||'';bmState.guestName=currentProfile?.display_name||currentUser.user_metadata?.full_name||'';}
+  bmState.date=new Date().toISOString().split('T')[0];
+  if(titleEl)titleEl.textContent=store.name;
+  solenTrack('booking_flow_start',{salon_id:store.id,salon_name:store.name});
+  await loadBranchesForBooking();
+  renderBookingModal();
+  if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
 }
 
 // PROFILE PAGE
@@ -6325,7 +6443,7 @@ async function renderBookings(){
   document.getElementById('bookingsContent').innerHTML=html;
 }
 
-function rebookBooking(storeId){showPage('home');setTimeout(()=>startBooking(storeId),300);}
+function rebookBooking(storeId){showPage('book/'+storeId);}
 
 // ── DM SYSTEM (Instagram-style) ──────────────────────────────────────────────
 const DM={
@@ -7385,11 +7503,11 @@ async function renderSalonDashboard(){
     </div>
     <div class="admin-tabs" id="dashTabs">
       <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
-      <button class="admin-tab analytics-tab-auth" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+      <button class="admin-tab analytics-tab-auth" onclick="_currentDashSalonId='${salon.id}';showPage('dashboard/analytics')">Statistiken</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabOeffnungszeiten','${salon.id}',null)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="display:inline;vertical-align:middle"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten</button>
     
       <button class="admin-tab" onclick="showDashTab(this,'dashTabCRM','${salon.id}','${salon.id}');setTimeout(()=>renderCRM('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> CRM</button>
-      <button class="admin-tab" onclick="showDashTab(this,'dashTabMitarbeiter','${salon.id}','${salon.id}');setTimeout(()=>renderStaffCommission('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Mitarbeiter</button>
+      <button class="admin-tab" onclick="_currentDashSalonId='${salon.id}';showPage('dashboard/staff')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Mitarbeiter</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabMarketing','${salon.id}','${salon.id}');setTimeout(()=>renderMarketingBlast('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Marketing</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabInventar','${salon.id}','${salon.id}');setTimeout(()=>renderInventory('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Inventar</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabFotos','${salon.id}','${salon.id}');setTimeout(()=>renderDashPhotoManager('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Fotos</button>
@@ -7641,40 +7759,15 @@ function closeFilterSheet(){
 }
 
 // BOOKING MODAL (new simplified)
+let _pendingBookPreselectedTime=null;
 async function openBookingModal(store,preselectedTime){
   if(!store)return;
-  // Auth gate: require login before booking (mirrors startBooking logic)
-  if(!currentUser){
-    try{
-      const{data:{session}}=await sb.auth.getSession();
-      if(session?.user){currentUser=session.user;await loadProfile();}
-    }catch(e){}
-  }
-  if(!currentUser){pendingBookingStoreId=store.id;openAuth('login');return;}
-  bmState={store,service:null,date:'',time:preselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false};
-  const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
-  // Pre-fill from session
-  if(currentUser){
-    bmState.guestEmail=currentUser.email||'';
-    bmState.guestName=currentProfile?.display_name||currentUser.user_metadata?.full_name||'';
-  }
-  // Set default date to today
-  const today=new Date();
-  bmState.date=today.toISOString().split('T')[0];
-  document.getElementById('bmTitle').textContent=t('book_now')+' \u2014 '+store.name;
-  solenTrack('booking_flow_start',{salon_id:store.id,salon_name:store.name});
-  await loadBranchesForBooking();
-  renderBookingModal();
-  var bmEl=document.getElementById('bookingModal');
-  bmEl.classList.add('open');
-  document.body.classList.add('modal-open');
-  setTimeout(function(){trapFocus(bmEl.querySelector('.bm-content')||bmEl);},100);
-  if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
+  _pendingBookPreselectedTime=preselectedTime||null;
+  showPage('book/'+store.id);
 }
 function closeBookingModal(){
   var bmEl=document.getElementById('bookingModal');
-  releaseFocus(bmEl);
-  bmEl.classList.remove('open');
+  if(bmEl){releaseFocus(bmEl);bmEl.classList.remove('open');}
   _checkModalOpen();
   bmState={};
 }
@@ -7694,6 +7787,7 @@ function selectBranch(branchId){
   loadStaffPickerInBooking(b.id);
 }
 
+function _bmBody(){return document.getElementById('bookPageBody')||document.getElementById('bmBody');}
 function renderBookingModal(){
   const s=bmState.store;
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
@@ -7710,7 +7804,7 @@ function renderBookingModal(){
     const calUrl=`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent((svc?.name||'Termin')+' @ '+s.name)}&dates=${calStart}/${calEnd}&location=${encodeURIComponent(s.address||'Basel')}&details=${encodeURIComponent('Gebucht via Solen')}`;
     const bookingId=bmState.confirmedBookingId||null;
     const reviewSalonId=typeof s.id==='string'&&s.id.startsWith('d')?null:s.id;
-    document.getElementById('bmBody').innerHTML=`
+    _bmBody().innerHTML=`
       <div class="bm-confirmation">
         <div style="margin-bottom:12px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <h3>${t('booking_confirmed')}</h3>
@@ -7741,7 +7835,7 @@ function renderBookingModal(){
   }
 
   if(bmState.branches&&!bmState.selectedBranch){
-    document.getElementById('bmBody').innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
+    _bmBody().innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
     return;
   }
   // Step indicator (3 steps: Service, Datum & Zeit, Bestätigen)
@@ -7809,7 +7903,7 @@ function renderBookingModal(){
   } else {
     html+=`<button class="btn-primary" onclick="insertBooking()" style="min-height:44px">${t('book_now')}</button>`;
   }
-  document.getElementById('bmBody').innerHTML=html;
+  _bmBody().innerHTML=html;
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
 }
 function bmSelectService(id){bmState.service=allServices.find(s=>s.id===id);renderBookingModal();}
@@ -7870,7 +7964,7 @@ async function joinWaitingList(){
     user_email:bmState.guestEmail||currentUser?.email||null
   });
   if(error){toast('Fehler beim Eintragen in die Warteliste.','error');return;}
-  document.getElementById('bmBody').innerHTML=`
+  _bmBody().innerHTML=`
     <div class="bm-confirmation">
       <div style="margin-bottom:12px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
       <h3 style="margin-bottom:8px">Du stehst auf der Warteliste!</h3>
@@ -8193,10 +8287,19 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 .booking-card{box-shadow:0 1px 3px rgba(31,31,31,.05),0 4px 12px rgba(31,31,31,.07)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent) !important;box-shadow:0 0 0 3px rgba(155,29,48,.12) !important}
 
+/* ── PAGE ROUTE OVERRIDES ── */
+#pagePartner .salon-reg-wrap{max-width:560px;max-height:none;overflow-y:visible;border-radius:var(--r-lg,20px);margin:0 auto}
+#pagePartner .salon-reg-header .salon-reg-close{display:none}
+#pageBook .bm-content{box-shadow:none;border-radius:0;max-width:560px;margin:0 auto}
+#pageBook #bookingModal{display:none}
+#pageSalonSetup .modal-hd .close-btn{display:none}
+#pageDashboardAnalytics .analytics-tab-auth,#pageDashboardStaff .analytics-tab-auth{display:none}
+
 /* ── MOBILE BOTTOM NAV ── */
 </style>
 
-<div id="salonRegModal" role="dialog" aria-modal="true">
+<!-- PARTNER REGISTRATION FORM (lives in #pagePartner via renderPartnerPage()) -->
+<div id="salonRegModal" style="display:none">
   <div class="salon-reg-wrap">
     <div class="salon-reg-header">
       <h2>Deinen Salon eintragen</h2>
@@ -8446,38 +8549,12 @@ function regValidateStep(step){
 
 // ── REGISTRATION: Core flow ──────────────────────────────────────
 function openSalonRegistration(){
-  const modal=document.getElementById('salonRegModal');
-  modal.classList.add('open');
-  document.body.style.overflow='hidden';
-  const grid=document.getElementById('regHoursGrid');
-  if(grid&&!grid.dataset.built){
-    const days=[['Mo','Montag'],['Di','Dienstag'],['Mi','Mittwoch'],['Do','Donnerstag'],['Fr','Freitag'],['Sa','Samstag'],['So','Sonntag']];
-    grid.innerHTML=days.map(([k,label])=>`
-      <div class="reg-day-row">
-        <input type="checkbox" id="rh_${k}" checked aria-label="${label} geöffnet">
-        <label class="reg-day-lbl" for="rh_${k}">${k}</label>
-        <div class="reg-time-inputs">
-          <label class="sr-only" for="rh_${k}_f">${label} von</label>
-          <input type="time" id="rh_${k}_f" value="09:00" aria-label="${label} Öffnungszeit von">
-          <span class="reg-time-dash" aria-hidden="true">–</span>
-          <label class="sr-only" for="rh_${k}_t">${label} bis</label>
-          <input type="time" id="rh_${k}_t" value="19:00" aria-label="${label} Öffnungszeit bis">
-        </div>
-      </div>`).join('');
-    grid.dataset.built='1';
-  }
-  const pSel=document.getElementById('reg_parent_store_id'); if(pSel&&pSel.options.length<=1){allStores.filter(x=>!x.parent_store_id).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;pSel.appendChild(o);});}
-  const hadDraft=regRestoreDraft();
-  regGoTo(hadDraft?_regCurrentStep:1);
-  regAttachAutosave();
+  showPage('partner');
 }
 function closeSalonReg(){
-  document.getElementById('salonRegModal').classList.remove('open');
-  document.body.style.overflow='';
-  setTimeout(()=>{
-    document.getElementById('salonRegForm').style.display='';
-    document.getElementById('regSuccess').style.display='none';
-  },300);
+  document.getElementById('salonRegForm').style.display='';
+  document.getElementById('regSuccess').style.display='none';
+  showPage('home');
 }
 function regGoTo(step){
   _regCurrentStep=step;
@@ -8562,10 +8639,7 @@ async function submitSalonReg(e){
     }
   }
 }
-// Close on backdrop click
-document.getElementById('salonRegModal').addEventListener('click',function(e){
-  if(e.target===this)closeSalonReg();
-});
+// (salon reg modal converted to route /partner)
 </script>
 
 <!-- ADD STAFF MODAL -->
@@ -8646,13 +8720,15 @@ async function submitAddStaff(e){
   if(error){toast('Fehler: '+error.message,'error');return;}
   closeAddStaffMdl();
   toast('Personal hinzugefügt','success');
-  loadDashStaffSection(sId);
+  if(document.getElementById('pageDashboardStaff')?.classList.contains('active'))renderStaffPage();
+  else loadDashStaffSection(sId);
 }
 
 async function deleteStaff(staffId,salonId){
   if(!confirm('Mitarbeiter entfernen?'))return;
   await sb.from('store_staff').update({active:false}).eq('id',staffId);
-  loadDashStaffSection(salonId);
+  if(document.getElementById('pageDashboardStaff')?.classList.contains('active'))renderStaffPage();
+  else loadDashStaffSection(salonId);
 }
 
 // ── STAFF PICKER IN BOOKING MODAL ──────────────────────────────────
@@ -8740,7 +8816,7 @@ async function loadStaffPickerInBooking(storeId){
     return '<div class="sp-chip" data-id="'+m.id+'" data-name="'+first+'" onclick="selectStaff(this.dataset.id,this.dataset.name,this)"><div class="sp-av">'+av+'</div><span>'+first+'</span></div>';
   }).join('');
   sec.innerHTML='<h4>Von wem möchten Sie bedient werden?</h4><div class="sp-grid"><div class="sp-chip sel" onclick="selectStaff(null,null,this)"><div class="sp-av"></div><span>Egal</span></div>'+chips+'</div>';
-  const bmBody=document.getElementById('bmBody');
+  const bmBody=_bmBody();
   if(bmBody)bmBody.parentNode.insertBefore(sec,bmBody);
 }
 
