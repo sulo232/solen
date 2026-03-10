@@ -981,6 +981,62 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-summary{background:var(--bg2);border-radius:var(--r);padding:16px;margin:16px 0}
 .bm-summary .row{display:flex;justify-content:space-between;font-size:.85rem;padding:3px 0;color:var(--text2)}
 .bm-summary .row.total{font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
+
+/* ── PERSISTENT BOOKING SUMMARY SIDEBAR (Theme 9) ── */
+#pageBook.active{overflow:visible}
+.bk-layout{display:flex;gap:40px;align-items:flex-start;position:relative}
+.bk-main{flex:1;min-width:0;padding-bottom:40px}
+.bk-sidebar{width:296px;flex-shrink:0;position:sticky;top:84px;background:rgba(var(--surface-rgb),.08);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(var(--surface-rgb),.18);border-radius:var(--r2);padding:22px 20px;box-shadow:0 8px 32px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.18)}
+[data-theme="dark"] .bk-sidebar{background:rgba(var(--surface-rgb),.14);border-color:rgba(255,255,255,.09);box-shadow:0 8px 32px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)}
+.bk-sidebar-title{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.01em;margin-bottom:14px;color:var(--c-text);display:flex;align-items:center;gap:6px}
+.bk-sidebar-title::before{content:'';display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c-accent);opacity:.8}
+.bk-sum-items{display:flex;flex-direction:column;gap:0}
+.bk-sum-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:1px solid var(--c-border)}
+.bk-sum-row:last-child{border-bottom:none}
+.bk-sum-label{font-size:.72rem;font-weight:700;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;padding-top:2px}
+.bk-sum-value{font-size:.85rem;font-weight:600;color:var(--c-text);text-align:right;line-height:1.35}
+.bk-sum-value small{display:block;font-size:.75rem;font-weight:400;color:var(--c-text-muted)}
+.bk-sum-total{display:flex;justify-content:space-between;align-items:center;padding:12px 0 4px;margin-top:4px;border-top:2px solid var(--c-border-strong)}
+.bk-sum-total-label{font-size:.82rem;font-weight:700;color:var(--c-text);text-transform:uppercase;letter-spacing:.04em}
+.bk-sum-total-price{font-family:var(--font-mono);font-size:1.05rem;font-weight:700;color:var(--c-accent)}
+.bk-sum-total-mins{font-size:.75rem;color:var(--c-text-muted);text-align:right;margin-bottom:14px}
+.bk-sidebar-action-btn{margin-top:0;width:100%}
+.bk-empty-hint{font-size:.82rem;color:var(--c-text-muted);text-align:center;padding:18px 0 10px;font-style:italic;line-height:1.5}
+/* Add-ons in booking form */
+.bk-addons-section{margin:16px 0}
+.bk-addons-section h4{font-size:.92rem;font-weight:700;margin-bottom:10px}
+.bk-addon-list{display:flex;flex-direction:column;gap:6px}
+.bk-addon-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:var(--r);cursor:pointer;transition:border-color .15s,background .15s;font-size:.85rem}
+.bk-addon-item.selected{border-color:var(--c-accent);background:rgba(155,29,48,.05)}
+[data-theme="dark"] .bk-addon-item.selected{background:rgba(212,88,106,.08)}
+.bk-addon-item-left{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--c-text)}
+.bk-addon-item-left input[type=checkbox]{accent-color:var(--c-accent);width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.bk-addon-price{font-family:var(--font-mono);font-size:.82rem;font-weight:600;color:var(--c-text-secondary)}
+/* Haircut style input */
+.bk-haircut-row{margin:12px 0 0}
+.bk-bleach-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:var(--r);margin:8px 0;cursor:pointer;transition:border-color .15s,background .15s;font-size:.85rem}
+.bk-bleach-row.selected{border-color:var(--c-accent);background:rgba(155,29,48,.05)}
+[data-theme="dark"] .bk-bleach-row.selected{background:rgba(212,88,106,.08)}
+.bk-bleach-row label{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--c-text);cursor:pointer;flex:1}
+.bk-bleach-row label input[type=checkbox]{accent-color:var(--c-accent);width:16px;height:16px}
+/* Mobile sticky booking bar */
+.bk-mob-bar{position:fixed;bottom:0;left:0;right:0;z-index:600;background:rgba(var(--surface-rgb),.88);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border-top:1px solid rgba(var(--surface-rgb),.2);padding:12px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,.10),0 -1px 0 rgba(255,255,255,.15) inset;display:none;align-items:center;gap:12px}
+[data-theme="dark"] .bk-mob-bar{background:rgba(var(--surface-rgb),.94);border-top-color:rgba(255,255,255,.08)}
+.bk-mob-bar-info{flex:1;min-width:0}
+.bk-mob-service{font-size:.82rem;font-weight:600;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-mob-total{font-size:.88rem;font-weight:700;font-family:var(--font-mono);color:var(--c-accent);margin-top:1px}
+.bk-mob-btn{width:auto!important;padding:11px 22px!important;margin-top:0!important;white-space:nowrap;flex-shrink:0}
+@media(max-width:900px){
+  .bk-layout{flex-direction:column}
+  .bk-sidebar{display:none!important}
+  #pageBook.active .bm-summary{display:none}
+  #pageBook.active .bk-main{padding-bottom:80px}
+}
+@media(min-width:901px){
+  .bk-mob-bar{display:none!important}
+  #pageBook.active .bm-summary{display:none}
+}
+
 /* ── ENHANCED DATE/TIME STEP ── */
 .bm-cal-wrap{margin-bottom:20px}
 .bm-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -3186,9 +3242,25 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       </div>
     </div>
   </div>
-  <!-- Step content -->
-  <div class="bp-body">
-    <div id="bookPageBody"></div>
+  <!-- Layout: step content + persistent sidebar -->
+  <div class="bk-layout bp-body">
+    <div class="bk-main">
+      <div id="bookPageBody"></div>
+    </div>
+    <aside class="bk-sidebar" id="bkSidebar" aria-label="Buchungsübersicht">
+      <div class="bk-sidebar-title">Übersicht</div>
+      <div id="bkSumItems" class="bk-sum-items">
+        <div class="bk-empty-hint">Wähle einen Service,<br>um die Zusammenfassung zu sehen.</div>
+      </div>
+      <div id="bkSumTotalWrap" style="display:none">
+        <div class="bk-sum-total">
+          <span class="bk-sum-total-label">Total</span>
+          <span class="bk-sum-total-price" id="bkSumTotalPrice">CHF 0</span>
+        </div>
+        <div class="bk-sum-total-mins" id="bkSumTotalMins"></div>
+      </div>
+      <div id="bkSidebarActionWrap" style="margin-top:12px"></div>
+    </aside>
   </div>
 </div>
 
@@ -3522,6 +3594,14 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 </main>
+<!-- MOBILE BOOKING SUMMARY BAR (Theme 9) -->
+<div class="bk-mob-bar" id="bkMobBar" role="complementary" aria-label="Buchungsübersicht">
+  <div class="bk-mob-bar-info">
+    <div class="bk-mob-service" id="bkMobService">Wähle einen Service</div>
+    <div class="bk-mob-total" id="bkMobTotal"></div>
+  </div>
+  <button class="btn-primary bk-mob-btn" id="bkMobBtn" onclick="bkSidebarAction()">Weiter</button>
+</div>
 <!-- SALON OWNER CTA -->
 <section class="partner-cta" id="partnerCta">
   <div class="partner-cta-inner">
@@ -6516,6 +6596,8 @@ function _checkModalOpen(){
 // PAGE ROUTER (hash-based)
 function showPage(page,skipHash){
   closeAllModals();
+  // Hide booking summary bar when leaving booking page
+  if(!page.startsWith('book/')){const _mb=document.getElementById('bkMobBar');if(_mb)_mb.style.display='none';}
   document.getElementById('pageHome').style.display='none';
   ['pageProfile','pageBookings','pageAdmin','pageSalonDashboard','pagePartner','pageSalonSetup','pageDashboardAnalytics','pageDashboardStaff','pageBook'].forEach(p=>{const el=document.getElementById(p);if(el)el.classList.remove('active');});
   var dd=document.getElementById('navDropdown');if(dd)dd.classList.remove('open');
@@ -6735,9 +6817,9 @@ async function renderBookPage(salonId){
   if(heroAddr)heroAddr.textContent=store.address||'';
   if(heroBg){const ph=store.photo_url||store.cover_url||'';heroBg.style.backgroundImage=ph?`url(${ph})`:'';heroBg.style.opacity=ph?'1':'0';}
 
-  // Init booking state — merged fields from both branches
+  // Init booking state
   const _now=new Date();
-  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null};
+  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[]};
   // Smart gender-based haircut tab default
   const _pg=currentProfile?.gender||'';
   bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
@@ -6757,6 +6839,10 @@ async function renderBookPage(salonId){
   } else {
     bpGoStep(1,true);
   }
+  // Init sidebar + mobile bar
+  const _mb=document.getElementById('bkMobBar');
+  if(_mb)_mb.style.display='flex';
+  updateBookingSummary();
 }
 
 // ── BOOK PAGE: step navigation ──────────────────────────────────────────────
@@ -8468,8 +8554,13 @@ function renderBookingModal(){
         </div>
       </div>`:''}
     `;
+    // Hide summary sidebar & mob-bar on confirmation screen
+    const _bkSb=document.getElementById('bkSidebar');if(_bkSb)_bkSb.style.visibility='hidden';
+    const _bkMb=document.getElementById('bkMobBar');if(_bkMb)_bkMb.style.display='none';
     return;
   }
+  // Restore sidebar visibility
+  const _bkSb=document.getElementById('bkSidebar');if(_bkSb)_bkSb.style.visibility='';
 
   if(bmState.branches&&!bmState.selectedBranch){
     _bmBody().innerHTML=`<div class="branch-picker-wrap"><h3 style="margin-bottom:16px;font-size:1rem;font-weight:700">Filiale wählen</h3>${bmState.branches.map(b=>`<div class="branch-card" onclick="selectBranch('${b.id}')" role="button" tabindex="0"><span>${getStoreEmoji(b.type)}</span><div><strong>${b.name}</strong><br><small>${b.address||''}</small></div></div>`).join('')}</div>`;
@@ -8635,6 +8726,9 @@ function renderBookingModal(){
   }
   _bmBody().innerHTML=html;
   if(currentLang!=='de')translateVisibleDescriptions(currentLang);
+  // Load haircut style / bleaching / add-ons asynchronously, then refresh summary
+  if(bmState.store?.id)loadBmExtras(bmState.store.id);
+  updateBookingSummary();
 }
 function bmSelectService(id){
   bmState.service=allServices.find(s=>s.id===id);
@@ -9695,6 +9789,7 @@ function selectStaff(id,name,el){
   _selStaffId=id;_selStaffName=name;
   document.querySelectorAll('.sp-chip').forEach(c=>c.classList.remove('sel'));
   if(el)el.classList.add('sel');
+  updateBookingSummary();
 }
 function selectStylistCard(id,name,el){
   bmState.staffId=id||null;
@@ -9714,6 +9809,221 @@ document.addEventListener('DOMContentLoaded',function(){
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
+
+// ═══════════════════════════════════════════════════════════
+// THEME 9 – PERSISTENT BOOKING SUMMARY SIDEBAR & MOBILE BAR
+// ═══════════════════════════════════════════════════════════
+
+// Loaded add-ons cache per store
+let _bkAddonsCache = {};
+
+async function loadBookingAddons(storeId) {
+  if (!storeId) return [];
+  if (_bkAddonsCache[storeId]) return _bkAddonsCache[storeId];
+  try {
+    const { data } = await sb.from('addons').select('id,name,price,duration').eq('store_id', storeId).eq('active', true);
+    _bkAddonsCache[storeId] = data || [];
+    return _bkAddonsCache[storeId];
+  } catch (e) { return []; }
+}
+
+function _isHairService(svc) {
+  if (!svc) return false;
+  const n = (svc.name || '').toLowerCase();
+  return n.includes('haar') || n.includes('schnitt') || n.includes('cut') || n.includes('color') || n.includes('farb') || n.includes('blond') || n.includes('bleach') || n.includes('tönung') || n.includes('styling') || n.includes('coiffeur');
+}
+
+function updateBookingSummary() {
+  if (typeof bmState === 'undefined' || !bmState) return;
+  const itemsEl = document.getElementById('bkSumItems');
+  const totalWrap = document.getElementById('bkSumTotalWrap');
+  const totalPriceEl = document.getElementById('bkSumTotalPrice');
+  const totalMinsEl = document.getElementById('bkSumTotalMins');
+  const actionWrap = document.getElementById('bkSidebarActionWrap');
+  const mobBar = document.getElementById('bkMobBar');
+  const mobServiceEl = document.getElementById('bkMobService');
+  const mobTotalEl = document.getElementById('bkMobTotal');
+  const mobBtn = document.getElementById('bkMobBtn');
+  if (!itemsEl) return;
+
+  const isBookPageActive = document.getElementById('pageBook')?.classList.contains('active');
+  const svc = bmState.service || null;
+  const staff = _selStaffName || null;
+  const haircutStyle = bmState.haircutStyle || '';
+  const bleaching = bmState.bleaching || false;
+  const bleachPrice = bmState.bleachPrice || 0;
+  const selectedAddons = bmState.selectedAddons || [];
+
+  // Calculate totals
+  let totalPrice = svc ? (parseFloat(svc.price) || 0) : 0;
+  let totalMins = svc ? (parseInt(svc.duration) || 0) : 0;
+  if (bleaching && bleachPrice) totalPrice += parseFloat(bleachPrice);
+  selectedAddons.forEach(a => {
+    totalPrice += parseFloat(a.price) || 0;
+    totalMins += parseInt(a.duration) || 0;
+  });
+
+  if (!svc) {
+    itemsEl.innerHTML = '<div class="bk-empty-hint">Wähle einen Service,<br>um die Zusammenfassung zu sehen.</div>';
+    if (totalWrap) totalWrap.style.display = 'none';
+    if (actionWrap) actionWrap.innerHTML = '';
+    if (mobBar && isBookPageActive) {
+      mobBar.style.display = 'flex';
+      if (mobServiceEl) mobServiceEl.textContent = 'Wähle einen Service';
+      if (mobTotalEl) mobTotalEl.textContent = '';
+      if (mobBtn) { mobBtn.textContent = 'Weiter'; mobBtn.disabled = true; }
+    } else if (mobBar) { mobBar.style.display = 'none'; }
+    return;
+  }
+
+  // Build summary rows
+  let rows = '';
+  rows += `<div class="bk-sum-row"><span class="bk-sum-label">Service</span><span class="bk-sum-value">${svc.name}<small>CHF ${svc.price} &middot; ${svc.duration} Min.</small></span></div>`;
+  if (haircutStyle) {
+    rows += `<div class="bk-sum-row"><span class="bk-sum-label">Stil</span><span class="bk-sum-value">${haircutStyle}</span></div>`;
+  }
+  if (staff) {
+    rows += `<div class="bk-sum-row"><span class="bk-sum-label">Stylist</span><span class="bk-sum-value">${staff}</span></div>`;
+  }
+  if (bleaching) {
+    rows += `<div class="bk-sum-row"><span class="bk-sum-label">Bleaching</span><span class="bk-sum-value">+ CHF ${bleachPrice}</span></div>`;
+  }
+  selectedAddons.forEach(a => {
+    rows += `<div class="bk-sum-row"><span class="bk-sum-label">Extra</span><span class="bk-sum-value">${a.name}<small>+ CHF ${a.price}</small></span></div>`;
+  });
+  itemsEl.innerHTML = rows;
+
+  // Total row
+  if (totalWrap) totalWrap.style.display = 'block';
+  if (totalPriceEl) totalPriceEl.textContent = `CHF ${totalPrice % 1 === 0 ? totalPrice : totalPrice.toFixed(2)}`;
+  if (totalMinsEl) totalMinsEl.textContent = totalMins > 0 ? `${totalMins} Minuten` : '';
+
+  // Sidebar action button
+  const { label: btnLabel, disabled: btnDisabled } = _getBkActionMeta();
+  if (actionWrap) {
+    actionWrap.innerHTML = `<button class="btn-primary bk-sidebar-action-btn" onclick="bkSidebarAction()" ${btnDisabled ? 'disabled' : ''}>${btnLabel}</button>`;
+  }
+
+  // Mobile bar
+  if (mobBar) {
+    if (isBookPageActive) {
+      mobBar.style.display = 'flex';
+      if (mobServiceEl) mobServiceEl.textContent = svc.name;
+      if (mobTotalEl) mobTotalEl.textContent = totalMins > 0
+        ? `CHF ${totalPrice % 1 === 0 ? totalPrice : totalPrice.toFixed(2)} · ${totalMins} Min.`
+        : `CHF ${totalPrice % 1 === 0 ? totalPrice : totalPrice.toFixed(2)}`;
+      if (mobBtn) { mobBtn.textContent = btnLabel; mobBtn.disabled = btnDisabled; }
+    } else {
+      mobBar.style.display = 'none';
+    }
+  }
+}
+
+function _getBkActionMeta() {
+  if (!bmState.service) return { label: 'Weiter', disabled: true };
+  const hasName = bmState.guestName || document.getElementById('bmGuestName')?.value;
+  const hasPhone = bmState.guestPhone || document.getElementById('bmGuestPhone')?.value;
+  if (!bmState.date || !bmState.time) return { label: 'Datum & Zeit wählen', disabled: true };
+  if (!hasName || !hasPhone) return { label: 'Bestätigen', disabled: false };
+  return { label: 'Bestätigen', disabled: false };
+}
+
+function bkSidebarAction() {
+  if (!bmState.service) {
+    document.querySelector('.bm-svc-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  // Sync form values before submitting
+  const nameEl = document.getElementById('bmGuestName');
+  const phoneEl = document.getElementById('bmGuestPhone');
+  const emailEl = document.getElementById('bmGuestEmail');
+  const notesEl = document.getElementById('bmNotes');
+  if (nameEl) bmState.guestName = nameEl.value;
+  if (phoneEl) bmState.guestPhone = phoneEl.value;
+  if (emailEl) bmState.guestEmail = emailEl.value;
+  if (notesEl) bmState.notes = notesEl.value;
+  if (!bmState.date || !bmState.time) {
+    document.querySelector('input[type="date"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('Bitte Datum und Uhrzeit wählen.', 'error');
+    return;
+  }
+  insertBooking();
+}
+
+function toggleBkAddon(addonObj, checkboxEl) {
+  const existing = bmState.selectedAddons || [];
+  const idx = existing.findIndex(a => a.id === addonObj.id);
+  if (idx > -1) {
+    bmState.selectedAddons = existing.filter(a => a.id !== addonObj.id);
+    checkboxEl.closest('.bk-addon-item')?.classList.remove('selected');
+  } else {
+    bmState.selectedAddons = [...existing, addonObj];
+    checkboxEl.closest('.bk-addon-item')?.classList.add('selected');
+  }
+  checkboxEl.checked = idx === -1;
+  updateBookingSummary();
+}
+
+function toggleBkBleaching(checkboxEl) {
+  bmState.bleaching = checkboxEl.checked;
+  const row = checkboxEl.closest('.bk-bleach-row');
+  if (row) row.classList.toggle('selected', bmState.bleaching);
+  updateBookingSummary();
+}
+
+function setBkHaircutStyle(val) {
+  bmState.haircutStyle = val;
+  updateBookingSummary();
+}
+
+async function loadBmExtras(storeId) {
+  const sec = document.getElementById('bmExtrasSection');
+  if (!sec) return;
+  const addons = await loadBookingAddons(storeId);
+  const svc = bmState.service;
+  const isHair = _isHairService(svc);
+  // Find bleaching add-on if present
+  const bleachAddon = addons.find(a => /bleach|blondier/i.test(a.name));
+  const otherAddons = addons.filter(a => a !== bleachAddon);
+  let html = '';
+  if (isHair) {
+    const curStyle = bmState.haircutStyle || '';
+    html += `<div class="bk-haircut-row">
+      <label style="font-size:.88rem;font-weight:700;display:block;margin-bottom:6px">Haarschnitt-Stil <span style="font-weight:400;color:var(--c-text-muted)">(optional)</span></label>
+      <input class="form-input" id="bmHaircutStyle" placeholder="z.B. Bob, Stufenschnitt, Undercut…" value="${curStyle.replace(/"/g,'&quot;')}" oninput="setBkHaircutStyle(this.value)" style="margin-bottom:8px">
+    </div>`;
+    if (bleachAddon) {
+      const isSel = !!(bmState.bleaching);
+      html += `<div class="bk-bleach-row${isSel?' selected':''}" onclick="this.querySelector('input').click()">
+        <label>
+          <input type="checkbox" onchange="toggleBkBleaching(this)" ${isSel?'checked':''}>
+          Bleaching / Blondierung
+        </label>
+        <span class="bk-addon-price">+CHF ${bleachAddon.price}</span>
+      </div>`;
+      if (!bmState.bleachPrice) { bmState.bleachPrice = bleachAddon.price; }
+    }
+  }
+  if (otherAddons.length) {
+    html += `<div class="bk-addons-section">
+      <h4>Extras</h4>
+      <div class="bk-addon-list">`;
+    const selIds = (bmState.selectedAddons||[]).map(a=>a.id);
+    otherAddons.forEach(a => {
+      const isSel = selIds.includes(a.id);
+      html += `<div class="bk-addon-item${isSel?' selected':''}" onclick="this.querySelector('input').click()">
+        <span class="bk-addon-item-left">
+          <input type="checkbox" onchange="toggleBkAddon({id:'${a.id}',name:'${a.name.replace(/'/g,"\\'")}',price:${a.price||0},duration:${a.duration||0}},this)" ${isSel?'checked':''}>
+          ${a.name}
+        </span>
+        <span class="bk-addon-price">+CHF ${a.price||0}</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+  sec.innerHTML = html;
+  updateBookingSummary();
+}
 
 // === UI POLISH ===
 (function(){
