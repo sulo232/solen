@@ -2136,6 +2136,33 @@ body{font-family:var(--font-body,system-ui);}
 .staff-selector-chip{padding:.35rem .85rem;border-radius:20px;border:1.5px solid var(--c-border);background:var(--c-surface);cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s;color:var(--c-text)}
 .staff-selector-chip.active{border-color:var(--c-cta,#FF6B6B);color:var(--c-cta,#FF6B6B);background:rgba(255,107,107,.07)}
 
+/* ═══ STYLIST CALENDAR EDITOR ═══ */
+.stylist-cal-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px}
+.stylist-cal-modal{background:var(--c-surface);border-radius:var(--r2);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);display:flex;flex-direction:column}
+.stylist-cal-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--c-border);position:sticky;top:0;background:var(--c-surface);z-index:1}
+.stylist-cal-modal-hd h3{font-size:1rem;font-weight:700;margin:0;color:var(--c-text)}
+.stylist-cal-modal-close{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--c-text-muted);line-height:1;padding:2px 6px}
+.stylist-cal-modal-close:hover{color:var(--c-text)}
+.stylist-cal-modal-body{padding:18px 20px}
+.stylist-cal-same-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:.875rem;color:var(--c-text-secondary)}
+.stylist-cal-week-grid{display:grid;grid-template-columns:90px 1fr 1fr 80px;gap:6px;align-items:center;font-size:.82rem;margin-bottom:4px}
+.stylist-cal-week-grid.header{font-weight:700;color:var(--c-text-muted);margin-bottom:6px}
+.stylist-cal-day-label{font-weight:600;color:var(--c-text);font-size:.85rem}
+.stylist-cal-time-input{padding:6px 8px;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.82rem;width:100%;color:var(--c-text)}
+.stylist-cal-time-input:disabled{opacity:.4;cursor:not-allowed}
+.stylist-cal-avail-toggle{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-text-secondary)}
+.stylist-cal-exceptions{margin-top:20px;border-top:1px solid var(--c-border);padding-top:16px}
+.stylist-cal-exceptions h4{font-size:.88rem;font-weight:700;margin-bottom:10px;color:var(--c-text)}
+.stylist-cal-exc-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.stylist-cal-exc-chip{display:flex;align-items:center;justify-content:space-between;background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:8px;padding:6px 10px;font-size:.82rem}
+.stylist-cal-exc-chip button{background:none;border:none;cursor:pointer;color:var(--c-text-muted);font-size:1rem;padding:0 2px}
+.stylist-cal-exc-chip button:hover{color:var(--c-error)}
+.stylist-cal-exc-add{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stylist-cal-exc-add input{padding:6px 10px;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.82rem;color:var(--c-text)}
+.stylist-cal-modal-footer{display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--c-border);background:var(--c-surface);position:sticky;bottom:0}
+.btn-cal-edit{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--c-accent);color:var(--c-accent);background:none;border-radius:var(--r-pill);font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;margin-top:6px}
+.btn-cal-edit:hover{background:var(--c-accent);color:var(--c-accent-fg)}
+
 /* ═══ CRM PHOTO UPLOAD ═══ */
 .crm-photo-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
 .crm-photo-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1.5px solid var(--c-border);cursor:pointer}
@@ -11709,6 +11736,10 @@ async function renderServicesTeamTab(salonId) {
                 </label>
                 <span>Buchbar</span>
               </div>
+              <button class="btn-cal-edit" onclick="openStylistCalendarModal('${s.id}','${s.name}','${salonId}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Kalender bearbeiten
+              </button>
             </div>`;
           }).join('')
         }
@@ -11747,7 +11778,31 @@ async function renderServicesTeamTab(salonId) {
       </div>
     </div>
 
-    <!-- B: HERREN PRESETS -->
+    <!-- B: KALENDER PRO STYLIST -->
+    <div class="svcteam-section">
+      <div class="svcteam-section-hd">
+        <h3>Kalender pro Stylist</h3>
+        <span style="font-size:.78rem;color:var(--c-text-muted)">Wöchentliche Verfügbarkeit & Ausnahmen</span>
+      </div>
+      ${staffList.length===0
+        ? '<p style="color:var(--c-text-muted);font-size:.88rem">Füge zuerst Stylisten hinzu, um ihre Kalender zu bearbeiten.</p>'
+        : '<div class="stylist-grid" style="margin:0">' + staffList.map(s=>{
+            const initials=(s.name||'?').split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+            const av=s.photo_url?`<img src="${s.photo_url}" alt="${s.name}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`:`<span>${initials}</span>`;
+            return `<div class="stylist-card" style="cursor:default">
+              <div class="stylist-avatar">${av}</div>
+              <div class="stylist-name">${s.name}</div>
+              ${s.role?`<div class="stylist-role">${s.role}</div>`:''}
+              <button class="btn-cal-edit" onclick="openStylistCalendarModal('${s.id}','${s.name}','${salonId}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Kalender bearbeiten
+              </button>
+            </div>`;
+          }).join('') + '</div>'
+      }
+    </div>
+
+    <!-- C: HERREN PRESETS -->
     <div class="svcteam-section">
       <div class="svcteam-section-hd">
         <h3>Herrenhaarschnitte</h3>
@@ -11807,6 +11862,190 @@ async function deleteSvcTeamStylist(staffId,salonId) {
 async function updateStylistBookable(staffId,salonId,bookable) {
   await sb.from('store_staff').update({bookable}).eq('id',staffId);
   toast(bookable?'Stylist ist jetzt buchbar':'Stylist nicht mehr buchbar','success');
+}
+
+// ── STYLIST CALENDAR EDITOR ───────────────────────────────────────────────────
+const DAYS_DE=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+let _styCalExceptions=[];// array of {date,label}
+
+async function openStylistCalendarModal(stylistId,stylistName,salonId){
+  // Remove any existing modal
+  document.getElementById('stylistCalModal')?.remove();
+
+  // Load existing availability rows for this stylist (one per weekday, date=null)
+  const{data:rows}=await sb.from('stylist_availability').select('*').eq('stylist_id',stylistId).is('date',null).order('id');
+  // Build a map: dayIndex (0=Mon…6=Sun) → row
+  const rowMap={};
+  (rows||[]).forEach(r=>{if(r.day_of_week!=null)rowMap[r.day_of_week]=r;});
+
+  // Load salon general hours as fallback defaults
+  const{data:salonData}=await sb.from('salons').select('opening_hours').eq('id',salonId).single();
+  let salonHours={};
+  try{salonHours=typeof salonData?.opening_hours==='string'?JSON.parse(salonData.opening_hours):salonData?.opening_hours||{};}catch(e){}
+
+  // Load exception dates for this stylist
+  const{data:excRows}=await sb.from('stylist_availability').select('*').eq('stylist_id',stylistId).not('date','is',null);
+  _styCalExceptions=(excRows||[]).map(r=>({id:r.id,date:r.date,label:r.exceptions?.[0]?.label||'Ausnahme',is_available:r.is_available}));
+
+  // Build default hours per day from salon hours or sensible defaults
+  function defaultHours(dayIdx){
+    // Try salon hours first
+    const dayKey=['mon','tue','wed','thu','fri','sat','sun'][dayIdx];
+    if(salonHours[dayKey]){return{start:salonHours[dayKey].open||'09:00',end:salonHours[dayKey].close||'18:00',avail:!salonHours[dayKey].closed};}
+    if(dayIdx>=5)return{start:'10:00',end:'16:00',avail:false}; // weekend off by default
+    return{start:'09:00',end:'18:00',avail:true};
+  }
+
+  // Build day rows HTML
+  const dayRowsHtml=DAYS_DE.map((dayName,i)=>{
+    const existing=rowMap[i];
+    const def=defaultHours(i);
+    const avail=existing!=null?existing.is_available:def.avail;
+    const start=existing?.start_time?.substring(0,5)||def.start;
+    const end=existing?.end_time?.substring(0,5)||def.end;
+    return `<div class="stylist-cal-week-grid" data-day="${i}">
+      <span class="stylist-cal-day-label">${dayName}</span>
+      <input class="stylist-cal-time-input" type="time" id="scStart_${i}" value="${start}" ${avail?'':'disabled'}>
+      <input class="stylist-cal-time-input" type="time" id="scEnd_${i}" value="${end}" ${avail?'':'disabled'}>
+      <div class="stylist-cal-avail-toggle">
+        <label class="toggle-switch" style="width:32px;height:18px">
+          <input type="checkbox" id="scAvail_${i}" ${avail?'checked':''} onchange="onStyCalAvailToggle(${i})">
+          <span class="toggle-slider"></span>
+        </label>
+        <span id="scAvailLabel_${i}" style="font-size:.75rem">${avail?'An':'Frei'}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Build exceptions list HTML
+  function excListHtml(){
+    if(_styCalExceptions.length===0)return '<p style="font-size:.82rem;color:var(--c-text-muted)">Keine Ausnahmen eingetragen.</p>';
+    return _styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip">
+      <span>${e.date} – ${e.label}</span>
+      <button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button>
+    </div>`).join('');
+  }
+
+  const modal=document.createElement('div');
+  modal.id='stylistCalModal';
+  modal.className='stylist-cal-modal-overlay';
+  modal.innerHTML=`
+    <div class="stylist-cal-modal" role="dialog" aria-modal="true" aria-label="Kalender ${stylistName}">
+      <div class="stylist-cal-modal-hd">
+        <h3>Kalender – ${stylistName}</h3>
+        <button class="stylist-cal-modal-close" onclick="document.getElementById('stylistCalModal')?.remove()" aria-label="Schliessen">✕</button>
+      </div>
+      <div class="stylist-cal-modal-body">
+        <!-- Same-times checkbox -->
+        <div class="stylist-cal-same-row">
+          <label class="toggle-switch" style="width:32px;height:18px">
+            <input type="checkbox" id="scSameAll" onchange="onStyCalSameAll()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span>Gleiche Zeiten für alle Tage</span>
+        </div>
+        <!-- Column headers -->
+        <div class="stylist-cal-week-grid header">
+          <span>Tag</span><span>Von</span><span>Bis</span><span>Aktiv</span>
+        </div>
+        ${dayRowsHtml}
+        <!-- Exceptions -->
+        <div class="stylist-cal-exceptions">
+          <h4>Ausnahmen (Urlaub, Feiertage)</h4>
+          <div id="styCalExcList">${excListHtml()}</div>
+          <div class="stylist-cal-exc-add">
+            <input type="date" id="scExcDate" class="stylist-cal-time-input" style="width:auto">
+            <input type="text" id="scExcLabel" class="stylist-cal-time-input" placeholder="Grund (z.B. Urlaub)" style="flex:1;min-width:120px">
+            <button class="btn-secondary btn-sm" onclick="_styCalAddExc('${stylistId}')">+ Hinzufügen</button>
+          </div>
+        </div>
+      </div>
+      <div class="stylist-cal-modal-footer">
+        <button class="btn-primary btn-sm" onclick="saveStylistCalendar('${stylistId}','${salonId}')">Speichern</button>
+        <button class="btn-secondary btn-sm" onclick="document.getElementById('stylistCalModal')?.remove()">Abbrechen</button>
+        <span id="styCalSaveStatus" style="font-size:.82rem;color:var(--c-text-muted);margin-left:auto"></span>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  // Close on overlay click
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+function onStyCalAvailToggle(dayIdx){
+  const avail=document.getElementById('scAvail_'+dayIdx)?.checked;
+  document.getElementById('scStart_'+dayIdx).disabled=!avail;
+  document.getElementById('scEnd_'+dayIdx).disabled=!avail;
+  const lbl=document.getElementById('scAvailLabel_'+dayIdx);
+  if(lbl)lbl.textContent=avail?'An':'Frei';
+}
+
+function onStyCalSameAll(){
+  const same=document.getElementById('scSameAll')?.checked;
+  if(!same)return;
+  const start0=document.getElementById('scStart_0')?.value||'09:00';
+  const end0=document.getElementById('scEnd_0')?.value||'18:00';
+  for(let i=1;i<7;i++){
+    const sEl=document.getElementById('scStart_'+i);
+    const eEl=document.getElementById('scEnd_'+i);
+    if(sEl&&!sEl.disabled)sEl.value=start0;
+    if(eEl&&!eEl.disabled)eEl.value=end0;
+  }
+}
+
+async function _styCalAddExc(stylistId){
+  const dateVal=document.getElementById('scExcDate')?.value;
+  const label=(document.getElementById('scExcLabel')?.value||'Ausnahme').trim();
+  if(!dateVal){toast('Bitte Datum wählen','error');return;}
+  // Insert directly to DB
+  const{error}=await sb.from('stylist_availability').insert([{
+    stylist_id:stylistId,date:dateVal,is_available:false,booked:false,
+    exceptions:[{label}]
+  }]);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  // Reload exceptions list in modal
+  const{data:excRows}=await sb.from('stylist_availability').select('*').eq('stylist_id',stylistId).not('date','is',null);
+  _styCalExceptions=(excRows||[]).map(r=>({id:r.id,date:r.date,label:r.exceptions?.[0]?.label||'Ausnahme',is_available:r.is_available}));
+  const listEl=document.getElementById('styCalExcList');
+  if(listEl)listEl.innerHTML=_styCalExceptions.length===0
+    ?'<p style="font-size:.82rem;color:var(--c-text-muted)">Keine Ausnahmen eingetragen.</p>'
+    :_styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip"><span>${e.date} – ${e.label}</span><button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button></div>`).join('');
+  document.getElementById('scExcDate').value='';
+  document.getElementById('scExcLabel').value='';
+  toast('Ausnahme hinzugefügt','success');
+}
+
+async function _styCalRemoveExc(idx,stylistId){
+  const exc=_styCalExceptions[idx];
+  if(!exc)return;
+  if(exc.id){await sb.from('stylist_availability').delete().eq('id',exc.id);}
+  _styCalExceptions.splice(idx,1);
+  const listEl=document.getElementById('styCalExcList');
+  if(listEl)listEl.innerHTML=_styCalExceptions.length===0
+    ?'<p style="font-size:.82rem;color:var(--c-text-muted)">Keine Ausnahmen eingetragen.</p>'
+    :_styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip"><span>${e.date} – ${e.label}</span><button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button></div>`).join('');
+  toast('Ausnahme entfernt','info');
+}
+
+async function saveStylistCalendar(stylistId,salonId){
+  const statusEl=document.getElementById('styCalSaveStatus');
+  if(statusEl)statusEl.textContent='Speichert…';
+
+  // Build upsert rows for the 7 weekdays (date=null, day_of_week = 0..6)
+  const toUpsert=[];
+  for(let i=0;i<7;i++){
+    const avail=document.getElementById('scAvail_'+i)?.checked||false;
+    const start=document.getElementById('scStart_'+i)?.value||null;
+    const end=document.getElementById('scEnd_'+i)?.value||null;
+    toUpsert.push({stylist_id:stylistId,date:null,day_of_week:i,start_time:avail?start:null,end_time:avail?end:null,is_available:avail,booked:false,exceptions:[]});
+  }
+
+  // Delete existing weekday rows (date IS NULL) then re-insert
+  await sb.from('stylist_availability').delete().eq('stylist_id',stylistId).is('date',null);
+  const{error}=await sb.from('stylist_availability').insert(toUpsert);
+  if(error){toast('Fehler: '+error.message,'error');if(statusEl)statusEl.textContent='Fehler!';return;}
+  if(statusEl)statusEl.textContent='Gespeichert ✓';
+  setTimeout(()=>{if(statusEl)statusEl.textContent='';},3000);
+  toast('Kalender gespeichert','success');
 }
 
 async function saveServicesTeamTab(salonId) {
