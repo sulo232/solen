@@ -6819,7 +6819,7 @@ async function renderBookPage(salonId){
 
   // Init booking state
   const _now=new Date();
-  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[]};
+  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[],calLoading:false,staffNoSchedule:false,blockedDates:null,dateBlocked:false};
   // Smart gender-based haircut tab default
   const _pg=currentProfile?.gender||'';
   bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
@@ -8645,10 +8645,15 @@ function renderBookingModal(){
     html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
   }
   // 2. Date – inline calendar
-  html+=`<h4 style="font-size:.92rem;font-weight:700;margin:16px 0 10px">${t('select_date')}</h4>`;
-  html+=renderBmCal();
-  // 3. Time slot grid with availability
-  html+=renderBmTimeSlots();
+  const _calTitle=bmState.staffName?`${bmState.staffName}s Kalender`:`Verfügbare Termine (alle)`;
+  html+=`<h4 style="font-size:.92rem;font-weight:700;margin:16px 0 10px">${_calTitle}</h4>`;
+  if(bmState.calLoading){
+    html+=`<div style="text-align:center;padding:30px 0"><div class="spinner" style="width:24px;height:24px;border-width:2px;margin:0 auto"></div><p style="font-size:.82rem;color:var(--c-text-muted);margin-top:10px">Kalender wird geladen…</p></div>`;
+  }else{
+    html+=renderBmCal();
+    // 3. Time slot grid with availability
+    html+=renderBmTimeSlots();
+  }
   // Wer schneidet? – stylist picker sub-tab
   const egalSelected=!bmState.staffId;
   html+=`<div class="stylist-picker-section">
@@ -8770,15 +8775,16 @@ function renderBmCal(){
     const dt=new Date(yr,mo,d);
     const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isPast=dt<today;
+    const isBlockedDay=(bmState.blockedDates||[]).some(b=>ds>=b.start_date&&ds<=b.end_date);
     const isSel=bmState.date===ds;
     const isTod=dt.getTime()===today.getTime();
     let cls='bm-cal-day';
-    if(isPast)cls+=' disabled';
+    if(isPast||isBlockedDay)cls+=' disabled';
     else if(isSel)cls+=' selected';
     else if(isTod)cls+=' today available';
     else cls+=' available';
-    const oc=isPast?'':`bmSelectDate('${ds}')`;
-    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${isPast?-1:0}">${d}</div>`;
+    const oc=(isPast||isBlockedDay)?'':`bmSelectDate('${ds}')`;
+    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${(isPast||isBlockedDay)?-1:0}" title="${isBlockedDay?'Betriebsferien':''}">${d}</div>`;
   }
   h+=`</div></div>`;
   return h;
@@ -8790,19 +8796,42 @@ async function bmSelectDate(ds){
   bmState.bookedSlots=[];
   bmState.staffWorkStart=null;
   bmState.staffWorkEnd=null;
+  bmState.staffNoSchedule=false;
+  bmState.dateBlocked=false;
   renderBookingModal();
   try{
     const sid=typeof bmState.store?.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store?.id;
     if(sid){
-      const{data:bkd}=await sb.from('bookings').select('booking_time').eq('salon_id',sid).eq('booking_date',ds).neq('status','cancelled');
-      bmState.bookedSlots=(bkd||[]).map(r=>(r.booking_time||'').slice(0,5)).filter(Boolean);
-      if(_selStaffId){
-        const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time,staff_name').eq('salon_id',sid).eq('date',ds).eq('block_type','working');
-        const wday=scd&&scd.find(r=>!_selStaffId||r.staff_id===_selStaffId||true);
-        if(wday){bmState.staffWorkStart=(wday.start_time||'').slice(0,5);bmState.staffWorkEnd=(wday.end_time||'').slice(0,5);}
+      // Load blocked dates once per booking session
+      if(bmState.blockedDates===null){
+        const{data:bd}=await sb.from('blocked_dates').select('start_date,end_date').eq('store_id',sid);
+        bmState.blockedDates=bd||[];
+      }
+      // Check if selected date falls in a blocked range (salon vacation)
+      bmState.dateBlocked=(bmState.blockedDates||[]).some(b=>ds>=b.start_date&&ds<=b.end_date);
+      if(!bmState.dateBlocked){
+        const{data:bkd}=await sb.from('bookings').select('booking_time').eq('salon_id',sid).eq('booking_date',ds).neq('status','cancelled');
+        bmState.bookedSlots=(bkd||[]).map(r=>(r.booking_time||'').slice(0,5)).filter(Boolean);
+        if(_selStaffId){
+          const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time,staff_id,block_type').eq('salon_id',sid).eq('date',ds);
+          const staffEntry=scd&&scd.find(r=>String(r.staff_id)===String(_selStaffId));
+          if(staffEntry){
+            if(staffEntry.block_type==='working'){
+              bmState.staffWorkStart=(staffEntry.start_time||'').slice(0,5);
+              bmState.staffWorkEnd=(staffEntry.end_time||'').slice(0,5);
+            } else {
+              // vacation or other block type for this stylist
+              bmState.dateBlocked=true;
+            }
+          } else {
+            // No schedule entry found for this stylist on this date
+            bmState.staffNoSchedule=true;
+          }
+        }
       }
     }
   }catch(e){}
+  bmState.calLoading=false;
   renderBookingModal();
 }
 
@@ -8827,6 +8856,18 @@ function renderBmTimeSlots(){
     h+=`<p class="bm-slots-loading">Bitte zuerst ein Datum wählen.</p>`;
     return h;
   }
+  // Edge case: date is blocked (salon vacation or stylist vacation)
+  if(bmState.dateBlocked){
+    h+=`<p class="bm-slots-loading" style="color:var(--c-warning,#d97706)">&#128683; Dieser Tag ist gesperrt (Urlaub/Betriebsferien).</p>`;
+    h+=`<div class="bm-time-grid">`;
+    slots.forEach(sl=>{h+=`<button class="bm-time-btn booked" disabled aria-disabled="true">${sl}</button>`;});
+    h+=`</div>`;
+    return h;
+  }
+  // Edge case: stylist selected but no schedule set → show warning + fallback slots
+  if(bmState.staffNoSchedule&&bmState.staffId){
+    h+=`<p style="font-size:.82rem;color:var(--c-text-muted,#888);margin-bottom:8px;padding:6px 10px;background:var(--c-surface-alt,#f5f5f5);border-radius:8px">Noch keine Termine eingetragen – Salonzeiten werden angezeigt.</p>`;
+  }
   h+=`<div class="bm-time-grid">`;
   slots.forEach(sl=>{
     const isBooked=booked.includes(sl);
@@ -8835,7 +8876,7 @@ function renderBmTimeSlots(){
     if(isSel)cls+=' selected';
     else if(isBooked)cls+=' booked';
     else cls+=' available';
-    h+=`<button class="${cls}" onclick="${isBooked?'':  `bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
+    h+=`<button class="${cls}" onclick="${isBooked?'':`bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
   });
   h+=`</div>`;
   return h;
@@ -9792,6 +9833,7 @@ function selectStaff(id,name,el){
   updateBookingSummary();
 }
 function selectStylistCard(id,name,el){
+  const prevId=bmState.staffId;
   bmState.staffId=id||null;
   bmState.staffName=name||null;
   _selStaffId=id||null;_selStaffName=name||null;
@@ -9799,6 +9841,20 @@ function selectStylistCard(id,name,el){
   if(el)el.classList.add('selected');
   const summaryVal=document.getElementById('summaryStylstVal');
   if(summaryVal)summaryVal.textContent=name||'Bester Verfügbarer';
+  // When stylist changes, reset calendar and re-fetch with loading spinner (max 400ms)
+  if(String(prevId||'')!==String(id||'')){
+    const ds=new Date().toISOString().split('T')[0];
+    bmState.time='';
+    bmState.bookedSlots=[];
+    bmState.staffWorkStart=null;
+    bmState.staffWorkEnd=null;
+    bmState.staffNoSchedule=false;
+    bmState.dateBlocked=false;
+    bmState.calLoading=true;
+    renderBookingModal();
+    const _tmr=setTimeout(()=>{bmState.calLoading=false;renderBookingModal();},400);
+    bmSelectDate(ds).then(()=>clearTimeout(_tmr)).catch(()=>{clearTimeout(_tmr);bmState.calLoading=false;renderBookingModal();});
+  }
 }
 
 // Close add-staff modal on backdrop click
