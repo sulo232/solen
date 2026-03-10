@@ -54,10 +54,13 @@
   /* ── CATEGORY TOKENS ── */
   --cat-hair:#9B1D30;--cat-barbershop:#4A4A8A;--cat-nails:#C4587A;--cat-spa:#5B8F7B;--cat-makeup:#9B6BBF;--cat-cosmetik:#D4AF77;--cat-tattoo:#2D2D2D;
   /* ── SPACING ── */
-  --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;}
+  --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;
+  /* ── RGB TOKENS FOR GLASSMORPHISM ── */
+  --surface-rgb:255,255,255;--bg-rgb:248,244,237;}
 [data-theme="dark"]{
   --bg:#1A1210;--bg2:#231B16;--surface:#231B16;--surfaceAlt:#2D231C;
   --c-bg:#1A1210;--c-bg-elevated:#231B16;--c-surface:#231B16;--c-surface-alt:#2D231C;
+  --surface-rgb:35,27,22;--bg-rgb:26,18,16;
   --text:#F8F4ED;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
   --c-text:#F8F4ED;--c-text-secondary:#9CA3AF;--c-text-muted:#6b7280;
   --accent:#D4586A;--accent2:#D4AF77;--accent-dark:#B8384E;--accentFg:#1A1210;
@@ -74,6 +77,7 @@
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#1A1210;--bg2:#231B16;--surface:#231B16;--surfaceAlt:#2D231C;
   --c-bg:#1A1210;--c-bg-elevated:#231B16;--c-surface:#231B16;--c-surface-alt:#2D231C;
+  --surface-rgb:35,27,22;--bg-rgb:26,18,16;
   --text:#F8F4ED;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
   --c-text:#F8F4ED;--c-text-secondary:#9CA3AF;--c-text-muted:#6b7280;
   --accent:#D4586A;--accent2:#D4AF77;--accent-dark:#B8384E;--accentFg:#1A1210;
@@ -312,26 +316,36 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .skeleton-img::after{content:'';position:absolute;inset:0}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-/* MODAL BASE */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%);max-width:100vw;overflow-x:hidden;overflow-y:auto;opacity:0;transition:opacity .25s var(--ease-standard)}
+/* MODAL BASE — Liquid Glassmorphism */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);max-width:100vw;overflow-x:hidden;overflow-y:auto;opacity:0;transition:opacity .3s var(--ease-standard);will-change:opacity}
 .overlay.active{display:flex;opacity:1}
-.overlay .modal{transform:translateY(16px) scale(.97);opacity:0;transition:transform .3s var(--ease-emphasized),opacity .25s var(--ease-standard)}
+.overlay .modal{transform:translateY(20px) scale(.95);opacity:0;transition:transform .4s var(--ease-emphasized),opacity .3s var(--ease-standard);will-change:transform,opacity}
 .overlay.active .modal{transform:translateY(0) scale(1);opacity:1}
-.modal{background:var(--surface);border-radius:20px;width:100%;max-width:min(480px,calc(100vw - 32px));max-height:90vh;overflow-y:auto;overflow-x:hidden;box-shadow:0 24px 80px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.1);border:1px solid var(--border);position:relative}
+.modal{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;width:100%;max-width:min(480px,calc(100vw - 32px));max-height:90vh;overflow-y:auto;overflow-x:hidden;box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18);position:relative}
+[data-theme="dark"] .modal{background:rgba(var(--surface-rgb,31,31,31),.78);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 80px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.06)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .modal{background:rgba(var(--surface-rgb,31,31,31),.78);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 80px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.06)}}
 .modal-wide{max-width:min(700px,calc(100vw - 32px))}
 .modal-hd{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between;position:relative}
-.modal-hd h2{font-size:1.2rem;font-weight:800}
-.close-btn{background:var(--surfaceAlt,rgba(0,0,0,.06));border:none;font-size:1.1rem;color:var(--muted);line-height:1;padding:0;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s,transform .15s;flex-shrink:0}
-.close-btn:hover{color:var(--text);background:var(--border);transform:scale(1.08)}
+.modal-hd h2{font-size:1.2rem;font-weight:800;color:var(--text)}
+.close-btn{background:rgba(0,0,0,.06);border:none;font-size:1.1rem;color:var(--muted);line-height:1;padding:0;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,transform .2s var(--ease-standard);flex-shrink:0}
+[data-theme="dark"] .close-btn{background:rgba(255,255,255,.08)}
+.close-btn:hover{color:var(--text);background:rgba(0,0,0,.12);transform:scale(1.1)}
+.close-btn:active{transform:scale(.92);transition-duration:.1s}
 .modal-body{padding:20px 24px 24px}
 /* ── MODAL Z-INDEX STACKING & BODY LOCK ── */
 body.modal-open{overflow:hidden!important}
-/* Prevent chat fab, AI fab, and bottom nav from leaking above modals */
+/* Prevent ALL floating elements from leaking above modals */
+body.modal-open .chat-fab,
+body.modal-open .ai-helper-fab,
+body.modal-open .chat-panel,
+body.modal-open .bottom-nav{opacity:0!important;pointer-events:none!important;transform:translateY(100%)!important;transition:opacity .25s,transform .25s!important}
+/* Fallback sibling selectors for modals that don't use body.modal-open */
 .overlay.active~.chat-fab,.overlay.active~.ai-helper-fab,
 #bookingModal.open~.chat-fab,#bookingModal.open~.ai-helper-fab,
-.cal-overlay:not(.hidden)~.chat-fab,.cal-overlay:not(.hidden)~.ai-helper-fab{opacity:0;pointer-events:none;transition:opacity .2s}
-/* When any full-screen overlay is open, hide bottom nav */
-body.modal-open .bottom-nav{transform:translateY(100%)}
+.cal-overlay:not(.hidden)~.chat-fab,.cal-overlay:not(.hidden)~.ai-helper-fab,
+.overlay.active~.chat-panel,#bookingModal.open~.chat-panel,
+.report-modal:not(.hidden)~.chat-fab,.report-modal:not(.hidden)~.ai-helper-fab,
+.offer-picker:not(.hidden)~.chat-fab,.offer-picker:not(.hidden)~.ai-helper-fab{opacity:0!important;pointer-events:none!important;transition:opacity .25s}
 /* Ensure modals don't leak outside viewport */
 .overlay,.cal-overlay,#bookingModal,.legal-modal,.offer-picker,.report-modal{overflow-x:hidden}
 
@@ -916,9 +930,9 @@ html,body{overflow-x:hidden;max-width:100vw}
 .filialen-badge{position:absolute;top:10px;right:10px;background:rgba(212,175,119,.92);color:#1F1F1F;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:50px;pointer-events:none;backdrop-filter:blur(4px)}
 
 /* BOOKING MODAL */
-#bookingModal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%);opacity:0;transition:opacity .25s var(--ease-standard)}
+#bookingModal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);opacity:0;transition:opacity .3s var(--ease-standard);will-change:opacity}
 #bookingModal.open{display:flex;opacity:1}
-#bookingModal .bm-content{background:var(--surface);border-radius:20px;width:100%;max-width:min(560px,calc(100vw - 32px));max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.1);border:1px solid var(--border);padding:0;transform:translateY(16px) scale(.97);opacity:0;transition:transform .3s var(--ease-emphasized),opacity .25s var(--ease-standard)}
+#bookingModal .bm-content{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;width:100%;max-width:min(560px,calc(100vw - 32px));max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18);padding:0;transform:translateY(20px) scale(.95);opacity:0;transition:transform .4s var(--ease-emphasized),opacity .3s var(--ease-standard);will-change:transform,opacity}
 #bookingModal.open .bm-content{transform:translateY(0) scale(1);opacity:1}
 #bookingModal .bm-header{padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
 #bookingModal .bm-header h2{font-size:1.15rem;font-weight:800}
@@ -989,9 +1003,9 @@ html,body{overflow-x:hidden;max-width:100vw}
 }
 
 /* IMPRESSUM/DATENSCHUTZ MODAL */
-.legal-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%);opacity:0;transition:opacity .25s var(--ease-standard)}
+.legal-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);opacity:0;transition:opacity .3s var(--ease-standard);will-change:opacity}
 .legal-modal.open{display:flex;opacity:1}
-.legal-modal .legal-content{background:var(--surface);border-radius:20px;width:100%;max-width:min(520px,calc(100vw - 32px));max-height:80vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.1);border:1px solid var(--border);padding:24px;transform:translateY(16px) scale(.97);opacity:0;transition:transform .3s var(--ease-emphasized),opacity .25s var(--ease-standard)}
+.legal-modal .legal-content{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;width:100%;max-width:min(520px,calc(100vw - 32px));max-height:80vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18);padding:24px;transform:translateY(20px) scale(.95);opacity:0;transition:transform .4s var(--ease-emphasized),opacity .3s var(--ease-standard);will-change:transform,opacity}
 .legal-modal.open .legal-content{transform:translateY(0) scale(1);opacity:1}
 .legal-modal h2{font-size:1.2rem;font-weight:800;margin-bottom:16px}
 .legal-modal p{font-size:.9rem;color:var(--text2);line-height:1.7;margin-bottom:12px}
@@ -1458,9 +1472,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 .chat-input-row textarea{flex:1;border:1.5px solid var(--c-border,#e2e8f0);border-radius:12px;padding:8px 10px;font-size:13px;resize:none;outline:none;max-height:80px;font-family:inherit;}
 .btn-send-chat{background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:10px;width:36px;height:36px;font-size:16px;cursor:pointer;}
 /* === OFFER PICKER & REPORT MODAL === */
-.offer-picker,.report-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%);transition:opacity .25s var(--ease-standard)}
+.offer-picker,.report-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);transition:opacity .3s var(--ease-standard);will-change:opacity}
 .offer-picker.hidden,.report-modal.hidden{display:none!important;opacity:0}
-.offer-picker-inner,.report-inner{background:var(--c-surface,#fff);border-radius:20px;padding:24px;min-width:280px;max-width:calc(100vw - 32px);box-shadow:0 24px 80px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.1);transition:transform .3s var(--ease-emphasized)}
+.offer-picker-inner,.report-inner{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;padding:24px;min-width:280px;max-width:calc(100vw - 32px);box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18);transition:transform .4s var(--ease-emphasized)}
 .offer-picker-inner h4,.report-inner h4{margin:0 0 12px;font-size:15px;}
 .offer-item{padding:10px 14px;border:1.5px solid var(--c-border,#e2e8f0);border-radius:10px;cursor:pointer;margin-bottom:8px;font-size:13px;transition:border-color .15s;}
 .offer-item:hover{border-color:var(--c-cta,#FF6B6B);}
@@ -1861,7 +1875,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 .weather-bar{background:var(--c-surface,#fff);border-bottom:1px solid var(--c-border,#E2DCD3);padding:.5rem 1rem;text-align:center}.weather-pill{display:inline-flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--c-text-secondary,#6B5E4F);background:var(--c-surface-alt,#F3EEE6);padding:.35rem .9rem;border-radius:20px}.weather-pill.weather-deal{background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0369a1;font-weight:500}.weather-icon{font-size:1.1rem}.weather-deal-text{font-size:.8rem;color:#0369a1;margin-left:.25rem}
 /* ═══ AI HELPER ═══ */
 .ai-helper-fab{position:fixed;bottom:90px;right:20px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--c-cta,#FF6B6B),#f39c12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 16px rgba(255,107,107,.35);z-index:900;transition:transform .2s}.ai-helper-fab:hover{transform:scale(1.1)}
-#aiHelperModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(12px) saturate(120%);-webkit-backdrop-filter:blur(12px) saturate(120%)}.ai-helper-box{background:var(--c-bg,#F8F4ED);border-radius:20px;padding:1.5rem;width:100%;max-width:min(480px,calc(100vw - 32px));box-shadow:0 24px 80px rgba(0,0,0,.18),0 8px 24px rgba(0,0,0,.1)}.ai-helper-box h3{margin:0 0 .25rem;font-size:1.2rem}.ai-helper-box p{color:var(--c-text-muted);font-size:.88rem;margin:0 0 1rem}.ai-helper-input-row{display:flex;gap:.5rem;margin-bottom:1rem}
+#aiHelperModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%)}.ai-helper-box{background:rgba(var(--surface-rgb,255,255,255),.82);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;padding:1.5rem;width:100%;max-width:min(480px,calc(100vw - 32px));box-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.18)}.ai-helper-box h3{margin:0 0 .25rem;font-size:1.2rem}.ai-helper-box p{color:var(--c-text-muted);font-size:.88rem;margin:0 0 1rem}.ai-helper-input-row{display:flex;gap:.5rem;margin-bottom:1rem}
 #aiHelperInput{flex:1;padding:.65rem 1rem;border:1.5px solid var(--c-border,#E2DCD3);border-radius:10px;font-size:.95rem;background:var(--c-surface,#fff)}#aiHelperInput:focus{outline:none;border-color:var(--c-cta,#FF6B6B)}.btn-ai-search{padding:.65rem 1.1rem;background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:.9rem}.ai-result-card{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}.ai-result-card:hover{background:var(--c-surface-alt,#F3EEE6)}
 .ai-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}.ai-suggestion-chip{background:var(--c-surface-alt,#F3EEE6);border:1px solid var(--c-border);border-radius:20px;padding:.3rem .75rem;font-size:.82rem;cursor:pointer;color:var(--c-text-secondary)}.ai-suggestion-chip:hover{background:var(--c-border)}
 /* ═══ PANEL HEADER ═══ */
@@ -1870,56 +1884,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 .admin-pending-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1rem}.admin-salon-row{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:1rem}.admin-salon-row .salon-meta{flex:1}.admin-salon-row .salon-meta strong{display:block}.admin-salon-row .salon-meta span{font-size:.82rem;color:var(--c-text-muted)}.btn-approve{padding:.4rem .9rem;background:#2d7a4f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;margin-right:.35rem}.btn-reject{padding:.4rem .9rem;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
 .approved-notice{background:#e8f5e9;color:#2d7a4f;border-radius:8px;padding:.5rem .9rem;font-size:.85rem;margin-top:.5rem}
 
-/* ══════════════════════════════════════════════
-   MOBILE RESPONSIVENESS FIXES
-   ══════════════════════════════════════════════ */
-
-/* Chat FAB above bottom nav on mobile */
-@media(max-width:768px){
-  .chat-fab{bottom:calc(env(safe-area-inset-bottom,8px) + 74px);right:16px;width:52px;height:52px;font-size:22px}
-  .ai-helper-fab{bottom:calc(env(safe-area-inset-bottom,8px) + 134px);right:16px}
-  .chat-panel{bottom:calc(env(safe-area-inset-bottom,8px) + 134px);right:16px;width:calc(100vw - 32px);max-height:60vh}
-  /* Full screen modals on small screens */
-  .overlay .modal{max-width:100%;max-height:100vh;border-radius:0;border:none;margin:0}
-  .overlay{padding:0}
-  /* Except auth modal - keep centered with slight padding */
-  #authOverlay{padding:16px}
-  #authOverlay .modal{max-width:calc(100vw - 32px);max-height:90vh;border-radius:20px}
-  /* Calendar overlay mobile */
-  .cal-overlay-inner{width:100%;max-width:100%;border-radius:0;max-height:100vh;padding:20px 16px}
-  .cal-overlay{padding:0}
-  /* Walk-in modal mobile */
-  .walkin-modal{bottom:calc(env(safe-area-inset-bottom,8px) + 74px);width:calc(100vw - 32px);min-width:auto}
-  /* Booking modal full screen on mobile */
-  #bookingModal .bm-content{max-width:100%;max-height:100vh;border-radius:0;border:none}
-  #bookingModal{padding:0}
-  /* Analytics charts single column on mobile */
-  #analyticsDash [style*="grid-template-columns: 1fr 1fr"]{display:flex!important;flex-direction:column!important}
-  /* Counter components bigger touch targets */
-  .cal-group-row button{width:40px;height:40px;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center}
-  .cal-group-row{gap:14px;padding:12px 0}
-  .cal-group-row span{font-size:1.1rem;font-weight:700;min-width:24px;text-align:center}
-  /* Commission summary responsive */
-  .comm-summary-row{grid-template-columns:1fr 1fr;gap:.35rem}
-}
-
-/* Small phones */
-@media(max-width:380px){
-  #authOverlay .modal{max-width:100%;border-radius:0}
-  #authOverlay{padding:0}
-  .modal-hd{padding:20px 16px 0}
-  .modal-body{padding:16px}
-  .bm-header{padding:16px!important}
-  .bm-body{padding:16px!important}
-}
-
-/* Landscape mode */
-@media(max-height:500px) and (orientation:landscape){
-  .overlay .modal{max-height:100vh;border-radius:12px}
-  .overlay{padding:8px}
-  .cal-overlay-inner{max-height:100vh;padding:12px}
-  .bottom-nav{display:none}
-}
+/* (Mobile responsiveness moved to end of stylesheet) */
 
 /* ── COUNTER COMPONENTS ── */
 .counter-btn{width:36px;height:36px;border:1.5px solid var(--c-border-strong,#D5CFC6);border-radius:10px;background:var(--c-surface,#fff);cursor:pointer;font-size:1.1rem;font-weight:600;color:var(--c-text,#1F1F1F);display:flex;align-items:center;justify-content:center;transition:all .15s var(--ease-standard);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -1953,6 +1918,87 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 /* Prevent all horizontal scroll - scope to content areas only */
 .page,.stores-section,.hero,.popular-services,.quartier-discovery,.trending-section,.partner-cta,.footer-enhanced,.site-footer{max-width:100vw;overflow-x:hidden}
 .modal *,.bm-content *,.cal-overlay-inner *,.report-inner *,.offer-picker-inner *{max-width:100%}
+
+/* ═══ MICRO-ANIMATIONS ═══ */
+@keyframes modalSlideUp{from{transform:translateY(24px) scale(.95);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+@keyframes modalSlideDown{from{transform:translateY(0) scale(1);opacity:1}to{transform:translateY(16px) scale(.96);opacity:0}}
+@keyframes overlayFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes overlayFadeOut{from{opacity:1}to{opacity:0}}
+@keyframes btnPress{0%{transform:scale(1)}50%{transform:scale(.95)}100%{transform:scale(1)}}
+/* Button micro-animations */
+.btn-primary:active,.btn-secondary:active,.btn-book:active,.btn-google:active,.btn-phone-toggle:active{animation:btnPress .2s var(--ease-standard)}
+.bottom-nav-item:active{transform:scale(.9);transition-duration:.1s}
+/* Smooth form interactions */
+.form-input:focus{transform:translateY(-1px);box-shadow:0 0 0 3px rgba(155,29,48,.18),0 4px 12px rgba(155,29,48,.08)!important}
+/* Analytics auth-only visibility */
+.analytics-auth-only{display:none!important}
+body.is-authenticated .analytics-auth-only{display:block!important}
+/* Analytics tab in dashboard - hidden for non-auth */
+.analytics-tab-auth{display:none!important}
+body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
+
+/* ═══ ENHANCED MOBILE RESPONSIVE ═══ */
+@media(max-width:768px){
+  /* Bottom sheet style modals on mobile */
+  .overlay .modal{max-width:100%;max-height:92vh;border-radius:24px 24px 0 0;border:none;margin:0;align-self:flex-end;border-bottom-left-radius:0;border-bottom-right-radius:0}
+  .overlay{padding:0;align-items:flex-end}
+  /* Auth modal stays centered */
+  #authOverlay{padding:16px;align-items:center}
+  #authOverlay .modal{max-width:calc(100vw - 32px);max-height:90vh;border-radius:24px;align-self:center}
+  /* Touch-friendly spacing */
+  .modal-body{padding:16px 20px 24px}
+  .modal-hd{padding:20px 20px 0}
+  /* Drag handle indicator for bottom-sheet modals */
+  .overlay:not(#authOverlay) .modal::before{content:'';display:block;width:36px;height:4px;background:rgba(128,128,128,.3);border-radius:4px;margin:10px auto 0}
+  /* Booking modal full screen on mobile */
+  #bookingModal .bm-content{max-width:100%;max-height:100vh;border-radius:24px 24px 0 0;border:none}
+  #bookingModal{padding:0;align-items:flex-end}
+  /* Calendar overlay mobile */
+  .cal-overlay-inner{width:100%;max-width:100%;border-radius:24px 24px 0 0;max-height:92vh;padding:20px 16px}
+  .cal-overlay{padding:0;align-items:flex-end}
+  /* Walk-in modal mobile */
+  .walkin-modal{bottom:calc(env(safe-area-inset-bottom,8px) + 74px);width:calc(100vw - 32px);min-width:auto}
+  /* Chat FAB positioning */
+  .chat-fab{bottom:calc(env(safe-area-inset-bottom,8px) + 74px);right:16px;width:52px;height:52px;font-size:22px}
+  .ai-helper-fab{bottom:calc(env(safe-area-inset-bottom,8px) + 134px);right:16px}
+  .chat-panel{bottom:calc(env(safe-area-inset-bottom,8px) + 134px);right:16px;width:calc(100vw - 32px);max-height:60vh}
+  /* Analytics charts single column on mobile */
+  #analyticsDash [style*="grid-template-columns: 1fr 1fr"]{display:flex!important;flex-direction:column!important}
+  /* Counter components bigger touch targets */
+  .cal-group-row button{width:40px;height:40px;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .cal-group-row{gap:14px;padding:12px 0}
+  .cal-group-row span{font-size:1.1rem;font-weight:700;min-width:24px;text-align:center}
+  /* Commission summary responsive */
+  .comm-summary-row{grid-template-columns:1fr 1fr;gap:.35rem}
+  /* Gallery panel mobile */
+  #galleryPanel>div{margin:0!important;border-radius:24px 24px 0 0!important;max-width:100%!important;min-height:50vh}
+  /* Profile edit modal mobile */
+  #profileEditModal>div{margin:0!important;border-radius:24px 24px 0 0!important;max-width:100%!important;max-height:92vh!important}
+  /* Ensure all buttons meet 44px touch target */
+  button,a[role="button"],.chip,.bottom-nav-item,.analytics-filter-btn,.export-btn{min-height:44px}
+  /* No horizontal scroll on any element */
+  *{max-width:100vw}
+  .stores-grid,.trending-grid{overflow-x:hidden}
+}
+
+/* Small phones */
+@media(max-width:380px){
+  #authOverlay .modal{max-width:100%;border-radius:24px 24px 0 0}
+  #authOverlay{padding:0;align-items:flex-end}
+  .modal-hd{padding:20px 16px 0}
+  .modal-body{padding:16px}
+  .bm-header{padding:16px!important}
+  .bm-body{padding:16px!important}
+}
+
+/* Landscape mode */
+@media(max-height:500px) and (orientation:landscape){
+  .overlay .modal{max-height:100vh;border-radius:16px;align-self:center}
+  .overlay{padding:8px;align-items:center}
+  .cal-overlay-inner{max-height:100vh;padding:12px;border-radius:16px}
+  .cal-overlay{align-items:center}
+  .bottom-nav{display:none}
+}
 </style>
 
   <meta name="description" content="Salons und Beauty-Studios in Basel buchen. Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -2857,22 +2903,22 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 </div>
 
 <!-- IMPRESSUM MODAL -->
-<div class="legal-modal" id="impressumModal" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
+<div class="legal-modal" id="impressumModal" role="dialog" aria-modal="true" aria-label="Impressum" onclick="if(event.target===this)closeLegalModal('impressumModal')">
   <div class="legal-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 style="margin:0" data-i18n="impressum">Impressum</h2>
-      <button class="close-btn" onclick="document.getElementById('impressumModal').classList.remove('open');document.body.style.overflow=''" aria-label="Schliessen">&times;</button>
+      <button class="close-btn" onclick="closeLegalModal('impressumModal')" aria-label="Schliessen">&times;</button>
     </div>
     <p>Solen GmbH, Basel, Schweiz.<br>E-Mail: info@solen.ch<br>Handelsregisternummer: CHE-XXX.XXX.XXX</p>
   </div>
 </div>
 
 <!-- DATENSCHUTZ MODAL -->
-<div class="legal-modal" id="datenschutzModal" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
+<div class="legal-modal" id="datenschutzModal" role="dialog" aria-modal="true" aria-label="Datenschutz" onclick="if(event.target===this)closeLegalModal('datenschutzModal')">
   <div class="legal-content">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <h2 style="margin:0" data-i18n="privacy">Datenschutz</h2>
-      <button class="close-btn" onclick="document.getElementById('datenschutzModal').classList.remove('open');document.body.style.overflow=''" aria-label="Schliessen">&times;</button>
+      <button class="close-btn" onclick="closeLegalModal('datenschutzModal')" aria-label="Schliessen">&times;</button>
     </div>
     <p>Wir erheben nur Daten fuer die Buchung. Keine Weitergabe an Dritte. Gemaess DSG haben Sie Recht auf Auskunft, Berichtigung und Loeschung.</p>
   </div>
@@ -2944,8 +2990,8 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
         <button class="footer-col-link" onclick="openSalonRegistration()" data-i18n="nav_register_salon">Salon eintragen</button>
         <button class="footer-col-link" onclick="openAuth('login')" data-i18n="nav_login">Anmelden</button>
         <button class="footer-col-link" onclick="openAuth('register-choice')" data-i18n="nav_register">Registrieren</button>
-        <button class="footer-col-link" onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</button>
-        <button class="footer-col-link" onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</button>
+        <button class="footer-col-link" onclick="openLegalModal('impressumModal')" data-i18n="impressum">Impressum</button>
+        <button class="footer-col-link" onclick="openLegalModal('datenschutzModal')" data-i18n="privacy">Datenschutz</button>
       </div>
     </div>
   </div>
@@ -2954,8 +3000,8 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     <div class="footer-bottom-inner">
       <span style="font-family:'Space Grotesk',sans-serif" data-i18n="footer_text">&copy; 2026 solen &middot; Mit Liebe aus Basel &hearts;</span>
       <div class="footer-bottom-links">
-        <button onclick="document.getElementById('impressumModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="impressum">Impressum</button>
-        <button onclick="document.getElementById('datenschutzModal').classList.add('open');document.body.style.overflow='hidden'" data-i18n="privacy">Datenschutz</button>
+        <button onclick="openLegalModal('impressumModal')" data-i18n="impressum">Impressum</button>
+        <button onclick="openLegalModal('datenschutzModal')" data-i18n="privacy">Datenschutz</button>
       </div>
     </div>
   </div>
@@ -3792,6 +3838,7 @@ sb.auth.onAuthStateChange((event,session)=>{
     if(wasLoggedOut){onSignIn(session.user);}
     else{
       // Already had a user but auth state changed (e.g. token refresh) — refresh UI
+      document.body.classList.add('is-authenticated');
       document.getElementById('navGuest').classList.add('hidden');
       document.getElementById('navUser').classList.remove('hidden');
       renderStores();
@@ -3808,6 +3855,7 @@ sb.auth.onAuthStateChange((event,session)=>{
 
 async function onSignIn(user){
   currentUser=user;
+  document.body.classList.add('is-authenticated');
   // Smooth nav transition: fade out guest, fade in user
   const navGuest=document.getElementById('navGuest');
   const navUser=document.getElementById('navUser');
@@ -3865,6 +3913,7 @@ async function onSignIn(user){
 
 function onSignOut(){
   currentUser=null; currentProfile=null; window._isAdmin=false;
+  document.body.classList.remove('is-authenticated');
   document.getElementById('navGuest').classList.remove('hidden');
   document.getElementById('navUser').classList.add('hidden');
   // Sync mobile menu
@@ -5814,6 +5863,23 @@ function releaseFocus(modal){
   if(modal._triggerEl){modal._triggerEl.focus();modal._triggerEl=null;}
 }
 
+// ── LEGAL MODAL HELPERS ──
+function openLegalModal(id){
+  var m=document.getElementById(id);
+  if(!m)return;
+  m._triggerEl=document.activeElement;
+  m.classList.add('open');
+  document.body.classList.add('modal-open');
+  setTimeout(function(){trapFocus(m.querySelector('.legal-content')||m);},100);
+}
+function closeLegalModal(id){
+  var m=document.getElementById(id);
+  if(!m)return;
+  releaseFocus(m);
+  m.classList.remove('open');
+  _checkModalOpen();
+}
+
 // CLOSE ALL MODALS (used when switching tabs via bottom nav)
 function closeAllModals(){
   try{closeAuth();}catch(e){}
@@ -5821,16 +5887,20 @@ function closeAllModals(){
   try{closeStoreDetail();}catch(e){}
   try{closeChat();}catch(e){}
   try{closeBookingModal();}catch(e){}
+  try{closeAnalyticsDash();}catch(e){}
+  try{closeAIHelper();}catch(e){}
   document.getElementById('setupOverlay')?.classList.remove('active');
   document.getElementById('impressumModal')?.classList.remove('open');
   document.getElementById('datenschutzModal')?.classList.remove('open');
   document.getElementById('editStoreOverlay')?.classList.remove('active');
   const pm=document.getElementById('profileEditModal');if(pm)pm.style.display='none';
+  document.getElementById('reportModal')?.classList.add('hidden');
+  document.getElementById('offerPicker')?.classList.add('hidden');
   document.body.classList.remove('modal-open');
 }
 // Helper: check if any modal is still open and update body class accordingly
 function _checkModalOpen(){
-  var anyOpen=document.querySelector('.overlay.active,#bookingModal.open,.cal-overlay:not(.hidden),.onboard-wizard.active,.legal-modal.open');
+  var anyOpen=document.querySelector('.overlay.active,#bookingModal.open,.cal-overlay:not(.hidden),.onboard-wizard.active,.legal-modal.open,.report-modal:not(.hidden),.offer-picker:not(.hidden),#aiHelperModal[style*="flex"],#profileEditModal[style*="block"],#galleryPanel[style*="block"]');
   if(!anyOpen)document.body.classList.remove('modal-open');
 }
 
@@ -6996,7 +7066,7 @@ async function renderSalonDashboard(){
     </div>
     <div class="admin-tabs" id="dashTabs">
       <button class="admin-tab active" onclick="showDashTab(this,'dashTabBuchungen','${salon.id}',null)">Buchungen</button>
-      <button class="admin-tab" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
+      <button class="admin-tab analytics-tab-auth" onclick="showDashTab(this,'dashTabStatistiken','${salon.id}',null)">Statistiken</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabOeffnungszeiten','${salon.id}',null)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="display:inline;vertical-align:middle"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Öffnungszeiten</button>
     
       <button class="admin-tab" onclick="showDashTab(this,'dashTabCRM','${salon.id}','${salon.id}');setTimeout(()=>renderCRM('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> CRM</button>
@@ -7078,7 +7148,7 @@ function showDashTab(btn,tab,salonId,storeId){
 }
 
 async function renderAnalytics(salonId,storeId){
-  if(!currentUser){return;}
+  if(!currentUser){var el2=document.getElementById('analyticsContent');if(el2)el2.innerHTML='<p class="text-muted">Bitte anmelden, um Statistiken zu sehen.</p>';return;}
   const el=document.getElementById('analyticsContent');
   if(!el)return;
   el.innerHTML='<div class="spinner"></div>';
@@ -7239,12 +7309,16 @@ async function openBookingModal(store,preselectedTime){
   solenTrack('booking_flow_start',{salon_id:store.id,salon_name:store.name});
   await loadBranchesForBooking();
   renderBookingModal();
-  document.getElementById('bookingModal').classList.add('open');
+  var bmEl=document.getElementById('bookingModal');
+  bmEl.classList.add('open');
   document.body.classList.add('modal-open');
+  setTimeout(function(){trapFocus(bmEl.querySelector('.bm-content')||bmEl);},100);
   if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
 }
 function closeBookingModal(){
-  document.getElementById('bookingModal').classList.remove('open');
+  var bmEl=document.getElementById('bookingModal');
+  releaseFocus(bmEl);
+  bmEl.classList.remove('open');
   _checkModalOpen();
   bmState={};
 }
@@ -7501,8 +7575,8 @@ async function saveProfileSlideIn(){
 }
 
 // PROFILE EDIT MODAL
-async function openProfileModal(){document.getElementById('profileEditModal').style.display='block';document.body.style.overflow='hidden';try{const{data:{user}}=await sb.auth.getUser();if(user){document.getElementById('pmEmail').value=user.email||'';const{data}=await sb.from('profiles').select('*').eq('user_id',user.id).single();if(data){document.getElementById('pmDisplayName').value=data.display_name||'';document.getElementById('pmAgeRange').value=data.age_range||'';document.getElementById('pmGender').value=data.gender||'';document.getElementById('pmHairType').value=data.hair_type||'';document.getElementById('pmHairLength').value=data.hair_length||'';document.getElementById('pmNeighbourhood').value=data.neighbourhood||'';const initials=(data.display_name||user.email||'S')[0].toUpperCase();document.getElementById('profileAvatar').textContent=initials;if(data.preferred_services){const s=typeof data.preferred_services==='string'?JSON.parse(data.preferred_services):data.preferred_services;document.querySelectorAll('.pm-svc').forEach(cb=>cb.checked=s.includes(cb.value));}}}}catch(e){}}
-function closeProfileModal(){document.getElementById('profileEditModal').style.display='none';document.body.style.overflow='';}
+async function openProfileModal(){var pm=document.getElementById('profileEditModal');pm._triggerEl=document.activeElement;pm.style.display='block';document.body.classList.add('modal-open');try{const{data:{user}}=await sb.auth.getUser();if(user){document.getElementById('pmEmail').value=user.email||'';const{data}=await sb.from('profiles').select('*').eq('user_id',user.id).single();if(data){document.getElementById('pmDisplayName').value=data.display_name||'';document.getElementById('pmAgeRange').value=data.age_range||'';document.getElementById('pmGender').value=data.gender||'';document.getElementById('pmHairType').value=data.hair_type||'';document.getElementById('pmHairLength').value=data.hair_length||'';document.getElementById('pmNeighbourhood').value=data.neighbourhood||'';const initials=(data.display_name||user.email||'S')[0].toUpperCase();document.getElementById('profileAvatar').textContent=initials;if(data.preferred_services){const s=typeof data.preferred_services==='string'?JSON.parse(data.preferred_services):data.preferred_services;document.querySelectorAll('.pm-svc').forEach(cb=>cb.checked=s.includes(cb.value));}}}}catch(e){}}
+function closeProfileModal(){document.getElementById('profileEditModal').style.display='none';_checkModalOpen();}
 async function saveProfileModal(){try{const{data:{user}}=await sb.auth.getUser();if(!user)return;const svcs=[...document.querySelectorAll('.pm-svc:checked')].map(c=>c.value);await sb.from('profiles').upsert({user_id:user.id,display_name:document.getElementById('pmDisplayName').value,age_range:document.getElementById('pmAgeRange').value,gender:document.getElementById('pmGender').value,hair_type:document.getElementById('pmHairType').value,hair_length:document.getElementById('pmHairLength').value,neighbourhood:document.getElementById('pmNeighbourhood').value,preferred_services:JSON.stringify(svcs),profile_complete:true,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(typeof toast==='function')toast('Profil gespeichert!','success');localStorage.setItem('solenProfileDone','1');closeProfileModal();}catch(e){if(typeof toast==='function')toast('Fehler beim Speichern','error');}}
 // Close booking modal on click outside
 document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.target.id==='bookingModal')closeBookingModal();});
@@ -7521,7 +7595,7 @@ document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.targe
 </div>
 
 <!-- PROFILE EDIT MODAL -->
-<div id="profileEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:10000;overflow-y:auto">
+<div id="profileEditModal" role="dialog" aria-modal="true" aria-label="Profil bearbeiten" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:10000;overflow-y:auto"
 <div style="max-width:480px;margin:40px auto;background:var(--card);border-radius:20px;padding:32px;position:relative">
 <button onclick="closeProfileModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)">x</button>
 <div style="text-align:center;margin-bottom:24px"><div id="profileAvatar" style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">S</div><h2 style="margin:0;font-size:20px;color:var(--text)">Mein Profil</h2></div>
@@ -8345,7 +8419,7 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 
 <!-- ANALYTICS DASHBOARD OVERLAY -->
-<div class="onboard-wizard" id="analyticsDash" style="z-index:9998">
+<div class="onboard-wizard analytics-auth-only" id="analyticsDash" style="z-index:9998">
   <div class="onboard-header">
     <h2>Analytics Dashboard</h2>
     <button class="close-btn" onclick="closeAnalyticsDash()" aria-label="Schliessen">&times;</button>
@@ -8855,10 +8929,19 @@ let _analyticsSalonId=null, _analyticsPeriod='30d';
 function openAnalyticsDash(salonId){
   if(!currentUser){openAuth('login');return;}
   _analyticsSalonId=salonId;
-  document.getElementById('analyticsDash').classList.add('active');
+  var dash=document.getElementById('analyticsDash');
+  dash.classList.add('active');
+  document.body.classList.add('modal-open');
   loadAnalyticsData();
+  // Trap focus for accessibility
+  setTimeout(function(){trapFocus(dash);},100);
 }
-function closeAnalyticsDash(){document.getElementById('analyticsDash').classList.remove('active');_checkModalOpen();}
+function closeAnalyticsDash(){
+  var dash=document.getElementById('analyticsDash');
+  releaseFocus(dash);
+  dash.classList.remove('active');
+  _checkModalOpen();
+}
 function setAnalyticsPeriod(p,btn){
   _analyticsPeriod=p;
   document.querySelectorAll('.analytics-filter-btn').forEach(b=>b.classList.remove('active'));
@@ -9031,8 +9114,9 @@ document.addEventListener('click',function(e){
       else{_oldOpenSalonReg();}
     };
   }
-  // Add analytics button to salon dashboard tabs
+  // Add analytics button to salon dashboard tabs (only for authenticated users)
   const observer=new MutationObserver(function(mutations){
+    if(!currentUser)return; // Don't add analytics button for public users
     mutations.forEach(function(m){
       m.addedNodes.forEach(function(node){
         if(node.nodeType!==1)return;
@@ -9395,8 +9479,8 @@ function toggleChatSearch(){var bar=document.getElementById('chatSearchBar');if(
 function filterChatMessages(q){document.querySelectorAll('.chat-msg').forEach(function(m){var txt=(m.querySelector('.chat-bubble')||{}).textContent||'';m.style.display=txt.toLowerCase().includes(q.toLowerCase())?'':'none';});}
 function triggerChatMedia(){var inp=document.getElementById('chatMediaInput');if(inp)inp.click();}
 function uploadChatMedia(input){if(input&&input.files&&input.files[0])alert('Bild-Upload in K\u00fcrze verf\u00fcgbar.');}
-function openReportModal(msgId){window._reportMsgId=msgId;var m=document.getElementById('reportModal');if(m)m.classList.remove('hidden');}
-function closeReportModal(){var m=document.getElementById('reportModal');if(m)m.classList.add('hidden');}
+function openReportModal(msgId){window._reportMsgId=msgId;var m=document.getElementById('reportModal');if(m){m._triggerEl=document.activeElement;m.classList.remove('hidden');document.body.classList.add('modal-open');setTimeout(function(){trapFocus(m.querySelector('.report-inner')||m);},100);}}
+function closeReportModal(){var m=document.getElementById('reportModal');if(m){releaseFocus(m);m.classList.add('hidden');_checkModalOpen();}}
 async function submitReport(reason){if(window._reportMsgId&&window._sb)await window._sb.from('reports').insert([{message_id:window._reportMsgId,reason:reason}]);closeReportModal();alert('Gemeldet. Danke!');}
 function translateMsg(msgId){alert('\u00dcbersetzung in K\u00fcrze verf\u00fcgbar.');}
 function setQuickReply(text){var inp=document.getElementById('chatInput');if(inp){inp.value=text;inp.focus();}}
@@ -9530,8 +9614,24 @@ async function loadWeatherWidget(){
     if(isRainy)window._weatherBoostCat='massage';
   }catch(e){if(document.getElementById('weatherWidget'))document.getElementById('weatherWidget').innerHTML='';}
 }
-function openAIHelper(){const m=document.getElementById('aiHelperModal');if(m){m.style.display='flex';document.getElementById('aiHelperInput')?.focus();}}
-function closeAIHelper(){const m=document.getElementById('aiHelperModal');if(m)m.style.display='none';}
+function openAIHelper(){
+  const m=document.getElementById('aiHelperModal');
+  if(!m)return;
+  m._triggerEl=document.activeElement;
+  m.style.display='flex';
+  document.body.classList.add('modal-open');
+  setTimeout(function(){
+    document.getElementById('aiHelperInput')?.focus();
+    trapFocus(m.querySelector('.ai-helper-box')||m);
+  },100);
+}
+function closeAIHelper(){
+  const m=document.getElementById('aiHelperModal');
+  if(!m)return;
+  releaseFocus(m);
+  m.style.display='none';
+  _checkModalOpen();
+}
 async function submitAIHelperQuery(){
   const input=document.getElementById('aiHelperInput');const resultsEl=document.getElementById('aiHelperResults');
   if(!input||!resultsEl)return;const query=input.value.trim();if(!query)return;
@@ -9643,7 +9743,7 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   </div>
 </div>
 <!-- Gallery Panel -->
-<div id="galleryPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto" onclick="if(event.target===this)this.style.display='none'">
+<div id="galleryPanel" role="dialog" aria-modal="true" aria-label="Fotogalerie" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:8000;overflow-y:auto" onclick="if(event.target===this){this.style.display='none';_checkModalOpen()}"
   <div style="background:var(--c-bg,#fff);max-width:600px;margin:40px auto;border-radius:var(--r-xl,24px);padding:24px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <h3 style="font-family:var(--font-display,serif)">Fotogalerie</h3>
