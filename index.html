@@ -6608,6 +6608,123 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .btn-teal{background:#9B1D30;color:#fff;border:none;padding:6px 16px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;align-self:flex-end;}
 #scrollBar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#9B1D30,#D4AF77);z-index:99999;width:0;pointer-events:none;}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.035;background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');background-size:150px;}
+
+/* === BATCH1: DESIGN SYSTEM + DARK MODE + ACCESSIBILITY === */
+/* Typography */
+h1,h2,h3,h4{font-family:var(--font-display,serif);letter-spacing:-.02em;}
+body{font-family:var(--font-body,system-ui);}
+.price,.amount,.chf{font-variant-numeric:tabular-nums;font-family:var(--font-mono,monospace);}
+/* Skip-to-content */
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+.skip-link:focus{position:fixed;top:12px;left:12px;z-index:10000;padding:8px 16px;background:var(--c-cta,#FF6B6B);color:#fff;border-radius:var(--r-md,12px);width:auto;height:auto;font-weight:600;}
+/* Focus indicators */
+*:focus-visible{outline:3px solid var(--c-focus,#4ECDC4);outline-offset:2px;}
+/* Dark mode */
+[data-theme="dark"]{
+  --c-bg:#0f0f0f;--c-bg-elevated:#1a1a1a;--c-surface:#1f1f1f;--c-surface-alt:#252525;
+  --c-text:#f0f0f0;--c-text-secondary:#b0b0b0;--c-text-muted:#707070;
+  --c-border:#2a2a2a;--c-border-strong:#3a3a3a;
+  color-scheme:dark;
+}
+@media(prefers-color-scheme:dark){body:not([data-theme="light"]){
+  --c-bg:#0f0f0f;--c-bg-elevated:#1a1a1a;--c-surface:#1f1f1f;--c-surface-alt:#252525;
+  --c-text:#f0f0f0;--c-text-secondary:#b0b0b0;--c-text-muted:#707070;
+  --c-border:#2a2a2a;--c-border-strong:#3a3a3a;
+  color-scheme:dark;
+}}
+/* Dark mode toggle button */
+.btn-dark-toggle{background:none;border:1px solid var(--c-border,#e2dcd5);border-radius:var(--r-pill,999px);padding:6px 10px;cursor:pointer;font-size:16px;color:var(--c-text,#1f1f1f);display:flex;align-items:center;gap:4px;transition:all .2s var(--ease);}
+.btn-dark-toggle:hover{background:var(--c-surface,#f5f5f5);}
+/* Verified salon badge */
+.badge-verified{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#4ECDC4,#26a69a);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill,999px);letter-spacing:.04em;}
+.badge-verified::before{content:"✓";}
+/* Empty states */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-8,64px) var(--space-4,32px);text-align:center;color:var(--c-text-muted,#888);}
+.empty-state-icon{font-size:48px;margin-bottom:var(--space-2,16px);opacity:.4;}
+.empty-state h3{font-family:var(--font-display,serif);font-size:1.25rem;color:var(--c-text,#1f1f1f);margin-bottom:8px;}
+.empty-state p{font-size:.9rem;margin-bottom:var(--space-3,24px);max-width:320px;}
+/* New salon card */
+.salon-card{background:var(--c-surface,#fff);border-radius:var(--r-lg,16px);overflow:hidden;box-shadow:var(--shadow-card);transition:transform .2s var(--ease),box-shadow .2s var(--ease);cursor:pointer;}
+.salon-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+.salon-card:active{transform:translateY(-4px);}
+.salon-card-img{aspect-ratio:3/2;overflow:hidden;background:var(--c-surface-alt,#f5f5f5);}
+.salon-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s var(--ease);}
+.salon-card:hover .salon-card-img img{transform:scale(1.05);}
+.salon-card-body{padding:var(--space-2,16px);}
+.salon-card-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.salon-card-quartier{background:rgba(78,205,196,.1);color:#26a69a;font-size:11px;font-weight:600;padding:2px 8px;border-radius:var(--r-pill,999px);}
+.salon-card-cat{font-size:11px;color:var(--c-text-muted,#888);}
+.salon-card-name{font-family:var(--font-display,serif);font-size:1.05rem;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;color:var(--c-text,#1f1f1f);}
+.salon-card-rating{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--c-text-secondary,#666);}
+.salon-card-price{font-variant-numeric:tabular-nums;font-size:.85rem;}
+.salon-card-cta{display:block;width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#FF6B6B,#ff8e53);color:#fff;border:none;border-radius:var(--r-md,12px);font-weight:600;font-size:.9rem;cursor:pointer;transition:opacity .15s;}
+.salon-card-cta:hover{opacity:.88;}
+/* Filter pills (simplified) */
+.filter-pills-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.filter-pill{background:var(--c-surface,#fff);border:1.5px solid var(--c-border,#e2dcd5);border-radius:var(--r-pill,999px);padding:8px 16px;font-size:.875rem;cursor:pointer;transition:all .15s;color:var(--c-text,#1f1f1f);font-weight:500;white-space:nowrap;}
+.filter-pill:hover,.filter-pill.active{background:var(--c-cta,#FF6B6B);border-color:var(--c-cta,#FF6B6B);color:#fff;}
+.filter-pill:focus-visible{outline:3px solid var(--c-cta,#FF6B6B);outline-offset:2px;}
+/* PWA install banner */
+.pwa-banner{position:fixed;bottom:0;left:0;right:0;background:var(--c-surface,#fff);box-shadow:0 -4px 20px rgba(0,0,0,.1);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9990;transform:translateY(100%);transition:transform .3s var(--ease);}
+.pwa-banner.visible{transform:translateY(0);}
+.pwa-banner-text{font-size:.875rem;font-weight:500;}
+.pwa-banner-text small{display:block;color:var(--c-text-muted,#888);font-size:.75rem;}
+.btn-pwa-install{background:linear-gradient(135deg,#FF6B6B,#ff8e53);color:#fff;border:none;border-radius:var(--r-pill,999px);padding:8px 18px;font-weight:600;cursor:pointer;}
+.btn-pwa-dismiss{background:none;border:none;color:var(--c-text-muted,#888);cursor:pointer;font-size:20px;padding:4px;}
+/* Client CRM panel */
+.crm-panel{padding:var(--space-3,24px);}
+.crm-client-list{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+.crm-client-card{background:var(--c-surface,#fff);border-radius:var(--r-md,12px);padding:14px;box-shadow:var(--shadow-card);cursor:pointer;transition:transform .15s;}
+.crm-client-card:hover{transform:translateX(4px);}
+.crm-client-name{font-weight:600;font-size:.95rem;}
+.crm-client-meta{font-size:.8rem;color:var(--c-text-muted,#888);margin-top:2px;}
+.crm-client-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;}
+.crm-tag{background:rgba(78,205,196,.15);color:#26a69a;font-size:10px;font-weight:600;padding:2px 6px;border-radius:var(--r-pill,999px);}
+.crm-notes-area{width:100%;min-height:80px;padding:10px;border:1.5px solid var(--c-border,#e2dcd5);border-radius:var(--r-md,12px);font-family:inherit;font-size:.875rem;resize:vertical;background:var(--c-bg,#fff);color:var(--c-text,#1f1f1f);}
+/* Staff management + commission */
+.staff-commission-card{background:var(--c-surface,#fff);border-radius:var(--r-md,12px);padding:14px;box-shadow:var(--shadow-card);margin-bottom:12px;}
+.commission-bar{height:6px;background:var(--c-border,#e2dcd5);border-radius:3px;margin-top:6px;overflow:hidden;}
+.commission-bar-fill{height:100%;background:linear-gradient(90deg,#4ECDC4,#26a69a);border-radius:3px;transition:width .5s var(--ease);}
+/* Marketing blast */
+.blast-panel{padding:var(--space-3,24px);}
+.blast-segment{display:flex;align-items:center;gap:8px;padding:10px;border:1.5px solid var(--c-border,#e2dcd5);border-radius:var(--r-md,12px);margin-bottom:8px;cursor:pointer;}
+.blast-segment.selected{border-color:var(--c-cta,#FF6B6B);background:rgba(255,107,107,.05);}
+.blast-segment input[type=radio]{accent-color:var(--c-cta,#FF6B6B);}
+.blast-preview{background:var(--c-surface-alt,#f8f8f8);border-radius:var(--r-md,12px);padding:16px;margin-top:16px;font-size:.875rem;}
+/* Product inventory */
+.inventory-table{width:100%;border-collapse:collapse;font-size:.875rem;}
+.inventory-table th{text-align:left;padding:10px;border-bottom:2px solid var(--c-border,#e2dcd5);font-weight:600;color:var(--c-text-secondary,#666);}
+.inventory-table td{padding:10px;border-bottom:1px solid var(--c-border,#e2dcd5);}
+.inventory-table tr:hover td{background:var(--c-surface-alt,#f8f8f8);}
+.stock-low{color:#dc2626;font-weight:600;}
+.stock-ok{color:#16a34a;}
+.btn-reorder{background:none;border:1.5px solid var(--c-cta,#FF6B6B);color:var(--c-cta,#FF6B6B);border-radius:var(--r-pill,999px);padding:4px 12px;font-size:.75rem;cursor:pointer;font-weight:600;}
+/* Photo gallery */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px;}
+.gallery-item{aspect-ratio:1;border-radius:var(--r-md,12px);overflow:hidden;background:var(--c-surface-alt,#f5f5f5);position:relative;}
+.gallery-item img{width:100%;height:100%;object-fit:cover;}
+.gallery-add{aspect-ratio:1;border-radius:var(--r-md,12px);border:2px dashed var(--c-border-strong,#ccc);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:4px;color:var(--c-text-muted,#888);font-size:.8rem;transition:border-color .15s;}
+.gallery-add:hover{border-color:var(--c-cta,#FF6B6B);color:var(--c-cta,#FF6B6B);}
+.gallery-item-del{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:none;}
+.gallery-item:hover .gallery-item-del{display:flex;align-items:center;justify-content:center;}
+/* Admin approval */
+.admin-pending-card{background:var(--c-surface,#fff);border-radius:var(--r-md,12px);padding:16px;box-shadow:var(--shadow-card);margin-bottom:12px;border-left:4px solid #f59e0b;}
+.admin-approved-card{border-left-color:#16a34a;}
+.admin-rejected-card{border-left-color:#dc2626;}
+/* Mandatory review prompt */
+.review-prompt{background:linear-gradient(135deg,rgba(78,205,196,.1),rgba(255,107,107,.05));border:1.5px solid var(--c-accent,#4ECDC4);border-radius:var(--r-lg,16px);padding:20px;margin:16px 0;text-align:center;}
+.review-prompt h4{font-family:var(--font-display,serif);margin-bottom:8px;}
+/* Salon review reply */
+.review-reply{background:var(--c-surface-alt,#f8f8f8);border-radius:var(--r-md,12px);padding:12px;margin-top:8px;margin-left:24px;font-size:.875rem;}
+.review-reply-author{font-weight:700;font-size:.8rem;color:var(--c-accent,#4ECDC4);margin-bottom:4px;}
+/* iCal export button */
+.btn-ical{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--c-border,#e2dcd5);border-radius:var(--r-pill,999px);padding:8px 16px;font-size:.875rem;cursor:pointer;color:var(--c-text,#1f1f1f);transition:all .15s;}
+.btn-ical:hover{border-color:var(--c-accent,#4ECDC4);color:var(--c-accent,#4ECDC4);}
+/* Dashboard tabs redesign */
+.dash-tab-bar{display:flex;gap:4px;background:var(--c-surface-alt,#f5f5f5);border-radius:var(--r-lg,16px);padding:4px;margin-bottom:24px;overflow-x:auto;}
+.dash-tab-btn{flex:1;min-width:80px;padding:10px 14px;background:transparent;border:none;border-radius:var(--r-md,12px);cursor:pointer;font-size:.85rem;font-weight:500;color:var(--c-text-muted,#888);white-space:nowrap;transition:all .15s;}
+.dash-tab-btn.active{background:var(--c-bg,#fff);color:var(--c-text,#1f1f1f);box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:600;}
+/* === END BATCH1 CSS === */
 </style>
 
 <div id="salonRegModal" role="dialog" aria-modal="true">
@@ -8344,7 +8461,122 @@ function openOfferPicker(){var box=document.getElementById('offerPicker');var li
 function closeOfferPicker(){var b=document.getElementById('offerPicker');if(b)b.classList.add('hidden');}
 function sendOffer(idx){var offers=[{title:'10% Rabatt',desc:'Einmalig'},{title:'Gratis Beratung',desc:'30 Min'},{title:'Treue-Bonus',desc:'5. Besuch gratis'}];var o=offers[idx];var inp=document.getElementById('chatInput');if(inp)inp.value='Spezialangebot: '+o.title+' ('+o.desc+')';closeOfferPicker();if(window.sendMessage)sendMessage();}
 function autoResizeChatInput(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
+
+// === BATCH1: NEW FEATURES ===
+function toggleDarkMode(){var cur=document.documentElement.getAttribute("data-theme"),next=cur==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",next);localStorage.setItem("solen_theme",next);var btn=document.getElementById("darkToggleBtn");if(btn)btn.textContent=next==="dark"?"☀":"🌙";}
+function initDarkMode(){var saved=localStorage.getItem("solen_theme"),sys=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light",theme=saved||sys;document.documentElement.setAttribute("data-theme",theme);var btn=document.getElementById("darkToggleBtn");if(btn)btn.textContent=theme==="dark"?"☀":"🌙";}
+document.addEventListener("DOMContentLoaded",initDarkMode);
+var _pwaPrompt=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();_pwaPrompt=e;var b=document.getElementById("pwaBanner");if(b)setTimeout(function(){b.classList.add("visible");},3000);});
+function installPWA(){if(!_pwaPrompt)return;_pwaPrompt.prompt();_pwaPrompt.userChoice.then(function(){dismissPWABanner();});}
+function dismissPWABanner(){var b=document.getElementById("pwaBanner");if(b)b.classList.remove("visible");}
+var crmData=JSON.parse(localStorage.getItem("solen_crm")||"{}");
+function saveCRM(){localStorage.setItem("solen_crm",JSON.stringify(crmData));}
+function openClientCRM(storeId){var panel=document.getElementById("crmPanel");if(!panel)return;window._crmStoreId=storeId;loadCRMFromBookings(storeId).then(function(){renderCRMPanel(storeId);});panel.style.display="block";}
+function closeCRM(){var p=document.getElementById("crmPanel");if(p)p.style.display="none";}
+async function loadCRMFromBookings(storeId){try{var r=await supabase.from("bookings").select("customer_id,customer_name,customer_phone,created_at").eq("store_id",storeId).order("created_at",{ascending:false});if(!r.data)return;if(!crmData[storeId])crmData[storeId]={};var vc={};r.data.forEach(function(b){var id=b.customer_id||b.customer_phone||"anon";if(!crmData[storeId][id])crmData[storeId][id]={id:id,name:b.customer_name||"Unbekannt",tags:[],visits:0,notes:""};vc[id]=(vc[id]||0)+1;crmData[storeId][id].visits=vc[id];if(b.created_at)crmData[storeId][id].lastVisit=b.created_at.split("T")[0];});saveCRM();}catch(e){console.error("CRM",e);}}
+function renderCRMPanel(storeId){var panel=document.getElementById("crmClientList");if(!panel)return;var clients=Object.values(crmData[storeId]||{});if(!clients.length){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon">👥</div><h3>Noch keine Kunden</h3><p>Kunden erscheinen hier nach Buchungen.</p></div>';return;}panel.innerHTML=clients.map(function(c){return'<div class="crm-client-card"><div class="crm-client-name">'+( c.name||"Unbekannt")+'</div><div class="crm-client-meta">'+(c.visits||0)+' Besuche'+( c.lastVisit ? ' · '+ c.lastVisit : "")+'</div><div class="crm-client-tags">'+(c.tags||[]).map(function(t){return '<span class="crm-tag">'+t+'</span>';}).join("")+'</div><textarea class="crm-notes-area" placeholder="Notizen..." onchange="saveCRMNote(\''+ c.id+'\',this.value,\''+ storeId+'\')">'+( c.notes||"")+'</textarea></div>';}).join("");}
+function saveCRMNote(clientId,notes,storeId){if(!crmData[storeId]||!crmData[storeId][clientId])return;crmData[storeId][clientId].notes=notes;saveCRM();}
+async function loadStaffCommission(storeId){try{var sr=await supabase.from("staff").select("*").eq("store_id",storeId),br=await supabase.from("bookings").select("staff_id,price,status").eq("store_id",storeId).eq("status","confirmed"),staff=sr.data,bookings=br.data,cm={};if(bookings)bookings.forEach(function(b){if(b.staff_id)cm[b.staff_id]=(cm[b.staff_id]||0)+(b.price||0);});var panel=document.getElementById("staffCommissionList");if(!panel||!staff){return;}var tot=Object.values(cm).reduce(function(a,b){return a+b;},0)||1;panel.innerHTML=staff.length?staff.map(function(s){var rev=cm[s.id]||0,pct=Math.round(rev/tot*100);return'<div class="staff-commission-card"><div style="display:flex;justify-content:space-between"><strong>'+s.name+'</strong><span class="chf">CHF '+rev.toFixed(2)+'</span></div><div class="commission-bar"><div class="commission-bar-fill" style="width:'+pct+'%"></div></div><div style="font-size:.75rem;color:var(--c-text-muted)">'+pct+'% des Umsatzes</div></div>';}).join(""):'<div class="empty-state"><div class="empty-state-icon">👤</div><h3>Keine Mitarbeitende</h3></div>';}catch(e){console.error("Commission",e);}}
+async function sendMarketingBlast(){var sub=document.getElementById("blastSubject"),msg=document.getElementById("blastMessage");if(!sub||!msg||!sub.value||!msg.value){showToast&&showToast("Bitte alle Felder ausfüllen.");return;}var btn=document.getElementById("btnSendBlast");if(btn){btn.disabled=true;btn.textContent="Sendet...";}try{var storeId=window.currentStoreId||window.ownerStoreId,br=await supabase.from("bookings").select("customer_email,customer_name").eq("store_id",storeId),bk=br.data||[],emails=[...new Set(bk.filter(function(b){return b.customer_email;}).map(function(b){return b.customer_email;}))];if(!emails.length){showToast&&showToast("Keine E-Mails.");return;}var res=await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:emails.map(function(e){return{email:e};}),subject:sub.value,html:"<p>"+msg.value+"</p>",from:"Solen.ch"})});showToast&&showToast(res.ok?"Blast an "+emails.length+" Kunden gesendet!":"Sendefehler.");}catch(e){showToast&&showToast("Fehler: "+e.message);}finally{if(btn){btn.disabled=false;btn.textContent="Blast senden";}}}
+var inventoryData=JSON.parse(localStorage.getItem("solen_inventory")||"[]");
+function saveInventory(){localStorage.setItem("solen_inventory",JSON.stringify(inventoryData));}
+function renderInventory(){var tbl=document.getElementById("inventoryTableBody");if(!tbl)return;if(!inventoryData.length){tbl.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px">Noch keine Produkte.</td></tr>';return;}tbl.innerHTML=inventoryData.map(function(p,i){var low=p.stock<p.minStock;return'<tr><td>'+p.name+'</td><td class="'+( low?"stock-low":"stock-ok")+'">'+p.stock+'</td><td>'+p.minStock+'</td><td class="chf">CHF '+(p.price||0).toFixed(2)+'</td><td>'+(low?'<button class="btn-reorder" onclick="reorderProduct('+i+')">Nachbestellen</button>':"OK")+'</td></tr>';}).join("");}
+function addInventoryProduct(){var name=prompt("Produktname:");if(!name)return;var stock=parseInt(prompt("Bestand:"))||0,min=parseInt(prompt("Mindestbestand:"))||5,price=parseFloat(prompt("Preis CHF:"))||0;inventoryData.push({name:name,stock:stock,minStock:min,price:price,id:Date.now()});saveInventory();renderInventory();}
+function reorderProduct(i){var p=inventoryData[i];if(!p)return;showToast&&showToast("Nachbestellung: "+p.name);inventoryData[i].stock=p.minStock*3;saveInventory();renderInventory();}
+var galleryItems=[];
+async function loadGalleryItems(storeId){try{var r=await supabase.from("stores").select("gallery").eq("id",storeId).single();galleryItems=(r.data&&r.data.gallery)||[];renderGalleryGrid();}catch(e){galleryItems=[];renderGalleryGrid();}}
+function renderGalleryGrid(){var grid=document.getElementById("galleryGrid");if(!grid)return;grid.innerHTML=galleryItems.map(function(url,i){return'<div class="gallery-item"><img src="'+url+'" loading="lazy"><button class="gallery-item-del" onclick="deleteGalleryItem('+i+')">×</button></div>';}).join("")+'<label class="gallery-add"><input type="file" accept="image/*" style="display:none" onchange="uploadGalleryPhoto(this)"><span style="font-size:24px">+</span><span>Foto</span></label>';}
+async function uploadGalleryPhoto(inp){var file=inp.files[0];if(!file)return;var storeId=window.currentStoreId||window.ownerStoreId,path=storeId+"/gallery/"+Date.now()+".jpg";showToast&&showToast("Lädt hoch...");try{var up=await supabase.storage.from("salon-photos").upload(path,file,{upsert:true});if(up.error)throw up.error;var pub=supabase.storage.from("salon-photos").getPublicUrl(path);galleryItems.push(pub.data.publicUrl);await supabase.from("stores").update({gallery:galleryItems}).eq("id",storeId);renderGalleryGrid();showToast&&showToast("Foto hochgeladen!");}catch(e){showToast&&showToast("Fehler: "+e.message);}}
+async function deleteGalleryItem(i){if(!confirm("Foto löschen?"))return;galleryItems.splice(i,1);var storeId=window.currentStoreId||window.ownerStoreId;await supabase.from("stores").update({gallery:galleryItems}).eq("id",storeId);renderGalleryGrid();}
+async function loadPendingSalons(){var panel=document.getElementById("adminPendingList");if(!panel)return;try{var r=await supabase.from("stores").select("*").eq("status","pending").order("created_at",{ascending:false}),data=r.data;if(!data||!data.length){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon">✅</div><h3>Alle erledigt</h3></div>';return;}panel.innerHTML=data.map(function(s){return'<div class="admin-pending-card" id="pending-'+s.id+'"><strong>'+s.name+'</strong><div style="font-size:.85rem;color:var(--c-text-muted);margin:4px 0">'+(s.address||"")+' · '+(s.contact_email||"")+'</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" style="flex:1" onclick="approveStore(this,\''+ s.id+'\')">Genehmigen</button><button class="btn" style="flex:1;border-color:#dc2626;color:#dc2626" onclick="rejectStoreAdmin(this,\''+ s.id+'\')">Ablehnen</button></div></div>';}).join("");}catch(e){panel.innerHTML="Fehler: "+e.message;}}
+async function approveStore(btn,sid){await supabase.from("stores").update({status:"approved",approved_at:new Date().toISOString()}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#16a34a;font-weight:600">✓ Genehmigt</span>';showToast&&showToast("Salon genehmigt!");}
+async function rejectStoreAdmin(btn,sid){var reason=prompt("Ablehnungsgrund:")||"";await supabase.from("stores").update({status:"rejected",rejection_reason:reason}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#dc2626;font-weight:600">✗ Abgelehnt</span>';showToast&&showToast("Salon abgelehnt.");}
+async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await supabase.from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veröffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
+async function checkVerifiedStatus(storeId){var r=await supabase.from("bookings").select("id",{count:"exact"}).eq("store_id",storeId).eq("status","confirmed"),isVerified=(r.count||0)>=10;if(isVerified)await supabase.from("stores").update({is_verified:true}).eq("id",storeId);return isVerified;}
+async function exportIcal(storeId){var r=await supabase.from("bookings").select("*").eq("store_id",storeId).eq("status","confirmed"),data=r.data;if(!data||!data.length){showToast&&showToast("Keine Termine.");return;}var lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Solen.ch//DE"];data.forEach(function(b){var dt=(b.date||"20260101").replace(/-/g,""),tm=((b.time||"10:00").replace(/:/g,""))+"00";lines.push("BEGIN:VEVENT","UID:solen-"+b.id,"DTSTART:"+dt+"T"+tm,"SUMMARY:"+(b.service||"Termin")+" - "+(b.customer_name||"Kunde"),"END:VEVENT");});lines.push("END:VCALENDAR");var blob=new Blob([lines.join("
+")],{type:"text/calendar"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="solen-termine.ics";a.click();}
+function trackEvent(name,props){try{if(typeof gtag==="function")gtag("event",name,props||{});supabase.from("analytics_events").insert({event:name,props:JSON.stringify(props||{}),ts:new Date().toISOString()}).then(function(){}).catch(function(){});}catch(e){}}
+document.addEventListener("click",function(e){var card=e.target.closest(".card");if(card&&card.dataset.storeId)trackEvent("salon_card_click",{store_id:card.dataset.storeId});});
+function initFilterPills(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});document.querySelectorAll(".filter-pill[data-q]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-q]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});}
+if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});
+function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="empty-state"><div class="empty-state-icon">'+icon+'</div><h3>'+title+'</h3><p>'+text+'</p>'+(lbl?'<button class="btn btn-primary" onclick="'+fn+'">'+lbl+'</button>':"")+"</div>";}
+// === END BATCH1 JS ===
 </script>
 
+<!-- PWA Install Banner -->
+<div id="pwaBanner" class="pwa-banner" role="complementary" aria-label="App installieren">
+  <div class="pwa-banner-text">solen als App installieren<small>Schneller Zugriff, kein Browser nötig</small></div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn-pwa-install" onclick="installPWA()">Installieren</button>
+    <button class="btn-pwa-dismiss" onclick="dismissPWABanner()" aria-label="Schließen">×</button>
+  </div>
+</div>
+<!-- Client CRM Panel -->
+<div id="crmPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto" onclick="if(event.target===this)closeCRM()">
+  <div class="crm-panel" style="background:var(--c-bg,#fff);max-width:500px;margin:40px auto;border-radius:var(--r-xl,24px);min-height:400px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-family:var(--font-display,serif)">Kunden-CRM</h3>
+      <button onclick="closeCRM()" style="background:none;border:none;font-size:24px;cursor:pointer">×</button>
+    </div>
+    <div id="crmClientList"></div>
+  </div>
+</div>
+<!-- Admin Pending Salons Panel -->
+<div id="adminPendingPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--c-bg,#fff);max-width:600px;margin:40px auto;border-radius:var(--r-xl,24px);padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-family:var(--font-display,serif)">Salon-Genehmigung</h3>
+      <button onclick="this.closest('[id=adminPendingPanel]').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer">×</button>
+    </div>
+    <div id="adminPendingList"><div style="text-align:center;padding:40px;color:var(--c-text-muted)">Lädt...</div></div>
+  </div>
+</div>
+<!-- Marketing Blast Panel -->
+<div id="blastPanel" class="blast-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--c-bg,#fff);max-width:500px;margin:40px auto;border-radius:var(--r-xl,24px);padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-family:var(--font-display,serif)">Marketing-Blast</h3>
+      <button onclick="document.getElementById('blastPanel').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer">×</button>
+    </div>
+    <div class="blast-segment selected" data-segment="all" onclick="document.querySelectorAll('.blast-segment').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')">
+      <input type="radio" name="seg" checked> Alle Kunden
+    </div>
+    <div class="blast-segment" data-segment="recent" onclick="document.querySelectorAll('.blast-segment').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')">
+      <input type="radio" name="seg"> Letzte 30 Tage
+    </div>
+    <label style="display:block;margin-top:16px;font-weight:600;font-size:.875rem">Betreff</label>
+    <input id="blastSubject" type="text" placeholder="Betreff..." style="width:100%;padding:10px;border:1.5px solid var(--c-border);border-radius:var(--r-md);font-family:inherit;margin-top:4px;background:var(--c-bg);color:var(--c-text)">
+    <label style="display:block;margin-top:12px;font-weight:600;font-size:.875rem">Nachricht</label>
+    <textarea id="blastMessage" rows="5" placeholder="Deine Nachricht an die Kunden..." style="width:100%;padding:10px;border:1.5px solid var(--c-border);border-radius:var(--r-md);font-family:inherit;margin-top:4px;resize:vertical;background:var(--c-bg);color:var(--c-text)"></textarea>
+    <button id="btnSendBlast" class="btn btn-primary" style="width:100%;margin-top:16px" onclick="sendMarketingBlast()">Blast senden</button>
+  </div>
+</div>
+<!-- Inventory Panel -->
+<div id="inventoryPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--c-bg,#fff);max-width:700px;margin:40px auto;border-radius:var(--r-xl,24px);padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-family:var(--font-display,serif)">Produktlager</h3>
+      <button onclick="document.getElementById('inventoryPanel').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer">×</button>
+    </div>
+    <button class="btn btn-primary" onclick="addInventoryProduct()" style="margin-bottom:16px">+ Produkt hinzufügen</button>
+    <div style="overflow-x:auto">
+    <table class="inventory-table"><thead><tr><th>Produkt</th><th>Bestand</th><th>Mindest</th><th>Preis</th><th>Status</th></tr></thead>
+    <tbody id="inventoryTableBody"><tr><td colspan="5" style="text-align:center;padding:24px">Noch keine Produkte.</td></tr></tbody></table>
+    </div>
+  </div>
+</div>
+<!-- Gallery Panel -->
+<div id="galleryPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;overflow-y:auto" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--c-bg,#fff);max-width:600px;margin:40px auto;border-radius:var(--r-xl,24px);padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="font-family:var(--font-display,serif)">Fotogalerie</h3>
+      <button onclick="document.getElementById('galleryPanel').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer">×</button>
+    </div>
+    <p style="font-size:.875rem;color:var(--c-text-muted);margin-bottom:12px">Lade Fotos hoch, die auf deinem Salon-Profil erscheinen.</p>
+    <div id="galleryGrid" class="gallery-grid"></div>
+  </div>
+</div>
+<!-- Dark mode toggle + skip link (appended to body) -->
+<a href="#main-content" class="skip-link">Zum Inhalt springen</a>
 </body>
 </html>
