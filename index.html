@@ -974,6 +974,40 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-summary{background:var(--bg2);border-radius:var(--r);padding:16px;margin:16px 0}
 .bm-summary .row{display:flex;justify-content:space-between;font-size:.85rem;padding:3px 0;color:var(--text2)}
 .bm-summary .row.total{font-weight:700;color:var(--text);border-top:1px solid var(--border);margin-top:8px;padding-top:8px}
+/* ── ENHANCED DATE/TIME STEP ── */
+.bm-cal-wrap{margin-bottom:20px}
+.bm-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bm-cal-nav-btn{background:none;border:1.5px solid var(--border2);border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:1.2rem;color:var(--text);display:flex;align-items:center;justify-content:center;transition:.15s;line-height:1}
+.bm-cal-nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.bm-cal-month-lbl{font-weight:700;font-size:.95rem;color:var(--text)}
+.bm-cal-days-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+.bm-cal-day-hd{text-align:center;font-size:.7rem;font-weight:700;color:var(--muted);padding:4px 0}
+.bm-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.bm-cal-day{min-height:38px;padding:5px 2px;border-radius:var(--r);border:1.5px solid var(--border);text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .15s;background:var(--surface);position:relative;display:flex;align-items:center;justify-content:center}
+.bm-cal-day:hover:not(.disabled){border-color:var(--text);background:var(--surfaceAlt)}
+.bm-cal-day.today{border-color:var(--border2)}
+.bm-cal-day.today::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.bm-cal-day.available{border-color:rgba(45,122,79,.45)}
+.bm-cal-day.available::before{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:var(--success)}
+.bm-cal-day.selected{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:var(--glow)}
+.bm-cal-day.selected::before,.bm-cal-day.selected::after{display:none}
+.bm-cal-day.disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+/* Time slot availability colours */
+.bm-time-btn.available{border-color:rgba(45,122,79,.5);position:relative}
+.bm-time-btn.available::after{content:'';position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--success)}
+.bm-time-btn.booked{opacity:.35;cursor:not-allowed;pointer-events:none;text-decoration:line-through}
+.bm-time-btn:disabled{opacity:.35;cursor:not-allowed}
+/* Duration badge */
+.bm-dur-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:rgba(45,122,79,.12);color:var(--success);border-radius:100px;font-size:.75rem;font-weight:700;margin-left:8px;vertical-align:middle}
+/* Summary / datetime bar */
+.bm-dt-bar{display:flex;align-items:center;gap:14px;background:var(--surfaceAlt);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;flex-wrap:wrap}
+.bm-dt-bar-item{display:flex;align-items:center;gap:5px;font-size:.82rem;color:var(--text2);white-space:nowrap}
+.bm-dt-bar-item svg{opacity:.6;flex-shrink:0}
+.bm-dt-bar-item strong{color:var(--text);font-weight:700}
+.bm-dt-bar-item.filled svg{opacity:1;color:var(--success)}
+.bm-dt-bar-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
+/* Availability loading indicator */
+.bm-slots-loading{text-align:center;padding:12px;font-size:.82rem;color:var(--muted)}
 .bm-confirmation{text-align:center;padding:20px 0}
 .bm-confirmation h3{font-size:1.2rem;font-weight:800;margin-bottom:8px;color:var(--success)}
 .bm-confirmation p{font-size:.9rem;color:var(--text2);margin-bottom:16px}
@@ -2253,6 +2287,66 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   .cal-overlay{align-items:center}
   .bottom-nav{display:none}
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   THEME 11 — DARK GLASS DESIGN SYSTEM
+   #0f0f0f base · quartier card style · selective glass · accent = selected only
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. TRUE #0f0f0f BACKGROUND ── */
+[data-theme="dark"]{--bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121}}
+
+/* ── 2. QUARTIER CARD STYLE — 20px radius everywhere, photo-first ── */
+.store-card,.salon-card{border-radius:20px}
+[data-theme="dark"] .store-card{border-color:rgba(255,255,255,0.08);background:#1a1a1a}
+[data-theme="dark"] .store-card:hover{border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .store-card{border-color:rgba(255,255,255,0.08);background:#1a1a1a}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .store-card:hover{border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05)}}
+
+/* Heart / fav button → dark glass style matching .qpc-heart */
+[data-theme="dark"] .fav-btn{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}
+[data-theme="dark"] .fav-btn:hover{background:rgba(0,0,0,0.65);transform:scale(1.1)}
+[data-theme="dark"] .fav-btn.is-fav{background:rgba(212,88,106,0.65);color:#fff}
+[data-theme="dark"] .fav-btn.is-fav svg{fill:#fff;stroke:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn.is-fav{background:rgba(212,88,106,0.65);color:#fff}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn.is-fav svg{fill:#fff;stroke:#fff}}
+
+/* ── 3. GLASS FORMULA: rgba(255,255,255,0.08) + blur(16px) + 1px rgba(255,255,255,0.1) border ── */
+
+/* A. Booking summary sidebar */
+[data-theme="dark"] .booking-summary,
+[data-theme="dark"] .bm-summary{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:16px}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-summary,:root:not([data-theme="light"]) .bm-summary{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:16px}}
+
+/* B. Mobile bottom bar */
+[data-theme="dark"] .bottom-nav{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-top:1px solid rgba(255,255,255,0.08)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .bottom-nav{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border-top:1px solid rgba(255,255,255,0.08)}}
+
+/* C. Tab headers — venue tabs & dashboard pill bar */
+[data-theme="dark"] .venue-tabs{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1)}
+[data-theme="dark"] .dash-tab-bar{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}
+[data-theme="dark"] .dash-tab-btn.active{background:rgba(255,255,255,0.12);color:var(--c-text,#f0f0f0);box-shadow:0 1px 4px rgba(0,0,0,0.3);font-weight:600}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .venue-tabs{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.1)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .dash-tab-bar{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .dash-tab-btn.active{background:rgba(255,255,255,0.12);color:var(--c-text,#f0f0f0);box-shadow:0 1px 4px rgba(0,0,0,0.3)}}
+
+/* D. Hovered stylist & haircut cards — glass on hover, no accent color until selected */
+[data-theme="dark"] .booking-staff-card:hover:not(.selected),
+[data-theme="dark"] .svc-card:hover:not(.selected),
+[data-theme="dark"] .bm-svc-card:hover:not(.selected){background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,0.15);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-staff-card:hover:not(.selected),:root:not([data-theme="light"]) .svc-card:hover:not(.selected),:root:not([data-theme="light"]) .bm-svc-card:hover:not(.selected){background:rgba(255,255,255,0.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,0.15);box-shadow:0 4px 16px rgba(0,0,0,0.2)}}
+
+/* ── 4. ORANGE ACCENT = SELECTED ONLY ── */
+/* Selected stylist card — accent ring + glow */
+[data-theme="dark"] .booking-staff-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.12);box-shadow:0 0 0 1px var(--c-accent,#D4586A),0 4px 16px rgba(212,88,106,0.15)}
+/* Selected service / haircut cards */
+[data-theme="dark"] .svc-card.selected,
+[data-theme="dark"] .bm-svc-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.1)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-staff-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.12);box-shadow:0 0 0 1px var(--c-accent,#D4586A),0 4px 16px rgba(212,88,106,0.15)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .svc-card.selected,:root:not([data-theme="light"]) .bm-svc-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.1)}}
+/* ── END THEME 11 ── */
 
 /* ── HAIRCUT STYLE PICKER ── */
 .hsp-section{margin:16px 0 4px}
@@ -6400,7 +6494,8 @@ async function renderBookPage(salonId){
   }
   const store=allStores.find(x=>String(x.id)===String(salonId));
   if(!store){bodyEl.innerHTML='<p class="text-muted">Salon nicht gefunden.</p>';return;}
-  bmState={store,service:null,date:'',time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false,haircutStyle:null,haircutGender:null};
+  const _now=new Date();
+  bmState={store,service:null,date:'',time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:'service',confirmed:false,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,haircutStyle:null,haircutGender:null};
   _pendingBookPreselectedTime=null;
   const _sv=JSON.parse(localStorage.getItem('solen_guest')||'null');
   if(_sv){bmState.guestName=_sv.n||'';bmState.guestPhone=_sv.p||'';bmState.guestEmail=_sv.e||'';bmState.saveInfo=true;}
@@ -7902,9 +7997,7 @@ function _bmBody(){return document.getElementById('bookPageBody')||document.getE
 function renderBookingModal(){
   const s=bmState.store;
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
-  const slots=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
   const today=new Date().toISOString().split('T')[0];
-  const maxDate=new Date(Date.now()+60*24*60*60*1000).toISOString().split('T')[0];
 
   if(bmState.confirmed){
     const svc=bmState.service;
@@ -7956,6 +8049,7 @@ function renderBookingModal(){
   }
   // Step indicator (3 steps: Service, Datum & Zeit, Bestätigen)
   const hasService=!!bmState.service; const hasDateTime=!!(bmState.date&&bmState.time); const step1=hasService?'done':'active'; const step2=hasService?(hasDateTime?'done':'active'):''; const step3=(hasService&&hasDateTime)?'active':'';
+  const _dur=calcBmDuration();
   let html=`<div class="bm-steps">
     <div class="bm-step-item ${step1}"><div class="bm-step-dot">${hasService?'&#10003;':'1'}</div><span>Service</span></div>
     <div class="bm-step-line"></div>
@@ -7963,6 +8057,14 @@ function renderBookingModal(){
     <div class="bm-step-line"></div>
     <div class="bm-step-item ${step3}"><div class="bm-step-dot">3</div><span>Best&auml;tigen</span></div>
   </div>`;
+  // Summary bar – shows current selections at a glance
+  html+=`<div class="bm-dt-bar">`;
+  html+=`<div class="bm-dt-bar-item${bmState.service?' filled':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/><path d="M16 3v4M8 3v4M3 11h18"/></svg><strong>${bmState.service?bmState.service.name:'Service wählen'}</strong></div>`;
+  html+=`<div class="bm-dt-bar-sep"></div>`;
+  html+=`<div class="bm-dt-bar-item${bmState.date?' filled':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><strong>${bmState.date?formatDate(bmState.date):'Datum wählen'}</strong></div>`;
+  html+=`<div class="bm-dt-bar-sep"></div>`;
+  html+=`<div class="bm-dt-bar-item${bmState.time?' filled':''}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><strong>${bmState.time||'Uhrzeit wählen'}</strong>${_dur?`&nbsp;<span class="bm-dur-badge">${_dur}&thinsp;Min.</span>`:''}</div>`;
+  html+=`</div>`;
   // 1. Service picker
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_service')}</h4>`;
   if(svcs.length){
@@ -7970,12 +8072,11 @@ function renderBookingModal(){
   } else {
     html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
   }
-  // 2. Date input
+  // 2. Date – inline calendar
   html+=`<h4 style="font-size:.92rem;font-weight:700;margin:16px 0 10px">${t('select_date')}</h4>`;
-  html+=`<input type="date" class="form-input" value="${bmState.date}" min="${today}" max="${maxDate}" onchange="bmState.date=this.value" style="margin-bottom:16px">`;
-  // 3. Time slot grid
-  html+=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_time')}</h4>`;
-  html+=`<div class="bm-time-grid">${slots.map(sl=>`<button class="bm-time-btn ${bmState.time===sl?'selected':''}" onclick="bmSelectTime('${sl}')">${sl}</button>`).join('')}</div>`;
+  html+=renderBmCal();
+  // 3. Time slot grid with availability
+  html+=renderBmTimeSlots();
   // 4. Haircut style picker (hair/barber stores only)
   if(_isHairStore(s)){
     if(!bmState.haircutGender)bmState.haircutGender=_haircutGenderDefault(s);
@@ -8011,10 +8112,10 @@ function renderBookingModal(){
   if(svc){
     html+=`<div class="row"><span>Service</span><span>${svc.name}</span></div>`;
     const _hspPrice=_selHsp?svc.price+15:svc.price;
-    const _hspDur=_selHsp?(svc.duration||0)+20:svc.duration;
     html+=`<div class="row"><span>Preis</span><span>CHF ${_hspPrice}${_selHsp?` <small style="color:var(--c-text-muted);font-size:.78rem">(inkl. +CHF 15 Stil)</small>`:''}</span></div>`;
-    if(_hspDur)html+=`<div class="row"><span>Dauer</span><span>${_hspDur} Min.${_selHsp?' <small style="color:var(--c-text-muted);font-size:.78rem">(inkl. +20 Min)</small>':''}</span></div>`;
   }
+  const _hspDur=(_dur||0)+(_selHsp?20:0);
+  if(_hspDur)html+=`<div class="row"><span>Dauer</span><span>${_hspDur}&thinsp;Min.${_selHsp?' <small style="color:var(--c-text-muted);font-size:.78rem">(inkl. +20 Min)</small>':''}</span></div>`;
   if(_selHsp)html+=`<div class="row"><span>Stil</span><span>${_selHsp.name}</span></div>`;
   html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
   html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
@@ -8037,6 +8138,107 @@ function renderBookingModal(){
 }
 function bmSelectService(id){bmState.service=allServices.find(s=>s.id===id);renderBookingModal();}
 function bmSelectTime(t){bmState.time=t;renderBookingModal();}
+
+// ── ENHANCED CALENDAR (Step 2) ──
+function bmCalNav(dir){
+  bmState.bmCalMonth=(bmState.bmCalMonth||0)+dir;
+  if(bmState.bmCalMonth>11){bmState.bmCalMonth=0;bmState.bmCalYear++;}
+  if(bmState.bmCalMonth<0){bmState.bmCalMonth=11;bmState.bmCalYear--;}
+  renderBookingModal();
+}
+
+function renderBmCal(){
+  const months=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const yr=bmState.bmCalYear||new Date().getFullYear();
+  const mo=bmState.bmCalMonth!=null?bmState.bmCalMonth:new Date().getMonth();
+  const today=new Date();today.setHours(0,0,0,0);
+  const first=new Date(yr,mo,1);
+  let startDow=first.getDay()-1;if(startDow<0)startDow=6;
+  const dim=new Date(yr,mo+1,0).getDate();
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  let h=`<div class="bm-cal-wrap">`;
+  h+=`<div class="bm-cal-nav">`;
+  h+=`<button class="bm-cal-nav-btn" onclick="bmCalNav(-1)" aria-label="Vorheriger Monat">&#8249;</button>`;
+  h+=`<span class="bm-cal-month-lbl">${months[mo]} ${yr}</span>`;
+  h+=`<button class="bm-cal-nav-btn" onclick="bmCalNav(1)" aria-label="Nächster Monat">&#8250;</button>`;
+  h+=`</div>`;
+  h+=`<div class="bm-cal-days-row">${days.map(d=>`<div class="bm-cal-day-hd">${d}</div>`).join('')}</div>`;
+  h+=`<div class="bm-cal-grid">`;
+  for(let i=0;i<startDow;i++)h+='<div></div>';
+  for(let d=1;d<=dim;d++){
+    const dt=new Date(yr,mo,d);
+    const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isPast=dt<today;
+    const isSel=bmState.date===ds;
+    const isTod=dt.getTime()===today.getTime();
+    let cls='bm-cal-day';
+    if(isPast)cls+=' disabled';
+    else if(isSel)cls+=' selected';
+    else if(isTod)cls+=' today available';
+    else cls+=' available';
+    const oc=isPast?'':`bmSelectDate('${ds}')`;
+    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${isPast?-1:0}">${d}</div>`;
+  }
+  h+=`</div></div>`;
+  return h;
+}
+
+async function bmSelectDate(ds){
+  bmState.date=ds;
+  bmState.time='';
+  bmState.bookedSlots=[];
+  bmState.staffWorkStart=null;
+  bmState.staffWorkEnd=null;
+  renderBookingModal();
+  try{
+    const sid=typeof bmState.store?.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store?.id;
+    if(sid){
+      const{data:bkd}=await sb.from('bookings').select('booking_time').eq('salon_id',sid).eq('booking_date',ds).neq('status','cancelled');
+      bmState.bookedSlots=(bkd||[]).map(r=>(r.booking_time||'').slice(0,5)).filter(Boolean);
+      if(_selStaffId){
+        const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time,staff_name').eq('salon_id',sid).eq('date',ds).eq('block_type','working');
+        const wday=scd&&scd.find(r=>!_selStaffId||r.staff_id===_selStaffId||true);
+        if(wday){bmState.staffWorkStart=(wday.start_time||'').slice(0,5);bmState.staffWorkEnd=(wday.end_time||'').slice(0,5);}
+      }
+    }
+  }catch(e){}
+  renderBookingModal();
+}
+
+function calcBmDuration(){
+  const svc=bmState.service;
+  if(!svc)return 0;
+  return parseInt(svc.duration)||60;
+}
+
+function renderBmTimeSlots(){
+  const ALL_SLOTS=['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
+  const booked=bmState.bookedSlots||[];
+  const wStart=bmState.staffWorkStart;
+  const wEnd=bmState.staffWorkEnd;
+  let slots=ALL_SLOTS;
+  if(wStart&&wEnd)slots=ALL_SLOTS.filter(s=>s>=wStart&&s<wEnd);
+  if(!slots.length)slots=ALL_SLOTS;
+  const dur=calcBmDuration();
+  const durHtml=dur?`<span class="bm-dur-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${dur}&thinsp;Min.</span>`:'';
+  let h=`<h4 style="font-size:.92rem;font-weight:700;margin-bottom:10px">${t('select_time')}${durHtml}</h4>`;
+  if(!bmState.date){
+    h+=`<p class="bm-slots-loading">Bitte zuerst ein Datum wählen.</p>`;
+    return h;
+  }
+  h+=`<div class="bm-time-grid">`;
+  slots.forEach(sl=>{
+    const isBooked=booked.includes(sl);
+    const isSel=bmState.time===sl;
+    let cls='bm-time-btn';
+    if(isSel)cls+=' selected';
+    else if(isBooked)cls+=' booked';
+    else cls+=' available';
+    h+=`<button class="${cls}" onclick="${isBooked?'':  `bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
+  });
+  h+=`</div>`;
+  return h;
+}
 async function insertBooking(){
   // Read current form values
   bmState.guestName=document.getElementById('bmGuestName')?.value||'';
