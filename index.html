@@ -1976,6 +1976,159 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
 /* Prevent all horizontal scroll - scope to content areas only */
 .page,.stores-section,.hero,.popular-services,.quartier-discovery,.trending-section,.partner-cta,.footer-enhanced,.site-footer{max-width:100vw;overflow-x:hidden}
 .modal *,.bm-content *,.cal-overlay-inner *,.report-inner *,.offer-picker-inner *{max-width:100%}
+
+/* ═══ HOMEPAGE CLEANUP — IMPROVED LAYOUT ═══ */
+
+/* --- Hero improvements --- */
+.hero{min-height:90vh}
+.hero-content h1{font-size:3rem;line-height:1.15;letter-spacing:-.02em}
+.hero-content p{font-size:1.1rem;max-width:520px;margin:0 auto 28px;opacity:.9}
+.hero-highlight{background:linear-gradient(135deg,var(--c-accent),#D4AF77);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-utility-btn:hover{background:rgba(255,255,255,.22)!important;border-color:rgba(255,255,255,.45)!important}
+@media(max-width:640px){
+  .hero-content h1{font-size:2.1rem}
+  .hero-content p{font-size:.95rem;margin-bottom:20px}
+}
+
+/* --- Improved section spacing --- */
+.popular-services{padding:56px 24px 48px}
+.quartier-discovery{padding:0 24px 56px}
+.stores-section{padding:48px 24px 72px}
+.carousel-section{padding:48px 24px}
+.spotlight-section{padding:56px 24px}
+.about-section{padding:64px 24px}
+.section-divider{height:1px;background:var(--c-border);margin:0 24px;opacity:.5}
+.social-proof-bar{padding:20px 0;margin-bottom:8px}
+
+/* --- Section headers hierarchy --- */
+.popular-services-header h2,
+.quartier-discovery-header h2,
+.carousel-header h2,
+.spotlight-header h2{
+  font-size:1.6rem;letter-spacing:-.01em;margin-bottom:4px
+}
+.section-eyebrow{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--c-accent);margin-bottom:8px}
+
+/* --- Improved service icon cards --- */
+.services-icon-grid{gap:16px}
+.service-icon-card{
+  border-radius:20px;padding:24px 16px 18px;gap:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04),0 2px 8px rgba(0,0,0,.02);
+  border:1.5px solid var(--c-border);
+  transition:all .3s cubic-bezier(.4,0,.2,1)
+}
+.service-icon-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 12px 28px -6px rgba(155,29,48,.12),0 4px 12px rgba(0,0,0,.06);
+  border-color:var(--c-accent)
+}
+.service-icon-card:hover .sic-icon{background:var(--c-accent);color:#fff;transform:scale(1.08)}
+.sic-icon{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.sic-count{font-size:.72rem;font-weight:600;color:var(--c-accent);opacity:.8}
+
+/* --- Improved quartier photo cards --- */
+.quartier-photo-card{
+  border-radius:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transition:all .35s cubic-bezier(.4,0,.2,1)
+}
+.quartier-photo-card:hover{
+  transform:translateY(-8px) scale(1.02);
+  box-shadow:0 20px 48px -12px rgba(0,0,0,.25)
+}
+.quartier-photo-card:hover .qpc-bg{transform:scale(1.06)}
+.quartier-coming-soon{opacity:.7;filter:grayscale(.3)}
+.quartier-coming-soon:hover{opacity:.85;filter:grayscale(.1)}
+
+/* --- Improved store cards --- */
+.store-card{
+  border-radius:20px;
+  box-shadow:0 1px 4px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04);
+  border:1px solid var(--c-border);
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  overflow:hidden
+}
+.store-card:hover{
+  transform:translateY(-8px);
+  box-shadow:0 16px 40px -8px rgba(155,29,48,.12),0 8px 20px rgba(0,0,0,.06);
+  border-color:transparent
+}
+.store-card:hover .store-card-photo img{transform:scale(1.05)}
+.store-card:active{transform:translateY(-4px) scale(.995)}
+.store-card-photo{aspect-ratio:16/10;overflow:hidden;position:relative}
+.store-card-photo img{transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.store-card-body{padding:18px 22px 14px}
+.store-name{font-size:1.12rem;font-weight:500}
+
+/* --- Loading skeleton animations --- */
+@keyframes skeletonPulse{
+  0%{opacity:1}
+  50%{opacity:.4}
+  100%{opacity:1}
+}
+@keyframes skeletonSlide{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}
+.skeleton-card{
+  background:var(--c-surface);border-radius:20px;overflow:hidden;border:1px solid var(--c-border);
+  animation:skeletonPulse 1.8s ease-in-out infinite
+}
+.skeleton-img{
+  aspect-ratio:16/10;height:auto;background:var(--c-surface-alt);position:relative;overflow:hidden
+}
+.skeleton-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.12) 50%,transparent 100%);
+  animation:skeletonSlide 1.5s ease-in-out infinite
+}
+.skeleton-body{padding:22px}
+.skeleton-line{
+  height:14px;border-radius:8px;background:var(--c-surface-alt);margin-bottom:12px;
+  position:relative;overflow:hidden
+}
+.skeleton-line::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.12) 50%,transparent 100%);
+  animation:skeletonSlide 1.5s ease-in-out infinite
+}
+.skeleton-line.w60{width:60%}
+.skeleton-line.w40{width:40%}
+.skeleton-line.w80{width:80%}
+.skeleton-line.h20{height:20px}
+
+/* --- Improved carousel empty states --- */
+.carousel-empty{
+  min-height:220px;
+  background:linear-gradient(135deg,var(--c-surface-alt) 0%,var(--c-surface) 100%);
+  border-radius:20px;border:1.5px dashed var(--c-border);
+  text-align:center;padding:48px 24px;
+  display:flex;align-items:center;justify-content:center;
+  width:100%
+}
+.carousel-empty-inner{max-width:340px}
+.carousel-empty-icon{margin-bottom:16px;line-height:1}
+.carousel-empty h4{font-family:var(--font-display);font-size:1.1rem;margin-bottom:8px;color:var(--c-text)}
+.carousel-empty p{font-size:.88rem;color:var(--c-text-muted);line-height:1.6}
+
+/* --- Spotlight cards improved --- */
+.spotlight-card{
+  border-radius:20px;
+  transition:all .3s cubic-bezier(.4,0,.2,1)
+}
+.spotlight-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 16px 40px -8px rgba(155,29,48,.1)
+}
+
+/* --- Filter pills improved --- */
+.filter-pill{
+  border-radius:var(--r-pill);padding:8px 18px;font-size:.82rem;font-weight:600;
+  border:1.5px solid var(--c-border);background:var(--c-surface);color:var(--c-text-secondary);
+  cursor:pointer;transition:all .2s ease;white-space:nowrap
+}
+.filter-pill:hover{border-color:var(--c-accent);color:var(--c-accent)}
+.filter-pill.active{background:var(--c-accent);color:#fff;border-color:var(--c-accent)}
 </style>
 
   <meta name="description" content="Salons und Beauty-Studios in Basel buchen. Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -2125,6 +2278,11 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
         </div>
         <button class="hero-search-submit" onclick="applySelectionSearch()" data-i18n="search_btn">Suchen</button>
       </div>
+      <!-- Geo + Map utility buttons -->
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px">
+        <button class="hero-utility-btn" onclick="geoLocateMe()" title="Standort verwenden" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);backdrop-filter:blur(8px);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s ease"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Mein Standort</button>
+        <button class="hero-utility-btn" onclick="toggleMapView()" title="Kartenansicht" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);backdrop-filter:blur(8px);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s ease"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg> Karte</button>
+      </div>
       <!-- Hidden search input for JS compatibility -->
       <input type="text" id="searchInput" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" oninput="debounceSearch()" aria-hidden="true">
       <div class="hero-quick-filters" style="padding:12px 0 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -2142,9 +2300,10 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     </div>
   </section>
 
-<section id="discoverySection" class="discovery-section container">
+<section id="discoverySection" class="discovery-section container" style="padding-top:0">
 <div id="weatherWidget" class="weather-bar"></div>
-  <div style="position:relative">
+  <!-- Search bar removed: hero search is the single prominent search -->
+  <div style="position:relative;display:none">
     <div class="search-bar-wrap">
       <span style="font-size:18px;opacity:.5">&#128269;</span>
       <input id="searchNlp" class="search-nlp" type="text" placeholder="Salon, Service oder Quartier suchen..." aria-label="Salon, Service oder Quartier suchen" oninput="handleSearchInput(this.value)" onkeydown="if(event.key==='Enter')executeSearch()"/>
@@ -2408,7 +2567,7 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     </div>
     <div id="lastMinuteSection" class="lm-section hidden"></div>
     <div id="recentSection" style="display:none"></div>
-    <div id="storesGrid" class="stores-grid"><div class="spinner"></div></div>
+    <div id="storesGrid" class="stores-grid"><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div></div>
   </div>
 </div>
 
@@ -2426,7 +2585,9 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     </div>
   </div>
   <div class="carousel-track" id="neuTrack">
-    <!-- Populated by JS -->
+    <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+    <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+    <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
   </div>
 </section>
 
@@ -2444,7 +2605,9 @@ html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rota
     </div>
   </div>
   <div class="carousel-track" id="naeheTrack">
-    <!-- Populated by JS -->
+    <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+    <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+    <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
   </div>
 </section>
 
@@ -3176,7 +3339,7 @@ const T={
     search_placeholder:'z.B. Balayage, Maniküre, Massage...',search_btn:'Suchen',
     stat_salons:'Lokale Salons',stat_services:'Behandlungen',stat_location:'Dein Quartier',
     nav_salons:'Salons',nav_quartiere:'Quartiere',nav_about:'\u00dcber uns',
-    cat_all:'Alle',cat_hairsalon:'Coiffeur',cat_cosmetik:'Kosmetik',stores_title:'Salons in deiner N\u00e4he',
+    cat_all:'Alle',cat_hairsalon:'Coiffeur',cat_cosmetik:'Kosmetik',stores_title:'Alle Salons',
     profile_title:'Mein Profil',profile_sub:'Verwalte deine pers\u00f6nlichen Daten und Pr\u00e4ferenzen',
     bookings_title:'Meine Buchungen',bookings_sub:'Deine vergangenen und kommenden Termine',
     admin_title:'Verwaltung',admin_sub:'Salons, Services und Buchungen verwalten',
@@ -3290,7 +3453,7 @@ const T={
     search_placeholder:'Service, salon or category...',search_btn:'Search',
     stat_salons:'Local salons',stat_services:'Treatments',stat_location:'Your area',
     nav_salons:'Salons',nav_quartiere:'Neighbourhoods',nav_about:'About us',
-    cat_all:'All',cat_hairsalon:'Hairdresser',cat_cosmetik:'Cosmetics',stores_title:'Salons near you',
+    cat_all:'All',cat_hairsalon:'Hairdresser',cat_cosmetik:'Cosmetics',stores_title:'All Salons',
     profile_title:'My Profile',profile_sub:'Manage your personal data and preferences',
     bookings_title:'My Bookings',bookings_sub:'Your past and upcoming appointments',
     admin_title:'Management',admin_sub:'Manage salons, services and bookings',
@@ -3403,7 +3566,7 @@ const T={
     search_placeholder:'Service, salon ou cat\u00e9gorie...',search_btn:'Rechercher',
     stat_salons:'Salons locaux',stat_services:'Soins',stat_location:'Ton quartier',
     nav_salons:'Salons',nav_quartiere:'Quartiers',nav_about:'\u00c0 propos',
-    cat_all:'Tous',cat_hairsalon:'Coiffeur',cat_cosmetik:'Cosm\u00e9tique',stores_title:'Salons pr\u00e8s de toi',
+    cat_all:'Tous',cat_hairsalon:'Coiffeur',cat_cosmetik:'Cosm\u00e9tique',stores_title:'Tous les salons',
     profile_title:'Mon profil',profile_sub:'G\u00e8re tes donn\u00e9es personnelles et pr\u00e9f\u00e9rences',
     bookings_title:'Mes r\u00e9servations',bookings_sub:'Tes rendez-vous pass\u00e9s et \u00e0 venir',
     admin_title:'Gestion',admin_sub:'G\u00e9rer les salons, services et r\u00e9servations',
@@ -3516,7 +3679,7 @@ const T={
     search_placeholder:'Hizmet, salon veya kategori...',search_btn:'Ara',
     stat_salons:'Yerel Salon',stat_services:'Hizmet',stat_location:'Senin B\u00f6lgen',
     nav_salons:'Salonlar',nav_quartiere:'Mahalleler',nav_about:'Hakk\u0131m\u0131zda',
-    cat_all:'T\u00fcm\u00fc',cat_hairsalon:'Kuaf\u00f6r',cat_cosmetik:'Kozmetik',stores_title:'Yak\u0131n\u0131ndaki Salonlar',
+    cat_all:'T\u00fcm\u00fc',cat_hairsalon:'Kuaf\u00f6r',cat_cosmetik:'Kozmetik',stores_title:'T\u00fcm Salonlar',
     profile_title:'Profilim',profile_sub:'KiÅisel bilgilerinizi ve tercihlerinizi yönetin',
     bookings_title:'Rezervasyonlarım',bookings_sub:'GeçmiÅ ve gelecek randevularınız',
     admin_title:'Y\u00f6netim',admin_sub:'Salonlar\u0131, hizmetleri ve rezervasyonlar\u0131 y\u00f6netin',
@@ -4927,7 +5090,7 @@ function renderNeuAufSolen() {
   if (!track) return;
   const newest = [...allStores].sort((a, b) => (b.id || 0) - (a.id || 0)).slice(0, 8);
   if (newest.length === 0) {
-    track.innerHTML = '<div class="carousel-empty"><div class="carousel-empty-inner"><div class="carousel-empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h4>Neue Salons kommen bald</h4><p>Wir arbeiten daran, die besten Salons in Basel für dich zu finden.</p></div></div>';
+    track.innerHTML = '<div class="carousel-empty"><div class="carousel-empty-inner"><div class="carousel-empty-icon"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="var(--c-accent)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".3"/><path d="M24 14l2.47 5.01L32 19.9l-4 3.9.94 5.5L24 26.7l-4.94 2.6.94-5.5-4-3.9 5.53-.89L24 14z" fill="var(--c-accent)" opacity=".2" stroke="var(--c-accent)" stroke-width="1.2"/></svg></div><h4>Neue Salons kommen bald</h4><p>Wir arbeiten daran, die besten Salons in Basel f\u00fcr dich zu finden.</p></div></div>';
     return;
   }
   track.innerHTML = newest.map(s => renderStoreCard(s)).join('');
@@ -4948,7 +5111,7 @@ function renderInDeinerNaehe() {
     nearby = [...allStores].sort(() => Math.random() - 0.5).slice(0, 8);
   }
   if (nearby.length === 0) {
-    track.innerHTML = '<div class="carousel-empty"><div class="carousel-empty-inner"><div class="carousel-empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><h4>Salons in deiner Nähe</h4><p>Aktiviere deinen Standort, um Salons in deinem Quartier zu entdecken.</p></div></div>';
+    track.innerHTML = '<div class="carousel-empty"><div class="carousel-empty-inner"><div class="carousel-empty-icon"><svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="var(--c-accent)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".3"/><path d="M24 12a8 8 0 00-8 8c0 6 8 14 8 14s8-8 8-14a8 8 0 00-8-8z" fill="var(--c-accent)" opacity=".15" stroke="var(--c-accent)" stroke-width="1.2"/><circle cx="24" cy="20" r="3" fill="var(--c-accent)" opacity=".3"/></svg></div><h4>Salons in deiner N\u00e4he entdecken</h4><p>Aktiviere deinen Standort, um Salons in deinem Quartier zu sehen.</p><button class="btn-book" onclick="geoLocateMe()" style="margin-top:16px;padding:10px 24px;font-size:.85rem">Standort aktivieren</button></div></div>';
     return;
   }
   track.innerHTML = nearby.map(s => renderStoreCard(s)).join('');
@@ -5121,7 +5284,7 @@ renderRecentlyViewed();
     var searchQuery=document.getElementById('searchInput').value;
     var emptyMsg=searchQuery?(t('empty_search_no_results')||'Wir haben nichts zu \''+searchQuery+'\' gefunden. Versuch einen anderen Begriff.'):t('empty_try_other');
     document.getElementById('storesGrid').innerHTML='<div class="empty-state-beautiful" style="grid-column:1/-1;text-align:center;padding:80px 24px;background:linear-gradient(135deg,var(--c-surface-alt),var(--c-surface));border-radius:var(--r2);border:1.5px dashed var(--c-border)">' +
-      '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(155,29,48,.08),rgba(212,175,119,.12));display:flex;align-items:center;justify-content:center;margin:0 auto 20px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--c-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>' +
+      '<div style="margin:0 auto 24px"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="38" stroke="var(--c-accent)" stroke-width="1.5" stroke-dasharray="5 4" opacity=".25"/><circle cx="40" cy="40" r="28" fill="var(--c-accent)" opacity=".06"/><path d="M32 38c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8-8-3.6-8-8z" stroke="var(--c-accent)" stroke-width="1.5" opacity=".4"/><line x1="46" y1="44" x2="54" y2="52" stroke="var(--c-accent)" stroke-width="2" stroke-linecap="round" opacity=".4"/></svg></div>' +
       '<h3 style="font-family:var(--font-display);font-size:1.35rem;margin-bottom:10px;color:var(--c-text)">'+t('empty_no_salon')+'</h3>' +
       '<p style="color:var(--c-text-secondary);margin-bottom:24px;line-height:1.6;max-width:380px;margin-left:auto;margin-right:auto;font-size:.95rem">'+emptyMsg+'</p>' +
       '<button class="btn-book" onclick="resetAllFilters()" style="max-width:260px;margin:0 auto;padding:12px 32px;font-size:.95rem">'+t('empty_show_all')+'</button>' +
@@ -9311,8 +9474,11 @@ document.addEventListener('click',function(e){
           if (c > 0) {
             el.textContent = c + (c === 1 ? ' Salon' : ' Salons');
           } else {
-            el.textContent = 'Bald verfügbar';
+            el.textContent = 'Bald hier';
             el.style.fontStyle = 'italic';
+            el.style.opacity = '0.7';
+            var card = el.closest('.quartier-photo-card');
+            if (card) card.classList.add('quartier-coming-soon');
           }
         }
       });
@@ -9337,8 +9503,11 @@ document.addEventListener('click',function(e){
         var el = document.getElementById(catMap[cat]);
         if (el) {
           var cnt = catCounts[cat] || 0;
-          el.textContent = cnt > 0 ? cnt + ' Salons' : 'Entdecken';
-          if (cnt === 0) el.style.opacity = '0.6';
+          if (cnt > 0) {
+            el.textContent = cnt + ' Salons';
+          } else {
+            el.textContent = 'Entdecken';
+          }
         }
       });
     }
