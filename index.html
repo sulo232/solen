@@ -992,6 +992,21 @@ html,body{overflow-x:hidden;max-width:100vw}
 .star-input{display:flex;gap:4px;margin-bottom:12px}
 .star-input span{font-size:1.5rem;cursor:pointer;color:var(--border2);transition:color .15s}
 .star-input span.active{color:#D4AF77}
+.review-photo-wrap{margin-top:8px}
+.review-photo{max-width:160px;max-height:120px;border-radius:10px;object-fit:cover;cursor:zoom-in;border:1px solid var(--border)}
+.review-photo-label{display:inline-flex;align-items:center;cursor:pointer;color:var(--text2);font-size:.83rem;padding:6px 10px;border:1.5px dashed var(--border);border-radius:8px;transition:border-color .2s}
+.review-photo-label:hover{border-color:var(--accent);color:var(--accent)}
+.review-google-badge{display:inline-flex;align-items:center;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:100px;background:#f1f3f4;color:#444;margin-left:2px;vertical-align:middle;line-height:1.4}
+.google-reviews-divider{display:flex;align-items:center;gap:8px;margin:16px 0 8px;font-size:.8rem;font-weight:700;color:var(--text2)}
+.google-reviews-divider::before,.google-reviews-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.post-booking-review{margin-top:20px;padding:16px;background:var(--bg2);border-radius:14px;border:1.5px solid var(--border)}
+.pbr-header{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:12px}
+.pbr-icon{font-size:1.8rem;color:#D4AF77;margin-bottom:4px}
+.reply-label{display:block;font-size:.72rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.reply-text{margin:0;font-size:.85rem;color:var(--text2)}
+.reply-area{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.reply-input{font-size:.85rem;min-height:56px;resize:vertical}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 
 /* RATING FILTER */
 .rating-filter{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -5672,6 +5687,8 @@ async function openStore(storeId){
   const svcs=allServices.filter(x=>x.store_id===storeId||x.salon_id===storeId);
   const photoUrl=getSalonPhoto(s);
   const reviews=await loadReviews(storeId);
+  // Trigger Google review sync in background if store has a Place ID
+  if(s.google_place_id)syncGoogleReviews(storeId,s.google_place_id);
   // Group services by category for Fresha-style display
   const svcCategories=[...new Set(svcs.map(sv=>sv.category||getTypeName(s.cat||s.type||'')))];
   const avgR=parseFloat(s.avg_rating)||0;
@@ -7589,6 +7606,8 @@ function renderBookingModal(){
     const endM=parseInt(bmState.time.split(':')[1])+(svc?.duration?svc.duration%60:0);
     const calEnd=bmState.date.replace(/-/g,'')+'T'+String(endH).padStart(2,'0')+String(endM).padStart(2,'0')+'00';
     const calUrl=`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent((svc?.name||'Termin')+' @ '+s.name)}&dates=${calStart}/${calEnd}&location=${encodeURIComponent(s.address||'Basel')}&details=${encodeURIComponent('Gebucht via Solen')}`;
+    const bookingId=bmState.confirmedBookingId||null;
+    const reviewSalonId=typeof s.id==='string'&&s.id.startsWith('d')?null:s.id;
     document.getElementById('bmBody').innerHTML=`
       <div class="bm-confirmation">
         <div style="margin-bottom:12px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
@@ -7597,7 +7616,25 @@ function renderBookingModal(){
         <a href="${calUrl}" target="_blank" rel="noopener" class="bm-cal-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${t('add_to_calendar')}</a>
         <button class="bm-cal-link" style="background:none;border:1px solid var(--primary);cursor:pointer" onclick="downloadIcs()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:middle" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Apple / Outlook (.ics)</button>
         ${bmState.wantsReminder!==false?'<p style="font-size:.82rem;color:var(--muted);margin-top:12px">Du erhältst 48h und 2h vor deinem Termin eine Erinnerung per E-Mail.</p>':''}
-      </div>`;
+      </div>
+      ${reviewSalonId?`<div class="post-booking-review" id="postBookingReview">
+        <div class="pbr-header"><span class="pbr-icon">&#9733;</span><strong>War das dein letzter Besuch?</strong><p style="margin:4px 0 0;font-size:.82rem;color:var(--text2)">Teile deine Erfahrung – es dauert nur 30 Sekunden.</p></div>
+        <div class="star-input" id="starInput_pbr_${reviewSalonId}" style="margin:10px 0">` +
+        [1,2,3,4,5].map(i=>`<span onclick="setReviewStar('pbr_${reviewSalonId}',${i})" data-star="${i}" style="cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>`).join('') +
+        `</div>
+        <textarea class="form-input" id="reviewComment_pbr_${reviewSalonId}" rows="2" placeholder="Wie war dein Besuch?" style="margin-bottom:8px;font-size:.88rem"></textarea>
+        <label class="review-photo-label" style="font-size:.82rem;margin-bottom:8px;display:block">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Foto hinzufügen (optional)
+          <input type="file" id="reviewPhoto_pbr_${reviewSalonId}" accept="image/*" style="display:none" onchange="previewReviewPhoto('pbr_${reviewSalonId}')">
+        </label>
+        <div id="reviewPhotoPreview_pbr_${reviewSalonId}" style="margin-bottom:8px"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-primary" style="flex:1;font-size:.88rem;padding:10px" onclick="submitPostBookingReview('${reviewSalonId}','${bookingId||''}')">Jetzt bewerten</button>
+          <button class="btn-sm" style="flex:0;padding:10px 14px" onclick="document.getElementById('postBookingReview').remove()">Überspringen</button>
+        </div>
+      </div>`:''}
+    `;
     return;
   }
 
@@ -7709,11 +7746,13 @@ async function insertBooking(){
     return;
   }
   bmState.confirmed=true;
+  bmState.confirmedBookingId=bkData?.id||null;
   bmState.slotConflict=false;
   renderBookingModal();
   toast(t('booking_confirmed'),'success');
   solenTrack('booking_completed',{salon_id:bmState.store.id,service:svc?.name||bmState.customSvc||''});
   if(bmState.wantsReminder!==false)scheduleReminders({bookingId:bkData?.id,userId:currentUser?.id,salonId:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,salonName:bmState.store.name,serviceName:svc?.name||bmState.customSvc||'',bookingDate:bmState.date,bookingTime:bmState.time,customerName:bmState.guestName,customerEmail:bmState.guestEmail||currentUser?.email||''});
+  checkAndSetVerifiedAfterBooking(typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id);
 }
 
 async function joinWaitingList(){
@@ -7745,9 +7784,11 @@ async function loadReviews(salonId){
 function renderReviewCard(r,salonId){
   const d=new Date(r.created_at).toLocaleDateString(getLocale());
   const isOwner=currentUser&&mySalons&&mySalons.find(s=>String(s.id)===String(salonId));
+  const googleBadge=r.source==='google'?'<span class="review-google-badge" title="Google Bewertung"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:middle;margin-right:3px"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google</span>':'';
+  const photoHtml=r.photo_url?`<div class="review-photo-wrap"><img src="${r.photo_url}" alt="Bewertungsfoto" class="review-photo" loading="lazy" onclick="window.open('${r.photo_url}','_blank')"></div>`:'';
   const replyHtml=r.owner_reply?'<div class="review-reply"><span class="reply-label">Salon-Antwort</span><p class="reply-text">'+dmEsc(r.owner_reply)+'</p></div>':'';
-  const replyForm=isOwner?'<div class="reply-area"><textarea id="ra_'+r.id+'" class="form-input reply-input" placeholder="Antworten...">'+dmEsc(r.owner_reply||'')+'</textarea><button class="btn-sm btn-teal" data-rid="'+r.id+'" data-sid="'+salonId+'" onclick="submitReviewReply(this.dataset.rid,this.dataset.sid)">Senden</button></div>':'';
-  return `<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${dmEsc(r.reviewer_name)}</span><span class="review-date">${d}</span></div><div class="review-comment">${dmEsc(r.comment||'')}</div>${replyHtml}${replyForm}</div>`;
+  const replyForm=isOwner&&r.source!=='google'?'<div class="reply-area"><textarea id="ra_'+r.id+'" class="form-input reply-input" placeholder="Antworten...">'+dmEsc(r.owner_reply||'')+'</textarea><button class="btn-sm btn-teal" data-rid="'+r.id+'" data-sid="'+salonId+'" onclick="submitReviewReply(this.dataset.rid,this.dataset.sid)">Senden</button></div>':'';
+  return `<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${dmEsc(r.reviewer_name)}</span>${googleBadge}<span class="review-date">${d}</span></div><div class="review-comment">${dmEsc(r.comment||'')}</div>${photoHtml}${replyHtml}${replyForm}</div>`;
 }
 async function submitReviewReply(reviewId,salonId){
   const ta=document.getElementById('ra_'+reviewId);
@@ -7760,14 +7801,18 @@ async function submitReviewReply(reviewId,salonId){
   loadReviews(salonId);
 }
 function renderReviewsSection(salonId,reviews){
-  let html=`<div class="reviews-section"><div class="section-hd"><h3>Das sagen Kunden (${reviews.length})</h3><button class="btn-sm" onclick="toggleReviewForm('${salonId}')">${t('write_review')}</button></div>`;
+  const manualReviews=reviews.filter(r=>r.source!=='google');
+  const googleReviews=reviews.filter(r=>r.source==='google');
+  const totalCount=reviews.length;
+  let html=`<div class="reviews-section"><div class="section-hd"><h3>Das sagen Kunden (${totalCount})</h3><button class="btn-sm" onclick="toggleReviewForm('${salonId}')">${t('write_review')}</button></div>`;
   html+=`<div id="reviewForm_${salonId}" class="hidden"><div class="review-form"><div class="star-input" id="starInput_${salonId}">`;
   for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}" style="cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>`;
-  html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Wie war dein Besuch?"></textarea></div><button class="btn-primary" onclick="submitReview('${salonId}')">Bewertung abgeben</button></div></div>`;
-  reviews.forEach(r=>{
-    const d=new Date(r.created_at).toLocaleDateString(getLocale());
-    html+=`<div class="review-item"><div class="review-header"><span class="review-stars">${renderStars(r.rating)}</span><span class="review-name">${dmEsc(r.reviewer_name)}</span><span class="review-date">${d}</span></div><div class="review-comment">${dmEsc(r.comment||'')}</div></div>`;
-  });
+  html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Wie war dein Besuch?"></textarea></div><div class="form-group"><label class="review-photo-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Foto hinzufügen (optional)<input type="file" id="reviewPhoto_${salonId}" accept="image/*" style="display:none" onchange="previewReviewPhoto('${salonId}')"></label><div id="reviewPhotoPreview_${salonId}" style="margin-top:6px"></div></div><button class="btn-primary" onclick="submitReview('${salonId}')">Bewertung abgeben</button></div></div>`;
+  manualReviews.forEach(r=>{html+=renderReviewCard(r,salonId);});
+  if(googleReviews.length){
+    html+=`<div class="google-reviews-divider"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:middle;margin-right:6px"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google Bewertungen</div>`;
+    googleReviews.forEach(r=>{html+=renderReviewCard(r,salonId);});
+  }
   html+=`</div>`;
   return html;
 }
@@ -7781,14 +7826,44 @@ function toggleReviewForm(salonId){
   const el=document.getElementById('reviewForm_'+salonId);
   if(el)el.classList.toggle('hidden');
 }
-async function submitReview(salonId){
+async function uploadReviewPhoto(file){
+  if(!file)return null;
+  try{
+    const ext=file.name.split('.').pop()||'jpg';
+    const path=`review-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const{data,error}=await sb.storage.from('review-photos').upload(path,file,{contentType:file.type,upsert:false});
+    if(error)return null;
+    const{data:urlData}=sb.storage.from('review-photos').getPublicUrl(data.path);
+    return urlData?.publicUrl||null;
+  }catch(e){return null;}
+}
+function previewReviewPhoto(salonId){
+  const inp=document.getElementById('reviewPhoto_'+salonId);
+  const prev=document.getElementById('reviewPhotoPreview_'+salonId);
+  if(!inp||!prev||!inp.files[0])return;
+  const url=URL.createObjectURL(inp.files[0]);
+  prev.innerHTML=`<img src="${url}" style="max-width:120px;max-height:90px;border-radius:8px;object-fit:cover;border:1px solid var(--border)" alt="Vorschau"><button onclick="clearReviewPhoto('${salonId}')" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;display:block;margin-top:4px">Entfernen</button>`;
+}
+function clearReviewPhoto(salonId){
+  const inp=document.getElementById('reviewPhoto_'+salonId);
+  const prev=document.getElementById('reviewPhotoPreview_'+salonId);
+  if(inp)inp.value='';
+  if(prev)prev.innerHTML='';
+}
+async function submitReview(salonId,bookingId){
   const name=document.getElementById('reviewName_'+salonId)?.value?.trim();
   const comment=document.getElementById('reviewComment_'+salonId)?.value?.trim();
   const rating=reviewStarVal[salonId]||0;
   if(!name||!rating){toast('Name und Bewertung erforderlich.','error');return;}
-  const{error}=await sb.from('reviews').insert({salon_id:salonId,user_id:currentUser?.id||null,reviewer_name:name,rating,comment});
+  const photoFile=document.getElementById('reviewPhoto_'+salonId)?.files?.[0]||null;
+  let photo_url=null;
+  if(photoFile){photo_url=await uploadReviewPhoto(photoFile);}
+  const row={salon_id:salonId,user_id:currentUser?.id||null,reviewer_name:name,rating,comment,source:'manual'};
+  if(photo_url)row.photo_url=photo_url;
+  if(bookingId)row.booking_id=bookingId;
+  const{error}=await sb.from('reviews').insert(row);
   if(error){toast('Fehler: '+error.message,'error');return;}
-  // Update local store
+  if(bookingId)await sb.from('bookings').update({reviewed:true}).eq('id',bookingId);
   const store=allStores.find(s=>s.id===salonId);
   if(store){
     const rc=(parseInt(store.review_count)||0)+1;
@@ -7797,6 +7872,55 @@ async function submitReview(salonId){
   }
   toast('Bewertung gespeichert!','success');
   openStore(salonId);
+}
+
+// POST-BOOKING REVIEW SUBMIT (from confirmation screen, uses pbr_ prefix for star state)
+async function submitPostBookingReview(salonId,bookingId){
+  const comment=document.getElementById('reviewComment_pbr_'+salonId)?.value?.trim()||'';
+  const rating=reviewStarVal['pbr_'+salonId]||0;
+  if(!rating){toast('Bitte wähle eine Sternebewertung.','error');return;}
+  const name=bmState.guestName||currentProfile?.display_name||'Gast';
+  const photoFile=document.getElementById('reviewPhoto_pbr_'+salonId)?.files?.[0]||null;
+  let photo_url=null;
+  if(photoFile)photo_url=await uploadReviewPhoto(photoFile);
+  const row={salon_id:salonId,user_id:currentUser?.id||null,reviewer_name:name,rating,comment,source:'manual'};
+  if(photo_url)row.photo_url=photo_url;
+  if(bookingId)row.booking_id=bookingId;
+  const{error}=await sb.from('reviews').insert(row);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  if(bookingId)await sb.from('bookings').update({reviewed:true}).eq('id',bookingId);
+  const store=allStores.find(s=>String(s.id)===String(salonId));
+  if(store){const rc=(parseInt(store.review_count)||0)+1;const ar=((parseFloat(store.avg_rating)||0)*(rc-1)+rating)/rc;store.review_count=rc;store.avg_rating=ar;}
+  const box=document.getElementById('postBookingReview');
+  if(box)box.innerHTML='<div style="text-align:center;padding:16px 0"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><p style="margin:8px 0 0;font-weight:700">Danke für deine Bewertung!</p></div>';
+  toast('Bewertung gespeichert!','success');
+}
+
+// VERIFIED BADGE: auto-grant after 10 confirmed bookings
+async function checkAndSetVerifiedAfterBooking(storeId){
+  if(!storeId)return;
+  try{
+    const{count}=await sb.from('bookings').select('id',{count:'exact',head:true}).eq('salon_id',storeId).eq('status','confirmed');
+    if((count||0)>=10){
+      const{error}=await sb.from('stores').update({is_verified:true}).eq('id',storeId).eq('is_verified',false);
+      if(!error){
+        const store=allStores.find(s=>String(s.id)===String(storeId));
+        if(store&&!store.is_verified){store.is_verified=true;toast('Verifiziert! Dieses Salon hat das Verifiziert-Abzeichen erhalten.','success');}
+      }
+    }
+  }catch(e){}
+}
+
+// GOOGLE REVIEWS SYNC: fetch from Places API and store in Supabase
+async function syncGoogleReviews(storeId,placeId){
+  if(!storeId||!placeId)return;
+  try{
+    await fetch('/api/fetch-google-reviews',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({storeId,placeId})
+    });
+  }catch(e){}
 }
 
 // KEYBOARD SHORTCUTS
