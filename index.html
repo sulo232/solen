@@ -57,22 +57,34 @@
   --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;}
 [data-theme="dark"]{
   --bg:#1A1210;--bg2:#231B16;--surface:#231B16;--surfaceAlt:#2D231C;
+  --c-bg:#1A1210;--c-bg-elevated:#231B16;--c-surface:#231B16;--c-surface-alt:#2D231C;
   --text:#F8F4ED;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
+  --c-text:#F8F4ED;--c-text-secondary:#9CA3AF;--c-text-muted:#6b7280;
   --accent:#D4586A;--accent2:#D4AF77;--accent-dark:#B8384E;--accentFg:#1A1210;
+  --c-accent:#D4586A;--c-accent-hover:#B8384E;--c-accent-fg:#1A1210;
   --accent-lemon:#D4AF77;
   --border:#3D3028;--border2:#4A3D33;
+  --c-border:#3D3028;--c-border-strong:#4A3D33;
   --shadow:0 2px 16px rgba(0,0,0,0.35);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
+  --shadow-card:0 2px 16px rgba(0,0,0,0.35);
   --glow:0 0 24px rgba(155,29,48,0.30);
+  --elev-1:0 2px 8px rgba(0,0,0,.2);--elev-2:0 8px 24px rgba(0,0,0,.3);--elev-3:0 16px 48px rgba(0,0,0,.4);
   --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#1A1210;--bg2:#231B16;--surface:#231B16;--surfaceAlt:#2D231C;
+  --c-bg:#1A1210;--c-bg-elevated:#231B16;--c-surface:#231B16;--c-surface-alt:#2D231C;
   --text:#F8F4ED;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
+  --c-text:#F8F4ED;--c-text-secondary:#9CA3AF;--c-text-muted:#6b7280;
   --accent:#D4586A;--accent2:#D4AF77;--accent-dark:#B8384E;--accentFg:#1A1210;
+  --c-accent:#D4586A;--c-accent-hover:#B8384E;--c-accent-fg:#1A1210;
   --accent-lemon:#D4AF77;
   --border:#3D3028;--border2:#4A3D33;
+  --c-border:#3D3028;--c-border-strong:#4A3D33;
   --shadow:0 2px 16px rgba(0,0,0,0.35);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
+  --shadow-card:0 2px 16px rgba(0,0,0,0.35);
   --glow:0 0 24px rgba(155,29,48,0.30);
+  --elev-1:0 2px 8px rgba(0,0,0,.2);--elev-2:0 8px 24px rgba(0,0,0,.3);--elev-3:0 16px 48px rgba(0,0,0,.4);
   --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
 }}
 @media(prefers-reduced-motion:reduce){*{transition-duration:0.01ms!important;animation-duration:0.01ms!important}}
@@ -987,8 +999,9 @@ html,body{overflow-x:hidden;max-width:100vw}
 @media(max-width:640px){.footer-inner{flex-direction:column;text-align:center}}
 
 /* GLOBAL POLISH */
-body{overflow-x:hidden}
-button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-primary{min-height:44px}
+body{overflow-x:hidden;font-size:17px;line-height:1.6}
+button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-primary{min-height:48px}
+@media(min-width:769px){button,.btn-book,.btn-primary,.btn-secondary,.btn-sm{min-height:52px}}
 /* STAFF MANAGEMENT */
 .dash-section-hd{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px}
 .dash-section-hd h3{font-size:1.05rem;font-weight:700}
@@ -1561,6 +1574,229 @@ body{font-family:var(--font-body,system-ui);}
 .dash-tab-btn.active{background:var(--c-bg,#fff);color:var(--c-text,#1f1f1f);box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:600;}
 /* === END BATCH1 CSS === */
 
+/* ══════════════════════════════════════════════════════════════════
+   PREMIUM REDESIGN — Fresha-style warm open experience
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── ENHANCED GLOBAL SPACING & TYPOGRAPHY ── */
+.stores-section{padding:56px 24px 72px}
+.page{padding:48px 24px 72px}
+.section-title{font-size:1.5rem;font-weight:400;margin-bottom:24px;font-family:var(--font-display);letter-spacing:-.01em}
+.page-title{font-size:2.2rem;font-weight:400;font-family:var(--font-display)}
+.page-sub{font-size:1rem;color:var(--c-text-secondary);margin-bottom:40px}
+@media(min-width:769px){
+  .stores-section{padding:64px 32px 80px}
+  .page{padding:56px 32px 80px}
+  .section-title{font-size:1.8rem}
+  .page-title{font-size:2.6rem}
+}
+
+/* ── ENHANCED DARK MODE TOGGLE ── */
+.theme-toggle{position:relative;overflow:hidden}
+.theme-toggle .sun-icon,.theme-toggle .moon-icon{transition:transform .3s var(--ease-standard),opacity .3s var(--ease-standard)}
+[data-theme="dark"] .theme-toggle .sun-icon,
+html:not([data-theme="light"]) .theme-toggle .sun-icon{opacity:0;transform:rotate(90deg) scale(.5)}
+[data-theme="light"] .theme-toggle .moon-icon{opacity:0;transform:rotate(-90deg) scale(.5)}
+[data-theme="dark"] .theme-toggle .moon-icon{opacity:1;transform:rotate(0) scale(1)}
+@media(prefers-color-scheme:dark){html:not([data-theme="light"]) .theme-toggle .sun-icon{opacity:0;transform:rotate(90deg) scale(.5)}
+html:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:1;transform:rotate(0) scale(1)}}
+
+/* ── ENHANCED CARD HOVER — Premium lift + shadow ── */
+.store-card{border-radius:var(--r2);border:1px solid var(--c-border);box-shadow:var(--elev-1);transition:transform .25s var(--ease-standard),box-shadow .25s var(--ease-standard),border-color .25s var(--ease-standard)}
+.store-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:var(--elev-3);border-color:transparent}
+.store-card:hover .store-card-photo img{transform:scale(1.06)}
+.store-card-photo{aspect-ratio:16/9;overflow:hidden;position:relative;background:var(--c-surface-alt)}
+.store-card-photo img{transition:transform .4s var(--ease-standard)}
+.store-card-body{padding:20px 24px 16px}
+.store-name{font-size:1.15rem;margin-bottom:8px}
+.store-card-meta{margin-bottom:16px;gap:16px}
+.store-card-services{padding:0 24px 8px}
+.store-card-see-all{padding:8px 24px 16px}
+.store-card-footer,.store-footer{padding-top:16px}
+
+/* ── SKELETON LOADING ENHANCEMENTS ── */
+.skeleton-card{border-radius:var(--r2)}
+.skeleton-img{aspect-ratio:16/9;height:auto;background:var(--c-surface-alt)}
+.skeleton-body{padding:24px}
+.skeleton-line{border-radius:8px;background:var(--c-surface-alt)}
+.skeleton-avatar{width:48px;height:48px;border-radius:50%;background:var(--c-surface-alt);position:relative;overflow:hidden}
+.skeleton-avatar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimmer 1.5s infinite}
+
+/* ── SCROLL REVEAL ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease-standard),transform .6s var(--ease-standard)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* ── HERO ENHANCEMENTS ── */
+.hero{min-height:88vh}
+.hero-bg-slideshow{position:absolute;inset:0;z-index:0}
+.hero-bg-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out}
+.hero-bg-slide.active{opacity:1}
+.hero-bg-slide img{width:100%;height:100%;object-fit:cover}
+.hero h1{font-size:clamp(2.8rem,7vw,4.8rem);letter-spacing:-.03em;margin-bottom:20px}
+.hero p{font-size:1.2rem;margin-bottom:40px;max-width:540px;margin-left:auto;margin-right:auto}
+.hero-search{border-radius:24px;box-shadow:0 12px 48px rgba(0,0,0,.2)}
+@media(max-width:480px){.hero{min-height:auto;padding:88px 0 32px}.hero h1{font-size:2rem}.hero p{font-size:1rem}}
+
+/* ── SOCIAL PROOF BADGE WARM ── */
+.hero-proof-badge{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.2);border-radius:var(--r-pill);padding:10px 24px;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.95);display:flex;align-items:center;gap:10px;white-space:nowrap;z-index:4}
+.hero-proof-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:proofPulse 2s ease-in-out infinite}
+@keyframes proofPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+
+/* ── ENHANCED FILTER PILLS with icons ── */
+.filter-pill{border-radius:var(--r-pill);padding:10px 22px;font-size:.88rem;transition:all .2s var(--ease-standard);border-width:1.5px;gap:6px;display:inline-flex;align-items:center}
+.filter-pill svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.filter-pill:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.filter-pill.active{transform:translateY(-1px)}
+
+/* ── CATEGORY TABS (horizontal scrollable, Fresha-style) ── */
+.cat-tabs-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cat-tabs-scroll::-webkit-scrollbar{display:none}
+.cat-tab{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--r-pill);border:1.5px solid var(--c-border-strong);background:var(--c-surface);color:var(--c-text-secondary);font-size:.88rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .2s var(--ease-standard)}
+.cat-tab svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.cat-tab:hover{border-color:var(--c-accent);color:var(--c-accent);transform:translateY(-1px)}
+.cat-tab.active{background:var(--c-accent);color:var(--c-accent-fg);border-color:var(--c-accent)}
+
+/* ── VIEW TOGGLE (List/Map) ── */
+.view-toggle{display:flex;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);overflow:hidden;background:var(--c-surface)}
+.view-toggle-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border:none;background:transparent;font-size:.82rem;font-weight:600;color:var(--c-text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.view-toggle-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.view-toggle-btn.active{background:var(--c-accent);color:#fff}
+.view-toggle-btn:hover:not(.active){background:var(--c-surface-alt)}
+
+/* ── CAROUSEL: "Neu auf solen" / "In deiner Nähe" ── */
+.carousel-section{max-width:1200px;margin:0 auto;padding:56px 24px 48px}
+.carousel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.carousel-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:400;letter-spacing:-.01em}
+.carousel-nav{display:flex;gap:8px}
+.carousel-nav-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--c-border-strong);background:var(--c-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--c-text)}
+.carousel-nav-btn:hover{border-color:var(--c-accent);color:var(--c-accent);transform:scale(1.05)}
+.carousel-nav-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.carousel-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:4px 0 8px}
+.carousel-track::-webkit-scrollbar{display:none}
+.carousel-track .store-card{min-width:320px;max-width:360px;flex-shrink:0;scroll-snap-align:start}
+@media(max-width:640px){.carousel-track .store-card{min-width:280px;max-width:calc(100vw - 48px)}}
+
+/* ── QUARTIER CARDS ENHANCED ── */
+.quartier-photo-card{border-radius:var(--r2);transition:transform .3s var(--ease-standard),box-shadow .3s var(--ease-standard)}
+.quartier-photo-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:var(--elev-3)}
+
+/* ── PHOTO MANAGEMENT SYSTEM ── */
+.photo-manager{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r2);padding:28px;margin-bottom:28px}
+.photo-manager-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.photo-manager-header h3{font-family:var(--font-display);font-size:1.15rem;font-weight:400}
+.photo-manager-upload-btn{display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--c-accent);color:var(--c-accent-fg);border:none;border-radius:var(--r-pill);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+.photo-manager-upload-btn:hover{background:var(--c-accent-hover);transform:scale(1.03)}
+.photo-manager-upload-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.photo-grid-item{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;cursor:grab;background:var(--c-surface-alt);border:2px solid transparent;transition:all .2s}
+.photo-grid-item.dragging{opacity:.5;border-color:var(--c-accent);transform:scale(.95)}
+.photo-grid-item.drag-over{border-color:var(--c-accent);box-shadow:0 0 0 3px rgba(155,29,48,.2)}
+.photo-grid-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-grid-item.is-cover{border-color:var(--c-accent);box-shadow:0 0 0 3px rgba(155,29,48,.15)}
+.photo-grid-item .cover-badge{position:absolute;top:8px;left:8px;background:var(--c-accent);color:#fff;font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);letter-spacing:.03em;text-transform:uppercase;z-index:2}
+.photo-grid-item .photo-actions{position:absolute;bottom:0;left:0;right:0;display:flex;gap:6px;padding:8px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);opacity:0;transition:opacity .2s;justify-content:flex-end}
+.photo-grid-item:hover .photo-actions{opacity:1}
+.photo-action-btn{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.9);color:var(--c-text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;transition:all .15s}
+.photo-action-btn:hover{transform:scale(1.1);background:#fff}
+.photo-action-btn.delete:hover{background:#fee2e2;color:#dc2626}
+.photo-upload-zone{border:2px dashed var(--c-border-strong);border-radius:var(--r2);padding:48px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--c-surface-alt);color:var(--c-text-muted)}
+.photo-upload-zone:hover,.photo-upload-zone.drag-active{border-color:var(--c-accent);background:rgba(155,29,48,.04);color:var(--c-accent)}
+.photo-upload-zone svg{width:48px;height:48px;stroke:currentColor;fill:none;stroke-width:1.5;margin-bottom:12px}
+.photo-upload-zone p{font-size:.92rem;font-weight:600;margin-bottom:4px}
+.photo-upload-zone span{font-size:.82rem;color:var(--c-text-muted)}
+.photo-upload-progress{height:4px;border-radius:2px;background:var(--c-border);overflow:hidden;margin-top:8px}
+.photo-upload-progress-bar{height:100%;background:var(--c-accent);border-radius:2px;transition:width .3s ease;width:0}
+
+/* ── PHOTO FALLBACK (no photos yet) ── */
+.photo-empty-state{aspect-ratio:16/9;border-radius:var(--r2);background:linear-gradient(135deg,var(--c-surface-alt),var(--c-bg));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:2px dashed var(--c-border);color:var(--c-text-muted)}
+.photo-empty-state svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.5}
+.photo-empty-state .add-photo-btn{padding:10px 24px;background:var(--c-accent);color:#fff;border:none;border-radius:var(--r-pill);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+.photo-empty-state .add-photo-btn:hover{background:var(--c-accent-hover);transform:scale(1.03)}
+
+/* ── SALON DETAIL GALLERY ── */
+.salon-detail-hero{position:relative;width:100%;aspect-ratio:16/9;max-height:400px;overflow:hidden;border-radius:var(--r2) var(--r2) 0 0}
+.salon-detail-hero img{width:100%;height:100%;object-fit:cover}
+.salon-detail-gallery{display:flex;gap:8px;padding:12px 24px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.salon-detail-gallery::-webkit-scrollbar{display:none}
+.salon-detail-gallery-thumb{width:80px;height:60px;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;flex-shrink:0;transition:all .2s;opacity:.7}
+.salon-detail-gallery-thumb:hover,.salon-detail-gallery-thumb.active{opacity:1;border-color:var(--c-accent)}
+.salon-detail-gallery-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* ── CONFIRM DELETE MODAL ── */
+.confirm-dialog{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+.confirm-dialog-content{background:var(--c-surface);border-radius:var(--r2);padding:28px;max-width:380px;width:100%;box-shadow:var(--elev-3);text-align:center}
+.confirm-dialog-content h3{font-family:var(--font-display);font-size:1.1rem;margin-bottom:8px}
+.confirm-dialog-content p{color:var(--c-text-secondary);font-size:.92rem;margin-bottom:24px;line-height:1.6}
+.confirm-dialog-actions{display:flex;gap:12px;justify-content:center}
+.confirm-dialog-actions button{padding:10px 24px;border-radius:var(--r-pill);font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s;border:none;min-height:44px}
+.confirm-dialog-cancel{background:var(--c-surface-alt);color:var(--c-text);border:1px solid var(--c-border)!important}
+.confirm-dialog-cancel:hover{background:var(--c-border)}
+.confirm-dialog-delete{background:var(--c-error);color:#fff}
+.confirm-dialog-delete:hover{opacity:.9;transform:scale(1.03)}
+
+/* ── HEART BUTTON ANIMATION ── */
+.fav-btn{position:absolute;top:12px;right:12px;z-index:3;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--c-text-muted)}
+.fav-btn:hover{transform:scale(1.1);background:#fff}
+.fav-btn.is-fav{color:#e11d48}
+.fav-btn.is-fav svg{fill:#e11d48;stroke:#e11d48}
+@keyframes heartPop{0%{transform:scale(1)}25%{transform:scale(1.3)}50%{transform:scale(.9)}100%{transform:scale(1)}}
+.fav-btn.just-faved{animation:heartPop .4s ease}
+
+/* ── LAZY LOADING IMAGE ── */
+.lazy-img{opacity:0;transition:opacity .4s ease}
+.lazy-img.loaded{opacity:1}
+
+/* ── SMOOTH SECTION SEPARATORS ── */
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--c-border),transparent);max-width:1200px;margin:0 auto}
+
+/* ── MOBILE TOUCH IMPROVEMENTS ── */
+@media(max-width:768px){
+  .stores-section{padding:32px 16px 80px}
+  .store-card-body{padding:16px 18px 12px}
+  .store-card-services{padding:0 18px 6px}
+  .store-card-see-all{padding:6px 18px 14px}
+  .carousel-track .store-card{min-width:280px}
+  .photo-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+  .photo-manager{padding:20px 16px}
+  .salon-detail-gallery{padding:8px 16px}
+  .filter-pill{padding:8px 16px;font-size:.82rem}
+}
+
+/* ── BUTTONS ENHANCED ── */
+.btn-book{padding:12px 28px;border-radius:var(--r-pill);font-size:.92rem;transition:all .25s var(--ease-standard)}
+.btn-book:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(155,29,48,.4)}
+.btn-primary{border-radius:var(--r-pill);font-size:1rem;padding:14px;transition:all .25s var(--ease-standard)}
+.btn-primary:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(155,29,48,.4)}
+
+/* ── MODAL ENHANCEMENTS ── */
+.modal{border-radius:var(--r2)}
+.modal-hd{padding:28px 28px 0}
+.modal-hd h2{font-size:1.3rem;font-family:var(--font-display);font-weight:400}
+.modal-body{padding:24px 28px 28px}
+
+/* ── PARTNER CTA ENHANCED ── */
+.partner-cta{padding:72px 24px;background:linear-gradient(135deg,rgba(155,29,48,.04),rgba(212,175,119,.06))}
+.partner-cta h2{font-size:1.6rem}
+.partner-cta p{font-size:1rem;line-height:1.7;max-width:520px;margin:0 auto 28px}
+
+/* ── FOOTER ENHANCED ── */
+.footer-enhanced{background:var(--c-surface);border-top:1px solid var(--c-border);padding:48px 24px 24px;margin-top:auto}
+.footer-inner-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-bottom:32px}
+.footer-col h4{font-family:var(--font-display);font-size:1rem;margin-bottom:14px;font-weight:400}
+.footer-col a{display:block;color:var(--c-text-secondary);font-size:.88rem;padding:4px 0;transition:color .15s}
+.footer-col a:hover{color:var(--c-accent)}
+.footer-bottom{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--c-border);font-size:.82rem;color:var(--c-text-muted)}
+
+/* ── IMAGE LIGHTBOX ── */
+.lightbox{position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+.lightbox.active{display:flex}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lightbox-close{position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.4rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.lightbox-close:hover{background:rgba(255,255,255,.3);transform:scale(1.1)}
+
 /* ═══ CRM TAB ═══ */
 .crm-container{padding:1.5rem}.crm-search{width:100%;padding:.65rem 1rem;border:1px solid var(--c-border,#E2DCD3);border-radius:var(--r-md,12px);background:var(--c-surface,#fff);color:var(--c-text,#1F1F1F);font-size:.95rem;margin-bottom:1rem}
 .crm-list{display:flex;flex-direction:column;gap:1rem}.crm-card{background:var(--c-surface,#fff);border:1px solid var(--c-border,#E2DCD3);border-radius:var(--r-lg,16px);padding:1.25rem;transition:box-shadow .2s}.crm-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
@@ -1614,7 +1850,7 @@ body{font-family:var(--font-body,system-ui);}
       <a href="#" class="nav-link" onclick="scrollToQuartiere();return false" data-i18n="nav_quartiere">Quartiere</a>
       <a href="#" class="nav-link" onclick="scrollToAbout();return false" data-i18n="nav_about">&#220;ber uns</a>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" style="display:none" id="mobileThemeToggle">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" id="mobileThemeToggle">
       <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
       <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
@@ -1693,9 +1929,10 @@ body{font-family:var(--font-body,system-ui);}
 <div id="pageHome" class="active" style="display:block">
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg">
-      <img class="hero-bg-img" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=80" alt="" width="1600" height="900" loading="eager">
+    <div class="hero-bg hero-bg-slideshow" id="heroSlideshow">
+      <div class="hero-bg-slide active"><img class="hero-bg-img" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=80" alt="" width="1600" height="900" loading="eager"></div>
     </div>
+    <div class="hero-bg"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,0.85) 0%,rgba(13,13,13,0.4) 50%,rgba(13,13,13,0.2) 100%);z-index:1"></div></div>
     <div class="hero-content">
       <h1 data-i18n-html="hero_title">Dein n&auml;chster<br><span class="hero-highlight">Lieblingsort wartet.</span></h1>
       <p data-i18n="hero_sub">Buche direkt bei Salons in deinem Quartier &ndash; ohne Umwege.</p>
@@ -2014,49 +2251,45 @@ body{font-family:var(--font-body,system-ui);}
   </div>
 </div>
 
-<!-- ═══ TRENDING / NEW ON SOLEN CAROUSEL ═══ -->
-<section class="trending-section" id="trendingSection" aria-label="Neu und Trending auf solen">
-  <div class="trending-header fade-in-up">
+<!-- ═══ NEU AUF SOLEN CAROUSEL ═══ -->
+<div class="section-divider"></div>
+<section class="carousel-section reveal" id="neuAufSolenSection" aria-label="Neu auf solen">
+  <div class="carousel-header">
     <div>
-      <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Trending</div>
       <h2>Neu auf solen</h2>
+      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px">Frisch dabei — entdecke die neuesten Salons</p>
     </div>
-    <button class="trending-see-all" onclick="scrollToStores()" aria-label="Alle Salons anzeigen">
-      Alle ansehen
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </button>
-  </div>
-  <div class="trending-scroll" id="trendingScroll" role="list">
-    <!-- Populated by JS from stores data — skeleton shown on load -->
-    <div class="trending-card fade-in-up stagger-1" role="listitem" style="pointer-events:none">
-      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
-      <div class="trending-card-body">
-        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
-        <div class="skeleton-line w60"></div>
-      </div>
-    </div>
-    <div class="trending-card fade-in-up stagger-2" role="listitem" style="pointer-events:none">
-      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
-      <div class="trending-card-body">
-        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
-        <div class="skeleton-line w60"></div>
-      </div>
-    </div>
-    <div class="trending-card fade-in-up stagger-3" role="listitem" style="pointer-events:none">
-      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
-      <div class="trending-card-body">
-        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
-        <div class="skeleton-line w60"></div>
-      </div>
-    </div>
-    <div class="trending-card fade-in-up stagger-4" role="listitem" style="pointer-events:none">
-      <div class="trending-card-photo" style="background:var(--c-surface-alt)"></div>
-      <div class="trending-card-body">
-        <div class="skeleton-line w80 h20" style="margin-bottom:6px"></div>
-        <div class="skeleton-line w60"></div>
-      </div>
+    <div class="carousel-nav">
+      <button class="carousel-nav-btn" onclick="scrollCarousel('neuTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="carousel-nav-btn" onclick="scrollCarousel('neuTrack',1)" aria-label="Weiter"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
     </div>
   </div>
+  <div class="carousel-track" id="neuTrack">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ═══ IN DEINER NÄHE CAROUSEL ═══ -->
+<div class="section-divider"></div>
+<section class="carousel-section reveal" id="inDeinerNaeheSection" aria-label="In deiner Nähe">
+  <div class="carousel-header">
+    <div>
+      <h2>In deiner Nähe</h2>
+      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px">Salons in deinem Quartier</p>
+    </div>
+    <div class="carousel-nav">
+      <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',1)" aria-label="Weiter"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+    </div>
+  </div>
+  <div class="carousel-track" id="naeheTrack">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ═══ TRENDING (kept for backwards compat) ═══ -->
+<section class="trending-section" id="trendingSection" aria-label="Neu und Trending auf solen" style="display:none">
+  <div class="trending-scroll" id="trendingScroll"></div>
 </section>
 
 <!-- SALON SPOTLIGHT -->
@@ -4030,7 +4263,7 @@ async function finishSetup(){
 // SKELETON
 function renderSkeletons(n=4){
   const grid=document.getElementById('storesGrid');
-  grid.innerHTML=Array(n).fill(0).map(()=>`<div class="skeleton-card"><div class="skeleton-img" style="height:220px"></div><div class="skeleton-body"><div class="skeleton-line h20 w60" style="position:relative;overflow:hidden"></div><div class="skeleton-line w40" style="position:relative;overflow:hidden;height:10px"></div><div style="display:flex;gap:6px;margin:12px 0"><div class="skeleton-line" style="position:relative;overflow:hidden;width:80px;height:28px;border-radius:100px;margin:0"></div><div class="skeleton-line" style="position:relative;overflow:hidden;width:100px;height:28px;border-radius:100px;margin:0"></div></div><div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)"><div class="skeleton-line w40" style="position:relative;overflow:hidden;height:16px;margin:0"></div><div class="skeleton-line" style="position:relative;overflow:hidden;width:90px;height:36px;border-radius:50px;margin:0"></div></div></div></div>`).join('');
+  grid.innerHTML=Array(n).fill(0).map(()=>`<div class="skeleton-card"><div class="skeleton-img" style="aspect-ratio:16/9;height:auto"></div><div class="skeleton-body" style="padding:24px"><div style="display:flex;gap:8px;margin-bottom:10px"><div class="skeleton-line" style="width:70px;height:22px;border-radius:var(--r-pill);margin:0;position:relative;overflow:hidden"></div><div class="skeleton-line" style="width:60px;height:22px;border-radius:var(--r-pill);margin:0;position:relative;overflow:hidden"></div></div><div class="skeleton-line h20 w60" style="position:relative;overflow:hidden;margin-bottom:10px"></div><div class="skeleton-line w40" style="position:relative;overflow:hidden;height:12px;margin-bottom:16px"></div><div style="border-top:1px solid var(--border);padding-top:14px"><div class="skeleton-line" style="position:relative;overflow:hidden;width:100%;height:48px;border-radius:var(--r-pill);margin:0"></div></div></div></div>`).join('');
 }
 
 // STORES
@@ -4072,10 +4305,18 @@ async function loadStores(){
   restoreSort();
   // Clear dismissed recently-viewed on new session
   try{sessionStorage.getItem('solenSession')||(() => {sessionStorage.setItem('solenSession','1');localStorage.removeItem('solenViewedDismissed');})();}catch(e){}
+  // Preload salon photos, then render
+  await preloadAllSalonPhotos();
   renderStores();
   renderLastMinute();
   renderSpotlight();
+  renderNeuAufSolen();
+  renderInDeinerNaehe();
   checkURLStore();
+  // Init hero slideshow with dynamic photos
+  initHeroSlideshow();
+  // Init scroll reveal & lazy loading
+  setTimeout(()=>{ initScrollReveal(); initLazyImages(); }, 300);
 }
 
 function getStoreEmoji(type){
@@ -4093,28 +4334,467 @@ function getNextTimeSlots(n){
 }
 
 // SALON PHOTOS (BUG 5)
+// ══════════════════════════════════════════════════════════════
+// PHOTO MANAGEMENT SYSTEM — Dynamic salon photos
+// ══════════════════════════════════════════════════════════════
+
+// Cache for salon photos
+let _salonPhotosCache = {};
+
+async function loadSalonPhotos(salonId) {
+  if (_salonPhotosCache[salonId]) return _salonPhotosCache[salonId];
+  try {
+    const { data, error } = await sb.from('salon_photos')
+      .select('*')
+      .eq('salon_id', salonId)
+      .order('sort_order', { ascending: true });
+    if (!error && data) {
+      _salonPhotosCache[salonId] = data;
+      return data;
+    }
+  } catch (e) {}
+  return [];
+}
+
+function getSalonMainPhoto(store) {
+  const photos = _salonPhotosCache[store.id];
+  if (photos && photos.length > 0) {
+    const cover = photos.find(p => p.is_cover);
+    return cover ? cover.url : photos[0].url;
+  }
+  return null;
+}
+
+// Preload salon photos for all stores
+async function preloadAllSalonPhotos() {
+  try {
+    const { data, error } = await sb.from('salon_photos')
+      .select('*')
+      .order('sort_order', { ascending: true });
+    if (!error && data) {
+      data.forEach(p => {
+        if (!_salonPhotosCache[p.salon_id]) _salonPhotosCache[p.salon_id] = [];
+        _salonPhotosCache[p.salon_id].push(p);
+      });
+    }
+  } catch (e) {}
+}
+
+// Upload photos for a salon
+async function uploadSalonPhoto(salonId, file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  const allowed = ['jpg', 'jpeg', 'png', 'webp'];
+  if (!allowed.includes(ext)) { toast('Nur JPG, PNG oder WebP erlaubt', 'error'); return null; }
+  if (file.size > 10 * 1024 * 1024) { toast('Datei zu gross (max 10MB)', 'error'); return null; }
+
+  const fileName = `${salonId}/${Date.now()}_${Math.random().toString(36).slice(2,8)}.${ext}`;
+  const { data: uploadData, error: uploadErr } = await sb.storage
+    .from('salon-photos')
+    .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+  if (uploadErr) { toast('Upload fehlgeschlagen: ' + uploadErr.message, 'error'); return null; }
+
+  const { data: urlData } = sb.storage.from('salon-photos').getPublicUrl(fileName);
+  const publicUrl = urlData?.publicUrl;
+  if (!publicUrl) { toast('URL konnte nicht erstellt werden', 'error'); return null; }
+
+  // Check if this is the first photo (auto-set as cover)
+  const existing = _salonPhotosCache[salonId] || [];
+  const isCover = existing.length === 0;
+  const sortOrder = existing.length;
+
+  const { data: photoData, error: insertErr } = await sb.from('salon_photos').insert({
+    salon_id: salonId, url: publicUrl, storage_path: fileName,
+    is_cover: isCover, sort_order: sortOrder, uploaded_by: currentUser?.id || null
+  }).select().single();
+
+  if (insertErr) { toast('Foto konnte nicht gespeichert werden', 'error'); return null; }
+
+  // Update cache
+  if (!_salonPhotosCache[salonId]) _salonPhotosCache[salonId] = [];
+  _salonPhotosCache[salonId].push(photoData);
+
+  // Also update the store's photo_url if this is the cover
+  if (isCover) {
+    await sb.from('stores').update({ photo_url: publicUrl }).eq('id', salonId);
+    const store = allStores.find(s => s.id === salonId);
+    if (store) store.photo_url = publicUrl;
+  }
+
+  return photoData;
+}
+
+async function deleteSalonPhoto(photoId, salonId) {
+  const photos = _salonPhotosCache[salonId] || [];
+  const photo = photos.find(p => p.id === photoId);
+  if (!photo) return;
+
+  // Delete from storage
+  if (photo.storage_path) {
+    await sb.storage.from('salon-photos').remove([photo.storage_path]);
+  }
+
+  // Delete from DB
+  await sb.from('salon_photos').delete().eq('id', photoId);
+
+  // Update cache
+  _salonPhotosCache[salonId] = photos.filter(p => p.id !== photoId);
+
+  // If deleted photo was cover, make next one cover
+  if (photo.is_cover && _salonPhotosCache[salonId].length > 0) {
+    const newCover = _salonPhotosCache[salonId][0];
+    await sb.from('salon_photos').update({ is_cover: true }).eq('id', newCover.id);
+    newCover.is_cover = true;
+    await sb.from('stores').update({ photo_url: newCover.url }).eq('id', salonId);
+    const store = allStores.find(s => s.id === salonId);
+    if (store) store.photo_url = newCover.url;
+  }
+
+  toast('Foto gelöscht', 'info');
+}
+
+async function setCoverPhoto(photoId, salonId) {
+  const photos = _salonPhotosCache[salonId] || [];
+
+  // Unset all covers
+  for (const p of photos) {
+    if (p.is_cover) {
+      await sb.from('salon_photos').update({ is_cover: false }).eq('id', p.id);
+      p.is_cover = false;
+    }
+  }
+
+  // Set new cover
+  const photo = photos.find(p => p.id === photoId);
+  if (photo) {
+    await sb.from('salon_photos').update({ is_cover: true }).eq('id', photoId);
+    photo.is_cover = true;
+    await sb.from('stores').update({ photo_url: photo.url }).eq('id', salonId);
+    const store = allStores.find(s => s.id === salonId);
+    if (store) store.photo_url = photo.url;
+  }
+
+  toast('Cover-Foto aktualisiert', 'success');
+}
+
+async function reorderSalonPhotos(salonId, orderedIds) {
+  const photos = _salonPhotosCache[salonId] || [];
+  for (let i = 0; i < orderedIds.length; i++) {
+    const p = photos.find(x => x.id === orderedIds[i]);
+    if (p) {
+      p.sort_order = i;
+      await sb.from('salon_photos').update({ sort_order: i }).eq('id', orderedIds[i]);
+    }
+  }
+  _salonPhotosCache[salonId] = photos.sort((a, b) => a.sort_order - b.sort_order);
+}
+
+// Render photo manager UI for salon dashboard
+function renderPhotoManager(salonId) {
+  const photos = _salonPhotosCache[salonId] || [];
+  const hasPhotos = photos.length > 0;
+
+  return `
+    <div class="photo-manager" id="photoManager_${salonId}">
+      <div class="photo-manager-header">
+        <h3>Fotos verwalten</h3>
+        <button class="photo-manager-upload-btn" onclick="triggerPhotoUpload('${salonId}')">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Fotos hochladen
+        </button>
+      </div>
+      <input type="file" id="photoUploadInput_${salonId}" style="display:none" accept="image/jpeg,image/png,image/webp" multiple onchange="handlePhotoUpload('${salonId}', this.files)">
+      <div id="photoUploadProgress_${salonId}" style="display:none">
+        <div class="photo-upload-progress"><div class="photo-upload-progress-bar" id="photoProgressBar_${salonId}"></div></div>
+        <p style="font-size:.82rem;color:var(--c-text-muted);margin-top:6px" id="photoProgressText_${salonId}">Hochladen...</p>
+      </div>
+      ${hasPhotos ? `
+        <div class="photo-grid" id="photoGrid_${salonId}">
+          ${photos.map(p => `
+            <div class="photo-grid-item ${p.is_cover ? 'is-cover' : ''}" draggable="true" data-photo-id="${p.id}"
+              ondragstart="photoDragStart(event,'${p.id}')" ondragover="photoDragOver(event)" ondragleave="photoDragLeave(event)"
+              ondrop="photoDrop(event,'${salonId}','${p.id}')">
+              ${p.is_cover ? '<span class="cover-badge">Cover</span>' : ''}
+              <img src="${p.url}" alt="Salon Foto" loading="lazy">
+              <div class="photo-actions">
+                ${!p.is_cover ? `<button class="photo-action-btn" onclick="event.stopPropagation();setCoverAndRefresh('${p.id}','${salonId}')" title="Als Cover setzen">&#9733;</button>` : ''}
+                <button class="photo-action-btn delete" onclick="event.stopPropagation();confirmDeletePhoto('${p.id}','${salonId}')" title="Löschen">&#10005;</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <p style="font-size:.78rem;color:var(--c-text-muted);margin-top:12px">Drag & Drop zum Sortieren · Hover für Aktionen · Erstes Foto wird automatisch als Cover gesetzt</p>
+      ` : `
+        <div class="photo-upload-zone" id="photoDropZone_${salonId}"
+          onclick="triggerPhotoUpload('${salonId}')"
+          ondragover="event.preventDefault();this.classList.add('drag-active')"
+          ondragleave="this.classList.remove('drag-active')"
+          ondrop="event.preventDefault();this.classList.remove('drag-active');handlePhotoUpload('${salonId}',event.dataTransfer.files)">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Fotos hier ablegen oder klicken</p>
+          <span>JPG, PNG oder WebP · Max. 10 MB pro Bild</span>
+        </div>
+      `}
+    </div>`;
+}
+
+function triggerPhotoUpload(salonId) {
+  document.getElementById('photoUploadInput_' + salonId)?.click();
+}
+
+async function handlePhotoUpload(salonId, files) {
+  if (!files || files.length === 0) return;
+  const progressWrap = document.getElementById('photoUploadProgress_' + salonId);
+  const progressBar = document.getElementById('photoProgressBar_' + salonId);
+  const progressText = document.getElementById('photoProgressText_' + salonId);
+  if (progressWrap) progressWrap.style.display = 'block';
+
+  const total = files.length;
+  let done = 0;
+
+  for (const file of files) {
+    if (progressText) progressText.textContent = `Hochladen ${done + 1} / ${total}...`;
+    if (progressBar) progressBar.style.width = ((done / total) * 100) + '%';
+    await uploadSalonPhoto(salonId, file);
+    done++;
+    if (progressBar) progressBar.style.width = ((done / total) * 100) + '%';
+  }
+
+  if (progressText) progressText.textContent = `${done} Foto${done !== 1 ? 's' : ''} hochgeladen!`;
+  if (progressBar) progressBar.style.width = '100%';
+  setTimeout(() => { if (progressWrap) progressWrap.style.display = 'none'; }, 2000);
+
+  // Refresh photo manager
+  refreshPhotoManager(salonId);
+  renderStores();
+}
+
+function refreshPhotoManager(salonId) {
+  const container = document.getElementById('photoManager_' + salonId);
+  if (container) {
+    container.outerHTML = renderPhotoManager(salonId);
+  }
+}
+
+function confirmDeletePhoto(photoId, salonId) {
+  const dialog = document.createElement('div');
+  dialog.className = 'confirm-dialog';
+  dialog.innerHTML = `
+    <div class="confirm-dialog-content">
+      <h3>Foto löschen?</h3>
+      <p>Dieses Foto wird unwiderruflich gelöscht.</p>
+      <div class="confirm-dialog-actions">
+        <button class="confirm-dialog-cancel" onclick="this.closest('.confirm-dialog').remove()">Abbrechen</button>
+        <button class="confirm-dialog-delete" onclick="execDeletePhoto('${photoId}','${salonId}');this.closest('.confirm-dialog').remove()">Löschen</button>
+      </div>
+    </div>`;
+  document.body.appendChild(dialog);
+}
+
+async function execDeletePhoto(photoId, salonId) {
+  await deleteSalonPhoto(photoId, salonId);
+  refreshPhotoManager(salonId);
+  renderStores();
+}
+
+async function setCoverAndRefresh(photoId, salonId) {
+  await setCoverPhoto(photoId, salonId);
+  refreshPhotoManager(salonId);
+  renderStores();
+}
+
+// Drag & drop for photo reordering
+let _dragPhotoId = null;
+function photoDragStart(e, photoId) {
+  _dragPhotoId = photoId;
+  e.target.closest('.photo-grid-item')?.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function photoDragOver(e) {
+  e.preventDefault();
+  e.target.closest('.photo-grid-item')?.classList.add('drag-over');
+}
+function photoDragLeave(e) {
+  e.target.closest('.photo-grid-item')?.classList.remove('drag-over');
+}
+async function photoDrop(e, salonId, targetPhotoId) {
+  e.preventDefault();
+  const targetEl = e.target.closest('.photo-grid-item');
+  if (targetEl) targetEl.classList.remove('drag-over');
+  document.querySelectorAll('.photo-grid-item.dragging').forEach(el => el.classList.remove('dragging'));
+
+  if (!_dragPhotoId || _dragPhotoId === targetPhotoId) return;
+
+  const photos = _salonPhotosCache[salonId] || [];
+  const ids = photos.map(p => p.id);
+  const fromIdx = ids.indexOf(_dragPhotoId);
+  const toIdx = ids.indexOf(targetPhotoId);
+  if (fromIdx === -1 || toIdx === -1) return;
+
+  ids.splice(fromIdx, 1);
+  ids.splice(toIdx, 0, _dragPhotoId);
+
+  await reorderSalonPhotos(salonId, ids);
+  refreshPhotoManager(salonId);
+  _dragPhotoId = null;
+}
+
+// Detail page photo switching
+function switchDetailPhoto(thumb, url) {
+  document.querySelectorAll('.salon-detail-gallery-thumb').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+  const heroImg = thumb.closest('.modal')?.querySelector('.salon-detail-hero img') || document.querySelector('.salon-detail-hero img');
+  if (heroImg) { heroImg.src = url; heroImg.onclick = function() { openPhotoLightbox(url); }; }
+}
+
+// Photo Lightbox (salon detail photos)
+function openPhotoLightbox(url) {
+  let lb = document.getElementById('photoLightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'photoLightbox';
+    lb.className = 'lightbox';
+    lb.innerHTML = '<button class="lightbox-close" onclick="closePhotoLightbox()">&times;</button><img src="" alt="">';
+    lb.onclick = function(e) { if (e.target === lb) closePhotoLightbox(); };
+    document.body.appendChild(lb);
+  }
+  lb.querySelector('img').src = url;
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closePhotoLightbox() {
+  const lb = document.getElementById('photoLightbox');
+  if (lb) lb.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Hero slideshow with dynamic salon photos
+let _heroSlideIdx = 0;
+let _heroSlideInterval = null;
+async function initHeroSlideshow() {
+  await preloadAllSalonPhotos();
+  const slideshow = document.getElementById('heroSlideshow');
+  if (!slideshow) return;
+
+  // Collect cover photos from all salons
+  const coverPhotos = [];
+  for (const salonId in _salonPhotosCache) {
+    const photos = _salonPhotosCache[salonId];
+    const cover = photos.find(p => p.is_cover) || photos[0];
+    if (cover) coverPhotos.push(cover.url);
+  }
+  // Fallback to store photo_urls if no uploaded photos
+  if (coverPhotos.length < 3) {
+    allStores.forEach(s => {
+      if (s.photo_url && !coverPhotos.includes(s.photo_url)) coverPhotos.push(s.photo_url);
+    });
+  }
+  if (coverPhotos.length < 2) return; // Not enough for slideshow
+
+  const photos = coverPhotos.slice(0, 6);
+
+  slideshow.innerHTML = photos.map((url, i) =>
+    `<div class="hero-bg-slide ${i === 0 ? 'active' : ''}"><img src="${url}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" width="1600" height="900" style="width:100%;height:100%;object-fit:cover"></div>`
+  ).join('') + '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(13,13,13,0.85) 0%,rgba(13,13,13,0.4) 50%,rgba(13,13,13,0.2) 100%);z-index:1"></div>';
+
+  _heroSlideInterval = setInterval(() => {
+    const slides = slideshow.querySelectorAll('.hero-bg-slide');
+    if (slides.length < 2) return;
+    slides[_heroSlideIdx].classList.remove('active');
+    _heroSlideIdx = (_heroSlideIdx + 1) % slides.length;
+    slides[_heroSlideIdx].classList.add('active');
+  }, 5000);
+}
+
+// Scroll reveal observer
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible')); return; }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// Lazy image loading
+function initLazyImages() {
+  if (!('IntersectionObserver' in window)) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+        img.classList.add('loaded');
+        observer.unobserve(img);
+      }
+    });
+  }, { rootMargin: '200px' });
+  document.querySelectorAll('img[data-src], .lazy-img').forEach(img => observer.observe(img));
+}
+
+// Render photo manager in dashboard Fotos tab
+async function renderDashPhotoManager(salonId) {
+  const container = document.getElementById('dashTabFotos');
+  if (!container) return;
+  // Ensure photos are loaded
+  if (!_salonPhotosCache[salonId]) await loadSalonPhotos(salonId);
+  container.innerHTML = renderPhotoManager(salonId);
+}
+
+// Carousel scroll helper
+function scrollCarousel(trackId, direction) {
+  const track = document.getElementById(trackId);
+  if (!track) return;
+  const cardWidth = track.querySelector('.store-card')?.offsetWidth || 340;
+  track.scrollBy({ left: direction * (cardWidth + 24), behavior: 'smooth' });
+}
+
+// Render "Neu auf solen" carousel
+function renderNeuAufSolen() {
+  const track = document.getElementById('neuTrack');
+  if (!track) return;
+  // Sort by most recently added (assuming higher ID = newer, or use created_at if available)
+  const newest = [...allStores].sort((a, b) => (b.id || 0) - (a.id || 0)).slice(0, 8);
+  if (newest.length === 0) { document.getElementById('neuAufSolenSection')?.style.setProperty('display', 'none'); return; }
+  track.innerHTML = newest.map(s => renderStoreCard(s)).join('');
+}
+
+// Render "In deiner Nähe" carousel
+function renderInDeinerNaehe() {
+  const track = document.getElementById('naeheTrack');
+  if (!track) return;
+  let nearby;
+  if (userLat && userLng) {
+    nearby = [...allStores].sort((a, b) => {
+      const da = haversine(userLat, userLng, a.lat || 47.56, a.lng || 7.59);
+      const db = haversine(userLat, userLng, b.lat || 47.56, b.lng || 7.59);
+      return da - db;
+    }).slice(0, 8);
+  } else {
+    // Random selection if no location
+    nearby = [...allStores].sort(() => Math.random() - 0.5).slice(0, 8);
+  }
+  if (nearby.length === 0) { document.getElementById('inDeinerNaeheSection')?.style.setProperty('display', 'none'); return; }
+  track.innerHTML = nearby.map(s => renderStoreCard(s)).join('');
+}
+
+// ═══ END PHOTO MANAGEMENT SYSTEM ═══
+
 function getSalonPhoto(store){
+  // Priority 1: Dynamic uploaded cover photo from salon_photos
+  const dynamicPhoto = getSalonMainPhoto(store);
+  if(dynamicPhoto) return dynamicPhoto;
+  // Priority 2: Store's own photo_url from DB
   if(store.photo_url)return store.photo_url;
   if(store.image_url)return store.image_url;
-  const photos={
-    'barbershop':'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80',
-    'barber':'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80',
-    'Barbershop':'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80',
-    'hair':'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80',
-    'hairsalon':'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80',
-    'Friseursalon':'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80',
-    'nails':'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80',
-    'Nagelstudio':'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80',
-    'spa':'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80',
-    'Spa':'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80',
-    'makeup':'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80',
-    'Make-up':'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80',
-    'eyebrows':'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80',
-    'cosmetik':'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80',
-    'default':'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&q=80'
-  };
+  // Priority 3: Category-based fallback (soft warm placeholder)
   const cat=store.cat||store.type||'';
-  return photos[cat]||photos['default'];
+  return '';  // Return empty — card will show elegant fallback
+}
+function getSalonPhotoOrFallback(store){
+  const photo = getSalonPhoto(store);
+  if(photo) return photo;
+  // Warm neutral fallback
+  return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="338" viewBox="0 0 600 338"><rect fill="%23F3EEE6" width="600" height="338"/><text x="300" y="160" text-anchor="middle" font-family="system-ui" font-size="16" fill="%238C7E6F">Foto hinzufügen</text><text x="300" y="185" text-anchor="middle" font-family="system-ui" font-size="32" fill="%23D4AF77">📷</text></svg>');
 }
 
 function getPriceRange(s){const c=(s.cat||'').toLowerCase();if(c.includes('barbershop'))return 'ab CHF 25';if(c.includes('friseursalon')||c.includes('coiffeur'))return 'ab CHF 45';if(c.includes('nagelstudio')||c.includes('nail'))return 'ab CHF 35';if(c.includes('make-up')||c.includes('kosmetik'))return 'ab CHF 80';if(c.includes('spa')||c.includes('wellness'))return 'ab CHF 60';if(c.includes('braids')||c.includes('afro'))return 'ab CHF 50';if(c.includes('augenbrauen')||c.includes('wimpern'))return 'ab CHF 30';return 'ab CHF 35';};
@@ -4162,30 +4842,38 @@ function getOpenStatus(s){
 function renderStoreCard(s){
   const svcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
   const minPrice=svcs.length?Math.min(...svcs.map(x=>x.price)):null;
-  const priceDisplay=s.price_range?s.price_range:(minPrice?'ab CHF '+minPrice:'ab CHF 30');
-  const photoUrl=getSalonPhoto(s);
+  const priceDisplay=minPrice?'ab CHF '+minPrice:(s.price_range||'ab CHF 30');
+  const photoUrl=getSalonPhotoOrFallback(s);
+  const hasDynamicPhoto = !!getSalonPhoto(s);
   const avgR=parseFloat(s.avg_rating)||0;
   const revCount=parseInt(s.review_count)||0;
   const catName=getTypeName(s.cat||s.type||'');
   const quartier=extractQuartier(s.address||'Basel');
-  const ratingHtml=avgR>0?'<span class="card-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--c-highlight)" stroke="var(--c-highlight)" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> '+avgR.toFixed(1)+(revCount>0?' <span style="color:var(--c-text-muted);font-weight:500">('+revCount+')</span>':'')+'</span>':'';
+  const distHtml=userLat&&userLng&&s.lat&&s.lng?'<span style="color:var(--c-text-muted);font-size:.82rem">'+haversine(userLat,userLng,s.lat,s.lng).toFixed(1)+' km</span>':'';
+  const ratingHtml=avgR>0?'<span class="card-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF77" stroke="#D4AF77" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> '+avgR.toFixed(1)+(revCount>0?' <span style="color:var(--c-text-muted);font-weight:500">('+revCount+')</span>':'')+'</span>':'';
   // Featured/deals tags
   const isEmpf=typeof isEmpfohlen==='function'&&isEmpfohlen(s);
-  const tagsHtml='<div class="store-card-tags">'+(isEmpf?'<span class="store-featured-tag">Empfohlen</span>':'')+'<span class="store-quartier-badge">'+quartier+'</span><span class="store-cat-label">'+catName+'</span></div>';
   // Service preview rows (up to 3 services)
   const previewSvcs=svcs.slice(0,3);
+  const svcTagsHtml=svcs.length>0?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+svcs.slice(0,3).map(sv=>'<span style="font-size:.75rem;padding:3px 10px;border-radius:var(--r-pill);border:1px solid var(--c-border);color:var(--c-text-muted)">'+sv.name+'</span>').join('')+'</div>':'';
   const svcPreviewHtml=previewSvcs.length?'<div class="store-card-services">'+previewSvcs.map(sv=>
     '<div class="store-card-svc-row"><span class="store-card-svc-name">'+sv.name+'</span><span class="store-card-svc-meta"><span class="store-card-svc-dur">'+sv.duration+' Min.</span><span class="store-card-svc-price">CHF '+sv.price+'</span></span></div>'
   ).join('')+'</div>'+(svcs.length>3?'<div class="store-card-see-all"><button class="store-card-see-all-btn" onclick="event.stopPropagation();openStore(\''+s.id+'\')">'+t('see_all_services')+' &rarr;</button></div>':''):'';
+
   return'<div class="store-card" onclick="openStore(\''+s.id+'\')" tabindex="0" role="link" aria-label="'+s.name+' besuchen">'+
-    '<div class="store-card-photo"><img src="'+photoUrl+'" alt="'+s.name+'" loading="lazy" width="400" height="267"></div>'+
+    '<div class="store-card-photo">'+
+      '<img src="'+photoUrl+'" alt="'+s.name+'" loading="lazy" width="600" height="338">'+
+      (isEmpf?'<span class="empfohlen-badge">Empfohlen</span>':'')+
+      '<button class="fav-btn'+(isFav(s.id)?' is-fav':'')+'" data-sid="'+s.id+'" onclick="event.stopPropagation();toggleFav(\''+s.id+'\')" aria-label="Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="'+(isFav(s.id)?'currentColor':'none')+'" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>'+
+      (s.is_verified?'<span class="verified-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Verifiziert</span>':'')+
+    '</div>'+
     '<div class="store-card-body">'+
-      tagsHtml+
-      '<div class="store-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+s.name+'</div>'+
-      '<div class="store-card-meta">'+ratingHtml+'<span class="store-price-range">'+priceDisplay+'</span></div>'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="store-quartier-badge">'+quartier+'</span><span class="store-cat-label">'+catName+'</span></div>'+
+      '<div class="store-name">'+s.name+'</div>'+
+      '<div class="store-card-meta" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'+ratingHtml+distHtml+'<span class="store-price-range" style="color:var(--c-accent);font-weight:700">'+priceDisplay+'</span></div>'+
     '</div>'+
     svcPreviewHtml+
-    '<div style="padding:0 20px 16px"><button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore(\''+s.id+'\'),null)" style="width:100%">'+t('btn_book_appointment')+'</button></div>'+
+    '<div style="padding:0 24px 20px"><button class="btn-book" onclick="event.stopPropagation();openBookingModal(findStore(\''+s.id+'\'),null)" style="width:100%">'+t('btn_book_appointment')+'</button></div>'+
   '</div>';
 }
 function findStore(id){return allStores.find(x=>x.id===id);}
@@ -4550,10 +5238,17 @@ async function openStore(storeId){
   const avgR=parseFloat(s.avg_rating)||0;
   const revCount=parseInt(s.review_count)||0;
 
+  // Load salon photos from DB
+  const salonPhotos = await loadSalonPhotos(storeId);
+  const mainPhoto = salonPhotos.find(p=>p.is_cover) || salonPhotos[0] || null;
+  const heroPhotoUrl = mainPhoto ? mainPhoto.url : photoUrl;
+  const galleryPhotos = salonPhotos.length > 1 ? salonPhotos : [];
+
   document.getElementById('storeDetailContent').innerHTML=`
-    <div class="store-detail-img-wrap">
-      <img class="store-detail-img" src="${photoUrl}" alt="${s.name}">
+    <div class="salon-detail-hero" onclick="openPhotoLightbox('${heroPhotoUrl}')">
+      <img class="store-detail-img" src="${heroPhotoUrl}" alt="${s.name}" style="cursor:zoom-in">
     </div>
+    ${galleryPhotos.length > 0 ? `<div class="salon-detail-gallery">${galleryPhotos.map((p,i)=>`<div class="salon-detail-gallery-thumb ${i===0||(mainPhoto&&p.id===mainPhoto.id)?'active':''}" onclick="switchDetailPhoto(this,'${p.url}')"><img src="${p.url}" alt="${s.name} Foto ${i+1}" loading="lazy"></div>`).join('')}</div>` : ''}
     <div style="padding:24px 24px 16px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:0">
@@ -6144,7 +6839,8 @@ async function renderSalonDashboard(){
       <button class="admin-tab" onclick="showDashTab(this,'dashTabMitarbeiter','${salon.id}','${salon.id}');setTimeout(()=>renderStaffCommission('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Mitarbeiter</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabMarketing','${salon.id}','${salon.id}');setTimeout(()=>renderMarketingBlast('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Marketing</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabInventar','${salon.id}','${salon.id}');setTimeout(()=>renderInventory('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Inventar</button>
-      <button class="admin-tab" onclick="showDashTab(this,'dashTabGalerie','${salon.id}','${salon.id}');setTimeout(()=>renderGallery('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Galerie</button></div>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabFotos','${salon.id}','${salon.id}');setTimeout(()=>renderDashPhotoManager('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Fotos</button>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabGalerie','${salon.id}','${salon.id}');setTimeout(()=>renderGallery('${salon.id}'),50)">Galerie</button></div>
     <div id="dashTabBuchungen">
       ${allBookings.length>0?`<div class="bookings-list">${allBookings.map(b=>`<div class="booking-card">
         <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
@@ -6163,7 +6859,9 @@ async function renderSalonDashboard(){
     <div id="dashTabMitarbeiter" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Mitarbeiter…</div></div>
     <div id="dashTabMarketing" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Marketing…</div></div>
     <div id="dashTabInventar" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Inventar…</div></div>
-    <div id="dashTabGalerie" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Galerie…</div></div>/div>`;
+    <div id="dashTabFotos" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Fotos…</div></div>
+    <div id="dashTabGalerie" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Galerie…</div></div>`;
+
   if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);
   if(salon&&salon.id)loadDashHoursSection(salon.id);}
 }
