@@ -1923,6 +1923,68 @@ body{font-family:var(--font-body,system-ui);}
 .admin-pending-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1rem}.admin-salon-row{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:1rem}.admin-salon-row .salon-meta{flex:1}.admin-salon-row .salon-meta strong{display:block}.admin-salon-row .salon-meta span{font-size:.82rem;color:var(--c-text-muted)}.btn-approve{padding:.4rem .9rem;background:#2d7a4f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;margin-right:.35rem}.btn-reject{padding:.4rem .9rem;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
 .approved-notice{background:#e8f5e9;color:#2d7a4f;border-radius:8px;padding:.5rem .9rem;font-size:.85rem;margin-top:.5rem}
 
+/* ═══ STAFF CALENDAR (per-stylist week view) ═══ */
+.staff-calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.staff-cal-nav{display:flex;gap:.5rem;align-items:center}
+.staff-cal-nav button{padding:.3rem .7rem;border:1px solid var(--c-border);border-radius:8px;background:var(--c-surface);cursor:pointer;font-size:.82rem;color:var(--c-text)}
+.staff-week-grid{display:grid;grid-template-columns:80px repeat(7,1fr);gap:1px;background:var(--c-border);border-radius:12px;overflow:hidden;font-size:.78rem}
+.staff-week-col-hd{background:var(--c-surface-alt);padding:.5rem .3rem;text-align:center;font-weight:600;border-bottom:2px solid var(--c-border)}
+.staff-week-row-hd{background:var(--c-surface-alt);padding:.4rem .5rem;font-size:.75rem;color:var(--c-text-muted);display:flex;align-items:center}
+.staff-week-cell{background:var(--c-surface);min-height:38px;padding:.25rem;cursor:pointer;transition:background .15s;position:relative}
+.staff-week-cell:hover{background:rgba(155,29,48,.05)}
+.staff-week-cell.has-booking{background:rgba(78,205,196,.12);border-left:3px solid var(--c-accent,#4ECDC4)}
+.staff-week-cell.is-off{background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(0,0,0,.04) 4px,rgba(0,0,0,.04) 8px)}
+.staff-cal-booking-chip{font-size:.7rem;background:var(--c-accent,#4ECDC4);color:#fff;border-radius:4px;padding:.1rem .35rem;margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.staff-selector{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.staff-selector-chip{padding:.35rem .85rem;border-radius:20px;border:1.5px solid var(--c-border);background:var(--c-surface);cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s;color:var(--c-text)}
+.staff-selector-chip.active{border-color:var(--c-cta,#FF6B6B);color:var(--c-cta,#FF6B6B);background:rgba(255,107,107,.07)}
+
+/* ═══ CRM PHOTO UPLOAD ═══ */
+.crm-photo-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
+.crm-photo-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1.5px solid var(--c-border);cursor:pointer}
+.crm-photo-add{width:52px;height:52px;border-radius:8px;border:1.5px dashed var(--c-border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;color:var(--c-text-muted);background:var(--c-surface-alt)}
+
+/* ═══ INVENTORY INLINE FORM ═══ */
+.inv-container{padding:1.5rem}
+.inv-add-form{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:14px;padding:1rem;margin-bottom:1.25rem;display:grid;grid-template-columns:1fr 70px 70px 90px auto;gap:.5rem;align-items:end}
+.inv-add-form input{padding:.5rem .7rem;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.875rem;width:100%}
+.inv-add-form label{font-size:.75rem;font-weight:600;color:var(--c-text-muted);display:block;margin-bottom:.2rem}
+.inv-add-btn{padding:.5rem 1rem;background:var(--c-cta,#FF6B6B);color:#fff;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;font-weight:600}
+.inv-low-badge{background:#fff3f3;color:#dc2626;border:1px solid #f5c6c6;border-radius:20px;padding:.1rem .55rem;font-size:.72rem;font-weight:700;margin-left:.35rem}
+@media(max-width:600px){.inv-add-form{grid-template-columns:1fr 1fr}}
+
+/* ═══ BEFORE/AFTER GALLERY BADGES ═══ */
+.ba-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.ba-badge.before{background:#fff3e0;color:#e65100;border:1px solid #ffcc80}
+.ba-badge.after{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
+.ba-badge.gallery{background:var(--c-surface-alt);color:var(--c-text-muted);border:1px solid var(--c-border)}
+.gallery-photo-type{position:absolute;top:4px;left:4px}
+.gallery-item{position:relative}
+
+/* ═══ SMS REMINDERS SCHEDULER ═══ */
+.reminders-container{padding:1.5rem}
+.reminder-upcoming{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:12px;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.reminder-upcoming .rem-info strong{display:block;font-size:.9rem}
+.reminder-upcoming .rem-info span{font-size:.8rem;color:var(--c-text-muted)}
+.btn-send-reminder{padding:.35rem .8rem;background:var(--c-accent,#4ECDC4);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:600}
+.btn-send-reminder:disabled{opacity:.5;cursor:default}
+.rem-sent-badge{font-size:.75rem;color:var(--c-success,#2d7a4f);font-weight:600}
+
+/* ═══ GCAL SYNC BUTTON ═══ */
+.gcal-row{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
+.btn-gcal{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.1rem;border:1.5px solid #4285F4;color:#4285F4;background:none;border-radius:8px;cursor:pointer;font-size:.875rem;font-weight:600;transition:.15s}
+.btn-gcal:hover{background:#4285F4;color:#fff}
+.btn-ics{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.1rem;border:1.5px solid var(--c-border);color:var(--c-text);background:var(--c-surface);border-radius:8px;cursor:pointer;font-size:.875rem;font-weight:600;transition:.15s}
+.btn-ics:hover{border-color:var(--c-accent);color:var(--c-accent)}
+
+/* ═══ ANALYTICS REVENUE BAR ═══ */
+.rev-bar-row{display:flex;align-items:center;gap:.65rem;padding:.5rem 0;border-bottom:1px solid var(--c-border)}
+.rev-bar-row:last-child{border-bottom:none}
+.rev-bar-label{flex:1;font-weight:600;font-size:.875rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rev-bar-track{width:120px;height:8px;background:var(--c-border);border-radius:4px;overflow:hidden;flex-shrink:0}
+.rev-bar-fill{height:100%;background:linear-gradient(90deg,var(--c-cta,#FF6B6B),var(--c-accent,#4ECDC4));border-radius:4px}
+.rev-bar-value{width:80px;text-align:right;font-size:.82rem;color:var(--c-text-muted);flex-shrink:0}
+
 /* (Mobile responsiveness moved to end of stylesheet) */
 
 /* ── COUNTER COMPONENTS ── */
@@ -7331,7 +7393,9 @@ async function renderSalonDashboard(){
       <button class="admin-tab" onclick="showDashTab(this,'dashTabMarketing','${salon.id}','${salon.id}');setTimeout(()=>renderMarketingBlast('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Marketing</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabInventar','${salon.id}','${salon.id}');setTimeout(()=>renderInventory('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Inventar</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabFotos','${salon.id}','${salon.id}');setTimeout(()=>renderDashPhotoManager('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Fotos</button>
-      <button class="admin-tab" onclick="showDashTab(this,'dashTabGalerie','${salon.id}','${salon.id}');setTimeout(()=>renderGallery('${salon.id}'),50)">Galerie</button></div>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabGalerie','${salon.id}','${salon.id}');setTimeout(()=>renderGallery('${salon.id}'),50)">Galerie</button>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabSMS','${salon.id}','${salon.id}');setTimeout(()=>renderSMSReminders('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9A16 16 0 0 0 13 14.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> SMS</button>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabGCal','${salon.id}','${salon.id}');renderGCalTab('${salon.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Kalender</button></div>
     <div id="dashTabBuchungen">
       ${allBookings.length>0?`<div class="bookings-list">${allBookings.map(b=>`<div class="booking-card">
         <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
@@ -7351,7 +7415,9 @@ async function renderSalonDashboard(){
     <div id="dashTabMarketing" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Marketing…</div></div>
     <div id="dashTabInventar" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Inventar…</div></div>
     <div id="dashTabFotos" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Fotos…</div></div>
-    <div id="dashTabGalerie" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Galerie…</div></div>`;
+    <div id="dashTabGalerie" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Galerie…</div></div>
+    <div id="dashTabSMS" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade SMS-Erinnerungen…</div></div>
+    <div id="dashTabGCal" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Kalender-Sync…</div></div>`;
 
   if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);
   if(salon&&salon.id)loadDashHoursSection(salon.id);}
@@ -7397,15 +7463,16 @@ async function saveDashHours(salonId){
 function showDashTab(btn,tab,salonId,storeId){
   document.querySelectorAll('#dashTabs .admin-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['dashTabBuchungen','dashTabStatistiken','dashTabOeffnungszeiten','dashTabCRM','dashTabMitarbeiter','dashTabMarketing','dashTabInventar','dashTabGalerie'].forEach(id=>{
+  ['dashTabBuchungen','dashTabStatistiken','dashTabOeffnungszeiten','dashTabCRM','dashTabMitarbeiter','dashTabMarketing','dashTabInventar','dashTabFotos','dashTabGalerie','dashTabSMS','dashTabGCal'].forEach(id=>{
     const el=document.getElementById(id);
-    if(el)el.classList.toggle('hidden',id!==tab);
+    if(el){el.classList.toggle('hidden',id!==tab);el.style.display=id===tab?'':'none';}
   });
   if(tab==='dashTabStatistiken')renderAnalytics(salonId,storeId);
 }
 
+// ── ANALYTICS: bookings + revenue + peak hours + no-show rate ──
 async function renderAnalytics(salonId,storeId){
-  if(!currentUser){var el2=document.getElementById('analyticsContent');if(el2)el2.innerHTML='<p class="text-muted">Bitte anmelden, um Statistiken zu sehen.</p>';return;}
+  if(!currentUser){const el2=document.getElementById('analyticsContent');if(el2)el2.innerHTML='<p class="text-muted">Bitte anmelden, um Statistiken zu sehen.</p>';return;}
   const el=document.getElementById('analyticsContent');
   if(!el)return;
   el.innerHTML='<div class="spinner"></div>';
@@ -7424,39 +7491,71 @@ async function renderAnalytics(salonId,storeId){
   const noShowRate=all.length>0?((noShows.length/all.length)*100).toFixed(1):'0.0';
   const weekChange=thisWeek.length-lastWeek.length;
   const weekChangeTxt=weekChange>0?`+${weekChange}`:weekChange===0?'±0':`${weekChange}`;
-  // Top services
-  const svcMap={};
-  all.forEach(b=>{const s=b.service_name||'Unbekannt';svcMap[s]=(svcMap[s]||0)+1;});
-  const topServices=Object.entries(svcMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  // Top time slots
-  const timeMap={};
-  all.forEach(b=>{const t=b.booking_time||b.time||'–';timeMap[t]=(timeMap[t]||0)+1;});
-  const topTimes=Object.entries(timeMap).filter(e=>e[0]!=='–').sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // Revenue totals
+  const totalRevenue=all.filter(b=>b.status==='confirmed').reduce((s,b)=>s+parseFloat(b.service_price||b.service_revenue||0),0);
+  const weekRevenue=thisWeek.filter(b=>b.status==='confirmed').reduce((s,b)=>s+parseFloat(b.service_price||b.service_revenue||0),0);
+
+  // Revenue per service (most profitable)
+  const svcRevMap={};
+  all.filter(b=>b.status==='confirmed').forEach(b=>{
+    const k=b.service_name||'Unbekannt';
+    if(!svcRevMap[k])svcRevMap[k]={count:0,revenue:0};
+    svcRevMap[k].count++;
+    svcRevMap[k].revenue+=parseFloat(b.service_price||b.service_revenue||0);
+  });
+  const topRevServices=Object.entries(svcRevMap).sort((a,b)=>b[1].revenue-a[1].revenue).slice(0,6);
+  const maxRev=topRevServices[0]?topRevServices[0][1].revenue:1;
+
+  // Peak hours (bookings by hour)
+  const hourMap={};
+  all.forEach(b=>{
+    const t=b.booking_time||b.time||'';
+    const h=t.slice(0,2);
+    if(h&&h>='07'&&h<='21')hourMap[h]=(hourMap[h]||0)+1;
+  });
+  const peakHours=Object.entries(hourMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxHourCount=peakHours[0]?peakHours[0][1]:1;
+
   // Top customers
   const custMap={};
   all.forEach(b=>{const name=[b.customer_first,b.customer_last].filter(Boolean).join(' ')||b.customer_name||null;if(name)custMap[name]=(custMap[name]||0)+1;});
   const topCustomers=Object.entries(custMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const topSvc=topServices[0]?topServices[0][0]:'–';
-  const topTime=topTimes[0]?topTimes[0][0]:'–';
+  const topSvc=topRevServices[0]?topRevServices[0][0]:'–';
+  const topTime=peakHours[0]?peakHours[0][0]+':00 Uhr':'–';
   const rowStyle=(i,arr)=>`display:flex;align-items:center;justify-content:space-between;padding:8px 0;${i<arr.length-1?'border-bottom:1px solid var(--border)':''}`;
+
   el.innerHTML=`
     <div class="dashboard-stats" style="margin-top:16px">
       <div class="dash-stat"><span class="dash-stat-num">${all.length}</span><span class="dash-stat-label">Buchungen gesamt</span></div>
       <div class="dash-stat"><span class="dash-stat-num">${thisWeek.length}</span><span class="dash-stat-label">Diese Woche<br><small style="font-size:.72rem;color:var(--muted);font-weight:400">${weekChangeTxt} vs. Vorwoche</small></span></div>
       <div class="dash-stat"><span class="dash-stat-num">${noShowRate}%</span><span class="dash-stat-label">No-Show-Rate</span></div>
-      <div class="dash-stat"><span class="dash-stat-num" style="font-size:.95rem;padding-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${topSvc}</span><span class="dash-stat-label">Top Service</span></div>
-      <div class="dash-stat"><span class="dash-stat-num" style="font-size:1.2rem">${topTime}</span><span class="dash-stat-label">Top Zeitslot</span></div>
+      <div class="dash-stat"><span class="dash-stat-num" style="font-size:1rem">CHF ${totalRevenue.toFixed(0)}</span><span class="dash-stat-label">Gesamtumsatz</span></div>
+      <div class="dash-stat"><span class="dash-stat-num" style="font-size:1rem">CHF ${weekRevenue.toFixed(0)}</span><span class="dash-stat-label">Umsatz Woche</span></div>
     </div>
     ${!all.length?'<p class="text-muted" style="margin-top:20px;text-align:center">Noch keine Buchungsdaten vorhanden.</p>':''}
-    ${topServices.length?`<div class="section-hd" style="margin-top:24px"><h3>Top Services</h3></div>
+    ${topRevServices.length?`
+    <div class="section-hd" style="margin-top:24px"><h3>Rentabelste Services</h3></div>
     <div class="profile-card" style="padding:16px 20px">
-      ${topServices.map((s,i,arr)=>`<div style="${rowStyle(i,arr)}"><span style="font-weight:600">${s[0]}</span><span class="booking-status status-confirmed" style="min-width:36px;text-align:center">${s[1]}×</span></div>`).join('')}
+      ${topRevServices.map(([name,d])=>`
+        <div class="rev-bar-row">
+          <span class="rev-bar-label">${name}</span>
+          <div class="rev-bar-track"><div class="rev-bar-fill" style="width:${Math.round(d.revenue/maxRev*100)}%"></div></div>
+          <span class="rev-bar-value">CHF ${d.revenue.toFixed(0)} (${d.count}×)</span>
+        </div>`).join('')}
     </div>`:''}
-    ${topTimes.length?`<div class="section-hd" style="margin-top:24px"><h3>Beliebte Uhrzeiten</h3></div>
+    ${peakHours.length?`
+    <div class="section-hd" style="margin-top:24px"><h3>Stoßzeiten</h3></div>
     <div class="profile-card" style="padding:16px 20px">
-      ${topTimes.map((t,i,arr)=>`<div style="${rowStyle(i,arr)}"><span style="font-weight:600">${t[0]}</span><span class="booking-status status-confirmed" style="min-width:36px;text-align:center">${t[1]}×</span></div>`).join('')}
+      ${peakHours.map(([h,n])=>`
+        <div class="rev-bar-row">
+          <span class="rev-bar-label">${h}:00 – ${parseInt(h)+1}:00 Uhr</span>
+          <div class="rev-bar-track"><div class="rev-bar-fill" style="width:${Math.round(n/maxHourCount*100)}%"></div></div>
+          <span class="rev-bar-value">${n} Buchungen</span>
+        </div>`).join('')}
     </div>`:''}
-    ${topCustomers.length?`<div class="section-hd" style="margin-top:24px"><h3>Top Kunden</h3></div>
+    ${topCustomers.length?`
+    <div class="section-hd" style="margin-top:24px"><h3>Top Kunden</h3></div>
     <div class="profile-card" style="padding:16px 20px">
       ${topCustomers.map((c,i,arr)=>`<div style="${rowStyle(i,arr)}"><span style="font-weight:600">${c[0]}</span><span class="booking-status status-pending" style="min-width:36px;text-align:center">${c[1]}×</span></div>`).join('')}
     </div>`:''}
@@ -9871,22 +9970,283 @@ function renderCRMPanel(storeId){var panel=document.getElementById("crmClientLis
 function saveCRMNote(clientId,notes,storeId){if(!crmData[storeId]||!crmData[storeId][clientId])return;crmData[storeId][clientId].notes=notes;saveCRM();}
 async function loadStaffCommission(storeId){try{var sr=await supabase.from("staff").select("*").eq("store_id",storeId),br=await supabase.from("bookings").select("staff_id,price,status").eq("store_id",storeId).eq("status","confirmed"),staff=sr.data,bookings=br.data,cm={};if(bookings)bookings.forEach(function(b){if(b.staff_id)cm[b.staff_id]=(cm[b.staff_id]||0)+(b.price||0);});var panel=document.getElementById("staffCommissionList");if(!panel||!staff){return;}var tot=Object.values(cm).reduce(function(a,b){return a+b;},0)||1;panel.innerHTML=staff.length?staff.map(function(s){var rev=cm[s.id]||0,pct=Math.round(rev/tot*100);return'<div class="staff-commission-card"><div style="display:flex;justify-content:space-between"><strong>'+s.name+'</strong><span class="chf">CHF '+rev.toFixed(2)+'</span></div><div class="commission-bar"><div class="commission-bar-fill" style="width:'+pct+'%"></div></div><div style="font-size:.75rem;color:var(--c-text-muted)">'+pct+'% des Umsatzes</div></div>';}).join(""):'<div class="empty-state"><div class="empty-state-icon">👤</div><h3>Keine Mitarbeitende</h3></div>';}catch(e){console.error("Commission",e);}}
 async function sendMarketingBlast(){var sub=document.getElementById("blastSubject"),msg=document.getElementById("blastMessage");if(!sub||!msg||!sub.value||!msg.value){showToast&&showToast("Bitte alle Felder ausfüllen.");return;}var btn=document.getElementById("btnSendBlast");if(btn){btn.disabled=true;btn.textContent="Sendet...";}try{var storeId=window.currentStoreId||window.ownerStoreId,br=await supabase.from("bookings").select("customer_email,customer_name").eq("store_id",storeId),bk=br.data||[],emails=[...new Set(bk.filter(function(b){return b.customer_email;}).map(function(b){return b.customer_email;}))];if(!emails.length){showToast&&showToast("Keine E-Mails.");return;}var res=await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:emails.map(function(e){return{email:e};}),subject:sub.value,html:"<p>"+msg.value+"</p>",from:"Solen.ch"})});showToast&&showToast(res.ok?"Blast an "+emails.length+" Kunden gesendet!":"Sendefehler.");}catch(e){showToast&&showToast("Fehler: "+e.message);}finally{if(btn){btn.disabled=false;btn.textContent="Blast senden";}}}
-var inventoryData=JSON.parse(localStorage.getItem("solen_inventory")||"[]");
-function saveInventory(){localStorage.setItem("solen_inventory",JSON.stringify(inventoryData));}
-function renderInventory(){var tbl=document.getElementById("inventoryTableBody");if(!tbl)return;if(!inventoryData.length){tbl.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px">Noch keine Produkte.</td></tr>';return;}tbl.innerHTML=inventoryData.map(function(p,i){var low=p.stock<p.minStock;return'<tr><td>'+p.name+'</td><td class="'+( low?"stock-low":"stock-ok")+'">'+p.stock+'</td><td>'+p.minStock+'</td><td class="chf">CHF '+(p.price||0).toFixed(2)+'</td><td>'+(low?'<button class="btn-reorder" onclick="reorderProduct('+i+')">Nachbestellen</button>':"OK")+'</td></tr>';}).join("");}
-function addInventoryProduct(){var name=prompt("Produktname:");if(!name)return;var stock=parseInt(prompt("Bestand:"))||0,min=parseInt(prompt("Mindestbestand:"))||5,price=parseFloat(prompt("Preis CHF:"))||0;inventoryData.push({name:name,stock:stock,minStock:min,price:price,id:Date.now()});saveInventory();renderInventory();}
-function reorderProduct(i){var p=inventoryData[i];if(!p)return;showToast&&showToast("Nachbestellung: "+p.name);inventoryData[i].stock=p.minStock*3;saveInventory();renderInventory();}
+// ── INVENTORY: Supabase-backed (replaces old localStorage version) ──
+async function renderInventory(storeId){
+  const panel=document.getElementById('dashTabInventar');
+  if(!panel)return;
+  panel.innerHTML=`<div class="inv-container">
+    <div class="panel-header"><h3>Produktlager</h3></div>
+    <div class="inv-add-form">
+      <div><label>Produkt</label><input id="invName" placeholder="z.B. Haarfarbe Ash Blonde"></div>
+      <div><label>Bestand</label><input id="invStock" type="number" min="0" value="0"></div>
+      <div><label>Mindest</label><input id="invMin" type="number" min="0" value="5"></div>
+      <div><label>Preis CHF</label><input id="invPrice" type="number" min="0" step="0.01" value="0"></div>
+      <div style="display:flex;align-items:flex-end"><button class="inv-add-btn" onclick="addInventoryItem('${storeId}')">+ Hinzufügen</button></div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="inventory-table">
+        <thead><tr><th>Produkt</th><th>Bestand</th><th>Mindest</th><th>Preis</th><th>Status</th><th></th></tr></thead>
+        <tbody id="invTableBody"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--c-text-muted)">Lade Lager…</td></tr></tbody>
+      </table>
+    </div>
+  </div>`;
+  await loadInventoryItems(storeId);
+}
+
+async function loadInventoryItems(storeId){
+  const tbl=document.getElementById('invTableBody');if(!tbl)return;
+  const {data,error}=await sb.from('inventory').select('*').eq('salon_id',storeId).order('name');
+  if(error){tbl.innerHTML=`<tr><td colspan="6" style="color:#e74c3c;padding:1rem">${error.message}</td></tr>`;return;}
+  if(!data||!data.length){tbl.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--c-text-muted)">Noch keine Produkte. Füge oben das erste hinzu.</td></tr>';return;}
+  tbl.innerHTML=data.map(p=>{
+    const low=p.stock<p.min_stock;
+    return `<tr>
+      <td>${p.name}${low?'<span class="inv-low-badge">Niedrig</span>':''}</td>
+      <td class="${low?'stock-low':'stock-ok'}">${p.stock}</td>
+      <td>${p.min_stock}</td>
+      <td class="chf">CHF ${parseFloat(p.price||0).toFixed(2)}</td>
+      <td>${low?`<button class="btn-reorder" onclick="reorderInventoryItem('${p.id}',${p.min_stock},'${storeId}')">Nachbestellen</button>`:'<span style="color:#16a34a;font-weight:600">OK</span>'}</td>
+      <td><button style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:1rem" title="Löschen" onclick="deleteInventoryItem('${p.id}','${storeId}')">&#10005;</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function addInventoryItem(storeId){
+  const name=document.getElementById('invName')?.value?.trim();
+  if(!name){toast('Bitte Produktname eingeben','error');return;}
+  const stock=parseInt(document.getElementById('invStock')?.value)||0;
+  const minStock=parseInt(document.getElementById('invMin')?.value)||5;
+  const price=parseFloat(document.getElementById('invPrice')?.value)||0;
+  const {error}=await sb.from('inventory').insert({salon_id:storeId,name,stock,min_stock:minStock,price});
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  document.getElementById('invName').value='';
+  document.getElementById('invStock').value='0';
+  document.getElementById('invMin').value='5';
+  document.getElementById('invPrice').value='0';
+  toast('Produkt hinzugefügt','success');
+  loadInventoryItems(storeId);
+}
+
+async function reorderInventoryItem(id,minStock,storeId){
+  const newStock=minStock*3;
+  await sb.from('inventory').update({stock:newStock,updated_at:new Date().toISOString()}).eq('id',id);
+  toast('Nachbestellung erfasst','success');
+  loadInventoryItems(storeId);
+}
+
+async function deleteInventoryItem(id,storeId){
+  if(!confirm('Produkt löschen?'))return;
+  await sb.from('inventory').delete().eq('id',id);
+  loadInventoryItems(storeId);
+}
+
+// ── BEFORE/AFTER GALLERY: photo upload with type tagging ──
 var galleryItems=[];
-async function loadGalleryItems(storeId){try{var r=await supabase.from("stores").select("gallery").eq("id",storeId).single();galleryItems=(r.data&&r.data.gallery)||[];renderGalleryGrid();}catch(e){galleryItems=[];renderGalleryGrid();}}
-function renderGalleryGrid(){var grid=document.getElementById("galleryGrid");if(!grid)return;grid.innerHTML=galleryItems.map(function(url,i){return'<div class="gallery-item"><img src="'+url+'" loading="lazy"><button class="gallery-item-del" onclick="deleteGalleryItem('+i+')">×</button></div>';}).join("")+'<label class="gallery-add"><input type="file" accept="image/*" style="display:none" onchange="uploadGalleryPhoto(this)"><span style="font-size:24px">+</span><span>Foto</span></label>';}
-async function uploadGalleryPhoto(inp){var file=inp.files[0];if(!file)return;var storeId=window.currentStoreId||window.ownerStoreId,path=storeId+"/gallery/"+Date.now()+".jpg";showToast&&showToast("Lädt hoch...");try{var up=await supabase.storage.from("salon-photos").upload(path,file,{upsert:true});if(up.error)throw up.error;var pub=supabase.storage.from("salon-photos").getPublicUrl(path);galleryItems.push(pub.data.publicUrl);await supabase.from("stores").update({gallery:galleryItems}).eq("id",storeId);renderGalleryGrid();showToast&&showToast("Foto hochgeladen!");}catch(e){showToast&&showToast("Fehler: "+e.message);}}
-async function deleteGalleryItem(i){if(!confirm("Foto löschen?"))return;galleryItems.splice(i,1);var storeId=window.currentStoreId||window.ownerStoreId;await supabase.from("stores").update({gallery:galleryItems}).eq("id",storeId);renderGalleryGrid();}
+async function loadGalleryItems(storeId){
+  try{
+    const {data}=await sb.from('salon_photos').select('*').eq('salon_id',storeId).order('sort_order');
+    galleryItems=(data||[]);
+    renderGalleryGrid(storeId);
+  }catch(e){galleryItems=[];renderGalleryGrid(storeId);}
+}
+
+function renderGalleryGrid(storeId){
+  const grid=document.getElementById('galleryGrid');if(!grid)return;
+  const sid=storeId||window._currentGalleryStore||window.currentStoreId||window.ownerStoreId;
+  grid.innerHTML=galleryItems.map((p,i)=>{
+    const typeLabel={before:'Vorher',after:'Nachher',gallery:'Galerie',cover:'Cover'}[p.photo_type||'gallery']||'Galerie';
+    const typeClass=p.photo_type==='before'?'before':p.photo_type==='after'?'after':'gallery';
+    return `<div class="gallery-item">
+      <img src="${p.url}" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer" onclick="window.open('${p.url}','_blank')">
+      <div class="gallery-photo-type"><span class="ba-badge ${typeClass}">${typeLabel}</span></div>
+      <button class="gallery-item-del" onclick="deleteGalleryPhoto('${p.id}','${sid}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:.8rem">&times;</button>
+    </div>`;
+  }).join('')+
+  `<div style="display:flex;flex-direction:column;gap:.5rem">
+    ${['before','after','gallery'].map(type=>`
+    <label class="gallery-add" style="cursor:pointer;text-align:center;padding:.5rem;border:1.5px dashed var(--c-border);border-radius:8px;display:block">
+      <input type="file" accept="image/*" style="display:none" onchange="uploadGalleryPhotoTyped(this,'${sid}','${type}')">
+      <span style="font-size:.75rem;font-weight:600;color:var(--c-text-muted)">${type==='before'?'+ Vorher':type==='after'?'+ Nachher':'+ Galerie'}</span>
+    </label>`).join('')}
+  </div>`;
+}
+
+async function uploadGalleryPhotoTyped(inp,storeId,photoType){
+  const file=inp.files[0];if(!file)return;
+  const path=`${storeId}/gallery/${photoType}_${Date.now()}.jpg`;
+  toast('Lädt hoch…');
+  try{
+    const {error:upErr}=await sb.storage.from('salon-photos').upload(path,file,{upsert:true});
+    if(upErr)throw upErr;
+    const {data:{publicUrl}}=sb.storage.from('salon-photos').getPublicUrl(path);
+    await sb.from('salon_photos').insert({salon_id:storeId,url:publicUrl,storage_path:path,photo_type:photoType,sort_order:galleryItems.length});
+    toast('Foto hochgeladen','success');
+    loadGalleryItems(storeId);
+  }catch(e){toast('Fehler: '+e.message,'error');}
+}
+
+// Keep legacy uploadGalleryPhoto as alias
+async function uploadGalleryPhoto(inp){
+  const sid=window._currentGalleryStore||window.currentStoreId||window.ownerStoreId;
+  uploadGalleryPhotoTyped(inp,sid,'gallery');
+}
+
+async function deleteGalleryPhoto(photoId,storeId){
+  if(!confirm('Foto löschen?'))return;
+  const photo=galleryItems.find(p=>p.id===photoId);
+  if(photo?.storage_path){await sb.storage.from('salon-photos').remove([photo.storage_path]).catch(()=>{});}
+  await sb.from('salon_photos').delete().eq('id',photoId);
+  loadGalleryItems(storeId);
+}
+
+// Legacy deleteGalleryItem
+async function deleteGalleryItem(i){
+  const p=galleryItems[i];if(!p)return;
+  const sid=window._currentGalleryStore||window.currentStoreId||window.ownerStoreId;
+  deleteGalleryPhoto(p.id,sid);
+}
 async function loadPendingSalons(){var panel=document.getElementById("adminPendingList");if(!panel)return;try{var r=await supabase.from("stores").select("*").eq("status","pending").order("created_at",{ascending:false}),data=r.data;if(!data||!data.length){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon">✅</div><h3>Alle erledigt</h3></div>';return;}panel.innerHTML=data.map(function(s){return'<div class="admin-pending-card" id="pending-'+s.id+'"><strong>'+s.name+'</strong><div style="font-size:.85rem;color:var(--c-text-muted);margin:4px 0">'+(s.address||"")+' · '+(s.contact_email||"")+'</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" style="flex:1" onclick="approveStore(this,\''+ s.id+'\')">Genehmigen</button><button class="btn" style="flex:1;border-color:#dc2626;color:#dc2626" onclick="rejectStoreAdmin(this,\''+ s.id+'\')">Ablehnen</button></div></div>';}).join("");}catch(e){panel.innerHTML="Fehler: "+e.message;}}
 async function approveStore(btn,sid){await supabase.from("stores").update({status:"approved",approved_at:new Date().toISOString()}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#16a34a;font-weight:600">✓ Genehmigt</span>';showToast&&showToast("Salon genehmigt!");}
 async function rejectStoreAdmin(btn,sid){var reason=prompt("Ablehnungsgrund:")||"";await supabase.from("stores").update({status:"rejected",rejection_reason:reason}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#dc2626;font-weight:600">✗ Abgelehnt</span>';showToast&&showToast("Salon abgelehnt.");}
 async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await supabase.from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veröffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
 async function checkVerifiedStatus(storeId){var r=await supabase.from("bookings").select("id",{count:"exact"}).eq("store_id",storeId).eq("status","confirmed"),isVerified=(r.count||0)>=10;if(isVerified)await supabase.from("stores").update({is_verified:true}).eq("id",storeId);return isVerified;}
-async function exportIcal(storeId){var r=await supabase.from("bookings").select("*").eq("store_id",storeId).eq("status","confirmed"),data=r.data;if(!data||!data.length){showToast&&showToast("Keine Termine.");return;}var lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Solen.ch//DE"];data.forEach(function(b){var dt=(b.date||"20260101").replace(/-/g,""),tm=((b.time||"10:00").replace(/:/g,""))+"00";lines.push("BEGIN:VEVENT","UID:solen-"+b.id,"DTSTART:"+dt+"T"+tm,"SUMMARY:"+(b.service||"Termin")+" - "+(b.customer_name||"Kunde"),"END:VEVENT");});lines.push("END:VCALENDAR");var blob=new Blob([lines.join("\r\n")],{type:"text/calendar"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="solen-termine.ics";a.click();}
+// ── GOOGLE CALENDAR SYNC + iCal export ──
+async function exportIcal(storeId){
+  const {data}=await sb.from('bookings').select('*').eq('store_id',storeId).eq('status','confirmed');
+  if(!data||!data.length){toast('Keine bestätigten Termine.','error');return;}
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Solen.ch//DE','CALSCALE:GREGORIAN'];
+  data.forEach(b=>{
+    const dateStr=(b.booking_date||b.date||'').replace(/-/g,'');
+    const timeStr=(b.booking_time||b.time||'0900').replace(/:/g,'').padEnd(6,'0');
+    const dur=60; // default 60 min
+    const endTime=String(parseInt(timeStr.slice(0,2))*100+parseInt(timeStr.slice(2,4))+dur).padStart(4,'0');
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:solen-${b.id}@solen.ch`,
+      `DTSTART:${dateStr}T${timeStr}`,
+      `DTEND:${dateStr}T${endTime}00`,
+      `SUMMARY:${(b.service_name||b.service||'Termin')} – ${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||b.customer_name||'Kunde'}`,
+      `DESCRIPTION:Ref: ${b.reference||b.id}\\nTelefon: ${b.customer_phone||'–'}`,
+      'END:VEVENT'
+    );
+  });
+  lines.push('END:VCALENDAR');
+  const blob=new Blob([lines.join('\r\n')],{type:'text/calendar'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='solen-termine.ics';a.click();
+  toast(`${data.length} Termine als .ics exportiert`,'success');
+}
+
+function openInGoogleCalendar(storeId){
+  // Opens next upcoming confirmed booking in Google Calendar for quick add
+  sb.from('bookings').select('*').eq('store_id',storeId).eq('status','confirmed')
+    .gte('booking_date',new Date().toISOString().split('T')[0]).order('booking_date').limit(1)
+    .then(({data})=>{
+      if(!data||!data.length){toast('Keine bevorstehenden Termine.','error');return;}
+      const b=data[0];
+      const dateStr=(b.booking_date||'').replace(/-/g,'');
+      const timeStr=(b.booking_time||'0900').replace(/:/g,'').padEnd(6,'0');
+      const endH=String(parseInt(timeStr.slice(0,2))+1).padStart(2,'0');
+      const endTime=endH+timeStr.slice(2,4)+'00';
+      const title=encodeURIComponent(`${b.service_name||'Termin'} – ${b.customer_name||'Kunde'}`);
+      const gcalUrl=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateStr}T${timeStr}/${dateStr}T${endTime}&details=${encodeURIComponent('Gebucht via Solen.ch')}`;
+      window.open(gcalUrl,'_blank');
+    });
+}
+
+// ── GOOGLE CALENDAR TAB ──
+function renderGCalTab(storeId){
+  const panel=document.getElementById('dashTabGCal');
+  if(!panel)return;
+  panel.innerHTML=`<div style="padding:1.5rem">
+    <div class="panel-header"><h3>Kalender-Sync</h3></div>
+    <p style="font-size:.875rem;color:var(--c-text-muted);margin-bottom:1.25rem">
+      Exportiere deine bestätigten Termine in deinen Kalender oder füge sie direkt in Google Calendar hinzu.
+    </p>
+    <div class="gcal-row">
+      <button class="btn-gcal" onclick="openInGoogleCalendar('${storeId}')">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="#4285F4" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#4285F4" stroke-width="2"/><line x1="8" y1="2" x2="8" y2="6" stroke="#4285F4" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="#4285F4" stroke-width="2"/></svg>
+        Google Calendar öffnen
+      </button>
+      <button class="btn-ics" onclick="exportIcal('${storeId}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        .ics herunterladen
+      </button>
+    </div>
+    <div style="margin-top:1.5rem;background:var(--c-surface-alt);border-radius:12px;padding:1rem;font-size:.85rem;color:var(--c-text-muted)">
+      <strong>Tipp:</strong> Importiere die .ics-Datei in Apple Kalender, Outlook oder jede andere Kalender-App. Google Calendar: Einstellungen → Kalender importieren.
+    </div>
+    <div style="margin-top:1rem" id="gcalUpcomingList"><div class="spinner"></div></div>
+  </div>`;
+  // Show upcoming confirmed bookings as preview
+  sb.from('bookings').select('booking_date,booking_time,service_name,customer_name').eq('store_id',storeId)
+    .eq('status','confirmed').gte('booking_date',new Date().toISOString().split('T')[0])
+    .order('booking_date').limit(10)
+    .then(({data})=>{
+      const el=document.getElementById('gcalUpcomingList');if(!el)return;
+      if(!data||!data.length){el.innerHTML='<p style="color:var(--c-text-muted);font-size:.85rem">Keine bevorstehenden Termine.</p>';return;}
+      el.innerHTML='<h4 style="margin-bottom:.75rem">Bevorstehende Termine</h4>'+data.map(b=>
+        `<div style="display:flex;gap:.75rem;padding:.5rem 0;border-bottom:1px solid var(--c-border);font-size:.875rem">
+          <span style="min-width:90px;font-weight:600">${b.booking_date}</span>
+          <span style="min-width:50px">${b.booking_time||'–'}</span>
+          <span style="flex:1">${b.service_name||'Termin'}</span>
+          <span style="color:var(--c-text-muted)">${b.customer_name||'Kunde'}</span>
+        </div>`).join('');
+    });
+}
+
+// ── SMS REMINDER SCHEDULER ──
+async function renderSMSReminders(storeId){
+  const panel=document.getElementById('dashTabSMS');
+  if(!panel)return;
+  panel.innerHTML=`<div class="reminders-container">
+    <div class="panel-header"><h3>SMS-Erinnerungen</h3></div>
+    <p style="font-size:.875rem;color:var(--c-text-muted);margin-bottom:1.25rem">
+      Sende automatisch 24h vor dem Termin eine SMS-Erinnerung an Kunden.
+    </p>
+    <div id="reminderList"><div class="spinner"></div></div>
+  </div>`;
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  const tomorrowStr=tomorrow.toISOString().split('T')[0];
+  const {data:bookings}=await sb.from('bookings').select('id,customer_name,customer_phone,service_name,booking_date,booking_time,status')
+    .eq('store_id',storeId).eq('status','confirmed')
+    .gte('booking_date',new Date().toISOString().split('T')[0])
+    .order('booking_date').limit(20);
+  const {data:sentReminders}=await sb.from('sms_reminders').select('booking_id,status').eq('salon_id',storeId).eq('status','sent');
+  const sentIds=new Set((sentReminders||[]).map(r=>r.booking_id));
+  const list=document.getElementById('reminderList');
+  if(!list)return;
+  if(!bookings||!bookings.length){list.innerHTML='<div style="color:var(--c-text-muted);padding:1rem">Keine bevorstehenden Buchungen.</div>';return;}
+  list.innerHTML=bookings.map(b=>{
+    const isSent=sentIds.has(b.id);
+    const hasPhone=!!b.customer_phone;
+    return `<div class="reminder-upcoming">
+      <div class="rem-info">
+        <strong>${b.customer_name||'Kunde'}</strong>
+        <span>${b.service_name||'Termin'} · ${b.booking_date} ${b.booking_time||''} · ${b.customer_phone||'Keine Nummer'}</span>
+      </div>
+      ${isSent?'<span class="rem-sent-badge">&#10003; Gesendet</span>':
+        hasPhone?`<button class="btn-send-reminder" onclick="sendSMSReminder('${storeId}','${b.id}','${b.customer_phone}','${(b.customer_name||'').replace(/'/g,"\\'")}','${b.service_name||''}','${b.booking_date}','${b.booking_time||''}',this)">SMS senden</button>`:
+        '<span style="font-size:.78rem;color:var(--c-text-muted)">Keine Nummer</span>'}
+    </div>`;
+  }).join('');
+}
+
+async function sendSMSReminder(storeId,bookingId,phone,name,service,date,time,btn){
+  if(btn){btn.disabled=true;btn.textContent='Sendet…';}
+  const dateFormatted=new Date(date).toLocaleDateString('de-CH',{weekday:'short',day:'numeric',month:'numeric'});
+  const message=`Hallo ${name}, wir erinnern Sie an Ihren Termin: ${service} am ${dateFormatted} um ${time} Uhr. Bei Fragen: Solen.ch`;
+  try{
+    const r=await fetch('/api/send-sms',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({to:phone,message,from:'Solen.ch'})});
+    if(!r.ok)throw new Error('SMS-Fehler');
+    await sb.from('sms_reminders').insert({salon_id:storeId,booking_id:bookingId,phone,message,scheduled_for:new Date().toISOString(),sent_at:new Date().toISOString(),status:'sent'});
+    toast('SMS-Erinnerung gesendet','success');
+    if(btn)btn.replaceWith(Object.assign(document.createElement('span'),{className:'rem-sent-badge',textContent:'✓ Gesendet'}));
+  }catch(e){
+    toast('Fehler: '+e.message,'error');
+    if(btn){btn.disabled=false;btn.textContent='SMS senden';}
+  }
+}
 function trackEvent(name,props){try{if(!currentUser)return;if(typeof gtag==="function")gtag("event",name,props||{});supabase.from("analytics_events").insert({event:name,props:JSON.stringify(props||{}),ts:new Date().toISOString()}).then(function(){}).catch(function(){});}catch(e){}}
 document.addEventListener("click",function(e){var card=e.target.closest(".card");if(card&&card.dataset.storeId)trackEvent("salon_card_click",{store_id:card.dataset.storeId});});
 function initFilterPills(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});document.querySelectorAll(".filter-pill[data-q]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-q]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});}
@@ -9901,68 +10261,339 @@ function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementB
 try{window._crmNotes=JSON.parse(localStorage.getItem('solen_crm_notes')||'{}');}catch(e){window._crmNotes={};}
 try{window._crmAllergies=JSON.parse(localStorage.getItem('solen_crm_allergies')||'{}');}catch(e){window._crmAllergies={};}
 
+// ── CLIENT CRM: notes, allergies, past photos ──
 async function renderCRM(storeId){
   const panel=document.getElementById('dashTabCRM');
   if(!panel)return;
-  panel.innerHTML='<div class="crm-container"><div class="panel-header"><h3>Kundenkartei</h3></div><input id="crmSearch" class="crm-search" placeholder="Kunden suchen..." oninput="filterCRMClients()"><div id="crmClientList" class="crm-list"><div style="padding:2rem;text-align:center;color:var(--c-text-muted)">Lade Kunden...</div></div></div>';
-  const {data:bookings}=await window._sb.from('bookings').select('id,customer_name,customer_phone,service_name,booking_date,status').eq('store_id',storeId).order('booking_date',{ascending:false});
+  panel.innerHTML=`<div class="crm-container">
+    <div class="panel-header"><h3>Kundenkartei</h3></div>
+    <input id="crmSearch" class="crm-search" placeholder="Kunden suchen…" oninput="filterCRMClients()">
+    <div id="crmClientList" class="crm-list"><div style="padding:2rem;text-align:center;color:var(--c-text-muted)">Lade Kunden…</div></div>
+  </div>`;
+  const {data:bookings}=await sb.from('bookings').select('id,customer_name,customer_phone,service_name,booking_date,status,crm_photo_url').eq('store_id',storeId).order('booking_date',{ascending:false});
   const list=document.getElementById('crmClientList');
   if(!list)return;
   if(!bookings||!bookings.length){list.innerHTML='<div class="empty-state" style="padding:2rem;text-align:center;color:var(--c-text-muted)">Noch keine Kunden vorhanden.</div>';return;}
   const clients={};
-  bookings.forEach(b=>{const key=b.customer_phone||b.customer_name||'unbekannt';if(!clients[key])clients[key]={name:b.customer_name,phone:b.customer_phone,visits:[]};clients[key].visits.push(b);});
+  bookings.forEach(b=>{
+    const key=b.customer_phone||b.customer_name||'unbekannt';
+    if(!clients[key])clients[key]={name:b.customer_name,phone:b.customer_phone,visits:[]};
+    clients[key].visits.push(b);
+  });
   list.innerHTML=Object.entries(clients).map(([key,c])=>{
     const notes=(window._crmNotes[storeId]||{})[key]||'';
     const allergy=(window._crmAllergies[storeId]||{})[key]||'';
     const lastDate=c.visits[0]?new Date(c.visits[0].booking_date).toLocaleDateString('de-CH'):'';
-    return '<div class="crm-card" id="crmCard_'+encodeURIComponent(key)+'">'
-      +'<div class="crm-card-header"><div class="crm-avatar">'+(c.name||'?').charAt(0).toUpperCase()+'</div>'
-      +'<div class="crm-info"><strong>'+(c.name||'Unbekannt')+'</strong><span class="crm-phone">'+(c.phone||'')+'</span></div>'
-      +'<div class="crm-stats"><span class="crm-badge">'+c.visits.length+' Besuche</span><span class="crm-last">'+lastDate+'</span></div></div>'
-      +(allergy?'<div class="crm-allergy-warning"><span style="color:#e74c3c;font-weight:600">&#9888; Allergie:</span> '+allergy+'</div>':'')
-      +'<div class="crm-notes-row">'
-      +'<textarea class="crm-notes-input" placeholder="Notizen (Vorlieben, Haartyp...)" onchange="saveCRMNote(\''+storeId+'\',\''+key+'\',this.value)">'+notes+'</textarea>'
-      +'<input class="crm-allergy-input" placeholder="Allergien/Hinweise" value="'+allergy+'" onchange="saveCRMAllergy(\''+storeId+'\',\''+key+'\',this.value)">'
-      +'</div>'
-      +'<div class="crm-services">'+c.visits.slice(0,3).map(v=>'<span class="crm-service-chip">'+(v.service_name||'Service')+'</span>').join('')+'</div>'
-      +'</div>';
+    const photos=c.visits.filter(v=>v.crm_photo_url).map(v=>v.crm_photo_url);
+    const safeKey=encodeURIComponent(key).replace(/'/g,'%27');
+    return `<div class="crm-card" id="crmCard_${safeKey}">
+      <div class="crm-card-header">
+        <div class="crm-avatar">${(c.name||'?').charAt(0).toUpperCase()}</div>
+        <div class="crm-info"><strong>${c.name||'Unbekannt'}</strong><span class="crm-phone">${c.phone||''}</span></div>
+        <div class="crm-stats"><span class="crm-badge">${c.visits.length} Besuche</span><span class="crm-last">${lastDate}</span></div>
+      </div>
+      ${allergy?`<div class="crm-allergy-warning"><span style="color:#e74c3c;font-weight:600">&#9888; Allergie:</span> ${allergy}</div>`:''}
+      <div class="crm-notes-row">
+        <textarea class="crm-notes-input" placeholder="Notizen (Vorlieben, Haartyp, Farbnummer…)" onchange="saveCRMNote('${storeId}','${safeKey}',this.value)">${notes}</textarea>
+        <input class="crm-allergy-input" placeholder="Allergien / Hinweise (z.B. kein Ammoniak)" value="${allergy}" onchange="saveCRMAllergy('${storeId}','${safeKey}',this.value)">
+      </div>
+      <div class="crm-services">${c.visits.slice(0,4).map(v=>`<span class="crm-service-chip">${v.service_name||'Service'}</span>`).join('')}</div>
+      <div class="crm-photo-row">
+        ${photos.map(url=>`<img class="crm-photo-thumb" src="${url}" onclick="window.open('${url}','_blank')" title="Kundenfoto">`).join('')}
+        <label class="crm-photo-add" title="Foto hochladen">
+          +
+          <input type="file" accept="image/*" style="display:none" onchange="uploadCRMPhoto(this,'${storeId}','${c.visits[0]?.id||''}')">
+        </label>
+      </div>
+    </div>`;
   }).join('');
 }
 function filterCRMClients(){const q=(document.getElementById('crmSearch')?.value||'').toLowerCase();document.querySelectorAll('.crm-card').forEach(c=>{c.style.display=c.textContent.toLowerCase().includes(q)?'':'none';});}
 function saveCRMNote(sid,key,val){if(!window._crmNotes[sid])window._crmNotes[sid]={};window._crmNotes[sid][key]=val;try{localStorage.setItem('solen_crm_notes',JSON.stringify(window._crmNotes));}catch(e){}}
 function saveCRMAllergy(sid,key,val){if(!window._crmAllergies[sid])window._crmAllergies[sid]={};window._crmAllergies[sid][key]=val;try{localStorage.setItem('solen_crm_allergies',JSON.stringify(window._crmAllergies));}catch(e){}}
+async function uploadCRMPhoto(inp,storeId,bookingId){
+  const file=inp.files[0];if(!file)return;
+  const path=`crm/${storeId}/${bookingId||Date.now()}_${Date.now()}.jpg`;
+  toast('Lädt hoch…');
+  try{
+    const {error:upErr}=await sb.storage.from('salon-photos').upload(path,file,{upsert:true});
+    if(upErr)throw upErr;
+    const {data:{publicUrl}}=sb.storage.from('salon-photos').getPublicUrl(path);
+    if(bookingId){await sb.from('bookings').update({crm_photo_url:publicUrl}).eq('id',bookingId);}
+    toast('Foto gespeichert','success');
+    renderCRM(storeId);
+  }catch(e){toast('Fehler: '+e.message,'error');}
+}
+
+// ── STAFF MANAGEMENT: commission + per-stylist calendar ──
+let _staffCalWeekOffset=0; // weeks from now
+let _staffCalActiveName=null;
 
 async function renderStaffCommission(storeId){
   const panel=document.getElementById('dashTabMitarbeiter');
   if(!panel)return;
-  panel.innerHTML='<div class="staff-comm-container"><div class="panel-header"><h3>Mitarbeiter &amp; Provisionen</h3><button class="btn-add-staff-comm" onclick="openAddStaffComm(\''+storeId+'\')">+ Mitarbeiter</button></div><div id="staffCommList"></div><hr style="margin:1.5rem 0"><h4 style="margin-bottom:1rem">Abrechnungsübersicht</h4><div id="staffCommSummary"></div></div>';
+  panel.innerHTML=`
+    <div class="staff-comm-container">
+      <div class="panel-header">
+        <h3>Mitarbeiter &amp; Provisionen</h3>
+        <button class="btn-add-staff-comm" onclick="openAddStaffComm('${storeId}')">+ Mitarbeiter</button>
+      </div>
+      <div id="staffCommList"></div>
+      <hr style="margin:1.5rem 0">
+      <div class="panel-header" style="margin-bottom:.5rem">
+        <h4 style="margin:0">Kalender – Stylist-Übersicht</h4>
+        <div class="staff-cal-nav">
+          <button onclick="shiftStaffWeek(-1,'${storeId}')">&#8592;</button>
+          <span id="staffCalWeekLabel" style="font-size:.85rem;font-weight:600;min-width:90px;text-align:center"></span>
+          <button onclick="shiftStaffWeek(1,'${storeId}')">&#8594;</button>
+        </div>
+      </div>
+      <div id="staffSelector" class="staff-selector"></div>
+      <div id="staffWeekGrid" style="overflow-x:auto;margin-bottom:1.5rem"></div>
+      <h4 style="margin-bottom:1rem">Abrechnungsübersicht</h4>
+      <div id="staffCommSummary"></div>
+    </div>`;
+  _staffCalWeekOffset=0;
   await renderStaffCommList(storeId);
+  await renderStaffCalendar(storeId);
 }
+
 async function renderStaffCommList(sid){
   const list=document.getElementById('staffCommList');if(!list)return;
-  const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();
+  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
   const staffList=store?.staff_list||[];
-  if(!staffList.length){list.innerHTML='<div style="padding:1rem;color:var(--c-text-muted)">Noch keine Mitarbeiter. Klicke "+ Mitarbeiter" um zu beginnen.</div>';}
-  else{list.innerHTML=staffList.map((s,i)=>'<div class="staff-comm-row"><div class="staff-avatar-sm">'+s.name.charAt(0)+'</div><div class="staff-comm-info"><strong>'+s.name+'</strong><span>'+(s.role||'Stylist')+'</span></div><div class="staff-comm-rate"><label>Provision %</label><input type="number" class="comm-input" value="'+(s.commission||0)+'" min="0" max="100" onchange="updateStaffCommission('+sid+','+i+',this.value)"></div><button class="btn-remove-staff-sm" onclick="removeStaffMember('+sid+','+i+')">Entfernen</button></div>').join('');}
-  const {data:bookings}=await window._sb.from('bookings').select('staff_name,service_price').eq('store_id',sid).eq('status','confirmed');
+  if(!staffList.length){
+    list.innerHTML='<div style="padding:1rem;color:var(--c-text-muted)">Noch keine Mitarbeiter. Klicke &ldquo;+ Mitarbeiter&rdquo; um zu beginnen.</div>';
+  } else {
+    list.innerHTML=staffList.map((s,i)=>`
+      <div class="staff-comm-row">
+        <div class="staff-avatar-sm">${s.name.charAt(0)}</div>
+        <div class="staff-comm-info"><strong>${s.name}</strong><span>${s.role||'Stylist'}</span></div>
+        <div class="staff-comm-rate"><label>Provision %</label>
+          <input type="number" class="comm-input" value="${s.commission||0}" min="0" max="100"
+            onchange="updateStaffCommission(${sid},${i},this.value)">
+        </div>
+        <button class="btn-remove-staff-sm" onclick="removeStaffMember(${sid},${i})">Entfernen</button>
+      </div>`).join('');
+  }
+  // Selector chips for calendar
+  const sel=document.getElementById('staffSelector');
+  if(sel&&staffList.length){
+    if(!_staffCalActiveName)_staffCalActiveName=staffList[0]?.name||null;
+    sel.innerHTML=staffList.map(s=>`<div class="staff-selector-chip${s.name===_staffCalActiveName?' active':''}"
+      onclick="selectStaffCal('${sid}','${s.name.replace(/'/g,"\\'")}',this)">${s.name}</div>`).join('');
+  }
+  // Commission summary
+  const {data:bookings}=await sb.from('bookings').select('staff_name,service_price').eq('store_id',sid).eq('status','confirmed');
   const summary=document.getElementById('staffCommSummary');
-  if(summary&&bookings?.length){const byStaff={};bookings.forEach(b=>{const k=b.staff_name||'Unzugewiesen';if(!byStaff[k])byStaff[k]={n:0,rev:0};byStaff[k].n++;byStaff[k].rev+=parseFloat(b.service_price||0);});const sc={};staffList.forEach(s=>{sc[s.name]=s.commission||0;});summary.innerHTML=Object.entries(byStaff).map(([name,d])=>{const rate=sc[name]||0;const comm=(d.rev*rate/100).toFixed(2);return'<div class="comm-summary-row"><span>'+name+'</span><span>'+d.n+' Buchungen</span><span>CHF '+d.rev.toFixed(2)+'</span><span class="comm-amount">CHF '+comm+' ('+rate+'%)</span></div>';}).join('');}
-  else if(summary)summary.innerHTML='<div style="color:var(--c-text-muted)">Noch keine Buchungen.</div>';
+  if(summary&&bookings?.length){
+    const byStaff={};
+    bookings.forEach(b=>{const k=b.staff_name||'Unzugewiesen';if(!byStaff[k])byStaff[k]={n:0,rev:0};byStaff[k].n++;byStaff[k].rev+=parseFloat(b.service_price||0);});
+    const sc={};staffList.forEach(s=>{sc[s.name]=s.commission||0;});
+    summary.innerHTML=Object.entries(byStaff).map(([name,d])=>{
+      const rate=sc[name]||0;const comm=(d.rev*rate/100).toFixed(2);
+      return `<div class="comm-summary-row"><span>${name}</span><span>${d.n} Buchungen</span><span>CHF ${d.rev.toFixed(2)}</span><span class="comm-amount">CHF ${comm} (${rate}%)</span></div>`;
+    }).join('');
+  } else if(summary) summary.innerHTML='<div style="color:var(--c-text-muted)">Noch keine Buchungen.</div>';
 }
-function openAddStaffComm(sid){const name=prompt('Name des Mitarbeiters:');if(!name?.trim())return;const role=prompt('Rolle (z.B. Stylistin, Barbier):')||'Stylist';const comm=parseInt(prompt('Provision % (0-100):')||'0');addStaffToStore(sid,{name:name.trim(),role,commission:Math.min(100,Math.max(0,comm))});}
-async function addStaffToStore(sid,sm){const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();const list=store?.staff_list||[];list.push(sm);await window._sb.from('stores').update({staff_list:list}).eq('id',sid);renderStaffCommList(sid);}
-async function removeStaffMember(sid,idx){if(!confirm('Mitarbeiter entfernen?'))return;const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();const list=store?.staff_list||[];list.splice(idx,1);await window._sb.from('stores').update({staff_list:list}).eq('id',sid);renderStaffCommList(sid);}
-async function updateStaffCommission(sid,idx,val){const {data:store}=await window._sb.from('stores').select('staff_list').eq('id',sid).single();const list=store?.staff_list||[];if(list[idx])list[idx].commission=parseInt(val)||0;await window._sb.from('stores').update({staff_list:list}).eq('id',sid);}
 
+function selectStaffCal(sid,name,chip){
+  _staffCalActiveName=name;
+  document.querySelectorAll('.staff-selector-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  renderStaffCalendar(sid);
+}
+
+function shiftStaffWeek(delta,sid){_staffCalWeekOffset+=delta;renderStaffCalendar(sid);}
+
+async function renderStaffCalendar(sid){
+  const grid=document.getElementById('staffWeekGrid');
+  const label=document.getElementById('staffCalWeekLabel');
+  if(!grid)return;
+  const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
+  const today=new Date();
+  const monday=new Date(today);
+  monday.setDate(today.getDate()-((today.getDay()+6)%7)+_staffCalWeekOffset*7);
+  monday.setHours(0,0,0,0);
+  const weekDates=days.map((_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return d;});
+  if(label)label.textContent=monday.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit'})+' – '+weekDates[6].toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit'});
+  const dateStrs=weekDates.map(d=>d.toISOString().split('T')[0]);
+  // Fetch bookings for this stylist this week
+  let bookingsMap={};
+  if(_staffCalActiveName&&sid){
+    const {data:bkgs}=await sb.from('bookings').select('booking_date,booking_time,service_name,status')
+      .eq('store_id',sid).eq('staff_name',_staffCalActiveName)
+      .gte('booking_date',dateStrs[0]).lte('booking_date',dateStrs[6]);
+    (bkgs||[]).forEach(b=>{if(!bookingsMap[b.booking_date])bookingsMap[b.booking_date]=[];bookingsMap[b.booking_date].push(b);});
+  }
+  const hours=['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+  let html=`<div class="staff-week-grid" style="grid-template-columns:56px repeat(7,1fr)">`;
+  // Header
+  html+='<div class="staff-week-col-hd" style="font-size:.7rem">Zeit</div>';
+  weekDates.forEach((d,i)=>{
+    const isToday=d.toDateString()===today.toDateString();
+    html+=`<div class="staff-week-col-hd" style="${isToday?'background:rgba(155,29,48,.08)':''}">${days[i]}<br><span style="font-size:.65rem;font-weight:400">${d.getDate()}.${d.getMonth()+1}</span></div>`;
+  });
+  // Rows
+  hours.forEach(hr=>{
+    html+=`<div class="staff-week-row-hd">${hr}</div>`;
+    weekDates.forEach(d=>{
+      const ds=d.toISOString().split('T')[0];
+      const cell=(bookingsMap[ds]||[]).filter(b=>(b.booking_time||'').startsWith(hr.slice(0,2)));
+      const hasBooking=cell.length>0;
+      html+=`<div class="staff-week-cell${hasBooking?' has-booking':''}">`;
+      cell.forEach(b=>{html+=`<div class="staff-cal-booking-chip">${b.service_name||'Termin'}</div>`;});
+      html+='</div>';
+    });
+  });
+  html+='</div>';
+  grid.innerHTML=html;
+}
+
+function openAddStaffComm(sid){
+  const name=prompt('Name des Mitarbeiters:');if(!name?.trim())return;
+  const role=prompt('Rolle (z.B. Stylistin, Barbier):')||'Stylist';
+  const comm=parseInt(prompt('Provision % (0-100):')||'0');
+  addStaffToStore(sid,{name:name.trim(),role,commission:Math.min(100,Math.max(0,comm))});
+}
+async function addStaffToStore(sid,sm){
+  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
+  const list=store?.staff_list||[];list.push(sm);
+  await sb.from('stores').update({staff_list:list}).eq('id',sid);
+  renderStaffCommList(sid);
+}
+async function removeStaffMember(sid,idx){
+  if(!confirm('Mitarbeiter entfernen?'))return;
+  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
+  const list=store?.staff_list||[];list.splice(idx,1);
+  await sb.from('stores').update({staff_list:list}).eq('id',sid);
+  renderStaffCommList(sid);
+}
+async function updateStaffCommission(sid,idx,val){
+  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
+  const list=store?.staff_list||[];
+  if(list[idx])list[idx].commission=parseInt(val)||0;
+  await sb.from('stores').update({staff_list:list}).eq('id',sid);
+}
+
+// ── MARKETING BLAST: SMS + Email to past clients ──
 async function renderMarketingBlast(storeId){
   const panel=document.getElementById('dashTabMarketing');
   if(!panel)return;
-  panel.innerHTML='<div class="marketing-container"><div class="panel-header"><h3>Marketing &amp; Aktionen</h3></div><div class="marketing-compose"><h4 style="margin:0 0 1rem">Nachricht an Kunden senden</h4><div class="marketing-form"><label>Zielgruppe</label><select id="mktTarget" class="mkt-select"><option value="all">Alle Kunden</option><option value="recent">Letzte 30 Tage</option><option value="inactive">Inaktiv 60+ Tage</option></select><label>Betreff</label><input id="mktSubject" class="mkt-input" placeholder="z.B. Frühlingsangebot – 20% auf alle Services!" maxlength="80"><label>Nachricht</label><textarea id="mktMessage" class="mkt-textarea" rows="4" maxlength="320" placeholder="Deine Nachricht..."></textarea><div class="mkt-preview-hint" id="mktPreviewHint"></div><div class="mkt-actions"><button class="btn-mkt-preview" onclick="previewMarketingBlast(\''+storeId+'\')">Vorschau</button><button class="btn-mkt-send" onclick="sendMarketingBlast(\''+storeId+'\')">Kampagne starten</button></div></div></div><hr style="margin:1.5rem 0"><h4>Gesendete Kampagnen</h4><div id="mktHistory"></div></div>';
+  panel.innerHTML=`<div class="marketing-container">
+    <div class="panel-header"><h3>Marketing &amp; Aktionen</h3></div>
+    <div class="marketing-compose">
+      <h4 style="margin:0 0 1rem">Nachricht an Kunden senden</h4>
+      <div class="marketing-form">
+        <label>Zielgruppe</label>
+        <select id="mktTarget" class="mkt-select">
+          <option value="all">Alle Kunden</option>
+          <option value="recent">Letzte 30 Tage</option>
+          <option value="inactive">Inaktiv 60+ Tage</option>
+        </select>
+        <label>Kanal</label>
+        <select id="mktChannel" class="mkt-select">
+          <option value="sms">SMS (Swiss)</option>
+          <option value="email">E-Mail</option>
+          <option value="both">SMS + E-Mail</option>
+        </select>
+        <label>Betreff / Absender-Anzeige</label>
+        <input id="mktSubject" class="mkt-input" placeholder="z.B. Frühlingsangebot – 20% auf alle Services!" maxlength="80">
+        <label>Nachricht</label>
+        <textarea id="mktMessage" class="mkt-textarea" rows="4" maxlength="320" placeholder="Deine Nachricht an die Kunden…"></textarea>
+        <div class="mkt-preview-hint" id="mktPreviewHint"></div>
+        <div class="mkt-actions">
+          <button class="btn-mkt-preview" onclick="previewMarketingBlast('${storeId}')">Vorschau</button>
+          <button class="btn-mkt-send" id="btnMktSend" onclick="sendMarketingBlast('${storeId}')">Kampagne starten</button>
+        </div>
+      </div>
+    </div>
+    <hr style="margin:1.5rem 0">
+    <h4>Gesendete Kampagnen</h4>
+    <div id="mktHistory"></div>
+  </div>`;
   loadMarketingHistory(storeId);
 }
-async function previewMarketingBlast(sid){const target=document.getElementById('mktTarget')?.value;const {data:b}=await window._sb.from('bookings').select('customer_name,customer_phone,booking_date').eq('store_id',sid);if(!b)return;const now=Date.now();let f=b;if(target==='recent')f=b.filter(x=>(now-new Date(x.booking_date))<30*86400000);if(target==='inactive')f=b.filter(x=>(now-new Date(x.booking_date))>60*86400000);const u=[...new Map(f.map(x=>[x.customer_phone||x.customer_name,x])).values()];const hint=document.getElementById('mktPreviewHint');if(hint)hint.innerHTML='<span style="color:var(--c-accent)">&#10003; '+u.length+' Kunden werden erreicht</span>';}
-function sendMarketingBlast(sid){const subject=document.getElementById('mktSubject')?.value?.trim();const message=document.getElementById('mktMessage')?.value?.trim();if(!subject||!message){alert('Bitte Betreff und Nachricht ausfüllen.');return;}const key='solen_mkt_'+sid;let h=[];try{h=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}h.unshift({subject,message,sentAt:new Date().toISOString(),target:document.getElementById('mktTarget')?.value});localStorage.setItem(key,JSON.stringify(h.slice(0,20)));alert('Kampagne gespeichert! SMS/E-Mail Versand wird in Kürze integriert.');loadMarketingHistory(sid);document.getElementById('mktSubject').value='';document.getElementById('mktMessage').value='';}
-function loadMarketingHistory(sid){const hist=document.getElementById('mktHistory');if(!hist)return;let h=[];try{h=JSON.parse(localStorage.getItem('solen_mkt_'+sid)||'[]');}catch(e){}if(!h.length){hist.innerHTML='<div style="color:var(--c-text-muted);padding:1rem">Noch keine Kampagnen gesendet.</div>';return;}hist.innerHTML=h.map(x=>'<div class="mkt-hist-row"><div class="mkt-hist-info"><strong>'+x.subject+'</strong><span style="color:var(--c-text-muted)">'+new Date(x.sentAt).toLocaleDateString('de-CH')+' &bull; '+(x.target==='all'?'Alle':x.target==='recent'?'30 Tage':'Inaktiv')+'</span></div><div class="mkt-hist-preview">'+x.message.substring(0,60)+'&hellip;</div></div>').join('');}
+
+async function previewMarketingBlast(sid){
+  const target=document.getElementById('mktTarget')?.value;
+  const {data:b}=await sb.from('bookings').select('customer_name,customer_phone,customer_email,booking_date').eq('store_id',sid);
+  if(!b)return;
+  const now=Date.now();
+  let f=b;
+  if(target==='recent')f=b.filter(x=>(now-new Date(x.booking_date))<30*86400000);
+  if(target==='inactive')f=b.filter(x=>(now-new Date(x.booking_date))>60*86400000);
+  const u=[...new Map(f.map(x=>[x.customer_phone||x.customer_email||x.customer_name,x])).values()];
+  const phones=u.filter(x=>x.customer_phone).length;
+  const emails=u.filter(x=>x.customer_email).length;
+  const hint=document.getElementById('mktPreviewHint');
+  if(hint)hint.innerHTML=`<span style="color:var(--c-accent,#4ECDC4)">&#10003; ${u.length} Kunden – ${phones} Telefone, ${emails} E-Mails</span>`;
+}
+
+async function sendMarketingBlast(sid){
+  const subject=document.getElementById('mktSubject')?.value?.trim();
+  const message=document.getElementById('mktMessage')?.value?.trim();
+  const target=document.getElementById('mktTarget')?.value||'all';
+  const channel=document.getElementById('mktChannel')?.value||'sms';
+  if(!message){alert('Bitte eine Nachricht eingeben.');return;}
+  const btn=document.getElementById('btnMktSend');
+  if(btn){btn.disabled=true;btn.textContent='Sendet…';}
+  try{
+    const {data:bkgs}=await sb.from('bookings').select('customer_name,customer_phone,customer_email,booking_date').eq('store_id',sid);
+    let filtered=bkgs||[];
+    const now=Date.now();
+    if(target==='recent')filtered=filtered.filter(x=>(now-new Date(x.booking_date))<30*86400000);
+    if(target==='inactive')filtered=filtered.filter(x=>(now-new Date(x.booking_date))>60*86400000);
+    // Deduplicate by phone/email
+    const unique=[...new Map(filtered.map(x=>[x.customer_phone||x.customer_email||x.customer_name,x])).values()];
+    let smsSent=0,emailSent=0;
+    // SMS blast
+    if(channel==='sms'||channel==='both'){
+      const phones=[...new Set(unique.filter(x=>x.customer_phone).map(x=>x.customer_phone))];
+      if(phones.length){
+        const r=await fetch('/api/send-sms',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({to:phones,message,from:subject||'Solen.ch'})});
+        if(r.ok){const d=await r.json();smsSent=d.sent||phones.length;}
+        else{const e=await r.json();console.warn('SMS error:',e);}
+      }
+    }
+    // Email blast
+    if(channel==='email'||channel==='both'){
+      const emails=[...new Set(unique.filter(x=>x.customer_email).map(x=>x.customer_email))];
+      if(emails.length){
+        const r=await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({to:emails.map(e=>({email:e})),subject:subject||'Nachricht von Ihrem Salon',
+            html:`<p>${message.replace(/\n/g,'<br>')}</p>`,from:'Solen.ch'})});
+        if(r.ok)emailSent=emails.length;
+      }
+    }
+    // Save to history
+    const key='solen_mkt_'+sid;
+    let h=[];try{h=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+    h.unshift({subject,message,sentAt:new Date().toISOString(),target,channel,smsSent,emailSent});
+    localStorage.setItem(key,JSON.stringify(h.slice(0,20)));
+    toast(`Kampagne gesendet: ${smsSent} SMS, ${emailSent} E-Mails`,'success');
+    loadMarketingHistory(sid);
+    document.getElementById('mktSubject').value='';
+    document.getElementById('mktMessage').value='';
+    document.getElementById('mktPreviewHint').innerHTML='';
+  }catch(e){toast('Fehler: '+e.message,'error');}
+  finally{if(btn){btn.disabled=false;btn.textContent='Kampagne starten';}}
+}
+
+function loadMarketingHistory(sid){
+  const hist=document.getElementById('mktHistory');if(!hist)return;
+  let h=[];try{h=JSON.parse(localStorage.getItem('solen_mkt_'+sid)||'[]');}catch(e){}
+  if(!h.length){hist.innerHTML='<div style="color:var(--c-text-muted);padding:1rem">Noch keine Kampagnen gesendet.</div>';return;}
+  hist.innerHTML=h.map(x=>`<div class="mkt-hist-row">
+    <div class="mkt-hist-info">
+      <strong>${x.subject||'(kein Betreff)'}</strong>
+      <span style="color:var(--c-text-muted)">${new Date(x.sentAt).toLocaleDateString('de-CH')} &bull; ${x.target==='all'?'Alle':x.target==='recent'?'30 Tage':'Inaktiv'} &bull; ${x.channel||'email'}</span>
+    </div>
+    <div class="mkt-hist-preview">${(x.message||'').substring(0,60)}&hellip;</div>
+    ${x.smsSent||x.emailSent?`<div style="font-size:.75rem;color:var(--c-text-muted);margin-top:.25rem">${x.smsSent||0} SMS &bull; ${x.emailSent||0} E-Mails</div>`:''}
+  </div>`).join('');
+}
 
 function renderGallery(storeId){window._currentGalleryStore=storeId;if(typeof renderGalleryGrid==='function')renderGalleryGrid();}
 
