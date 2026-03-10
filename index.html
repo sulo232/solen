@@ -113,12 +113,14 @@ button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-
 input,select,textarea{font-family:inherit;min-height:44px}
 
 /* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.72);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(0,0,0,0.06);box-shadow:0 1px 24px rgba(0,0,0,.06);}
-.nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,29,48,.12),transparent)}
-[data-theme="dark"] .nav{background:rgba(18,14,12,0.88);border-bottom:1px solid rgba(255,255,255,0.08);box-shadow:0 1px 24px rgba(0,0,0,.35)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.08);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.4);}
+.nav::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:0.04;pointer-events:none;z-index:0}
+.nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);z-index:1}
+[data-theme="dark"] .nav{background:rgba(12,10,10,0.18);border-bottom:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.12)}
 [data-theme="dark"] .nav::after{background:linear-gradient(90deg,transparent,rgba(212,175,119,.3),transparent)}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:var(--c-text);letter-spacing:-.02em;text-decoration:none;margin-right:auto;position:relative}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:700;color:var(--c-text);letter-spacing:-.02em;text-decoration:none;margin-right:auto;position:relative;transition:transform .4s cubic-bezier(.34,1.56,.64,1),filter .4s ease;display:inline-block}
+.logo:hover{transform:scale(1.07);filter:drop-shadow(0 0 14px rgba(155,29,48,.55))}
 .logo span{color:var(--c-accent)}
 .theme-toggle{background:var(--c-surface-alt,#F3EEE6);border:1.5px solid var(--c-border);color:var(--c-text-secondary);width:56px;height:30px;border-radius:50px;display:flex;align-items:center;cursor:pointer;font-size:1.1rem;transition:all .3s var(--ease);flex-shrink:0;margin-right:8px;position:relative;padding:0 3px}
 .theme-toggle::after{content:'';position:absolute;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);transition:transform .3s var(--ease-standard)}
@@ -178,8 +180,8 @@ input,select,textarea{font-family:inherit;min-height:44px}
 [data-theme="dark"] .hamburger{color:white}
 
 /* MOBILE NAV MENU */
-.mobile-menu{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(255,255,255,0.95);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(0,0,0,.06);gap:8px;z-index:1001}
-[data-theme="dark"] .mobile-menu{background:rgba(18,14,12,0.96);border-bottom-color:rgba(255,255,255,.1)}
+.mobile-menu{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(255,255,255,0.12);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.35);gap:8px;z-index:1001}
+[data-theme="dark"] .mobile-menu{background:rgba(12,10,10,0.22);border-bottom-color:rgba(255,255,255,.1);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)}
 .mobile-menu.open{display:flex}
 .mobile-menu .lang-switcher-mobile{display:flex;gap:6px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px}
 .mobile-menu .btn-nav-ghost,.mobile-menu .btn-nav-primary{width:100%;text-align:center;min-height:44px}
