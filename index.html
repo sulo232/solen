@@ -1031,6 +1031,9 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bm-svc-card.selected{border-color:var(--accent);background:var(--surfaceAlt)}
 .bm-svc-card .svc-name{font-weight:700;font-size:.88rem;margin-bottom:2px}
 .bm-svc-card .svc-price{font-size:.82rem;color:var(--accent);font-weight:600}
+.bm-svc-card{position:relative}
+.bm-svc-check{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:.15s}
+.bm-svc-card.selected .bm-svc-check{background:var(--c-accent);border-color:var(--c-accent)}
 .bm-time-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:20px}
 .bm-time-btn{padding:10px;border:1.5px solid var(--border2);border-radius:var(--r);text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;background:var(--surface);min-height:44px}
 .bm-time-btn:hover{border-color:var(--accent)}
@@ -3279,6 +3282,9 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
             <button class="sort-option" onclick="selectSort('name_asc','A-Z')">A-Z</button>
           </div>
         </div>
+        <button class="chip last-minute-chip" id="lastMinuteChip" onclick="toggleLastMinute()" style="font-size:.82rem;padding:6px 14px;white-space:nowrap;border:1.5px solid var(--c-mustard);color:var(--c-mustard);background:transparent;border-radius:20px;cursor:pointer;font-weight:600;transition:.15s" aria-pressed="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Last-minute
+        </button>
         <!-- Map / List toggle (Fresha-style) -->
         <div class="view-toggle" role="group" aria-label="Ansicht wechseln">
           <button class="view-toggle-btn active" id="viewListBtn" onclick="setView('list')" aria-pressed="true">
@@ -4115,7 +4121,7 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 // STATE
 let currentUser=null, currentProfile=null, allStores=[], allServices=[];
-let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBookingStoreId=null, currentSort='default';
+let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBookingStoreId=null, currentSort='default', lastMinuteMode=false;
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 let currentLang=localStorage.getItem('solen_lang')||'de';
@@ -6064,7 +6070,8 @@ renderRecentlyViewed();
     const minSvcPrice=svcPrices.length?Math.min(...svcPrices):0;
     const matchPrice=maxPriceFilter<=0||maxPriceFilter>=300||minSvcPrice<=0||minSvcPrice<=maxPriceFilter;
     const matchEmpfohlen=!onlyEmpfohlen||isEmpfohlen(s);
-    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating&&matchPrice&&matchEmpfohlen&&(!showOnlyFavs||favSalons.has(String(s.id)));
+    const matchLastMinute=!lastMinuteMode||!window._lastMinuteSalons||window._lastMinuteSalons.has(String(s.id));
+    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating&&matchPrice&&matchEmpfohlen&&matchLastMinute&&(!showOnlyFavs||favSalons.has(String(s.id)));
   });
   // Sort
   if(currentSort==='popular'){
@@ -6216,6 +6223,56 @@ function resetAllFilters(){
   document.querySelectorAll('.rating-chip').forEach((b,i)=>{b.classList.toggle('active',i===0);});
   ['priceSliderDesktop','priceSliderMobile'].forEach(id=>{const el=document.getElementById(id);if(el){el.value=300;el.style.setProperty('--pct','100%');}});
   ['priceLabelDesktop','priceLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='Alle';});
+  lastMinuteMode=false;
+  const lmChip=document.getElementById('lastMinuteChip');
+  if(lmChip){lmChip.classList.remove('active');lmChip.setAttribute('aria-pressed','false');lmChip.style.background='transparent';lmChip.style.color='var(--c-mustard)';}
+  renderStores();
+}
+
+// Last-minute: show salons with open slots in the next 2-4 hours
+function toggleLastMinute(){
+  lastMinuteMode=!lastMinuteMode;
+  const chip=document.getElementById('lastMinuteChip');
+  if(chip){
+    chip.classList.toggle('active',lastMinuteMode);
+    chip.setAttribute('aria-pressed',String(lastMinuteMode));
+    chip.style.background=lastMinuteMode?'var(--c-mustard)':'transparent';
+    chip.style.color=lastMinuteMode?'#fff':'var(--c-mustard)';
+  }
+  if(lastMinuteMode)loadLastMinuteSlots();
+  else renderStores();
+}
+
+async function loadLastMinuteSlots(){
+  const now=new Date();
+  const todayStr=now.toISOString().split('T')[0];
+  const nowH=now.getHours();
+  const nowM=now.getMinutes();
+  const cutoffH=nowH+4;
+  // Find salons with availability in next 2-4 hours
+  try{
+    // Get all bookings for today
+    const{data:todayBookings}=await sb.from('bookings').select('salon_id,booking_time').eq('booking_date',todayStr).neq('status','cancelled');
+    const bookedBySalon={};
+    (todayBookings||[]).forEach(b=>{
+      if(!bookedBySalon[b.salon_id])bookedBySalon[b.salon_id]=new Set();
+      bookedBySalon[b.salon_id].add((b.booking_time||'').slice(0,5));
+    });
+    // Filter stores that have at least one open slot in 2-4h window
+    window._lastMinuteSalons=new Set();
+    allStores.forEach(s=>{
+      const booked=bookedBySalon[s.id]||new Set();
+      const oh=s.opening_hours||s.business_hours;
+      let closeH=18;
+      if(oh){try{const parsed=typeof oh==='string'?JSON.parse(oh):oh;const dayNames=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];const todayOH=parsed[dayNames[now.getDay()]];if(todayOH?.close){closeH=parseInt(todayOH.close.split(':')[0])||18;}}catch(e){}}
+      for(let h=Math.max(nowH+1,9);h<=Math.min(cutoffH,closeH);h++){
+        const slot=String(h).padStart(2,'0')+':00';
+        if(!booked.has(slot)){window._lastMinuteSalons.add(String(s.id));break;}
+        const slot30=String(h).padStart(2,'0')+':30';
+        if(!booked.has(slot30)){window._lastMinuteSalons.add(String(s.id));break;}
+      }
+    });
+  }catch(e){window._lastMinuteSalons=null;}
   renderStores();
 }
 
@@ -7286,7 +7343,7 @@ async function renderBookPage(salonId){
 
   // Init booking state
   const _now=new Date();
-  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[],availDates:{},availLoaded:false,availLoadedFor:null,calLoading:false,staffNoSchedule:false,blockedDates:null,dateBlocked:false};
+  bmState={store,service:null,services:[],date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[],availDates:{},availLoaded:false,availLoadedFor:null,calLoading:false,staffNoSchedule:false,blockedDates:null,dateBlocked:false};
   // Smart gender-based haircut tab default
   const _pg=currentProfile?.gender||'';
   bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
@@ -7419,18 +7476,30 @@ function renderBPStep(step){
   if(!content)return;
 
   if(step===1){
-    let html=`<h3 class="bp-step-title">Service wählen</h3>`;
+    const _selIds=new Set((bmState.services||[]).map(x=>x.id));
+    const _totalPrice=(bmState.services||[]).reduce((s,x)=>s+(parseFloat(x.price)||0),0);
+    const _totalMins=(bmState.services||[]).reduce((s,x)=>s+(parseInt(x.duration)||0),0);
+    let html=`<h3 class="bp-step-title">Services wählen</h3>`;
+    html+=`<p style="font-size:.85rem;color:var(--text2);margin:-4px 0 14px">Mehrere Services auswählbar</p>`;
     if(svcs.length){
       html+=`<div class="bm-service-grid">`+svcs.map(sv=>`
-        <div class="bm-svc-card${bmState.service?.id===sv.id?' selected':''}"
-             onclick="bmSelectService('${sv.id}')"
-             role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter'||event.key===' ')bmSelectService('${sv.id}')"
+        <div class="bm-svc-card${_selIds.has(sv.id)?' selected':''}"
+             onclick="bmToggleService('${sv.id}')"
+             role="checkbox" aria-checked="${_selIds.has(sv.id)}" tabindex="0"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();bmToggleService('${sv.id}')}"
              aria-label="${sv.name.replace(/"/g,'')}, CHF ${sv.price}">
+          <div class="bm-svc-check">${_selIds.has(sv.id)?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':''}</div>
           <div class="svc-name">${sv.name}</div>
           ${sv.duration?`<div class="svc-duration">${sv.duration} Min.</div>`:''}
           <div class="svc-price">CHF ${sv.price}</div>
         </div>`).join('')+`</div>`;
+      if(_selIds.size){
+        html+=`<div class="bp-multi-total" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--glass);border:1.5px solid var(--c-accent-20);border-radius:var(--r);margin-top:14px;font-size:.9rem">
+          <span><strong>${_selIds.size}</strong> Service${_selIds.size>1?'s':''} · ${_totalMins} Min.</span>
+          <strong style="color:var(--c-accent)">CHF ${_totalPrice.toFixed(0)}</strong>
+        </div>`;
+      }
+      html+=`<button class="btn-primary" style="margin-top:14px;min-height:48px" onclick="bpStep1Next()" ${_selIds.size?'':'disabled'}>Weiter →</button>`;
     } else {
       html+=`<div class="form-row" style="margin-bottom:20px">
         <div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div>
@@ -7477,10 +7546,21 @@ function renderBPStep(step){
 
   } else if(step===3){
     const svc=bmState.service;
+    const _svcs=bmState.services||[];
+    const _multiSvc=_svcs.length>1;
+    const _totalPrice=_svcs.reduce((t,x)=>t+(parseFloat(x.price)||0),0);
+    const _totalMins=_svcs.reduce((t,x)=>t+(parseInt(x.duration)||0),0);
     let html=`<h3 class="bp-step-title">Buchung bestätigen</h3>`;
     html+=`<div class="bp-summary-card">
       <div class="bp-summary-row"><span>Salon</span><strong>${s.name}</strong></div>`;
-    if(svc){
+    if(_svcs.length){
+      _svcs.forEach(sv=>{
+        html+=`<div class="bp-summary-row"><span>${sv.name}</span><strong>CHF ${sv.price}${sv.duration?' · '+sv.duration+' Min.':''}</strong></div>`;
+      });
+      if(_multiSvc){
+        html+=`<div class="bp-summary-row" style="border-top:1px solid var(--border2);padding-top:8px;margin-top:4px"><span><strong>Gesamt</strong></span><strong style="color:var(--c-accent)">CHF ${_totalPrice.toFixed(0)} · ${_totalMins} Min.</strong></div>`;
+      }
+    } else if(svc){
       html+=`<div class="bp-summary-row"><span>Service</span><strong>${svc.name}</strong></div>`;
       html+=`<div class="bp-summary-row"><span>Preis</span><strong>CHF ${svc.price}</strong></div>`;
       if(svc.duration)html+=`<div class="bp-summary-row"><span>Dauer</span><strong>${svc.duration} Min.</strong></div>`;
@@ -7505,7 +7585,21 @@ function renderBPStep(step){
       </div>
     </div>`;
     html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.88rem;margin-bottom:8px;cursor:pointer"><input type="checkbox" id="bmReminder" ${bmState.wantsReminder===false?'':'checked'} onchange="bmState.wantsReminder=this.checked"> E-Mail-Erinnerung (48h &amp; 2h vor dem Termin)</label>`;
-    html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--c-text-secondary);margin-bottom:20px;cursor:pointer"><input type="checkbox" id="bmSaveInfo"${bmState.saveInfo?' checked':''} onchange="bmState.saveInfo=this.checked"> Meine Daten speichern</label>`;
+    html+=`<label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--c-text-secondary);margin-bottom:12px;cursor:pointer"><input type="checkbox" id="bmSaveInfo"${bmState.saveInfo?' checked':''} onchange="bmState.saveInfo=this.checked"> Meine Daten speichern</label>`;
+    // Recurring booking option
+    html+=`<div class="form-group" style="margin-bottom:20px;padding:12px 14px;background:var(--glass);border:1.5px solid var(--border2);border-radius:var(--r)">
+      <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer;font-weight:600;margin-bottom:${bmState.isRecurring?'10px':'0'}"><input type="checkbox" id="bmRecurring" ${bmState.isRecurring?'checked':''} onchange="bmState.isRecurring=this.checked;renderBPStep(3)"> Wiederkehrender Termin</label>
+      ${bmState.isRecurring?`<div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div class="form-group" style="flex:1;min-width:120px"><label style="font-size:.8rem">Intervall</label><select class="form-input" style="font-size:.85rem" onchange="bmState.recurrenceWeeks=+this.value">
+          <option value="1" ${bmState.recurrenceWeeks===1?'selected':''}>Wöchentlich</option>
+          <option value="2" ${bmState.recurrenceWeeks===2?'selected':''}>Alle 2 Wochen</option>
+          <option value="4" ${bmState.recurrenceWeeks===4?'selected':''}>Monatlich</option>
+        </select></div>
+        <div class="form-group" style="flex:1;min-width:120px"><label style="font-size:.8rem">Anzahl Termine</label><select class="form-input" style="font-size:.85rem" onchange="bmState.recurrenceCount=+this.value">
+          ${[2,3,4,5,6,8,10,12].map(n=>`<option value="${n}" ${bmState.recurrenceCount===n?'selected':''}>${n} Termine</option>`).join('')}
+        </select></div>
+      </div>`:''}
+    </div>`;
     if(bmState.slotConflict){
       html+=`<div class="bp-conflict-box">
         <p style="font-weight:700;margin-bottom:6px;color:var(--c-text)">Dieser Termin ist leider vergeben.</p>
@@ -8224,10 +8318,16 @@ async function userCancelBooking(){
   if(!id)return;
   document.getElementById('cancelBookingOverlay').classList.remove('active');
   window._cancelId=null;
-  const{error}=await sb.from('bookings').delete().eq('id',id).eq('user_id',currentUser.id);
+  const{error}=await sb.from('bookings').update({status:'cancelled'}).eq('id',id).eq('user_id',currentUser.id);
   if(error){toast(t('error_generic'),'error');return;}
+  // Update the card in-place to show cancelled status
   const card=document.querySelector(`.booking-item[data-booking-id="${id}"]`);
-  if(card)card.remove();
+  if(card){
+    const statusEl=card.querySelector('.booking-status');
+    if(statusEl){statusEl.className='booking-status status-cancelled';statusEl.textContent=t('status_cancelled')||'Abgesagt';}
+    const cancelBtn=card.querySelector('.cancel-btn');
+    if(cancelBtn)cancelBtn.remove();
+  }
   const list=document.querySelector('#bookingsContent .booking-list');
   if(list&&!list.children.length){
     document.getElementById('bookingsContent').innerHTML=`<div class="empty-state"><div style="margin-bottom:12px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><h3 style="margin-top:12px">${t('empty_no_bookings')}</h3><p>${t('empty_book_first')}</p><button class="btn-sm solid" style="margin-top:16px" onclick="showPage('home')">${t('empty_discover')}</button></div>`;
@@ -9575,6 +9675,19 @@ function bmSelectService(id){
   if(document.getElementById('bpProgress')&&_bpCurrentStep===1){bpGoStep(2);}
   else{renderBookingModal();}
 }
+function bmToggleService(id){
+  if(!bmState.services)bmState.services=[];
+  const idx=bmState.services.findIndex(s=>s.id===id);
+  if(idx>=0){bmState.services.splice(idx,1);}
+  else{const svc=allServices.find(s=>s.id===id);if(svc)bmState.services.push(svc);}
+  bmState.service=bmState.services[0]||null;
+  updateBookingSummary();
+  renderBPStep(1);
+}
+function bpStep1Next(){
+  if(!(bmState.services||[]).length&&!bmState.service){toast('Bitte mindestens einen Service wählen.','error');return;}
+  bpGoStep(2);
+}
 function bmSelectTime(t){bmState.time=t;renderBookingModal();}
 function bmSetHaircutTab(tab){bmState.activeHaircutTab=tab;bmState.haircutTabFromProfile=false;renderBookingModal();}
 
@@ -9761,38 +9874,54 @@ async function insertBooking(){
   if(!bmState.guestName||!bmState.guestPhone){toast(t('toast_name_phone_required')||'Name und Telefon sind erforderlich.','error');return;}
   if(!bmState.date||!bmState.time){toast(t('toast_select_datetime')||'Datum und Uhrzeit w\u00e4hlen.','error');return;}
   const svc=bmState.service;
-  const{data:bkData,error}=await sb.from('bookings').insert({
-    salon_id:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,
+  const _svcs=bmState.services||[];
+  const _svcNames=_svcs.length?_svcs.map(x=>x.name).join(', '):(svc?.name||bmState.customSvc||'');
+  const _svcPrice=_svcs.length?_svcs.reduce((t,x)=>t+(parseFloat(x.price)||0),0):(svc?.price||parseFloat(bmState.customPrice)||0);
+  const _svcDur=_svcs.length?_svcs.reduce((t,x)=>t+(parseInt(x.duration)||0),0):(svc?.duration||0);
+  const _salonId=typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id;
+  // Build list of booking dates (supports recurring)
+  const _dates=[bmState.date];
+  if(bmState.isRecurring&&bmState.recurrenceWeeks&&bmState.recurrenceCount>1){
+    const base=new Date(bmState.date);
+    for(let i=1;i<bmState.recurrenceCount;i++){
+      const nd=new Date(base);nd.setDate(nd.getDate()+i*bmState.recurrenceWeeks*7);
+      _dates.push(nd.toISOString().split('T')[0]);
+    }
+  }
+  // Insert booking(s)
+  const rows=_dates.map(d=>({
+    salon_id:_salonId,
     user_id:currentUser?.id||null,
     guest_name:bmState.guestName,
     guest_phone:bmState.guestPhone,
     guest_email:bmState.guestEmail,
-    service_name:svc?.name||bmState.customSvc||'',
-    service_price:(svc?.price||parseFloat(bmState.customPrice)||0)+(bmState.haircutStyle?15:0),
-    service_duration:(svc?.duration||0)+(bmState.haircutStyle?20:0),
-    booking_date:bmState.date,
+    service_name:_svcNames,
+    service_price:_svcPrice+(bmState.haircutStyle?15:0),
+    service_duration:_svcDur+(bmState.haircutStyle?20:0),
+    booking_date:d,
     booking_time:bmState.time,
     status:'pending',
-    notes:[bmState.notes,bmState.haircutStyle?`Stil: ${_allHaircutStyles().find(x=>x.id===bmState.haircutStyle)?.name||''}`:null].filter(Boolean).join('\n')||null,
+    notes:[bmState.notes,bmState.haircutStyle?`Stil: ${_allHaircutStyles().find(x=>x.id===bmState.haircutStyle)?.name||''}`:null,bmState.isRecurring?`Wiederkehrend: alle ${bmState.recurrenceWeeks} Woche(n), ${bmState.recurrenceCount} Termine`:null].filter(Boolean).join('\n')||null,
     is_first_visit:bmState.isFirstVisit!==false,
     staff_id:bmState.staffId||null,
     staff_name:bmState.staffName||null,
     stylist_selection_fee:bmState.staffId?(parseFloat(bmState.stylistFee)||0):0
-  // ALTER TABLE bookings ADD COLUMN is_first_visit boolean DEFAULT false;
-  }).select('id').single();
+  }));
+  const{data:bkData,error}=await sb.from('bookings').insert(rows).select('id');
   if(error){
     bmState.slotConflict=true;
     renderBookingModal();
     return;
   }
   bmState.confirmed=true;
-  bmState.confirmedBookingId=bkData?.id||null;
+  bmState.confirmedBookingId=bkData?.[0]?.id||null;
   bmState.slotConflict=false;
   renderBookingModal();
-  toast(t('booking_confirmed'),'success');
-  solenTrack('booking_completed',{salon_id:bmState.store.id,service:svc?.name||bmState.customSvc||''});
-  if(bmState.wantsReminder!==false)scheduleReminders({bookingId:bkData?.id,userId:currentUser?.id,salonId:typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id,salonName:bmState.store.name,serviceName:svc?.name||bmState.customSvc||'',bookingDate:bmState.date,bookingTime:bmState.time,customerName:bmState.guestName,customerEmail:bmState.guestEmail||currentUser?.email||''});
-  checkAndSetVerifiedAfterBooking(typeof bmState.store.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store.id);
+  const _msg=_dates.length>1?`${_dates.length} Termine gebucht!`:(t('booking_confirmed')||'Buchung bestätigt!');
+  toast(_msg,'success');
+  solenTrack('booking_completed',{salon_id:bmState.store.id,service:_svcNames,recurring:bmState.isRecurring,count:_dates.length});
+  if(bmState.wantsReminder!==false)scheduleReminders({bookingId:bkData?.[0]?.id,userId:currentUser?.id,salonId:_salonId,salonName:bmState.store.name,serviceName:_svcNames,bookingDate:bmState.date,bookingTime:bmState.time,customerName:bmState.guestName,customerEmail:bmState.guestEmail||currentUser?.email||''});
+  checkAndSetVerifiedAfterBooking(_salonId);
 }
 
 async function joinWaitingList(){
@@ -10783,9 +10912,11 @@ function updateBookingSummary() {
   const selectedAddons = bmState.selectedAddons || [];
   const stylistFee = bmState.staffId ? (parseFloat(bmState.stylistFee) || 0) : 0;
 
-  // Calculate totals
-  let totalPrice = svc ? (parseFloat(svc.price) || 0) : 0;
-  let totalMins = svc ? (parseInt(svc.duration) || 0) : 0;
+  // Calculate totals — support multi-service (all data from internal bmState, not user input)
+  const _svcs = bmState.services || [];
+  const _hasMulti = _svcs.length > 0;
+  let totalPrice = _hasMulti ? _svcs.reduce((t,x)=>t+(parseFloat(x.price)||0),0) : (svc ? (parseFloat(svc.price) || 0) : 0);
+  let totalMins = _hasMulti ? _svcs.reduce((t,x)=>t+(parseInt(x.duration)||0),0) : (svc ? (parseInt(svc.duration) || 0) : 0);
   if (bleaching && bleachPrice) totalPrice += parseFloat(bleachPrice);
   selectedAddons.forEach(a => {
     totalPrice += parseFloat(a.price) || 0;
@@ -10793,7 +10924,7 @@ function updateBookingSummary() {
   });
   if (stylistFee) totalPrice += stylistFee;
 
-  if (!svc) {
+  if (!svc && !_hasMulti) {
     itemsEl.innerHTML = '<div class="bk-empty-hint">Wähle einen Service,<br>um die Zusammenfassung zu sehen.</div>';
     if (totalWrap) totalWrap.style.display = 'none';
     if (actionWrap) actionWrap.innerHTML = '';
@@ -10806,9 +10937,15 @@ function updateBookingSummary() {
     return;
   }
 
-  // Build summary rows
+  // Build summary rows — multi-service aware (service names come from Supabase DB, not user input)
   let rows = '';
-  rows += `<div class="bk-sum-row"><span class="bk-sum-label">Service</span><span class="bk-sum-value">${svc.name}<small>CHF ${svc.price} &middot; ${svc.duration} Min.</small></span></div>`;
+  if (_hasMulti) {
+    _svcs.forEach(sv => {
+      rows += `<div class="bk-sum-row"><span class="bk-sum-label">${sv.name}</span><span class="bk-sum-value">CHF ${sv.price}${sv.duration?' \u00b7 '+sv.duration+' Min.':''}</span></div>`;
+    });
+  } else {
+    rows += `<div class="bk-sum-row"><span class="bk-sum-label">Service</span><span class="bk-sum-value">${svc.name}<small>CHF ${svc.price} &middot; ${svc.duration} Min.</small></span></div>`;
+  }
   if (haircutStyle) {
     rows += `<div class="bk-sum-row"><span class="bk-sum-label">Stil</span><span class="bk-sum-value">${haircutStyle}</span></div>`;
   }
@@ -10841,7 +10978,7 @@ function updateBookingSummary() {
   if (mobBar) {
     if (isBookPageActive) {
       mobBar.style.display = 'flex';
-      if (mobServiceEl) mobServiceEl.textContent = svc.name;
+      if (mobServiceEl) mobServiceEl.textContent = _hasMulti ? _svcs.length+' Services' : svc.name;
       if (mobTotalEl) mobTotalEl.textContent = totalMins > 0
         ? `CHF ${totalPrice % 1 === 0 ? totalPrice : totalPrice.toFixed(2)} · ${totalMins} Min.`
         : `CHF ${totalPrice % 1 === 0 ? totalPrice : totalPrice.toFixed(2)}`;
