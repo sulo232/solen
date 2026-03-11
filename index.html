@@ -103,7 +103,7 @@ h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-fa
 .nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title{hyphens:none;word-break:normal;overflow-wrap:normal}
 .store-price-range,.store-price,.price-label,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
-button,a,[role="button"],[role="link"],[onclick]{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none}
+button,a,[role="button"],[role="link"],[onclick],.bottom-nav-item,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.svc-card,.cal-day,.slot{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none}
 .store-card,.sort-trigger,.view-toggle-btn,.filter-panel-trigger,.filter-pill,.cat-tab,.quartier-photo-card,.service-icon-card,.store-card-see-all-btn{pointer-events:auto;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 img{max-width:100%;display:block}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -114,6 +114,8 @@ img{max-width:100%;display:block}
 *:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
 /* ── TOUCH TARGETS (5g, 5i) ── */
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
+/* ── MOBILE TAP FIX: ensure all clickable elements have proper z-index isolation ── */
+@media(max-width:768px){button,a,[role="button"],[onclick],.bottom-nav-item,.close-btn,.fav-btn,.hamburger,.theme-toggle{position:relative;z-index:1}}
 input,select,textarea{font-family:inherit;min-height:44px}
 
 /* NAV */
@@ -7035,9 +7037,11 @@ function closeAllModals(){
 }
 // Helper: check if any modal is still open and update body class accordingly
 function _checkModalOpen(){
-  var anyOpen=document.querySelector('.overlay.active,#bookingModal.open,.cal-overlay:not(.hidden),.onboard-wizard.active,.legal-modal.open,.report-modal:not(.hidden),.offer-picker:not(.hidden),#aiHelperModal[style*="flex"],#profileEditModal[style*="block"],#galleryPanel[style*="block"]');
+  var anyOpen=document.querySelector('.overlay.active,#bookingModal.open,.cal-overlay:not(.hidden),.onboard-wizard.active,.legal-modal.open,.report-modal:not(.hidden),.offer-picker:not(.hidden),#aiHelperModal[style*="flex"],#profileEditModal[style*="block"],#galleryPanel[style*="block"],#crmPanel[style*="block"],#adminPendingPanel[style*="block"],#blastPanel[style*="block"],#inventoryPanel[style*="block"],#salonRegModal[style*="flex"]');
   if(!anyOpen)document.body.classList.remove('modal-open');
 }
+// Safety: periodically check for stuck modal-open class (e.g. if a modal was closed without calling _checkModalOpen)
+setInterval(function(){if(document.body.classList.contains('modal-open'))_checkModalOpen();},3000);
 
 // PAGE ROUTER (hash-based)
 function showPage(page,skipHash){
@@ -10712,7 +10716,7 @@ function selectStylistCard(id,name,el,fee){
 document.addEventListener('DOMContentLoaded',function(){
   window.addEventListener('scroll',function(){const h=document.body.scrollHeight-window.innerHeight;if(h>0){const sb=document.getElementById('scrollBar');if(sb)sb.style.width=(Math.min(window.scrollY/h*100,100))+'%';}},{passive:true});
   window.bnGo=function(id){document.querySelectorAll('.bn-tab').forEach(t=>t.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');};
-  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else document.getElementById('storeOverlay')?.classList.remove('active');});
+  window.addEventListener('popstate',function(e){if(e.state&&e.state.salonId)openStore(e.state.salonId);else{document.getElementById('storeOverlay')?.classList.remove('active');_checkModalOpen();}});
   const m=document.getElementById('addStaffMdl');
   if(m)m.addEventListener('click',function(e){if(e.target===this)closeAddStaffMdl();});
 });
@@ -10945,7 +10949,10 @@ async function loadBmExtras(storeId) {
   function revealCards(){document.querySelectorAll('.store-card:not(.revealed),.card:not(.revealed),.booking-card:not(.revealed)').forEach(function(c,i){c.style.transitionDelay=(i*80)+'ms';obs.observe(c);});}
   setTimeout(revealCards,300);
   function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transition='none';el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*6)+'px,'+(((e.clientY-r.top)/r.height-.5)*6)+'px)';});el.addEventListener('mouseleave',function(){el.style.transition='transform 0.3s ease';el.style.transform='';});}
-  setTimeout(function(){document.querySelectorAll('.btn-primary,.cta-btn').forEach(mag);},500);
+  // Only apply magnetic effect on non-touch (desktop) devices — it breaks mobile taps
+  if(!('ontouchstart' in window)&&!navigator.maxTouchPoints){
+    setTimeout(function(){document.querySelectorAll('.btn-primary,.cta-btn').forEach(mag);},500);
+  }
 
   // === MOBILE TAP FIX: Event delegation for touch devices ===
   // iOS Safari sometimes fails to synthesize click events on non-button elements.
@@ -11020,6 +11027,23 @@ async function loadBmExtras(storeId) {
         e.preventDefault();
         sicCard.click();
         return;
+      }
+      // === GENERAL FALLBACK: ensure ALL buttons/links/clickable elements respond to taps ===
+      // iOS Safari sometimes fails to synthesize click events, especially on elements
+      // inside position:fixed containers or elements with backdrop-filter.
+      var clickable=t.closest('button,a,[role="button"],[onclick],.bottom-nav-item,.btn-primary,.btn-secondary,.btn-book,.btn-nav-ghost,.btn-nav-primary,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.cal-day,.slot,.svc-card,.btn-book-glass,.btn-danger,.add-btn');
+      if(clickable&&!t.closest('input,select,textarea')){
+        // Only intervene if the element didn't already handle the tap via native click
+        // Use a small delay to check if click fires naturally; if not, force it
+        var alreadyClicked=false;
+        var onceClick=function(){alreadyClicked=true;};
+        clickable.addEventListener('click',onceClick,{once:true});
+        setTimeout(function(){
+          clickable.removeEventListener('click',onceClick);
+          if(!alreadyClicked){
+            clickable.click();
+          }
+        },80);
       }
     },{passive:false});
   })();
