@@ -2471,6 +2471,152 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .filter-pill:hover{border-color:var(--c-accent);color:var(--c-accent)}
 .filter-pill.active{background:var(--c-accent);color:#fff;border-color:var(--c-accent)}
 
+/* ═══ EXPANDABLE FILTER PANEL ═══ */
+.filter-panel{
+  background:var(--c-surface);
+  border:1.5px solid var(--c-border);
+  border-radius:16px;
+  margin-bottom:20px;
+  overflow:hidden;
+  will-change:transform;
+}
+.filter-panel-trigger{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  padding:14px 18px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  font-size:.9rem;
+  font-weight:700;
+  color:var(--c-text);
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.filter-panel-trigger:active{
+  background:var(--c-surface-alt);
+}
+.filter-panel-left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.filter-panel-icon{
+  width:18px;height:18px;
+  stroke:var(--c-text-secondary);
+  fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.filter-panel-chevron{
+  width:18px;height:18px;
+  stroke:var(--c-text-secondary);
+  fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:transform 350ms cubic-bezier(.25,.1,.25,1);
+  flex-shrink:0;
+}
+.filter-panel.expanded .filter-panel-chevron{
+  transform:rotate(180deg);
+}
+.filter-panel-chips{
+  display:flex;
+  gap:6px;
+  flex-wrap:nowrap;
+  overflow-x:auto;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  flex:1;
+  min-width:0;
+  padding:0 4px;
+}
+.filter-panel-chips::-webkit-scrollbar{display:none}
+.filter-chip-mini{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 10px;
+  background:rgba(155,29,48,.08);
+  color:var(--c-accent);
+  border-radius:var(--r-pill);
+  font-size:.75rem;
+  font-weight:600;
+  white-space:nowrap;
+  animation:chipEnter .25s cubic-bezier(.25,.1,.25,1) both;
+}
+@keyframes chipEnter{
+  from{opacity:0;transform:translateX(8px) scale(.92)}
+  to{opacity:1;transform:translateX(0) scale(1)}
+}
+.filter-panel-body{
+  overflow:hidden;
+  transition:max-height 350ms cubic-bezier(.25,.1,.25,1),
+             opacity 280ms cubic-bezier(.25,.1,.25,1);
+  max-height:0;
+  opacity:0;
+}
+.filter-panel.expanded .filter-panel-body{
+  opacity:1;
+}
+.filter-panel-inner{
+  padding:0 18px 18px;
+}
+.filter-section-label{
+  font-size:.72rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--c-text-muted,#999);
+  margin-bottom:10px;
+  padding-top:2px;
+}
+.filter-section-label:not(:first-child){
+  margin-top:16px;
+}
+.filter-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.filter-grid .filter-pill{
+  padding:7px 14px;
+  font-size:.8rem;
+  font-weight:600;
+  transition:all .18s ease, transform .18s ease;
+}
+.filter-grid .filter-pill:active{
+  transform:scale(.95);
+}
+.filter-panel-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-top:16px;
+  margin-top:16px;
+  border-top:1px solid var(--c-border);
+}
+.filter-reset-btn{
+  background:none;
+  border:none;
+  color:var(--c-text-secondary);
+  font-size:.82rem;
+  font-weight:600;
+  cursor:pointer;
+  padding:6px 12px;
+  border-radius:var(--r-pill);
+  transition:all .15s ease;
+}
+.filter-reset-btn:hover{
+  color:var(--c-accent);
+  background:rgba(155,29,48,.06);
+}
+.filter-count-badge{
+  font-size:.78rem;
+  font-weight:600;
+  color:var(--c-text-secondary);
+}
+
 /* ═══ ENHANCED MOBILE RESPONSIVE ═══ */
 @media(max-width:768px){
   /* Bottom sheet style modals on mobile */
@@ -3132,25 +3278,47 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <input type="hidden" id="priceSliderDesktop" value="300">
       <span id="priceLabelDesktop" style="display:none"></span>
     </div>
-    <!-- FILTER PILLS: Category -->
-    <div class="filter-pills" id="catFilterPills" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <button class="filter-pill active" onclick="selectCatPill(this,'')" data-i18n="cat_all">Alle</button>
-      <button class="filter-pill" onclick="selectCatPill(this,'hairsalon')" data-i18n="cat_hairsalon">Coiffeur</button>
-      <button class="filter-pill" onclick="selectCatPill(this,'barber')" data-i18n="cat_barber">Barbershop</button>
-      <button class="filter-pill" onclick="selectCatPill(this,'nails')" data-i18n="cat_nails">Nails</button>
-      <button class="filter-pill" onclick="selectCatPill(this,'spa')" data-i18n="cat_spa">Massage &amp; Spa</button>
-      <button class="filter-pill" onclick="selectCatPill(this,'makeup')" data-i18n="cat_makeup">Make-up</button>
-      <button class="filter-pill" onclick="selectCatPill(this,'cosmetik')" data-i18n="cat_cosmetik">Kosmetik</button>
-    </div>
-    <!-- FILTER PILLS: Quartier (compact row, no label duplication with photo cards above) -->
-    <div class="filter-pills" id="quartierFilterPills" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px">
-      <button class="filter-pill active" onclick="selectQuartierPill(this,'')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Alle</button>
-      <button class="filter-pill" onclick="selectQuartierPill(this,'Grossbasel')">Grossbasel</button>
-      <button class="filter-pill" onclick="selectQuartierPill(this,'Kleinbasel')">Kleinbasel</button>
-      <button class="filter-pill" onclick="selectQuartierPill(this,'Gundeldingen')">Gundeli</button>
-      <button class="filter-pill" onclick="selectQuartierPill(this,'St. Johann')">St. Johann</button>
-      <button class="filter-pill" onclick="selectQuartierPill(this,'Bruderholz')">Bruderholz</button>
-      <button class="filter-pill" onclick="selectQuartierPill(this,'Hirzbrunnen')">Hirzbrunnen</button>
+    <!-- ═══ EXPANDABLE FILTER PANEL ═══ -->
+    <div class="filter-panel" id="filterPanel">
+      <button class="filter-panel-trigger" onclick="toggleFilterPanel()" aria-expanded="false" aria-controls="filterPanelBody">
+        <div class="filter-panel-left">
+          <svg class="filter-panel-icon" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+          <span>Filter</span>
+        </div>
+        <div class="filter-panel-chips" id="filterActiveChips"></div>
+        <svg class="filter-panel-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="filter-panel-body" id="filterPanelBody">
+        <div class="filter-panel-inner">
+          <!-- Category filters -->
+          <div class="filter-section-label" data-i18n="filter_services">Dienstleistung</div>
+          <div class="filter-grid" id="catFilterPills">
+            <button class="filter-pill active" onclick="selectCatPill(this,'')" data-i18n="cat_all">Alle</button>
+            <button class="filter-pill" onclick="selectCatPill(this,'hairsalon')" data-i18n="cat_hairsalon">Coiffeur</button>
+            <button class="filter-pill" onclick="selectCatPill(this,'barber')" data-i18n="cat_barber">Barbershop</button>
+            <button class="filter-pill" onclick="selectCatPill(this,'nails')" data-i18n="cat_nails">Nails</button>
+            <button class="filter-pill" onclick="selectCatPill(this,'spa')" data-i18n="cat_spa">Massage &amp; Spa</button>
+            <button class="filter-pill" onclick="selectCatPill(this,'makeup')" data-i18n="cat_makeup">Make-up</button>
+            <button class="filter-pill" onclick="selectCatPill(this,'cosmetik')" data-i18n="cat_cosmetik">Kosmetik</button>
+          </div>
+          <!-- Quartier filters -->
+          <div class="filter-section-label" data-i18n="filter_location">Quartier</div>
+          <div class="filter-grid" id="quartierFilterPills">
+            <button class="filter-pill active" onclick="selectQuartierPill(this,'')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:2px" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Alle</button>
+            <button class="filter-pill" onclick="selectQuartierPill(this,'Grossbasel')">Grossbasel</button>
+            <button class="filter-pill" onclick="selectQuartierPill(this,'Kleinbasel')">Kleinbasel</button>
+            <button class="filter-pill" onclick="selectQuartierPill(this,'Gundeldingen')">Gundeli</button>
+            <button class="filter-pill" onclick="selectQuartierPill(this,'St. Johann')">St. Johann</button>
+            <button class="filter-pill" onclick="selectQuartierPill(this,'Bruderholz')">Bruderholz</button>
+            <button class="filter-pill" onclick="selectQuartierPill(this,'Hirzbrunnen')">Hirzbrunnen</button>
+          </div>
+          <!-- Footer with reset + count -->
+          <div class="filter-panel-footer" id="filterPanelFooter" style="display:none">
+            <button class="filter-reset-btn" onclick="resetFiltersFromPanel()" data-i18n="reset_filters">Zur&uuml;cksetzen</button>
+            <span class="filter-count-badge" id="filterCountBadge"></span>
+          </div>
+        </div>
+      </div>
     </div>
     <div id="lastMinuteSection" class="lm-section hidden"></div>
     <div id="recentSection" style="display:none"></div>
@@ -6073,6 +6241,7 @@ function selectCatPill(btn,cat){
   var sEl=document.getElementById('selServiceValue');
   if(sEl)sEl.textContent=cat?btn.textContent.trim():getSelPlaceholder('service');
   saveCategoryFilter();renderStores();updateQuerySummary();
+  if(typeof updateFilterActiveChips==='function')updateFilterActiveChips();
   solenTrack('filter_category',{category:cat||'all'});
 }
 function selectQuartierPill(btn,q){
@@ -6085,12 +6254,102 @@ function selectQuartierPill(btn,q){
   var qEl=document.getElementById('selQuartierValue');
   if(qEl)qEl.textContent=q?btn.textContent.trim():getSelPlaceholder('quartier');
   renderStores();updateQuerySummary();
+  if(typeof updateFilterActiveChips==='function')updateFilterActiveChips();
   solenTrack('filter_quartier',{quartier:q||'all'});
 }
 function extractQuartier(address){
   const quartiers=['Grossbasel','Kleinbasel','St. Johann','Gundeldingen','Gundeli','Bruderholz','Hirzbrunnen','Iselin','Bachletten','Breite','Klybeck','Matthäus','Clara','Wettstein','Riehen'];
   for(const q of quartiers){if(address.toLowerCase().includes(q.toLowerCase()))return q;}
   return'Basel';
+}
+
+// ── EXPANDABLE FILTER PANEL ──
+var _filterPanelOpen=false;
+function toggleFilterPanel(){
+  var panel=document.getElementById('filterPanel');
+  var body=document.getElementById('filterPanelBody');
+  var trigger=panel?panel.querySelector('.filter-panel-trigger'):null;
+  if(!panel||!body)return;
+  _filterPanelOpen=!_filterPanelOpen;
+  if(_filterPanelOpen){
+    // Expand: measure content then animate
+    panel.classList.add('expanded');
+    if(trigger)trigger.setAttribute('aria-expanded','true');
+    // Measure the inner height
+    var inner=body.querySelector('.filter-panel-inner');
+    var targetH=inner?inner.scrollHeight:300;
+    body.style.maxHeight=targetH+'px';
+    body.style.opacity='1';
+    // Update after animation in case content changes
+    setTimeout(function(){if(_filterPanelOpen&&body)body.style.maxHeight=inner.scrollHeight+'px';},380);
+  } else {
+    // Collapse: fade out content first, then shrink
+    body.style.opacity='0';
+    panel.classList.remove('expanded');
+    // Slight delay so opacity fades before height
+    setTimeout(function(){body.style.maxHeight='0';},60);
+    if(trigger)trigger.setAttribute('aria-expanded','false');
+  }
+  updateFilterActiveChips();
+}
+
+function updateFilterActiveChips(){
+  var container=document.getElementById('filterActiveChips');
+  if(!container)return;
+  var chips=[];
+  // Category chips
+  if(activeCategories.size>0){
+    activeCategories.forEach(function(cat){
+      var pill=document.querySelector('#catFilterPills .filter-pill.active');
+      var label=pill?pill.textContent.trim():cat;
+      chips.push(label);
+    });
+  }
+  // Quartier chip
+  if(activeNeighbourhood){
+    var qPill=document.querySelector('#quartierFilterPills .filter-pill.active');
+    var qLabel=qPill?qPill.textContent.trim():activeNeighbourhood;
+    chips.push(qLabel);
+  }
+  // Render mini chips (only when collapsed)
+  if(!_filterPanelOpen&&chips.length>0){
+    container.innerHTML=chips.map(function(c){return'<span class="filter-chip-mini">'+c+'</span>';}).join('');
+  } else {
+    container.innerHTML='';
+  }
+  // Update footer
+  var footer=document.getElementById('filterPanelFooter');
+  var badge=document.getElementById('filterCountBadge');
+  if(footer){
+    footer.style.display=chips.length>0?'flex':'none';
+  }
+  if(badge){
+    badge.textContent=chips.length>0?chips.length+' aktiv':'';
+  }
+}
+
+function resetFiltersFromPanel(){
+  // Reset categories
+  activeCategories.clear();
+  document.querySelectorAll('#catFilterPills .filter-pill').forEach(function(b,i){
+    b.classList.toggle('active',i===0);
+  });
+  // Reset quartier
+  activeNeighbourhood='';
+  document.querySelectorAll('#quartierFilterPills .filter-pill').forEach(function(b,i){
+    b.classList.toggle('active',i===0);
+  });
+  // Sync selection menu state
+  selMenuState.service='';selMenuState.serviceName='';
+  selMenuState.quartier='';selMenuState.quartierName='';
+  var sEl=document.getElementById('selServiceValue');
+  if(sEl)sEl.textContent=getSelPlaceholder('service');
+  var qEl=document.getElementById('selQuartierValue');
+  if(qEl)qEl.textContent=getSelPlaceholder('quartier');
+  saveCategoryFilter();
+  renderStores();
+  updateQuerySummary();
+  updateFilterActiveChips();
 }
 
 // ── NAV HELPERS ──
