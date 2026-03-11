@@ -3428,6 +3428,18 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <div id="pageBookings" class="page">
   <div class="page-title" data-i18n="bookings_title">Meine Buchungen</div>
   <div class="page-sub" data-i18n="bookings_sub">Deine vergangenen und kommenden Termine</div>
+  <div id="calSyncBar" style="display:none;margin-bottom:16px;padding:12px 16px;background:var(--glass);border:1.5px solid var(--border2);border-radius:var(--r);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <span style="font-size:.85rem;font-weight:600;margin-right:auto">Kalender-Sync</span>
+    <button class="btn-sm" id="gcalConnectBtn" onclick="connectCalendar('google')" style="font-size:.8rem;padding:5px 12px;border:1px solid #4285f4;color:#4285f4;background:transparent;border-radius:6px;cursor:pointer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.5 8.1l-6.3 6.3c-.2.2-.5.2-.7 0L7.5 11c-.2-.2-.2-.5 0-.7l.7-.7c.2-.2.5-.2.7 0l2.3 2.3 5.2-5.2c.2-.2.5-.2.7 0l.7.7c.2.2.2.5-.3.7z"/></svg>Google
+    </button>
+    <button class="btn-sm" id="outlookConnectBtn" onclick="connectCalendar('outlook')" style="font-size:.8rem;padding:5px 12px;border:1px solid #0078d4;color:#0078d4;background:transparent;border-radius:6px;cursor:pointer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:3px" aria-hidden="true"><rect width="24" height="24" rx="4"/></svg>Outlook
+    </button>
+    <button class="btn-sm" onclick="downloadCalFeed()" style="font-size:.8rem;padding:5px 12px;border:1px solid var(--border2);color:var(--text2);background:transparent;border-radius:6px;cursor:pointer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:3px" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>.ics Feed
+    </button>
+  </div>
   <div id="bookingsContent"><div class="spinner"></div></div>
 </div>
 
@@ -7672,9 +7684,35 @@ async function renderBookings(){
     </div>`;
   }).join('')}</div>`;
   document.getElementById('bookingsContent').innerHTML=html;
+  showCalSyncBar();
 }
 
 function rebookBooking(storeId){showPage('book/'+storeId);}
+
+// ── CALENDAR SYNC UI ─────────────────────────────────────────────────────────
+function showCalSyncBar(){
+  const bar=document.getElementById('calSyncBar');
+  if(bar&&currentUser)bar.style.display='flex';
+}
+function connectCalendar(provider){
+  if(!currentUser){openAuth('login');return;}
+  const baseUrl=provider==='google'?'/api/gcal-auth':'/api/outlook-auth';
+  window.open(baseUrl+'?action=authorize&user_id='+encodeURIComponent(currentUser.id),'_blank','width=500,height=700');
+}
+async function syncCalendar(provider){
+  if(!currentUser)return;
+  const endpoint=provider==='google'?'/api/gcal-sync':'/api/outlook-sync';
+  try{
+    const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:currentUser.id,action:'push'})});
+    const d=await r.json();
+    if(r.ok)toast(d.message||'Sync erfolgreich!','success');
+    else toast(d.error||'Sync fehlgeschlagen.','error');
+  }catch(e){toast('Verbindungsfehler.','error');}
+}
+function downloadCalFeed(){
+  if(!currentUser){openAuth('login');return;}
+  window.open('/api/calendar-feed?user_id='+encodeURIComponent(currentUser.id),'_blank');
+}
 
 // ── DM SYSTEM (Instagram-style) ──────────────────────────────────────────────
 const DM={
