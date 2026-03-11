@@ -89,13 +89,13 @@ Making it incredibly easy for users to find what they want.
 ### 5.1 Reviews System
 - [x] **Verified Reviews Only**: Supabase RLS policy (migration 009) requires confirmed/completed booking before review insert. Google-sourced reviews bypass.
 - [x] **Photo Reviews**: Photo upload with review text via Supabase Storage.
-- [ ] **Automated Requests**: Requires cron service (Supabase pg_cron or Vercel Cron). Email/SMS templates ready via existing endpoints.
+- [x] **Automated Requests**: Vercel Cron job `/api/cron-review-requests` runs daily at 10:00. Sends review request email 24h after booking completion. Marks bookings as `review_requested`.
 - [x] **Review Management**: Salon owners can publicly reply to reviews. RLS policy restricts replies to salon owner only.
 - [x] **Google Reviews Integration**: `/api/fetch-google-reviews.js` exists. Called on salon page load when `google_place_id` is set.
 - [x] **Verified Badge**: Counts completed bookings per salon. Badge displayed at >= 10 completed bookings.
 
 ### 5.2 Quality Assurance & Security
-- [ ] **Active Store Check Engine**: Requires scheduled job infrastructure (Supabase pg_cron or Vercel Cron). Email templates exist.
+- [x] **Active Store Check Engine**: Vercel Cron job `/api/cron-store-check` runs monthly. Checks `last_active` on stores. Sends up to 3 warning emails, then freezes store and cancels future bookings.
 - [x] **Role-Based Access Control (RBAC)**: Client-side route guards + Supabase RLS. Staff cannot access owner payouts.
 - [x] **Messaging & Chat**: DM system already implemented with per-booking threads, read receipts, and attachment support.
 
