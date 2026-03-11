@@ -114,8 +114,7 @@ img{max-width:100%;display:block}
 *:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
 /* ── TOUCH TARGETS (5g, 5i) ── */
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
-/* ── MOBILE TAP FIX: ensure all clickable elements have proper z-index isolation ── */
-@media(max-width:768px){button,a,[role="button"],[onclick],.bottom-nav-item,.close-btn,.fav-btn,.hamburger,.theme-toggle{position:relative;z-index:1}}
+/* ── MOBILE TAP FIX: removed destructive z-index isolation rule ── */
 input,select,textarea{font-family:inherit;min-height:44px}
 
 /* NAV */
@@ -13547,5 +13546,7 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   </div>
 </div>
 
+  <!-- Vite ES module entry point — imports src/services, src/utils, src/styles -->
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>

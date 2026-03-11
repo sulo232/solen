@@ -1,0 +1,100 @@
+/*
+ * variables.css
+ * All CSS custom properties (design tokens) for the Solen app.
+ * Includes: color tokens, typography tokens, radius, shadow, motion,
+ * elevation, category, spacing, and teal/coral palette tokens.
+ * Also contains [data-theme="dark"] overrides and prefers-color-scheme.
+ */
+
+:root{
+  /* ── COLOR TOKENS (Warm Swiss / Basel) ── */
+  --c-bg:#F8F4ED;--c-bg-elevated:#FFFFFF;--c-surface:#FFFFFF;--c-surface-alt:#F3EEE6;
+  --c-text:#1F1F1F;--c-text-secondary:#6B5E4F;--c-text-muted:#8C7E6F;
+  --c-accent:#9B1D30;--c-accent-hover:#7A1626;--c-accent-fg:#FFFFFF;
+  --c-cta:#9B1D30;--c-cta-hover:#7A1626;--c-cta-fg:#FFFFFF;
+  --c-highlight:#D4AF77;--c-accent-secondary:#D4AF77;
+  --c-border:#E2DCD3;--c-border-strong:#D5CFC6;
+  --c-success:#2d7a4f;--c-error:#DC2626;--c-warning:#d97706;
+  --c-focus:#7C3AED;
+  /* ── LEGACY ALIASES ── */
+  --bg:var(--c-bg);--bg2:var(--c-bg-elevated);--surface:var(--c-surface);--surfaceAlt:var(--c-surface-alt);
+  --text:var(--c-text);--text2:var(--c-text-secondary);--muted:var(--c-text-secondary);--textMuted:var(--c-text-secondary);--light:var(--c-text-muted);
+  --accent:var(--c-accent);--accent2:var(--c-cta);--accent-dark:var(--c-accent-hover);--accentFg:var(--c-accent-fg);
+  --accent-lemon:var(--c-highlight);--accent-secondary:var(--c-accent-secondary);--accent-gold:var(--c-highlight);
+  --border:var(--c-border);--border2:var(--c-border-strong);
+  --success:var(--c-success);--error:var(--c-error);--warning:var(--c-warning);
+  /* ── TYPOGRAPHY TOKENS ── */
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','Space Grotesk',monospace;
+  --lh-body:1.55;--lh-heading:1.25;
+  /* ── RADIUS TOKENS ── */
+  --r:8px;--r2:16px;--r-lg:16px;--r-pill:100px;--radius:8px;
+  /* ── SHADOW TOKENS ── */
+  --shadow-card:0 10px 30px -10px rgba(155,29,48,0.15);
+  --shadow:var(--shadow-card);--shadow2:0 20px 40px -15px rgba(155,29,48,0.2);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
+  --glow:0 2px 8px rgba(155,29,48,0.12);
+  /* ── MOTION TOKENS ── */
+  --ease:cubic-bezier(.4,0,.2,1);
+  --ease-standard:cubic-bezier(.2,.8,.2,1);
+  --ease-emphasized:cubic-bezier(.2,0,0,1);
+  --motion-fast:120ms;
+  --motion-base:200ms;
+  --motion-slow:280ms;
+  /* ── ELEVATION TOKENS ── */
+  --elev-0:none;
+  --elev-1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --elev-2:0 6px 18px rgba(0,0,0,.08);
+  --elev-3:0 12px 36px rgba(0,0,0,.12);
+  /* ── CATEGORY TOKENS ── */
+  --cat-hair:#9B1D30;--cat-barbershop:#4A4A8A;--cat-nails:#C4587A;--cat-spa:#5B8F7B;--cat-makeup:#9B6BBF;--cat-cosmetik:#D4AF77;--cat-tattoo:#2D2D2D;
+  /* ── SPACING ── */
+  --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;
+  /* ── RGB TOKENS FOR GLASSMORPHISM ── */
+  --surface-rgb:255,255,255;--bg-rgb:248,244,237;
+  /* ── TEAL & CORAL PALETTE (chat, badges, map, commission) ── */
+  --c-teal:#4ECDC4;--c-teal-dark:#26a69a;--c-teal-rgb:78,205,196;
+  --c-coral:#FF6B6B;--c-coral-dark:#FF8E53;--c-coral-rgb:255,107,107;
+  /* ── DM DESIGN SYSTEM TOKENS ── */
+  --dm-blue:#0095F6;--dm-blue-hover:#1AA1F7;--dm-sent:#3797F0;--dm-bubble-mine:var(--dm-blue);--dm-bubble-theirs:var(--surfaceAlt);--dm-unread:#0095F6;--dm-online:#44D62C;--dm-typing:var(--muted);--dm-fail:var(--error);
+}
+
+[data-theme="dark"]{
+  --bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121;
+  --c-bg:#0F0F0F;--c-bg-elevated:#1a1a1a;--c-surface:#1A1A1A;--c-surface-alt:#252525;--c-surface2:#242424;
+  --surface-rgb:35,27,22;--bg-rgb:26,18,16;
+  --text:#F8F4ED;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
+  --c-text:#EFEFEF;--c-text-secondary:#9CA3AF;--c-text-muted:#6b7280;
+  --accent:#D4586A;--accent2:#D4AF77;--accent-dark:#B8384E;--accentFg:#1A1210;
+  --c-accent:#D4586A;--c-accent-hover:#B8384E;--c-accent-fg:#1A1210;
+  --accent-lemon:#D4AF77;
+  --border:#3D3028;--border2:#4A3D33;
+  --c-border:#2E2E2E;--c-border-strong:#3a3a3a;
+  --shadow:0 2px 16px rgba(0,0,0,0.35);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
+  --shadow-card:0 2px 16px rgba(0,0,0,0.35);
+  --glow:0 2px 8px rgba(155,29,48,0.15);
+  --elev-1:0 2px 8px rgba(0,0,0,.2);--elev-2:0 8px 24px rgba(0,0,0,.3);--elev-3:0 16px 48px rgba(0,0,0,.4);
+  --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
+  --dm-bubble-theirs:#262626;--dm-sent:#3797F0;
+  color-scheme:dark;
+}
+
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121;
+  --c-bg:#0f0f0f;--c-bg-elevated:#1a1a1a;--c-surface:#1f1f1f;--c-surface-alt:#252525;
+  --surface-rgb:35,27,22;--bg-rgb:26,18,16;
+  --text:#F8F4ED;--text2:#9CA3AF;--muted:#9CA3AF;--textMuted:#9CA3AF;--light:#6b7280;
+  --c-text:#f0f0f0;--c-text-secondary:#b0b0b0;--c-text-muted:#707070;
+  --accent:#D4586A;--accent2:#D4AF77;--accent-dark:#B8384E;--accentFg:#1A1210;
+  --c-accent:#D4586A;--c-accent-hover:#B8384E;--c-accent-fg:#1A1210;
+  --accent-lemon:#D4AF77;
+  --border:#3D3028;--border2:#4A3D33;
+  --c-border:#2a2a2a;--c-border-strong:#3a3a3a;
+  --shadow:0 2px 16px rgba(0,0,0,0.35);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
+  --shadow-card:0 2px 16px rgba(0,0,0,0.35);
+  --glow:0 2px 8px rgba(155,29,48,0.15);
+  --elev-1:0 2px 8px rgba(0,0,0,.2);--elev-2:0 8px 24px rgba(0,0,0,.3);--elev-3:0 16px 48px rgba(0,0,0,.4);
+  --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
+  --dm-bubble-theirs:#262626;--dm-sent:#3797F0;
+  color-scheme:dark;
+}}
