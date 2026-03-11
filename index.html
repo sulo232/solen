@@ -2494,6 +2494,11 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   color:var(--c-text);
   -webkit-tap-highlight-color:transparent;
   user-select:none;
+  position:relative;
+  z-index:1;
+}
+.filter-panel-trigger>*{
+  pointer-events:none;
 }
 .filter-panel-trigger:active{
   background:var(--c-surface-alt);
