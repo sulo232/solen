@@ -2136,6 +2136,33 @@ body{font-family:var(--font-body,system-ui);}
 .staff-selector-chip{padding:.35rem .85rem;border-radius:20px;border:1.5px solid var(--c-border);background:var(--c-surface);cursor:pointer;font-size:.82rem;font-weight:600;transition:.15s;color:var(--c-text)}
 .staff-selector-chip.active{border-color:var(--c-cta,#FF6B6B);color:var(--c-cta,#FF6B6B);background:rgba(255,107,107,.07)}
 
+/* ═══ STYLIST CALENDAR EDITOR ═══ */
+.stylist-cal-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px}
+.stylist-cal-modal{background:var(--c-surface);border-radius:var(--r2);width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow3);display:flex;flex-direction:column}
+.stylist-cal-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--c-border);position:sticky;top:0;background:var(--c-surface);z-index:1}
+.stylist-cal-modal-hd h3{font-size:1rem;font-weight:700;margin:0;color:var(--c-text)}
+.stylist-cal-modal-close{background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--c-text-muted);line-height:1;padding:2px 6px}
+.stylist-cal-modal-close:hover{color:var(--c-text)}
+.stylist-cal-modal-body{padding:18px 20px}
+.stylist-cal-same-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:.875rem;color:var(--c-text-secondary)}
+.stylist-cal-week-grid{display:grid;grid-template-columns:90px 1fr 1fr 80px;gap:6px;align-items:center;font-size:.82rem;margin-bottom:4px}
+.stylist-cal-week-grid.header{font-weight:700;color:var(--c-text-muted);margin-bottom:6px}
+.stylist-cal-day-label{font-weight:600;color:var(--c-text);font-size:.85rem}
+.stylist-cal-time-input{padding:6px 8px;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.82rem;width:100%;color:var(--c-text)}
+.stylist-cal-time-input:disabled{opacity:.4;cursor:not-allowed}
+.stylist-cal-avail-toggle{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--c-text-secondary)}
+.stylist-cal-exceptions{margin-top:20px;border-top:1px solid var(--c-border);padding-top:16px}
+.stylist-cal-exceptions h4{font-size:.88rem;font-weight:700;margin-bottom:10px;color:var(--c-text)}
+.stylist-cal-exc-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.stylist-cal-exc-chip{display:flex;align-items:center;justify-content:space-between;background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:8px;padding:6px 10px;font-size:.82rem}
+.stylist-cal-exc-chip button{background:none;border:none;cursor:pointer;color:var(--c-text-muted);font-size:1rem;padding:0 2px}
+.stylist-cal-exc-chip button:hover{color:var(--c-error)}
+.stylist-cal-exc-add{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stylist-cal-exc-add input{padding:6px 10px;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.82rem;color:var(--c-text)}
+.stylist-cal-modal-footer{display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--c-border);background:var(--c-surface);position:sticky;bottom:0}
+.btn-cal-edit{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px solid var(--c-accent);color:var(--c-accent);background:none;border-radius:var(--r-pill);font-size:.78rem;font-weight:600;cursor:pointer;transition:.15s;margin-top:6px}
+.btn-cal-edit:hover{background:var(--c-accent);color:var(--c-accent-fg)}
+
 /* ═══ CRM PHOTO UPLOAD ═══ */
 .crm-photo-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
 .crm-photo-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1.5px solid var(--c-border);cursor:pointer}
@@ -6819,7 +6846,7 @@ async function renderBookPage(salonId){
 
   // Init booking state
   const _now=new Date();
-  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[]};
+  bmState={store,service:null,date:new Date().toISOString().split('T')[0],time:_pendingBookPreselectedTime||'',guestName:'',guestPhone:'',guestEmail:'',notes:'',isNewCustomer:null,isRecurring:false,recurrenceWeeks:4,recurrenceCount:3,step:1,confirmed:false,wantsReminder:true,bmCalMonth:_now.getMonth(),bmCalYear:_now.getFullYear(),bookedSlots:[],staffWorkStart:null,staffWorkEnd:null,staffId:null,staffName:null,haircutStyle:null,haircutGender:null,selectedAddons:[],availDates:{},availLoaded:false,availLoadedFor:null,calLoading:false,staffNoSchedule:false,blockedDates:null,dateBlocked:false};
   // Smart gender-based haircut tab default
   const _pg=currentProfile?.gender||'';
   bmState.activeHaircutTab=_pg==='Weiblich'?'damen':'herren';
@@ -6906,6 +6933,43 @@ function bpValidateStep2(){
   bpGoStep(3);
 }
 
+// ── Helper: render the right booking view (modal or book page) ───────────────
+function _bmRender(){
+  if(document.getElementById('bpProgress')){renderBPStep(_bpCurrentStep);}
+  else{renderBookingModal();}
+}
+
+// ── BOOK PAGE: fetch stylist availability from staff_calendars ───────────────
+async function bpLoadStepAvailability(){
+  const salonId=bmState.store?.id;
+  if(!salonId||String(salonId).startsWith('d'))return;
+  bmState.availDates={};
+  bmState.availLoaded=false;
+  bmState.availLoadedFor=bmState.staffId||'egal';
+  try{
+    let q=sb.from('staff_calendars')
+      .select('date,start_time,end_time,staff_name')
+      .eq('salon_id',salonId)
+      .eq('block_type','working');
+    // Filter by selected stylist name if one is chosen
+    if(bmState.staffId&&bmState.staffName){
+      q=q.eq('staff_name',bmState.staffName);
+    }
+    const{data}=await q;
+    const avail={};
+    (data||[]).forEach(r=>{
+      const d=String(r.date).slice(0,10);
+      if(!avail[d])avail[d]=[];
+      avail[d].push({start:(r.start_time||'').slice(0,5),end:(r.end_time||'').slice(0,5)});
+    });
+    bmState.availDates=avail;
+    bmState.availLoaded=true;
+  }catch(e){
+    bmState.availLoaded=true; // don't block on error
+  }
+  if(_bpCurrentStep===2)renderBPStep(2);
+}
+
 // ── BOOK PAGE: step renderers ───────────────────────────────────────────────
 
 function renderBPStep(step){
@@ -6951,24 +7015,25 @@ function renderBPStep(step){
     if(bmState.store)loadStaffPickerInBooking(bmState.store.id);
 
   } else if(step===2){
-    const today=new Date().toISOString().split('T')[0];
-    const maxDate=new Date(Date.now()+60*24*60*60*1000).toISOString().split('T')[0];
-    const slots=['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00'];
     let html=`<h3 class="bp-step-title">Datum &amp; Zeit</h3>`;
-    html+=`<div class="form-group" style="margin-bottom:22px">
-      <label style="font-size:.85rem;font-weight:700;margin-bottom:8px;display:block">Datum</label>
-      <input type="date" class="form-input bp-date-input" value="${bmState.date||today}" min="${today}" max="${maxDate}" onchange="bmState.date=this.value">
-    </div>`;
-    html+=`<div style="margin-bottom:24px">
-      <label style="font-size:.85rem;font-weight:700;margin-bottom:10px;display:block">Uhrzeit</label>`;
-    if(_bpSlotLoading){
-      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:20px;height:20px;border-width:2px;flex-shrink:0"></div><span>Verfügbarkeit wird geladen…</span></div>`;
-    } else {
-      html+=`<div class="bm-time-grid">`+slots.map(sl=>`<button class="bm-time-btn${bmState.time===sl?' selected':''}" onclick="bmState.time='${sl}';document.querySelectorAll('.bm-time-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected')">${sl}</button>`).join('')+`</div>`;
+    // Stylist-specific banner
+    if(bmState.staffId&&bmState.staffName){
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(45,122,79,.08);border:1.5px solid rgba(45,122,79,.3);border-radius:var(--r);margin-bottom:16px;font-size:.85rem;color:var(--c-success)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Zeige Verfügbarkeit von <strong>${bmState.staffName}</strong></span></div>`;
     }
-    html+=`</div>`;
-    html+=`<button class="btn-primary" style="min-height:48px" onclick="bpValidateStep2()">Weiter →</button>`;
+    // Inline calendar with availability dots
+    html+=renderBmCal();
+    // Loading indicator while availability is being fetched
+    if(!bmState.availLoaded){
+      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:16px;height:16px;border-width:2px;flex-shrink:0"></div><span style="font-size:.82rem">Verfügbarkeit wird geladen…</span></div>`;
+    }
+    // Time slots (duration auto-calculated from service + add-ons)
+    html+=renderBmTimeSlots();
+    html+=`<button class="btn-primary" style="min-height:48px;margin-top:8px" onclick="bpValidateStep2()">Weiter →</button>`;
     content.innerHTML=html;
+    // Fetch availability if not yet loaded for current staff selection
+    if(!bmState.availLoaded||bmState.availLoadedFor!==(bmState.staffId||'egal')){
+      bpLoadStepAvailability();
+    }
 
   } else if(step===3){
     const svc=bmState.service;
@@ -8649,10 +8714,15 @@ function renderBookingModal(){
     html+=`<div class="form-row" style="margin-bottom:16px"><div class="form-group"><label>Service</label><input class="form-input" id="bmCustomSvc" placeholder="Service-Name" value="${bmState.customSvc||''}"></div><div class="form-group"><label>Preis (CHF)</label><input class="form-input" type="number" id="bmCustomPrice" placeholder="0" value="${bmState.customPrice||''}"></div></div>`;
   }
   // 2. Date – inline calendar
-  html+=`<h4 style="font-size:.92rem;font-weight:700;margin:16px 0 10px">${t('select_date')}</h4>`;
-  html+=renderBmCal();
-  // 3. Time slot grid with availability
-  html+=renderBmTimeSlots();
+  const _calTitle=bmState.staffName?`${bmState.staffName}s Kalender`:`${t('select_date')}`;
+  html+=`<h4 style="font-size:.92rem;font-weight:700;margin:16px 0 10px">${_calTitle}</h4>`;
+  if(bmState.calLoading){
+    html+=`<div style="text-align:center;padding:30px 0"><div class="spinner" style="width:24px;height:24px;border-width:2px;margin:0 auto"></div><p style="font-size:.82rem;color:var(--c-text-muted);margin-top:10px">Kalender wird geladen…</p></div>`;
+  }else{
+    html+=renderBmCal();
+    // 3. Time slot grid with availability
+    html+=renderBmTimeSlots();
+  }
   // Wer schneidet? – stylist picker sub-tab
   const egalSelected=!bmState.staffId;
   html+=`<div class="stylist-picker-section">
@@ -8749,7 +8819,7 @@ function bmCalNav(dir){
   bmState.bmCalMonth=(bmState.bmCalMonth||0)+dir;
   if(bmState.bmCalMonth>11){bmState.bmCalMonth=0;bmState.bmCalYear++;}
   if(bmState.bmCalMonth<0){bmState.bmCalMonth=11;bmState.bmCalYear--;}
-  renderBookingModal();
+  _bmRender();
 }
 
 function renderBmCal(){
@@ -8770,19 +8840,25 @@ function renderBmCal(){
   h+=`<div class="bm-cal-days-row">${days.map(d=>`<div class="bm-cal-day-hd">${d}</div>`).join('')}</div>`;
   h+=`<div class="bm-cal-grid">`;
   for(let i=0;i<startDow;i++)h+='<div></div>';
+  const availDates=bmState.availDates||null;
+  const availLoaded=bmState.availLoaded||false;
+  const hasAnyAvailData=availLoaded&&availDates&&Object.keys(availDates).length>0;
   for(let d=1;d<=dim;d++){
     const dt=new Date(yr,mo,d);
     const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isPast=dt<today;
+    const isBlockedDay=(bmState.blockedDates||[]).some(b=>ds>=b.start_date&&ds<=b.end_date);
     const isSel=bmState.date===ds;
     const isTod=dt.getTime()===today.getTime();
+    const dayHasAvail=!hasAnyAvailData||!!(availDates[ds]&&availDates[ds].length);
     let cls='bm-cal-day';
-    if(isPast)cls+=' disabled';
+    if(isPast||isBlockedDay)cls+=' disabled';
     else if(isSel)cls+=' selected';
+    else if(!dayHasAvail)cls+=' disabled';
     else if(isTod)cls+=' today available';
     else cls+=' available';
-    const oc=isPast?'':`bmSelectDate('${ds}')`;
-    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${isPast?-1:0}">${d}</div>`;
+    const oc=(isPast||isBlockedDay||!dayHasAvail)?'':`bmSelectDate('${ds}')`;
+    h+=`<div class="${cls}" onclick="${oc}" role="button" tabindex="${(isPast||isBlockedDay||!dayHasAvail)?-1:0}" title="${isBlockedDay?'Betriebsferien':''}">${d}</div>`;
   }
   h+=`</div></div>`;
   return h;
@@ -8792,22 +8868,59 @@ async function bmSelectDate(ds){
   bmState.date=ds;
   bmState.time='';
   bmState.bookedSlots=[];
-  bmState.staffWorkStart=null;
-  bmState.staffWorkEnd=null;
-  renderBookingModal();
+  bmState.staffNoSchedule=false;
+  bmState.dateBlocked=false;
+  // Use preloaded availability for working hours if available
+  const preAvail=(bmState.availDates||{})[ds];
+  if(preAvail&&preAvail.length){
+    const starts=preAvail.map(a=>a.start).filter(Boolean).sort();
+    const ends=preAvail.map(a=>a.end).filter(Boolean).sort();
+    bmState.staffWorkStart=starts[0]||null;
+    bmState.staffWorkEnd=ends[ends.length-1]||null;
+  }else{
+    bmState.staffWorkStart=null;
+    bmState.staffWorkEnd=null;
+  }
+  _bmRender();
   try{
     const sid=typeof bmState.store?.id==='string'&&bmState.store.id.startsWith('d')?null:bmState.store?.id;
     if(sid){
-      const{data:bkd}=await sb.from('bookings').select('booking_time').eq('salon_id',sid).eq('booking_date',ds).neq('status','cancelled');
-      bmState.bookedSlots=(bkd||[]).map(r=>(r.booking_time||'').slice(0,5)).filter(Boolean);
-      if(_selStaffId){
-        const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time,staff_name').eq('salon_id',sid).eq('date',ds).eq('block_type','working');
-        const wday=scd&&scd.find(r=>!_selStaffId||r.staff_id===_selStaffId||true);
-        if(wday){bmState.staffWorkStart=(wday.start_time||'').slice(0,5);bmState.staffWorkEnd=(wday.end_time||'').slice(0,5);}
+      // Load blocked dates once per booking session
+      if(bmState.blockedDates===null){
+        const{data:bd}=await sb.from('blocked_dates').select('start_date,end_date').eq('store_id',sid);
+        bmState.blockedDates=bd||[];
+      }
+      // Check if selected date falls in a blocked range (salon vacation)
+      bmState.dateBlocked=(bmState.blockedDates||[]).some(b=>ds>=b.start_date&&ds<=b.end_date);
+      if(!bmState.dateBlocked){
+        const{data:bkd}=await sb.from('bookings').select('booking_time').eq('salon_id',sid).eq('booking_date',ds).neq('status','cancelled');
+        bmState.bookedSlots=(bkd||[]).map(r=>(r.booking_time||'').slice(0,5)).filter(Boolean);
+        if(_selStaffId){
+          const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time,staff_id,block_type').eq('salon_id',sid).eq('date',ds);
+          const staffEntry=scd&&scd.find(r=>String(r.staff_id)===String(_selStaffId));
+          if(staffEntry){
+            if(staffEntry.block_type==='working'){
+              bmState.staffWorkStart=(staffEntry.start_time||'').slice(0,5);
+              bmState.staffWorkEnd=(staffEntry.end_time||'').slice(0,5);
+            }else{
+              // vacation or block for this stylist
+              bmState.dateBlocked=true;
+            }
+          }else if(!preAvail){
+            // No schedule entry for this stylist on this date
+            bmState.staffNoSchedule=true;
+          }
+        }else if(!preAvail){
+          // Fallback: any staff working hours
+          const{data:scd}=await sb.from('staff_calendars').select('start_time,end_time').eq('salon_id',sid).eq('date',ds).eq('block_type','working');
+          const wday=scd&&scd[0];
+          if(wday){bmState.staffWorkStart=(wday.start_time||'').slice(0,5);bmState.staffWorkEnd=(wday.end_time||'').slice(0,5);}
+        }
       }
     }
   }catch(e){}
-  renderBookingModal();
+  bmState.calLoading=false;
+  _bmRender();
 }
 
 function calcBmDuration(){
@@ -8831,6 +8944,18 @@ function renderBmTimeSlots(){
     h+=`<p class="bm-slots-loading">Bitte zuerst ein Datum wählen.</p>`;
     return h;
   }
+  // Edge case: date is blocked (salon vacation or stylist vacation)
+  if(bmState.dateBlocked){
+    h+=`<p class="bm-slots-loading" style="color:var(--c-warning,#d97706)">&#128683; Dieser Tag ist gesperrt (Urlaub/Betriebsferien).</p>`;
+    h+=`<div class="bm-time-grid">`;
+    slots.forEach(sl=>{h+=`<button class="bm-time-btn booked" disabled aria-disabled="true">${sl}</button>`;});
+    h+=`</div>`;
+    return h;
+  }
+  // Edge case: stylist selected but no schedule set → show warning + fallback slots
+  if(bmState.staffNoSchedule&&bmState.staffId){
+    h+=`<p style="font-size:.82rem;color:var(--c-text-muted,#888);margin-bottom:8px;padding:6px 10px;background:var(--c-surface-alt,#f5f5f5);border-radius:8px">Noch keine Termine eingetragen – Salonzeiten werden angezeigt.</p>`;
+  }
   h+=`<div class="bm-time-grid">`;
   slots.forEach(sl=>{
     const isBooked=booked.includes(sl);
@@ -8839,7 +8964,7 @@ function renderBmTimeSlots(){
     if(isSel)cls+=' selected';
     else if(isBooked)cls+=' booked';
     else cls+=' available';
-    h+=`<button class="${cls}" onclick="${isBooked?'':  `bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
+    h+=`<button class="${cls}" onclick="${isBooked?'':`bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
   });
   h+=`</div>`;
   return h;
@@ -9776,6 +9901,7 @@ async function loadStaffPickerInBooking(storeId){
         <div class="sc-stars">${stars}</div>
         <div class="sc-count">${fee>0?`+CHF ${fee} Auswahl`:'124 Termine'}</div>
       </div>
+      ${isSelected?'<span class="sc-badge sc-badge-eigener">Eigener Kalender</span>':''}
     </div>`;
   }).join('');
   // Replace grid content: keep Egal card first, append staff cards
@@ -9798,15 +9924,45 @@ function selectStaff(id,name,el){
   updateBookingSummary();
 }
 function selectStylistCard(id,name,el,fee){
+  const prevId=bmState.staffId;
   bmState.staffId=id||null;
   bmState.staffName=name||null;
   bmState.stylistFee=id?(parseFloat(fee)||0):0;
   _selStaffId=id||null;_selStaffName=name||null;
-  document.querySelectorAll('#stylistPickerCards .stylist-card').forEach(c=>c.classList.remove('selected'));
-  if(el)el.classList.add('selected');
+  // Invalidate preloaded availability so step 2 re-fetches for new selection
+  bmState.availLoaded=false;
+  bmState.availDates={};
+  document.querySelectorAll('#stylistPickerCards .stylist-card').forEach(c=>{
+    c.classList.remove('selected');
+    const eb=c.querySelector('.sc-badge-eigener');
+    if(eb)eb.remove();
+  });
+  if(el){
+    el.classList.add('selected');
+    if(id){
+      const badge=document.createElement('span');
+      badge.className='sc-badge sc-badge-eigener';
+      badge.textContent='Eigener Kalender';
+      el.appendChild(badge);
+    }
+  }
   const summaryVal=document.getElementById('summaryStylstVal');
   if(summaryVal)summaryVal.textContent=name||'Bester Verfügbarer';
-  updateBookingSummary();
+  // When stylist changes, reset calendar state and show loading spinner
+  if(String(prevId||'')!==String(id||'')){
+    bmState.time='';
+    bmState.bookedSlots=[];
+    bmState.staffWorkStart=null;
+    bmState.staffWorkEnd=null;
+    bmState.staffNoSchedule=false;
+    bmState.dateBlocked=false;
+    bmState.calLoading=true;
+    _bmRender();
+    const _tmr=setTimeout(()=>{bmState.calLoading=false;bpLoadStepAvailability();},400);
+    // bpLoadStepAvailability calls _bmRender on completion
+  }else{
+    updateBookingSummary();
+  }
 }
 
 // Close add-staff modal on backdrop click
@@ -11727,6 +11883,10 @@ async function renderServicesTeamTab(salonId) {
                 <label style="font-size:.72rem;color:var(--c-text-secondary);font-weight:600;display:block;margin-bottom:3px">Auswahlgebühr CHF</label>
                 <input type="number" class="form-input" style="font-size:.82rem;padding:5px 8px;text-align:center" min="0" max="20" step="1" value="${curFee}" placeholder="0" onchange="updateStylistSelectionFee('${s.id}',this.value)">
               </div>
+              <button class="btn-cal-edit" onclick="openStylistCalendarModal('${s.id}','${s.name}','${salonId}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Kalender bearbeiten
+              </button>
             </div>`;
           }).join('')
         }
@@ -11771,7 +11931,31 @@ async function renderServicesTeamTab(salonId) {
       </div>
     </div>
 
-    <!-- B: HERREN PRESETS -->
+    <!-- B: KALENDER PRO STYLIST -->
+    <div class="svcteam-section">
+      <div class="svcteam-section-hd">
+        <h3>Kalender pro Stylist</h3>
+        <span style="font-size:.78rem;color:var(--c-text-muted)">Wöchentliche Verfügbarkeit & Ausnahmen</span>
+      </div>
+      ${staffList.length===0
+        ? '<p style="color:var(--c-text-muted);font-size:.88rem">Füge zuerst Stylisten hinzu, um ihre Kalender zu bearbeiten.</p>'
+        : '<div class="stylist-grid" style="margin:0">' + staffList.map(s=>{
+            const initials=(s.name||'?').split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+            const av=s.photo_url?`<img src="${s.photo_url}" alt="${s.name}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`:`<span>${initials}</span>`;
+            return `<div class="stylist-card" style="cursor:default">
+              <div class="stylist-avatar">${av}</div>
+              <div class="stylist-name">${s.name}</div>
+              ${s.role?`<div class="stylist-role">${s.role}</div>`:''}
+              <button class="btn-cal-edit" onclick="openStylistCalendarModal('${s.id}','${s.name}','${salonId}')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Kalender bearbeiten
+              </button>
+            </div>`;
+          }).join('') + '</div>'
+      }
+    </div>
+
+    <!-- C: HERREN PRESETS -->
     <div class="svcteam-section">
       <div class="svcteam-section-hd">
         <h3>Herrenhaarschnitte</h3>
@@ -11840,6 +12024,190 @@ async function deleteSvcTeamStylist(staffId,salonId) {
 async function updateStylistBookable(staffId,salonId,bookable) {
   await sb.from('store_staff').update({bookable}).eq('id',staffId);
   toast(bookable?'Stylist ist jetzt buchbar':'Stylist nicht mehr buchbar','success');
+}
+
+// ── STYLIST CALENDAR EDITOR ───────────────────────────────────────────────────
+const DAYS_DE=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+let _styCalExceptions=[];// array of {date,label}
+
+async function openStylistCalendarModal(stylistId,stylistName,salonId){
+  // Remove any existing modal
+  document.getElementById('stylistCalModal')?.remove();
+
+  // Load existing availability rows for this stylist (one per weekday, date=null)
+  const{data:rows}=await sb.from('stylist_availability').select('*').eq('stylist_id',stylistId).is('date',null).order('id');
+  // Build a map: dayIndex (0=Mon…6=Sun) → row
+  const rowMap={};
+  (rows||[]).forEach(r=>{if(r.day_of_week!=null)rowMap[r.day_of_week]=r;});
+
+  // Load salon general hours as fallback defaults
+  const{data:salonData}=await sb.from('salons').select('opening_hours').eq('id',salonId).single();
+  let salonHours={};
+  try{salonHours=typeof salonData?.opening_hours==='string'?JSON.parse(salonData.opening_hours):salonData?.opening_hours||{};}catch(e){}
+
+  // Load exception dates for this stylist
+  const{data:excRows}=await sb.from('stylist_availability').select('*').eq('stylist_id',stylistId).not('date','is',null);
+  _styCalExceptions=(excRows||[]).map(r=>({id:r.id,date:r.date,label:r.exceptions?.[0]?.label||'Ausnahme',is_available:r.is_available}));
+
+  // Build default hours per day from salon hours or sensible defaults
+  function defaultHours(dayIdx){
+    // Try salon hours first
+    const dayKey=['mon','tue','wed','thu','fri','sat','sun'][dayIdx];
+    if(salonHours[dayKey]){return{start:salonHours[dayKey].open||'09:00',end:salonHours[dayKey].close||'18:00',avail:!salonHours[dayKey].closed};}
+    if(dayIdx>=5)return{start:'10:00',end:'16:00',avail:false}; // weekend off by default
+    return{start:'09:00',end:'18:00',avail:true};
+  }
+
+  // Build day rows HTML
+  const dayRowsHtml=DAYS_DE.map((dayName,i)=>{
+    const existing=rowMap[i];
+    const def=defaultHours(i);
+    const avail=existing!=null?existing.is_available:def.avail;
+    const start=existing?.start_time?.substring(0,5)||def.start;
+    const end=existing?.end_time?.substring(0,5)||def.end;
+    return `<div class="stylist-cal-week-grid" data-day="${i}">
+      <span class="stylist-cal-day-label">${dayName}</span>
+      <input class="stylist-cal-time-input" type="time" id="scStart_${i}" value="${start}" ${avail?'':'disabled'}>
+      <input class="stylist-cal-time-input" type="time" id="scEnd_${i}" value="${end}" ${avail?'':'disabled'}>
+      <div class="stylist-cal-avail-toggle">
+        <label class="toggle-switch" style="width:32px;height:18px">
+          <input type="checkbox" id="scAvail_${i}" ${avail?'checked':''} onchange="onStyCalAvailToggle(${i})">
+          <span class="toggle-slider"></span>
+        </label>
+        <span id="scAvailLabel_${i}" style="font-size:.75rem">${avail?'An':'Frei'}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Build exceptions list HTML
+  function excListHtml(){
+    if(_styCalExceptions.length===0)return '<p style="font-size:.82rem;color:var(--c-text-muted)">Keine Ausnahmen eingetragen.</p>';
+    return _styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip">
+      <span>${e.date} – ${e.label}</span>
+      <button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button>
+    </div>`).join('');
+  }
+
+  const modal=document.createElement('div');
+  modal.id='stylistCalModal';
+  modal.className='stylist-cal-modal-overlay';
+  modal.innerHTML=`
+    <div class="stylist-cal-modal" role="dialog" aria-modal="true" aria-label="Kalender ${stylistName}">
+      <div class="stylist-cal-modal-hd">
+        <h3>Kalender – ${stylistName}</h3>
+        <button class="stylist-cal-modal-close" onclick="document.getElementById('stylistCalModal')?.remove()" aria-label="Schliessen">✕</button>
+      </div>
+      <div class="stylist-cal-modal-body">
+        <!-- Same-times checkbox -->
+        <div class="stylist-cal-same-row">
+          <label class="toggle-switch" style="width:32px;height:18px">
+            <input type="checkbox" id="scSameAll" onchange="onStyCalSameAll()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span>Gleiche Zeiten für alle Tage</span>
+        </div>
+        <!-- Column headers -->
+        <div class="stylist-cal-week-grid header">
+          <span>Tag</span><span>Von</span><span>Bis</span><span>Aktiv</span>
+        </div>
+        ${dayRowsHtml}
+        <!-- Exceptions -->
+        <div class="stylist-cal-exceptions">
+          <h4>Ausnahmen (Urlaub, Feiertage)</h4>
+          <div id="styCalExcList">${excListHtml()}</div>
+          <div class="stylist-cal-exc-add">
+            <input type="date" id="scExcDate" class="stylist-cal-time-input" style="width:auto">
+            <input type="text" id="scExcLabel" class="stylist-cal-time-input" placeholder="Grund (z.B. Urlaub)" style="flex:1;min-width:120px">
+            <button class="btn-secondary btn-sm" onclick="_styCalAddExc('${stylistId}')">+ Hinzufügen</button>
+          </div>
+        </div>
+      </div>
+      <div class="stylist-cal-modal-footer">
+        <button class="btn-primary btn-sm" onclick="saveStylistCalendar('${stylistId}','${salonId}')">Speichern</button>
+        <button class="btn-secondary btn-sm" onclick="document.getElementById('stylistCalModal')?.remove()">Abbrechen</button>
+        <span id="styCalSaveStatus" style="font-size:.82rem;color:var(--c-text-muted);margin-left:auto"></span>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  // Close on overlay click
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+function onStyCalAvailToggle(dayIdx){
+  const avail=document.getElementById('scAvail_'+dayIdx)?.checked;
+  document.getElementById('scStart_'+dayIdx).disabled=!avail;
+  document.getElementById('scEnd_'+dayIdx).disabled=!avail;
+  const lbl=document.getElementById('scAvailLabel_'+dayIdx);
+  if(lbl)lbl.textContent=avail?'An':'Frei';
+}
+
+function onStyCalSameAll(){
+  const same=document.getElementById('scSameAll')?.checked;
+  if(!same)return;
+  const start0=document.getElementById('scStart_0')?.value||'09:00';
+  const end0=document.getElementById('scEnd_0')?.value||'18:00';
+  for(let i=1;i<7;i++){
+    const sEl=document.getElementById('scStart_'+i);
+    const eEl=document.getElementById('scEnd_'+i);
+    if(sEl&&!sEl.disabled)sEl.value=start0;
+    if(eEl&&!eEl.disabled)eEl.value=end0;
+  }
+}
+
+async function _styCalAddExc(stylistId){
+  const dateVal=document.getElementById('scExcDate')?.value;
+  const label=(document.getElementById('scExcLabel')?.value||'Ausnahme').trim();
+  if(!dateVal){toast('Bitte Datum wählen','error');return;}
+  // Insert directly to DB
+  const{error}=await sb.from('stylist_availability').insert([{
+    stylist_id:stylistId,date:dateVal,is_available:false,booked:false,
+    exceptions:[{label}]
+  }]);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  // Reload exceptions list in modal
+  const{data:excRows}=await sb.from('stylist_availability').select('*').eq('stylist_id',stylistId).not('date','is',null);
+  _styCalExceptions=(excRows||[]).map(r=>({id:r.id,date:r.date,label:r.exceptions?.[0]?.label||'Ausnahme',is_available:r.is_available}));
+  const listEl=document.getElementById('styCalExcList');
+  if(listEl)listEl.innerHTML=_styCalExceptions.length===0
+    ?'<p style="font-size:.82rem;color:var(--c-text-muted)">Keine Ausnahmen eingetragen.</p>'
+    :_styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip"><span>${e.date} – ${e.label}</span><button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button></div>`).join('');
+  document.getElementById('scExcDate').value='';
+  document.getElementById('scExcLabel').value='';
+  toast('Ausnahme hinzugefügt','success');
+}
+
+async function _styCalRemoveExc(idx,stylistId){
+  const exc=_styCalExceptions[idx];
+  if(!exc)return;
+  if(exc.id){await sb.from('stylist_availability').delete().eq('id',exc.id);}
+  _styCalExceptions.splice(idx,1);
+  const listEl=document.getElementById('styCalExcList');
+  if(listEl)listEl.innerHTML=_styCalExceptions.length===0
+    ?'<p style="font-size:.82rem;color:var(--c-text-muted)">Keine Ausnahmen eingetragen.</p>'
+    :_styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip"><span>${e.date} – ${e.label}</span><button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button></div>`).join('');
+  toast('Ausnahme entfernt','info');
+}
+
+async function saveStylistCalendar(stylistId,salonId){
+  const statusEl=document.getElementById('styCalSaveStatus');
+  if(statusEl)statusEl.textContent='Speichert…';
+
+  // Build upsert rows for the 7 weekdays (date=null, day_of_week = 0..6)
+  const toUpsert=[];
+  for(let i=0;i<7;i++){
+    const avail=document.getElementById('scAvail_'+i)?.checked||false;
+    const start=document.getElementById('scStart_'+i)?.value||null;
+    const end=document.getElementById('scEnd_'+i)?.value||null;
+    toUpsert.push({stylist_id:stylistId,date:null,day_of_week:i,start_time:avail?start:null,end_time:avail?end:null,is_available:avail,booked:false,exceptions:[]});
+  }
+
+  // Delete existing weekday rows (date IS NULL) then re-insert
+  await sb.from('stylist_availability').delete().eq('stylist_id',stylistId).is('date',null);
+  const{error}=await sb.from('stylist_availability').insert(toUpsert);
+  if(error){toast('Fehler: '+error.message,'error');if(statusEl)statusEl.textContent='Fehler!';return;}
+  if(statusEl)statusEl.textContent='Gespeichert ✓';
+  setTimeout(()=>{if(statusEl)statusEl.textContent='';},3000);
+  toast('Kalender gespeichert','success');
 }
 
 async function saveServicesTeamTab(salonId) {
