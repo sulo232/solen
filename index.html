@@ -116,15 +116,6 @@ img{max-width:100%;display:block}
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
 input,select,textarea{font-family:inherit;min-height:44px}
 
-/* iOS WebKit Hardware Acceleration Hack for Backdrop-Filter */
-@media(max-width:768px) {
-  button, a, [role="button"], [onclick], .bottom-nav-item, .close-btn, .fav-btn, .hamburger, .theme-toggle {
-    position: relative;
-    z-index: 2;
-    transform: translateZ(0); 
-  }
-}
-
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.95);border-bottom:1px solid rgba(0,0,0,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.05);}
 .nav .nav-highlight-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);z-index:1;pointer-events:none}
@@ -9392,7 +9383,7 @@ function renderBookingModal(){
   if(bmState.step==='confirm'){
     const svc=bmState.service;
     const durMin=svc?.duration||0;
-    const price=svc?.price??parseFloat(bmState.customPrice)||0;
+    const price=(svc?.price??parseFloat(bmState.customPrice))||0;
     const serviceName=svc?.name||bmState.customSvc||'-';
     const cancelPolicy=s.cancellation_policy||'Kostenlose Stornierung bis 24 Stunden vor dem Termin';
     let html=`<div class="bm-steps">
@@ -10953,6 +10944,7 @@ async function loadBmExtras(storeId) {
 
 // === UI POLISH ===
 (function(){
+  document.body.addEventListener('touchstart', function() {}, {passive: true}); // Restores CSS :active for WebKit
   var p=document.createElement('div'); p.id='scrollProgress';document.body.prepend(p);
   window.addEventListener('scroll',function(){var h=document.documentElement;p.style.width=((h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
   var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)e.target.classList.add('revealed');});},{threshold:0.08});
@@ -12523,82 +12515,6 @@ async function uploadCRMPhoto(inp,storeId,bookingId){
 }
 
 // ── SERVICES & TEAM TAB ──────────────────────────────────────────────
-const SVCTEAM_HERREN=[
-  {key:'h_klassisch',name:'Klassischer Herrenschnitt',duration:30,price:35},
-  {key:'h_fade',name:'Fade / Undercut',duration:45,price:45},
-  {key:'h_bart',name:'Bart trimmen',duration:20,price:20},
-  {key:'h_bart_schnitt',name:'Bart + Schnitt Kombi',duration:60,price:60},
-  {key:'h_rasur',name:'Heißrasur',duration:30,price:35},
-  {key:'h_kinder',name:'Kinderhaarschnitt',duration:20,price:25},
-  {key:'h_business',name:'Business Trim',duration:25,price:30},
-  {key:'h_skinfade',name:'Skin Fade',duration:40,price:50},
-];
-const SVCTEAM_DAMEN=[
-  {key:'d_waschen',name:'Waschen & Föhnen',duration:45,price:45},
-  {key:'d_schnitt',name:'Damenschnitt',duration:60,price:65},
-  {key:'d_balayage',name:'Balayage',duration:150,price:180},
-  {key:'d_highlights',name:'Highlights / Strähnen',duration:120,price:150},
-  {key:'d_coloration',name:'Tönung / Coloration',duration:90,price:90},
-  {key:'d_dauerwelle',name:'Dauerwelle',duration:120,price:120},
-  {key:'d_keratin',name:'Keratin-Behandlung',duration:180,price:200},
-  {key:'d_hochsteck',name:'Hochsteckfrisur',duration:60,price:80},
-];
-const SVCTEAM_ADDONS=[
-  {key:'a_blond',name:'Blondierung',duration:120,price:140},
-  {key:'a_ansatz_blond',name:'Ansatz-Blondierung',duration:60,price:80},
-  {key:'a_toner',name:'Toner / Glossing',duration:30,price:35},
-  {key:'a_olaplex',name:'Olaplex Behandlung',duration:30,price:40},
-  {key:'a_pflege',name:'Pflegekur / Maske',duration:15,price:15},
-  {key:'a_massage',name:'Kopfmassage',duration:15,price:15},
-  {key:'a_ansatz_farbe',name:'Ansatz färben',duration:60,price:70},
-  {key:'a_wimpern',name:'Wimpernwelle',duration:45,price:55},
-];
-
-function _presetTableHtml(presets, settings, groupKey) {
-  return `<table class="preset-table">
-    <thead><tr>
-      <th style="width:36px">Anbieten?</th>
-      <th>Leistung</th>
-      <th style="width:100px">Preis (CHF)</th>
-      <th style="width:100px">Dauer (min)</th>
-    </tr></thead>
-    <tbody>
-      ${presets.map(p=>{
-        const s=settings[p.key]||{};
-        const active=s.active||false;
-        return `<tr class="${active?'preset-active':''}" id="ptr_${p.key}">
-          <td style="text-align:center"><input type="checkbox" id="pchk_${p.key}" ${active?'checked':''} onchange="_presetToggle('${p.key}',this)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--c-accent)"></td>
-          <td style="font-weight:${active?600:400};color:${active?'var(--c-text)':'var(--c-text-muted)'}">${p.name}</td>
-          <td><input type="number" class="preset-input-sm" id="pprice_${p.key}" value="${s.price??p.price}" min="0" step="1" ${active?'':'disabled style="opacity:.45"'}></td>
-          <td><input type="number" class="preset-input-sm" id="pdur_${p.key}" value="${s.duration??p.duration}" min="5" step="5" ${active?'':'disabled style="opacity:.45"'}></td>
-        </tr>`;
-      }).join('')}
-    </tbody>
-  </table>`;
-}
-
-function _presetToggle(key, cb) {
-  const row = document.getElementById('ptr_'+key);
-  const priceInput = document.getElementById('pprice_'+key);
-  const durInput = document.getElementById('pdur_'+key);
-  if (!row) return;
-  if (cb.checked) {
-    row.classList.add('preset-active');
-    if (priceInput) { priceInput.removeAttribute('disabled'); priceInput.style.opacity='1'; }
-    if (durInput) { durInput.removeAttribute('disabled'); durInput.style.opacity='1'; }
-    row.querySelector('td:nth-child(2)').style.fontWeight='600';
-    row.querySelector('td:nth-child(2)').style.color='var(--c-text)';
-  } else {
-    row.classList.remove('preset-active');
-    if (priceInput) { priceInput.setAttribute('disabled',''); priceInput.style.opacity='0.45'; }
-    if (durInput) { durInput.setAttribute('disabled',''); durInput.style.opacity='0.45'; }
-    row.querySelector('td:nth-child(2)').style.fontWeight='400';
-    row.querySelector('td:nth-child(2)').style.color='var(--c-text-muted)';
-  }
-}
-
-let _svcTeamSalonId=null;
-
 async function renderServicesTeamTab(salonId) {
   _svcTeamSalonId=salonId;
   const panel=document.getElementById('dashTabServices');
