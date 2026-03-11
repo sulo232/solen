@@ -10202,6 +10202,9 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .reg-field input,.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none}
 .reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--accent2)}
 .reg-field textarea{resize:vertical;min-height:90px}
+.reg-service-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-end}
+.reg-service-row .reg-field{margin-bottom:0}
+@media(max-width:600px){.reg-service-row{flex-wrap:wrap}.reg-service-row .reg-field{flex:1 1 100%!important}}
 .reg-hours{display:flex;flex-direction:column;gap:6px}
 .reg-day-row{display:flex;align-items:center;gap:8px;font-size:.85rem;min-height:44px;padding:8px 0}
 .reg-day-row input[type=checkbox]{width:22px;height:22px;min-width:22px;accent-color:var(--accent2);cursor:pointer;flex-shrink:0}
@@ -10322,6 +10325,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="salon-reg-dot active" id="regDot1"></div>
       <div class="salon-reg-dot" id="regDot2"></div>
       <div class="salon-reg-dot" id="regDot3"></div>
+      <div class="salon-reg-dot" id="regDot4"></div>
     </div>
     <div class="reg-error-summary" id="regErrorSummary" role="alert"></div>
     <div class="reg-draft-indicator" id="regDraftIndicator"></div>
@@ -10329,7 +10333,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <!-- STEP 1: Basics -->
       <div class="reg-step active" id="regStep1">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 1 von 3: Basis-Informationen</p>
+          <p class="step-hint">Schritt 1 von 4: Basis-Informationen</p>
           <div class="reg-field" id="field_reg_name"><label for="reg_name">Salonname (Pflichtfeld)</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization" aria-describedby="err_reg_name"><div class="reg-field-error" id="err_reg_name" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Salonnamen eingeben.</div></div>
           <div class="reg-field" id="field_reg_cat"><label for="reg_cat">Kategorie (Pflichtfeld)</label>
             <select id="reg_cat" aria-describedby="err_reg_cat">
@@ -10350,7 +10354,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <!-- STEP 2: Location -->
       <div class="reg-step" id="regStep2">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 2 von 3: Standort und Online-Präsenz</p>
+          <p class="step-hint">Schritt 2 von 4: Standort und Online-Präsenz</p>
           <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
             <select id="reg_nb" aria-describedby="err_reg_nb">
@@ -10366,16 +10370,37 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           </div>
           <div class="reg-field"><label for="reg_web">Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
           <div class="reg-field"><label for="reg_ig">Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
+          <div class="reg-field"><label for="reg_tiktok">TikTok</label><input type="text" id="reg_tiktok" placeholder="@meinsalon"></div>
+          <div class="reg-field"><label for="reg_fb">Facebook</label><input type="url" id="reg_fb" placeholder="https://facebook.com/meinsalon"></div>
         </div>
         <div class="salon-reg-footer">
           <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zurück</button>
           <button type="button" class="reg-btn-next" onclick="regNext(2)">Weiter →</button>
         </div>
       </div>
-      <!-- STEP 3: Details -->
+      <!-- STEP 3: Services -->
       <div class="reg-step" id="regStep3">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 3 von 3: Beschreibung und Öffnungszeiten</p>
+          <p class="step-hint">Schritt 3 von 4: Deine Services</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Trage mindestens einen Service ein, den du anbietest. Du kannst später weitere hinzufügen.</p>
+          <div id="regServicesContainer">
+            <div class="reg-service-row" data-idx="0">
+              <div class="reg-field" style="flex:2"><label>Service-Name</label><input type="text" class="reg-svc-name" placeholder="z.B. Herrenschnitt"></div>
+              <div class="reg-field" style="flex:1"><label>Preis (CHF)</label><input type="number" class="reg-svc-price" placeholder="35" min="0"></div>
+              <div class="reg-field" style="flex:1"><label>Dauer (Min.)</label><input type="number" class="reg-svc-dur" placeholder="30" min="5"></div>
+            </div>
+          </div>
+          <button type="button" onclick="regAddServiceRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:8px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%">+ Weiteren Service hinzufügen</button>
+        </div>
+        <div class="salon-reg-footer">
+          <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
+          <button type="button" class="reg-btn-next" onclick="regNext(3)">Weiter →</button>
+        </div>
+      </div>
+      <!-- STEP 4: Details & Review -->
+      <div class="reg-step" id="regStep4">
+        <div class="salon-reg-body">
+          <p class="step-hint">Schritt 4 von 4: Beschreibung und Öffnungszeiten</p>
           <div class="reg-field"><label for="reg_desc">Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
           <div class="reg-field"><label for="reg_parent_store_id">Filiale von (optional)</label><select id="reg_parent_store_id" class="form-input" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
             <label>Öffnungszeiten</label>
@@ -10390,7 +10415,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           </div>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(4)">← Zurück</button>
           <button type="submit" class="reg-btn-next" id="regSubmitBtn"> Jetzt eintragen</button>
         </div>
       </div>
@@ -10425,6 +10450,9 @@ function regCollectDraft(){
     nb:document.getElementById('reg_nb')?.value||'',
     web:document.getElementById('reg_web')?.value||'',
     ig:document.getElementById('reg_ig')?.value||'',
+    tiktok:document.getElementById('reg_tiktok')?.value||'',
+    fb:document.getElementById('reg_fb')?.value||'',
+    services:regCollectServices(),
     desc:document.getElementById('reg_desc')?.value||'',
     parent:document.getElementById('reg_parent_store_id')?.value||'',
     terms:document.getElementById('reg_terms')?.checked||false,
@@ -10476,6 +10504,23 @@ function regRestoreDraft(){
     if(d.nb)document.getElementById('reg_nb').value=d.nb;
     if(d.web)document.getElementById('reg_web').value=d.web;
     if(d.ig)document.getElementById('reg_ig').value=d.ig;
+    if(d.tiktok){const el=document.getElementById('reg_tiktok');if(el)el.value=d.tiktok;}
+    if(d.fb){const el=document.getElementById('reg_fb');if(el)el.value=d.fb;}
+    if(d.services&&d.services.length){
+      const container=document.getElementById('regServicesContainer');
+      if(container){
+        d.services.forEach((sv,i)=>{
+          if(i>0)regAddServiceRow();
+          const rows=container.querySelectorAll('.reg-service-row');
+          const row=rows[rows.length-1];
+          if(row){
+            const nm=row.querySelector('.reg-svc-name');if(nm)nm.value=sv.name||'';
+            const pr=row.querySelector('.reg-svc-price');if(pr)pr.value=sv.price||'';
+            const du=row.querySelector('.reg-svc-dur');if(du)du.value=sv.duration||'';
+          }
+        });
+      }
+    }
     if(d.desc)document.getElementById('reg_desc').value=d.desc;
     if(d.parent)document.getElementById('reg_parent_store_id').value=d.parent;
     if(d.terms)document.getElementById('reg_terms').checked=true;
@@ -10552,6 +10597,12 @@ function regValidateStep(step){
     if(!document.getElementById('reg_nb').value){regShowFieldError('field_reg_nb');errors.push('Quartier fehlt.');}
   }
   if(step===3){
+    // Validate at least one service has a name
+    const svcNames=document.querySelectorAll('.reg-svc-name');
+    const hasAnySvc=Array.from(svcNames).some(el=>el.value.trim());
+    if(!hasAnySvc){errors.push('Bitte mindestens einen Service eintragen.');}
+  }
+  if(step===4){
     if(!document.getElementById('reg_terms').checked){regShowFieldError('field_reg_terms');errors.push('Nutzungsbedingungen nicht akzeptiert.');}
   }
   if(errors.length){regShowErrorSummary(errors);return false;}
@@ -10571,7 +10622,7 @@ function regGoTo(step){
   _regCurrentStep=step;
   solenTrack('partner_reg_step',{step:step});
   regClearErrors();
-  [1,2,3].forEach(i=>{
+  [1,2,3,4].forEach(i=>{
     const s=document.getElementById('regStep'+i);
     const d=document.getElementById('regDot'+i);
     if(s)s.classList.toggle('active',i===step);
@@ -10585,11 +10636,32 @@ function regNext(cur){
   regGoTo(cur+1);
 }
 function regPrev(cur){regGoTo(cur-1);}
+function regAddServiceRow(){
+  const container=document.getElementById('regServicesContainer');
+  if(!container)return;
+  const idx=container.querySelectorAll('.reg-service-row').length;
+  const row=document.createElement('div');
+  row.className='reg-service-row';
+  row.dataset.idx=idx;
+  row.innerHTML=`<div class="reg-field" style="flex:2"><label>Service-Name</label><input type="text" class="reg-svc-name" placeholder="z.B. Balayage"></div><div class="reg-field" style="flex:1"><label>Preis (CHF)</label><input type="number" class="reg-svc-price" placeholder="85" min="0"></div><div class="reg-field" style="flex:1"><label>Dauer (Min.)</label><input type="number" class="reg-svc-dur" placeholder="60" min="5"></div><button type="button" onclick="this.parentElement.remove()" style="position:absolute;top:4px;right:4px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.1rem;padding:2px 6px" aria-label="Service entfernen">&times;</button>`;
+  row.style.position='relative';
+  container.appendChild(row);
+}
+function regCollectServices(){
+  const rows=document.querySelectorAll('.reg-service-row');
+  const svcs=[];
+  rows.forEach(r=>{
+    const name=(r.querySelector('.reg-svc-name')?.value||'').trim();
+    if(!name)return;
+    svcs.push({name,price:parseFloat(r.querySelector('.reg-svc-price')?.value)||0,duration:parseInt(r.querySelector('.reg-svc-dur')?.value)||30});
+  });
+  return svcs;
+}
 async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,user_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
   e.preventDefault();
   solenTrack('partner_reg_submit',{});
-  if(!regValidateStep(3))return;
+  if(!regValidateStep(4))return;
   const btn=document.getElementById('regSubmitBtn');
   if(btn.classList.contains('loading'))return;
   btn.classList.add('loading');
@@ -10608,6 +10680,8 @@ async function submitSalonReg(e){
     neighbourhood:document.getElementById('reg_nb').value,
     website:document.getElementById('reg_web').value.trim()||null,
     instagram:document.getElementById('reg_ig').value.trim()||null,
+    tiktok:document.getElementById('reg_tiktok')?.value.trim()||null,
+    facebook:document.getElementById('reg_fb')?.value.trim()||null,
     description:document.getElementById('reg_desc').value.trim()||null,
     hours:hours,
     status:'pending',
