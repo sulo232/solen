@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>solen • Beauty &amp; Wellness Basel</title>
+<meta name="description" content="Finde und buche die besten Beauty- und Wellness-Salons in Basel. Friseur, Nails, Massage, Kosmetik und mehr – alles auf einer Plattform.">
+<link rel="canonical" href="https://solen.ch">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Solen","url":"https://solen.ch","description":"Beauty & Wellness Booking Platform for Basel","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"CHF"},"author":{"@type":"Organization","name":"Solen","url":"https://solen.ch","logo":"https://solen.ch/icon-512.png","areaServed":{"@type":"City","name":"Basel","addressCountry":"CH"}}}</script>
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -3340,6 +3343,14 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
             <button class="filter-pill" onclick="selectQuartierPill(this,'Bruderholz')">Bruderholz</button>
             <button class="filter-pill" onclick="selectQuartierPill(this,'Hirzbrunnen')">Hirzbrunnen</button>
           </div>
+          <!-- Radius filter -->
+          <div class="filter-section-label" id="radiusFilterSection" style="display:none">Umkreis</div>
+          <div id="radiusSliderWrap" style="display:none;padding:4px 0 12px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <input type="range" id="radiusSlider" min="0.5" max="10" step="0.5" value="10" style="flex:1;accent-color:var(--c-accent)" oninput="updateRadiusFilter(this.value)">
+              <span id="radiusLabel" style="font-size:.85rem;font-weight:600;min-width:50px;text-align:right">10 km</span>
+            </div>
+          </div>
           <!-- Footer with reset + count -->
           <div class="filter-panel-footer" id="filterPanelFooter" style="display:none">
             <button class="filter-reset-btn" onclick="resetFiltersFromPanel()" data-i18n="reset_filters">Zur&uuml;cksetzen</button>
@@ -6083,7 +6094,8 @@ renderRecentlyViewed();
     const matchPrice=maxPriceFilter<=0||maxPriceFilter>=300||minSvcPrice<=0||minSvcPrice<=maxPriceFilter;
     const matchEmpfohlen=!onlyEmpfohlen||isEmpfohlen(s);
     const matchLastMinute=!lastMinuteMode||!window._lastMinuteSalons||window._lastMinuteSalons.has(String(s.id));
-    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating&&matchPrice&&matchEmpfohlen&&matchLastMinute&&(!showOnlyFavs||favSalons.has(String(s.id)));
+    const matchRadius=!maxRadiusKm||maxRadiusKm>=10||!userLat||!userLng||!s.lat||!s.lng||haversine(userLat,userLng,s.lat,s.lng)<=maxRadiusKm;
+    return matchCat&&matchSearch&&matchNeighbourhood&&matchRating&&matchPrice&&matchEmpfohlen&&matchLastMinute&&matchRadius&&(!showOnlyFavs||favSalons.has(String(s.id)));
   });
   // Sort
   if(currentSort==='popular'){
@@ -6580,7 +6592,7 @@ async function openStore(storeId){
 
   document.getElementById('storeDetailContent').innerHTML=`
     <div class="salon-detail-hero" onclick="openPhotoLightbox('${heroPhotoUrl}')">
-      <img class="store-detail-img" src="${heroPhotoUrl}" alt="${s.name}" style="cursor:zoom-in">
+      <img class="store-detail-img" src="${heroPhotoUrl}" alt="${s.name}" style="cursor:zoom-in" loading="lazy" width="800" height="450">
     </div>
     ${galleryPhotos.length > 0 ? `<div class="salon-detail-gallery">${galleryPhotos.map((p,i)=>`<div class="salon-detail-gallery-thumb ${i===0||(mainPhoto&&p.id===mainPhoto.id)?'active':''}" onclick="switchDetailPhoto(this,'${p.url}')"><img src="${p.url}" alt="${s.name} Foto ${i+1}" loading="lazy"></div>`).join('')}</div>` : ''}
     <div style="padding:24px 24px 16px">
@@ -9305,9 +9317,21 @@ function requestGeolocation(){
     currentSort='distance';
     const sel=document.getElementById('sortSelect');if(sel)sel.value='distance';
     const selM=document.getElementById('sortSelectMobile');if(selM)selM.value='distance';
+    // Show radius filter when location is available
+    const rSec=document.getElementById('radiusFilterSection');
+    const rWrap=document.getElementById('radiusSliderWrap');
+    if(rSec)rSec.style.display='';
+    if(rWrap)rWrap.style.display='';
     renderStores();
     toast('Standort erkannt','success');
   },()=>{toast(t('location_unavailable'),'error');});
+}
+let maxRadiusKm=0; // 0 = no radius filter
+function updateRadiusFilter(val){
+  maxRadiusKm=parseFloat(val)||0;
+  const lbl=document.getElementById('radiusLabel');
+  if(lbl)lbl.textContent=maxRadiusKm>=10?'Alle':maxRadiusKm+' km';
+  renderStores();
 }
 
 // NEIGHBOURHOOD FILTER
