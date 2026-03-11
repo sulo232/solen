@@ -9,8 +9,13 @@ Solen.ch is a web application designed for booking beauty and wellness services 
 - **Hosting**: Configured for Vercel deployment (`vercel.json`).
 - **PWA**: Includes a Web App Manifest (`manifest.json`) and a Service Worker (`sw.js`).
 
-## Architecture & Structure
-Currently, the application is structured as a monolith. The majority of the application logic, styling, and markup is housed within `index.html`.
+## Architecture & Structure (CRITICAL)
+**DO NOT USE VITE, WEBPACK, OR NPM TO BUILD THIS PROJECT.**
+The user's local MacOS environment has severe NPM permission restrictions (`EPERM` / `EACCES` on `~/.npm`). We cannot compile code locally, and GitHub Actions is unavailable or hidden for this repository. 
+
+Because of this, the application MUST remain structured as a **Vanilla HTML/CSS/JS Monolith**. All application logic, styling, and markup MUST be housed directly within `index.html` or served as static `<script>`/`<link>` tags from the root directory. 
+
+If you extract code into a `src/` folder that requires compilation, the live GitHub Pages site will ignore it because it only serves the root `index.html`.
 
 ### Theming & Design System
 - **CSS Variables**: Extensive use of CSS variables (tokens) handles the color palette, typography, spacing, and theming.
@@ -24,5 +29,5 @@ Currently, the application is structured as a monolith. The majority of the appl
 4. **Authentication**: Handled via Supabase (Magic Link/Email or Google OAuth).
 
 ## Known Technical Debt
-- **Mobile Tap Issue**: A custom JavaScript global `touchend` event delegation script (Lines 10957-11050) aggressively calls `e.preventDefault()`, stopping native clicks and causing touch unresponsiveness on mobile devices. **(Currently pending fix: remove this script)**
-- **Monolith Size**: Maintaining a 13,000+ line HTML file presents challenges for debugging and collaboration. Splitting this into distinct files (HTML, CSS, JS) should be a priority.
+- **Mobile Tap Issue**: A custom JavaScript global `touchend` event delegation script aggressively called `e.preventDefault()`, stopping native clicks. This has been removed. A secondary WebKit bug regarding `backdrop-filter` clipping has also been patched by moving those filters to `::before` pseudo-elements.
+- **Monolith Size**: Maintaining a 13,000+ line HTML file presents challenges for debugging and collaboration. However, due to the deployment pipeline restrictions (no build step permitted), you must deal with the monolith as-is. Do not attempt to modularize it into a build pipeline.
