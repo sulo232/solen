@@ -1161,3 +1161,15 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .dash-notif-title{font-size:.82rem;font-weight:700;color:var(--c-text)}
 .dash-notif-message{font-size:.85rem;color:var(--c-text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dash-notif-meta{font-size:.75rem;color:var(--c-text-muted);margin-top:3px}
+
+/* ── PHASE 4: iOS Safari backdrop-filter hit-testing fix ──
+   WebKit fails to calculate hit-boxes for elements inside or above
+   backdrop-filter containers. translateZ(0) forces a GPU-accelerated
+   compositing layer, breaking the element out of the broken context. */
+@media(max-width:768px){
+  button,a,[role="button"],[onclick],.bottom-nav-item,.close-btn,.fav-btn,.hamburger,.theme-toggle{
+    position:relative;
+    z-index:1;
+    transform:translateZ(0);
+  }
+}
