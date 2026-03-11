@@ -2478,7 +2478,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   border-radius:16px;
   margin-bottom:20px;
   overflow:hidden;
-  will-change:transform;
+  position:relative;
+  z-index:2;
 }
 .filter-panel-trigger{
   display:flex;
@@ -2486,16 +2487,20 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   justify-content:space-between;
   width:100%;
   padding:14px 18px;
-  background:none;
+  background:transparent;
   border:none;
   cursor:pointer;
   font-size:.9rem;
   font-weight:700;
   color:var(--c-text);
-  -webkit-tap-highlight-color:transparent;
+  -webkit-tap-highlight-color:rgba(0,0,0,.05);
   user-select:none;
   position:relative;
-  z-index:1;
+  z-index:3;
+  min-height:48px;
+  touch-action:manipulation;
+  -webkit-appearance:none;
+  appearance:none;
 }
 .filter-panel-trigger>*{
   pointer-events:none;
