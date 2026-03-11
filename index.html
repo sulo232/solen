@@ -114,8 +114,16 @@ img{max-width:100%;display:block}
 *:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
 /* ── TOUCH TARGETS (5g, 5i) ── */
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
-/* ── MOBILE TAP FIX: removed destructive z-index isolation rule ── */
 input,select,textarea{font-family:inherit;min-height:44px}
+
+/* iOS WebKit Hardware Acceleration Hack for Backdrop-Filter */
+@media(max-width:768px) {
+  button, a, [role="button"], [onclick], .bottom-nav-item, .close-btn, .fav-btn, .hamburger, .theme-toggle {
+    position: relative;
+    z-index: 2;
+    transform: translateZ(0); 
+  }
+}
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.4);}
