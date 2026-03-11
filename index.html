@@ -103,7 +103,8 @@ h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-fa
 .nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title{hyphens:none;word-break:normal;overflow-wrap:normal}
 .store-price-range,.store-price,.price-label,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
-button,a,[role="button"]{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button,a,[role="button"],[role="link"],[onclick]{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none}
+.store-card,.sort-trigger,.view-toggle-btn,.filter-panel-trigger,.filter-pill,.cat-tab,.quartier-photo-card,.service-icon-card,.store-card-see-all-btn{pointer-events:auto;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 img{max-width:100%;display:block}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* ── SKIP LINK ── */
@@ -118,7 +119,7 @@ input,select,textarea{font-family:inherit;min-height:44px}
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.08);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.4);}
 .nav::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:0.04;pointer-events:none;z-index:0}
-.nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);z-index:1}
+.nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);z-index:1;pointer-events:none}
 [data-theme="dark"] .nav{background:rgba(12,10,10,0.18);border-bottom:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.12)}
 [data-theme="dark"] .nav::after{background:linear-gradient(90deg,transparent,rgba(212,175,119,.3),transparent)}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
@@ -254,10 +255,10 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .page-title,.hero h1,.store-name,.profile-info h2{letter-spacing:.01em}
 
 /* STORES */
-.stores-section{max-width:1200px;margin:0 auto;padding:48px 24px 60px}
-.stores-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.stores-section{max-width:1200px;margin:0 auto;padding:48px 24px 60px;position:relative;z-index:2}
+.stores-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;position:relative;z-index:10}
 .stores-count{font-size:.88rem;color:var(--muted);font-weight:500}
-.stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:28px}
+.stores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr));gap:28px;position:relative;z-index:1}
 .store-card{background:var(--c-surface);border-radius:var(--r2);overflow:hidden;border:1px solid var(--c-border);cursor:pointer;transition:transform var(--motion-base) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard),border-color var(--motion-base) var(--ease-standard);position:relative;box-shadow:var(--elev-1)}
 .store-card:hover{transform:translateY(-3px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
 .store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
@@ -303,9 +304,9 @@ input,select,textarea{font-family:inherit;min-height:44px}
 .query-summary-clear{background:none;border:none;color:var(--c-accent);font-size:.82rem;font-weight:600;cursor:pointer;padding:6px 12px;border-radius:var(--r-pill);transition:background var(--motion-fast) var(--ease-standard);white-space:nowrap}
 .query-summary-clear:hover{background:rgba(155,29,48,.08)}
 /* SORT DROPDOWN */
-.stores-header-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
-.sort-dropdown{position:relative}
-.sort-trigger{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);background:var(--c-surface);color:var(--c-text-secondary);font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--motion-fast) var(--ease-standard);white-space:nowrap}
+.stores-header-actions{margin-left:auto;display:flex;align-items:center;gap:8px;position:relative;z-index:10}
+.sort-dropdown{position:relative;z-index:10}
+.sort-trigger{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);background:var(--c-surface);color:var(--c-text-secondary);font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--motion-fast) var(--ease-standard);white-space:nowrap;min-height:44px;position:relative;z-index:5}
 .sort-trigger:hover{border-color:var(--c-accent);color:var(--c-accent)}
 .sort-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--c-surface);border:1px solid var(--c-border);border-radius:12px;box-shadow:var(--elev-2);min-width:160px;padding:4px;z-index:50;display:none}
 .sort-menu.open{display:block}
@@ -1655,8 +1656,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 @media(max-width:768px){.trending-section{padding:0 16px 40px}.trending-card{flex:0 0 210px}}
 
 /* ── MAP/LIST TOGGLE ── */
-.view-toggle{display:flex;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);overflow:hidden;flex-shrink:0}
-.view-toggle-btn{padding:7px 14px;font-size:.82rem;font-weight:600;border:none;background:var(--c-surface);color:var(--c-text-secondary);cursor:pointer;transition:all .15s var(--ease-standard);display:flex;align-items:center;gap:5px;white-space:nowrap;min-height:36px}
+.view-toggle{display:flex;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);overflow:visible;flex-shrink:0;position:relative;z-index:5}
+.view-toggle-btn{padding:7px 14px;font-size:.82rem;font-weight:600;border:none;background:var(--c-surface);color:var(--c-text-secondary);cursor:pointer;transition:all .15s var(--ease-standard);display:flex;align-items:center;gap:5px;white-space:nowrap;min-height:44px}
 .view-toggle-btn:first-child{border-right:1.5px solid var(--c-border-strong)}
 .view-toggle-btn.active{background:var(--c-accent);color:#fff}
 .view-toggle-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
@@ -1973,8 +1974,8 @@ body{font-family:var(--font-body,system-ui);}
 .cat-tab.active{background:var(--c-accent);color:var(--c-accent-fg);border-color:var(--c-accent)}
 
 /* ── VIEW TOGGLE (List/Map) ── */
-.view-toggle{display:flex;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);overflow:hidden;background:var(--c-surface)}
-.view-toggle-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border:none;background:transparent;font-size:.82rem;font-weight:600;color:var(--c-text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.view-toggle{display:flex;border:1.5px solid var(--c-border-strong);border-radius:var(--r-pill);overflow:visible;background:var(--c-surface);position:relative;z-index:5}
+.view-toggle-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border:none;background:transparent;font-size:.82rem;font-weight:600;color:var(--c-text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;min-height:44px}
 .view-toggle-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
 .view-toggle-btn.active{background:var(--c-accent);color:#fff}
 .view-toggle-btn:hover:not(.active){background:var(--c-surface-alt)}
@@ -2478,7 +2479,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   border-radius:16px;
   margin-bottom:20px;
   overflow:hidden;
-  will-change:transform;
+  position:relative;
+  z-index:5;
 }
 .filter-panel-trigger{
   display:flex;
@@ -6001,7 +6003,7 @@ function renderStoreCard(s){
     '<div class="store-card-svc-row"><span class="store-card-svc-name">'+sv.name+'</span><span class="store-card-svc-meta"><span class="store-card-svc-dur">'+sv.duration+' Min.</span><span class="store-card-svc-price">CHF '+sv.price+'</span></span></div>'
   ).join('')+'</div>'+(svcs.length>3?'<div class="store-card-see-all"><button class="store-card-see-all-btn" onclick="event.stopPropagation();openStore(\''+s.id+'\')">'+t('see_all_services')+' &rarr;</button></div>':''):'';
 
-  return'<div class="store-card" onclick="openStore(\''+s.id+'\')" tabindex="0" role="link" aria-label="'+s.name+' besuchen">'+
+  return'<div class="store-card" onclick="openStore(\''+s.id+'\')" data-store-id="'+s.id+'" tabindex="0" role="button" aria-label="'+s.name+' besuchen">'+
     '<div class="store-card-photo">'+
       '<img src="'+photoUrl+'" alt="'+s.name+'" loading="lazy" width="600" height="338">'+
       (isEmpf?'<span class="empfohlen-badge">Empfohlen</span>':'')+
@@ -10944,6 +10946,83 @@ async function loadBmExtras(storeId) {
   setTimeout(revealCards,300);
   function mag(el){el.addEventListener('mousemove',function(e){var r=el.getBoundingClientRect();el.style.transition='none';el.style.transform='translate('+(((e.clientX-r.left)/r.width-.5)*6)+'px,'+(((e.clientY-r.top)/r.height-.5)*6)+'px)';});el.addEventListener('mouseleave',function(){el.style.transition='transform 0.3s ease';el.style.transform='';});}
   setTimeout(function(){document.querySelectorAll('.btn-primary,.cta-btn').forEach(mag);},500);
+
+  // === MOBILE TAP FIX: Event delegation for touch devices ===
+  // iOS Safari sometimes fails to synthesize click events on non-button elements.
+  // This handler uses touchend delegation to ensure taps always register.
+  (function(){
+    var touchMoved=false;
+    var touchStartY=0;
+    document.addEventListener('touchstart',function(e){
+      touchMoved=false;
+      touchStartY=e.touches[0].clientY;
+    },{passive:true});
+    document.addEventListener('touchmove',function(e){
+      if(Math.abs(e.touches[0].clientY-touchStartY)>10)touchMoved=true;
+    },{passive:true});
+    document.addEventListener('touchend',function(e){
+      if(touchMoved)return;
+      var t=e.target;
+      // Store card tap: find closest store-card with data-store-id
+      var card=t.closest('.store-card[data-store-id]');
+      if(card&&!t.closest('button,a,input,select,textarea')){
+        e.preventDefault();
+        var id=card.getAttribute('data-store-id');
+        if(id&&window.openStore)window.openStore(id);
+        return;
+      }
+      // Filter panel trigger
+      var filterTrig=t.closest('.filter-panel-trigger');
+      if(filterTrig){
+        e.preventDefault();
+        if(window.toggleFilterPanel)window.toggleFilterPanel();
+        return;
+      }
+      // Sort trigger
+      var sortTrig=t.closest('.sort-trigger');
+      if(sortTrig){
+        e.preventDefault();
+        if(window.toggleSortDropdown)window.toggleSortDropdown();
+        return;
+      }
+      // View toggle buttons
+      var viewBtn=t.closest('.view-toggle-btn');
+      if(viewBtn){
+        e.preventDefault();
+        var mode=viewBtn.id==='viewMapBtn'?'map':'list';
+        if(window.setView)window.setView(mode);
+        return;
+      }
+      // Filter pills
+      var pill=t.closest('.filter-pill');
+      if(pill&&pill.onclick){
+        e.preventDefault();
+        pill.click();
+        return;
+      }
+      // Sort options
+      var sortOpt=t.closest('.sort-option');
+      if(sortOpt&&sortOpt.onclick){
+        e.preventDefault();
+        sortOpt.click();
+        return;
+      }
+      // Quartier photo cards
+      var qCard=t.closest('.quartier-photo-card[onclick]');
+      if(qCard&&!t.closest('button')){
+        e.preventDefault();
+        qCard.click();
+        return;
+      }
+      // Service icon cards
+      var sicCard=t.closest('.service-icon-card[onclick]');
+      if(sicCard){
+        e.preventDefault();
+        sicCard.click();
+        return;
+      }
+    },{passive:false});
+  })();
 })();
 </script>
 
