@@ -4400,7 +4400,7 @@ const T={
     admin_title:'Gestion',admin_sub:'G\u00e9rer les salons, services et r\u00e9servations',
     salon_dash_title:'Mon salon',salon_dash_sub:'G\u00e9rer les rendez-vous, messages et param\u00e8tres',
     auth_login_title:'Se connecter',auth_register_title:"S'inscrire",auth_customer_title:"S'inscrire comme client",auth_salon_title:'Inscrire un salon',
-    btn_login:'Se connecter',btn_create_account:'Cr\u00e9er un compte',btn_book:'R\u00e9server',btn_book_now:'R\u00e9server',
+    btn_login:'Se connecter',btn_create_account:'Cr\u00e9er un compte',btn_book:'R\u00e9server',btn_book_now:'R\u00e9server',btn_book_appointment:'Prendre rendez-vous',
     btn_confirm:'R\u00e9server',btn_cancel:'Annuler',btn_back:'Retour',btn_next:'Suivant',btn_save:'Sauvegarder',btn_skip:'Passer',
     lbl_email:'E-mail',lbl_password:'Mot de passe',lbl_firstname:'Pr\u00e9nom',lbl_lastname:'Nom',
     wiz_service:'Service',wiz_date:'Date',wiz_time:'Heure',wiz_details:'D\u00e9tails',wiz_confirm:'Confirmer',
@@ -4514,7 +4514,7 @@ const T={
     admin_title:'Y\u00f6netim',admin_sub:'Salonlar\u0131, hizmetleri ve rezervasyonlar\u0131 y\u00f6netin',
     salon_dash_title:'Salonum',salon_dash_sub:'Randevular\u0131, mesajlar\u0131 ve ayarlar\u0131 y\u00f6netin',
     auth_login_title:'GiriÅ Yap',auth_register_title:'Kayıt Ol',auth_customer_title:'MüÅteri Kaydı',auth_salon_title:'Salon Kaydı',
-    btn_login:'GiriÅ Yap',btn_create_account:'Hesap OluÅtur',btn_book:'Rezervasyon',btn_book_now:'Åimdi Rezervasyon',
+    btn_login:'GiriÅ Yap',btn_create_account:'Hesap OluÅtur',btn_book:'Rezervasyon',btn_book_now:'Åimdi Rezervasyon',btn_book_appointment:'Randevu Al',
     btn_confirm:'Randevuyu Onayla',btn_cancel:'İptal',btn_back:'Geri',btn_next:'İleri',btn_save:'Profili Kaydet',btn_skip:'Atla',
     lbl_email:'E-posta',lbl_password:'Åifre',lbl_firstname:'Ad',lbl_lastname:'Soyad',
     wiz_service:'Hizmet',wiz_date:'Tarih',wiz_time:'Saat',wiz_details:'Detaylar',wiz_confirm:'Onayla',
@@ -12728,7 +12728,9 @@ async function sendSMSReminder(storeId,bookingId,phone,name,service,date,time,bt
 function trackEvent(name,props){try{if(!currentUser)return;if(typeof gtag==="function")gtag("event",name,props||{});supabase.from("analytics_events").insert({event:name,props:JSON.stringify(props||{}),ts:new Date().toISOString()}).then(function(){}).catch(function(){});}catch(e){}}
 document.addEventListener("click",function(e){var card=e.target.closest(".card");if(card&&card.dataset.storeId)trackEvent("salon_card_click",{store_id:card.dataset.storeId});});
 function initFilterPills(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-cat]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});document.querySelectorAll(".filter-pill[data-q]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".filter-pill[data-q]").forEach(function(b){b.classList.remove("active");});this.classList.add("active");if(typeof loadStores==="function")loadStores();});});}
-if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){});});
+if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").then(function(reg){window._swReg=reg;}).catch(function(){});});
+async function subscribeToPush(){if(!window._swReg||!('PushManager' in window))return null;var vapidKey=window.VAPID_PUBLIC_KEY;if(!vapidKey){console.warn('Push: VAPID_PUBLIC_KEY not set');return null;}try{var sub=await window._swReg.pushManager.getSubscription();if(sub)return sub;var converted=urlBase64ToUint8Array(vapidKey);sub=await window._swReg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:converted});var user=(await window._sb.auth.getUser()).data?.user;if(user)fetch('/api/push-subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:user.id,subscription:sub.toJSON()})});return sub;}catch(e){console.warn('Push subscription failed:',e);return null;}}
+function urlBase64ToUint8Array(b){var p='='.repeat((4-b.length%4)%4);var s=(b+p).replace(/-/g,'+').replace(/_/g,'/');var r=atob(s);var a=new Uint8Array(r.length);for(var i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a;}
 function renderEmptyState(id,icon,title,text,lbl,fn){var el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="empty-state" style="background:linear-gradient(135deg,var(--c-surface-alt),var(--c-surface));border-radius:var(--r2);border:1.5px dashed var(--c-border);padding:56px 24px"><div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(155,29,48,.06),rgba(212,175,119,.1));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem">'+icon+'</div><h3>'+title+'</h3><p style="max-width:320px;margin-left:auto;margin-right:auto">'+text+'</p>'+(lbl?'<button class="btn-book" onclick="'+fn+'" style="margin:0 auto;padding:10px 28px">'+lbl+'</button>':"")+"</div>";}
 // === END BATCH1 JS ===
 

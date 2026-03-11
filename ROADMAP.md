@@ -105,12 +105,12 @@ Making it incredibly easy for users to find what they want.
 
 ### 6.1 Localization & PWA
 - [x] **Multi-Language Switcher**: Full DE/EN/FR/TR support. Switcher in navbar. ~150 keys per language.
-- [ ] **Progressive Web App (PWA)**: Manifest exists, service worker registered. Push notifications require VAPID keys (not yet configured).
+- [x] **Progressive Web App (PWA)**: Manifest, service worker with tiered caching, push notification handlers in sw.js. Client-side `subscribeToPush()` + `/api/push-subscribe.js` endpoint + migration 010. Requires VAPID_PUBLIC_KEY env var to activate.
 
 ### 6.2 AI & Integrations
 - [ ] **AI Assistant**: Requires LLM API key. Vercel edge function architecture planned.
 - [x] **Weather Integration**: Open-Meteo integration exists for contextual weather-based promos.
-- [ ] **Virtual Queue**: Requires Supabase Realtime subscriptions. Walk-in list UI not yet built.
+- [x] **Virtual Queue**: Walk-in queue implemented with `walk_in_queue` table, join/leave/status UI, position estimation (~15 min/person). Modal shows queue position.
 
 ### 6.3 Performance & SEO
 - [x] **SEO Structured Data**: JSON-LD schema markup and canonical URL added. (Full SSR/SSG not possible with monolith architecture — would require build pipeline.)
