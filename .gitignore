@@ -7,3 +7,4 @@ dist/
 # Environment variables — never commit secrets
 .env
 .env.local
+.vercel

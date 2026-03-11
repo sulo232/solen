@@ -4,57 +4,161 @@
  * Module structure:
  *
  *   src/
- *   ├── main.js                  ← you are here
+ *   ├── main.js                        ← you are here
+ *   ├── store/
+ *   │   └── index.js                   — reactive state store + getLocale()
+ *   ├── modules/
+ *   │   ├── auth.js                    — login, signup, session, profile
+ *   │   ├── booking.js                 — confirm/insert booking, reminders, cancel
+ *   │   ├── salons.js                  — load stores, filter/sort, favourites, reviews
+ *   │   ├── dashboard.js               — salon owner: staff, hours, photos, analytics
+ *   │   ├── admin.js                   — admin: approve/reject salons, users
+ *   │   ├── crm.js                     — CRM: customer notes, tags, visit history
+ *   │   └── analytics.js               — event tracking, scroll depth, page views
  *   ├── services/
- *   │   ├── supabase.js          — shared Supabase client singleton
- *   │   ├── auth.js              — sign-in / sign-out / session helpers
- *   │   ├── bookings.js          — booking CRUD (create, fetch, update, cancel)
- *   │   └── salons.js            — salon / provider data fetching
- *   ├── utils/
- *   │   ├── dom.js               — querySelector wrappers, element helpers
- *   │   └── events.js            — safe event listeners, touch-friendly onTap
+ *   │   ├── supabase.js                — shared Supabase client singleton
+ *   │   ├── auth.js                    — raw Supabase auth helpers
+ *   │   ├── bookings.js                — raw booking CRUD
+ *   │   └── salons.js                  — raw salon data fetching
  *   └── styles/
- *       ├── main.css             — CSS entry point (imports below layers)
- *       ├── variables.css        — design tokens / CSS custom properties
- *       └── components.css       — per-component styles
+ *       ├── main.css                   — CSS entry point
+ *       ├── variables.css              — design tokens
+ *       └── components.css             — per-component styles
  *
- * This file bootstraps the app:
- *   1. Imports the CSS bundle so Vite processes and injects it.
- *   2. Imports service / utility modules as they are implemented.
- *   3. Calls init() once the DOM is ready.
+ * Bootstrap sequence:
+ *   1. Import CSS so Vite processes and injects it.
+ *   2. Restore auth session and update the store.
+ *   3. Initialize analytics (scroll depth tracking).
+ *   4. Expose module functions globally as window.solenModules so the
+ *      legacy inline scripts in index.html can call them during the
+ *      incremental migration.
  *
- * NOTE: During the migration phase index.html still contains the full legacy
- * app. This module coexists without interfering — it is not yet referenced by
- * index.html. Once modules are ready, a <script type="module" src="/src/main.js">
- * tag will replace the inline scripts.
+ * NOTE: index.html still contains the full legacy inline app. This module
+ * coexists without interfering. As each inline function is migrated,
+ * the corresponding window.solenModules call replaces it.
  */
 
 import './styles/main.css';
 
-// ---------------------------------------------------------------------------
-// Future imports — uncomment as each module is implemented
-// ---------------------------------------------------------------------------
-// import { supabase }               from '@/services/supabase.js';
-// import { getSession, onAuthChange } from '@/services/auth.js';
-// import { fetchSalons }            from '@/services/salons.js';
-// import { fetchUserBookings }      from '@/services/bookings.js';
-// import { qs, qsa }               from '@/utils/dom.js';
-// import { onTap, delegate }        from '@/utils/events.js';
+import { store, getLocale } from '@/store/index.js';
+
+import { initAuth, onAuthStateChange, login, loginWithGoogle, signOut,
+         signupCustomer, signupSalon, resetPassword, resendPasswordReset,
+         updatePassword, sendSmsOtp, verifyPhoneOtp,
+         loadProfile, saveProfile, isAdmin, isSalonOwner } from '@/modules/auth.js';
+
+import { confirmBooking, insertBooking, joinWaitingList,
+         cancelBooking, fetchUserBookings, scheduleReminders,
+         checkAndSetVerifiedAfterBooking } from '@/modules/booking.js';
+
+import { loadStores, fetchStoreDetail, loadReviews, submitReview,
+         submitReviewReply, applyFilters, haversine,
+         preloadAllSalonPhotos, getSalonPhotos, getSalonMainPhotoUrl,
+         fetchLastMinuteSlots, toggleFav, isFav } from '@/modules/salons.js';
+
+import { loadMySalons, loadDashboardBookings, updateBookingStatus,
+         saveDashHours, saveServices, loadStaff, addStaff, deleteStaff,
+         updateStaffBookable, loadBlockedDates, addVacationBlock,
+         deleteVacationBlock, loadAddons, toggleAddon, saveAddonPrice,
+         loadSalonPhotos, uploadSalonPhoto, deleteSalonPhoto, setCoverPhoto,
+         loadAnalytics } from '@/modules/dashboard.js';
+
+import { loadPendingSalons, approveStore, rejectStore, loadAdminBookings,
+         adminCancelBooking, loadAdminUsers, toggleBanUser,
+         deleteProfile } from '@/modules/admin.js';
+
+import { loadCRMFromBookings, saveCRMNote, saveCRMAllergy,
+         toggleCRMTag, getLocalCRM } from '@/modules/crm.js';
+
+import { track, persistEvent, initScrollDepthTracking,
+         trackPageView, getSessionEvents } from '@/modules/analytics.js';
+
+// Phase 3 view components
+import { DashboardCalendar } from '@/views/dashboard/calendar.js';
+import { NotificationCenter } from '@/views/dashboard/notifications.js';
+import { renderRevenueChart, renderTopServicesChart, renderPeakHoursChart } from '@/views/dashboard/revenue-chart.js';
+import { MapView, FilterPresets } from '@/views/filtering/index.js';
+import { ReviewForm, ReviewList, submitReviewWithPhoto, uploadReviewPhoto, hasVerifiedVisit } from '@/views/reviews/index.js';
 
 // ---------------------------------------------------------------------------
 // Bootstrap
 // ---------------------------------------------------------------------------
 
-/**
- * init — top-level application bootstrap.
- *
- * Called once the DOM is interactive. Wire up services, render initial state,
- * and attach event listeners here.
- */
-function init() {
-  console.log('Solen app initialized');
+async function init() {
+  // Start analytics immediately
+  initScrollDepthTracking();
 
-  // TODO: restore session, load initial data, register service worker, etc.
+  // Restore session (updates store.currentUser + store.currentProfile)
+  await initAuth();
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ---------------------------------------------------------------------------
+// Global bridge — lets legacy inline scripts call module functions
+// during the incremental migration from index.html
+// ---------------------------------------------------------------------------
+
+window.solenModules = {
+  // Store
+  store,
+  getLocale,
+
+  // Auth
+  initAuth, onAuthStateChange,
+  login, loginWithGoogle, signOut,
+  signupCustomer, signupSalon,
+  resetPassword, resendPasswordReset, updatePassword,
+  sendSmsOtp, verifyPhoneOtp,
+  loadProfile, saveProfile,
+  isAdmin, isSalonOwner,
+
+  // Booking
+  confirmBooking, insertBooking, joinWaitingList,
+  cancelBooking, fetchUserBookings, scheduleReminders,
+  checkAndSetVerifiedAfterBooking,
+
+  // Salons
+  loadStores, fetchStoreDetail, loadReviews, submitReview, submitReviewReply,
+  applyFilters, haversine,
+  preloadAllSalonPhotos, getSalonPhotos, getSalonMainPhotoUrl,
+  fetchLastMinuteSlots, toggleFav, isFav,
+
+  // Dashboard
+  loadMySalons, loadDashboardBookings, updateBookingStatus,
+  saveDashHours, saveServices,
+  loadStaff, addStaff, deleteStaff, updateStaffBookable,
+  loadBlockedDates, addVacationBlock, deleteVacationBlock,
+  loadAddons, toggleAddon, saveAddonPrice,
+  loadSalonPhotos, uploadSalonPhoto, deleteSalonPhoto, setCoverPhoto,
+  loadAnalytics,
+
+  // Admin
+  loadPendingSalons, approveStore, rejectStore,
+  loadAdminBookings, adminCancelBooking,
+  loadAdminUsers, toggleBanUser, deleteProfile,
+
+  // CRM
+  loadCRMFromBookings, saveCRMNote, saveCRMAllergy, toggleCRMTag, getLocalCRM,
+
+  // Analytics
+  track, persistEvent, trackPageView, getSessionEvents,
+
+  // Phase 3 — Dashboard views
+  DashboardCalendar,
+  NotificationCenter,
+  renderRevenueChart,
+  renderTopServicesChart,
+  renderPeakHoursChart,
+
+  // Phase 3 — Advanced filtering
+  MapView,
+  FilterPresets,
+
+  // Phase 3 — Reviews
+  ReviewForm,
+  ReviewList,
+  submitReviewWithPhoto,
+  uploadReviewPhoto,
+  hasVerifiedVisit,
+};

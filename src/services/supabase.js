@@ -12,10 +12,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// TODO: move to import.meta.env.VITE_SUPABASE_URL
-const SUPABASE_URL = 'https://tocfnsmxmdxkrcmjzzdw.supabase.co';
-
-// TODO: move to import.meta.env.VITE_SUPABASE_ANON_KEY
-const SUPABASE_ANON_KEY = 'sb_publishable_WG19p7vPb3bULi-kbaWo1g_cdW28SCu';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
