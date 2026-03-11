@@ -8933,7 +8933,7 @@ function renderBmTimeSlots(){
     if(isSel)cls+=' selected';
     else if(isBooked)cls+=' booked';
     else cls+=' available';
-    h+=`<button class="${cls}" onclick="${isBooked?'':  `bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
+    h+=`<button class="${cls}" onclick="${isBooked?'':`bmSelectTime('${sl}')`}" ${isBooked?'disabled aria-disabled="true"':''}>${sl}</button>`;
   });
   h+=`</div>`;
   return h;
