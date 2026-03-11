@@ -24,5 +24,5 @@ Currently, the application is structured as a monolith. The majority of the appl
 4. **Authentication**: Handled via Supabase (Magic Link/Email or Google OAuth).
 
 ## Known Technical Debt
-- **Mobile Tap Issue**: A global CSS rule (`@media(max-width:768px)` applying `position: relative; z-index: 1;` to all clickable elements) breaks the native CSS stacking context, causing tap unresponsiveness on mobile devices. **(Currently pending fix)**
+- **Mobile Tap Issue**: A custom JavaScript global `touchend` event delegation script (Lines 10957-11050) aggressively calls `e.preventDefault()`, stopping native clicks and causing touch unresponsiveness on mobile devices. **(Currently pending fix: remove this script)**
 - **Monolith Size**: Maintaining a 13,000+ line HTML file presents challenges for debugging and collaboration. Splitting this into distinct files (HTML, CSS, JS) should be a priority.

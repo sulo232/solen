@@ -10954,9 +10954,12 @@ async function loadBmExtras(storeId) {
     setTimeout(function(){document.querySelectorAll('.btn-primary,.cta-btn').forEach(mag);},500);
   }
 
-  // === MOBILE TAP FIX: Event delegation for touch devices ===
-  // iOS Safari sometimes fails to synthesize click events on non-button elements.
-  // This handler uses touchend delegation to ensure taps always register.
+  // === MOBILE TAP FIX: Scoped touchend delegation for custom non-button elements only ===
+  // Only intercept taps on custom div-based interactive elements that iOS Safari won't
+  // synthesize a click for automatically. Native <button>, <a>, and elements with
+  // onclick/role="button" already receive synthesized clicks from iOS — do NOT call
+  // preventDefault() on those, as it cancels the synthesized click and breaks taps on
+  // bottom-nav, hamburger, hero CTA buttons, and all other native controls.
   (function(){
     var touchMoved=false;
     var touchStartY=0;
@@ -10970,82 +10973,33 @@ async function loadBmExtras(storeId) {
     document.addEventListener('touchend',function(e){
       if(touchMoved)return;
       var t=e.target;
-      // Store card tap: find closest store-card with data-store-id
+      // Store card: a plain <div> with data-store-id — not a native control, so iOS
+      // Safari will NOT synthesize a click. Safe to preventDefault + dispatch manually.
       var card=t.closest('.store-card[data-store-id]');
       if(card&&!t.closest('button,a,input,select,textarea')){
-        e.preventDefault();
+        e.preventDefault(); // div element — needs explicit click dispatch
         var id=card.getAttribute('data-store-id');
         if(id&&window.openStore)window.openStore(id);
         return;
       }
-      // Filter panel trigger
-      var filterTrig=t.closest('.filter-panel-trigger');
-      if(filterTrig){
-        e.preventDefault();
-        if(window.toggleFilterPanel)window.toggleFilterPanel();
-        return;
-      }
-      // Sort trigger
-      var sortTrig=t.closest('.sort-trigger');
-      if(sortTrig){
-        e.preventDefault();
-        if(window.toggleSortDropdown)window.toggleSortDropdown();
-        return;
-      }
-      // View toggle buttons
-      var viewBtn=t.closest('.view-toggle-btn');
-      if(viewBtn){
-        e.preventDefault();
-        var mode=viewBtn.id==='viewMapBtn'?'map':'list';
-        if(window.setView)window.setView(mode);
-        return;
-      }
-      // Filter pills
-      var pill=t.closest('.filter-pill');
-      if(pill&&pill.onclick){
-        e.preventDefault();
-        pill.click();
-        return;
-      }
-      // Sort options
-      var sortOpt=t.closest('.sort-option');
-      if(sortOpt&&sortOpt.onclick){
-        e.preventDefault();
-        sortOpt.click();
-        return;
-      }
-      // Quartier photo cards
+      // Quartier photo cards: div-based with onclick — same situation as store cards.
       var qCard=t.closest('.quartier-photo-card[onclick]');
-      if(qCard&&!t.closest('button')){
-        e.preventDefault();
+      if(qCard&&!t.closest('button,a,input,select,textarea')){
+        e.preventDefault(); // div with onclick — needs explicit dispatch
         qCard.click();
         return;
       }
-      // Service icon cards
+      // Service icon cards: div-based with onclick — same situation.
       var sicCard=t.closest('.service-icon-card[onclick]');
-      if(sicCard){
-        e.preventDefault();
+      if(sicCard&&!t.closest('button,a,input,select,textarea')){
+        e.preventDefault(); // div with onclick — needs explicit dispatch
         sicCard.click();
         return;
       }
-      // === GENERAL FALLBACK: ensure ALL buttons/links/clickable elements respond to taps ===
-      // iOS Safari sometimes fails to synthesize click events, especially on elements
-      // inside position:fixed containers or elements with backdrop-filter.
-      var clickable=t.closest('button,a,[role="button"],[onclick],.bottom-nav-item,.btn-primary,.btn-secondary,.btn-book,.btn-nav-ghost,.btn-nav-primary,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.cal-day,.slot,.svc-card,.btn-book-glass,.btn-danger,.add-btn');
-      if(clickable&&!t.closest('input,select,textarea')){
-        // Only intervene if the element didn't already handle the tap via native click
-        // Use a small delay to check if click fires naturally; if not, force it
-        var alreadyClicked=false;
-        var onceClick=function(){alreadyClicked=true;};
-        clickable.addEventListener('click',onceClick,{once:true});
-        setTimeout(function(){
-          clickable.removeEventListener('click',onceClick);
-          if(!alreadyClicked){
-            clickable.click();
-          }
-        },80);
-      }
-    },{passive:false});
+      // NOTE: filter-panel-trigger, sort-trigger, view-toggle-btn, filter-pill,
+      // sort-option, bottom-nav-item, hamburger, and all <button>/<a>/[onclick] elements
+      // are handled natively by iOS Safari — no preventDefault or manual dispatch needed.
+    },{passive:false}); // passive:false required so the three preventDefault() above work
   })();
 })();
 </script>
