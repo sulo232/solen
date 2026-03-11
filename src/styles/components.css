@@ -1164,12 +1164,21 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 
 /* ── PHASE 4: iOS Safari backdrop-filter hit-testing fix ──
    WebKit fails to calculate hit-boxes for elements inside or above
-   backdrop-filter containers. translateZ(0) forces a GPU-accelerated
-   compositing layer, breaking the element out of the broken context. */
+   backdrop-filter containers if the container directly uses the property.
+   
+   The robust fix is generally to apply the backdrop-filter to a pseudo-element
+   (::before) positioned absolutely behind the content, rather than using
+   translateZ hacks that can corrupt stacking contexts. 
+   
+   If elements remain unclickable, ensure their z-index is positive and that
+   no parent container has overflow:hidden cropping the hit-area unexpectedly. */
 @media(max-width:768px){
-  button,a,[role="button"],[onclick],.bottom-nav-item,.close-btn,.fav-btn,.hamburger,.theme-toggle{
-    position:relative;
-    z-index:1;
-    transform:translateZ(0);
+  /* Re-initialize touch interactions to override any stalled states */
+  button, a, [role="button"], [onclick], .bottom-nav-item, .hamburger, .hero-utility-btn {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    position: relative;
+    z-index: 50;
   }
 }
