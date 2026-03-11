@@ -1,38 +1,30 @@
 # Solen.ch Roadmap (Claude Code Hand-off)
 
-## Phase 4: iOS Safari WebKit Hit-Testing Bug Fix
+# Solen.ch Roadmap & Architecture (Claude Code Hand-off)
 
-### The Problem
-While Phase 1 removed the destructive global JS `touchend` delegation script which fixed Android taps, taps on specific mobile elements are still failing exclusively on iOS Safari. 
-The affected areas are:
-- The Hamburger Menu
-- The Bottom Navigation Links (`Entdecken`, `Login`, etc.)
-- The Hero `Mein Standort` and `Karte` utility buttons
+## The Core Problem: Why Changes Weren't Going Live
+Recently, Claude Code refactored the application from a 13,000-line monolithic `index.html` file into a modular Vite application (inside the `src/` directory). 
 
-### Root Cause Analysis
-All of the unresponsive elements share a common styling feature: they are situated inside or above a container that uses the CSS `backdrop-filter: blur(...)` property.
+However, **the live website (GitHub Pages) was still serving the uncompiled `index.html` file in the root directory.** 
+Because `npm install` and `npm run build` were failing locally due to NPM permission errors on the host machine, the Vite application was never actually compiled into a format the browser could read. Therefore, all of the clean, modular code inside `src/` was completely ignored by the live site, which continued to run the legacy inline code.
 
-There is a known, long-standing bug in iOS Safari / WebKit where **interactive elements nested within or overlaying a `backdrop-filter` lose their ability to be tapped/clicked**. The browser engine fails to calculate the hit-box correctly because of how compositing layers are rendered.
+## The Solution: Automated Deployments via GitHub Actions
 
-### The Solution: Hardware Acceleration Layering
-To fix this, we must force iOS Safari to render these specific clickable controls onto their own hardware-accelerated 3D layer, which breaks them out of the broken `backdrop-filter` hit-testing context.
+To permanently fix this so that Claude's code *actually goes live*:
+1. **GitHub Actions pipeline created:** A `.github/workflows/deploy.yml` file has been pushed to the `main` branch.
+2. **Automated Vite Build:** This action listens for any push to the `main` branch. It automatically spins up an Ubuntu server in the cloud, installs dependencies, runs `npm run build`, and deploys the resulting `dist/` folder to GitHub Pages.
 
-### Instructions for Claude Code
-Please implement the following CSS fix in the global stylesheet (`index.html` or the extracted CSS file for Phase 2):
+### Immediate Action Required by the USER:
+To make this work, the USER must change how GitHub Pages hosts the site:
+1. Go to your GitHub Repository -> **Settings** -> **Pages**.
+2. Under **Build and deployment**, change the **Source** dropdown from "Deploy from a branch" to **"GitHub Actions"**.
 
-1. **Create an explicit mobile media query** (e.g., `@media(max-width:768px)`).
-2. **Target the affected UI elements**: `button, a, [role="button"], [onclick], .bottom-nav-item, .close-btn, .fav-btn, .hamburger, .theme-toggle`.
-3. **Apply the 3D-transform layer hack**: Apply `position: relative; z-index: 1; transform: translateZ(0);` to those elements. The `translateZ(0)` is the critical part that forces the hardware acceleration.
+---
 
-```css
-/* Add this logic to the CSS */
-@media(max-width:768px) {
-  button, a, [role="button"], [onclick], .bottom-nav-item, .close-btn, .fav-btn, .hamburger, .theme-toggle {
-    position: relative;
-    z-index: 1;
-    transform: translateZ(0);
-  }
-}
-```
+### Instructions for Claude Code (Going Forward):
 
-Implement this change and test the build to confirm that taps over frosted glass containers are now fully registering on iOS devices.
+1. **Stop editing `index.html`'s massive inline `<style>` and `<script>` tags.** 
+   The root `index.html` should only be treated as a Vite entrypoint. Delete the legacy 13,000 lines of inline CSS/JS from it once you are confident the Vite modules in `src/` have fully replaced their functionality.
+2. **Write code in `src/`.** All future features, UI tweaks, and CSS changes should be done inside the `src/` directory.
+3. **Push to `main`.** Whenever you finish a feature, simply commit and `git push origin main`. The newly created GitHub Action will automatically compile the Vite app and deploy it live to `solen.ch`!
+4. **Fix NPM locally (if required):** If you need to test the Vite build locally using `npm run dev`, you must fix the NPM permission error on the User's Mac by running: `sudo chown -R 501:20 "/Users/sulo/.npm"`.
