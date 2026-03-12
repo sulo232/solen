@@ -321,7 +321,7 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .btn-book{background:#9B1D30;color:#fff;border:none;padding:9px 22px;border-radius:50px;font-size:var(--text-base);font-weight:700;cursor:pointer;transition:all .2s var(--ease-standard);text-shadow:0 1px 2px rgba(0,0,0,.15);box-shadow:0 2px 8px rgba(155,29,48,.35);}
 .btn-book:hover{background:var(--accent-dark);box-shadow:var(--glow)}
 .visited-badge{position:absolute;top:12px;left:12px;background:rgba(45,122,79,0.9);color:white;font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px)}
-.store-img{height:220px;background:linear-gradient(135deg,rgba(212,175,119,.12),#1a1a1a 60%);position:relative;overflow:hidden}
+.store-img{aspect-ratio:16/10;height:auto;background:linear-gradient(135deg,rgba(212,175,119,.12),#1a1a1a 60%);position:relative;overflow:hidden}
 .store-img img{width:100%;height:100%;object-fit:cover}
 .store-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.4}
 .store-badge{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border:none;padding:4px 12px;border-radius:100px;font-size:.75rem;font-weight:600;color:var(--text)}
@@ -1652,7 +1652,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 .social-proof-item svg{width:20px;height:20px;stroke:var(--c-accent);fill:none;stroke-width:1.8;flex-shrink:0}
 .social-proof-item strong{font-family:var(--font-mono);font-size:1.1rem;color:var(--c-accent);font-weight:800;font-variant-numeric:tabular-nums}
 .social-proof-divider{width:1px;height:28px;background:var(--c-border);flex-shrink:0}
-@media(max-width:640px){.social-proof-inner{gap:16px}.social-proof-divider{display:none}.social-proof-item{font-size:.8rem}}
+@media(max-width:640px){.social-proof-inner{gap:14px;flex-direction:column;align-items:flex-start;padding:0 8px}.social-proof-divider{display:none}.social-proof-item{font-size:.85rem}.social-proof-item strong{font-size:1rem}}
 
 /* ── SECTION LABELS ── */
 .section-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(155,29,48,.07);border-radius:100px;font-size:.72rem;font-weight:700;color:var(--c-accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
