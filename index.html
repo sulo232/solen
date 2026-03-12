@@ -133,7 +133,7 @@ img{max-width:100%;display:block}
 /* ── TOUCH TARGETS (5g, 5i) ── */
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
 input,select,textarea{font-family:inherit;min-height:44px}
-button:active,.bottom-nav-item:active,.chip:active, .fav-btn:active {transform:scale(0.96);transition-duration:0.1s;}
+button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-chip:active,.rating-chip:active,.neighbourhood-chip:active,.filter-chip-mini:active,.reg-choice-card:active{transform:scale(0.96);transition-duration:0.1s;}
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.4);}
@@ -222,7 +222,7 @@ button:active,.bottom-nav-item:active,.chip:active, .fav-btn:active {transform:s
 [data-theme="dark"] .hero-bg::after{background:linear-gradient(to right,transparent 60%,var(--c-bg) 100%)}
 [data-theme="dark"] .hero h1{color:var(--c-text)}
 [data-theme="dark"] .hero p{color:var(--c-text-secondary)}
-.hero-filter-chip{background:var(--c-surface);border:1.5px solid var(--c-border);color:var(--c-text-secondary);padding:8px 20px;border-radius:var(--r-pill);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s var(--ease);box-shadow:var(--elev-1)}
+.hero-filter-chip{background:var(--c-surface);border:1.5px solid var(--c-border);color:var(--c-text-secondary);padding:8px 20px;min-height:44px;border-radius:var(--r-pill);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s var(--ease);box-shadow:var(--elev-1)}
 .hero-filter-chip:hover{border-color:var(--c-accent);color:var(--c-accent);box-shadow:var(--elev-2)}
 .hero-search{display:flex;gap:0;max-width:560px;margin:0 0 32px;background:var(--c-surface);border:1.5px solid var(--c-border);border-radius:20px;padding:0;overflow:hidden;box-shadow:var(--elev-2)}
 .hero-search-field{flex:1;display:flex;align-items:center;gap:8px;padding:14px 16px;cursor:pointer;border-right:1px solid rgba(0,0,0,.08);transition:background var(--motion-fast) var(--ease-standard);position:relative;min-width:0}
@@ -1263,7 +1263,7 @@ html,body{overflow-x:hidden;max-width:100vw}
 
 /* RATING FILTER */
 .rating-filter{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.rating-chip{padding:6px 14px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:36px}
+.rating-chip{padding:6px 14px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:44px}
 .rating-chip:hover{border-color:var(--accent)}
 .rating-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
@@ -2304,7 +2304,7 @@ body{font-family:var(--font-body,system-ui);}
 /* (Mobile responsiveness moved to end of stylesheet) */
 
 /* ── COUNTER COMPONENTS ── */
-.counter-btn{width:36px;height:36px;border:1.5px solid var(--c-border-strong,#D5CFC6);border-radius:10px;background:var(--c-surface,#fff);cursor:pointer;font-size:1.1rem;font-weight:600;color:var(--c-text,#1F1F1F);display:flex;align-items:center;justify-content:center;transition:all .15s var(--ease-standard);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.counter-btn{width:44px;height:44px;border:1.5px solid var(--c-border-strong,#D5CFC6);border-radius:10px;background:var(--c-surface,#fff);cursor:pointer;font-size:1.1rem;font-weight:600;color:var(--c-text,#1F1F1F);display:flex;align-items:center;justify-content:center;transition:all .15s var(--ease-standard);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .counter-btn:hover{border-color:var(--c-accent);color:var(--c-accent);background:rgba(155,29,48,.05)}
 .counter-btn:active{transform:scale(.92);background:rgba(155,29,48,.1)}
 .cal-group-row{display:flex;align-items:center;gap:12px;margin:12px 0;font-size:.92rem;font-weight:600}
@@ -2582,7 +2582,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   display:inline-flex;
   align-items:center;
   gap:4px;
-  padding:4px 10px;
+  padding:10px 14px;
+  min-height:44px;
   background:rgba(155,29,48,.08);
   color:var(--c-accent);
   border-radius:var(--r-pill);
@@ -2626,7 +2627,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   gap:8px;
 }
 .filter-grid .filter-pill{
-  padding:7px 14px;
+  padding:10px 16px;
+  min-height:44px;
   font-size:.8rem;
   font-weight:600;
   transition:all .18s ease, transform .18s ease;
@@ -4028,6 +4030,10 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
       <span data-i18n="nav_login">Login</span>
     </button>
+    <button class="bottom-nav-item bn-guest" onclick="openAuth('register-choice')" id="bnRegister">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      <span data-i18n="nav_register">Registrieren</span>
+    </button>
     <button class="bottom-nav-item bn-logged-in hidden" onclick="showPage('profile')" id="bnProfile">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span data-i18n="bn_profile">Profil</span>
@@ -5154,7 +5160,7 @@ function openAuth(tab='login'){
   document.body.classList.add('modal-open');
   switchAuthTab(tab);
   document.getElementById('authMsg').innerHTML='';
-  setTimeout(function(){trapFocus(document.getElementById('authModal'));},100);
+  setTimeout(function(){var m=document.getElementById('authModal');if(m&&m.closest('.active'))trapFocus(m);},150);
   const modal=document.getElementById('authModal');
   if(tab==='salon-signup')modal.style.maxWidth='600px';
   else if(tab==='register-choice')modal.style.maxWidth='540px';
@@ -5201,6 +5207,8 @@ async function doLogin(){
     showAuthMsg(msg);
   } else {
     console.log('[Solen Auth] Login success:', loginData?.user?.email);
+    closeAuth();
+    if(loginData?.user) await onSignIn(loginData.user);
   }
 }
 
@@ -7101,7 +7109,7 @@ function trapFocus(modal){
   var focusable=modal.querySelectorAll('button,a[href],input:not([type="hidden"]),select,textarea,[tabindex]:not([tabindex="-1"])');
   if(!focusable.length)return;
   var first=focusable[0],last=focusable[focusable.length-1];
-  first.focus();
+  if(window.innerWidth>=768)first.focus();
   modal._focusTrap=function(e){
     if(e.key==='Tab'){
       if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
