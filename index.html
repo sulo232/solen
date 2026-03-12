@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initPlacesAutocomplete" async defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:color .3s var(--ease),background-color .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
 .no-transition,.no-transition *,.no-transition *::before,.no-transition *::after{transition:none!important}
@@ -4401,7 +4402,9 @@ const T={
     popular_services_eyebrow:'Services entdecken',popular_services_title:'Was suchst du heute?',popular_services_sub:'W\u00e4hle direkt einen Service und finde Salons in deiner N\u00e4he',
     about_title:'Warum solen?',about_text:'solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Jeder Salon hier ist echt. Kein Stock-Foto, kein Franchise.',about_sig:'Gegr\u00fcndet in Basel \u00b7 F\u00fcr unsere lokalen Beauty-Experten',
     svc_coiffeur:'Coiffeur',svc_barbershop:'Barbershop',svc_nails:'Nails',svc_spa:'Spa & Wellness',svc_makeup:'Make-up',svc_kosmetik:'Kosmetik',svc_eyebrows:'Augenbrauen',svc_tattoo:'Tattoo',
-    bookings_empty_title:'Du hast noch keine Termine',bookings_empty_sub:'Zeit, deinen n\u00e4chsten Lieblingssalon zu entdecken!',bookings_discover_btn:'Salons entdecken',
+    bookings_empty_title:'Du hast noch keine Termine',bookings_empty_sub:'Zeit, deinen nächsten Lieblingssalon zu entdecken!',bookings_discover_btn:'Salons entdecken',
+    reg_step1_hint:'Schritt 1 von 5: Basis-Informationen',reg_step2_hint:'Schritt 2 von 5: Standort und Online-Präsenz',reg_step3_hint:'Schritt 3 von 5: Deine Services',reg_step4_hint:'Schritt 4 von 5: Dein Team',reg_step5_hint:'Schritt 5 von 5: Beschreibung und Öffnungszeiten',
+    reg_team_hint:'Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.',reg_add_staff:'+ Mitarbeiter hinzufügen',reg_staff_name:'Name',reg_staff_role:'Rolle',reg_staff_bookable:'Online buchbar',reg_staff_hours_toggle:'Verfügbarkeit festlegen',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
@@ -4528,6 +4531,8 @@ const T={
     about_title:'Why solen?',about_text:'solen makes Basel\'s salons visible and booking as easy as texting a friend. Every salon here is real. No stock photos, no franchises.',about_sig:'Founded in Basel \u00b7 For our local beauty experts',
     svc_coiffeur:'Hair Salon',svc_barbershop:'Barbershop',svc_nails:'Nails',svc_spa:'Spa & Wellness',svc_makeup:'Make-up',svc_kosmetik:'Cosmetics',svc_eyebrows:'Eyebrows',svc_tattoo:'Tattoo',
     bookings_empty_title:'No bookings yet',bookings_empty_sub:'Time to discover your next favourite salon!',bookings_discover_btn:'Discover salons',
+    reg_step1_hint:'Step 1 of 5: Basic Information',reg_step2_hint:'Step 2 of 5: Location & Online Presence',reg_step3_hint:'Step 3 of 5: Your Services',reg_step4_hint:'Step 4 of 5: Your Team',reg_step5_hint:'Step 5 of 5: Description & Opening Hours',
+    reg_team_hint:'Add your team. You can always change staff later.',reg_add_staff:'+ Add staff member',reg_staff_name:'Name',reg_staff_role:'Role',reg_staff_bookable:'Bookable online',reg_staff_hours_toggle:'Set availability',
   },
   fr:{
     nav_login:'Se connecter',nav_register:"S'inscrire",nav_logout:'Se d\u00e9connecter',nav_theme:'Clair / Sombre',
@@ -4654,6 +4659,8 @@ const T={
     about_title:'Pourquoi solen\u00a0?',about_text:'solen rend les salons b\u00e2lois visibles et la r\u00e9servation aussi simple qu\'un message entre amis. Chaque salon ici est authentique.',about_sig:'Fond\u00e9 \u00e0 B\u00e2le \u00b7 Pour nos experts beaut\u00e9 locaux',
     svc_coiffeur:'Coiffure',svc_barbershop:'Barbier',svc_nails:'Ongles',svc_spa:'Spa & Bien-\u00eatre',svc_makeup:'Maquillage',svc_kosmetik:'Cosm\u00e9tique',svc_eyebrows:'Sourcils',svc_tattoo:'Tatouage',
     bookings_empty_title:'Pas encore de rendez-vous',bookings_empty_sub:'Il est temps de d\u00e9couvrir ton prochain salon pr\u00e9f\u00e9r\u00e9\u00a0!',bookings_discover_btn:'D\u00e9couvrir des salons',
+    reg_step1_hint:'\u00c9tape 1 sur 5 : Informations de base',reg_step2_hint:'\u00c9tape 2 sur 5 : Emplacement et pr\u00e9sence en ligne',reg_step3_hint:'\u00c9tape 3 sur 5 : Vos services',reg_step4_hint:'\u00c9tape 4 sur 5 : Votre \u00e9quipe',reg_step5_hint:'\u00c9tape 5 sur 5 : Description et horaires',
+    reg_team_hint:'Ajoutez votre \u00e9quipe. Vous pourrez toujours modifier le personnel plus tard.',reg_add_staff:'+ Ajouter un membre',reg_staff_name:'Nom',reg_staff_role:'R\u00f4le',reg_staff_bookable:'R\u00e9servable en ligne',reg_staff_hours_toggle:'D\u00e9finir la disponibilit\u00e9',
   },
   tr:{
     nav_login:'GiriÅ Yap',nav_register:'Kayıt Ol',nav_logout:'ÇıkıÅ Yap',nav_theme:'Açık / Koyu',
@@ -4779,6 +4786,8 @@ const T={
     about_title:'Neden solen?',about_text:'solen, Basel\'in salonlar\u0131n\u0131 g\u00f6r\u00fcn\u00fcr k\u0131lar ve randevu almay\u0131 arkada\u015f\u0131na mesaj atmak kadar kolayla\u015ft\u0131r\u0131r. Buradaki her salon ger\u00e7ek.',about_sig:'Basel\'de kuruldu \u00b7 Yerel g\u00fczellik uzmanlar\u0131m\u0131z i\u00e7in',
     svc_coiffeur:'Kuaf\u00f6r',svc_barbershop:'Berber',svc_nails:'T\u0131rnak',svc_spa:'Spa & Sa\u011fl\u0131k',svc_makeup:'Makyaj',svc_kosmetik:'Kozmetik',svc_eyebrows:'Ka\u015f',svc_tattoo:'D\u00f6vme',
     bookings_empty_title:'Hen\u00fcz randevunuz yok',bookings_empty_sub:'Bir sonraki favori salonunu ke\u015ffetmenin zaman\u0131!',bookings_discover_btn:'Salonlar\u0131 ke\u015ffet',
+    reg_step1_hint:'Ad\u0131m 1/5: Temel Bilgiler',reg_step2_hint:'Ad\u0131m 2/5: Konum ve \u00c7evrimi\u00e7i Varl\u0131k',reg_step3_hint:'Ad\u0131m 3/5: Hizmetleriniz',reg_step4_hint:'Ad\u0131m 4/5: Ekibiniz',reg_step5_hint:'Ad\u0131m 5/5: A\u00e7\u0131klama ve \u00c7al\u0131\u015fma Saatleri',
+    reg_team_hint:'Ekibinizi ekleyin. Personeli daha sonra istedi\u011finiz zaman de\u011fi\u015ftirebilirsiniz.',reg_add_staff:'+ Personel ekle',reg_staff_name:'\u0130sim',reg_staff_role:'Rol',reg_staff_bookable:'Online rezerve edilebilir',reg_staff_hours_toggle:'Uygunlu\u011fu ayarla',
   },
 };
 
@@ -10477,7 +10486,9 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .salon-reg-body p.step-hint{color:var(--text2);font-size:.85rem;margin:0 0 18px}
 .reg-field{margin-bottom:14px}
 .reg-field label{display:block;font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
-.reg-field input,.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none;min-height:44px}
+.reg-field input:not([type=checkbox]):not([type=radio]),.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none;min-height:44px}
+.reg-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:14px;padding-right:36px}
+[data-theme="dark"] .reg-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")}
 .reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--accent2)}
 .reg-field textarea{resize:vertical;min-height:90px}
 .reg-service-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-end}
@@ -10485,7 +10496,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 @media(max-width:600px){.reg-service-row{flex-wrap:wrap}.reg-service-row .reg-field{flex:1 1 100%!important}}
 .reg-hours{display:flex;flex-direction:column;gap:6px}
 .reg-day-row{display:flex;align-items:center;gap:8px;font-size:.85rem;min-height:44px;padding:8px 0}
-.reg-day-row input[type=checkbox]{width:22px;height:22px;min-width:22px;accent-color:var(--accent2);cursor:pointer;flex-shrink:0}
+.reg-day-row input[type=checkbox]{width:22px;height:22px;min-width:22px;accent-color:var(--accent2);cursor:pointer;flex-shrink:0;appearance:checkbox!important;-webkit-appearance:checkbox!important}
 .reg-day-lbl{min-width:32px;font-weight:600;color:var(--text2);font-size:.85rem}
 .reg-time-inputs{display:flex;align-items:center;gap:6px;flex:1}
 .reg-time-inputs input[type=time]{flex:1;background:var(--surfaceAlt);border:1px solid var(--border);border-radius:8px;padding:5px 8px;color:var(--text);font-family:var(--font-body);font-size:.8rem;outline:none;min-width:0;min-height:36px;-webkit-appearance:none;appearance:none;touch-action:manipulation}
@@ -10513,9 +10524,18 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
   .reg-day-row{gap:6px;flex-wrap:nowrap}
   .reg-day-row input[type=checkbox]{width:24px;height:24px;min-width:24px}
   .reg-time-inputs input[type=time]{min-height:44px;padding:8px 6px;font-size:.82rem}
-  .salon-reg-footer button{min-height:48px;min-width:48px;padding:13px 28px;font-size:.92rem}
+  .salon-reg-footer{gap:8px;padding:16px 20px 24px}
+  .salon-reg-footer button{min-height:48px;padding:12px 16px;font-size:.85rem;flex:1;white-space:nowrap}
   .reg-btn-back,.reg-btn-next{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 }
+/* Google Places Autocomplete dropdown */
+.pac-container{background:var(--surface)!important;border:1.5px solid var(--border)!important;border-radius:12px!important;font-family:var(--font-body)!important;z-index:10001!important;margin-top:4px!important}
+[data-theme="dark"] .pac-container{background:var(--surface)!important}
+.pac-item{padding:12px 14px!important;border-color:var(--border)!important;color:var(--text)!important;min-height:44px!important;display:flex!important;align-items:center!important;cursor:pointer}
+.pac-item:hover{background:var(--surfaceAlt)!important}
+.pac-item-query{color:var(--text)!important;font-size:.9rem!important}
+.pac-matched{font-weight:700!important}
+.pac-icon{display:none}
 /* Draft autosave indicator */
 .reg-draft-indicator{font-size:.72rem;color:var(--text2);padding:4px 28px;text-align:right;opacity:.7}
 .reg-draft-indicator.saving{color:var(--warning)}
@@ -10602,6 +10622,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="salon-reg-dot" id="regDot2"></div>
       <div class="salon-reg-dot" id="regDot3"></div>
       <div class="salon-reg-dot" id="regDot4"></div>
+      <div class="salon-reg-dot" id="regDot5"></div>
     </div>
     <div class="reg-error-summary" id="regErrorSummary" role="alert"></div>
     <div class="reg-draft-indicator" id="regDraftIndicator"></div>
@@ -10609,7 +10630,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <!-- STEP 1: Basics -->
       <div class="reg-step active" id="regStep1">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 1 von 4: Basis-Informationen</p>
+          <p class="step-hint" data-i18n="reg_step1_hint">Schritt 1 von 5: Basis-Informationen</p>
           <div class="reg-field" id="field_reg_name"><label for="reg_name">Salonname (Pflichtfeld)</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization" aria-describedby="err_reg_name"><div class="reg-field-error" id="err_reg_name" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Salonnamen eingeben.</div></div>
           <div class="reg-field" id="field_reg_cat"><label for="reg_cat">Kategorie (Pflichtfeld)</label>
             <select id="reg_cat" aria-describedby="err_reg_cat">
@@ -10630,7 +10651,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <!-- STEP 2: Location -->
       <div class="reg-step" id="regStep2">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 2 von 4: Standort und Online-Präsenz</p>
+          <p class="step-hint" data-i18n="reg_step2_hint">Schritt 2 von 5: Standort und Online-Präsenz</p>
           <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
             <select id="reg_nb" aria-describedby="err_reg_nb">
@@ -10657,7 +10678,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <!-- STEP 3: Services -->
       <div class="reg-step" id="regStep3">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 3 von 4: Deine Services</p>
+          <p class="step-hint" data-i18n="reg_step3_hint">Schritt 3 von 5: Deine Services</p>
           <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Trage mindestens einen Service ein, den du anbietest. Du kannst später weitere hinzufügen.</p>
           <div id="regServicesContainer">
             <div class="reg-service-row" data-idx="0">
@@ -10673,12 +10694,25 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           <button type="button" class="reg-btn-next" onclick="regNext(3)">Weiter →</button>
         </div>
       </div>
-      <!-- STEP 4: Details & Review -->
+      <!-- STEP 4: Team / Staff -->
       <div class="reg-step" id="regStep4">
         <div class="salon-reg-body">
-          <p class="step-hint">Schritt 4 von 4: Beschreibung und Öffnungszeiten</p>
+          <p class="step-hint" data-i18n="reg_step4_hint">Schritt 4 von 5: Dein Team</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px" data-i18n="reg_team_hint">Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.</p>
+          <div id="regStaffContainer"></div>
+          <button type="button" onclick="regAddStaffRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px" data-i18n="reg_add_staff">+ Mitarbeiter hinzufügen</button>
+        </div>
+        <div class="salon-reg-footer">
+          <button type="button" class="reg-btn-back" onclick="regPrev(4)">← Zurück</button>
+          <button type="button" class="reg-btn-next" onclick="regNext(4)">Weiter →</button>
+        </div>
+      </div>
+      <!-- STEP 5: Details & Review -->
+      <div class="reg-step" id="regStep5">
+        <div class="salon-reg-body">
+          <p class="step-hint" data-i18n="reg_step5_hint">Schritt 5 von 5: Beschreibung und Öffnungszeiten</p>
           <div class="reg-field"><label for="reg_desc">Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
-          <div class="reg-field"><label for="reg_parent_store_id">Filiale von (optional)</label><select id="reg_parent_store_id" class="form-input" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
+          <div class="reg-field"><label for="reg_parent_store_id">Filiale von (optional)</label><select id="reg_parent_store_id" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
             <label>Öffnungszeiten</label>
             <div class="reg-hours" id="regHoursGrid"></div>
           </div>
@@ -10691,7 +10725,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           </div>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(4)">← Zurück</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(5)">← Zurück</button>
           <button type="submit" class="reg-btn-next" id="regSubmitBtn"> Jetzt eintragen</button>
         </div>
       </div>
@@ -10729,12 +10763,24 @@ function regCollectDraft(){
     tiktok:document.getElementById('reg_tiktok')?.value||'',
     fb:document.getElementById('reg_fb')?.value||'',
     services:regCollectServices(),
+    staff:regCollectStaffDraft(),
     desc:document.getElementById('reg_desc')?.value||'',
     parent:document.getElementById('reg_parent_store_id')?.value||'',
     terms:document.getElementById('reg_terms')?.checked||false,
     hours:regCollectHours(),
     savedAt:new Date().toISOString()
   };
+}
+function regCollectStaffDraft(){
+  const cards=document.querySelectorAll('#regStaffContainer .staff-setup-card');
+  const arr=[];
+  cards.forEach(function(card){
+    const name=card.querySelector('.reg-staff-name')?.value||'';
+    const role=card.querySelector('.reg-staff-role')?.value||'';
+    const bookable=card.querySelector('.reg-staff-bookable')?.checked!==false;
+    arr.push({name:name,role:role,bookable:bookable});
+  });
+  return arr;
 }
 
 function regCollectHours(){
@@ -10750,6 +10796,23 @@ function regCollectHours(){
   });
   return hours;
 }
+
+// ── Google Places Autocomplete for address field ──
+window.initPlacesAutocomplete=function(){
+  const input=document.getElementById('reg_street');
+  if(!input||!window.google||!google.maps||!google.maps.places)return;
+  const ac=new google.maps.places.Autocomplete(input,{
+    types:['address'],
+    componentRestrictions:{country:'ch'},
+    fields:['formatted_address','address_components','geometry']
+  });
+  ac.addListener('place_changed',function(){
+    const place=ac.getPlace();
+    if(place&&place.formatted_address){
+      input.value=place.formatted_address;
+    }
+  });
+};
 
 function regSaveDraft(){
   clearTimeout(_regDraftTimer);
@@ -10797,6 +10860,18 @@ function regRestoreDraft(){
         });
       }
     }
+    if(d.staff&&d.staff.length){
+      d.staff.forEach(function(s){
+        regAddStaffRow();
+        const cards=document.querySelectorAll('#regStaffContainer .staff-setup-card');
+        const card=cards[cards.length-1];
+        if(card){
+          const nm=card.querySelector('.reg-staff-name');if(nm)nm.value=s.name||'';
+          const rl=card.querySelector('.reg-staff-role');if(rl)rl.value=s.role||'';
+          const bk=card.querySelector('.reg-staff-bookable');if(bk)bk.checked=s.bookable!==false;
+        }
+      });
+    }
     if(d.desc)document.getElementById('reg_desc').value=d.desc;
     if(d.parent)document.getElementById('reg_parent_store_id').value=d.parent;
     if(d.terms)document.getElementById('reg_terms').checked=true;
@@ -10815,7 +10890,7 @@ function regRestoreDraft(){
         }else{cb.checked=false;}
       });
     }
-    if(d.step&&d.step>=1&&d.step<=3){_regCurrentStep=d.step;}
+    if(d.step&&d.step>=1&&d.step<=4){_regCurrentStep=d.step;}
     const ind=document.getElementById('regDraftIndicator');
     if(ind&&d.savedAt){
       const t=new Date(d.savedAt).toLocaleTimeString(getLocale(),{hour:'2-digit',minute:'2-digit'});
@@ -10879,6 +10954,9 @@ function regValidateStep(step){
     if(!hasAnySvc){errors.push('Bitte mindestens einen Service eintragen.');}
   }
   if(step===4){
+    // Team step — optional, no required fields
+  }
+  if(step===5){
     if(!document.getElementById('reg_terms').checked){regShowFieldError('field_reg_terms');errors.push('Nutzungsbedingungen nicht akzeptiert.');}
   }
   if(errors.length){regShowErrorSummary(errors);return false;}
@@ -10898,7 +10976,7 @@ function regGoTo(step){
   _regCurrentStep=step;
   solenTrack('partner_reg_step',{step:step});
   regClearErrors();
-  [1,2,3,4].forEach(i=>{
+  [1,2,3,4,5].forEach(i=>{
     const s=document.getElementById('regStep'+i);
     const d=document.getElementById('regDot'+i);
     if(s)s.classList.toggle('active',i===step);
@@ -10933,11 +11011,80 @@ function regCollectServices(){
   });
   return svcs;
 }
+// ── Staff management for registration Step 4 ──
+let _regStaffIdx=0;
+function regAddStaffRow(){
+  const container=document.getElementById('regStaffContainer');
+  if(!container)return;
+  const idx=_regStaffIdx++;
+  const card=document.createElement('div');
+  card.className='staff-setup-card';
+  card.style.cssText='margin-bottom:12px;padding:16px;position:relative';
+  // Build staff card with name, role, bookable toggle, and availability grid
+  const closeBtn=document.createElement('button');
+  closeBtn.type='button';
+  closeBtn.setAttribute('aria-label','Mitarbeiter entfernen');
+  closeBtn.style.cssText='position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.1rem;padding:2px 6px';
+  closeBtn.textContent='\u00d7';
+  closeBtn.addEventListener('click',function(){card.remove();});
+  card.appendChild(closeBtn);
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px';
+  const f1=document.createElement('div');f1.className='reg-field';f1.style.margin='0';
+  const l1=document.createElement('label');l1.setAttribute('data-i18n','reg_staff_name');l1.textContent='Name';
+  const i1=document.createElement('input');i1.type='text';i1.className='reg-staff-name';i1.placeholder='z.B. Maria';
+  f1.appendChild(l1);f1.appendChild(i1);
+  const f2=document.createElement('div');f2.className='reg-field';f2.style.margin='0';
+  const l2=document.createElement('label');l2.setAttribute('data-i18n','reg_staff_role');l2.textContent='Rolle';
+  const i2=document.createElement('input');i2.type='text';i2.className='reg-staff-role';i2.placeholder='z.B. Senior Stylist';
+  f2.appendChild(l2);f2.appendChild(i2);
+  grid.appendChild(f1);grid.appendChild(f2);
+  card.appendChild(grid);
+  const bookLabel=document.createElement('label');
+  bookLabel.style.cssText='display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;margin-bottom:10px';
+  const bookCb=document.createElement('input');bookCb.type='checkbox';bookCb.className='reg-staff-bookable';bookCb.checked=true;
+  bookCb.style.cssText='width:20px;height:20px;accent-color:var(--accent2);appearance:checkbox;-webkit-appearance:checkbox';
+  const bookSpan=document.createElement('span');bookSpan.setAttribute('data-i18n','reg_staff_bookable');bookSpan.textContent='Online buchbar';
+  bookLabel.appendChild(bookCb);bookLabel.appendChild(bookSpan);
+  card.appendChild(bookLabel);
+  const details=document.createElement('details');details.style.marginTop='8px';
+  const summary=document.createElement('summary');
+  summary.style.cssText='font-size:.82rem;font-weight:600;color:var(--text2);cursor:pointer';
+  summary.setAttribute('data-i18n','reg_staff_hours_toggle');summary.textContent='Verfügbarkeit festlegen';
+  details.appendChild(summary);
+  const hoursDiv=document.createElement('div');hoursDiv.className='reg-staff-hours';hoursDiv.style.marginTop='8px';
+  details.appendChild(hoursDiv);
+  card.appendChild(details);
+  container.appendChild(card);
+  renderRegStaffHours(hoursDiv);
+  if(typeof applyTranslations==='function')applyTranslations();
+}
+function renderRegStaffHours(container){
+  if(!container)return;
+  const days=[['Mo','Montag'],['Di','Dienstag'],['Mi','Mittwoch'],['Do','Donnerstag'],['Fr','Freitag'],['Sa','Samstag'],['So','Sonntag']];
+  days.forEach(function(pair){
+    const k=pair[0],label=pair[1];
+    const row=document.createElement('div');row.className='reg-day-row';
+    const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;
+    cb.setAttribute('aria-label',label+' verfügbar');
+    cb.style.cssText='appearance:checkbox;-webkit-appearance:checkbox';
+    row.appendChild(cb);
+    const lbl=document.createElement('span');lbl.className='reg-day-lbl';lbl.textContent=k;
+    row.appendChild(lbl);
+    const wrap=document.createElement('div');wrap.className='reg-time-inputs';
+    const t1=document.createElement('input');t1.type='time';t1.value='09:00';t1.setAttribute('aria-label',label+' von');
+    const dash=document.createElement('span');dash.className='reg-time-dash';dash.setAttribute('aria-hidden','true');dash.textContent='–';
+    const t2=document.createElement('input');t2.type='time';t2.value='19:00';t2.setAttribute('aria-label',label+' bis');
+    wrap.appendChild(t1);wrap.appendChild(dash);wrap.appendChild(t2);
+    row.appendChild(wrap);
+    container.appendChild(row);
+  });
+}
 async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,user_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
   e.preventDefault();
   solenTrack('partner_reg_submit',{});
-  if(!regValidateStep(4))return;
+  if(!regValidateStep(5))return;
   const btn=document.getElementById('regSubmitBtn');
   if(btn.classList.contains('loading'))return;
   btn.classList.add('loading');
@@ -10966,16 +11113,29 @@ async function submitSalonReg(e){
     created_at:new Date().toISOString()
   };
   try{
-    let err;
-    const r1=await sb.from('store_applications').insert([data]);
+    let err;let newStoreId=null;
+    const r1=await sb.from('store_applications').insert([data]).select('id').single();
     err=r1.error;
+    if(!err&&r1.data)newStoreId=r1.data.id;
     if(err&&err.code==='23505')err=null;
     if(err){
-      const r2=await sb.from('stores').insert([data]);
+      const r2=await sb.from('stores').insert([data]).select('id').single();
       err=r2.error;
+      if(!err&&r2.data)newStoreId=r2.data.id;
       if(err&&err.code==='23505')err=null;
     }
     if(err)throw err;
+    // Insert staff members from Step 4
+    if(newStoreId){
+      const staffCards=document.querySelectorAll('#regStaffContainer .staff-setup-card');
+      for(const card of staffCards){
+        const sName=card.querySelector('.reg-staff-name')?.value?.trim();
+        if(!sName)continue;
+        const sRole=card.querySelector('.reg-staff-role')?.value?.trim()||null;
+        const sBookable=card.querySelector('.reg-staff-bookable')?.checked!==false;
+        await sb.from('store_staff').insert([{store_id:newStoreId,name:sName,role:sRole,bookable:sBookable,active:true}]);
+      }
+    }
     regClearDraft();
     document.getElementById('salonRegForm').style.display='none';
     document.getElementById('regSuccess').style.display='block';
