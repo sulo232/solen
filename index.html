@@ -76,44 +76,6 @@
   --glass-border:1px solid rgba(255,255,255,.18);--glass-badge-blur:blur(8px);
   --glass-shadow:0 8px 32px rgba(120,90,60,.08),0 24px 64px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.5);
   --glass-text-shadow:0 1px 2px rgba(0,0,0,.08);--glass-text-shadow-dark:0 1px 3px rgba(0,0,0,.4);}
-[data-theme="dark"]{
-  --bg:#0C0A09;--bg2:#1A1614;--surface:#1A1614;--surfaceAlt:#262220;
-  --c-bg:#0C0A09;--c-bg-elevated:#1A1614;--c-surface:#1A1614;--c-surface-alt:#262220;
-  --surface-rgb:26,22,20;--bg-rgb:12,10,9;
-  --text:#F5F0E8;--text2:#B0A89E;--muted:#B0A89E;--textMuted:#B0A89E;--light:#7A726A;
-  --c-text:#F5F0E8;--c-text-secondary:#B0A89E;--c-text-muted:#7A726A;
-  --accent:#E06478;--accent2:#D4AF77;--accent-dark:#C84A5E;--accentFg:#0C0A09;
-  --c-accent:#E06478;--c-accent-hover:#C84A5E;--c-accent-fg:#0C0A09;
-  --accent-lemon:#D4AF77;
-  --border:#2E2824;--border2:#3D3530;
-  --c-border:#2E2824;--c-border-strong:#3D3530;
-  --shadow:0 2px 16px rgba(0,0,0,0.5);--shadow2:0 8px 32px rgba(0,0,0,.55);--shadow3:0 20px 60px rgba(0,0,0,.65);
-  --shadow-card:0 2px 16px rgba(0,0,0,0.5);
-  --glow:0 2px 12px rgba(224,100,120,0.25);
-  --elev-1:0 2px 8px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04);--elev-2:0 8px 24px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);--elev-3:0 16px 48px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06);
-  --cat-hair:#E06478;--cat-barbershop:#8B8BDD;--cat-nails:#E098AE;--cat-spa:#8BC0A8;--cat-makeup:#C4AAEB;--cat-cosmetik:#D4AF77;--cat-tattoo:#999;
-  --glass-shadow:0 24px 80px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
-  --glass-border:1px solid rgba(255,255,255,.10);
-}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0C0A09;--bg2:#1A1614;--surface:#1A1614;--surfaceAlt:#262220;
-  --c-bg:#0C0A09;--c-bg-elevated:#1A1614;--c-surface:#1A1614;--c-surface-alt:#262220;
-  --surface-rgb:26,22,20;--bg-rgb:12,10,9;
-  --text:#F5F0E8;--text2:#B0A89E;--muted:#B0A89E;--textMuted:#B0A89E;--light:#7A726A;
-  --c-text:#F5F0E8;--c-text-secondary:#B0A89E;--c-text-muted:#7A726A;
-  --accent:#E06478;--accent2:#D4AF77;--accent-dark:#C84A5E;--accentFg:#0C0A09;
-  --c-accent:#E06478;--c-accent-hover:#C84A5E;--c-accent-fg:#0C0A09;
-  --accent-lemon:#D4AF77;
-  --border:#2E2824;--border2:#3D3530;
-  --c-border:#2E2824;--c-border-strong:#3D3530;
-  --shadow:0 2px 16px rgba(0,0,0,0.5);--shadow2:0 8px 32px rgba(0,0,0,.55);--shadow3:0 20px 60px rgba(0,0,0,.65);
-  --shadow-card:0 2px 16px rgba(0,0,0,0.5);
-  --glow:0 2px 12px rgba(224,100,120,0.25);
-  --elev-1:0 2px 8px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04);--elev-2:0 8px 24px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);--elev-3:0 16px 48px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06);
-  --cat-hair:#E06478;--cat-barbershop:#8B8BDD;--cat-nails:#E098AE;--cat-spa:#8BC0A8;--cat-makeup:#C4AAEB;--cat-cosmetik:#D4AF77;--cat-tattoo:#999;
-  --glass-shadow:0 24px 80px rgba(0,0,0,.5),0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
-  --glass-border:1px solid rgba(255,255,255,.10);
-}}
 @media(prefers-reduced-motion:reduce){*{transition-duration:0.01ms!important;animation-duration:0.01ms!important}}
 html,body{overflow-x:hidden;max-width:100vw}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:var(--lh-body);display:flex;flex-direction:column;overflow-wrap:break-word;word-break:break-word;-webkit-hyphens:auto;hyphens:auto}
@@ -122,7 +84,7 @@ h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-fa
 .nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title,.service-icon-card,.sic-label,.chip,.cat-pill{hyphens:none;word-break:normal;overflow-wrap:normal}
 .store-price-range,.store-price,.price-label,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
-button,a,[role="button"],[role="link"],[onclick],.bottom-nav-item,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.svc-card,.cal-day,.slot{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;transition:transform .15s var(--ease),opacity .15s var(--ease),color .2s var(--ease),background-color .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease)}
+button,a,[role="button"],[role="link"],[onclick],.bottom-nav-item,.close-btn,.hamburger,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.svc-card,.cal-day,.slot{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;transition:transform .15s var(--ease),opacity .15s var(--ease),color .2s var(--ease),background-color .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease)}
 .store-card,.sort-trigger,.view-toggle-btn,.filter-panel-trigger,.filter-pill,.cat-tab,.quartier-photo-card,.service-icon-card,.store-card-see-all-btn{pointer-events:auto;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 img{max-width:100%;display:block}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -146,19 +108,10 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .logo{font-family:'Space Grotesk',sans-serif;font-size:var(--text-2xl);font-weight:700;color:var(--c-text);letter-spacing:-.02em;text-decoration:none;margin-right:auto;position:relative;transition:transform .4s cubic-bezier(.34,1.56,.64,1),filter .4s ease;display:inline-block}
 .logo:hover{transform:scale(1.07);filter:drop-shadow(0 0 14px rgba(155,29,48,.55))}
 .logo span{color:var(--c-accent)}
-.theme-toggle{background:var(--c-surface-alt,#F3EEE6);border:1.5px solid var(--c-border);color:var(--c-text-secondary);width:56px;height:44px;padding:7px 3px;border-radius:50px;display:flex;align-items:center;cursor:pointer;font-size:1.1rem;transition:all .3s var(--ease);flex-shrink:0;margin-right:8px;position:relative;padding:0 3px}
-.theme-toggle::after{content:'';position:absolute;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);transition:transform .3s var(--ease-standard)}
-[data-theme="dark"] .theme-toggle::after{transform:translateX(26px)}
-.theme-toggle:hover{border-color:var(--c-accent);box-shadow:0 0 0 3px rgba(155,29,48,.08)}
-[data-theme="dark"] .theme-toggle{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
-[data-theme="dark"] .theme-toggle::after{background:var(--c-accent,#D4586A)}
-[data-theme="dark"] .theme-toggle:hover{border-color:rgba(255,255,255,.3);box-shadow:0 0 0 3px rgba(212,175,119,.12)}
 .nav-actions{display:flex;gap:10px;align-items:center}
 /* Login = outline pill, Register = solid pill */
 .btn-nav-ghost{color:var(--c-accent);border:1.5px solid rgba(155,29,48,.3);background:rgba(155,29,48,.04);padding:9px 22px;border-radius:100px;font-size:var(--text-md);font-weight:600;cursor:pointer;transition:all .25s var(--ease);white-space:nowrap;letter-spacing:.01em}
 .btn-nav-ghost:hover{background:rgba(155,29,48,.08);border-color:var(--c-accent);color:var(--c-accent)}
-[data-theme="dark"] .btn-nav-ghost{color:#D4AF77;border-color:rgba(212,175,119,.55);background:rgba(212,175,119,.10)}
-[data-theme="dark"] .btn-nav-ghost:hover{background:rgba(212,175,119,.20);border-color:#D4AF77;color:#D4AF77}
 .btn-nav-ghost.loading,.btn-nav-primary.loading{pointer-events:none;opacity:.7}
 .btn-nav-ghost.loading::after,.btn-nav-primary.loading::after{content:'';display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;margin-left:6px;vertical-align:middle}
 .btn-nav-primary{background:var(--c-accent);color:var(--c-accent-fg);border:none;padding:9px 22px;border-radius:100px;font-size:var(--text-md);font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 2px 10px rgba(155,29,48,.40);letter-spacing:.01em;text-shadow:0 1px 2px rgba(0,0,0,.15)}
@@ -184,16 +137,10 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .nav-link:hover{color:var(--c-text)}
 .nav-link-subtle{font-size:.82rem;color:var(--c-text-muted)}
 .nav-link-subtle:hover{color:var(--c-text-secondary)}
-[data-theme="dark"] .nav-link{color:rgba(255,255,255,.7)}
-[data-theme="dark"] .nav-link:hover{color:#fff}
-[data-theme="dark"] .nav-link-subtle{color:rgba(255,255,255,.5)}
-[data-theme="dark"] .nav-link-subtle:hover{color:rgba(255,255,255,.8)}
 /* LANGUAGE DROPDOWN */
 .nav-lang-dropdown{position:relative}
 .nav-lang-trigger{background:none;border:1px solid var(--c-border);color:var(--c-text-secondary);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s var(--ease)}
 .nav-lang-trigger:hover{background:rgba(155,29,48,.06);border-color:var(--c-accent);color:var(--c-accent)}
-[data-theme="dark"] .nav-lang-trigger{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.8)}
-[data-theme="dark"] .nav-lang-trigger:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
 .lang-dropdown-menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:12px;box-shadow:var(--glass-shadow);min-width:150px;overflow:hidden;z-index:1050;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s,transform .2s,visibility .2s;padding:4px}
 .lang-dropdown-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
 .lang-option{display:block;width:100%;padding:10px 14px;background:none;border:none;text-align:left;font-size:.88rem;font-weight:500;color:var(--text);cursor:pointer;border-radius:8px;transition:background .15s}
@@ -205,7 +152,6 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .lang-btn:hover{color:var(--c-text-secondary);border-color:var(--c-border-strong)}
 .lang-btn.active{background:var(--c-accent);color:var(--c-accent-fg);border-color:var(--c-accent)}
 .hamburger{display:none;background:none;border:none;color:var(--c-text);font-size:1.5rem;padding:12px;cursor:pointer;position:relative;z-index:10;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-[data-theme="dark"] .hamburger{color:white}
 .mobile-header-icons{display:none;align-items:center;gap:2px;margin-left:auto}
 .mobile-header-btn{background:none;border:none;color:var(--c-text);padding:8px;cursor:pointer;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;-webkit-tap-highlight-color:transparent}
 .mobile-header-btn:active{background:rgba(128,128,128,.12)}
@@ -215,7 +161,6 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 /* MOBILE NAV MENU */
 .mobile-menu{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(255,255,255,0.12);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.35);gap:8px;z-index:1001}
 .mobile-menu::before{content:'';position:absolute;inset:0;z-index:-1;backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);pointer-events:none}
-[data-theme="dark"] .mobile-menu{background:rgba(12,10,10,0.22);border-bottom-color:rgba(255,255,255,.1);box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08)}
 .mobile-menu.open{display:flex}
 .mobile-menu .lang-switcher-mobile{display:flex;gap:6px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px}
 .mobile-menu .btn-nav-ghost,.mobile-menu .btn-nav-primary{width:100%;text-align:center;min-height:44px}
@@ -229,10 +174,6 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .hero h1{font-family:var(--font-display);font-size:clamp(2.4rem,4vw,3.2rem);font-weight:400;line-height:var(--lh-heading);margin-bottom:16px;letter-spacing:-.01em;color:var(--c-text)}
 .hero-highlight{color:var(--c-accent);-webkit-text-fill-color:var(--c-accent);background:none}
 .hero p{font-size:var(--text-lg);color:var(--c-text-secondary);margin-bottom:36px;font-weight:500;line-height:var(--lh-body)}
-[data-theme="dark"] .hero{background:var(--c-bg)}
-[data-theme="dark"] .hero-bg::after{background:linear-gradient(to right,transparent 60%,var(--c-bg) 100%)}
-[data-theme="dark"] .hero h1{color:var(--c-text)}
-[data-theme="dark"] .hero p{color:var(--c-text-secondary)}
 .hero-filter-chip{background:var(--c-surface);border:1.5px solid var(--c-border);color:var(--c-text-secondary);padding:8px 20px;min-height:44px;border-radius:var(--r-pill);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s var(--ease);box-shadow:var(--elev-1)}
 .hero-filter-chip:hover{border-color:var(--c-accent);color:var(--c-accent);box-shadow:var(--elev-2)}
 .hero-filter-chip.selected{background:var(--c-accent);border-color:var(--c-accent);color:#fff;box-shadow:var(--glow)}
@@ -299,7 +240,6 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .stores-grid .store-card{break-inside:avoid;margin-bottom:28px;display:inline-block;width:100%}
 .store-card{background:var(--c-surface);border-radius:var(--r2);overflow:hidden;border:1px solid var(--c-border);cursor:pointer;transition:transform var(--motion-base) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard),border-color var(--motion-base) var(--ease-standard);position:relative;box-shadow:var(--elev-1)}
 .store-card:hover{transform:translateY(-3px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
-[data-theme="dark"] .store-card:hover{border-color:rgba(224,100,120,.25);box-shadow:var(--elev-2),0 0 0 1px rgba(224,100,120,.08)}
 .store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
 .store-card-photo{aspect-ratio:3/2;overflow:hidden;position:relative}
 .store-card-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s var(--ease)}
@@ -388,20 +328,15 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .overlay .modal{transform:translateY(16px) scale(.97);opacity:0;will-change:transform,opacity}
 .overlay.active .modal{transform:translateY(0) scale(1);opacity:1;animation:modalSlideIn .4s var(--ease-emphasized) both}
 .modal{background:rgba(var(--surface-rgb,255,255,255),.88);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;width:100%;max-width:min(480px,calc(100vw - 32px));max-height:90vh;overflow-y:auto;overflow-x:hidden;box-shadow:var(--glass-shadow);border:var(--glass-border);position:relative}
-[data-theme="dark"] .modal{background:rgba(var(--surface-rgb,31,31,31),.88);border:var(--glass-border);box-shadow:var(--glass-shadow)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .modal{background:rgba(var(--surface-rgb,31,31,31),.88);border:var(--glass-border);box-shadow:var(--glass-shadow)}}
 .modal-wide{max-width:min(700px,calc(100vw - 32px))}
 .modal-hd{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between;position:relative}
 .modal-hd h2{font-size:1.2rem;font-weight:800;color:var(--text)}
 .close-btn{background:rgba(0,0,0,.06);border:none;font-size:1.1rem;color:var(--muted);line-height:1;padding:0;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,transform .2s var(--ease-standard);flex-shrink:0}
-[data-theme="dark"] .close-btn{background:rgba(255,255,255,.08)}
 .close-btn:hover{color:var(--text);background:rgba(0,0,0,.12);transform:scale(1.1)}
 .close-btn:active{transform:scale(.92);transition-duration:.1s}
 .modal-body{padding:20px 24px 24px}
 /* ── GLASS TEXT READABILITY ── */
 .modal-hd,.modal-body,.bk-sidebar,.offer-picker-inner,.report-inner,.onboard-wizard{text-shadow:var(--glass-text-shadow)}
-[data-theme="dark"] .modal-hd,[data-theme="dark"] .modal-body,[data-theme="dark"] .bk-sidebar,[data-theme="dark"] .offer-picker-inner,[data-theme="dark"] .report-inner,[data-theme="dark"] .onboard-wizard{text-shadow:var(--glass-text-shadow-dark)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .modal-hd,:root:not([data-theme="light"]) .modal-body,:root:not([data-theme="light"]) .bk-sidebar,:root:not([data-theme="light"]) .offer-picker-inner,:root:not([data-theme="light"]) .report-inner,:root:not([data-theme="light"]) .onboard-wizard{text-shadow:var(--glass-text-shadow-dark)}}
 /* ── FORM UTILITY CLASSES ── */
 .form-hint{font-weight:400;color:var(--c-text-muted);font-size:var(--text-sm)}
 .form-section-title{font-size:var(--text-md);font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
@@ -430,8 +365,6 @@ body.modal-open .bottom-nav{opacity:0!important;pointer-events:none!important;tr
 input:focus,textarea:focus{border-color:rgba(155,29,48,0.5)!important;box-shadow:0 0 0 3px rgba(155,29,48,0.1)!important;outline:none}
 .form-input::placeholder{color:var(--muted)}
 select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:40px}
-[data-theme="dark"] select.form-input{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) select.form-input{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")}}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .visit-type-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding:8px 0;border-bottom:1px solid var(--border)}
 .visit-type-lbl{font-size:.8rem;font-weight:600;color:var(--muted);min-width:80px}
@@ -476,12 +409,6 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .msg.error{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
 .msg.error::before{content:'';display:inline-block;width:16px;height:16px;margin-right:6px;vertical-align:middle;background:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b91c1c' stroke-width='2'%3e%3ccircle cx='12' cy='12' r='10'/%3e%3cline x1='12' y1='8' x2='12' y2='12'/%3e%3cline x1='12' y1='16' x2='12.01' y2='16'/%3e%3c/svg%3e") no-repeat center/contain}
 .msg.info{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
-@media(prefers-color-scheme:dark){
-  .msg.success{background:#14532d;color:#86efac;border-color:#166534}
-  .msg.error{background:#7f1d1d;color:#fca5a5;border-color:#991b1b}
-}
-[data-theme="dark"] .msg.success{background:#14532d;color:#86efac;border-color:#166534}
-[data-theme="dark"] .msg.error{background:#7f1d1d;color:#fca5a5;border-color:#991b1b}
 
 /* AUTH TABS */
 .auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px}
@@ -517,7 +444,6 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .svc-meta{font-size:.8rem;color:var(--muted);display:flex;gap:10px}
 .svc-badge{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:var(--bg3);color:var(--muted);margin-bottom:6px;display:inline-block}
 .svc-badge.preferred-badge{background:#dcfce7;color:#15803d}
-@media(prefers-color-scheme:dark){.svc-badge.preferred-badge{background:#14532d;color:#86efac}}
 .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
 .cal-day{padding:10px 6px;border-radius:var(--r);border:1.5px solid var(--border);text-align:center;cursor:pointer;font-size:.85rem;font-weight:600;transition:.15s;background:var(--surface)}
 .cal-day:hover:not(.disabled){border-color:var(--text)}
@@ -655,11 +581,6 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .status-confirmed{background:#dcfce7;color:#15803d}
 .status-pending{background:#fef9c3;color:#854d0e}
 .status-cancelled{background:#fee2e2;color:#b91c1c}
-@media(prefers-color-scheme:dark){
-  .status-confirmed{background:#14532d;color:#86efac}
-  .status-pending{background:#713f12;color:#fde68a}
-  .status-cancelled{background:#7f1d1d;color:#fca5a5}
-}
 .booking-actions{display:flex;gap:8px;flex-shrink:0}
 .cancel-btn{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;font-size:.8rem;cursor:pointer}
 .cancel-btn:hover{background:#fca5a5;border-color:#dc2626}
@@ -674,8 +595,6 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .other-filialen h4{font-size:.85rem;font-weight:700;margin-bottom:8px;color:var(--text2)}
 /* ── DM DESIGN SYSTEM (Instagram-style) ────────────────────────────── */
 :root{--dm-blue:#0095F6;--dm-blue-hover:#1AA1F7;--dm-sent:#3797F0;--dm-bubble-mine:var(--dm-blue);--dm-bubble-theirs:var(--surfaceAlt);--dm-unread:#0095F6;--dm-online:#44D62C;--dm-typing:var(--muted);--dm-fail:var(--error)}
-[data-theme="dark"]{--dm-bubble-theirs:#262626;--dm-sent:#3797F0}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--dm-bubble-theirs:#262626;--dm-sent:#3797F0}}
 
 /* DM overlay & container */
 .dm-overlay{position:fixed;inset:0;z-index:1100;display:none;background:var(--bg);flex-direction:column}
@@ -899,11 +818,9 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.82);border-top:1px solid rgba(0,0,0,.06);padding:10px 0 calc(env(safe-area-inset-bottom,8px) + 4px);width:100%;max-width:100vw;transition:transform .3s var(--ease)}
 .bottom-nav::before{content:'';position:absolute;inset:0;z-index:-1;backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);pointer-events:none}
 .bottom-nav.nav-hidden{transform:translateY(100%)}
-[data-theme="dark"] .bottom-nav{background:rgba(12,10,9,.85);border-top-color:rgba(255,255,255,.08)}
 .bottom-nav-inner{display:flex;justify-content:space-around;align-items:center;max-width:600px;margin:0 auto}
 .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;font-size:var(--text-2xs);font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;min-width:48px;min-height:48px;justify-content:center;border-radius:16px;transition:all .2s}
 .bottom-nav-item.active{color:var(--accent);background:rgba(155,29,48,.12);font-weight:700}
-[data-theme="dark"] .bottom-nav-item.active{background:rgba(224,100,120,.15)}
 .bottom-nav-item svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8}
 .bottom-nav-item.active svg{stroke-width:2.2}
 @media(max-width:768px){.bottom-nav{display:block}}
@@ -915,7 +832,6 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 /* Glass text readability helper */
 .glass-panel,.glass-panel-light,.glass-panel-subtle{color:var(--c-text)}
 .glass-panel *,.glass-panel-light *{text-shadow:var(--glass-text-shadow)}
-[data-theme="dark"] .glass-panel *,[data-theme="dark"] .glass-panel-light *{text-shadow:var(--glass-text-shadow-dark)}
 
 /* ── Phase 4: INTERACTION FEEDBACK ── */
 /* Filter pill click pulse */
@@ -1073,8 +989,6 @@ html,body{overflow-x:hidden;max-width:100vw}
 /* OPEN/CLOSED STATUS */
 .status-open{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:.75rem;font-weight:600;background:rgba(45,122,79,0.12);color:#2d7a4f;border:1px solid rgba(45,122,79,0.25)}
 .status-closed{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:.75rem;font-weight:600;background:rgba(107,114,128,0.12);color:var(--muted);border:1px solid rgba(107,114,128,0.25)}
-@media(prefers-color-scheme:dark){.status-open{background:rgba(45,122,79,0.2);color:#86efac}}
-[data-theme="dark"] .status-open{background:rgba(45,122,79,0.2);color:#86efac}
 /* CATEGORY BADGE ON CARD */
 .store-cat-badge{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.7);color:#fff;font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:100px;backdrop-filter:blur(8px);z-index:2}
 /* EMPFOHLEN BADGE */
@@ -1119,7 +1033,6 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bk-layout{display:flex;gap:40px;align-items:flex-start;position:relative}
 .bk-main{flex:1;min-width:0;padding-bottom:40px}
 .bk-sidebar{width:296px;flex-shrink:0;position:sticky;top:84px;background:rgba(var(--surface-rgb),.78);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:var(--glass-border);border-radius:var(--r2);padding:22px 20px;box-shadow:var(--glass-shadow)}
-[data-theme="dark"] .bk-sidebar{background:rgba(var(--surface-rgb),.82);border:var(--glass-border);box-shadow:var(--glass-shadow)}
 .bk-sidebar-title{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.01em;margin-bottom:14px;color:var(--c-text);display:flex;align-items:center;gap:6px}
 .bk-sidebar-title::before{content:'';display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c-accent);opacity:.8}
 .bk-sum-items{display:flex;flex-direction:column;gap:0}
@@ -1140,7 +1053,6 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bk-addon-list{display:flex;flex-direction:column;gap:6px}
 .bk-addon-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:var(--r);cursor:pointer;transition:border-color .15s,background .15s;font-size:.85rem}
 .bk-addon-item.selected{border-color:var(--c-accent);background:rgba(155,29,48,.05)}
-[data-theme="dark"] .bk-addon-item.selected{background:rgba(212,88,106,.08)}
 .bk-addon-item-left{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--c-text)}
 .bk-addon-item-left input[type=checkbox]{accent-color:var(--c-accent);width:16px;height:16px;cursor:pointer;flex-shrink:0}
 .bk-addon-price{font-family:var(--font-mono);font-size:.82rem;font-weight:600;color:var(--c-text-secondary)}
@@ -1148,12 +1060,10 @@ html,body{overflow-x:hidden;max-width:100vw}
 .bk-haircut-row{margin:12px 0 0}
 .bk-bleach-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:var(--r);margin:8px 0;cursor:pointer;transition:border-color .15s,background .15s;font-size:.85rem}
 .bk-bleach-row.selected{border-color:var(--c-accent);background:rgba(155,29,48,.05)}
-[data-theme="dark"] .bk-bleach-row.selected{background:rgba(212,88,106,.08)}
 .bk-bleach-row label{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--c-text);cursor:pointer;flex:1}
 .bk-bleach-row label input[type=checkbox]{accent-color:var(--c-accent);width:16px;height:16px}
 /* Mobile sticky booking bar */
 .bk-mob-bar{position:fixed;bottom:0;left:0;right:0;z-index:600;background:rgba(var(--surface-rgb),.88);backdrop-filter:blur(16px) saturate(200%);-webkit-backdrop-filter:blur(16px) saturate(200%);border-top:1px solid rgba(var(--surface-rgb),.2);padding:12px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,.10),0 -1px 0 rgba(255,255,255,.15) inset;display:none;align-items:center;gap:12px}
-[data-theme="dark"] .bk-mob-bar{background:rgba(var(--surface-rgb),.94);border-top-color:rgba(255,255,255,.08)}
 .bk-mob-bar-info{flex:1;min-width:0}
 .bk-mob-service{font-size:.82rem;font-weight:600;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bk-mob-total{font-size:.88rem;font-weight:700;font-family:var(--font-mono);color:var(--c-accent);margin-top:1px}
@@ -1624,21 +1534,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 .store-card:hover{transform:translateY(-3px);box-shadow:var(--elev-2);border-color:var(--c-border-strong)}
 .store-card:active{transform:translateY(-2px) scale(.99);opacity:.95}
 
-/* ── THEME TOGGLE ICON STATES ── */
-.theme-toggle .sun-icon,.theme-toggle .moon-icon{position:absolute;pointer-events:none;transition:opacity .3s var(--ease),transform .3s var(--ease);width:14px;height:14px;top:50%;margin-top:-7px}
-.theme-toggle .sun-icon{left:7px;opacity:.7;transform:rotate(0) scale(1)}
-.theme-toggle .moon-icon{right:7px;opacity:.35;transform:rotate(0) scale(.85)}
-[data-theme="dark"] .theme-toggle .sun-icon{opacity:.35;transform:rotate(90deg) scale(.85)}
-[data-theme="dark"] .theme-toggle .moon-icon{opacity:.7;transform:rotate(0) scale(1)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .theme-toggle .sun-icon{opacity:.35;transform:rotate(90deg) scale(.85)}:root:not([data-theme="light"]) .theme-toggle .moon-icon{opacity:.7;transform:rotate(0) scale(1)}}
 
 /* ── GLASSMORPHISM TEXT READABILITY ── */
 .nav .nav-link,.nav .logo,.nav .btn-nav-ghost,.nav .btn-nav-primary,.nav .nav-link-subtle{text-shadow:0 0 8px rgba(255,255,255,.3)}
-[data-theme="dark"] .nav .nav-link,[data-theme="dark"] .nav .logo,[data-theme="dark"] .nav .btn-nav-ghost,[data-theme="dark"] .nav .btn-nav-primary,[data-theme="dark"] .nav .nav-link-subtle{text-shadow:0 0 8px rgba(0,0,0,.5)}
 .bottom-nav-item span{text-shadow:0 0 4px rgba(255,255,255,.2)}
-[data-theme="dark"] .bottom-nav-item span{text-shadow:0 0 4px rgba(0,0,0,.4)}
 /* Subtle glass sheen on store cards in light mode */
-[data-theme="light"] .store-card{box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);border-color:rgba(0,0,0,.06)}
+.store-card{box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);border-color:rgba(0,0,0,.06)}
 
 /* ── HERO PROOF BADGE (canonical definition at ~line 1997) ── */
 .hero-proof-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:pulseDot 2s infinite}
@@ -1657,7 +1558,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 
 /* ── SECTION LABELS ── */
 .section-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(155,29,48,.07);border-radius:100px;font-size:.72rem;font-weight:700;color:var(--c-accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
-[data-theme="dark"] .section-eyebrow{background:rgba(212,88,106,.15)}
 
 /* ── POPULAR SERVICES ICON GRID ── */
 .popular-services{max-width:1200px;margin:0 auto;padding:52px 24px 40px}
@@ -1872,19 +1772,6 @@ body{font-family:var(--font-body,system-ui);}
 /* Focus indicators */
 *:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px;}
 /* Dark mode */
-[data-theme="dark"]{
-  --c-bg:#0f0f0f;--c-bg-elevated:#1a1a1a;--c-surface:#1f1f1f;--c-surface-alt:#252525;
-  --c-text:#f0f0f0;--c-text-secondary:#b0b0b0;--c-text-muted:#707070;
-  --c-border:#2a2a2a;--c-border-strong:#3a3a3a;
-  color-scheme:dark;
-}
-@media(prefers-color-scheme:dark){body:not([data-theme="light"]){
-  --c-bg:#0f0f0f;--c-bg-elevated:#1a1a1a;--c-surface:#1f1f1f;--c-surface-alt:#252525;
-  --c-text:#f0f0f0;--c-text-secondary:#b0b0b0;--c-text-muted:#707070;
-  --c-border:#2a2a2a;--c-border-strong:#3a3a3a;
-  color-scheme:dark;
-}}
-/* Dark mode toggle button */
 /* Verified salon badge */
 .badge-verified{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--c-teal),var(--c-teal-dark));color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill,999px);letter-spacing:.04em;}
 .badge-verified::before{content:"✓";}
@@ -2721,7 +2608,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .filter-sheet.active{display:flex}
 .filter-sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .filter-sheet-body{position:relative;background:var(--c-bg,#fff);border-radius:20px 20px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,8px) + 20px);max-height:75vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:sheetUp .3s ease}
-[data-theme="dark"] .filter-sheet-body{background:var(--c-surface)}
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .filter-sheet-handle{width:40px;height:4px;border-radius:2px;background:var(--c-border-strong,#ccc);margin:0 auto 16px}
 .filter-sheet-title{font-weight:700;font-size:1.1rem;margin-bottom:16px;color:var(--c-text)}
@@ -2835,70 +2721,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s}
 .toggle-switch input:checked+.toggle-slider{background:var(--c-success)}
 .toggle-switch input:checked+.toggle-slider:before{transform:translateX(16px)}
-
-/* ═══════════════════════════════════════════════════════════════════
-   THEME 11 — DARK GLASS DESIGN SYSTEM
-   #0f0f0f base · quartier card style · selective glass · accent = selected only
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ── 1. TRUE #0f0f0f BACKGROUND ── */
-[data-theme="dark"]{--bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0f0f;--bg2:#141414;--surface:#1a1a1a;--surfaceAlt:#212121}}
-
 /* ── 2. QUARTIER CARD STYLE — 20px radius everywhere, photo-first ── */
-.store-card,.salon-card{border-radius:20px}
-[data-theme="dark"] .store-card{border-color:rgba(255,255,255,0.08);background:#1a1a1a}
-[data-theme="dark"] .store-card:hover{border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .store-card{border-color:rgba(255,255,255,0.08);background:#1a1a1a}}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .store-card:hover{border-color:rgba(255,255,255,0.14);box-shadow:0 12px 40px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05)}}
-
-/* Heart / fav button → dark glass style matching .qpc-heart */
-[data-theme="dark"] .fav-btn{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}
-[data-theme="dark"] .fav-btn:hover{background:rgba(0,0,0,0.65);transform:scale(1.1)}
-[data-theme="dark"] .fav-btn.is-fav{background:rgba(212,88,106,0.65);color:#fff}
-[data-theme="dark"] .fav-btn.is-fav svg{fill:#fff;stroke:#fff}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn{background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.15)}}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn.is-fav{background:rgba(212,88,106,0.65);color:#fff}}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .fav-btn.is-fav svg{fill:#fff;stroke:#fff}}
-
-/* ── 3. GLASS FORMULA: rgba(255,255,255,0.08) + blur(16px) + 1px rgba(255,255,255,0.1) border ── */
-
-/* A. Booking summary sidebar */
-[data-theme="dark"] .booking-summary,
-[data-theme="dark"] .bm-summary{background:rgba(255,255,255,0.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.15);border-radius:16px}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-summary,:root:not([data-theme="light"]) .bm-summary{background:rgba(255,255,255,0.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.15);border-radius:16px}}
-
-/* B. Mobile bottom bar — defer to line 10319+ which has correct rgba(18,14,12,.90) */
-[data-theme="dark"] .bottom-nav{background:rgba(18,14,12,.90);border-top:1px solid rgba(255,255,255,0.08)}
-[data-theme="dark"] .bottom-nav::before{-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
-@media(prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .bottom-nav{background:rgba(18,14,12,.90);border-top:1px solid rgba(255,255,255,0.08)}
-  :root:not([data-theme="light"]) .bottom-nav::before{-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
-}
-
-/* C. Tab headers — venue tabs & dashboard pill bar */
-[data-theme="dark"] .venue-tabs{background:rgba(255,255,255,0.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.12)}
-[data-theme="dark"] .dash-tab-bar{background:rgba(255,255,255,0.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.12)}
-[data-theme="dark"] .dash-tab-btn.active{background:rgba(255,255,255,0.16);color:var(--c-text,#f0f0f0);box-shadow:0 1px 4px rgba(0,0,0,0.3);font-weight:600}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .venue-tabs{background:rgba(255,255,255,0.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.12)}}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .dash-tab-bar{background:rgba(255,255,255,0.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.12)}}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .dash-tab-btn.active{background:rgba(255,255,255,0.16);color:var(--c-text,#f0f0f0);box-shadow:0 1px 4px rgba(0,0,0,0.3)}}
-
-/* D. Hovered stylist & haircut cards — glass on hover, no accent color until selected */
-[data-theme="dark"] .booking-staff-card:hover:not(.selected),
-[data-theme="dark"] .svc-card:hover:not(.selected),
-[data-theme="dark"] .bm-svc-card:hover:not(.selected){background:rgba(255,255,255,0.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,0.18);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-staff-card:hover:not(.selected),:root:not([data-theme="light"]) .svc-card:hover:not(.selected),:root:not([data-theme="light"]) .bm-svc-card:hover:not(.selected){background:rgba(255,255,255,0.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-color:rgba(255,255,255,0.18);box-shadow:0 4px 16px rgba(0,0,0,0.2)}}
-
-/* ── 4. ORANGE ACCENT = SELECTED ONLY ── */
-/* Selected stylist card — accent ring + glow */
-[data-theme="dark"] .booking-staff-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.12);box-shadow:0 0 0 1px var(--c-accent,#D4586A),0 4px 16px rgba(212,88,106,0.15)}
-/* Selected service / haircut cards */
-[data-theme="dark"] .svc-card.selected,
-[data-theme="dark"] .bm-svc-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.1)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .booking-staff-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.12);box-shadow:0 0 0 1px var(--c-accent,#D4586A),0 4px 16px rgba(212,88,106,0.15)}}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .svc-card.selected,:root:not([data-theme="light"]) .bm-svc-card.selected{border-color:var(--c-accent,#D4586A);background:rgba(212,88,106,0.1)}}
-/* ── END THEME 11 ── */
 
 /* ── HAIRCUT STYLE PICKER ── */
 .hsp-section{margin:16px 0 4px}
@@ -2928,8 +2751,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .hsp-selected-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(155,29,48,.1);color:var(--c-accent);font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:var(--r-pill)}
 .hsp-skip-btn{font-size:.8rem;color:var(--c-text-muted);background:none;border:none;cursor:pointer;padding:4px 0;font-family:inherit;text-decoration:underline;text-underline-offset:2px}
 .hsp-hint{font-size:.78rem;color:var(--c-text-muted)}
-[data-theme="dark"] .hsp-tab:not(.active){background:var(--c-surface-alt);color:var(--c-text-secondary)}
-[data-theme="dark"] .hsp-tab:not(.active):first-child{border-right-color:var(--c-border)}
 </style>
 
   <meta name="description" content="Salons und Beauty-Studios in Basel buchen. Friseur, Kosmetik, Nails, Massage und mehr auf solen.ch">
@@ -2982,15 +2803,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <div id="scrollBar"></div>
 <script>
 (function(){
-  // Block transitions until first paint to prevent theme flash
-  document.documentElement.classList.add('no-transition');
-  var c=document.cookie.split(';').find(function(s){return s.trim().indexOf('solenTheme=')===0;});
-  var t=c?c.split('=')[1].trim():null;
-  if(!t)t=localStorage.getItem('solenTheme')||localStorage.getItem('solen_theme')||localStorage.getItem('theme');
-  if(!t){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
-  document.documentElement.setAttribute('data-theme',t);
-  // Remove transition block after first paint
-  requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.remove('no-transition');});});
+  document.documentElement.setAttribute('data-theme','light');
 })();
 </script>
 
@@ -3004,10 +2817,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <a href="#" class="nav-link" onclick="scrollToQuartiere();return false" data-i18n="nav_quartiere">Quartiere</a>
       <a href="#" class="nav-link" onclick="scrollToAbout();return false" data-i18n="nav_about">&#220;ber uns</a>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" id="mobileThemeToggle">
-      <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-      <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
     <div class="mobile-header-icons">
       <button class="mobile-header-btn" onclick="scrollToHeroSearch()" aria-label="Suche">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3021,10 +2830,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </button>
     <div class="nav-actions nav-desktop" id="navActions">
       <a href="#" class="nav-link nav-link-subtle" onclick="openSalonRegistration();return false" id="navSalonBtn" data-i18n="nav_register_salon">Salon eintragen</a>
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Theme wechseln" title="Hell / Dunkel">
-        <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
       <div class="nav-lang-dropdown">
         <button class="nav-lang-trigger" aria-label="Sprache wechseln" onclick="toggleLangDropdown()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -3055,7 +2860,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
               <div class="sep"></div>
               <a href="#" onclick="showPage('admin');return false" data-i18n="nav_admin" role="menuitem">Verwaltung</a>
             </div>
-            <button onclick="toggleTheme()" id="dropdownThemeBtn" data-i18n="nav_theme" role="menuitem" style="width:100%;text-align:left;background:none;border:none;padding:10px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:10px;border-radius:8px;transition:background .2s"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg> Hell / Dunkel</button>
             <div class="sep"></div>
             <button onclick="signOut()" data-i18n="nav_logout" role="menuitem">Abmelden</button>
           </div>
@@ -3845,6 +3649,21 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
         <button class="btn-primary" onclick="doSalonSignup()" data-i18n="btn_register_salon_submit">Deinen Salon eintragen</button>
         <div class="auth-switch"><span data-i18n="auth_already">Du hast schon ein Konto?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
       </div>
+
+      <!-- EMAIL VERIFICATION CODE -->
+      <div id="formVerifyCode" class="hidden">
+        <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px" data-i18n="verify_code_hint">Wir haben dir einen 6-stelligen Code per E-Mail gesendet.</p>
+        <div class="form-group">
+          <label data-i18n="verify_code_title">Code eingeben</label>
+          <input class="form-input" type="text" id="verifyCode" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" maxlength="6" inputmode="numeric" autocomplete="one-time-code" style="letter-spacing:.3em;text-align:center;font-size:1.3rem" onkeydown="if(event.key==='Enter')verifyEmailCode()">
+        </div>
+        <button class="btn-primary" onclick="verifyEmailCode()" data-i18n="verify_code_btn">Bestätigen</button>
+        <div style="text-align:center;margin-top:12px">
+          <p style="font-size:.82rem;color:var(--text2)" data-i18n="verify_code_no_code">Keinen Code erhalten?</p>
+          <a onclick="resendVerificationCode()" style="font-size:.82rem;color:var(--accent);cursor:pointer;font-weight:600" data-i18n="verify_code_resend">Erneut senden</a>
+        </div>
+        <div class="auth-switch" style="margin-top:16px"><a onclick="openAuth('login')" style="cursor:pointer" data-i18n="back_to_login">Zurück zur Anmeldung</a></div>
+      </div>
     </div>
   </div>
 </div>
@@ -4324,6 +4143,7 @@ const T={
     err_invalid_email:'Das sieht nicht ganz richtig aus \u2013 check mal das Format.',err_email_not_registered:'Diese E-Mail-Adresse ist nicht registriert.',err_generic:'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
     err_already_registered:'Diese E-Mail ist bereits registriert.',err_signup_failed:'Registrierung fehlgeschlagen. Bitte versuche es erneut.',
     confirm_email_sent:'Best\u00e4tigungs-E-Mail gesendet! Bitte pr\u00fcfe dein Postfach.',
+    verify_code_title:'Code eingeben',verify_code_hint:'Wir haben dir einen 6-stelligen Code per E-Mail gesendet.',verify_code_btn:'Best\u00e4tigen',verify_code_resend:'Erneut senden',verify_code_invalid:'Code ung\u00fcltig. Bitte erneut versuchen.',verify_code_no_code:'Keinen Code erhalten?',verify_code_resent:'Code erneut gesendet!',
     setup_title:'Dein Profil',setup_welcome:'Sch\u00f6n, dass du da bist!',setup_edit:'Profil bearbeiten',
     setup_desc:'Ein kurzes Profil hilft deinem Salon, sich auf deinen Besuch vorzubereiten',
     forgot_password:'Passwort vergessen?',reset_desc:'Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zur\u00fccksetzen.',
@@ -4403,6 +4223,8 @@ const T={
     about_title:'Warum solen?',about_text:'solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Jeder Salon hier ist echt. Kein Stock-Foto, kein Franchise.',about_sig:'Gegr\u00fcndet in Basel \u00b7 F\u00fcr unsere lokalen Beauty-Experten',
     svc_coiffeur:'Coiffeur',svc_barbershop:'Barbershop',svc_nails:'Nails',svc_spa:'Spa & Wellness',svc_makeup:'Make-up',svc_kosmetik:'Kosmetik',svc_eyebrows:'Augenbrauen',svc_tattoo:'Tattoo',
     bookings_empty_title:'Du hast noch keine Termine',bookings_empty_sub:'Zeit, deinen nächsten Lieblingssalon zu entdecken!',bookings_discover_btn:'Salons entdecken',
+    lbl_plz:'PLZ (Pflichtfeld)',lbl_ort:'Ort',err_plz_invalid:'Bitte g\u00fcltige PLZ eingeben (z.B. 4000).',
+    lbl_pause:'Pause',btn_add_pause:'+ Pause',btn_remove_pause:'\u00d7 Pause',
     reg_step1_hint:'Schritt 1 von 5: Basis-Informationen',reg_step2_hint:'Schritt 2 von 5: Standort und Online-Präsenz',reg_step3_hint:'Schritt 3 von 5: Deine Services',reg_step4_hint:'Schritt 4 von 5: Dein Team',reg_step5_hint:'Schritt 5 von 5: Beschreibung und Öffnungszeiten',
     reg_team_hint:'Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.',reg_add_staff:'+ Mitarbeiter hinzufügen',reg_staff_name:'Name',reg_staff_role:'Rolle',reg_staff_bookable:'Online buchbar',reg_staff_hours_toggle:'Verfügbarkeit festlegen',
   },
@@ -4452,6 +4274,7 @@ const T={
     err_invalid_email:'Please enter a valid email address.',err_email_not_registered:'This email address is not registered.',err_generic:'An error occurred. Please try again.',
     err_already_registered:'This email is already registered.',err_signup_failed:'Registration failed. Please try again.',
     confirm_email_sent:'Confirmation email sent! Please check your inbox.',
+    verify_code_title:'Enter code',verify_code_hint:'We sent you a 6-digit code by email.',verify_code_btn:'Confirm',verify_code_resend:'Resend',verify_code_invalid:'Invalid code. Please try again.',verify_code_no_code:'Didn\'t receive a code?',verify_code_resent:'Code resent!',
     setup_title:'Your profile',setup_welcome:'Great to have you here!',setup_edit:'Edit profile',
     setup_desc:'A quick profile helps your salon prepare for your visit',
     forgot_password:'Forgot password?',reset_desc:'Enter your email address and we\'ll send you a reset link.',
@@ -4531,6 +4354,8 @@ const T={
     about_title:'Why solen?',about_text:'solen makes Basel\'s salons visible and booking as easy as texting a friend. Every salon here is real. No stock photos, no franchises.',about_sig:'Founded in Basel \u00b7 For our local beauty experts',
     svc_coiffeur:'Hair Salon',svc_barbershop:'Barbershop',svc_nails:'Nails',svc_spa:'Spa & Wellness',svc_makeup:'Make-up',svc_kosmetik:'Cosmetics',svc_eyebrows:'Eyebrows',svc_tattoo:'Tattoo',
     bookings_empty_title:'No bookings yet',bookings_empty_sub:'Time to discover your next favourite salon!',bookings_discover_btn:'Discover salons',
+    lbl_plz:'Postal code (required)',lbl_ort:'City',err_plz_invalid:'Please enter a valid postal code (e.g. 4000).',
+    lbl_pause:'Break',btn_add_pause:'+ Break',btn_remove_pause:'\u00d7 Break',
     reg_step1_hint:'Step 1 of 5: Basic Information',reg_step2_hint:'Step 2 of 5: Location & Online Presence',reg_step3_hint:'Step 3 of 5: Your Services',reg_step4_hint:'Step 4 of 5: Your Team',reg_step5_hint:'Step 5 of 5: Description & Opening Hours',
     reg_team_hint:'Add your team. You can always change staff later.',reg_add_staff:'+ Add staff member',reg_staff_name:'Name',reg_staff_role:'Role',reg_staff_bookable:'Bookable online',reg_staff_hours_toggle:'Set availability',
   },
@@ -4580,6 +4405,7 @@ const T={
     err_invalid_email:'Veuillez entrer un e-mail valide.',err_email_not_registered:"Cette adresse e-mail n'est pas enregistrée.",err_generic:'Une erreur est survenue. Veuillez r\u00e9essayer.',
     err_already_registered:'Cet e-mail est d\u00e9j\u00e0 inscrit.',err_signup_failed:'\u00c9chec de l\u2019inscription. Veuillez r\u00e9essayer.',
     confirm_email_sent:'E-mail de confirmation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
+    verify_code_title:'Entrer le code',verify_code_hint:'Nous vous avons envoy\u00e9 un code \u00e0 6 chiffres par e-mail.',verify_code_btn:'Confirmer',verify_code_resend:'Renvoyer',verify_code_invalid:'Code invalide. Veuillez r\u00e9essayer.',verify_code_no_code:'Pas de code re\u00e7u ?',verify_code_resent:'Code renvoy\u00e9 !',
     setup_title:'Ton profil',setup_welcome:'Bienvenue parmi nous !',setup_edit:'Modifier le profil',
     setup_desc:'Un profil rapide aide ton salon \u00e0 pr\u00e9parer ta visite',
     forgot_password:'Mot de passe oubli\u00e9 ?',reset_desc:'Entre ton adresse e-mail et nous t\'enverrons un lien de r\u00e9initialisation.',
@@ -4659,6 +4485,8 @@ const T={
     about_title:'Pourquoi solen\u00a0?',about_text:'solen rend les salons b\u00e2lois visibles et la r\u00e9servation aussi simple qu\'un message entre amis. Chaque salon ici est authentique.',about_sig:'Fond\u00e9 \u00e0 B\u00e2le \u00b7 Pour nos experts beaut\u00e9 locaux',
     svc_coiffeur:'Coiffure',svc_barbershop:'Barbier',svc_nails:'Ongles',svc_spa:'Spa & Bien-\u00eatre',svc_makeup:'Maquillage',svc_kosmetik:'Cosm\u00e9tique',svc_eyebrows:'Sourcils',svc_tattoo:'Tatouage',
     bookings_empty_title:'Pas encore de rendez-vous',bookings_empty_sub:'Il est temps de d\u00e9couvrir ton prochain salon pr\u00e9f\u00e9r\u00e9\u00a0!',bookings_discover_btn:'D\u00e9couvrir des salons',
+    lbl_plz:'Code postal (obligatoire)',lbl_ort:'Ville',err_plz_invalid:'Veuillez entrer un code postal valide (ex: 4000).',
+    lbl_pause:'Pause',btn_add_pause:'+ Pause',btn_remove_pause:'\u00d7 Pause',
     reg_step1_hint:'\u00c9tape 1 sur 5 : Informations de base',reg_step2_hint:'\u00c9tape 2 sur 5 : Emplacement et pr\u00e9sence en ligne',reg_step3_hint:'\u00c9tape 3 sur 5 : Vos services',reg_step4_hint:'\u00c9tape 4 sur 5 : Votre \u00e9quipe',reg_step5_hint:'\u00c9tape 5 sur 5 : Description et horaires',
     reg_team_hint:'Ajoutez votre \u00e9quipe. Vous pourrez toujours modifier le personnel plus tard.',reg_add_staff:'+ Ajouter un membre',reg_staff_name:'Nom',reg_staff_role:'R\u00f4le',reg_staff_bookable:'R\u00e9servable en ligne',reg_staff_hours_toggle:'D\u00e9finir la disponibilit\u00e9',
   },
@@ -4707,6 +4535,7 @@ const T={
     err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayıtlı deÄil.',err_generic:'Bir hata oluÅtu. Lütfen tekrar deneyin.',
     err_already_registered:'Bu e-posta zaten kayıtlı.',err_signup_failed:'Kayıt baÅarısız. Lütfen tekrar deneyin.',
     confirm_email_sent:'Onay e-postası gönderildi! Lütfen gelen kutunuzu kontrol edin.',
+    verify_code_title:'Kodu girin',verify_code_hint:'E-posta ile 6 haneli bir kod g\u00f6nderdik.',verify_code_btn:'Onayla',verify_code_resend:'Tekrar g\u00f6nder',verify_code_invalid:'Kod ge\u00e7ersiz. L\u00fctfen tekrar deneyin.',verify_code_no_code:'Kod almad\u0131n\u0131z m\u0131?',verify_code_resent:'Kod tekrar g\u00f6nderildi!',
     setup_title:'Profil OluÅtur',setup_welcome:'HoÅ geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili düzenle',
     setup_desc:'Kısa bir profil, salonun ziyaretine hazırlanmasına yardımcı olur',
     forgot_password:'Åifremi unuttum?',reset_desc:'E-posta adresinizi girin, size sıfırlama baÄlantısı gönderelim.',
@@ -4786,6 +4615,8 @@ const T={
     about_title:'Neden solen?',about_text:'solen, Basel\'in salonlar\u0131n\u0131 g\u00f6r\u00fcn\u00fcr k\u0131lar ve randevu almay\u0131 arkada\u015f\u0131na mesaj atmak kadar kolayla\u015ft\u0131r\u0131r. Buradaki her salon ger\u00e7ek.',about_sig:'Basel\'de kuruldu \u00b7 Yerel g\u00fczellik uzmanlar\u0131m\u0131z i\u00e7in',
     svc_coiffeur:'Kuaf\u00f6r',svc_barbershop:'Berber',svc_nails:'T\u0131rnak',svc_spa:'Spa & Sa\u011fl\u0131k',svc_makeup:'Makyaj',svc_kosmetik:'Kozmetik',svc_eyebrows:'Ka\u015f',svc_tattoo:'D\u00f6vme',
     bookings_empty_title:'Hen\u00fcz randevunuz yok',bookings_empty_sub:'Bir sonraki favori salonunu ke\u015ffetmenin zaman\u0131!',bookings_discover_btn:'Salonlar\u0131 ke\u015ffet',
+    lbl_plz:'Posta kodu (zorunlu)',lbl_ort:'\u015eehir',err_plz_invalid:'L\u00fctfen ge\u00e7erli bir posta kodu girin (\u00f6r. 4000).',
+    lbl_pause:'Mola',btn_add_pause:'+ Mola',btn_remove_pause:'\u00d7 Mola',
     reg_step1_hint:'Ad\u0131m 1/5: Temel Bilgiler',reg_step2_hint:'Ad\u0131m 2/5: Konum ve \u00c7evrimi\u00e7i Varl\u0131k',reg_step3_hint:'Ad\u0131m 3/5: Hizmetleriniz',reg_step4_hint:'Ad\u0131m 4/5: Ekibiniz',reg_step5_hint:'Ad\u0131m 5/5: A\u00e7\u0131klama ve \u00c7al\u0131\u015fma Saatleri',
     reg_team_hint:'Ekibinizi ekleyin. Personeli daha sonra istedi\u011finiz zaman de\u011fi\u015ftirebilirsiniz.',reg_add_staff:'+ Personel ekle',reg_staff_name:'\u0130sim',reg_staff_role:'Rol',reg_staff_bookable:'Online rezerve edilebilir',reg_staff_hours_toggle:'Uygunlu\u011fu ayarla',
   },
@@ -4895,30 +4726,6 @@ function animateRipple(el){if(!el)return;el.classList.add('anim-ripple');el.addE
   },{passive:true});
 })();
 
-// THEME TOGGLE
-function updateThemeIcons(isDark){
-  // CSS handles icon visibility via [data-theme] selectors — no JS needed for SVGs
-  const btn=document.getElementById('themeToggleBtn');
-  if(btn)btn.textContent=isDark?'Hell':'Dunkel';
-  // Update dropdown button label
-  const ddBtn=document.getElementById('dropdownThemeBtn');
-  if(ddBtn){var lbl=ddBtn.childNodes;for(var i=lbl.length-1;i>=0;i--){if(lbl[i].nodeType===3){lbl[i].textContent=isDark?' Hell / Dunkel':' Hell / Dunkel';break;}}}
-}
-function toggleTheme(){
-  const html=document.documentElement;
-  const current=html.getAttribute('data-theme');
-  const next=current==='dark'?'light':'dark';
-  html.setAttribute('data-theme',next);
-  document.cookie='solenTheme='+next+';path=/;max-age=31536000;SameSite=Lax';
-  localStorage.setItem('solenTheme',next);
-  localStorage.setItem('solen_theme',next);
-  updateThemeIcons(next==='dark');
-}
-(function(){
-  // Theme already set by blocking script in <head>, just sync icons
-  const theme=document.documentElement.getAttribute('data-theme');
-  updateThemeIcons(theme==='dark');
-})();
 
 
 // AUTO-TRANSLATE DYNAMIC CONTENT (MyMemory API – free, no key, 5000 req/day)
@@ -5327,7 +5134,7 @@ function openAuth(tab='login'){
 }
 function closeAuth(){var o=document.getElementById('authOverlay');releaseFocus(o);o.classList.remove('active');_checkModalOpen();}
 function switchAuthTab(tab){
-  const titleKeys={'login':'auth_login_title','register-choice':'auth_register_title','customer-signup':'auth_customer_title','salon-signup':'auth_salon_title','password-reset':'forgot_password','phone-auth':'Mit Telefon anmelden'};
+  const titleKeys={'login':'auth_login_title','register-choice':'auth_register_title','customer-signup':'auth_customer_title','salon-signup':'auth_salon_title','password-reset':'forgot_password','phone-auth':'Mit Telefon anmelden','verify-code':'verify_code_title'};
   document.getElementById('authModalTitle').textContent=t(titleKeys[tab]||'auth_login_title');
   document.getElementById('formLogin').classList.toggle('hidden',tab!=='login');
   document.getElementById('formSignup').classList.toggle('hidden',tab!=='customer-signup');
@@ -5337,7 +5144,9 @@ function switchAuthTab(tab){
   if(resetForm)resetForm.classList.toggle('hidden',tab!=='password-reset');
   const phoneForm=document.getElementById('formPhoneAuth');
   if(phoneForm)phoneForm.classList.toggle('hidden',tab!=='phone-auth');
-  document.getElementById('authMsg').innerHTML='';
+  const verifyForm=document.getElementById('formVerifyCode');
+  if(verifyForm)verifyForm.classList.toggle('hidden',tab!=='verify-code');
+  document.getElementById('authMsg').textContent='';
 }
 
 function showAuthMsg(msg,type='error'){
@@ -5401,24 +5210,34 @@ async function doSignup(){
     if(data?.user){
       await sb.from('profiles').upsert({id:data.user.id,display_name:name,role:'customer'});
     }
-    showAuthMsg(t('confirm_email_sent'),'success');
-    // Show resend confirmation link after 10s
-    setTimeout(()=>{
-      const m=document.getElementById('authMsg');
-      if(m&&m.classList.contains('success')){
-        const _email=email;
-        const link=document.createElement('a');
-        link.style.cssText='display:block;margin-top:8px;color:inherit;opacity:.75;cursor:pointer;font-size:.82rem;text-decoration:underline;font-weight:600';
-        link.textContent='E-Mail nicht erhalten? Erneut senden';
-        link.onclick=async()=>{
-          link.style.pointerEvents='none';link.textContent='Gesendet';
-          await sb.auth.resend({type:'signup',email:_email});
-          setTimeout(()=>{link.style.pointerEvents='';link.textContent='E-Mail nicht erhalten? Erneut senden';},60000);
-        };
-        m.appendChild(link);
-      }
-    },10000);
+    _pendingVerifyEmail=email;
+    switchAuthTab('verify-code');
+    document.getElementById('verifyCode').value='';
+    document.getElementById('verifyCode').focus();
   }
+}
+
+// EMAIL VERIFICATION CODE
+let _pendingVerifyEmail='';
+async function verifyEmailCode(){
+  const code=document.getElementById('verifyCode').value.trim();
+  if(code.length!==6||!/^\d+$/.test(code))return showAuthMsg(t('verify_code_invalid'));
+  const btn=document.querySelector('#formVerifyCode .btn-primary');
+  btn.disabled=true;btn.textContent='...';
+  const{error,data}=await sb.auth.verifyOtp({email:_pendingVerifyEmail,token:code,type:'signup'});
+  btn.disabled=false;btn.textContent=t('verify_code_btn');
+  if(error){
+    if(error.message&&(error.message.includes('expired')||error.message.includes('invalid')||error.message.includes('Invalid')))return showAuthMsg(t('verify_code_invalid'));
+    return showAuthMsg(error.message||t('err_generic'));
+  }
+  toast(t('confirm_email_sent'),'success');
+  if(data?.user)await onSignIn(data.user);
+  closeAuth();
+}
+async function resendVerificationCode(){
+  if(!_pendingVerifyEmail)return;
+  await sb.auth.resend({type:'signup',email:_pendingVerifyEmail});
+  showAuthMsg(t('verify_code_resent'),'success');
 }
 
 // SALON SIGNUP
@@ -5486,7 +5305,10 @@ async function doSalonSignup(){
   }
 
   btn.disabled=false;btn.textContent='Salon anmelden';
-  showAuthMsg('Willkommen als Solen-Partner! Wir pr\u00fcfen deinen Eintrag und schalten ihn frei. Du erh\u00e4ltst eine Best\u00e4tigung per E-Mail.','success');
+  _pendingVerifyEmail=email;
+  switchAuthTab('verify-code');
+  document.getElementById('verifyCode').value='';
+  document.getElementById('verifyCode').focus();
 }
 
 async function signInGoogle(){
@@ -7434,7 +7256,7 @@ function loadPageContent(page){
 // ── NEW PAGE RENDER FUNCTIONS ────────────────────────────────────────────────
 
 // PARTNER PAGE: move .salon-reg-wrap from hidden #salonRegModal into page and init
-function renderPartnerPage(){
+async function renderPartnerPage(){
   const target=document.getElementById('partnerPageContent');
   if(!target)return;
   // Move form into page container if not already there
@@ -7447,16 +7269,17 @@ function renderPartnerPage(){
   const grid=document.getElementById('regHoursGrid');
   if(grid&&!grid.dataset.built){
     const days=[['Mo','Montag'],['Di','Dienstag'],['Mi','Mittwoch'],['Do','Donnerstag'],['Fr','Freitag'],['Sa','Samstag'],['So','Sonntag']];
-    grid.innerHTML=days.map(([k,label])=>`<div class="reg-day-row"><input type="checkbox" id="rh_${k}" checked aria-label="${label} geöffnet"><label class="reg-day-lbl" for="rh_${k}">${k}</label><div class="reg-time-inputs"><label class="sr-only" for="rh_${k}_f">${label} von</label><input type="time" id="rh_${k}_f" value="09:00" aria-label="${label} Öffnungszeit von"><span class="reg-time-dash" aria-hidden="true">–</span><label class="sr-only" for="rh_${k}_t">${label} bis</label><input type="time" id="rh_${k}_t" value="19:00" aria-label="${label} Öffnungszeit bis"></div></div>`).join('');
+    grid.innerHTML=days.map(([k,label])=>`<div class="reg-day-row" data-day="${k}"><input type="checkbox" id="rh_${k}" checked aria-label="${label} geöffnet"><label class="reg-day-lbl" for="rh_${k}">${k}</label><div class="reg-time-inputs"><label class="sr-only" for="rh_${k}_f">${label} von</label><input type="time" id="rh_${k}_f" value="09:00" aria-label="${label} Öffnungszeit von"><span class="reg-time-dash" aria-hidden="true">–</span><label class="sr-only" for="rh_${k}_t">${label} bis</label><input type="time" id="rh_${k}_t" value="19:00" aria-label="${label} Öffnungszeit bis"></div><button type="button" class="reg-break-toggle" onclick="toggleRegBreak(this,'${k}')" style="font-size:.72rem;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;margin-left:6px">+ Pause</button></div>`).join('');
     grid.dataset.built='1';
   }
   // Populate parent store dropdown
   const pSel=document.getElementById('reg_parent_store_id');
   if(pSel&&pSel.options.length<=1){allStores.filter(x=>!x.parent_store_id).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;pSel.appendChild(o);});}
   // Restore draft and go to saved step
-  const hadDraft=regRestoreDraft();
+  const hadDraft=await regRestoreDraft();
   regGoTo(hadDraft?_regCurrentStep:1);
   regAttachAutosave();
+  initPlzAutoFill();
   // Reset success screen
   const form=document.getElementById('salonRegForm');
   const success=document.getElementById('regSuccess');
@@ -10490,14 +10313,14 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .reg-select-wrap{position:relative;display:block}
 .reg-select-wrap select{padding-right:36px!important;background-image:none!important}
 .reg-select-wrap::after{content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat center/contain;pointer-events:none}
-[data-theme="dark"] .reg-select-wrap::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")}
 .reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--accent2)}
 .reg-field textarea{resize:vertical;min-height:90px}
 .reg-service-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-end}
 .reg-service-row .reg-field{margin-bottom:0}
 @media(max-width:600px){.reg-service-row{flex-wrap:wrap}.reg-service-row .reg-field{flex:1 1 100%!important}}
 .reg-hours{display:flex;flex-direction:column;gap:6px}
-.reg-day-row{display:flex;align-items:center;gap:8px;font-size:.85rem;min-height:44px;padding:8px 0}
+.reg-day-row{display:flex;align-items:center;gap:8px;font-size:.85rem;min-height:44px;padding:8px 0;flex-wrap:wrap}
+.reg-break-inputs{width:100%}
 .reg-day-row input[type=checkbox]{width:22px;height:22px;min-width:22px;accent-color:var(--accent2);cursor:pointer;flex-shrink:0;appearance:checkbox!important;-webkit-appearance:checkbox!important}
 .reg-day-lbl{min-width:32px;font-weight:600;color:var(--text2);font-size:.85rem}
 .reg-time-inputs{display:flex;align-items:center;gap:6px;flex:1}
@@ -10523,7 +10346,8 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .reg-error-summary.visible{display:block}
 /* Mobile tap targets */
 @media(max-width:600px){
-  .reg-day-row{gap:6px;flex-wrap:nowrap}
+  .reg-day-row{gap:6px}
+  .reg-break-inputs{padding-left:0!important}
   .reg-day-row input[type=checkbox]{width:24px;height:24px;min-width:24px}
   .reg-time-inputs input[type=time]{min-height:44px;padding:8px 6px;font-size:.82rem}
   .salon-reg-footer{gap:8px;padding:16px 20px 24px}
@@ -10532,7 +10356,6 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 }
 /* Google Places Autocomplete dropdown */
 .pac-container{background:var(--surface)!important;border:1.5px solid var(--border)!important;border-radius:12px!important;font-family:var(--font-body)!important;z-index:10001!important;margin-top:4px!important}
-[data-theme="dark"] .pac-container{background:var(--surface)!important}
 .pac-item{padding:12px 14px!important;border-color:var(--border)!important;color:var(--text)!important;min-height:44px!important;display:flex!important;align-items:center!important;cursor:pointer}
 .pac-item:hover{background:var(--surfaceAlt)!important}
 .pac-item-query{color:var(--text)!important;font-size:.9rem!important}
@@ -10585,12 +10408,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 .toast{background:rgba(26,26,26,.85);color:#fff;padding:10px 22px;border-radius:24px;font-size:.875rem;box-shadow:var(--glass-shadow);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none;max-width:320px;text-align:center}
 .toast.show{opacity:1;transform:translateY(0)}
 /* Dark mode overrides (consolidated) */
-[data-theme=dark]{--c-bg:#0F0F0F;--c-surface:#1A1A1A;--c-surface2:#242424;--c-border:#2E2E2E;--c-text:#EFEFEF;--c-text-muted:#999}
-[data-theme=dark] body{background:var(--c-bg,#0F0F0F);color:var(--c-text,#EFEFEF)}
-[data-theme=dark] .store-card,[data-theme=dark] .booking-card,[data-theme=dark] .modal-box,[data-theme=dark] .modal-content,[data-theme=dark] .dash-panel,[data-theme=dark] .crm-card,[data-theme=dark] .page-section{background:var(--c-surface,#1A1A1A);border-color:var(--c-border,#2E2E2E)}
-[data-theme=dark] .form-input,[data-theme=dark] .filter-input,[data-theme=dark] select{background:var(--c-surface2,#242424);color:var(--c-text,#EFEFEF);border-color:var(--c-border,#2E2E2E)}
-[data-theme=dark] .category-chip{background:var(--c-surface2,#242424);border-color:var(--c-border,#2E2E2E);color:var(--c-text,#EFEFEF)}
-[data-theme="dark"] .bottom-nav{background:rgba(18,14,12,.90);border-top:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
 
 /* ── PREMIUM UI v2 ── */
 #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--c-accent,#9B1D30),var(--c-highlight,#D4AF77));z-index:9999;transition:width .12s linear;pointer-events:none}
@@ -10655,6 +10472,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
         <div class="salon-reg-body">
           <p class="step-hint" data-i18n="reg_step2_hint">Schritt 2 von 5: Standort und Online-Präsenz</p>
           <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
+          <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
+            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="postal-code"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gültige PLZ eingeben.</div></div>
+            <div class="reg-field" id="field_reg_ort"><label for="reg_ort" data-i18n="lbl_ort">Ort</label><input type="text" id="reg_ort" placeholder="Basel" readonly style="background:var(--surfaceAlt);opacity:.7"></div>
+          </div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
             <div class="reg-select-wrap"><select id="reg_nb" aria-describedby="err_reg_nb">
               <option value="">Quartier wählen...</option>
@@ -10745,6 +10566,45 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
 </div>
 
 <script>
+// ── REGISTRATION: PLZ → Quartier mapping ─────────────────────────
+const BASEL_PLZ_MAP={
+  '4000':{ort:'Basel',quartiere:['Altstadt Grossbasel']},
+  '4001':{ort:'Basel',quartiere:['Altstadt Grossbasel']},
+  '4051':{ort:'Basel',quartiere:['St. Alban','Bruderholz']},
+  '4052':{ort:'Basel',quartiere:['Bachletten','Neubad']},
+  '4053':{ort:'Basel',quartiere:['Gundeldingen']},
+  '4054':{ort:'Basel',quartiere:['Am Ring','Vorstädte']},
+  '4055':{ort:'Basel',quartiere:['St. Johann']},
+  '4056':{ort:'Basel',quartiere:['Matthäus','Iselin']},
+  '4057':{ort:'Basel',quartiere:['Clara','Wettstein']},
+  '4058':{ort:'Basel',quartiere:['Hirzbrunnen']},
+  '4059':{ort:'Basel',quartiere:['Altstadt Kleinbasel']}
+};
+function initPlzAutoFill(){
+  const plzInput=document.getElementById('reg_plz');
+  if(!plzInput||plzInput._plzWired)return;
+  plzInput._plzWired=true;
+  plzInput.addEventListener('input',function(){
+    const plz=this.value.trim();
+    const ortField=document.getElementById('reg_ort');
+    const nbSelect=document.getElementById('reg_nb');
+    const plzFieldDiv=document.getElementById('field_reg_plz');
+    if(plz.length<4){plzFieldDiv.classList.remove('has-error');ortField.value='';return;}
+    if(plz.length!==4||!/^\d{4}$/.test(plz)){plzFieldDiv.classList.add('has-error');ortField.value='';nbSelect.value='';return;}
+    const match=BASEL_PLZ_MAP[plz];
+    if(match){
+      plzFieldDiv.classList.remove('has-error');
+      ortField.value=match.ort;
+      if(match.quartiere.length>=1)nbSelect.value=match.quartiere[0];
+      regSaveDraft();
+    }else{
+      plzFieldDiv.classList.add('has-error');
+      ortField.value='';
+      nbSelect.value='';
+    }
+  });
+}
+
 // ── REGISTRATION: Draft autosave ──────────────────────────────────
 const REG_DRAFT_KEY='solen_reg_draft';
 let _regDraftTimer=null;
@@ -10759,6 +10619,8 @@ function regCollectDraft(){
     phone:document.getElementById('reg_phone')?.value||'',
     email:document.getElementById('reg_email')?.value||'',
     street:document.getElementById('reg_street')?.value||'',
+    plz:document.getElementById('reg_plz')?.value||'',
+    ort:document.getElementById('reg_ort')?.value||'',
     nb:document.getElementById('reg_nb')?.value||'',
     web:document.getElementById('reg_web')?.value||'',
     ig:document.getElementById('reg_ig')?.value||'',
@@ -10793,10 +10655,45 @@ function regCollectHours(){
     if(cb?.checked){
       const f=document.getElementById('rh_'+d+'_f')?.value||'09:00';
       const t2=document.getElementById('rh_'+d+'_t')?.value||'19:00';
-      hours[d]=f+'-'+t2;
+      const entry={open:f,close:t2};
+      const row=document.querySelector('.reg-day-row[data-day="'+d+'"]');
+      if(row){
+        const bStart=row.querySelector('.reg-break-start');
+        const bEnd=row.querySelector('.reg-break-end');
+        if(bStart&&bEnd){entry.break_start=bStart.value;entry.break_end=bEnd.value;}
+      }
+      hours[d]=entry;
     }
   });
   return hours;
+}
+
+function toggleRegBreak(btn,dayKey){
+  const row=btn.closest('.reg-day-row');
+  let breakDiv=row.querySelector('.reg-break-inputs');
+  if(breakDiv){
+    breakDiv.remove();
+    btn.textContent='+ Pause';
+  }else{
+    breakDiv=document.createElement('div');
+    breakDiv.className='reg-break-inputs';
+    breakDiv.style.cssText='display:flex;align-items:center;gap:6px;margin-top:6px;padding-left:62px;flex-wrap:wrap';
+    const lbl=document.createElement('span');
+    lbl.style.cssText='font-size:.72rem;color:var(--text2);font-weight:600';
+    lbl.textContent='Pause:';
+    const bs=document.createElement('input');
+    bs.type='time';bs.value='12:00';bs.className='reg-break-start';
+    bs.style.cssText='padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;background:var(--surfaceAlt);color:var(--text)';
+    const dash=document.createElement('span');
+    dash.textContent='\u2013';dash.style.cssText='color:var(--text2);font-size:.82rem';
+    const be=document.createElement('input');
+    be.type='time';be.value='13:00';be.className='reg-break-end';
+    be.style.cssText=bs.style.cssText;
+    breakDiv.appendChild(lbl);breakDiv.appendChild(bs);breakDiv.appendChild(dash);breakDiv.appendChild(be);
+    row.appendChild(breakDiv);
+    btn.textContent='\u00d7 Pause';
+  }
+  regSaveDraft();
 }
 
 // ── Google Places Autocomplete for address field ──
@@ -10820,28 +10717,43 @@ function regSaveDraft(){
   clearTimeout(_regDraftTimer);
   const ind=document.getElementById('regDraftIndicator');
   if(ind){ind.textContent='Speichere...';ind.className='reg-draft-indicator saving';}
-  _regDraftTimer=setTimeout(()=>{
+  _regDraftTimer=setTimeout(async()=>{
     try{
-      localStorage.setItem(REG_DRAFT_KEY,JSON.stringify(regCollectDraft()));
+      const draft=regCollectDraft();
+      localStorage.setItem(REG_DRAFT_KEY,JSON.stringify(draft));
+      if(currentUser){
+        await sb.from('salon_reg_drafts').upsert({user_id:currentUser.id,draft_data:draft,updated_at:new Date().toISOString()});
+      }
       if(ind){
         const t=new Date().toLocaleTimeString(getLocale(),{hour:'2-digit',minute:'2-digit'});
         ind.textContent='Entwurf gespeichert um '+t;
         ind.className='reg-draft-indicator saved';
       }
-    }catch(e){/* quota exceeded — ignore */}
+    }catch(e){/* quota exceeded or network error — ignore */}
   },600);
 }
 
-function regRestoreDraft(){
+async function regRestoreDraft(){
   try{
+    let d=null;
     const raw=localStorage.getItem(REG_DRAFT_KEY);
-    if(!raw)return false;
-    const d=JSON.parse(raw);
+    const localDraft=raw?JSON.parse(raw):null;
+    if(currentUser){
+      const{data:cloudRow}=await sb.from('salon_reg_drafts').select('draft_data,updated_at').eq('user_id',currentUser.id).maybeSingle();
+      if(cloudRow&&cloudRow.draft_data){
+        const cloudDate=new Date(cloudRow.updated_at||0).getTime();
+        const localDate=localDraft&&localDraft.savedAt?new Date(localDraft.savedAt).getTime():0;
+        d=cloudDate>=localDate?cloudRow.draft_data:localDraft;
+      }else{d=localDraft;}
+    }else{d=localDraft;}
+    if(!d)return false;
     if(d.name)document.getElementById('reg_name').value=d.name;
     if(d.cat)document.getElementById('reg_cat').value=d.cat;
     if(d.phone)document.getElementById('reg_phone').value=d.phone;
     if(d.email)document.getElementById('reg_email').value=d.email;
     if(d.street)document.getElementById('reg_street').value=d.street;
+    if(d.plz){document.getElementById('reg_plz').value=d.plz;const m=BASEL_PLZ_MAP[d.plz];if(m)document.getElementById('reg_ort').value=m.ort;}
+    if(d.ort)document.getElementById('reg_ort').value=d.ort;
     if(d.nb)document.getElementById('reg_nb').value=d.nb;
     if(d.web)document.getElementById('reg_web').value=d.web;
     if(d.ig)document.getElementById('reg_ig').value=d.ig;
@@ -10882,13 +10794,20 @@ function regRestoreDraft(){
       days.forEach(k=>{
         const cb=document.getElementById('rh_'+k);
         if(!cb)return;
-        if(d.hours[k]){
+        const h=d.hours[k];
+        if(h){
           cb.checked=true;
-          const[f,t]=d.hours[k].split('-');
+          let openVal,closeVal,bStart,bEnd;
+          if(typeof h==='string'){const[f,t2]=h.split('-');openVal=f;closeVal=t2;}
+          else{openVal=h.open;closeVal=h.close;bStart=h.break_start;bEnd=h.break_end;}
           const fEl=document.getElementById('rh_'+k+'_f');
           const tEl=document.getElementById('rh_'+k+'_t');
-          if(fEl)fEl.value=f;
-          if(tEl)tEl.value=t;
+          if(fEl)fEl.value=openVal;
+          if(tEl)tEl.value=closeVal;
+          if(bStart&&bEnd){
+            const btn=document.querySelector('.reg-day-row[data-day="'+k+'"] .reg-break-toggle');
+            if(btn){toggleRegBreak(btn,k);const row=btn.closest('.reg-day-row');const bs=row.querySelector('.reg-break-start');const be=row.querySelector('.reg-break-end');if(bs)bs.value=bStart;if(be)be.value=bEnd;}
+          }
         }else{cb.checked=false;}
       });
     }
@@ -10905,6 +10824,7 @@ function regRestoreDraft(){
 
 function regClearDraft(){
   try{localStorage.removeItem(REG_DRAFT_KEY);}catch(e){}
+  if(currentUser){sb.from('salon_reg_drafts').delete().eq('user_id',currentUser.id).then(()=>{});}
   _regSubmitIdempotencyKey=null;
 }
 
@@ -10936,6 +10856,8 @@ function regShowErrorSummary(messages){
   summary.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+function isValidEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+
 function regValidateStep(step){
   regClearErrors();
   const errors=[];
@@ -10943,10 +10865,12 @@ function regValidateStep(step){
     if(!document.getElementById('reg_name').value.trim()){regShowFieldError('field_reg_name');errors.push('Salonname fehlt.');}
     if(!document.getElementById('reg_cat').value){regShowFieldError('field_reg_cat');errors.push('Kategorie fehlt.');}
     const e=document.getElementById('reg_email').value.trim();
-    if(!e||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){regShowFieldError('field_reg_email');errors.push('Bitte gib eine gültige E-Mail-Adresse ein.');}
+    if(!e||!isValidEmail(e)){regShowFieldError('field_reg_email');errors.push(t('err_invalid_email'));}
   }
   if(step===2){
     if(!document.getElementById('reg_street').value.trim()){regShowFieldError('field_reg_street');errors.push('Strasse fehlt.');}
+    const plzVal=document.getElementById('reg_plz')?.value?.trim()||'';
+    if(!plzVal||!/^\d{4}$/.test(plzVal)||!BASEL_PLZ_MAP[plzVal]){regShowFieldError('field_reg_plz');errors.push('Bitte g\u00fcltige PLZ eingeben (z.B. 4000).');}
     if(!document.getElementById('reg_nb').value){regShowFieldError('field_reg_nb');errors.push('Quartier fehlt.');}
   }
   if(step===3){
@@ -10968,6 +10892,10 @@ function regValidateStep(step){
 // ── REGISTRATION: Core flow ──────────────────────────────────────
 function openSalonRegistration(){
   showPage('partner');
+  if(currentUser&&currentUser.email){
+    const ef=document.getElementById('reg_email');
+    if(ef&&!ef.value)ef.value=currentUser.email;
+  }
 }
 function closeSalonReg(){
   document.getElementById('salonRegForm').style.display='';
@@ -11079,8 +11007,25 @@ function renderRegStaffHours(container){
     const t2=document.createElement('input');t2.type='time';t2.value='19:00';t2.setAttribute('aria-label',label+' bis');
     wrap.appendChild(t1);wrap.appendChild(dash);wrap.appendChild(t2);
     row.appendChild(wrap);
+    const breakBtn=document.createElement('button');
+    breakBtn.type='button';breakBtn.className='reg-break-toggle';
+    breakBtn.style.cssText='font-size:.72rem;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;margin-left:6px';
+    breakBtn.textContent='+ Pause';
+    breakBtn.onclick=function(){toggleStaffBreak(this);};
+    row.appendChild(breakBtn);
     container.appendChild(row);
   });
+}
+function toggleStaffBreak(btn){
+  const row=btn.closest('.reg-day-row');
+  let breakDiv=row.querySelector('.reg-break-inputs');
+  if(breakDiv){breakDiv.remove();btn.textContent='+ Pause';}
+  else{
+    breakDiv=document.createElement('div');breakDiv.className='reg-break-inputs';
+    breakDiv.style.cssText='display:flex;align-items:center;gap:6px;margin-top:6px;padding-left:62px;flex-wrap:wrap';
+    breakDiv.innerHTML='<span style="font-size:.72rem;color:var(--text2);font-weight:600">Pause:</span><input type="time" value="12:00" class="reg-break-start" style="padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;background:var(--surfaceAlt);color:var(--text)"><span style="color:var(--text2);font-size:.82rem">\u2013</span><input type="time" value="13:00" class="reg-break-end" style="padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;background:var(--surfaceAlt);color:var(--text)">';
+    row.appendChild(breakDiv);btn.textContent='\u00d7 Pause';
+  }
 }
 async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,user_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
@@ -11101,7 +11046,7 @@ async function submitSalonReg(e){
     cat:document.getElementById('reg_cat').value,
     phone:document.getElementById('reg_phone').value.trim()||null,
     email:document.getElementById('reg_email').value.trim(),
-    address:document.getElementById('reg_street').value.trim()+', Basel',
+    address:document.getElementById('reg_street').value.trim()+', '+(document.getElementById('reg_plz')?.value||'4000')+' '+(document.getElementById('reg_ort')?.value||'Basel'),
     neighbourhood:document.getElementById('reg_nb').value,
     website:document.getElementById('reg_web').value.trim()||null,
     instagram:document.getElementById('reg_ig').value.trim()||null,
@@ -11149,10 +11094,16 @@ async function submitSalonReg(e){
     btn.classList.remove('loading');
     btn.disabled=false;
     btn.textContent='Jetzt eintragen';
-    const msg=ex&&ex.message?ex.message:'';
-    if(msg.includes('email')){
+    const msg=ex&&ex.message?ex.message.toLowerCase():'';
+    if(ex&&ex.code==='23505'&&msg.includes('email')){
       regShowFieldError('field_reg_email');
-      regShowErrorSummary(['E-Mail-Adresse ungültig oder bereits registriert.']);
+      regShowErrorSummary([t('err_already_registered')]);
+    }else if(msg.includes('invalid')&&msg.includes('email')){
+      regShowFieldError('field_reg_email');
+      regShowErrorSummary([t('err_invalid_email')]);
+    }else if(msg.includes('email')){
+      regShowFieldError('field_reg_email');
+      regShowErrorSummary(['E-Mail-Fehler: '+(ex&&ex.message||msg)]);
     }else if(msg.includes('name')){
       regShowFieldError('field_reg_name');
       regShowErrorSummary(['Salonname ungültig oder bereits vergeben.']);
@@ -12763,24 +12714,12 @@ document.addEventListener('click',function(e){
     tryPopulate();
   }
 
-  /* ── MOBILE THEME TOGGLE VISIBILITY ── */
-  function initMobileThemeToggle() {
-    var mobileToggle = document.getElementById('mobileThemeToggle');
-    if (!mobileToggle) return;
-    // Show on mobile (max-width 768px)
-    function updateVisibility() {
-      mobileToggle.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
-    }
-    updateVisibility();
-    window.addEventListener('resize', updateVisibility);
-  }
 
   /* ── INIT ── */
   document.addEventListener('DOMContentLoaded', function() {
     initScrollFadeIn();
     initSocialProofAnimation();
     restoreFavHearts();
-    initMobileThemeToggle();
     // Trending and quartier counts need store data — trigger after stores load
     setTimeout(function() {
       populateTrendingCarousel();
@@ -12853,7 +12792,7 @@ function sendOffer(idx){var offers=[{title:'10% Rabatt',desc:'Einmalig'},{title:
 function autoResizeChatInput(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
 
 // === BATCH1: NEW FEATURES ===
-// initDarkMode handled by blocking script in <head> — no DOMContentLoaded needed
+// Theme is always light — no dark mode toggle needed
 var _pwaPrompt=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();_pwaPrompt=e;var b=document.getElementById("pwaBanner");if(b)setTimeout(function(){b.classList.add("visible");},3000);});
 function installPWA(){if(!_pwaPrompt)return;_pwaPrompt.prompt();_pwaPrompt.userChoice.then(function(){dismissPWABanner();});}
 function dismissPWABanner(){var b=document.getElementById("pwaBanner");if(b)b.classList.remove("visible");}
@@ -13931,13 +13870,6 @@ document.addEventListener('DOMContentLoaded',function(){loadWeatherWidget();});
 if(document.readyState!=='loading')loadWeatherWidget();
 
 // ===== Scroll progress bar =====
-// ===== Dark mode =====
-function toggleDarkMode(){const h=document.documentElement;const n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('solen_theme',n);}
-function initDarkMode(){
-  // Theme is already set by blocking script in <head> — just sync localStorage keys
-  var current=document.documentElement.getAttribute('data-theme');
-  if(current){localStorage.setItem('solenTheme',current);localStorage.setItem('solen_theme',current);}
-}
 // ===== Toast notifications =====
 function showToast(msg,duration){duration=duration||2800;let tc=document.getElementById('toastContainer');if(!tc){tc=document.createElement('div');tc.id='toastContainer';document.body.appendChild(tc);}const t=document.createElement('div');t.className='toast';t.textContent=msg;tc.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});setTimeout(function(){t.classList.remove('show');setTimeout(function(){t.remove();},300);},duration);}
 

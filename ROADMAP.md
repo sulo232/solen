@@ -1,442 +1,465 @@
-# 🚀 Solen — Salon Registration Fix + Staff Step Roadmap
+# 🚀 Solen — Registration Auth + Salon Signup Fix Roadmap
 
 > **For:** Claude Code
 > **Updated:** 2026-03-12
-> **Scope:** Fix all bugs in the salon registration flow (screenshots) + add a staff management step during signup.
+> **Scope:** Fix salon registration bugs, improve auth flow, add postal code/quartier auto-select, add break times, remove dark mode.
 
 ---
 
 ## ⚠️ CONSTRAINTS
 
-- All code is in root `index.html` (~13,800 lines). No build tools, no npm, no `src/`.
+- All code is in root `index.html` (~14,000 lines). No build tools.
 - All visible text needs `data-i18n` + translations for **DE / EN / FR / TR**.
-- Every change must work in **dark mode** and **light mode**.
-- Test all changes at **mobile width (390×844)** — the registration is used primarily on phone.
-- After final phase, bump SW cache version in `sw.js`.
-- `git push origin main` after each phase.
+- **Light mode only** after this roadmap — all dark mode code will be removed.
+- Test on mobile (390×844). Push to `main` after each phase.
 
 ---
 
-## Phase 1: Address Field — Google Maps Autocomplete
+## Phase 1: Fix "E-Mail ungültig oder bereits registriert" False Error
 
-**Screenshot 1:** Step 2 "Strasse & Hausnummer" — user wants address suggestions (like Google Maps autocomplete) while typing.
+**Bug:** When submitting the salon registration form (Step 5 → "Jetzt eintragen"), it always shows "E-Mail-Adresse ungültig oder bereits registriert" even with a valid new email.
 
-**Field:** `<input id="reg_street">` at line ~10634 inside `#regStep2`.
+### Root cause:
+In `submitSalonReg()` (line ~11086), the catch block at line ~11152 checks:
+```js
+if (msg.includes('email')) {
+  regShowErrorSummary(['E-Mail-Adresse ungültig oder bereits registriert.']);
+}
+```
+This is **too broad** — ANY error message that happens to contain the word "email" (even unrelated Supabase errors like "missing column email" or "email format" from the DB schema) triggers this message.
+
+Additionally, `store_applications` or `stores` tables might have a **unique constraint on the email column**, so if someone already registered a salon with that email, the insert fails with a duplicate key error.
+
+### Fixes:
+
+#### 1.1 — Make the error check more specific
+At line ~11152, replace the broad `msg.includes('email')` check:
+```js
+// Before (too broad):
+if (msg.includes('email')) { ... }
+
+// After (specific):
+if (ex && ex.code === '23505' && msg.includes('email')) {
+  // Unique constraint violation on email
+  regShowFieldError('field_reg_email');
+  regShowErrorSummary(['Diese E-Mail ist bereits registriert. Bitte eine andere verwenden oder anmelden.']);
+} else if (msg.includes('invalid') && msg.includes('email')) {
+  regShowFieldError('field_reg_email');
+  regShowErrorSummary(['E-Mail-Adresse ist ungültig.']);
+} else if (msg.includes('email')) {
+  // Some other email-related error — show the actual error
+  regShowErrorSummary(['E-Mail-Fehler: ' + msg]);
+}
+```
+
+#### 1.2 — Allow already-registered users to register a salon
+The salon registration form (`submitSalonReg`, line ~11086) only inserts into `store_applications` / `stores` — it does NOT create a Supabase auth account. The `email` field in the form is the **salon's contact email**, not a login email.
+
+**Check:** Is the `store_applications` or `stores` table rejecting the insert because of a unique email constraint? If so:
+- If the user is **already logged in**, use `currentUser.id` as the `user_id` / `owner_id` in the insert.
+- The salon email field should NOT require uniqueness — multiple salons can share the same contact email.
+- If there IS a unique constraint on email in the DB, it should be removed or changed to allow duplicates. Document this in the roadmap as a **Supabase migration needed**.
+
+#### 1.3 — Pre-fill email if user is logged in
+If `currentUser` exists when the salon reg opens, pre-fill `#reg_email` with `currentUser.email`. The user can change it if they want.
+
+In `openSalonRegistration()` (line ~10889), add:
+```js
+if (currentUser && currentUser.email) {
+  const emailField = document.getElementById('reg_email');
+  if (emailField && !emailField.value) emailField.value = currentUser.email;
+}
+```
+
+#### 1.4 — Add client-side email validation before submit
+Before sending to Supabase, validate the email format in JS:
+```js
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+```
+In `regValidateStep(5)` (or wherever Step 5 / the final step validates), check `isValidEmail()` and show a clear error if invalid — so the user knows it's a format issue vs. a server issue.
+
+### ✅ Test:
+1. Open salon registration (not logged in). Fill all fields with a brand-new email. Submit → should succeed.
+2. Log in with an existing account. Open salon registration. The email field pre-fills. Submit → should succeed (no "already registered" error).
+3. Try submitting with an obviously invalid email (no @) → client-side error "E-Mail ungültig".
+4. Try submitting with valid email that's already used by another salon → specific error telling them it's taken.
+
+---
+
+## Phase 2: Email Verification Code on Registration
+
+**Current:** When registering (both customer and salon owner via `doSalonSignup`), Supabase sends a confirmation email with a link. The user wants a **verification code** instead — enter a code to verify your email.
+
+### How Supabase auth works:
+- `sb.auth.signUp()` sends a confirmation email by default (link-based).
+- For OTP (one-time password / code), use `sb.auth.signInWithOtp()`.
 
 ### What to do:
 
-#### 1.1 — Add Google Places Autocomplete API
-Load the Google Places JS library in `<head>`:
+#### 2.1 — Change customer registration to OTP flow
+In the customer signup function (search for `sb.auth.signUp` with `email` and `password`), after creating the account:
+1. Show a new "Verification Code" step instead of "Check your email for a confirmation link".
+2. The user enters a 6-digit code they received by email.
+3. Call `sb.auth.verifyOtp({ email, token: code, type: 'signup' })` to verify.
+
+#### 2.2 — Create the verification code UI
+Add a new section in the auth overlay (after registration form):
 ```html
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initPlacesAutocomplete" async defer></script>
+<div id="formVerifyCode" class="auth-form" style="display:none">
+  <h3>Code eingeben</h3>
+  <p style="font-size:.88rem;color:var(--text2)">Wir haben dir einen 6-stelligen Code per E-Mail gesendet.</p>
+  <div style="display:flex;gap:8px;justify-content:center;margin:20px 0">
+    <input type="text" id="verifyCode" maxlength="6" placeholder="000000"
+      style="text-align:center;font-size:1.5rem;letter-spacing:.5em;width:200px;padding:14px;border:1.5px solid var(--border);border-radius:12px;background:var(--surfaceAlt);color:var(--text);font-family:var(--font-mono,monospace)">
+  </div>
+  <button class="btn-primary" onclick="verifyEmailCode()">Bestätigen</button>
+  <p style="font-size:.82rem;margin-top:12px;color:var(--text2)">Keinen Code erhalten? <a onclick="resendVerificationCode()" style="color:var(--accent);cursor:pointer;font-weight:600">Erneut senden</a></p>
+</div>
 ```
-> **⚠️ IMPORTANT:** You need a Google Maps API key with the Places API enabled. Ask the user for their API key, or use the Solen project's existing key if one exists. Search for `maps.googleapis.com` in the file to see if one is already loaded.
 
-#### 1.2 — Initialize autocomplete on the street input
-Add a JS function:
+#### 2.3 — JS functions
 ```js
-function initPlacesAutocomplete() {
-  const input = document.getElementById('reg_street');
-  if (!input) return;
-  const autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ['address'],
-    componentRestrictions: { country: 'ch' },
-    fields: ['formatted_address', 'address_components', 'geometry']
+let _pendingVerifyEmail = '';
+
+async function verifyEmailCode() {
+  const code = document.getElementById('verifyCode').value.trim();
+  if (code.length !== 6) return showAuthMsg('Bitte 6-stelligen Code eingeben.');
+  const { error } = await sb.auth.verifyOtp({
+    email: _pendingVerifyEmail,
+    token: code,
+    type: 'signup'
   });
-  autocomplete.addListener('place_changed', function() {
-    const place = autocomplete.getPlace();
-    if (place.formatted_address) {
-      input.value = place.formatted_address;
-    }
-    // Optionally auto-fill quartier based on address components
-  });
+  if (error) return showAuthMsg('Code ungültig. Bitte erneut versuchen.');
+  toast('E-Mail bestätigt!', 'success');
+  closeAuth();
+  // Proceed to populate profile, etc.
+}
+
+async function resendVerificationCode() {
+  await sb.auth.resend({ type: 'signup', email: _pendingVerifyEmail });
+  toast('Code erneut gesendet', 'success');
 }
 ```
-Restrict to Switzerland (`country: 'ch'`) since Solen is Basel-focused.
 
-#### 1.3 — Style the autocomplete dropdown
-Google's autocomplete dropdown needs to match Solen's dark mode. Add CSS:
-```css
-.pac-container {
-  background: var(--surface) !important;
-  border: 1.5px solid var(--border) !important;
-  border-radius: 12px !important;
-  font-family: var(--font-body) !important;
-  z-index: 10001 !important;
-}
-[data-theme="dark"] .pac-container { background: var(--surface) !important; }
-.pac-item { padding: 10px 14px !important; border-color: var(--border) !important; color: var(--text) !important; }
-.pac-item:hover { background: var(--surfaceAlt) !important; }
-.pac-item-query { color: var(--text) !important; }
-.pac-matched { font-weight: 700 !important; }
-.pac-icon { display: none; }
-```
+#### 2.4 — Change salon owner signup to match
+In `doSalonSignup()` (line ~5433), after `sb.auth.signUp()` succeeds, show the verification code form instead of auto-closing. Set `_pendingVerifyEmail = email` and show `#formVerifyCode`.
 
-#### 1.4 — Fallback if no API key
-If Google Places API isn't available, the field should still work as a normal text input. No errors, just no suggestions.
+#### 2.5 — Google login stays as-is
+Google OAuth login should still work normally — no verification code needed for Google sign-in. Only email/password registration gets the code step.
+
+#### 2.6 — i18n keys
+| Key | DE | EN | FR | TR |
+|-----|----|----|----|----|
+| `verify_code_title` | Code eingeben | Enter code | Entrer le code | Kodu girin |
+| `verify_code_hint` | Wir haben dir einen 6-stelligen Code per E-Mail gesendet. | We sent you a 6-digit code by email. | Nous vous avons envoyé un code à 6 chiffres par e-mail. | E-posta ile 6 haneli bir kod gönderdik. |
+| `verify_code_btn` | Bestätigen | Confirm | Confirmer | Onayla |
+| `verify_code_resend` | Erneut senden | Resend | Renvoyer | Tekrar gönder |
+| `verify_code_invalid` | Code ungültig. | Code invalid. | Code invalide. | Kod geçersiz. |
 
 ### ⚡ Caution:
-- The autocomplete dropdown renders outside `#salonRegModal` in the DOM — make sure `z-index: 10001` is above the modal's `z-index: 9999`.
-- Touch targets in the suggestion list must be ≥44px for mobile.
-- If a Google Maps API key is already loaded elsewhere in the file (search for `maps.googleapis.com`), reuse it — don't load the script twice.
+- Supabase OTP verification requires the project to have email templates configured. If the default template sends a link instead of a code, the Supabase dashboard email settings need to be updated (this is a backend config, not a code change).
+- Google sign-in (`sb.auth.signInWithOAuth({provider:'google'})`) skips verification entirely — that's correct behavior.
 
 ### ✅ Test:
-1. Open salon registration, go to Step 2.
-2. Start typing "Hauptstrasse" — address suggestions should appear.
-3. Tap a suggestion — the full address fills the field.
-4. Test in dark mode — dropdown should match the theme.
-5. Test on mobile — suggestions should be tappable with a thumb.
+1. Register with email → see "Code eingeben" screen → receive email with code → enter code → logged in.
+2. Tap "Erneut senden" → new code arrives.
+3. Enter wrong code → "Code ungültig" error.
+4. Google login → still works without code step.
 
 ---
 
-## Phase 2: Fix "Filiale von" Dropdown (Broken Select)
+## Phase 3: Auto-Draft Salon Registration for Logged-In Users
 
-**Screenshot 2:** The "Filiale von (optional)" dropdown at Step 4 shows **multiple overlapping down-arrows (chevrons)** — it looks glitchy and broken.
+**The draft system already exists!** (lines ~10748–10916). It saves to `localStorage` and auto-restores on reopen. The user wants to make sure it works properly when logged in.
 
-**Element:** `<select id="reg_parent_store_id" class="form-input">` at line ~10681.
+### What to verify / fix:
 
-### Root cause:
-The `<select>` has `class="form-input"` AND is inside a `.reg-field`, so it inherits TWO sets of styles:
-1. `.reg-field select` at line ~10480: `appearance:none; -webkit-appearance:none;` — hides native arrow
-2. `.form-input` (defined elsewhere): likely adds its own custom arrow via `background-image` or `::after`
-3. The browser might STILL render a native arrow despite `appearance:none` on some iOS/Android versions
+#### 3.1 — Draft is already attached
+`regAttachAutosave()` (line ~10911) adds `input` and `change` listeners to the form. `regSaveDraft()` (line ~10819) saves to `localStorage['solen_reg_draft']`. `regRestoreDraft()` (line ~10835) restores on form open.
 
-This causes duplicate or triple arrows.
+**Verify this works:** Open registration, fill Step 1, close the modal, reopen → data should still be there. If it's NOT working, debug:
+- Is `regAttachAutosave()` called in `openSalonRegistration()` (line ~10889)? Check line ~7459 — it's called from the partner page init but maybe not from `openSalonRegistration()`. Add it if missing.
+- Is `regRestoreDraft()` called when the modal opens? Check line ~7457 — same issue. Add to `openSalonRegistration()` if missing.
 
-### Fix:
+#### 3.2 — Show a "Entwurf gespeichert" indicator clearly
+The `#regDraftIndicator` (line ~10630) already shows "Entwurf gespeichert um HH:MM". Make sure:
+- It updates timestamp correctly (line ~10829).
+- It's visible to the user (check font size, position).
 
-#### 2.1 — Remove `class="form-input"` from the select
-At line ~10681, change:
-```html
-<select id="reg_parent_store_id" class="form-input" style="font-size:.88rem">
-```
-to:
-```html
-<select id="reg_parent_store_id" style="font-size:.88rem">
-```
-This way it only picks up `.reg-field select` styles which are already correct.
-
-#### 2.2 — Add a single clean custom arrow
-Add a custom dropdown arrow using a background SVG on `.reg-field select`:
-```css
-.reg-field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 14px;
-  padding-right: 36px;
+#### 3.3 — Save draft to Supabase if logged in (optional enhancement)
+Currently drafts are `localStorage` only — lost if user clears browser data. For logged-in users, also save to Supabase:
+```js
+if (currentUser) {
+  await sb.from('salon_reg_drafts').upsert({
+    user_id: currentUser.id,
+    draft_data: JSON.stringify(regCollectDraft()),
+    updated_at: new Date().toISOString()
+  });
 }
 ```
-Check if this rule already exists at line ~10480 — if so, add the `background-image` properties. If there's a conflicting rule somewhere, remove it.
-
-#### 2.3 — Dark mode arrow color
-```css
-[data-theme="dark"] .reg-field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-}
-```
-
-#### 2.4 — Also fix the Category dropdown (Step 1) and Quartier dropdown (Step 2)
-The same bug may affect `<select id="reg_cat">` (line ~10615) and `<select id="reg_nb">` (line ~10636). Apply the same fix to all `<select>` elements inside `.reg-field`.
+This requires creating a `salon_reg_drafts` table in Supabase. **If creating DB tables is out of scope**, skip this and note it as a future improvement.
 
 ### ✅ Test:
-1. Step 1: tap "Kategorie wählen" — clean single arrow, dropdown opens correctly on mobile.
-2. Step 2: tap "Quartier wählen" — same clean look.
-3. Step 4: tap "Filiale von" — single arrow, opens a native iOS/Android picker, no visual glitches.
-4. Test both dark mode and light mode.
+1. Log in. Open salon registration. Fill Steps 1–3. Close the modal.
+2. Reopen the registration. All data should be restored. Current step should be saved.
+3. "Entwurf gespeichert um 19:08" indicator should show with correct time.
 
 ---
 
-## Phase 3: Fix Opening Hours Checkboxes + Day Rows
+## Phase 4: Postal Code + Auto-Quartier on Step 2
 
-**Screenshot 3:** The day checkboxes (MO, DI, MI, etc.) on Step 4 can't be tapped on phone. The boxes "look weird" and the rows feel broken.
+**User wants:** On Step 2 (Standort), instead of just a "Quartier wählen..." dropdown, add:
+1. A **PLZ (Postleitzahl)** field where you enter the postal code (e.g., "4000").
+2. An **Ort** field that auto-fills based on the PLZ (e.g., "Basel").
+3. The **Quartier dropdown auto-selects** based on the PLZ.
+4. If the PLZ format is wrong (not 4 digits, or not a Basel-area code), show a red error.
 
-**Element:** `#regHoursGrid` at line ~10683, rendered by JS (search for `regHoursGrid`).
-
-### Root cause analysis:
-- At line ~10488: `.reg-day-row input[type=checkbox]` has `width:22px; height:22px` with `accent-color:var(--accent2)`.
-- At line ~10514: mobile override increases to `width:24px; height:24px`.
-- The `appearance:none` on `.reg-field input` at line ~10480 **includes checkboxes** because the selector is `.reg-field input` (no type filter). This hides the checkbox completely — it becomes invisible/untappable.
-
-### Fix:
-
-#### 3.1 — Exclude checkboxes from `appearance:none`
-At line ~10480, change the selector from:
-```css
-.reg-field input,.reg-field select,.reg-field textarea
-```
-to:
-```css
-.reg-field input:not([type=checkbox]):not([type=radio]),.reg-field select,.reg-field textarea
-```
-This preserves checkbox native appearance so it's visible and tappable.
-
-#### 3.2 — Explicitly restore checkbox appearance
-Add:
-```css
-.reg-day-row input[type=checkbox] {
-  appearance: checkbox !important;
-  -webkit-appearance: checkbox !important;
-}
-```
-
-#### 3.3 — Improve the day row layout for mobile
-The row currently has `display:flex; align-items:center; gap:8px`. On small screens, the time inputs may overflow. Fix:
-
-```css
-@media (max-width: 600px) {
-  .reg-day-row {
-    display: grid;
-    grid-template-columns: 28px 32px 1fr auto 1fr;
-    gap: 6px;
-    align-items: center;
-  }
-}
-```
-Where columns = checkbox | day label | start time | dash | end time.
-
-#### 3.4 — Ensure time inputs are tappable
-The `<input type="time">` elements at line ~10491 have `min-height:36px`. On mobile at line ~10515 this is `min-height:44px`. **Verify** you can actually tap and change the time on iOS/Android. If the native time picker doesn't open, it might be because the input is too narrow or overlapped.
-
-Add `cursor:pointer` and ensure `touch-action:manipulation`.
-
-### ✅ Test:
-1. Step 4: each day checkbox (MO through SO) must be **tappable** on phone.
-2. Tapping a checkbox should toggle check/uncheck visually.
-3. Time inputs (09:00 / 19:00) should open a native time picker on tap.
-4. The entire row should fit on one line — no overflow or wrapping.
-5. Test on iOS Safari and Android Chrome.
-
----
-
-## Phase 4: Fix Footer Buttons — "Zurück" + "Jetzt eintragen" Overflow
-
-**Screenshot 4:** On Step 4, the "← Zurück" and "Jetzt eintragen" buttons don't fit on one line. The text wraps/hyphenates ("Zu-rück", "Jetzt eintra-gen"), which looks broken.
-
-**Element:** `.salon-reg-footer` at line ~10494 (CSS) and line ~10693 (HTML).
-
-### Root cause:
-- `.salon-reg-footer button` has `padding:11px 24px` and `font-size:.88rem`.
-- Mobile override at line ~10516: `padding:13px 28px; font-size:.92rem`.
-- With two buttons in a `display:flex; gap:10px` container, the combined width exceeds the modal width (especially on ≤375px screens like iPhone SE).
-
-### Fix:
-
-#### 4.1 — Reduce button padding on mobile
-```css
-@media (max-width: 600px) {
-  .salon-reg-footer {
-    padding: 16px 20px 24px;
-    gap: 8px;
-  }
-  .salon-reg-footer button {
-    padding: 12px 16px;
-    font-size: .85rem;
-    min-height: 48px;
-    flex: 1;
-    white-space: nowrap;
-  }
-}
-```
-`flex:1` makes both buttons share the space equally. `white-space:nowrap` prevents hyphenation.
-
-#### 4.2 — Shorten button text on very small screens
-If `white-space:nowrap` + `flex:1` still doesn't fit on tiny screens (≤360px), shorten the text via JS on mobile:
-- "← Zurück" → "← Zurück" (already short, fine)
-- "Jetzt eintragen" → "Eintragen" on small screens
-
-Or use `font-size: .82rem` as a last resort.
-
-#### 4.3 — Apply the same fix to ALL step footers
-The same button layout is used on Steps 1–3 ("← Zurück" / "Weiter →"). Make sure these also don't wrap. They're shorter text so probably fine, but verify.
-
-### ✅ Test:
-1. On iPhone SE (375px) and iPhone 14 (390px): Step 4 footer buttons sit side by side on one line.
-2. No hyphenation or word-breaking in button text.
-3. Both buttons are fully tappable (≥48px tall on mobile).
-4. Test Steps 1–3 footers too.
-
----
-
-## Phase 5: Add Staff Management Step to Salon Registration
-
-**Current flow:** 4 steps: Basis-Info → Standort → Services → Details/Öffnungszeiten.
-**New flow:** 5 steps: Basis-Info → Standort → Services → **Team / Personal** → Details/Öffnungszeiten.
-
-The user wants to add/manage staff (names, roles, calendar availability) during salon registration.
-
-### Existing staff system in the codebase:
-- **CSS:** `.stylist-grid`, `.stylist-avatar`, `.stylist-name`, `.stylist-role`, `.stylist-add-form` (lines ~858–868)
-- **Staff setup cards:** `.staff-setup-card` (line ~1483), `.staff-card` (line ~1368)
-- **Add staff modal:** `#addStaffMdl` (line ~1402)
-- **Staff calendar editor:** `.stylist-cal-modal`, `.stylist-cal-modal-overlay` (lines ~2277–2282)
-- **Supabase table:** `stylists` table (used by existing dashboard staff management)
-
-### What to build:
-
-#### 5.1 — Update step count from 4 to 5
-- Add a 5th dot to the progress dots (line ~10600–10604): add `<div class="salon-reg-dot" id="regDot5"></div>`.
-- Update step hints: "Schritt 1 von **5**", "Schritt 2 von **5**", etc. (lines ~10612, 10633, 10660, 10679).
-- Create a new `<div class="reg-step" id="regStep4">` for the staff step.
-- Renumber the old Step 4 (Details/Öffnungszeiten) to Step 5 (`regStep5`, `regDot5`).
-- Update the `regNext()` and `regPrev()` functions (search for them) to handle 5 steps.
-- Update `submitSalonReg()` to be on Step 5 instead of Step 4.
-
-#### 5.2 — New Step 4 HTML: "Dein Team"
-Insert after `</div><!-- end regStep3 -->` (after line ~10675):
+### 4.1 — Add PLZ + Ort fields before Quartier
+In `#regStep2` (line ~10653), after the street field and before the quartier select, add:
 
 ```html
-<!-- STEP 4: Staff / Team -->
-<div class="reg-step" id="regStep4">
-  <div class="salon-reg-body">
-    <p class="step-hint">Schritt 4 von 5: Dein Team</p>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">
-      Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.
-    </p>
-    <div id="regStaffContainer">
-      <!-- Staff cards rendered by JS -->
-    </div>
-    <button type="button" onclick="regAddStaffRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px">
-      + Mitarbeiter hinzufügen
-    </button>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
+  <div class="reg-field" id="field_reg_plz">
+    <label for="reg_plz">PLZ (Pflichtfeld)</label>
+    <input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" pattern="[0-9]{4}">
+    <div class="reg-field-error" id="err_reg_plz" role="alert">Bitte gültige PLZ eingeben (z.B. 4000).</div>
   </div>
-  <div class="salon-reg-footer">
-    <button type="button" class="reg-btn-back" onclick="regPrev(4)">← Zurück</button>
-    <button type="button" class="reg-btn-next" onclick="regNext(4)">Weiter →</button>
+  <div class="reg-field" id="field_reg_ort">
+    <label for="reg_ort">Ort</label>
+    <input type="text" id="reg_ort" placeholder="Basel" readonly style="background:var(--surfaceAlt);opacity:.7">
   </div>
 </div>
 ```
 
-#### 5.3 — Staff row template
-Each staff member is a card with:
-- **Name** (required) — text input
-- **Rolle** — text input (e.g., "Senior Stylist", "Junior", "Auszubildende")
-- **Buchbar** — checkbox (whether customers can book this person directly)
-- **Verfügbarkeit** — per-weekday toggle (MO–SO) with start/end time
-- **Delete button** — to remove the row
-
-Use the existing `.stylist-add-form` and `.staff-setup-card` CSS classes for consistent styling.
-
-JS function:
+#### 4.2 — Basel PLZ → Quartier mapping
+Create a JS lookup object:
 ```js
-let regStaffRows = [];
-function regAddStaffRow() {
-  const container = document.getElementById('regStaffContainer');
-  const idx = regStaffRows.length;
-  regStaffRows.push({ name: '', role: '', bookable: true, hours: {} });
-  const card = document.createElement('div');
-  card.className = 'staff-setup-card';
-  card.style.cssText = 'margin-bottom:12px;padding:16px;position:relative';
-  card.innerHTML = `
-    <button type="button" onclick="regRemoveStaff(${idx},this)" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:1rem">&times;</button>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-      <div class="reg-field" style="margin:0"><label>Name</label><input type="text" class="reg-staff-name" data-idx="${idx}" placeholder="z.B. Maria"></div>
-      <div class="reg-field" style="margin:0"><label>Rolle</label><input type="text" class="reg-staff-role" data-idx="${idx}" placeholder="z.B. Senior Stylist"></div>
-    </div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;cursor:pointer;margin-bottom:10px">
-      <input type="checkbox" class="reg-staff-bookable" data-idx="${idx}" checked style="width:20px;height:20px;accent-color:var(--accent2);appearance:checkbox;-webkit-appearance:checkbox">
-      Online buchbar
-    </label>
-    <details style="margin-top:8px">
-      <summary style="font-size:.82rem;font-weight:600;color:var(--text2);cursor:pointer">Verfügbarkeit festlegen</summary>
-      <div class="reg-staff-hours" data-idx="${idx}" style="margin-top:8px"></div>
-    </details>
-  `;
-  container.appendChild(card);
-  // Render availability grid for this staff member
-  renderRegStaffHours(idx, card.querySelector('.reg-staff-hours'));
-}
+const BASEL_PLZ_MAP = {
+  '4000': { ort: 'Basel', quartiere: ['Altstadt Grossbasel'] },
+  '4001': { ort: 'Basel', quartiere: ['Altstadt Grossbasel'] },
+  '4051': { ort: 'Basel', quartiere: ['St. Alban', 'Bruderholz'] },
+  '4052': { ort: 'Basel', quartiere: ['Bachletten', 'Neubad'] },
+  '4053': { ort: 'Basel', quartiere: ['Gundeldingen'] },
+  '4054': { ort: 'Basel', quartiere: ['Am Ring', 'Vorstädte'] },
+  '4055': { ort: 'Basel', quartiere: ['St. Johann'] },
+  '4056': { ort: 'Basel', quartiere: ['Matthäus', 'Iselin'] },
+  '4057': { ort: 'Basel', quartiere: ['Clara', 'Wettstein'] },
+  '4058': { ort: 'Basel', quartiere: ['Hirzbrunnen'] },
+  '4059': { ort: 'Basel', quartiere: ['Altstadt Kleinbasel'] }
+};
+```
+> **⚠️ IMPORTANT:** These mappings need to be verified for accuracy! Some PLZ may map to multiple quartiers. The user should verify this list or provide corrections.
+
+#### 4.3 — Auto-fill on PLZ input
+```js
+document.getElementById('reg_plz')?.addEventListener('input', function() {
+  const plz = this.value.trim();
+  const ortField = document.getElementById('reg_ort');
+  const nbSelect = document.getElementById('reg_nb');
+  const plzFieldDiv = document.getElementById('field_reg_plz');
+
+  if (plz.length !== 4 || isNaN(plz)) {
+    if (plz.length === 4) {
+      plzFieldDiv.classList.add('has-error');
+    }
+    ortField.value = '';
+    nbSelect.value = '';
+    return;
+  }
+
+  const match = BASEL_PLZ_MAP[plz];
+  if (match) {
+    plzFieldDiv.classList.remove('has-error');
+    ortField.value = match.ort;
+    // Auto-select first matching quartier
+    if (match.quartiere.length === 1) {
+      nbSelect.value = match.quartiere[0];
+    } else {
+      // If multiple quartiers, select the first one but let user change
+      nbSelect.value = match.quartiere[0];
+    }
+    regSaveDraft(); // trigger autosave
+  } else {
+    plzFieldDiv.classList.add('has-error');
+    ortField.value = '';
+    nbSelect.value = '';
+  }
+});
 ```
 
-#### 5.4 — Staff availability grid (per-member)
-Reuse the same row layout as the salon opening hours grid but scoped to each staff member:
+#### 4.4 — Red error styling
+The `.reg-field.has-error` class already exists (line ~10505) — it adds a red border. The error text div `.reg-field-error` shows when `.has-error` is on the parent. This is already wired up.
+
+#### 4.5 — Update address assembly
+In `submitSalonReg()` (line ~11104), the address is currently:
 ```js
-function renderRegStaffHours(idx, container) {
-  const days = ['MO','DI','MI','DO','FR','SA','SO'];
-  container.innerHTML = days.map((d, di) => `
-    <div class="reg-day-row">
-      <input type="checkbox" checked data-staff="${idx}" data-day="${di}">
-      <span class="reg-day-lbl">${d}</span>
-      <div class="reg-time-inputs">
-        <input type="time" value="09:00" data-staff="${idx}" data-day="${di}" data-type="start">
-        <span class="reg-time-dash">–</span>
-        <input type="time" value="19:00" data-staff="${idx}" data-day="${di}" data-type="end">
-      </div>
-    </div>
-  `).join('');
-}
+address: document.getElementById('reg_street').value.trim() + ', Basel'
+```
+Change to:
+```js
+address: document.getElementById('reg_street').value.trim() + ', ' + (document.getElementById('reg_plz')?.value||'4000') + ' ' + (document.getElementById('reg_ort')?.value||'Basel')
 ```
 
-#### 5.5 — Collect staff data on submit
-In `submitSalonReg()`, after inserting the salon into the `stores` table, loop through `regStaffRows` and insert each staff member into the `stylists` table:
-```js
-// After salon is created and we have store_id:
-const staffCards = document.querySelectorAll('#regStaffContainer .staff-setup-card');
-for (const card of staffCards) {
-  const name = card.querySelector('.reg-staff-name')?.value?.trim();
-  if (!name) continue;
-  const role = card.querySelector('.reg-staff-role')?.value?.trim() || '';
-  const bookable = card.querySelector('.reg-staff-bookable')?.checked ?? true;
-  // Collect hours from this card's availability grid...
-  await sb.from('stylists').insert({
-    salon_id: newStoreId,
-    name: name,
-    role: role,
-    is_bookable: bookable,
-    // hours: JSON.stringify(collectedHours)
-  });
-}
-```
-
-**Check the existing `stylists` table schema** — search for `sb.from('stylists')` to see what columns exist (name, salon_id, role, is_bookable, etc.).
-
-#### 5.6 — i18n keys (all 4 languages)
-| Key | DE | EN | FR | TR |
-|-----|----|----|----|----|
-| `reg_step_team` | Dein Team | Your Team | Votre équipe | Ekibiniz |
-| `reg_team_hint` | Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern. | Add your team. You can always change staff later. | Ajoutez votre équipe. Vous pourrez toujours modifier le personnel plus tard. | Ekibinizi ekleyin. Personeli daha sonra istediğiniz zaman değiştirebilirsiniz. |
-| `reg_add_staff` | + Mitarbeiter hinzufügen | + Add staff member | + Ajouter un membre | + Personel ekle |
-| `reg_staff_name` | Name | Name | Nom | İsim |
-| `reg_staff_role` | Rolle | Role | Rôle | Rol |
-| `reg_staff_bookable` | Online buchbar | Bookable online | Réservable en ligne | Online rezerve edilebilir |
-| `reg_staff_hours_toggle` | Verfügbarkeit festlegen | Set availability | Définir la disponibilité | Uygunluğu ayarla |
-
-### ⚡ Caution:
-- The step is **optional** — users should be able to skip it (click "Weiter →" with zero staff members). They can add staff later from the dashboard.
-- Don't break the existing dashboard staff management (`#addStaffMdl`, `renderStaffGrid()`). The registration step creates the same data in the same table.
-- Make sure `regNext()` and `regPrev()` handle the new step count (5 steps total).
-- The progress dots need to update correctly: done + active states.
+#### 4.6 — Include PLZ in draft save/restore
+In `regCollectDraft()` (line ~10754), add `plz` and `ort` to the collected data. In `regRestoreDraft()` (line ~10835), restore them.
 
 ### ✅ Test:
-1. Open salon registration. Progress dots show **5** segments.
-2. Step 1 → Step 2 → Step 3 → **Step 4 "Dein Team"** → Step 5 (Details/Öffnungszeiten).
-3. On Step 4: tap "+ Mitarbeiter hinzufügen" — a staff card appears with name, role, bookable checkbox.
-4. Add 2 staff members with names and roles. Expand "Verfügbarkeit" — day checkboxes and time inputs work.
-5. Tap "Weiter →" — goes to Step 5.
-6. Submit the form. Check Supabase `stylists` table — staff members should be saved with correct salon_id.
-7. Also test skipping (no staff added) — should work fine.
-8. Test on mobile, dark mode, all 4 languages.
+1. Step 2: Type "4053" in PLZ → Ort auto-fills "Basel", Quartier auto-selects "Gundeldingen".
+2. Type "1234" → red error on PLZ, ort and quartier empty.
+3. Type "4051" → Ort = "Basel", Quartier = "St. Alban".
+4. Manually change quartier dropdown → still allowed.
+5. Submit → address includes PLZ and Ort correctly.
 
 ---
 
-## Phase 6: Bump SW Cache + Final Polish
+## Phase 5: Break Times for Salon + Staff Schedules
 
-### 6.1 — Bump `sw.js` cache version
-After all changes, bump `solen-vXX` → next version.
+**User wants:** When setting opening hours (salon) or staff availability, option to add a **lunch break / pause** (e.g., 12:00–13:00).
 
-### 6.2 — Verify i18n coverage
-All new text in Step 4 (team) and existing steps should have `data-i18n` attributes. Switch to EN, FR, TR and verify step hints change ("Step X of 5: ...").
+### 5.1 — Add break time toggle per day row (salon hours)
+In the opening hours grid on Step 5, each day row currently shows:
+```
+[✓] MO   09:00 – 19:00
+```
+Add a "Pause" button that reveals a second time range:
+```
+[✓] MO   09:00 – 12:00   Pause: 12:00 – 13:00   13:00 – 19:00
+```
 
-### 6.3 — Test entire registration flow end-to-end on mobile
-1. Tap "Salon eintragen" → modal opens full-screen on mobile
-2. Step 1: fill basics → "Weiter"
-3. Step 2: type address → autocomplete suggestions appear → select one → "Weiter"
-4. Step 3: add a service → "Weiter"
-5. Step 4: add staff member, set availability → "Weiter"
-6. Step 5: description, "Filiale" dropdown (single clean arrow), opening hours (checkboxes work), accept terms → "Jetzt eintragen"
-7. Both footer buttons fit on one line on all steps
-8. Success screen appears
-9. Check Supabase: `stores` + `stylists` tables have correct data
+#### Simplified approach: add a "+ Pause" button per row
+Change each day row to:
+```
+[✓] MO   09:00 – 19:00   [+ Pause]
+```
+When "+ Pause" is tapped:
+```
+[✓] MO   09:00 – 12:00  |  13:00 – 19:00   [× Pause]
+```
+This splits the day into two shifts with a gap = the break.
+
+#### Implementation:
+Modify the JS that renders `#regHoursGrid` (search for the function near line ~7438 that builds day rows). Add a break toggle button per row:
+
+```js
+// In the day row template:
+`<button type="button" class="reg-break-toggle" onclick="toggleRegBreak(this, '${dayKey}')" 
+  style="font-size:.72rem;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap">
+  + Pause
+</button>`
+```
+
+When toggled, show a second pair of time inputs:
+```js
+function toggleRegBreak(btn, dayKey) {
+  const row = btn.closest('.reg-day-row');
+  let breakInputs = row.querySelector('.reg-break-inputs');
+  if (breakInputs) {
+    breakInputs.remove();
+    btn.textContent = '+ Pause';
+  } else {
+    breakInputs = document.createElement('div');
+    breakInputs.className = 'reg-break-inputs';
+    breakInputs.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:4px;padding-left:62px';
+    breakInputs.innerHTML = `
+      <span style="font-size:.72rem;color:var(--text2);font-weight:600">Pause:</span>
+      <input type="time" value="12:00" class="reg-break-start" style="...">
+      <span class="reg-time-dash">–</span>
+      <input type="time" value="13:00" class="reg-break-end" style="...">
+    `;
+    row.after(breakInputs);
+    btn.textContent = '× Pause';
+  }
+}
+```
+
+### 5.2 — Break times for staff availability
+Apply the same pattern to the staff availability grid (Phase 5 of previous roadmap → the `renderRegStaffHours()` function or the `<details>` block inside each staff card).
+
+### 5.3 — Save break times
+In `regCollectHours()`, collect break times per day:
+```js
+hours: {
+  mon: { open: '09:00', close: '19:00', break_start: '12:00', break_end: '13:00' },
+  tue: { open: '09:00', close: '19:00' }, // no break
+  ...
+}
+```
+
+### 5.4 — CSS for break row
+```css
+.reg-break-inputs input[type=time] {
+  /* same styles as .reg-time-inputs input[type=time] */
+}
+@media (max-width: 600px) {
+  .reg-break-inputs { padding-left: 0 !important; flex-wrap: wrap; }
+}
+```
+
+### ✅ Test:
+1. Step 5: tap "+ Pause" on Monday → break time inputs appear (12:00–13:00 default).
+2. Tap "× Pause" → break inputs removed.
+3. Submit with breaks set → check stored data includes break_start/break_end.
+4. Staff step: same break functionality works per staff member.
+
+---
+
+## Phase 6: Remove Dark Mode — Light Mode Only
+
+**User wants:** Delete dark mode entirely. Only light mode.
+
+### What to remove:
+
+#### 6.1 — Remove the theme toggle button
+Search for `.theme-toggle` in HTML — there's a toggle switch in the header (near the nav). Remove the entire `<button>` or `<div>` containing the sun/moon toggle.
+
+Also remove it from the mobile menu if it appears there.
+
+#### 6.2 — Remove `toggleTheme()` function
+The function at line ~4907 handles theme switching. Delete it. Also delete any `setTheme()`, `loadTheme()`, or `localStorage` theme preference code.
+
+#### 6.3 — Force light mode
+At the top of `<html>` or in the first `<script>`, set:
+```js
+document.documentElement.setAttribute('data-theme', 'light');
+```
+Remove the `DOMContentLoaded` listener that reads theme preference from `localStorage`.
+
+#### 6.4 — Remove ALL `[data-theme="dark"]` CSS rules
+There are **100+ lines** of `[data-theme="dark"]` rules scattered throughout the `<style>` blocks. Remove ALL of them:
+- `[data-theme="dark"] { ... }` blocks (line ~79, ~151–155, ~160–161, ~187–190, etc.)
+- All `@media(prefers-color-scheme:dark)` rules (lines ~98, ~392, ~404, ~434, ~479, ~520, ~658, etc.)
+
+**Strategy:** Do a search-and-delete for:
+1. All lines matching `[data-theme="dark"]`
+2. All `@media(prefers-color-scheme:dark){...}` blocks
+3. `[data-theme="light"]` specific overrides can be kept — they'll be the default now. But clean them up by moving the values into the base `:root` if they're just overrides.
+
+#### 6.5 — Remove dark mode CSS variables
+The `:root` block at line ~79 defines dark mode variables (`[data-theme="dark"]`). Delete the entire block. Keep only the light mode `:root` variables.
+
+#### 6.6 — Clean up the navigation
+The theme toggle button in the header takes up space. Removing it gives more room for other nav items on mobile.
+
+### ⚡ Caution:
+- **Do NOT break any CSS that isn't dark-mode specific.** Some rules might use selectors like `[data-theme] .something` or `[data-theme="light"]` — convert those to just `.something` since there's only one theme now.
+- **Test everything after removal.** Colors, backgrounds, borders, text — make sure nothing looks wrong on light mode.
+- The `.glass-panel`, `.modal`, `.bottom-nav` and other components all have dark-mode overrides. After removing those, verify they look correct with only the light-mode base styles.
+
+### ✅ Test:
+1. Load solen.ch — no theme toggle visible anywhere.
+2. Site is always light mode, even if device is in dark mode.
+3. All pages look correct: Home, Entdecken, Termine, Profil, Salon Registration.
+4. No visual glitches (missing backgrounds, invisible text, etc.).
+5. Search the entire file for `data-theme="dark"` — zero results.
+6. Search for `prefers-color-scheme` — zero results.
+
+---
+
+## Phase 7: Bump SW Cache
+
+After all changes: bump `solen-vXX` in `sw.js` to force fresh cache.
 
 ---
 
@@ -444,37 +467,33 @@ All new text in Step 4 (team) and existing steps should have `data-i18n` attribu
 
 | What | Line(s) |
 |------|---------|
-| Salon reg modal CSS | ~10461–10520 |
-| Salon reg modal HTML | ~10592–10709 |
-| Step 1 (Basics) | ~10610–10629 |
-| Step 2 (Standort) — address field | ~10631–10656 |
-| Step 3 (Services) | ~10658–10675 |
-| Step 4 (Details/Hours) → becomes Step 5 | ~10677–10697 |
-| `.reg-field input` appearance rule | ~10480 |
-| `.reg-day-row` checkbox CSS | ~10487–10488 |
-| `.salon-reg-footer` button CSS | ~10494–10500 |
-| Mobile overrides for reg | ~10512–10518 |
-| `regHoursGrid` JS rendering | ~7438 |
-| `regNext()` / `regPrev()` functions | search `function regNext` |
-| `submitSalonReg()` | search `function submitSalonReg` |
-| Existing staff/stylist CSS | ~858–868, ~1368–1403, ~1483–1495 |
-| Staff calendar CSS | ~2261–2282 |
-| `#addStaffMdl` (existing) | ~1402 |
-| `stylists` table queries | search `sb.from('stylists')` |
+| `submitSalonReg()` — email error | ~11086, error at ~11153 |
+| `doSalonSignup()` — auth signup | ~5433 |
+| `sb.auth.signUp()` calls | ~5452 |
+| Draft system | ~10748–10916 |
 | `openSalonRegistration()` | ~10889 |
-| SW cache version | `sw.js` |
+| Step 2 HTML (address/quartier) | ~10653–10668 |
+| Step 5 HTML (hours) | ~10699–10720 |
+| `regHoursGrid` JS rendering | ~7438 |
+| `toggleTheme()` | ~4907 |
+| Dark mode CSS `[data-theme="dark"]` | ~79, 151–155, 160, 187–190, 232–235, 302, 391–404, 433, 483, etc. |
+| `@media(prefers-color-scheme:dark)` | ~98, 392, 404, 434, 479, 520, 658, etc. |
+| Theme toggle HTML | search `.theme-toggle` |
+| `.reg-day-row` checkbox CSS | ~10487–10488 |
+| SW cache | `sw.js` |
 
 ---
 
 ## 🚦 Order
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
-  │          │          │          │          │          │
-  ▼          ▼          ▼          ▼          ▼          ▼
-Address    Fix        Fix        Fix        Add        SW bump
-auto-      dropdown   checkbox   button     staff      + final
-complete   arrows     tapping    overflow   step       test
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7
+  │          │          │          │          │          │          │
+  ▼          ▼          ▼          ▼          ▼          ▼          ▼
+Fix        Email      Auto-      PLZ →     Break     Remove     SW
+email      verify     draft      auto      times     dark       bump
+error      code       salon      quartier  salon +   mode
+                      reg                  staff
 ```
 
 **After each phase:** `git add -A && git commit -m "Phase X: [description]" && git push origin main`
