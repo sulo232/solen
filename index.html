@@ -2706,6 +2706,23 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   color:var(--c-text-secondary);
 }
 
+/* ═══ MOBILE FILTER FAB + BOTTOM SHEET ═══ */
+.filter-fab{display:none;position:fixed;bottom:calc(74px + env(safe-area-inset-bottom,8px) + 12px);right:16px;z-index:999;width:52px;height:52px;border-radius:50%;background:var(--c-accent,#9B1D30);color:#fff;border:none;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;transition:transform .15s}
+.filter-fab:active{transform:scale(.9)}
+.filter-fab svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2}
+@media(max-width:640px){.filter-panel{display:none}.filter-fab{display:flex}}
+.filter-sheet{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;justify-content:flex-end}
+.filter-sheet.active{display:flex}
+.filter-sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.filter-sheet-body{position:relative;background:var(--c-bg,#fff);border-radius:20px 20px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom,8px) + 20px);max-height:75vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:sheetUp .3s ease}
+[data-theme="dark"] .filter-sheet-body{background:var(--c-surface)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.filter-sheet-handle{width:40px;height:4px;border-radius:2px;background:var(--c-border-strong,#ccc);margin:0 auto 16px}
+.filter-sheet-title{font-weight:700;font-size:1.1rem;margin-bottom:16px;color:var(--c-text)}
+.filter-sheet-footer{display:flex;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--c-border)}
+.filter-sheet-footer .btn-primary{flex:1;margin-top:0}
+.filter-sheet-footer .btn-secondary{flex:0 0 auto;width:auto;padding:12px 20px;margin-top:0}
+
 /* ═══ ENHANCED MOBILE RESPONSIVE ═══ */
 @media(max-width:768px){
   /* Bottom sheet style modals on mobile */
@@ -3330,6 +3347,10 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
         </div>
       </div>
     </div>
+    <!-- Mobile Filter FAB -->
+    <button class="filter-fab" id="filterFab" onclick="openFilterSheet()" aria-label="Filter öffnen">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+    </button>
     <div id="lastMinuteSection" class="lm-section hidden"></div>
     <div id="recentSection" style="display:none"></div>
     <div id="storesGrid" class="stores-grid"><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div><div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div></div>
@@ -4283,7 +4304,7 @@ const T={
     back_to_login:'Zur\u00fcck zur Anmeldung',reset_email_sent:'Reset-Link gesendet! Pr\u00fcfe dein Postfach.',
     book_now:'Jetzt buchen',select_service:'Service w\u00e4hlen',select_date:'Datum w\u00e4hlen',select_time:'Uhrzeit w\u00e4hlen',
     guest_info:'Gastinformationen',booking_confirmed:'Dein Termin steht!',write_review:'Bewertung abgeben',
-    rating_filter:'Min. Bewertung',no_results:'Hmm, dazu haben wir noch nichts',reset_filters:'Filter zur\u00fccksetzen',
+    rating_filter:'Min. Bewertung',no_results:'Hmm, dazu haben wir noch nichts',reset_filters:'Filter zurücksetzen',filter_title:'Filter',filter_show_results:'Ergebnisse anzeigen',
     use_location:'Standort',neighbourhood:'Quartier',neighbourhood_all:'Alle Quartiere',
     impressum:'Impressum',privacy:'Datenschutz',nearest_slot_tomorrow:'N\u00e4chster: Morgen',
     add_to_calendar:'Zu Google Kalender hinzuf\u00fcgen',sort_distance:'Entfernung',
@@ -4409,7 +4430,7 @@ const T={
     back_to_login:'Back to sign in',reset_email_sent:'Reset link sent! Check your inbox.',
     book_now:'Book now',select_service:'Select service',select_date:'Select date',select_time:'Select time',
     guest_info:'Guest information',booking_confirmed:'Your appointment is set!',write_review:'Write review',
-    rating_filter:'Min. rating',no_results:'Hmm, nothing here yet',reset_filters:'Reset filters',
+    rating_filter:'Min. rating',no_results:'Hmm, nothing here yet',reset_filters:'Reset filters',filter_title:'Filters',filter_show_results:'Show results',
     use_location:'Location',neighbourhood:'Neighbourhood',neighbourhood_all:'All neighbourhoods',
     impressum:'Imprint',privacy:'Privacy',nearest_slot_tomorrow:'Next: Tomorrow',
     add_to_calendar:'Add to Google Calendar',sort_distance:'Distance',
@@ -4535,7 +4556,7 @@ const T={
     back_to_login:'Retour \u00e0 la connexion',reset_email_sent:'Lien de r\u00e9initialisation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
     book_now:'R\u00e9server maintenant',select_service:'Choisir un service',select_date:'Choisir une date',select_time:'Choisir une heure',
     guest_info:'Informations client',booking_confirmed:'Ton rendez-vous est confirm\u00e9 !',write_review:'\u00c9crire un avis',
-    rating_filter:'Note min.',no_results:'Hmm, rien ici pour le moment',reset_filters:'R\u00e9initialiser les filtres',
+    rating_filter:'Note min.',no_results:'Hmm, rien ici pour le moment',reset_filters:'Réinitialiser les filtres',filter_title:'Filtres',filter_show_results:'Afficher les résultats',
     use_location:'Position',neighbourhood:'Quartier',neighbourhood_all:'Tous les quartiers',
     impressum:'Mentions l\u00e9gales',privacy:'Confidentialit\u00e9',nearest_slot_tomorrow:'Prochain : demain',
     cat_barber:'Barbershop',cat_hairsalon:'Coiffeur',cat_nails:'Institut ongles',cat_spa:'Spa & Bien-\u00eatre',cat_makeup:'Maquillage',cat_eyebrows:'Sourcils',
@@ -4660,7 +4681,7 @@ const T={
     back_to_login:'GiriÅe geri dön',reset_email_sent:'Sıfırlama baÄlantısı gönderildi!',
     book_now:'Åimdi Rezervasyon',select_service:'Hizmet Seçin',select_date:'Tarih Seçin',select_time:'Saat Seçin',
     guest_info:'Misafir bilgileri',booking_confirmed:'Randevun hazır!',write_review:'Yorum yaz',
-    rating_filter:'Min. puan',no_results:'Hmm, henüz bir şey yok',reset_filters:'Filtreleri sıfırla',
+    rating_filter:'Min. puan',no_results:'Hmm, henüz bir şey yok',reset_filters:'Filtreleri sıfırla',filter_title:'Filtreler',filter_show_results:'Sonuçları göster',
     use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'Tüm mahalleler',
     impressum:'Künye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: Yarın',
     add_to_calendar:'Google Takvime Ekle',sort_distance:'Mesafe',
@@ -6572,6 +6593,19 @@ function updateFilterActiveChips(){
   if(badge){
     badge.textContent=chips.length>0?chips.length+' aktiv':'';
   }
+}
+
+function openFilterSheet(){
+  var sheet=document.getElementById('filterSheet');
+  var content=document.getElementById('filterSheetContent');
+  var src=document.querySelector('.filter-panel-inner');
+  if(src&&content)content.innerHTML=src.innerHTML;
+  sheet.classList.add('active');
+  document.body.classList.add('modal-open');
+}
+function closeFilterSheet(){
+  document.getElementById('filterSheet').classList.remove('active');
+  _checkModalOpen();
 }
 
 function resetFiltersFromPanel(){
@@ -13790,6 +13824,19 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
 <!-- Dark mode toggle + skip link (appended to body) -->
 <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
 
+<!-- ═══ MOBILE FILTER BOTTOM SHEET ═══ -->
+<div class="filter-sheet" id="filterSheet" onclick="if(event.target===this||event.target.classList.contains('filter-sheet-backdrop'))closeFilterSheet()">
+  <div class="filter-sheet-backdrop"></div>
+  <div class="filter-sheet-body">
+    <div class="filter-sheet-handle"></div>
+    <div class="filter-sheet-title" data-i18n="filter_title">Filter</div>
+    <div id="filterSheetContent"></div>
+    <div class="filter-sheet-footer">
+      <button class="btn-secondary" onclick="resetFiltersFromPanel();closeFilterSheet()" data-i18n="reset_filters">Zurücksetzen</button>
+      <button class="btn-primary" onclick="closeFilterSheet()" data-i18n="filter_show_results">Ergebnisse anzeigen</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
