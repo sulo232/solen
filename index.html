@@ -3098,7 +3098,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <!-- SOCIAL PROOF BADGE -->
       <div class="hero-proof-badge" id="heroProofBadge" aria-live="polite" style="position:static;transform:none;margin-top:16px;background:var(--c-surface-alt);border-color:var(--c-border);color:var(--c-text-secondary)">
         <span class="hero-proof-dot"></span>
-        <span><span class="hero-proof-num" id="heroProofNum" style="color:var(--c-text)">124</span> Termine heute gebucht</span>
+        <span><span class="hero-proof-num" id="heroProofNum" style="color:var(--c-text)">124</span> <span data-i18n="hero_proof_text">Termine heute gebucht</span></span>
       </div>
     </div>
   </section>
@@ -3124,22 +3124,22 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <div class="social-proof-inner">
       <div class="social-proof-item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-        <span><strong id="spSalons">40+</strong> Salons in Basel</span>
+        <span><strong id="spSalons">40+</strong> <span data-i18n="sp_salons">Salons in Basel</span></span>
       </div>
       <div class="social-proof-divider"></div>
       <div class="social-proof-item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span><strong id="spBookings">1&thinsp;200+</strong> Buchungen diesen Monat</span>
+        <span><strong id="spBookings">1&thinsp;200+</strong> <span data-i18n="sp_bookings">Buchungen diesen Monat</span></span>
       </div>
       <div class="social-proof-divider"></div>
       <div class="social-proof-item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span><strong>4.8</strong> / 5 Durchschnittsbewertung</span>
+        <span><strong>4.8</strong> / 5 <span data-i18n="sp_rating">Durchschnittsbewertung</span></span>
       </div>
       <div class="social-proof-divider"></div>
       <div class="social-proof-item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>Kostenlos &amp; sicher buchen</span>
+        <span data-i18n="sp_free">Kostenlos &amp; sicher buchen</span>
       </div>
     </div>
   </div>
@@ -3161,11 +3161,11 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
     <div class="quartier-discovery-header fade-in-up">
       <div>
-        <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Dein Quartier</div>
-        <h2>Entdecke dein Quartier</h2>
+        <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> <span data-i18n="quartier_eyebrow">Dein Quartier</span></div>
+        <h2 data-i18n="quartier_title">Entdecke dein Quartier</h2>
       </div>
       <button class="quartier-see-all" onclick="scrollToStores()" aria-label="Alle Quartiere anzeigen">
-        Alle ansehen
+        <span data-i18n="quartier_see_all">Alle ansehen</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
@@ -3360,8 +3360,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <section class="carousel-section reveal" id="neuAufSolenSection" aria-label="Neu auf solen">
   <div class="carousel-header">
     <div>
-      <h2>Neu auf solen</h2>
-      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px">Zuletzt hinzugefügt</p>
+      <h2 data-i18n="carousel_new_title">Neu auf solen</h2>
+      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px" data-i18n="carousel_new_sub">Zuletzt hinzugefügt</p>
     </div>
     <div class="carousel-nav">
       <button class="carousel-nav-btn" onclick="scrollCarousel('neuTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -3380,8 +3380,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <section class="carousel-section reveal" id="inDeinerNaeheSection" aria-label="In deiner Nähe">
   <div class="carousel-header">
     <div>
-      <h2>Salons in deiner Nähe</h2>
-      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px">Basierend auf deinem Standort</p>
+      <h2 data-i18n="carousel_nearby_title">Salons in deiner Nähe</h2>
+      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px" data-i18n="carousel_nearby_sub">Basierend auf deinem Standort</p>
     </div>
     <div class="carousel-nav">
       <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -3403,8 +3403,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <!-- SALON SPOTLIGHT -->
 <section class="spotlight-section" id="spotlightSection">
   <div class="spotlight-header">
-    <h2>Unsere Empfehlungen diese Woche</h2>
-    <p>Entdecke Salons, die uns begeistern</p>
+    <h2 data-i18n="spotlight_title">Unsere Empfehlungen diese Woche</h2>
+    <p data-i18n="spotlight_sub">Entdecke Salons, die uns begeistern</p>
   </div>
   <div class="spotlight-grid" id="spotlightGrid">
     <!-- populated by JS -->
@@ -3414,56 +3414,56 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <!-- ═══ POPULAR SERVICES ICON GRID ═══ -->
   <section class="popular-services" id="popularServicesSection" aria-label="Beliebte Services">
     <div class="popular-services-header fade-in-up">
-      <div class="section-eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Services entdecken</div>
-      <h2>Was suchst du heute?</h2>
-      <p>Wähle direkt einen Service und finde Salons in deiner Nähe</p>
+      <div class="section-eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span data-i18n="popular_services_eyebrow">Services entdecken</span></div>
+      <h2 data-i18n="popular_services_title">Was suchst du heute?</h2>
+      <p data-i18n="popular_services_sub">Wähle direkt einen Service und finde Salons in deiner Nähe</p>
     </div>
     <div class="services-icon-grid">
       <button class="service-icon-card fade-in-up stagger-1" data-cat="hairsalon" onclick="selectServiceFromMenu('hairsalon','Coiffeur')" aria-label="Coiffeur Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Coiffeur"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
-        <span class="sic-label">Coiffeur</span>
+        <span class="sic-label" data-i18n="svc_coiffeur">Coiffeur</span>
         <span class="sic-price">ab CHF 38</span>
         <span class="sic-time">35–90 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-2" data-cat="barber" onclick="selectServiceFromMenu('barber','Barbershop')" aria-label="Barbershops zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Barbershop"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><circle cx="6" cy="18" r="3"/></svg></div>
-        <span class="sic-label">Barbershop</span>
+        <span class="sic-label" data-i18n="svc_barbershop">Barbershop</span>
         <span class="sic-price">ab CHF 18</span>
         <span class="sic-time">20–45 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-3" data-cat="nails" onclick="selectServiceFromMenu('nails','Nails')" aria-label="Nagelstudios zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Nails"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
-        <span class="sic-label">Nails</span>
+        <span class="sic-label" data-i18n="svc_nails">Nails</span>
         <span class="sic-price">ab CHF 35</span>
         <span class="sic-time">40–60 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-4" data-cat="spa" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')" aria-label="Spa und Wellness zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Spa"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <span class="sic-label">Spa &amp; Wellness</span>
+        <span class="sic-label" data-i18n="svc_spa">Spa &amp; Wellness</span>
         <span class="sic-price">ab CHF 30</span>
         <span class="sic-time">45–90 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-5" data-cat="makeup" onclick="selectServiceFromMenu('makeup','Make-up')" aria-label="Make-up Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Make-up"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
-        <span class="sic-label">Make-up</span>
+        <span class="sic-label" data-i18n="svc_makeup">Make-up</span>
         <span class="sic-price">ab CHF 60</span>
         <span class="sic-time">45–60 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-6" data-cat="cosmetik" onclick="selectServiceFromMenu('cosmetik','Kosmetik')" aria-label="Kosmetik Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Kosmetik"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-        <span class="sic-label">Kosmetik</span>
+        <span class="sic-label" data-i18n="svc_kosmetik">Kosmetik</span>
         <span class="sic-price">ab CHF 45</span>
         <span class="sic-time">45–60 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-7" data-cat="eyebrows" onclick="selectServiceFromMenu('eyebrows','Augenbrauen')" aria-label="Augenbrauen Salons zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Augenbrauen"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <span class="sic-label">Augenbrauen</span>
+        <span class="sic-label" data-i18n="svc_eyebrows">Augenbrauen</span>
         <span class="sic-price">ab CHF 25</span>
         <span class="sic-time">30–45 Min.</span>
       </button>
       <button class="service-icon-card fade-in-up stagger-8" data-cat="tattoo" onclick="selectServiceFromMenu('tattoo','Tattoo &amp; Piercing')" aria-label="Tattoo und Piercing zeigen">
         <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Tattoo"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
-        <span class="sic-label">Tattoo</span>
+        <span class="sic-label" data-i18n="svc_tattoo">Tattoo</span>
         <span class="sic-price">ab CHF 80</span>
         <span class="sic-time">60–120 Min.</span>
       </button>
@@ -3486,9 +3486,9 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 
 <!-- ABOUT / STORY -->
 <section class="about-section" id="aboutSection">
-  <h2>Warum solen?</h2>
-  <p class="about-text">solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Jeder Salon hier ist echt. Kein Stock-Foto, kein Franchise.</p>
-  <div class="about-sig">Gegr&uuml;ndet in Basel &middot; F&uuml;r unsere lokalen Beauty-Experten</div>
+  <h2 data-i18n="about_title">Warum solen?</h2>
+  <p class="about-text" data-i18n="about_text">solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Jeder Salon hier ist echt. Kein Stock-Foto, kein Franchise.</p>
+  <div class="about-sig" data-i18n="about_sig">Gegr&uuml;ndet in Basel &middot; F&uuml;r unsere lokalen Beauty-Experten</div>
 </section>
 
 </div><!-- /pageHome -->
@@ -4341,6 +4341,16 @@ const T={
     weekdays:'Mo_Di_Mi_Do_Fr_Sa_So',
     profile_field_name:'Name',profile_field_email:'E-Mail',profile_field_phone:'Telefon',profile_field_language:'Sprache',
     profile_salon_cta_title:'Du hast einen Salon in Basel?',profile_salon_cta_desc:'Mach deinen Salon sichtbar in deinem Quartier. Kostenlos starten, keine Vertragsbindung.',profile_salon_cta_btn:'Kostenlos starten',
+    hero_proof_text:'Termine heute gebucht',
+    sp_salons:'Salons in Basel',sp_bookings:'Buchungen diesen Monat',sp_rating:'Durchschnittsbewertung',sp_free:'Kostenlos & sicher buchen',
+    quartier_eyebrow:'Dein Quartier',quartier_title:'Entdecke dein Quartier',quartier_see_all:'Alle ansehen',
+    carousel_new_title:'Neu auf solen',carousel_new_sub:'Zuletzt hinzugef\u00fcgt',
+    carousel_nearby_title:'Salons in deiner N\u00e4he',carousel_nearby_sub:'Basierend auf deinem Standort',
+    spotlight_title:'Unsere Empfehlungen diese Woche',spotlight_sub:'Entdecke Salons, die uns begeistern',
+    popular_services_eyebrow:'Services entdecken',popular_services_title:'Was suchst du heute?',popular_services_sub:'W\u00e4hle direkt einen Service und finde Salons in deiner N\u00e4he',
+    about_title:'Warum solen?',about_text:'solen macht Basler Salons sichtbar und die Buchung so einfach wie eine Nachricht an Freunde. Jeder Salon hier ist echt. Kein Stock-Foto, kein Franchise.',about_sig:'Gegr\u00fcndet in Basel \u00b7 F\u00fcr unsere lokalen Beauty-Experten',
+    svc_coiffeur:'Coiffeur',svc_barbershop:'Barbershop',svc_nails:'Nails',svc_spa:'Spa & Wellness',svc_makeup:'Make-up',svc_kosmetik:'Kosmetik',svc_eyebrows:'Augenbrauen',svc_tattoo:'Tattoo',
+    bookings_empty_title:'Du hast noch keine Termine',bookings_empty_sub:'Zeit, deinen n\u00e4chsten Lieblingssalon zu entdecken!',bookings_discover_btn:'Salons entdecken',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
@@ -4457,6 +4467,16 @@ const T={
     weekdays:'Mo_Tu_We_Th_Fr_Sa_Su',
     profile_field_name:'Name',profile_field_email:'Email',profile_field_phone:'Phone',profile_field_language:'Language',
     profile_salon_cta_title:'Do you have a salon in Basel?',profile_salon_cta_desc:'Make your salon visible in your neighbourhood. Start for free, no commitment.',profile_salon_cta_btn:'Start for free',
+    hero_proof_text:'bookings made today',
+    sp_salons:'Salons in Basel',sp_bookings:'Bookings this month',sp_rating:'Average rating',sp_free:'Book for free & safely',
+    quartier_eyebrow:'Your Neighbourhood',quartier_title:'Discover your neighbourhood',quartier_see_all:'See all',
+    carousel_new_title:'New on solen',carousel_new_sub:'Recently added',
+    carousel_nearby_title:'Salons near you',carousel_nearby_sub:'Based on your location',
+    spotlight_title:'Our picks this week',spotlight_sub:'Discover salons we love',
+    popular_services_eyebrow:'Discover services',popular_services_title:'What are you looking for?',popular_services_sub:'Pick a service and find salons near you',
+    about_title:'Why solen?',about_text:'solen makes Basel\'s salons visible and booking as easy as texting a friend. Every salon here is real. No stock photos, no franchises.',about_sig:'Founded in Basel \u00b7 For our local beauty experts',
+    svc_coiffeur:'Hair Salon',svc_barbershop:'Barbershop',svc_nails:'Nails',svc_spa:'Spa & Wellness',svc_makeup:'Make-up',svc_kosmetik:'Cosmetics',svc_eyebrows:'Eyebrows',svc_tattoo:'Tattoo',
+    bookings_empty_title:'No bookings yet',bookings_empty_sub:'Time to discover your next favourite salon!',bookings_discover_btn:'Discover salons',
   },
   fr:{
     nav_login:'Se connecter',nav_register:"S'inscrire",nav_logout:'Se d\u00e9connecter',nav_theme:'Clair / Sombre',
@@ -4573,6 +4593,16 @@ const T={
     location_unavailable:'Position non disponible',load_failed:'Impossible de charger les salons',reload:'Recharger',
     profile_field_name:'Nom',profile_field_email:'E-mail',profile_field_phone:'T\u00e9l\u00e9phone',profile_field_language:'Langue',
     profile_salon_cta_title:'Vous avez un salon \u00e0 B\u00e2le\u00a0?',profile_salon_cta_desc:'Rendez votre salon visible dans votre quartier. Gratuit, sans engagement.',profile_salon_cta_btn:'Commencer gratuitement',
+    hero_proof_text:'r\u00e9servations aujourd\'hui',
+    sp_salons:'Salons \u00e0 B\u00e2le',sp_bookings:'R\u00e9servations ce mois',sp_rating:'Note moyenne',sp_free:'R\u00e9server gratuitement',
+    quartier_eyebrow:'Ton quartier',quartier_title:'D\u00e9couvre ton quartier',quartier_see_all:'Tout voir',
+    carousel_new_title:'Nouveau sur solen',carousel_new_sub:'R\u00e9cemment ajout\u00e9',
+    carousel_nearby_title:'Salons pr\u00e8s de chez toi',carousel_nearby_sub:'Selon ta position',
+    spotlight_title:'Nos coups de c\u0153ur de la semaine',spotlight_sub:'D\u00e9couvre des salons qui nous inspirent',
+    popular_services_eyebrow:'D\u00e9couvrir les services',popular_services_title:'Que cherches-tu aujourd\'hui\u00a0?',popular_services_sub:'Choisis un service et trouve des salons pr\u00e8s de toi',
+    about_title:'Pourquoi solen\u00a0?',about_text:'solen rend les salons b\u00e2lois visibles et la r\u00e9servation aussi simple qu\'un message entre amis. Chaque salon ici est authentique.',about_sig:'Fond\u00e9 \u00e0 B\u00e2le \u00b7 Pour nos experts beaut\u00e9 locaux',
+    svc_coiffeur:'Coiffure',svc_barbershop:'Barbier',svc_nails:'Ongles',svc_spa:'Spa & Bien-\u00eatre',svc_makeup:'Maquillage',svc_kosmetik:'Cosm\u00e9tique',svc_eyebrows:'Sourcils',svc_tattoo:'Tatouage',
+    bookings_empty_title:'Pas encore de rendez-vous',bookings_empty_sub:'Il est temps de d\u00e9couvrir ton prochain salon pr\u00e9f\u00e9r\u00e9\u00a0!',bookings_discover_btn:'D\u00e9couvrir des salons',
   },
   tr:{
     nav_login:'GiriÅ Yap',nav_register:'Kayıt Ol',nav_logout:'ÇıkıÅ Yap',nav_theme:'Açık / Koyu',
@@ -4688,6 +4718,16 @@ const T={
     weekdays:'Pt_Sa_\u00c7a_Pe_Cu_Ct_Pz',
     profile_field_name:'\u0130sim',profile_field_email:'E-posta',profile_field_phone:'Telefon',profile_field_language:'Dil',
     profile_salon_cta_title:'Basel\'de bir salonunuz var m\u0131?',profile_salon_cta_desc:'Salonunuzu mahallede g\u00f6r\u00fcn\u00fcr k\u0131l\u0131n. \u00dccretsiz ba\u015flay\u0131n, s\u00f6zle\u015fme yok.',profile_salon_cta_btn:'\u00dccretsiz ba\u015fla',
+    hero_proof_text:'bug\u00fcn yap\u0131lan randevu',
+    sp_salons:'Basel\'de salon',sp_bookings:'Bu ay rezervasyon',sp_rating:'Ortalama puan',sp_free:'\u00dccretsiz ve g\u00fcvenli rezervasyon',
+    quartier_eyebrow:'Mahalleniz',quartier_title:'Mahalleni ke\u015ffet',quartier_see_all:'T\u00fcm\u00fcn\u00fc g\u00f6r',
+    carousel_new_title:'solen\'de yeni',carousel_new_sub:'Son eklenenler',
+    carousel_nearby_title:'Yak\u0131n\u0131ndaki salonlar',carousel_nearby_sub:'Konumuna g\u00f6re',
+    spotlight_title:'Bu haftan\u0131n \u00f6nerileri',spotlight_sub:'Bizi heyecanland\u0131ran salonlar\u0131 ke\u015ffet',
+    popular_services_eyebrow:'Hizmetleri ke\u015ffet',popular_services_title:'Bug\u00fcn ne ar\u0131yorsun?',popular_services_sub:'Bir hizmet se\u00e7 ve yak\u0131n\u0131ndaki salonlar\u0131 bul',
+    about_title:'Neden solen?',about_text:'solen, Basel\'in salonlar\u0131n\u0131 g\u00f6r\u00fcn\u00fcr k\u0131lar ve randevu almay\u0131 arkada\u015f\u0131na mesaj atmak kadar kolayla\u015ft\u0131r\u0131r. Buradaki her salon ger\u00e7ek.',about_sig:'Basel\'de kuruldu \u00b7 Yerel g\u00fczellik uzmanlar\u0131m\u0131z i\u00e7in',
+    svc_coiffeur:'Kuaf\u00f6r',svc_barbershop:'Berber',svc_nails:'T\u0131rnak',svc_spa:'Spa & Sa\u011fl\u0131k',svc_makeup:'Makyaj',svc_kosmetik:'Kozmetik',svc_eyebrows:'Ka\u015f',svc_tattoo:'D\u00f6vme',
+    bookings_empty_title:'Hen\u00fcz randevunuz yok',bookings_empty_sub:'Bir sonraki favori salonunu ke\u015ffetmenin zaman\u0131!',bookings_discover_btn:'Salonlar\u0131 ke\u015ffet',
   },
 };
 
