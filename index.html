@@ -4787,12 +4787,12 @@ function closeAllDropdowns(){
 }
 // Global outside-click listener for all dropdowns (click + touchstart for mobile)
 document.addEventListener('click',e=>{
-  if(!e.target.closest('[data-dropdown="open"],.nav-menu,.hamburger,.avatar')){
+  if(!e.target.closest('[data-dropdown="open"],.nav-menu,.hamburger,.avatar,.nav-lang-dropdown,.nav-lang-trigger,.lang-dropdown-menu')){
     closeAllDropdowns();
   }
 });
 document.addEventListener('touchstart',e=>{
-  if(!e.target.closest('[data-dropdown="open"],.nav-menu,.hamburger,.avatar')){
+  if(!e.target.closest('[data-dropdown="open"],.nav-menu,.hamburger,.avatar,.nav-lang-dropdown,.nav-lang-trigger,.lang-dropdown-menu')){
     closeAllDropdowns();
   }
 },{passive:true});
@@ -13671,7 +13671,5 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   </div>
 </div>
 
-  <!-- Vite ES module entry point — imports src/services, src/utils, src/styles -->
-  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
