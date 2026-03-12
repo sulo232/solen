@@ -7324,11 +7324,15 @@ function loadPageContent(page){
   if(page==='profile')renderProfile();
   else if(page==='bookings')renderBookings();
   else if(page==='admin')renderAdmin();
-  else if(page==='salon-dashboard')renderSalonDashboard();
+  else if(page==='salon-dashboard'||page==='salon/setup'||page==='dashboard/analytics'||page==='dashboard/staff'){
+    var _isOwner=!!(currentUser&&currentProfile&&(currentProfile.role==='salon_owner'||currentProfile.is_salon_owner));
+    if(!_isOwner){toast(t('owner_only')||'Nur für Salon-Inhaber.','error');showPage('home');return;}
+    if(page==='salon-dashboard')renderSalonDashboard();
+    else if(page==='salon/setup')renderSalonSetupPage();
+    else if(page==='dashboard/analytics')renderAnalyticsPage();
+    else if(page==='dashboard/staff')renderStaffPage();
+  }
   else if(page==='partner')renderPartnerPage();
-  else if(page==='salon/setup')renderSalonSetupPage();
-  else if(page==='dashboard/analytics')renderAnalyticsPage();
-  else if(page==='dashboard/staff')renderStaffPage();
   else if(page.startsWith('book/'))renderBookPage(page.split('/')[1]);
 }
 
@@ -8876,6 +8880,8 @@ async function deleteService(id){
 async function renderSalonDashboard(){
   const el=document.getElementById('dashTabBuchungen')||document.getElementById('salonDashContent');
   if(!currentUser){el.innerHTML='<p class="text-muted">'+(t('auth_required')||'Bitte anmelden.')+'</p>';return;}
+  var _salonOwner=!!(currentProfile&&(currentProfile.role==='salon_owner'||currentProfile.is_salon_owner));
+  if(!_salonOwner){el.innerHTML='<p class="text-muted">'+(t('owner_only')||'Nur für Salon-Inhaber.')+'</p>';return;}
   el.innerHTML='<div class="spinner"></div>';
   const{data:mySalons}=await sb.from('salons').select('*').eq('owner_id',currentUser.id);
   if(!mySalons||mySalons.length===0){
@@ -11578,6 +11584,7 @@ const OB_SOCIALS=[
 ];
 
 function openOnboarding(){
+  if(!currentUser){openAuth('login');return;}
   obRestoreProgress();
   if(!obData.categories)obData={categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}};
   // Prefill from current user
