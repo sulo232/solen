@@ -17,12 +17,12 @@
 .no-transition,.no-transition *,.no-transition *::before,.no-transition *::after{transition:none!important}
 :root{
   /* ── COLOR TOKENS (Warm Swiss / Basel) ── */
-  --c-bg:#F8F4ED;--c-bg-elevated:#FFFFFF;--c-surface:#FFFFFF;--c-surface-alt:#F3EEE6;
-  --c-text:#1F1F1F;--c-text-secondary:#6B5E4F;--c-text-muted:#8C7E6F;
+  --c-bg:#FAF7F2;--c-bg-elevated:#FEFDFB;--c-surface:#FEFDFB;--c-surface-alt:#F5F0E8;
+  --c-text:#1A1714;--c-text-secondary:#6B5E4F;--c-text-muted:#8C7E6F;
   --c-accent:#9B1D30;--c-accent-hover:#7A1626;--c-accent-fg:#FFFFFF;
   --c-cta:#9B1D30;--c-cta-hover:#7A1626;--c-cta-fg:#FFFFFF;
   --c-highlight:#D4AF77;--c-accent-secondary:#D4AF77;
-  --c-border:#E2DCD3;--c-border-strong:#D5CFC6;
+  --c-border:#EAE5DC;--c-border-strong:#DDD7CD;
   --c-success:#2d7a4f;--c-error:#DC2626;--c-warning:#d97706;
   --c-focus:#7C3AED;
   /* ── LEGACY ALIASES ── */
@@ -41,9 +41,9 @@
   /* ── RADIUS TOKENS ── */
   --r:8px;--r2:16px;--r-lg:16px;--r-pill:100px;--radius:8px;
   /* ── SHADOW TOKENS ── */
-  --shadow-card:0 10px 30px -10px rgba(155,29,48,0.15);
-  --shadow:var(--shadow-card);--shadow2:0 20px 40px -15px rgba(155,29,48,0.2);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
-  --glow:0 2px 8px rgba(155,29,48,0.12);
+  --shadow-card:0 2px 4px rgba(120,90,60,.04),0 8px 24px -6px rgba(155,29,48,.1);
+  --shadow:var(--shadow-card);--shadow2:0 4px 8px rgba(120,90,60,.05),0 16px 40px -10px rgba(155,29,48,.12);--shadow3:0 2px 6px rgba(120,90,60,.04),0 12px 32px rgba(120,90,60,.06),0 32px 64px rgba(0,0,0,.06);
+  --glow:0 2px 12px rgba(155,29,48,0.1);
   /* ── MOTION TOKENS ── */
   --ease:cubic-bezier(.4,0,.2,1);
   --ease-standard:cubic-bezier(.2,.8,.2,1);
@@ -53,15 +53,15 @@
   --motion-slow:280ms;
   /* ── ELEVATION TOKENS ── */
   --elev-0:none;
-  --elev-1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --elev-2:0 6px 18px rgba(0,0,0,.08);
-  --elev-3:0 12px 36px rgba(0,0,0,.12);
+  --elev-1:0 1px 3px rgba(120,90,60,.05),0 2px 6px rgba(120,90,60,.03);
+  --elev-2:0 2px 6px rgba(120,90,60,.04),0 8px 24px rgba(120,90,60,.07);
+  --elev-3:0 4px 10px rgba(120,90,60,.05),0 16px 48px rgba(120,90,60,.09);
   /* ── CATEGORY TOKENS ── */
   --cat-hair:#9B1D30;--cat-barbershop:#4A4A8A;--cat-nails:#C4587A;--cat-spa:#5B8F7B;--cat-makeup:#9B6BBF;--cat-cosmetik:#D4AF77;--cat-tattoo:#2D2D2D;
   /* ── SPACING ── */
   --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;
   /* ── RGB TOKENS FOR GLASSMORPHISM ── */
-  --surface-rgb:255,255,255;--bg-rgb:248,244,237;
+  --surface-rgb:254,253,251;--bg-rgb:250,247,242;
   /* ── TEAL & CORAL PALETTE (chat, badges, map, commission) ── */
   --c-teal:#4ECDC4;--c-teal-dark:#26a69a;--c-teal-rgb:78,205,196;
   --c-coral:#FF6B6B;--c-coral-dark:#FF8E53;--c-coral-rgb:255,107,107;
@@ -73,7 +73,7 @@
   --glass-bg:rgba(var(--surface-rgb),0.88);--glass-bg-light:rgba(var(--surface-rgb),0.78);
   --glass-blur:blur(20px) saturate(160%);--glass-blur-heavy:blur(32px) saturate(200%);
   --glass-border:1px solid rgba(255,255,255,.18);--glass-badge-blur:blur(8px);
-  --glass-shadow:0 24px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.25);
+  --glass-shadow:0 8px 32px rgba(120,90,60,.08),0 24px 64px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.5);
   --glass-text-shadow:0 1px 2px rgba(0,0,0,.08);--glass-text-shadow-dark:0 1px 3px rgba(0,0,0,.4);}
 [data-theme="dark"]{
   --bg:#1A1210;--bg2:#231B16;--surface:#231B16;--surfaceAlt:#2D231C;
@@ -121,7 +121,7 @@ h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-fa
 .nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title,.service-icon-card,.sic-label,.chip,.cat-pill{hyphens:none;word-break:normal;overflow-wrap:normal}
 .store-price-range,.store-price,.price-label,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 a{text-decoration:none;color:inherit}
-button,a,[role="button"],[role="link"],[onclick],.bottom-nav-item,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.svc-card,.cal-day,.slot{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none}
+button,a,[role="button"],[role="link"],[onclick],.bottom-nav-item,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.svc-card,.cal-day,.slot{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;transition:transform .15s var(--ease),opacity .15s var(--ease),color .2s var(--ease),background-color .2s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease)}
 .store-card,.sort-trigger,.view-toggle-btn,.filter-panel-trigger,.filter-pill,.cat-tab,.quartier-photo-card,.service-icon-card,.store-card-see-all-btn{pointer-events:auto;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 img{max-width:100%;display:block}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -132,8 +132,9 @@ img{max-width:100%;display:block}
 *:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
 /* ── TOUCH TARGETS (5g, 5i) ── */
 button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
-input,select,textarea{font-family:inherit;min-height:44px}
-button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-chip:active,.rating-chip:active,.neighbourhood-chip:active,.filter-chip-mini:active,.reg-choice-card:active{transform:scale(0.96);transition-duration:0.1s;}
+input,select,textarea{font-family:inherit;min-height:44px;transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
+input:focus,select:focus,textarea:focus{border-color:var(--c-accent);box-shadow:0 0 0 3px rgba(155,29,48,.1)}
+button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-chip:active,.rating-chip:active,.neighbourhood-chip:active,.filter-chip-mini:active,.reg-choice-card:active,.hero-utility-btn:active,.cat-pill:active,.lang-option:active,.nav-dropdown a:active,.nav-dropdown button:active,.salon-reg-close:active{transform:scale(0.96);transition-duration:0.1s;}
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.4);}
@@ -167,10 +168,11 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 #navGuest,#navUser{transition:opacity .25s ease}
 #navGuest.fade-out,#navUser.fade-out{opacity:0}
 .nav-menu{position:relative}
-.nav-dropdown{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow2);min-width:200px;overflow:hidden;z-index:500;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transition:opacity .2s ease,transform .2s ease,visibility .2s}
+.nav-dropdown{position:absolute;right:0;top:calc(100% + 8px);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:12px;box-shadow:var(--glass-shadow);min-width:200px;overflow:hidden;z-index:1050;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.97);transition:opacity .2s ease,transform .2s ease,visibility .2s}
 .nav-dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
-.nav-dropdown a,.nav-dropdown button{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:.88rem;font-weight:500;color:var(--text);background:transparent;border:none;width:100%;text-align:left;transition:.15s}
+.nav-dropdown a,.nav-dropdown button{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:.88rem;font-weight:500;color:var(--text);background:transparent;border:none;width:100%;text-align:left;transition:background .15s,transform .15s;-webkit-tap-highlight-color:transparent;min-height:44px}
 .nav-dropdown a:hover,.nav-dropdown button:hover{background:var(--surfaceAlt)}
+.nav-dropdown a:active,.nav-dropdown button:active{background:var(--surfaceAlt);transform:scale(.98)}
 .nav-dropdown .sep{height:1px;background:var(--border);margin:4px 0}
 /* NAV CENTER LINKS */
 .nav-center{display:flex;gap:28px;align-items:center;position:absolute;left:50%;transform:translateX(-50%)}
@@ -188,7 +190,7 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .nav-lang-trigger:hover{background:rgba(155,29,48,.06);border-color:var(--c-accent);color:var(--c-accent)}
 [data-theme="dark"] .nav-lang-trigger{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.8)}
 [data-theme="dark"] .nav-lang-trigger:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3)}
-.lang-dropdown-menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow2);min-width:150px;overflow:hidden;z-index:500;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s,transform .2s,visibility .2s;padding:4px}
+.lang-dropdown-menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:12px;box-shadow:var(--glass-shadow);min-width:150px;overflow:hidden;z-index:1050;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s,transform .2s,visibility .2s;padding:4px}
 .lang-dropdown-menu.open{opacity:1;visibility:visible;transform:translateY(0)}
 .lang-option{display:block;width:100%;padding:10px 14px;background:none;border:none;text-align:left;font-size:.88rem;font-weight:500;color:var(--text);cursor:pointer;border-radius:8px;transition:background .15s}
 .lang-option:hover{background:var(--surfaceAlt)}
@@ -224,6 +226,7 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 [data-theme="dark"] .hero p{color:var(--c-text-secondary)}
 .hero-filter-chip{background:var(--c-surface);border:1.5px solid var(--c-border);color:var(--c-text-secondary);padding:8px 20px;min-height:44px;border-radius:var(--r-pill);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s var(--ease);box-shadow:var(--elev-1)}
 .hero-filter-chip:hover{border-color:var(--c-accent);color:var(--c-accent);box-shadow:var(--elev-2)}
+.hero-filter-chip.selected{background:var(--c-accent);border-color:var(--c-accent);color:#fff;box-shadow:var(--glow)}
 .hero-search{display:flex;gap:0;max-width:560px;margin:0 0 32px;background:var(--c-surface);border:1.5px solid var(--c-border);border-radius:20px;padding:0;overflow:hidden;box-shadow:var(--elev-2)}
 .hero-search-field{flex:1;display:flex;align-items:center;gap:8px;padding:14px 16px;cursor:pointer;border-right:1px solid rgba(0,0,0,.08);transition:background var(--motion-fast) var(--ease-standard);position:relative;min-width:0}
 .hero-search-field:last-of-type{border-right:none}
@@ -233,9 +236,10 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .hero-search-field-value{font-size:.88rem;font-weight:600;color:#1F1F1F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
 .hero-search-field-text{display:flex;flex-direction:column;gap:2px;min-width:0}
 .hero-search-submit{background:var(--c-accent);color:#fff;border:none;padding:14px 28px;font-weight:700;font-size:.95rem;cursor:pointer;transition:all var(--motion-fast) var(--ease-standard);white-space:nowrap;flex-shrink:0}
-.hero-search-submit:hover{background:var(--c-accent-hover)}
+.hero-search-submit:hover{background:var(--c-accent-hover);box-shadow:0 4px 16px rgba(155,29,48,.3)}
+.hero-search-submit:active{transform:scale(.97);box-shadow:0 2px 8px rgba(155,29,48,.2)}
 /* Selection menu dropdown */
-.selection-dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:240px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:16px;box-shadow:var(--elev-3);z-index:100;padding:8px;display:none;max-height:320px;overflow-y:auto}
+.selection-dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:240px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-radius:16px;box-shadow:var(--glass-shadow);z-index:100;padding:8px;display:none;max-height:320px;overflow-y:auto}
 .selection-dropdown.open{display:block}
 .selection-dropdown-item{padding:10px 14px;border-radius:10px;font-size:.88rem;font-weight:500;color:var(--c-text);cursor:pointer;transition:background var(--motion-fast) var(--ease-standard);display:flex;align-items:center;gap:8px}
 .selection-dropdown-item:hover{background:var(--c-surface-alt)}
@@ -868,11 +872,11 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 /* TOAST */
 #toast{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 @media(max-width:768px){#toast{bottom:80px;right:12px;left:12px}}
-.toast-msg{padding:14px 20px;border-radius:var(--r);font-size:var(--text-base);font-weight:600;box-shadow:var(--shadow3);animation:toastSlide .35s cubic-bezier(.4,0,.2,1);pointer-events:auto;max-width:360px;backdrop-filter:blur(12px);display:flex;align-items:center;gap:10px}
+.toast-msg{padding:14px 20px;border-radius:16px;font-size:var(--text-base);font-weight:600;box-shadow:var(--glass-shadow);animation:toastSlide .35s cubic-bezier(.4,0,.2,1);pointer-events:auto;max-width:360px;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);display:flex;align-items:center;gap:10px;border:var(--glass-border)}
 .toast-msg .toast-icon{font-size:1.15rem;flex-shrink:0}
-.toast-msg.success{background:rgba(45,122,79,.95);color:white}
-.toast-msg.error{background:rgba(192,57,43,.95);color:white}
-.toast-msg.info{background:rgba(155,29,48,.95);color:#fff}
+.toast-msg.success{background:rgba(45,122,79,.88);color:white}
+.toast-msg.error{background:rgba(192,57,43,.88);color:white}
+.toast-msg.info{background:rgba(155,29,48,.88);color:#fff}
 .toast-msg.exiting{animation:toastExit .25s ease forwards}
 @keyframes toastSlide{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes toastExit{to{opacity:0;transform:translateY(-8px) scale(.95)}}
@@ -887,6 +891,11 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .bottom-nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
 .bottom-nav-item.active svg{stroke-width:2.2}
 @media(max-width:768px){.bottom-nav{display:block}}
+
+/* ── GLASS PANEL UTILITY ── */
+.glass-panel{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow)}
+.glass-panel-light{background:var(--glass-bg-light);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--elev-2)}
+.glass-panel-subtle{background:rgba(var(--surface-rgb),.92);backdrop-filter:var(--glass-badge-blur);-webkit-backdrop-filter:var(--glass-badge-blur);border:var(--glass-border)}
 
 /* UTIL */
 .stores-grid .store-card{animation:cardFadeIn .2s ease}
@@ -2098,6 +2107,16 @@ body{font-family:var(--font-body,system-ui);}
 @keyframes heartPop{0%{transform:scale(1)}25%{transform:scale(1.3)}50%{transform:scale(.9)}100%{transform:scale(1)}}
 .fav-btn.just-faved{animation:heartPop .4s ease}
 
+/* ── MICRO-ANIMATIONS (Phase 4) ── */
+@keyframes successPop{0%{transform:scale(0) rotate(-30deg);opacity:0}60%{transform:scale(1.15) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes ripplePulse{0%{box-shadow:0 0 0 0 rgba(155,29,48,.25)}100%{box-shadow:0 0 0 12px rgba(155,29,48,0)}}
+.anim-success{animation:successPop .4s cubic-bezier(.34,1.56,.64,1)}
+.anim-ripple{animation:ripplePulse .5s ease-out}
+/* Filter chip selected pulse */
+.cat-pill.active,.hero-filter-chip.active{animation:ripplePulse .35s ease-out}
+/* Grid content refresh fade */
+.stores-grid{transition:opacity .15s ease}
+
 /* ── LAZY LOADING IMAGE ── */
 .lazy-img{opacity:0;transition:opacity .4s ease}
 .lazy-img.loaded{opacity:1}
@@ -2704,6 +2723,12 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   #profileEditModal>div{margin:0!important;border-radius:24px 24px 0 0!important;max-width:100%!important;max-height:92vh!important}
   /* Ensure all buttons meet 44px touch target */
   button,a[role="button"],.chip,.bottom-nav-item,.analytics-filter-btn,.export-btn{min-height:44px}
+  /* Avatar & lang trigger: enlarge tap area to 44px on mobile */
+  .avatar{width:44px;height:44px;font-size:.9rem}
+  .nav-lang-trigger{width:44px;height:44px}
+  /* Nav dropdown: ensure items are tappable and spaced */
+  .nav-dropdown a,.nav-dropdown button{padding:14px 16px;min-height:48px;font-size:.92rem}
+  .lang-option{padding:12px 14px;min-height:44px}
   /* No horizontal scroll on any element */
   *{max-width:100vw}
   .stores-grid,.trending-grid{overflow-x:hidden}
@@ -4717,11 +4742,20 @@ const DEMO_SERVICES={
 function toast(msg,type='info'){
   const icons={success:'\u2714',error:'\u2718',info:'\u2139'};
   const d=document.createElement('div');
-  d.className=`toast-msg ${type}`;
-  d.innerHTML=`<span class="toast-icon">${icons[type]||icons.info}</span><span>${msg}</span>`;
+  d.className='toast-msg '+type;
+  const iconSpan=document.createElement('span');
+  iconSpan.className='toast-icon'+(type==='success'?' anim-success':'');
+  iconSpan.textContent=icons[type]||icons.info;
+  const textSpan=document.createElement('span');
+  textSpan.textContent=msg;
+  d.appendChild(iconSpan);
+  d.appendChild(textSpan);
   document.getElementById('toast').appendChild(d);
   setTimeout(()=>{d.classList.add('exiting');setTimeout(()=>d.remove(),250);},3500);
 }
+/* Phase 4: Micro-animation helpers */
+function animateSuccess(el){if(!el)return;el.classList.add('anim-success');el.addEventListener('animationend',()=>el.classList.remove('anim-success'),{once:true});}
+function animateRipple(el){if(!el)return;el.classList.add('anim-ripple');el.addEventListener('animationend',()=>el.classList.remove('anim-ripple'),{once:true});}
 
 // HEADROOM — hide bottom nav on scroll down, show on scroll up
 (function(){
@@ -5049,7 +5083,7 @@ function selectServiceFromMenu(cat,label){
   // Mark active card
   document.querySelectorAll('.service-icon-card').forEach(function(c){c.classList.remove('active');});
   var activeCard=document.querySelector('.service-icon-card[data-cat="'+cat+'"]');
-  if(activeCard)activeCard.classList.add('active');
+  if(activeCard){activeCard.classList.add('active');animateRipple(activeCard);}
 
   // Apply filter selection
   pickSelection('service',cat,label);
@@ -6113,6 +6147,10 @@ function restoreSort(){
 
 function renderStores(){
 renderRecentlyViewed();
+    /* Phase 4: Visual feedback — brief fade-out on content refresh */
+    const _grid=document.getElementById('storesGrid');
+    if(_grid&&_grid.children.length>0){_grid.style.opacity='.4';_grid.style.transition='opacity .15s ease';}
+    requestAnimationFrame(()=>{setTimeout(()=>{if(_grid)_grid.style.opacity='1';},80);});
     const query=document.getElementById('searchInput').value.toLowerCase();
   let filtered=allStores.filter(s=>{
     const matchCat=activeCategories.size===0||activeCategories.has(s.cat)||activeCategories.has(s.type);
@@ -10220,7 +10258,7 @@ document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.targe
 <!-- PROFILE EDIT MODAL -->
 <div id="profileEditModal" role="dialog" aria-modal="true" aria-label="Profil bearbeiten" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:10000;overflow-y:auto"
 <div style="max-width:480px;margin:40px auto;background:var(--card);border-radius:20px;padding:32px;position:relative">
-<button onclick="closeProfileModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted)">x</button>
+<button onclick="closeProfileModal()" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted);width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%">x</button>
 <div style="text-align:center;margin-bottom:24px"><div id="profileAvatar" style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">S</div><h2 style="margin:0;font-size:20px;color:var(--text)">Mein Profil</h2></div>
 Name: <input id="pmDisplayName" type="text" placeholder="Dein Name" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);margin-bottom:12px;box-sizing:border-box">
 E-Mail: <input id="pmEmail" type="email" readonly style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);margin-bottom:12px;box-sizing:border-box;opacity:0.7">
@@ -10244,7 +10282,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 @media(max-width:600px){.salon-reg-wrap{border-radius:28px 28px 0 0;max-height:94vh}}
 .salon-reg-header{padding:28px 28px 0;display:flex;align-items:center;justify-content:space-between}
 .salon-reg-header h2{font-family:var(--font-display);font-size:1.35rem;font-weight:800;color:var(--text);margin:0}
-.salon-reg-close{background:none;border:none;cursor:pointer;color:var(--text2);padding:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;width:36px;height:36px}
+.salon-reg-close{background:none;border:none;cursor:pointer;color:var(--text2);padding:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;width:44px;height:44px;-webkit-tap-highlight-color:transparent}
 .salon-reg-close:hover{background:var(--surfaceAlt);color:var(--text)}
 .salon-reg-steps{display:flex;gap:6px;padding:20px 28px 0}
 .salon-reg-dot{flex:1;height:4px;border-radius:4px;background:var(--border);transition:background .3s}
@@ -10254,7 +10292,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .salon-reg-body p.step-hint{color:var(--text2);font-size:.85rem;margin:0 0 18px}
 .reg-field{margin-bottom:14px}
 .reg-field label{display:block;font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
-.reg-field input,.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none}
+.reg-field input,.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none;min-height:44px}
 .reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--accent2)}
 .reg-field textarea{resize:vertical;min-height:90px}
 .reg-service-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-end}
@@ -10289,7 +10327,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 @media(max-width:600px){
   .reg-day-row{gap:6px;flex-wrap:nowrap}
   .reg-day-row input[type=checkbox]{width:24px;height:24px;min-width:24px}
-  .reg-time-inputs input[type=time]{min-height:40px;padding:8px 6px;font-size:.82rem}
+  .reg-time-inputs input[type=time]{min-height:44px;padding:8px 6px;font-size:.82rem}
   .salon-reg-footer button{min-height:48px;min-width:48px;padding:13px 28px;font-size:.92rem}
   .reg-btn-back,.reg-btn-next{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 }
@@ -10337,7 +10375,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
 /* Dark mode toggle */
 /* Toast notifications */
 #toastContainer{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);z-index:9500;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
-.toast{background:rgba(26,26,26,.95);color:#fff;padding:10px 22px;border-radius:24px;font-size:.875rem;box-shadow:0 4px 16px rgba(0,0,0,.3);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none;max-width:320px;text-align:center}
+.toast{background:rgba(26,26,26,.85);color:#fff;padding:10px 22px;border-radius:24px;font-size:.875rem;box-shadow:var(--glass-shadow);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none;max-width:320px;text-align:center}
 .toast.show{opacity:1;transform:translateY(0)}
 /* Dark mode overrides (consolidated) */
 [data-theme=dark]{--c-bg:#0F0F0F;--c-surface:#1A1A1A;--c-surface2:#242424;--c-border:#2E2E2E;--c-text:#EFEFEF;--c-text-muted:#999}
@@ -10443,7 +10481,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
               <div class="reg-field" style="flex:1"><label>Dauer (Min.)</label><input type="number" class="reg-svc-dur" placeholder="30" min="5"></div>
             </div>
           </div>
-          <button type="button" onclick="regAddServiceRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:8px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%">+ Weiteren Service hinzufügen</button>
+          <button type="button" onclick="regAddServiceRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px">+ Weiteren Service hinzufügen</button>
         </div>
         <div class="salon-reg-footer">
           <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
