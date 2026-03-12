@@ -4339,6 +4339,8 @@ const T={
     dm_error_title:'Verbindungsfehler',dm_error_sub:'Nachrichten konnten nicht geladen werden. Bitte nochmal versuchen.',
     months:'Januar_Februar_M\u00e4rz_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember',
     weekdays:'Mo_Di_Mi_Do_Fr_Sa_So',
+    profile_field_name:'Name',profile_field_email:'E-Mail',profile_field_phone:'Telefon',profile_field_language:'Sprache',
+    profile_salon_cta_title:'Du hast einen Salon in Basel?',profile_salon_cta_desc:'Mach deinen Salon sichtbar in deinem Quartier. Kostenlos starten, keine Vertragsbindung.',profile_salon_cta_btn:'Kostenlos starten',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
@@ -4453,6 +4455,8 @@ const T={
     dm_error_title:'Connection error',dm_error_sub:'Could not load messages. Please try again.',
     months:'January_February_March_April_May_June_July_August_September_October_November_December',
     weekdays:'Mo_Tu_We_Th_Fr_Sa_Su',
+    profile_field_name:'Name',profile_field_email:'Email',profile_field_phone:'Phone',profile_field_language:'Language',
+    profile_salon_cta_title:'Do you have a salon in Basel?',profile_salon_cta_desc:'Make your salon visible in your neighbourhood. Start for free, no commitment.',profile_salon_cta_btn:'Start for free',
   },
   fr:{
     nav_login:'Se connecter',nav_register:"S'inscrire",nav_logout:'Se d\u00e9connecter',nav_theme:'Clair / Sombre',
@@ -4567,6 +4571,8 @@ const T={
     weekdays:'Lu_Ma_Me_Je_Ve_Sa_Di',
     add_to_calendar:'Ajouter \u00e0 Google Agenda',sort_distance:'Distance',
     location_unavailable:'Position non disponible',load_failed:'Impossible de charger les salons',reload:'Recharger',
+    profile_field_name:'Nom',profile_field_email:'E-mail',profile_field_phone:'T\u00e9l\u00e9phone',profile_field_language:'Langue',
+    profile_salon_cta_title:'Vous avez un salon \u00e0 B\u00e2le\u00a0?',profile_salon_cta_desc:'Rendez votre salon visible dans votre quartier. Gratuit, sans engagement.',profile_salon_cta_btn:'Commencer gratuitement',
   },
   tr:{
     nav_login:'GiriÅ Yap',nav_register:'Kayıt Ol',nav_logout:'ÇıkıÅ Yap',nav_theme:'Açık / Koyu',
@@ -4680,6 +4686,8 @@ const T={
     dm_error_title:'Ba\u011flant\u0131 hatas\u0131',dm_error_sub:'Mesajlar y\u00fcklenemedi. Tekrar dene.',
     months:'Ocak_\u015eubat_Mart_Nisan_May\u0131s_Haziran_Temmuz_A\u011fustos_Eyl\u00fcl_Ekim_Kas\u0131m_Aral\u0131k',
     weekdays:'Pt_Sa_\u00c7a_Pe_Cu_Ct_Pz',
+    profile_field_name:'\u0130sim',profile_field_email:'E-posta',profile_field_phone:'Telefon',profile_field_language:'Dil',
+    profile_salon_cta_title:'Basel\'de bir salonunuz var m\u0131?',profile_salon_cta_desc:'Salonunuzu mahallede g\u00f6r\u00fcn\u00fcr k\u0131l\u0131n. \u00dccretsiz ba\u015flay\u0131n, s\u00f6zle\u015fme yok.',profile_salon_cta_btn:'\u00dccretsiz ba\u015fla',
   },
 };
 
@@ -7734,25 +7742,37 @@ async function renderProfile(){
   const initials=(p.display_name||currentUser.email||'?').substring(0,2).toUpperCase();
   const hairInfo=[p.hair_type,p.hair_length,p.hair_thickness,p.hair_condition].filter(Boolean);
   const prefs=p.preferred_services||[];
-  document.getElementById('profileContent').innerHTML=`
-    <div class="profile-card">
-      <div class="profile-top">
-        <div class="profile-avatar">${initials}</div>
-        <div class="profile-info">
-          <h2>${p.display_name||currentUser.email}</h2>
-          <p>${currentUser.email}</p>
-          ${prefs.length?`<div class="tag-list">${prefs.map(x=>`<span class="tag">${x}</span>`).join('')}</div>`:''}
-        </div>
-      </div>
-      <div class="profile-grid">
-        ${p.age_range?`<div class="profile-item"><div class="profile-item-label">Altersgruppe</div><div class="profile-item-val">${p.age_range}</div></div>`:''}
-        ${p.gender?`<div class="profile-item"><div class="profile-item-label">Geschlecht</div><div class="profile-item-val">${p.gender}</div></div>`:''}
-        ${p.hair_type?`<div class="profile-item"><div class="profile-item-label">Haartyp</div><div class="profile-item-val">${hairInfo.join(', ')}</div></div>`:''}
-        ${p.color_treated?`<div class="profile-item"><div class="profile-item-label">Behandlung</div><div class="profile-item-val">Chemisch behandelt</div></div>`:''}
-        ${p.stylist_notes?`<div class="profile-item" style="grid-column:1/-1"><div class="profile-item-label">Notizen</div><div class="profile-item-val">${p.stylist_notes}</div></div>`:''}
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:4px"><button class="btn-sm solid" onclick="openProfileModal()" data-i18n="nav_edit_profile">Profil bearbeiten</button></div>`;
+  const isSalonOwner=!!(p.role==='salon_owner'||p.is_salon_owner);
+  const langMap={de:'Deutsch',en:'English',fr:'Français',tr:'Türkçe'};
+  const userLang=langMap[p.preferred_language||currentLang]||(p.preferred_language||'–');
+  const el=document.getElementById('profileContent');
+  el.textContent='';
+  const card=document.createElement('div');card.className='profile-card';
+  card.innerHTML=[
+    '<div class="profile-top">',
+    '<div class="profile-avatar">'+initials+'</div>',
+    '<div class="profile-info">',
+    '<h2>'+(p.display_name||currentUser.email)+'</h2>',
+    '<p>'+currentUser.email+'</p>',
+    prefs.length?'<div class="tag-list">'+prefs.map(function(x){return '<span class="tag">'+x+'</span>';}).join('')+'</div>':'',
+    '</div></div>',
+    '<div style="margin-top:20px;border-top:1px solid var(--c-border,#E2DCD3);padding-top:16px">',
+    '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">'+(t('profile_field_name')||'Name')+'</span><span style="font-weight:500">'+(p.display_name||'–')+'</span></div>',
+    '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">'+(t('profile_field_email')||'E-Mail')+'</span><span style="font-weight:500">'+(currentUser.email||'–')+'</span></div>',
+    '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">'+(t('profile_field_phone')||'Telefon')+'</span><span style="font-weight:500">'+(p.phone||currentUser.phone||'–')+'</span></div>',
+    '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">'+(t('profile_field_language')||'Sprache')+'</span><span style="font-weight:500">'+userLang+'</span></div>',
+    p.age_range?'<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">Altersgruppe</span><span style="font-weight:500">'+p.age_range+'</span></div>':'',
+    p.gender?'<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">Geschlecht</span><span style="font-weight:500">'+p.gender+'</span></div>':'',
+    hairInfo.length?'<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--c-border,#E2DCD3)"><span style="color:var(--c-text-muted);font-size:.9rem">Haartyp</span><span style="font-weight:500">'+hairInfo.join(', ')+'</span></div>':'',
+    '</div>',
+    '<div style="text-align:center;margin-top:20px"><button class="btn-sm solid" onclick="openProfileModal()" data-i18n="nav_edit_profile">Profil bearbeiten</button></div>',
+  ].join('');
+  el.appendChild(card);
+  if(!isSalonOwner){
+    const cta=document.createElement('div');cta.className='profile-card';cta.style.cssText='margin-top:20px;text-align:center;padding:24px';
+    cta.innerHTML='<h3 style="margin:0 0 8px">'+(t('profile_salon_cta_title')||'Du hast einen Salon in Basel?')+'</h3><p style="color:var(--c-text-muted);font-size:.9rem;margin:0 0 16px">'+(t('profile_salon_cta_desc')||'Mach deinen Salon sichtbar in deinem Quartier.')+'</p><button class="btn-sm solid" onclick="showPage(\'partner\')">'+(t('profile_salon_cta_btn')||'Kostenlos starten')+'</button>';
+    el.appendChild(cta);
+  }
 }
 
 // BOOKINGS PAGE
