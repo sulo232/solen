@@ -11066,7 +11066,24 @@ async function submitSalonReg(e){
     if(!err&&r1.data)newStoreId=r1.data.id;
     if(err&&err.code==='23505')err=null;
     if(err){
-      const r2=await sb.from('stores').insert([data]).select('id').single();
+      // stores table has different columns than store_applications — map accordingly
+      const storeData={
+        name:data.name,
+        type:data.cat||null,
+        phone:data.phone,
+        address:data.address,
+        neighbourhood:data.neighbourhood,
+        website:data.website,
+        instagram:data.instagram,
+        tiktok:data.tiktok,
+        facebook:data.facebook,
+        description:data.description,
+        opening_hours:data.hours?JSON.stringify(data.hours):null,
+        status:'pending',
+        parent_store_id:data.parent_store_id,
+        user_id:currentUser?currentUser.id:null
+      };
+      const r2=await sb.from('stores').insert([storeData]).select('id').single();
       err=r2.error;
       if(!err&&r2.data)newStoreId=r2.data.id;
       if(err&&err.code==='23505')err=null;
