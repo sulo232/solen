@@ -7246,7 +7246,7 @@ function showPage(page,skipHash){
   // Update URL hash
   if(!skipHash)history.pushState(null,null,(page==='home'||page==='discover')?'#':'#/'+page);
   if(page==='home'){document.getElementById('pageHome').style.display='block';}
-  else if(page==='discover'){document.getElementById('pageHome').style.display='block';setTimeout(function(){var el=document.getElementById('discoverySection');if(el)el.scrollIntoView({behavior:'smooth'});},200);}
+  else if(page==='discover'){document.getElementById('pageHome').style.display='block';setTimeout(function(){var el=document.getElementById('quartiereSection');if(el)el.scrollIntoView({behavior:'smooth'});},200);}
   else if(page.startsWith('book/')){
     const bpEl=document.getElementById('pageBook');
     if(bpEl){bpEl.classList.add('active');bpEl.style.pointerEvents='';loadPageContent(page);}
