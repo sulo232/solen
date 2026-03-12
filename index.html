@@ -2723,6 +2723,13 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .filter-sheet-footer .btn-primary{flex:1;margin-top:0}
 .filter-sheet-footer .btn-secondary{flex:0 0 auto;width:auto;padding:12px 20px;margin-top:0}
 
+/* ═══ MOBILE HOMEPAGE COLLAPSE ═══ */
+.mobile-collapsed{display:none!important}
+@media(max-width:640px){
+  .services-icon-grid{display:grid!important;grid-template-columns:1fr 1fr!important;overflow-x:visible!important;gap:10px!important;scroll-snap-type:none!important}
+  #moreDiscoverBtn{display:block!important}
+}
+
 /* ═══ ENHANCED MOBILE RESPONSIVE ═══ */
 @media(max-width:768px){
   /* Bottom sheet style modals on mobile */
@@ -3395,6 +3402,11 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <div class="skeleton-card" style="min-width:320px;flex-shrink:0"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line h20 w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
   </div>
 </section>
+
+<!-- ═══ MEHR ENTDECKEN (mobile only) ═══ -->
+<div id="moreDiscoverBtn" style="display:none;text-align:center;padding:20px 16px">
+  <button class="btn-secondary" id="moreDiscoverToggle" onclick="toggleMobileMore()" style="width:auto;padding:12px 32px;border-radius:var(--r-pill)" data-i18n="more_discover">Mehr entdecken ▼</button>
+</div>
 
 <!-- ═══ TRENDING (kept for backwards compat) ═══ -->
 <section class="trending-section" id="trendingSection" aria-label="Neu und Trending auf solen" style="display:none">
@@ -4304,7 +4316,7 @@ const T={
     back_to_login:'Zur\u00fcck zur Anmeldung',reset_email_sent:'Reset-Link gesendet! Pr\u00fcfe dein Postfach.',
     book_now:'Jetzt buchen',select_service:'Service w\u00e4hlen',select_date:'Datum w\u00e4hlen',select_time:'Uhrzeit w\u00e4hlen',
     guest_info:'Gastinformationen',booking_confirmed:'Dein Termin steht!',write_review:'Bewertung abgeben',
-    rating_filter:'Min. Bewertung',no_results:'Hmm, dazu haben wir noch nichts',reset_filters:'Filter zurücksetzen',filter_title:'Filter',filter_show_results:'Ergebnisse anzeigen',
+    rating_filter:'Min. Bewertung',no_results:'Hmm, dazu haben wir noch nichts',reset_filters:'Filter zurücksetzen',filter_title:'Filter',filter_show_results:'Ergebnisse anzeigen',more_discover:'Mehr entdecken ▼',less_discover:'Weniger anzeigen ▲',
     use_location:'Standort',neighbourhood:'Quartier',neighbourhood_all:'Alle Quartiere',
     impressum:'Impressum',privacy:'Datenschutz',nearest_slot_tomorrow:'N\u00e4chster: Morgen',
     add_to_calendar:'Zu Google Kalender hinzuf\u00fcgen',sort_distance:'Entfernung',
@@ -4430,7 +4442,7 @@ const T={
     back_to_login:'Back to sign in',reset_email_sent:'Reset link sent! Check your inbox.',
     book_now:'Book now',select_service:'Select service',select_date:'Select date',select_time:'Select time',
     guest_info:'Guest information',booking_confirmed:'Your appointment is set!',write_review:'Write review',
-    rating_filter:'Min. rating',no_results:'Hmm, nothing here yet',reset_filters:'Reset filters',filter_title:'Filters',filter_show_results:'Show results',
+    rating_filter:'Min. rating',no_results:'Hmm, nothing here yet',reset_filters:'Reset filters',filter_title:'Filters',filter_show_results:'Show results',more_discover:'Discover more ▼',less_discover:'Show less ▲',
     use_location:'Location',neighbourhood:'Neighbourhood',neighbourhood_all:'All neighbourhoods',
     impressum:'Imprint',privacy:'Privacy',nearest_slot_tomorrow:'Next: Tomorrow',
     add_to_calendar:'Add to Google Calendar',sort_distance:'Distance',
@@ -4556,7 +4568,7 @@ const T={
     back_to_login:'Retour \u00e0 la connexion',reset_email_sent:'Lien de r\u00e9initialisation envoy\u00e9 ! V\u00e9rifie ta bo\u00eete de r\u00e9ception.',
     book_now:'R\u00e9server maintenant',select_service:'Choisir un service',select_date:'Choisir une date',select_time:'Choisir une heure',
     guest_info:'Informations client',booking_confirmed:'Ton rendez-vous est confirm\u00e9 !',write_review:'\u00c9crire un avis',
-    rating_filter:'Note min.',no_results:'Hmm, rien ici pour le moment',reset_filters:'Réinitialiser les filtres',filter_title:'Filtres',filter_show_results:'Afficher les résultats',
+    rating_filter:'Note min.',no_results:'Hmm, rien ici pour le moment',reset_filters:'Réinitialiser les filtres',filter_title:'Filtres',filter_show_results:'Afficher les résultats',more_discover:'Découvrir plus ▼',less_discover:'Voir moins ▲',
     use_location:'Position',neighbourhood:'Quartier',neighbourhood_all:'Tous les quartiers',
     impressum:'Mentions l\u00e9gales',privacy:'Confidentialit\u00e9',nearest_slot_tomorrow:'Prochain : demain',
     cat_barber:'Barbershop',cat_hairsalon:'Coiffeur',cat_nails:'Institut ongles',cat_spa:'Spa & Bien-\u00eatre',cat_makeup:'Maquillage',cat_eyebrows:'Sourcils',
@@ -4681,7 +4693,7 @@ const T={
     back_to_login:'GiriÅe geri dön',reset_email_sent:'Sıfırlama baÄlantısı gönderildi!',
     book_now:'Åimdi Rezervasyon',select_service:'Hizmet Seçin',select_date:'Tarih Seçin',select_time:'Saat Seçin',
     guest_info:'Misafir bilgileri',booking_confirmed:'Randevun hazır!',write_review:'Yorum yaz',
-    rating_filter:'Min. puan',no_results:'Hmm, henüz bir şey yok',reset_filters:'Filtreleri sıfırla',filter_title:'Filtreler',filter_show_results:'Sonuçları göster',
+    rating_filter:'Min. puan',no_results:'Hmm, henüz bir şey yok',reset_filters:'Filtreleri sıfırla',filter_title:'Filtreler',filter_show_results:'Sonuçları göster',more_discover:'Daha fazlasını keşfet ▼',less_discover:'Daha az göster ▲',
     use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'Tüm mahalleler',
     impressum:'Künye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: Yarın',
     add_to_calendar:'Google Takvime Ekle',sort_distance:'Mesafe',
@@ -6607,6 +6619,29 @@ function closeFilterSheet(){
   document.getElementById('filterSheet').classList.remove('active');
   _checkModalOpen();
 }
+
+// Mobile "Mehr entdecken" collapse
+var _mobileMoreExpanded=false;
+var _mobileCollapseSections=['quartiereSection','neuAufSolenSection','spotlightSection','trendingSection'];
+function toggleMobileMore(){
+  _mobileMoreExpanded=!_mobileMoreExpanded;
+  _mobileCollapseSections.forEach(function(id){
+    var el=document.getElementById(id);if(el)el.classList.toggle('mobile-collapsed',!_mobileMoreExpanded);
+  });
+  var ss=document.querySelector('.stores-section');if(ss)ss.classList.toggle('mobile-collapsed',!_mobileMoreExpanded);
+  var btn=document.getElementById('moreDiscoverToggle');
+  if(btn)btn.textContent=_mobileMoreExpanded?(t('less_discover')||'Weniger anzeigen ▲'):(t('more_discover')||'Mehr entdecken ▼');
+}
+function initMobileCollapse(){
+  if(window.innerWidth<=640){
+    _mobileCollapseSections.forEach(function(id){
+      var el=document.getElementById(id);if(el)el.classList.add('mobile-collapsed');
+    });
+    var ss=document.querySelector('.stores-section');if(ss)ss.classList.add('mobile-collapsed');
+  }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMobileCollapse);
+else initMobileCollapse();
 
 function resetFiltersFromPanel(){
   // Reset categories
