@@ -3592,6 +3592,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </div>
     <div class="modal-body">
       <div id="authMsg" role="alert" aria-live="polite"></div>
+      <div style="font-size:10px;color:#999;text-align:center;margin-bottom:4px">build v6</div>
 
       <!-- REGISTER CHOICE -->
       <div id="formRegChoice" class="hidden">
@@ -5183,6 +5184,7 @@ function showAuthMsg(msg,type='error'){
 const _rl={counts:{},check(key,limit=5,windowMs=60000){const now=Date.now();if(!this.counts[key])this.counts[key]=[];this.counts[key]=this.counts[key].filter(t=>now-t<windowMs);if(this.counts[key].length>=limit)return false;this.counts[key].push(now);return true;}};
 
 async function doLogin(){
+  toast('doLogin fired ✓ (v6)','info');
   if(!_rl.check('auth',5,60000)){toast('Too many attempts. Please wait 60s','error');return;}
   const email=document.getElementById('loginEmail').value.trim();
   const pw=document.getElementById('loginPw').value;
@@ -5323,6 +5325,7 @@ async function doSalonSignup(){
 }
 
 async function signInGoogle(){
+  toast('signInGoogle fired ✓ (v6)','info');
   if(!_rl.check('auth',5,60000)){toast('Too many attempts. Please wait 60s','error');return;}
   const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://www.solen.ch'}});
   if(error)toast(error.message,'error');
