@@ -3629,7 +3629,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
         </div>
         <div class="form-group">
           <label for="loginPw" data-i18n="lbl_password">Passwort <span class="form-hint">(Pflichtfeld)</span></label>
-          <input class="form-input" type="password" id="loginPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" required aria-required="true">
+          <input class="form-input" type="password" id="loginPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password" required aria-required="true" onkeydown="if(event.key==='Enter') doLogin()">
         </div>
         <div style="text-align:right;margin:-10px 0 12px"><a onclick="showPasswordReset()" style="font-size:.82rem;color:var(--accent);cursor:pointer;font-weight:600" data-i18n="forgot_password">Passwort vergessen?</a></div>
         <button class="btn-primary" onclick="doLogin()" data-i18n="btn_login">Anmelden</button>
@@ -3702,7 +3702,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
         </div>
         <div class="form-group">
           <label><span data-i18n="lbl_password">Passwort</span> <span style="color:var(--muted);font-weight:400">(min. 6 Zeichen)</span></label>
-          <input class="form-input" type="password" id="signupPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="new-password">
+          <input class="form-input" type="password" id="signupPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="new-password" onkeydown="if(event.key==='Enter') doSignup()">
         </div>
         <button class="btn-primary" onclick="doSignup()" data-i18n="btn_create_account">Konto erstellen</button>
         <div class="auth-switch"><span data-i18n="auth_already">Du hast schon ein Konto?</span> <a onclick="openAuth('login')" data-i18n="auth_login_now">Anmelden</a></div>
@@ -3716,7 +3716,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
           <div class="form-group"><label for="salonLast" data-i18n="lbl_lastname">Nachname</label><input class="form-input" type="text" id="salonLast" placeholder="Muster"></div>
         </div>
         <div class="form-group"><label for="salonEmail" data-i18n="lbl_email">E-Mail <span class="form-hint">(Pflichtfeld)</span></label><input class="form-input" type="email" id="salonEmail" placeholder="salon@email.com" required aria-required="true"></div>
-        <div class="form-group"><label for="salonPw" data-i18n="lbl_password">Passwort <span class="form-hint">(Pflichtfeld)</span></label><input class="form-input" type="password" id="salonPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required aria-required="true"></div>
+        <div class="form-group"><label for="salonPw" data-i18n="lbl_password">Passwort <span class="form-hint">(Pflichtfeld)</span></label><input class="form-input" type="password" id="salonPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required aria-required="true" onkeydown="if(event.key==='Enter') doSalonSignup()"></div>
         <div style="height:1px;background:var(--border);margin:20px 0"></div>
         <h3 class="form-section-title" data-i18n="lbl_salon_info">Salon-Info</h3>
         <div class="form-group"><label for="salonName" data-i18n="lbl_salon_name">Salon-Name <span class="form-hint">(Pflichtfeld)</span></label><input class="form-input" type="text" id="salonName" placeholder="Dein Salon" required aria-required="true"></div>
