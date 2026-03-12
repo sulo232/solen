@@ -205,6 +205,11 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .lang-btn.active{background:var(--c-accent);color:var(--c-accent-fg);border-color:var(--c-accent)}
 .hamburger{display:none;background:none;border:none;color:var(--c-text);font-size:1.5rem;padding:12px;cursor:pointer;position:relative;z-index:10;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 [data-theme="dark"] .hamburger{color:white}
+.mobile-header-icons{display:none;align-items:center;gap:2px;margin-left:auto}
+.mobile-header-btn{background:none;border:none;color:var(--c-text);padding:8px;cursor:pointer;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.mobile-header-btn:active{background:rgba(128,128,128,.12)}
+@media(max-width:768px){.mobile-header-icons{display:flex}}
+@media(min-width:769px){.mobile-header-icons{display:none}}
 
 /* MOBILE NAV MENU */
 .mobile-menu{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(255,255,255,0.12);flex-direction:column;padding:16px 24px 24px;border-bottom:1px solid rgba(255,255,255,0.18);box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.35);gap:8px;z-index:1001}
@@ -898,7 +903,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;font-size:var(--text-2xs);font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;min-width:48px;min-height:48px;justify-content:center;border-radius:16px;transition:all .2s}
 .bottom-nav-item.active{color:var(--accent);background:rgba(155,29,48,.12);font-weight:700}
 [data-theme="dark"] .bottom-nav-item.active{background:rgba(224,100,120,.15)}
-.bottom-nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+.bottom-nav-item svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8}
 .bottom-nav-item.active svg{stroke-width:2.2}
 @media(max-width:768px){.bottom-nav{display:block}}
 
@@ -3002,6 +3007,14 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
       <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
+    <div class="mobile-header-icons">
+      <button class="mobile-header-btn" onclick="scrollToHeroSearch()" aria-label="Suche">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="mobile-header-btn" onclick="geoLocateMe()" aria-label="Standort">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </button>
+    </div>
     <button class="hamburger" onclick="toggleMobileMenu()" id="hamburgerBtn" aria-label="Menu">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -12628,6 +12641,7 @@ function showSearchSuggestions(q){var box=document.getElementById('searchSuggest
 function applySearch(t){var inp=document.getElementById('searchNlp');if(inp)inp.value=t;var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');executeSearch();}
 function clearSearch(){var inp=document.getElementById('searchNlp');if(inp)inp.value='';var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');if(window.renderStores)renderStores(window.allStores||[]);}
 function executeSearch(){var q=(document.getElementById('searchNlp')||{}).value||'';q=q.toLowerCase().trim();var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');if(!q){if(window.renderStores)renderStores(window.allStores||[]);return;}var f=(window.allStores||[]).filter(function(s){var t=((s.name||'')+' '+(s.category||'')+' '+(s.neighbourhood||'')+' '+((s.services||[]).map(function(sv){return sv.name||sv;}).join(' '))).toLowerCase();return q.split(' ').every(function(w){return t.includes(w);});});if(window.renderStores)renderStores(f);}
+function scrollToHeroSearch(){showPage('home');setTimeout(function(){var el=document.querySelector('.hero-search')||document.getElementById('selectionMenu');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});var inp=el.querySelector('input');if(inp)inp.focus();}},200);}
 /* === GEO + MAP === */
 function geoLocateMe(){if(!navigator.geolocation){toast('Geolocation nicht verfügbar','error');return;}toast('Standort wird ermittelt…','info');navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude,lng=pos.coords.longitude;if(window._salonMap){window._salonMap.setView([lat,lng],14);L.circle([lat,lng],{radius:300,color:getComputedStyle(document.documentElement).getPropertyValue('--c-teal').trim()}).addTo(window._salonMap);}var nb=(window.allStores||[]).filter(function(s){return s.lat&&s.lng&&Math.hypot(s.lat-lat,s.lng-lng)<0.05;});if(window.renderStores&&nb.length)renderStores(nb);else toast('Keine Salons in deiner Nähe gefunden.','info');},function(){toast('Standort konnte nicht ermittelt werden','error');});}
 function toggleMapView(){var el=document.getElementById('salonMap');if(!el)return;el.classList.toggle('hidden');if(!el.classList.contains('hidden'))initSalonMap();}
