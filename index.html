@@ -3157,79 +3157,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </div>
   </div>
 
-  <!-- ═══ POPULAR SERVICES ICON GRID ═══ -->
-  <section class="popular-services" id="popularServicesSection" aria-label="Beliebte Services">
-    <div class="popular-services-header fade-in-up">
-      <div class="section-eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Services entdecken</div>
-      <h2>Was suchst du heute?</h2>
-      <p>Wähle direkt einen Service und finde Salons in deiner Nähe</p>
-    </div>
-    <div class="services-icon-grid">
-      <button class="service-icon-card fade-in-up stagger-1" data-cat="hairsalon" onclick="selectServiceFromMenu('hairsalon','Coiffeur')" aria-label="Coiffeur Salons zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Coiffeur"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
-        <span class="sic-label">Coiffeur</span>
-        <span class="sic-price">ab CHF 38</span>
-        <span class="sic-time">35–90 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-2" data-cat="barber" onclick="selectServiceFromMenu('barber','Barbershop')" aria-label="Barbershops zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Barbershop"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><circle cx="6" cy="18" r="3"/></svg></div>
-        <span class="sic-label">Barbershop</span>
-        <span class="sic-price">ab CHF 18</span>
-        <span class="sic-time">20–45 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-3" data-cat="nails" onclick="selectServiceFromMenu('nails','Nails')" aria-label="Nagelstudios zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Nails"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
-        <span class="sic-label">Nails</span>
-        <span class="sic-price">ab CHF 35</span>
-        <span class="sic-time">40–60 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-4" data-cat="spa" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')" aria-label="Spa und Wellness zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Spa"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <span class="sic-label">Spa &amp; Wellness</span>
-        <span class="sic-price">ab CHF 30</span>
-        <span class="sic-time">45–90 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-5" data-cat="makeup" onclick="selectServiceFromMenu('makeup','Make-up')" aria-label="Make-up Salons zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Make-up"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
-        <span class="sic-label">Make-up</span>
-        <span class="sic-price">ab CHF 60</span>
-        <span class="sic-time">45–60 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-6" data-cat="cosmetik" onclick="selectServiceFromMenu('cosmetik','Kosmetik')" aria-label="Kosmetik Salons zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Kosmetik"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-        <span class="sic-label">Kosmetik</span>
-        <span class="sic-price">ab CHF 45</span>
-        <span class="sic-time">45–60 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-7" data-cat="eyebrows" onclick="selectServiceFromMenu('eyebrows','Augenbrauen')" aria-label="Augenbrauen Salons zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Augenbrauen"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <span class="sic-label">Augenbrauen</span>
-        <span class="sic-price">ab CHF 25</span>
-        <span class="sic-time">30–45 Min.</span>
-      </button>
-      <button class="service-icon-card fade-in-up stagger-8" data-cat="tattoo" onclick="selectServiceFromMenu('tattoo','Tattoo &amp; Piercing')" aria-label="Tattoo und Piercing zeigen">
-        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Tattoo"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
-        <span class="sic-label">Tattoo</span>
-        <span class="sic-price">ab CHF 80</span>
-        <span class="sic-time">60–120 Min.</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- ═══ SERVICE DETAILS PANEL ═══ -->
-  <div id="serviceDetailsPanel">
-    <div class="svc-detail-card">
-      <div class="svc-detail-info">
-        <div class="svc-detail-name" id="svcDetailName"></div>
-        <div class="svc-detail-meta" id="svcDetailMeta"></div>
-      </div>
-      <button class="btn-primary" style="white-space:nowrap;flex-shrink:0" onclick="scrollToStores()">
-        Salons anzeigen
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="vertical-align:middle;margin-left:4px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </div>
-  </div>
-
   <!-- ═══ QUARTIER PHOTO CARDS ═══ -->
   <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
     <div class="quartier-discovery-header fade-in-up">
@@ -3483,6 +3410,79 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <!-- populated by JS -->
   </div>
 </section>
+
+<!-- ═══ POPULAR SERVICES ICON GRID ═══ -->
+  <section class="popular-services" id="popularServicesSection" aria-label="Beliebte Services">
+    <div class="popular-services-header fade-in-up">
+      <div class="section-eyebrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Services entdecken</div>
+      <h2>Was suchst du heute?</h2>
+      <p>Wähle direkt einen Service und finde Salons in deiner Nähe</p>
+    </div>
+    <div class="services-icon-grid">
+      <button class="service-icon-card fade-in-up stagger-1" data-cat="hairsalon" onclick="selectServiceFromMenu('hairsalon','Coiffeur')" aria-label="Coiffeur Salons zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Coiffeur"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></div>
+        <span class="sic-label">Coiffeur</span>
+        <span class="sic-price">ab CHF 38</span>
+        <span class="sic-time">35–90 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-2" data-cat="barber" onclick="selectServiceFromMenu('barber','Barbershop')" aria-label="Barbershops zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Barbershop"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/><circle cx="6" cy="18" r="3"/></svg></div>
+        <span class="sic-label">Barbershop</span>
+        <span class="sic-price">ab CHF 18</span>
+        <span class="sic-time">20–45 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-3" data-cat="nails" onclick="selectServiceFromMenu('nails','Nails')" aria-label="Nagelstudios zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Nails"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
+        <span class="sic-label">Nails</span>
+        <span class="sic-price">ab CHF 35</span>
+        <span class="sic-time">40–60 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-4" data-cat="spa" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')" aria-label="Spa und Wellness zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Spa"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <span class="sic-label">Spa &amp; Wellness</span>
+        <span class="sic-price">ab CHF 30</span>
+        <span class="sic-time">45–90 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-5" data-cat="makeup" onclick="selectServiceFromMenu('makeup','Make-up')" aria-label="Make-up Salons zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Make-up"><path d="M18.37 2.63L14 7l-1.59-1.59a2 2 0 00-2.82 0L8 7l9 9 1.59-1.59a2 2 0 000-2.82L17 10l4.37-4.37a2.12 2.12 0 10-3-3z"/><path d="M9 8L3 14l7 7 6-6"/></svg></div>
+        <span class="sic-label">Make-up</span>
+        <span class="sic-price">ab CHF 60</span>
+        <span class="sic-time">45–60 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-6" data-cat="cosmetik" onclick="selectServiceFromMenu('cosmetik','Kosmetik')" aria-label="Kosmetik Salons zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Kosmetik"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+        <span class="sic-label">Kosmetik</span>
+        <span class="sic-price">ab CHF 45</span>
+        <span class="sic-time">45–60 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-7" data-cat="eyebrows" onclick="selectServiceFromMenu('eyebrows','Augenbrauen')" aria-label="Augenbrauen Salons zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Augenbrauen"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <span class="sic-label">Augenbrauen</span>
+        <span class="sic-price">ab CHF 25</span>
+        <span class="sic-time">30–45 Min.</span>
+      </button>
+      <button class="service-icon-card fade-in-up stagger-8" data-cat="tattoo" onclick="selectServiceFromMenu('tattoo','Tattoo &amp; Piercing')" aria-label="Tattoo und Piercing zeigen">
+        <div class="sic-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Tattoo"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+        <span class="sic-label">Tattoo</span>
+        <span class="sic-price">ab CHF 80</span>
+        <span class="sic-time">60–120 Min.</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ SERVICE DETAILS PANEL ═══ -->
+  <div id="serviceDetailsPanel">
+    <div class="svc-detail-card">
+      <div class="svc-detail-info">
+        <div class="svc-detail-name" id="svcDetailName"></div>
+        <div class="svc-detail-meta" id="svcDetailMeta"></div>
+      </div>
+      <button class="btn-primary" style="white-space:nowrap;flex-shrink:0" onclick="scrollToStores()">
+        Salons anzeigen
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="vertical-align:middle;margin-left:4px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
 
 <!-- ABOUT / STORY -->
 <section class="about-section" id="aboutSection">
