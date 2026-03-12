@@ -11041,32 +11041,25 @@ async function submitSalonReg(e){
     _regSubmitIdempotencyKey=crypto.randomUUID?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(36).slice(2));
   }
   const hours=regCollectHours();
-  const data={
+  // Build insert payload using ONLY columns that exist in the stores table
+  // (confirmed from submitSalonProfile which already works with this table)
+  const storeInsert={
     name:document.getElementById('reg_name').value.trim(),
-    cat:document.getElementById('reg_cat').value,
+    type:document.getElementById('reg_cat').value||null,
     phone:document.getElementById('reg_phone').value.trim()||null,
-    email:document.getElementById('reg_email').value.trim(),
     address:document.getElementById('reg_street').value.trim()+', '+(document.getElementById('reg_plz')?.value||'4000')+' '+(document.getElementById('reg_ort')?.value||'Basel'),
-    neighbourhood:document.getElementById('reg_nb').value,
     website:document.getElementById('reg_web').value.trim()||null,
-    instagram:document.getElementById('reg_ig').value.trim()||null,
-    tiktok:document.getElementById('reg_tiktok')?.value.trim()||null,
-    facebook:document.getElementById('reg_fb')?.value.trim()||null,
     description:document.getElementById('reg_desc').value.trim()||null,
-    hours:hours,
+    opening_hours:hours?JSON.stringify(hours):null,
     status:'pending',
-    idempotency_key:_regSubmitIdempotencyKey,
     parent_store_id:(()=>{const v=document.getElementById('reg_parent_store_id')?.value||'';return v?(Number(v)||v):null;})(),
-    created_at:new Date().toISOString()
+    user_id:currentUser?currentUser.id:null
   };
   try{
-    let err;let newStoreId=null;
-    const r1=await sb.from('store_applications').insert([data]).select('id').single();
-    err=r1.error;
-    if(!err&&r1.data)newStoreId=r1.data.id;
-    // code 23505 = duplicate (idempotency key already submitted) — treat as success
-    if(err&&err.code==='23505')err=null;
-    if(err)throw err;
+    let newStoreId=null;
+    const{data:inserted,error:insertErr}=await sb.from('stores').insert([storeInsert]).select('id').single();
+    if(insertErr&&insertErr.code!=='23505')throw insertErr;
+    if(inserted)newStoreId=inserted.id;
     // Insert staff members from Step 4
     if(newStoreId){
       const staffCards=document.querySelectorAll('#regStaffContainer .staff-setup-card');
