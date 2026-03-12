@@ -10487,8 +10487,10 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .reg-field{margin-bottom:14px}
 .reg-field label{display:block;font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
 .reg-field input:not([type=checkbox]):not([type=radio]),.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none;min-height:44px}
-.reg-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:14px;padding-right:36px}
-[data-theme="dark"] .reg-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")}
+.reg-select-wrap{position:relative;display:block}
+.reg-select-wrap select{padding-right:36px!important;background-image:none!important}
+.reg-select-wrap::after{content:'';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat center/contain;pointer-events:none}
+[data-theme="dark"] .reg-select-wrap::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")}
 .reg-field input:focus,.reg-field select:focus,.reg-field textarea:focus{border-color:var(--accent2)}
 .reg-field textarea{resize:vertical;min-height:90px}
 .reg-service-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-end}
@@ -10633,14 +10635,14 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           <p class="step-hint" data-i18n="reg_step1_hint">Schritt 1 von 5: Basis-Informationen</p>
           <div class="reg-field" id="field_reg_name"><label for="reg_name">Salonname (Pflichtfeld)</label><input type="text" id="reg_name" placeholder="z.B. Studio Bella" autocomplete="organization" aria-describedby="err_reg_name"><div class="reg-field-error" id="err_reg_name" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Salonnamen eingeben.</div></div>
           <div class="reg-field" id="field_reg_cat"><label for="reg_cat">Kategorie (Pflichtfeld)</label>
-            <select id="reg_cat" aria-describedby="err_reg_cat">
+            <div class="reg-select-wrap"><select id="reg_cat" aria-describedby="err_reg_cat">
               <option value="">Kategorie wählen...</option>
               <option>Friseursalon / Coiffeur</option><option>Barbershop</option>
               <option>Nagelstudio</option><option>Make-up &amp; Kosmetik</option>
               <option>Spa &amp; Wellness</option><option>Braids &amp; Afro Hair</option>
               <option>Augenbrauen &amp; Wimpern</option><option>Massage</option>
               <option>Tattoo &amp; Piercing</option><option>Sonstiges</option>
-            </select>
+            </select></div>
             <div class="reg-field-error" id="err_reg_cat" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Kategorie wählen.</div>
           </div>
           <div class="reg-field"><label for="reg_phone">Telefon</label><input type="tel" id="reg_phone" placeholder="+41 79 000 00 00" autocomplete="tel"></div>
@@ -10654,7 +10656,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           <p class="step-hint" data-i18n="reg_step2_hint">Schritt 2 von 5: Standort und Online-Präsenz</p>
           <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
-            <select id="reg_nb" aria-describedby="err_reg_nb">
+            <div class="reg-select-wrap"><select id="reg_nb" aria-describedby="err_reg_nb">
               <option value="">Quartier wählen...</option>
               <option>Altstadt Grossbasel</option><option>Altstadt Kleinbasel</option>
               <option>Am Ring</option><option>Bachletten</option><option>Bruderholz</option>
@@ -10662,7 +10664,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
               <option>Iselin</option><option>Matthäus</option><option>Neubad</option>
               <option>St. Alban</option><option>St. Johann</option><option>Vorstädte</option>
               <option>Wettstein</option>
-            </select>
+            </select></div>
             <div class="reg-field-error" id="err_reg_nb" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Quartier wählen.</div>
           </div>
           <div class="reg-field"><label for="reg_web">Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
@@ -10712,7 +10714,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
         <div class="salon-reg-body">
           <p class="step-hint" data-i18n="reg_step5_hint">Schritt 5 von 5: Beschreibung und Öffnungszeiten</p>
           <div class="reg-field"><label for="reg_desc">Beschreibung</label><textarea id="reg_desc" placeholder="Beschreibe deinen Salon – Spezialisierungen, Atmosphäre, Besonderheiten..."></textarea></div>
-          <div class="reg-field"><label for="reg_parent_store_id">Filiale von (optional)</label><select id="reg_parent_store_id" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div> <div class="reg-field">
+          <div class="reg-field"><label for="reg_parent_store_id">Filiale von (optional)</label><div class="reg-select-wrap"><select id="reg_parent_store_id" style="font-size:.88rem"><option value="">— Hauptstandort / Keine Filiale —</option></select></div></div> <div class="reg-field">
             <label>Öffnungszeiten</label>
             <div class="reg-hours" id="regHoursGrid"></div>
           </div>
