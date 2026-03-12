@@ -392,9 +392,9 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 .close-btn:active{transform:scale(.92);transition-duration:.1s}
 .modal-body{padding:20px 24px 24px}
 /* ── GLASS TEXT READABILITY ── */
-.modal-hd,.modal-body,.bk-sidebar,.offer-picker-inner,.report-inner,.ai-helper-box,.onboard-wizard{text-shadow:var(--glass-text-shadow)}
-[data-theme="dark"] .modal-hd,[data-theme="dark"] .modal-body,[data-theme="dark"] .bk-sidebar,[data-theme="dark"] .offer-picker-inner,[data-theme="dark"] .report-inner,[data-theme="dark"] .ai-helper-box,[data-theme="dark"] .onboard-wizard{text-shadow:var(--glass-text-shadow-dark)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .modal-hd,:root:not([data-theme="light"]) .modal-body,:root:not([data-theme="light"]) .bk-sidebar,:root:not([data-theme="light"]) .offer-picker-inner,:root:not([data-theme="light"]) .report-inner,:root:not([data-theme="light"]) .ai-helper-box,:root:not([data-theme="light"]) .onboard-wizard{text-shadow:var(--glass-text-shadow-dark)}}
+.modal-hd,.modal-body,.bk-sidebar,.offer-picker-inner,.report-inner,.onboard-wizard{text-shadow:var(--glass-text-shadow)}
+[data-theme="dark"] .modal-hd,[data-theme="dark"] .modal-body,[data-theme="dark"] .bk-sidebar,[data-theme="dark"] .offer-picker-inner,[data-theme="dark"] .report-inner,[data-theme="dark"] .onboard-wizard{text-shadow:var(--glass-text-shadow-dark)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .modal-hd,:root:not([data-theme="light"]) .modal-body,:root:not([data-theme="light"]) .bk-sidebar,:root:not([data-theme="light"]) .offer-picker-inner,:root:not([data-theme="light"]) .report-inner,:root:not([data-theme="light"]) .onboard-wizard{text-shadow:var(--glass-text-shadow-dark)}}
 /* ── FORM UTILITY CLASSES ── */
 .form-hint{font-weight:400;color:var(--c-text-muted);font-size:var(--text-sm)}
 .form-section-title{font-size:var(--text-md);font-weight:700;margin-bottom:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
@@ -402,16 +402,15 @@ button:active,.bottom-nav-item:active,.chip:active,.fav-btn:active,.hero-filter-
 body.modal-open{overflow:hidden!important}
 /* Prevent ALL floating elements from leaking above modals */
 body.modal-open .chat-fab,
-body.modal-open .ai-helper-fab,
 body.modal-open .chat-panel,
 body.modal-open .bottom-nav{opacity:0!important;pointer-events:none!important;transform:translateY(100%)!important;transition:opacity .25s,transform .25s!important}
 /* Fallback sibling selectors for modals that don't use body.modal-open */
-.overlay.active~.chat-fab,.overlay.active~.ai-helper-fab,
-#bookingModal.open~.chat-fab,#bookingModal.open~.ai-helper-fab,
-.cal-overlay:not(.hidden)~.chat-fab,.cal-overlay:not(.hidden)~.ai-helper-fab,
+.overlay.active~.chat-fab,
+#bookingModal.open~.chat-fab,
+.cal-overlay:not(.hidden)~.chat-fab,
 .overlay.active~.chat-panel,#bookingModal.open~.chat-panel,
-.report-modal:not(.hidden)~.chat-fab,.report-modal:not(.hidden)~.ai-helper-fab,
-.offer-picker:not(.hidden)~.chat-fab,.offer-picker:not(.hidden)~.ai-helper-fab{opacity:0!important;pointer-events:none!important;transition:opacity .25s}
+.report-modal:not(.hidden)~.chat-fab,
+.offer-picker:not(.hidden)~.chat-fab{opacity:0!important;pointer-events:none!important;transition:opacity .25s}
 /* Ensure modals don't leak outside viewport */
 .overlay,.cal-overlay,#bookingModal,.legal-modal,.offer-picker,.report-modal{overflow-x:hidden}
 @media(max-width:480px){.modal-body{padding:16px}.modal-hd{padding:20px 16px 0}}
@@ -2243,11 +2242,6 @@ body{font-family:var(--font-body,system-ui);}
 .marketing-container{padding:1.5rem}.marketing-compose{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:16px;padding:1.25rem;margin-bottom:1.5rem}.marketing-form label{display:block;font-size:.85rem;font-weight:600;margin:.75rem 0 .25rem}.mkt-select,.mkt-input{width:100%;padding:.6rem .9rem;border:1px solid var(--c-border,#E2DCD3);border-radius:8px;background:var(--c-bg,#F8F4ED);font-size:.9rem;margin-bottom:.25rem}.mkt-textarea{width:100%;padding:.6rem .9rem;border:1px solid var(--c-border);border-radius:8px;background:var(--c-bg);font-size:.9rem;resize:vertical;font-family:inherit}.mkt-preview-hint{min-height:1.2rem;font-size:.85rem;margin:.4rem 0}.mkt-actions{display:flex;gap:.75rem;margin-top:.75rem}.btn-mkt-preview{padding:.55rem 1.1rem;border:1px solid var(--c-accent);color:var(--c-accent);background:none;border-radius:8px;cursor:pointer}.btn-mkt-send{padding:.55rem 1.1rem;background:var(--c-cta);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600}.mkt-history{display:flex;flex-direction:column;gap:.5rem}.mkt-hist-row{background:var(--c-surface-alt,#F3EEE6);border-radius:10px;padding:.75rem 1rem}.mkt-hist-info strong{display:block;font-size:.9rem}.mkt-hist-preview{font-size:.82rem;color:var(--c-text-muted);margin-top:.2rem}
 /* ═══ WEATHER ═══ */
 .weather-bar{background:var(--c-surface,#fff);border-bottom:1px solid var(--c-border,#E2DCD3);padding:.5rem 1rem;text-align:center}.weather-pill{display:inline-flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--c-text-secondary,#6B5E4F);background:var(--c-surface-alt,#F3EEE6);padding:.35rem .9rem;border-radius:20px}.weather-pill.weather-deal{background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0369a1;font-weight:500}.weather-icon{font-size:1.1rem}.weather-deal-text{font-size:.8rem;color:#0369a1;margin-left:.25rem}
-/* ═══ AI HELPER ═══ */
-.ai-helper-fab{position:fixed;bottom:90px;right:20px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--c-cta),#f39c12);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 16px rgba(var(--c-coral-rgb),.35);z-index:900;transition:transform .2s}.ai-helper-fab:hover{transform:scale(1.1)}
-#aiHelperModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%)}.ai-helper-box{background:rgba(var(--surface-rgb,255,255,255),.88);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:24px;padding:1.5rem;width:100%;max-width:min(480px,calc(100vw - 32px));box-shadow:var(--glass-shadow);border:var(--glass-border)}.ai-helper-box h3{margin:0 0 .25rem;font-size:1.2rem}.ai-helper-box p{color:var(--c-text-muted);font-size:.88rem;margin:0 0 1rem}.ai-helper-input-row{display:flex;gap:.5rem;margin-bottom:1rem}
-#aiHelperInput{flex:1;padding:.65rem 1rem;border:1.5px solid var(--c-border,#E2DCD3);border-radius:10px;font-size:.95rem;background:var(--c-surface,#fff)}#aiHelperInput:focus{outline:none;border-color:var(--c-cta)}.btn-ai-search{padding:.65rem 1.1rem;background:var(--c-cta);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:.9rem}.ai-result-card{background:var(--c-surface,#fff);border:1px solid var(--c-border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}.ai-result-card:hover{background:var(--c-surface-alt,#F3EEE6)}
-.ai-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem}.ai-suggestion-chip{background:var(--c-surface-alt,#F3EEE6);border:1px solid var(--c-border);border-radius:20px;padding:.3rem .75rem;font-size:.82rem;cursor:pointer;color:var(--c-text-secondary)}.ai-suggestion-chip:hover{background:var(--c-border)}
 /* ═══ PANEL HEADER ═══ */
 .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}.panel-header h3{margin:0;font-size:1.1rem;font-weight:700}
 /* ═══ ADMIN APPROVAL ═══ */
@@ -2730,7 +2724,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   .walkin-modal{bottom:calc(env(safe-area-inset-bottom,8px) + 74px);width:calc(100vw - 32px);min-width:auto}
   /* Chat FAB positioning */
   .chat-fab{bottom:calc(env(safe-area-inset-bottom,8px) + 74px);right:16px;width:52px;height:52px;font-size:22px}
-  .ai-helper-fab{bottom:calc(env(safe-area-inset-bottom,8px) + 134px);right:16px}
   .chat-panel{bottom:calc(env(safe-area-inset-bottom,8px) + 134px);right:16px;width:calc(100vw - 32px);max-height:60vh}
   /* Analytics charts single column on mobile */
   #analyticsDash [style*="grid-template-columns: 1fr 1fr"]{display:flex!important;flex-direction:column!important}
@@ -7211,7 +7204,6 @@ function closeAllModals(){
   try{closeChat();}catch(e){}
   try{closeBookingModal();}catch(e){}
   try{closeAnalyticsDash();}catch(e){}
-  try{closeAIHelper();}catch(e){}
   try{dmClose();}catch(e){}
   try{closeOnboarding();}catch(e){}
   // setupOverlay converted to /salon/setup page route
@@ -7227,7 +7219,7 @@ function closeAllModals(){
 }
 // Helper: check if any modal is still open and update body class accordingly
 function _checkModalOpen(){
-  var anyOpen=document.querySelector('.overlay.active,#bookingModal.open,.cal-overlay:not(.hidden),.onboard-wizard.active,.legal-modal.open,.report-modal:not(.hidden),.offer-picker:not(.hidden),#aiHelperModal[style*="flex"],#profileEditModal[style*="block"],#galleryPanel[style*="block"],#crmPanel[style*="block"],#adminPendingPanel[style*="block"],#blastPanel[style*="block"],#inventoryPanel[style*="block"],#salonRegModal[style*="flex"]');
+  var anyOpen=document.querySelector('.overlay.active,#bookingModal.open,.cal-overlay:not(.hidden),.onboard-wizard.active,.legal-modal.open,.report-modal:not(.hidden),.offer-picker:not(.hidden),#profileEditModal[style*="block"],#galleryPanel[style*="block"],#crmPanel[style*="block"],#adminPendingPanel[style*="block"],#blastPanel[style*="block"],#inventoryPanel[style*="block"],#salonRegModal[style*="flex"]');
   if(!anyOpen)document.body.classList.remove('modal-open');
 }
 // Safety: periodically check for stuck modal-open class (e.g. if a modal was closed without calling _checkModalOpen)
@@ -13612,39 +13604,6 @@ async function loadWeatherWidget(){
     if(isRainy)window._weatherBoostCat='massage';
   }catch(e){if(document.getElementById('weatherWidget'))document.getElementById('weatherWidget').innerHTML='';}
 }
-function openAIHelper(){
-  const m=document.getElementById('aiHelperModal');
-  if(!m)return;
-  m._triggerEl=document.activeElement;
-  m.style.display='flex';
-  document.body.classList.add('modal-open');
-  setTimeout(function(){
-    document.getElementById('aiHelperInput')?.focus();
-    trapFocus(m.querySelector('.ai-helper-box')||m);
-  },100);
-}
-function closeAIHelper(){
-  const m=document.getElementById('aiHelperModal');
-  if(!m)return;
-  releaseFocus(m);
-  m.style.display='none';
-  _checkModalOpen();
-}
-async function submitAIHelperQuery(){
-  const input=document.getElementById('aiHelperInput');const resultsEl=document.getElementById('aiHelperResults');
-  if(!input||!resultsEl)return;const query=input.value.trim();if(!query)return;
-  resultsEl.innerHTML='<div style="color:var(--c-text-muted);padding:1rem">Suche...</div>';
-  const priceMatch=query.match(/(d+)s*(?:chf|fr.?)/i);const maxPrice=priceMatch?parseInt(priceMatch[1]):null;
-  const catMap={'maniküre':'nails','nagel':'nails','nails':'nails','coiffeur':'coiffeur','haarschnitt':'coiffeur','massage':'massage','spa':'wellness','barbier':'barbershop','wimpern':'beauty','kosmetik':'beauty','beauty':'beauty'};
-  let detectedCat=null;const qL=query.toLowerCase();
-  for(const[kw,cat] of Object.entries(catMap)){if(qL.includes(kw)){detectedCat=cat;break;}}
-  const allStores=window._allStores||window.allStores||[];let filtered=[...allStores];
-  if(detectedCat)filtered=filtered.filter(s=>(s.category||'').toLowerCase().includes(detectedCat));
-  if(maxPrice)filtered=filtered.filter(s=>{const svcs=window.allServices?.filter(x=>x.store_id===s.id)||[];return svcs.some(sv=>parseFloat(sv.price||0)<=maxPrice)||(s.min_price&&parseFloat(s.min_price)<=maxPrice);});
-  if(qL.includes('diese woche')||qL.includes('this week'))filtered=filtered.filter(s=>s.available_today||s.slots_available);
-  if(!filtered.length){resultsEl.innerHTML='<div style="padding:1rem"><p>Keine Salons für &ldquo;'+query+'&rdquo; gefunden.</p><p style="color:var(--c-text-muted)">Versuche einen anderen Begriff.</p></div>';return;}
-  resultsEl.innerHTML='<p style="color:var(--c-text-muted);font-size:.85rem;margin-bottom:.75rem">'+filtered.length+' Salon'+(filtered.length>1?'s':'')+' gefunden:</p>'+filtered.slice(0,6).map(s=>'<div class="ai-result-card" onclick="'+(typeof openBookingForStore==='function'?'openBookingForStore('+s.id+');':'')+'closeAIHelper()"><div><strong>'+(s.name||'Salon')+'</strong><br><span style="font-size:.8rem;color:var(--c-text-muted)">'+(s.neighbourhood||s.quartier||'Basel')+'</span></div><span style="color:var(--c-cta);font-weight:600">'+(s.min_price?'ab CHF '+s.min_price:'')+'</span></div>').join('');
-}
 async function checkAndSetVerified(storeId){
   try{const {count}=await window._sb.from('bookings').select('id',{count:'exact',head:true}).eq('store_id',storeId).eq('status','confirmed');if(count>=10){await window._sb.from('stores').update({is_verified:true}).eq('id',storeId).is('is_verified',null);}}catch(e){}
 }
@@ -13757,26 +13716,6 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
 <!-- Dark mode toggle + skip link (appended to body) -->
 <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
 
-<button class="ai-helper-fab" onclick="openAIHelper()" title="KI-Assistent" aria-label="KI-Salonsuche">&#129302;</button>
-<div id="aiHelperModal" role="dialog" aria-modal="true" aria-labelledby="aiHelperTitle">
-  <div class="ai-helper-box">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">
-      <div><h3 id="aiHelperTitle">KI-Salonsuche</h3><p>Beschreib was du suchst – ich finde den passenden Salon.</p></div>
-      <button onclick="closeAIHelper()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--c-text-muted,#888)" aria-label="Schliessen">&#10005;</button>
-    </div>
-    <div class="ai-suggestions">
-      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Maniküre unter 80 CHF</span>
-      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Massage Kleinbasel</span>
-      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Coiffeur diese Woche</span>
-      <span class="ai-suggestion-chip" onclick="document.getElementById('aiHelperInput').value=this.textContent;submitAIHelperQuery()">Günstiger Barbier</span>
-    </div>
-    <div class="ai-helper-input-row">
-      <input id="aiHelperInput" type="text" placeholder="z.B. Maniküre unter 80 CHF" onkeydown="if(event.key==='Enter')submitAIHelperQuery()">
-      <button class="btn-ai-search" onclick="submitAIHelperQuery()">Suchen</button>
-    </div>
-    <div id="aiHelperResults"></div>
-  </div>
-</div>
 
 </body>
 </html>
