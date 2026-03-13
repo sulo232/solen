@@ -825,6 +825,40 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .bottom-nav-item.active svg{stroke-width:2.2}
 @media(max-width:768px){.bottom-nav{display:block}}
 
+/* ── EXPANDABLE TABS (bottom nav) ── */
+.bottom-nav-item{flex-direction:row;gap:0}
+.bottom-nav-item.active{gap:2px}
+.bottom-nav-item span{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;margin-left:0;transition:max-width .32s cubic-bezier(.34,1.56,.64,1),opacity .2s ease,margin .32s cubic-bezier(.34,1.56,.64,1)}
+.bottom-nav-item.active span{max-width:80px;opacity:1;margin-left:4px}
+
+/* ── SLIDING NUMBER COMPONENT ── */
+.sn-wrap{display:inline-flex;align-items:flex-end;overflow:hidden;vertical-align:middle;-webkit-text-fill-color:var(--c-text)!important;background:none!important}
+.sn-char{display:inline-block}
+.sn-digit{display:inline-block;height:1.15em;overflow:hidden;position:relative;vertical-align:bottom}
+.sn-reel{display:flex;flex-direction:column;transition:transform .55s cubic-bezier(.22,1,.36,1);will-change:transform;line-height:1.15em}
+.sn-reel span{display:block;line-height:1.15em;height:1.15em}
+@media(prefers-reduced-motion:reduce){.sn-reel{transition:none}}
+
+/* ── ACTION SEARCH PALETTE ── */
+#actionSearchOverlay{position:fixed;inset:0;z-index:1200;display:none;align-items:flex-start;justify-content:center;padding-top:72px;background:rgba(0,0,0,0);backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0);transition:background .2s ease}
+#actionSearchOverlay.as-open{display:flex;background:rgba(0,0,0,.45);backdrop-filter:blur(12px) saturate(140%);-webkit-backdrop-filter:blur(12px) saturate(140%)}
+#actionSearchModal{background:var(--c-surface);border:1px solid var(--c-border-strong);border-radius:var(--r2);width:100%;max-width:480px;box-shadow:var(--shadow3);overflow:hidden;transform:translateY(-14px) scale(.97);opacity:0;transition:transform .28s cubic-bezier(.34,1.56,.64,1),opacity .22s ease}
+#actionSearchOverlay.as-open #actionSearchModal{transform:translateY(0) scale(1);opacity:1}
+.as-action-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;border:none;width:100%;background:none;text-align:left;font-family:var(--font-body);transition:background .15s ease}
+.as-action-item:hover,.as-action-item.as-focused{background:var(--c-surface-alt)}
+.as-action-icon{width:36px;height:36px;border-radius:10px;background:var(--c-surface-alt);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.as-action-label{font-size:var(--text-md);font-weight:600;color:var(--c-text);display:block}
+.as-action-sub{font-size:var(--text-xs);color:var(--c-text-secondary);display:block;margin-top:1px}
+.as-action-end{font-size:.65rem;color:var(--c-text-muted);white-space:nowrap;padding:2px 8px;background:var(--c-surface-alt);border-radius:6px;border:1px solid var(--c-border)}
+#actionSearchInput{flex:1;border:none;background:transparent;font-size:var(--text-md);color:var(--c-text);font-family:var(--font-body);outline:none}
+#actionSearchInput::placeholder{color:var(--c-text-muted)}
+#actionSearchTrigger{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--r-pill);border:1.5px solid var(--c-border-strong);background:var(--c-surface);color:var(--c-text-secondary);font-size:var(--text-sm);font-weight:600;cursor:pointer;transition:all .2s ease;width:100%;max-width:320px;box-shadow:var(--elev-1)}
+#actionSearchTrigger:hover{background:var(--c-surface-alt);border-color:var(--c-accent);color:var(--c-text)}
+@media(max-width:540px){
+  #actionSearchOverlay{padding-top:16px;align-items:flex-end}
+  #actionSearchModal{border-radius:24px 24px 0 0;max-width:100%}
+}
+
 /* ── GLASS PANEL UTILITY (Phase 2) ── */
 .glass-panel{background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);border-radius:var(--r2)}
 .glass-panel-light{background:var(--glass-bg-light);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--elev-2);border-radius:var(--r2)}
@@ -2942,6 +2976,14 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
         <button class="hero-filter-chip" onclick="selectServiceFromMenu('spa','Spa &amp; Wellness')">Spa</button>
         <button class="hero-filter-chip" onclick="selectServiceFromMenu('makeup','Make-up')">Make-up</button>
       </div>
+      <!-- ACTION SEARCH TRIGGER -->
+      <div style="margin-top:12px">
+        <button id="actionSearchTrigger" onclick="openActionSearch()" aria-label="Schnellaktionen öffnen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span style="flex:1;text-align:left">Schnellaktionen…</span>
+          <kbd style="font-size:.6rem;padding:2px 6px;background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:4px;font-family:var(--font-mono);line-height:1.4">⌘K</kbd>
+        </button>
+      </div>
       <!-- SOCIAL PROOF BADGE -->
       <div class="hero-proof-badge" id="heroProofBadge" aria-live="polite" style="position:static;transform:none;margin-top:16px;background:var(--c-surface-alt);border-color:var(--c-border);color:var(--c-text-secondary)">
         <span class="hero-proof-dot"></span>
@@ -3918,6 +3960,22 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   </div>
 </footer>
 
+<!-- ACTION SEARCH PALETTE OVERLAY -->
+<div id="actionSearchOverlay" onclick="if(event.target===this)closeActionSearch()" role="dialog" aria-modal="true" aria-label="Schnellaktionen">
+  <div id="actionSearchModal">
+    <div style="display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--c-border)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--c-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="actionSearchInput" type="text" placeholder="Aktion suchen…" autocomplete="off" oninput="filterActionSearch(this.value)" onkeydown="handleActionSearchKey(event)">
+      <button onclick="closeActionSearch()" style="background:none;border:none;color:var(--c-text-muted);font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;min-height:auto" aria-label="Schliessen">✕</button>
+    </div>
+    <div id="actionSearchResults" style="padding:8px 0;max-height:320px;overflow-y:auto"></div>
+    <div style="padding:10px 16px;border-top:1px solid var(--c-border);display:flex;justify-content:space-between;font-size:.7rem;color:var(--c-text-muted)">
+      <span>↑↓ navigieren &nbsp; ↵ auswählen</span>
+      <span>ESC schliessen</span>
+    </div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV (mobile) - role-based -->
 <nav class="bottom-nav" id="bottomNav" role="navigation" aria-label="Mobile Navigation">
   <div class="bottom-nav-inner">
@@ -4878,7 +4936,7 @@ async function onSignIn(user){
   // Check if salon owner (existing salon/store record or salon_owner/owner profile role)
   const[{data:salonData},{data:storeData}]=await Promise.all([
     sb.from('salons').select('id').eq('owner_id',user.id).limit(1),
-    sb.from('stores').select('id').eq('user_id',user.id).limit(1)
+    sb.from('stores').select('id').eq('owner_id',user.id).limit(1)
   ]);
   if((salonData&&salonData.length>0)||(storeData&&storeData.length>0)||currentProfile?.role==='salon_owner'||currentProfile?.role==='owner'){
     document.getElementById('salonDashLink').classList.remove('hidden');
@@ -8803,8 +8861,8 @@ async function renderSalonDashboard(){
   el.innerHTML='<div class="spinner"></div>';
   const{data:mySalons}=await sb.from('salons').select('*').eq('owner_id',currentUser.id);
   if(!mySalons||mySalons.length===0){
-    // Also check stores table by user_id (owner created via salon profile form)
-    const{data:myStores}=await sb.from('stores').select('*').eq('user_id',currentUser.id).limit(1);
+    // Also check stores table by owner_id (owner created via salon profile form)
+    const{data:myStores}=await sb.from('stores').select('*').eq('owner_id',currentUser.id).limit(1);
     if(!myStores||myStores.length===0){
       el.innerHTML=`<div class="profile-card">
         <h3 style="margin-bottom:4px">Salon-Profil erstellen</h3>
@@ -9377,6 +9435,7 @@ async function renderAnalytics(salonId,storeId){
       ${topCustomers.map((c,i,arr)=>`<div style="${rowStyle(i,arr)}"><span style="font-weight:600">${c[0]}</span><span class="booking-status status-pending" style="min-width:36px;text-align:center">${c[1]}×</span></div>`).join('')}
     </div>`:''}
   `;
+  if (typeof initDashboardSlidingNumbers === 'function') initDashboardSlidingNumbers();
 }
 
 
@@ -11027,7 +11086,7 @@ function toggleStaffBreak(btn){
     row.appendChild(breakDiv);btn.textContent='\u00d7 Pause';
   }
 }
-async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,user_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
+async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,owner_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
   e.preventDefault();
   solenTrack('partner_reg_submit',{});
@@ -11052,7 +11111,7 @@ async function submitSalonReg(e){
     description:document.getElementById('reg_desc').value.trim()||null,
     status:'pending',
     parent_store_id:(()=>{const v=document.getElementById('reg_parent_store_id')?.value||'';return v?(Number(v)||v):null;})(),
-    user_id:currentUser?currentUser.id:null
+    owner_id:currentUser?currentUser.id:null
   };
   try{
     let newStoreId=null;
@@ -12505,7 +12564,11 @@ document.addEventListener('click',function(e){
       // Slowly tick up every 45–90 seconds to simulate live bookings
       setInterval(function() {
         baseBookings += Math.floor(Math.random() * 3) + 1;
-        heroNum.textContent = baseBookings.toLocaleString(getLocale());
+        if (typeof initSlidingNumber === 'function' && heroNum.querySelector('.sn-wrap')) {
+          initSlidingNumber(heroNum, baseBookings);
+        } else {
+          heroNum.textContent = baseBookings.toLocaleString(getLocale());
+        }
       }, 60000);
     }
   }
@@ -12715,6 +12778,7 @@ document.addEventListener('click',function(e){
   document.addEventListener('DOMContentLoaded', function() {
     initScrollFadeIn();
     initSocialProofAnimation();
+    initAllSlidingNumbers();
     restoreFavHearts();
     // Trending and quartier counts need store data — trigger after stores load
     setTimeout(function() {
@@ -13977,5 +14041,219 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   </div>
 </div>
 
+<script>
+/* ============================================================
+   SLIDING NUMBER COMPONENT
+   Each digit is a vertically-scrolling reel of 0-9.
+   CSS translateY animates to the target digit.
+   ============================================================ */
+function _snMakeReel(digit) {
+  var outer = document.createElement('span');
+  outer.className = 'sn-digit';
+  var reel = document.createElement('span');
+  reel.className = 'sn-reel';
+  reel.style.transform = 'translateY(0)';
+  for (var d = 0; d <= 9; d++) {
+    var s = document.createElement('span');
+    s.textContent = d;
+    reel.appendChild(s);
+  }
+  outer.appendChild(reel);
+  return { outer: outer, reel: reel, digit: digit };
+}
+
+function initSlidingNumber(el, targetValue) {
+  if (!el) return;
+  var str = String(targetValue);
+  var wrap = document.createElement('span');
+  wrap.className = 'sn-wrap';
+  var reels = [];
+  for (var i = 0; i < str.length; i++) {
+    var ch = str[i];
+    if (!/[0-9]/.test(ch)) {
+      var c = document.createElement('span');
+      c.className = 'sn-char';
+      c.textContent = ch;
+      wrap.appendChild(c);
+    } else {
+      var r = _snMakeReel(parseInt(ch, 10));
+      wrap.appendChild(r.outer);
+      reels.push(r);
+    }
+  }
+  el.textContent = '';
+  el.appendChild(wrap);
+  requestAnimationFrame(function() {
+    reels.forEach(function(r) {
+      r.reel.style.transform = 'translateY(-' + (r.digit * 1.15) + 'em)';
+    });
+  });
+}
+
+function initAllSlidingNumbers() {
+  var heroNum = document.getElementById('heroProofNum');
+  if (!heroNum || heroNum.dataset.snInited) return;
+  heroNum.dataset.snInited = '1';
+  setTimeout(function() {
+    var val = parseInt(heroNum.textContent.replace(/\D/g, ''), 10);
+    if (!isNaN(val)) initSlidingNumber(heroNum, val);
+  }, 2300);
+}
+
+function initDashboardSlidingNumbers() {
+  document.querySelectorAll('.dash-stat-num').forEach(function(el) {
+    if (el.dataset.snInited) return;
+    var raw = el.textContent.trim();
+    var numMatch = raw.match(/\d+/);
+    if (!numMatch) return;
+    var numStr = numMatch[0];
+    var hasChf = raw.includes('CHF');
+    var hasPct = raw.includes('%');
+    el.dataset.snInited = '1';
+    var inner = document.createElement('span');
+    el.textContent = hasChf ? 'CHF\u00a0' : '';
+    el.appendChild(inner);
+    if (hasPct) el.appendChild(document.createTextNode('%'));
+    setTimeout(function() { initSlidingNumber(inner, parseInt(numStr, 10)); }, 80);
+  });
+}
+
+/* ============================================================
+   ACTION SEARCH PALETTE
+   Solen-specific command palette triggered by button or Cmd+K.
+   ============================================================ */
+(function() {
+  var ACTIONS = [
+    { icon: '\u{1F50D}', label: 'Salon finden',        sub: 'Salons in der N\u00e4he entdecken', end: 'Entdecken',
+      fn: function() { showPage('home'); setTimeout(function(){ var s=document.getElementById('discoverySection'); if(s) s.scrollIntoView({behavior:'smooth'}); }, 200); } },
+    { icon: '\u{1F4C5}', label: 'Termin buchen',        sub: 'Einen Besuch planen',               end: 'Buchung',
+      fn: function() { showPage('discover'); } },
+    { icon: '\u{1F4CB}', label: 'Meine Buchungen',      sub: 'Bevorstehende & vergangene',        end: 'Profil',
+      fn: function() { window.currentUser ? showPage('bookings') : openAuth('login'); } },
+    { icon: '\u2764\uFE0F', label: 'Meine Favoriten',   sub: 'Gespeicherte Salons',               end: 'Profil',
+      fn: function() { window.currentUser ? showPage('profile') : openAuth('login'); } },
+    { icon: '\u{1F4CD}', label: 'Salon in meiner N\u00e4he', sub: 'Meinen Standort verwenden',   end: 'Standort',
+      fn: function() { closeActionSearch(); setTimeout(geoLocateMe, 60); } }
+  ];
+
+  var _filtered = ACTIONS.slice();
+  var _focusIdx = 0;
+
+  window._asExec = function(idx) {
+    var action = _filtered[idx];
+    if (!action) return;
+    closeActionSearch();
+    setTimeout(function() { action.fn(); }, 60);
+  };
+
+  window.openActionSearch = function() {
+    var overlay = document.getElementById('actionSearchOverlay');
+    var input   = document.getElementById('actionSearchInput');
+    if (!overlay) return;
+    overlay.style.display = 'flex';
+    requestAnimationFrame(function() { overlay.classList.add('as-open'); });
+    document.body.classList.add('modal-open');
+    _filtered = ACTIONS.slice();
+    _focusIdx = 0;
+    renderItems();
+    setTimeout(function() { if (input) input.focus(); }, 50);
+  };
+
+  window.closeActionSearch = function() {
+    var overlay = document.getElementById('actionSearchOverlay');
+    var input   = document.getElementById('actionSearchInput');
+    if (!overlay) return;
+    overlay.classList.remove('as-open');
+    setTimeout(function() {
+      overlay.style.display = 'none';
+      if (input) input.value = '';
+      _filtered = ACTIONS.slice();
+      _focusIdx = 0;
+      renderItems();
+    }, 280);
+    document.body.classList.remove('modal-open');
+    if (typeof _checkModalOpen === 'function') _checkModalOpen();
+  };
+
+  window.filterActionSearch = function(q) {
+    var ql = q.toLowerCase().trim();
+    _filtered = ql ? ACTIONS.filter(function(a) {
+      return (a.label + a.sub).toLowerCase().includes(ql);
+    }) : ACTIONS.slice();
+    _focusIdx = 0;
+    renderItems();
+  };
+
+  window.handleActionSearchKey = function(e) {
+    if (e.key === 'Escape') { closeActionSearch(); return; }
+    if (e.key === 'ArrowDown')  { e.preventDefault(); _focusIdx = Math.min(_focusIdx + 1, _filtered.length - 1); updateFocus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); _focusIdx = Math.max(_focusIdx - 1, 0); updateFocus(); }
+    else if (e.key === 'Enter')   { e.preventDefault(); window._asExec(_focusIdx); }
+  };
+
+  function updateFocus() {
+    document.querySelectorAll('.as-action-item').forEach(function(el, i) {
+      el.classList.toggle('as-focused', i === _focusIdx);
+    });
+  }
+
+  function makeActionBtn(a, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'as-action-item' + (idx === _focusIdx ? ' as-focused' : '');
+    btn.dataset.asIdx = idx;
+    btn.addEventListener('click', function() { window._asExec(idx); });
+
+    var iconSpan = document.createElement('span');
+    iconSpan.className = 'as-action-icon';
+    iconSpan.textContent = a.icon;
+
+    var textSpan = document.createElement('span');
+    textSpan.style.flex = '1';
+    var labelSpan = document.createElement('span');
+    labelSpan.className = 'as-action-label';
+    labelSpan.textContent = a.label;
+    var subSpan = document.createElement('span');
+    subSpan.className = 'as-action-sub';
+    subSpan.textContent = a.sub;
+    textSpan.appendChild(labelSpan);
+    textSpan.appendChild(subSpan);
+
+    var endSpan = document.createElement('span');
+    endSpan.className = 'as-action-end';
+    endSpan.textContent = a.end;
+
+    btn.appendChild(iconSpan);
+    btn.appendChild(textSpan);
+    btn.appendChild(endSpan);
+    return btn;
+  }
+
+  function renderItems() {
+    var container = document.getElementById('actionSearchResults');
+    if (!container) return;
+    container.textContent = '';
+    if (!_filtered.length) {
+      var empty = document.createElement('div');
+      empty.style.cssText = 'padding:20px;text-align:center;color:var(--c-text-muted);font-size:var(--text-sm)';
+      empty.textContent = 'Keine Aktionen gefunden';
+      container.appendChild(empty);
+      return;
+    }
+    _filtered.forEach(function(a, i) {
+      container.appendChild(makeActionBtn(a, i));
+    });
+  }
+
+  // Global Cmd+K / Ctrl+K shortcut
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      var overlay = document.getElementById('actionSearchOverlay');
+      if (overlay && overlay.classList.contains('as-open')) closeActionSearch();
+      else openActionSearch();
+    }
+  });
+}());
+</script>
 </body>
 </html>
