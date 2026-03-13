@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion, useAnimation, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 export function SlidingNumber({ value, prefix = "", suffix = "" }: { value: number, prefix?: string, suffix?: string }) {

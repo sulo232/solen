@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Search, Calendar, User, Heart, Settings } from "lucide-react";
+import { Search, Calendar, User, Heart } from "lucide-react";
 
 interface Tab {
   title: string;

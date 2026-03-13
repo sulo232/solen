@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Calendar, MapPin, Heart, Clock, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const ACTIONS = [
   { icon: Search, label: "Salon finden", sub: "Salons in der Nähe entdecken", end: "Entdecken", action: "home" },
