@@ -3722,6 +3722,31 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 <!-- EDIT STORE MODAL (ADMIN) -->
+<!-- EDIT BOOKING MODAL -->
+<div class="overlay" id="editBookingOverlay" role="dialog" aria-modal="true" aria-label="Buchung bearbeiten" onclick="if(event.target===this)closeEditBooking()">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2>Buchung bearbeiten</h2>
+      <button class="close-btn" onclick="closeEditBooking()" aria-label="Schliessen">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ebId">
+      <div class="form-group"><label for="ebDate">Datum</label><input class="form-input" type="date" id="ebDate"></div>
+      <div class="form-group"><label for="ebTime">Uhrzeit</label><input class="form-input" type="time" id="ebTime"></div>
+      <div class="form-group"><label for="ebStatus">Status</label>
+        <select class="form-input" id="ebStatus">
+          <option value="pending">Ausstehend</option>
+          <option value="confirmed">Bestätigt</option>
+          <option value="cancelled">Abgesagt</option>
+          <option value="completed">Abgeschlossen</option>
+          <option value="no_show">No-Show</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="saveEditBooking()">Speichern</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="editStoreOverlay" role="dialog" aria-modal="true" aria-label="Salon bearbeiten" onclick="if(event.target===this)closeEditStore()">
   <div class="modal">
     <div class="modal-hd">
@@ -7220,6 +7245,7 @@ function closeAllModals(){
   try{closeAnalyticsDash();}catch(e){}
   try{dmClose();}catch(e){}
   try{closeOnboarding();}catch(e){}
+  try{closeEditBooking();}catch(e){}
   // setupOverlay converted to /salon/setup page route
   document.getElementById('impressumModal')?.classList.remove('open');
   document.getElementById('datenschutzModal')?.classList.remove('open');
@@ -8672,7 +8698,8 @@ async function loadAdminBookings(){
       <td>${b.service_name||'—'}<br><span style="font-size:.75rem;color:var(--muted)">CHF ${b.service_price||0}</span></td>
       <td>${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Anonym'}<br><span style="font-size:.75rem;color:var(--muted)">${b.customer_email||''}</span></td>
       <td><span class="booking-status ${b.status==='confirmed'?'status-confirmed':b.status==='cancelled'?'status-cancelled':'status-pending'}">${b.status}</span></td>
-      <td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <button class="btn-sm" onclick="openEditBooking('${b.id}','${b.booking_date||''}','${b.booking_time||''}','${b.status||''}')">Bearbeiten</button>
         ${b.status!=='cancelled'?`<button class="btn-danger" onclick="cancelBooking('${b.id}')">Stornieren</button>`:''}
       </td>
     </tr>`).join('')}</tbody>
@@ -8795,6 +8822,28 @@ async function cancelBooking(id){
   else{toast('Storniert.','info');loadAdminBookings();}
 }
 
+function openEditBooking(id,date,time,status){
+  document.getElementById('ebId').value=id;
+  document.getElementById('ebDate').value=date||'';
+  document.getElementById('ebTime').value=time||'';
+  document.getElementById('ebStatus').value=status||'confirmed';
+  document.getElementById('editBookingOverlay').classList.add('active');
+}
+function closeEditBooking(){document.getElementById('editBookingOverlay').classList.remove('active');}
+async function saveEditBooking(){
+  const id=document.getElementById('ebId').value;
+  const date=document.getElementById('ebDate').value;
+  const time=document.getElementById('ebTime').value;
+  const status=document.getElementById('ebStatus').value;
+  if(!id)return;
+  const{error}=await sb.from('bookings').update({booking_date:date,booking_time:time,status}).eq('id',id);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  toast('Buchung aktualisiert','success');
+  closeEditBooking();
+  if(document.getElementById('pageAdmin')?.classList.contains('active'))loadAdminBookings();
+  else renderSalonDashboard();
+}
+
 function openAddService(){
   document.getElementById('editStoreTitle').textContent='Service hinzufügen';
   sb.from('stores').select('id,name').order('name').then(({data})=>{
@@ -8843,7 +8892,7 @@ async function deleteService(id){
 
 // SALON OWNER DASHBOARD
 async function renderSalonDashboard(){
-  const el=document.getElementById('dashTabBuchungen')||document.getElementById('salonDashContent');
+  const el=document.getElementById('salonDashContent');
   if(!currentUser){el.innerHTML='<p class="text-muted">'+(t('auth_required')||'Bitte anmelden.')+'</p>';return;}
   var _salonOwner=!!(currentProfile&&(currentProfile.role==='salon_owner'||currentProfile.is_salon_owner));
   if(!_salonOwner){el.innerHTML='<p class="text-muted">'+(t('owner_only')||'Nur für Salon-Inhaber.')+'</p>';return;}
@@ -8941,7 +8990,10 @@ async function renderSalonDashboard(){
         <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
         <div class="booking-meta">${b.service_name||'–'} · ${b.booking_date} · ${b.booking_time||'–'}</div>
         <div class="booking-meta">Ref: ${b.reference||'–'} · <span class="booking-status status-${b.status}">${b.status}</span></div>
-        ${b.status==='confirmed'?`<button class="btn-sm btn-danger" style="margin-top:8px" onclick="updateBookingStatus('${b.id}','cancelled')">Stornieren</button>`:''}
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <button class="btn-sm" onclick="openEditBooking('${b.id}','${b.booking_date||''}','${b.booking_time||''}','${b.status||''}')">Bearbeiten</button>
+          ${b.status==='confirmed'?`<button class="btn-sm btn-danger" onclick="updateBookingStatus('${b.id}','cancelled')">Stornieren</button>`:''}
+        </div>
       </div>`).join('')}</div>`:'<p class="text-muted">Noch keine Buchungen.</p>'}
     </div>
     <div id="dashTabStatistiken" class="hidden">
@@ -8973,26 +9025,53 @@ function loadDashHoursSection(salonId){
   const salon=allStores.find(s=>s.id==salonId)||mySalons.find(s=>s.id==salonId)||{};
   let oh={};
   if(salon.opening_hours){try{oh=typeof salon.opening_hours==='string'?JSON.parse(salon.opening_hours):salon.opening_hours;}catch(e){}}
-  sec.innerHTML='<div style="padding:16px 0"><p style="font-size:.85rem;color:var(--text2);margin-bottom:16px">Lege deine Öffnungszeiten fest:</p>'+
-    days.map(d=>{
-      const h=oh[d]||{};
-      const isClosed=h.closed||(!h.open&&!h.close);
-      return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)"><label style="width:90px;font-size:.85rem;font-weight:600">${dayNames[d]}</label><input type="checkbox" id="oh_${d}_open" ${!isClosed?'checked':''} onchange="ohToggle('${d}')" style="cursor:pointer"><span id="oh_${d}_times" style="${isClosed?'opacity:.3;pointer-events:none':''}"><input type="time" id="oh_${d}_from" value="${h.open||'09:00'}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.82rem"><span style="margin:0 6px;color:var(--text2)">bis</span><input type="time" id="oh_${d}_to" value="${h.close||'18:00'}" style="padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.82rem"></span></div>`;
-    }).join('')+
-    '<button class="btn btn-primary" style="margin-top:16px" onclick="saveDashHours('+salonId+')">Speichern</button></div>';
+  const inp='padding:4px 6px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.82rem';
+  const rows=days.map(d=>{
+    const h=oh[d]||{};
+    const isClosed=h.closed||(!h.open&&!h.close);
+    const hasBreak=!!(h.break_start&&h.break_end);
+    const dimStyle=isClosed?'opacity:.3;pointer-events:none':'';
+    return '<div style="padding:8px 0;border-bottom:1px solid var(--border)">'
+      +'<div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px">'
+      +'<label style="width:90px;font-size:.85rem;font-weight:600">'+dayNames[d]+'</label>'
+      +'<input type="checkbox" id="oh_'+d+'_open" '+(isClosed?'':'checked')+' onchange="ohToggle(\''+d+'\')" style="cursor:pointer">'
+      +'<span id="oh_'+d+'_times" style="display:flex;align-items:center;gap:4px;'+dimStyle+'">'
+        +'<input type="time" id="oh_'+d+'_from" value="'+(h.open||'09:00')+'" style="'+inp+'">'
+        +'<span style="margin:0 4px;color:var(--text2)">bis</span>'
+        +'<input type="time" id="oh_'+d+'_to" value="'+(h.close||'18:00')+'" style="'+inp+'">'
+      +'</span>'
+      +'<button type="button" onclick="ohToggleBreak(\''+d+'\')" id="oh_'+d+'_brbtn" style="font-size:.72rem;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;'+dimStyle+'">'+(hasBreak?'\xd7 Pause':'+ Pause')+'</button>'
+      +'</div>'
+      +'<div id="oh_'+d+'_break" style="display:'+(hasBreak?'flex':'none')+';align-items:center;gap:6px;margin-top:4px;padding-left:110px">'
+        +'<span style="font-size:.72rem;color:var(--text2);font-weight:600">Pause:</span>'
+        +'<input type="time" id="oh_'+d+'_bs" value="'+(h.break_start||'12:00')+'" style="'+inp+'">'
+        +'<span style="color:var(--text2);font-size:.82rem">\u2013</span>'
+        +'<input type="time" id="oh_'+d+'_be" value="'+(h.break_end||'13:00')+'" style="'+inp+'">'
+      +'</div>'
+      +'</div>';
+  });
+  sec.innerHTML='<div style="padding:16px 0"><p style="font-size:.85rem;color:var(--text2);margin-bottom:16px">Lege deine \u00d6ffnungszeiten fest:</p>'+rows.join('')+'<button class="btn btn-primary" style="margin-top:16px" onclick="saveDashHours('+salonId+')">Speichern</button></div>';
 }
 function ohToggle(day){
   const cb=document.getElementById('oh_'+day+'_open');
   const times=document.getElementById('oh_'+day+'_times');
-  if(times){times.style.opacity=cb.checked?'1':'0.3';times.style.pointerEvents=cb.checked?'auto':'none';}
+  const brbtn=document.getElementById('oh_'+day+'_brbtn');
+  const dim=!cb.checked;
+  if(times){times.style.opacity=dim?'0.3':'1';times.style.pointerEvents=dim?'none':'auto';}
+  if(brbtn){brbtn.style.opacity=dim?'0.3':'1';brbtn.style.pointerEvents=dim?'none':'auto';}
 }
 async function saveDashHours(salonId){
   const days=['mon','tue','wed','thu','fri','sat','sun'];
   const oh={};
   days.forEach(d=>{
     const open=document.getElementById('oh_'+d+'_open')?.checked;
-    if(open){oh[d]={open:document.getElementById('oh_'+d+'_from')?.value||'09:00',close:document.getElementById('oh_'+d+'_to')?.value||'18:00'};}
-    else{oh[d]={closed:true};}
+    if(open){
+      const entry={open:document.getElementById('oh_'+d+'_from')?.value||'09:00',close:document.getElementById('oh_'+d+'_to')?.value||'18:00'};
+      const breakDiv=document.getElementById('oh_'+d+'_break');
+      const breakVisible=breakDiv&&(breakDiv.style.display==='flex'||breakDiv.style.display==='');
+      if(breakVisible){const bs=document.getElementById('oh_'+d+'_bs')?.value;const be=document.getElementById('oh_'+d+'_be')?.value;if(bs&&be){entry.break_start=bs;entry.break_end=be;}}
+      oh[d]=entry;
+    }else{oh[d]={closed:true};}
   });
   const {error}=await sb.from('stores').update({opening_hours:oh}).eq('id',salonId);
   if(error){toast('Fehler beim Speichern','error');return;}
@@ -9001,6 +9080,14 @@ async function saveDashHours(salonId){
   const mi=mySalons.findIndex(s=>s.id==salonId);
   if(mi>=0)mySalons[mi].opening_hours=oh;
   toast('Öffnungszeiten gespeichert','success');
+}
+function ohToggleBreak(day){
+  const div=document.getElementById('oh_'+day+'_break');
+  const btn=document.getElementById('oh_'+day+'_brbtn');
+  if(!div)return;
+  const showing=div.style.display==='flex';
+  div.style.display=showing?'none':'flex';
+  if(btn)btn.textContent=showing?'+ Pause':'\u00d7 Pause';
 }
 function showDashTab(btn,tab,salonId,storeId){
   document.querySelectorAll('#dashTabs .admin-tab').forEach(b=>b.classList.remove('active'));
@@ -9159,122 +9246,6 @@ function _presetToggle(key, cb) {
 }
 
 let _svcTeamSalonId=null;
-
-async function renderServicesTeamTab(salonId) {
-  _svcTeamSalonId=salonId;
-  const panel=document.getElementById('dashTabServices');
-  if(!panel)return;
-  panel.innerHTML='<div style="padding:2rem;text-align:center"><div class="spinner"></div></div>';
-  const [salonRes,staffRes]=await Promise.all([
-    sb.from('salons').select('service_settings').eq('id',salonId).single(),
-    sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name')
-  ]);
-  const settings=salonRes.data?.service_settings||{};
-  const staffList=staffRes.data||[];
-
-  panel.innerHTML=`<div style="padding:16px 0 24px">
-
-    <!-- A: TEAM -->
-    <div class="svcteam-section">
-      <div class="svcteam-section-hd">
-        <h3>Team (Stylisten)</h3>
-        <button class="btn-primary btn-sm" onclick="document.getElementById('svcteamAddForm').style.display=document.getElementById('svcteamAddForm').style.display==='none'?'block':'none'">+ Stylist hinzufügen</button>
-      </div>
-      <div class="stylist-grid" id="svcteamStylistGrid">
-        ${staffList.length===0?'<p style="color:var(--c-text-muted);font-size:.88rem">Noch keine Stylisten eingetragen.</p>':
-          staffList.map(s=>{
-            const initials=(s.name||'?').split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
-            const av=s.photo_url?`<img src="${s.photo_url}" alt="${s.name}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`:`<span>${initials}</span>`;
-            const bookable=s.bookable!==false;
-            return `<div class="stylist-card" id="stycard_${s.id}">
-              <button class="stylist-del" onclick="deleteSvcTeamStylist('${s.id}','${salonId}')" title="Entfernen">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
-              <div class="stylist-avatar">${av}</div>
-              <div class="stylist-name">${s.name}</div>
-              ${s.role?`<div class="stylist-role">${s.role}</div>`:''}
-              ${s.specialties?`<div class="stylist-role" style="font-style:italic">${s.specialties}</div>`:''}
-              <div class="stylist-bookable">
-                <label class="toggle-switch" title="In Buchung wählbar?">
-                  <input type="checkbox" ${bookable?'checked':''} onchange="updateStylistBookable('${s.id}','${salonId}',this.checked)">
-                  <span class="toggle-slider"></span>
-                </label>
-                <span>Buchbar</span>
-              </div>
-            </div>`;
-          }).join('')
-        }
-      </div>
-      <!-- Add stylist form (hidden by default) -->
-      <div class="stylist-add-form" id="svcteamAddForm" style="display:none">
-        <h4 style="font-size:.88rem;font-weight:700;margin-bottom:12px;color:var(--c-text)">Neuen Stylisten hinzufügen</h4>
-        <div class="form-row">
-          <div class="form-group" style="margin:0">
-            <label style="font-size:.8rem;color:var(--c-text-secondary)">Name (Pflichtfeld)</label>
-            <input class="form-input" id="svcteamName" placeholder="z.B. Maria Müller">
-          </div>
-          <div class="form-group" style="margin:0">
-            <label style="font-size:.8rem;color:var(--c-text-secondary)">Rolle</label>
-            <input class="form-input" id="svcteamRole" placeholder="z.B. Stylistin, Barbier">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="margin:0">
-            <label style="font-size:.8rem;color:var(--c-text-secondary)">Spezialgebiete</label>
-            <input class="form-input" id="svcteamSpec" placeholder="z.B. Balayage, Fade">
-          </div>
-          <div class="form-group" style="margin:0">
-            <label style="font-size:.8rem;color:var(--c-text-secondary)">Foto-URL (optional)</label>
-            <input class="form-input" id="svcteamPhoto" type="url" placeholder="https://...">
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <label class="toggle-switch"><input type="checkbox" id="svcteamBookable" checked><span class="toggle-slider"></span></label>
-          <span style="font-size:.85rem;color:var(--c-text-secondary)">In Buchung wählbar</span>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button class="btn-primary btn-sm" onclick="addSvcTeamStylist('${salonId}')">Hinzufügen</button>
-          <button class="btn-secondary btn-sm" onclick="document.getElementById('svcteamAddForm').style.display='none'">Abbrechen</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- B: HERREN PRESETS -->
-    <div class="svcteam-section">
-      <div class="svcteam-section-hd">
-        <h3>Herrenhaarschnitte</h3>
-        <span style="font-size:.78rem;color:var(--c-text-muted)">Wähle was du anbietest</span>
-      </div>
-      ${_presetTableHtml(SVCTEAM_HERREN,settings,'herren')}
-    </div>
-
-    <!-- C: DAMEN PRESETS -->
-    <div class="svcteam-section">
-      <div class="svcteam-section-hd">
-        <h3>Damenhaarschnitte</h3>
-        <span style="font-size:.78rem;color:var(--c-text-muted)">Wähle was du anbietest</span>
-      </div>
-      ${_presetTableHtml(SVCTEAM_DAMEN,settings,'damen')}
-    </div>
-
-    <!-- D: BLEACHING & ADD-ONS -->
-    <div class="svcteam-section">
-      <div class="svcteam-section-hd">
-        <h3>Bleaching &amp; Add-ons</h3>
-        <span style="font-size:.78rem;color:var(--c-text-muted)">Zusatzleistungen</span>
-      </div>
-      ${_presetTableHtml(SVCTEAM_ADDONS,settings,'addons')}
-    </div>
-
-    <div style="display:flex;align-items:center;gap:16px;padding-top:8px">
-      <button class="svcteam-save-btn" onclick="saveServicesTeamTab('${salonId}')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Änderungen speichern
-      </button>
-      <span id="svcteamSaveStatus" style="font-size:.82rem;color:var(--c-text-muted)"></span>
-    </div>
-  </div>`;
-}
 
 async function addSvcTeamStylist(salonId) {
   const name=(document.getElementById('svcteamName')?.value||'').trim();
@@ -11190,7 +11161,7 @@ let _dashStaffSid=null;
 
 async function loadDashStaffSection(salonId){
   _dashStaffSid=salonId;
-  const el=document.getElementById('dashTabBuchungen')||document.getElementById('salonDashContent');
+  const el=document.getElementById('salonDashContent');
   if(!el)return;
   const existing=document.getElementById('dashStaffSection');
   if(existing)existing.remove();
@@ -13769,23 +13740,42 @@ async function renderStaffCalendar(sid){
       .gte('booking_date',dateStrs[0]).lte('booking_date',dateStrs[6]);
     (bkgs||[]).forEach(b=>{if(!bookingsMap[b.booking_date])bookingsMap[b.booking_date]=[];bookingsMap[b.booking_date].push(b);});
   }
+  // Load opening hours for shift bands
+  const storeRec=allStores.find(s=>String(s.id)===String(sid))||{};
+  let storeOH={};
+  try{storeOH=typeof storeRec.opening_hours==='string'?JSON.parse(storeRec.opening_hours):(storeRec.opening_hours||{});}catch(e){}
+  const dayKeyMap=['mon','tue','wed','thu','fri','sat','sun'];
+  function _toMins(t){if(!t)return-1;const[h,m]=(t||'').split(':').map(Number);return h*60+(m||0);}
+
   const hours=['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
-  let html=`<div class="staff-week-grid" style="grid-template-columns:56px repeat(7,1fr)">`;
+  let html='<div class="staff-week-grid" style="grid-template-columns:56px repeat(7,1fr)">';
   // Header
   html+='<div class="staff-week-col-hd" style="font-size:.7rem">Zeit</div>';
   weekDates.forEach((d,i)=>{
     const isToday=d.toDateString()===today.toDateString();
-    html+=`<div class="staff-week-col-hd" style="${isToday?'background:rgba(155,29,48,.08)':''}">${days[i]}<br><span style="font-size:.65rem;font-weight:400">${d.getDate()}.${d.getMonth()+1}</span></div>`;
+    html+='<div class="staff-week-col-hd" style="'+(isToday?'background:rgba(155,29,48,.08)':'')+'">'
+      +days[i]+'<br><span style="font-size:.65rem;font-weight:400">'+d.getDate()+'.'+(d.getMonth()+1)+'</span></div>';
   });
   // Rows
   hours.forEach(hr=>{
-    html+=`<div class="staff-week-row-hd">${hr}</div>`;
-    weekDates.forEach(d=>{
+    const hrMins=_toMins(hr);
+    html+='<div class="staff-week-row-hd">'+hr+'</div>';
+    weekDates.forEach((d,di)=>{
       const ds=d.toISOString().split('T')[0];
       const cell=(bookingsMap[ds]||[]).filter(b=>(b.booking_time||'').startsWith(hr.slice(0,2)));
       const hasBooking=cell.length>0;
-      html+=`<div class="staff-week-cell${hasBooking?' has-booking':''}">`;
-      cell.forEach(b=>{html+=`<div class="staff-cal-booking-chip">${b.service_name||'Termin'}</div>`;});
+      // Determine shift context from opening hours
+      const oh=storeOH[dayKeyMap[di]]||{};
+      const openMins=_toMins(oh.open);const closeMins=_toMins(oh.close);
+      const bsMins=_toMins(oh.break_start);const beMins=_toMins(oh.break_end);
+      const inShift=!oh.closed&&openMins>=0&&hrMins>=openMins&&hrMins<closeMins;
+      const inBreak=inShift&&bsMins>=0&&hrMins>=bsMins&&hrMins<beMins;
+      let cellBg='';
+      if(inBreak)cellBg='background:rgba(120,120,120,.10)';
+      else if(inShift)cellBg='background:rgba(155,29,48,.04)';
+      html+='<div class="staff-week-cell'+(hasBooking?' has-booking':'')+'" style="'+cellBg+'">';
+      if(inBreak&&!hasBooking)html+='<div style="font-size:.65rem;color:var(--c-text-muted);text-align:center;padding:2px 0">Pause</div>';
+      cell.forEach(b=>{html+='<div class="staff-cal-booking-chip">'+((b.service_name||'Termin').substring(0,12))+'</div>';});
       html+='</div>';
     });
   });
