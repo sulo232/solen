@@ -2892,6 +2892,9 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
             <div id="salonDashLink" class="hidden">
               <a href="#" onclick="showPage('salon-dashboard');return false" data-i18n="nav_salon_dash" role="menuitem">Mein Salon</a>
             </div>
+            <div id="addSalonLink">
+              <a href="#" onclick="openSalonRegistration();return false" data-i18n="nav_register_salon" role="menuitem">Salon eintragen</a>
+            </div>
             <div id="adminLink" class="hidden">
               <div class="sep"></div>
               <a href="#" onclick="showPage('admin');return false" data-i18n="nav_admin" role="menuitem">Verwaltung</a>
@@ -4120,7 +4123,7 @@ const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 // STATE
 let currentUser=null, currentProfile=null, allStores=[], allServices=[];
-let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBookingStoreId=null, currentSort='default', lastMinuteMode=false;
+let activeCategories=new Set(), bookingState={}, editingStore=null, pendingBookingStoreId=null, pendingSalonReg=false, currentSort='default', lastMinuteMode=false;
 let userBookedStores=new Set();
 let calendarMonth=new Date().getMonth(), calendarYear=new Date().getFullYear();
 let currentLang=localStorage.getItem('solen_lang')||'de';
@@ -4911,13 +4914,20 @@ async function onSignIn(user){
     const pendingStore=allStores.find(x=>x.id===sid);
     setTimeout(()=>showPage('book/'+sid),500);
   }
+  // Auto-open salon registration if triggered by "already registered" error on signup
+  if(pendingSalonReg){
+    pendingSalonReg=false;
+    setTimeout(()=>openSalonRegistration(),600);
+  }
   // Check if salon owner (existing salon/store record or salon_owner/owner profile role)
   const[{data:salonData},{data:storeData}]=await Promise.all([
     sb.from('salons').select('id').eq('owner_id',user.id).limit(1),
     sb.from('stores').select('id').eq('owner_id',user.id).limit(1)
   ]);
-  if((salonData&&salonData.length>0)||(storeData&&storeData.length>0)||currentProfile?.role==='salon_owner'||currentProfile?.role==='owner'){
+  const isSalonOwner=(salonData&&salonData.length>0)||(storeData&&storeData.length>0)||currentProfile?.role==='salon_owner'||currentProfile?.role==='owner';
+  if(isSalonOwner){
     document.getElementById('salonDashLink').classList.remove('hidden');
+    const addSalonEl=document.getElementById('addSalonLink');if(addSalonEl)addSalonEl.style.display='none';
     const mSalon=document.getElementById('mobileNavSalonBtn');if(mSalon)mSalon.classList.remove('hidden');
   }
 }
@@ -5308,12 +5318,13 @@ async function doSalonSignup(){
   if(error){
     btn.disabled=false;btn.textContent='Deinen Salon eintragen';
     let msg='Registrierung fehlgeschlagen. Bitte versuche es erneut.';
-    if(error.message.includes('already registered')||error.message.includes('already been registered'))msg='Diese E-Mail ist bereits registriert. <a onclick="openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Jetzt anmelden</a>';
+    if(error.message.includes('already registered')||error.message.includes('already been registered')){pendingSalonReg=true;msg='Diese E-Mail ist bereits registriert. <a onclick="pendingSalonReg=true;openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Anmelden und Salon eintragen →</a>';}
     return showAuthMsg(msg);
   }
   if(data?.user?.identities?.length===0){
     btn.disabled=false;btn.textContent='Deinen Salon eintragen';
-    return showAuthMsg('Diese E-Mail ist bereits registriert. <a onclick="openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Jetzt anmelden</a>');
+    pendingSalonReg=true;
+    return showAuthMsg('Diese E-Mail ist bereits registriert. <a onclick="pendingSalonReg=true;openAuth(\'login\')" style="color:var(--accent);font-weight:700;text-decoration:underline;cursor:pointer">Anmelden und Salon eintragen →</a>');
   }
 
   if(data?.user){
@@ -11069,6 +11080,12 @@ async function submitSalonReg(e){
   e.preventDefault();
   solenTrack('partner_reg_submit',{});
   if(!regValidateStep(5))return;
+  // Require login before insert — RLS on stores requires auth.uid() IS NOT NULL
+  if(!currentUser){
+    toast('Bitte zuerst einloggen oder registrieren, um deinen Salon einzureichen.','error');
+    openAuth('login');
+    return;
+  }
   const btn=document.getElementById('regSubmitBtn');
   if(btn.classList.contains('loading'))return;
   btn.classList.add('loading');
@@ -11782,9 +11799,40 @@ async function loadBmExtras(storeId) {
 const OB_STEPS=4;
 let obStep=1, obData={categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}};
 // localStorage persistence for wizard state
-function obSaveProgress(){try{localStorage.setItem('solen_ob_data',JSON.stringify(obData));localStorage.setItem('solen_ob_step',String(obStep));}catch(e){}}
+function obSaveProgress(){
+  try{
+    const snapshot=Object.assign({},obData,{_step:obStep,_savedAt:new Date().toISOString()});
+    localStorage.setItem('solen_ob_data',JSON.stringify(obData));
+    localStorage.setItem('solen_ob_step',String(obStep));
+    // Cloud sync: persist draft to salon_reg_drafts so users can resume on any device
+    if(currentUser&&sb){
+      sb.from('salon_reg_drafts').upsert({user_id:currentUser.id,draft_data:snapshot,updated_at:new Date().toISOString()}).then(()=>{}).catch(()=>{});
+    }
+  }catch(e){}
+}
 function obRestoreProgress(){try{var d=localStorage.getItem('solen_ob_data');if(d){obData=JSON.parse(d);obStep=parseInt(localStorage.getItem('solen_ob_step'))||1;}}catch(e){}}
-function obClearProgress(){try{localStorage.removeItem('solen_ob_data');localStorage.removeItem('solen_ob_step');}catch(e){}}
+async function obRestoreProgressCloud(){
+  try{
+    if(!currentUser)return;
+    const{data:row}=await sb.from('salon_reg_drafts').select('draft_data,updated_at').eq('user_id',currentUser.id).maybeSingle();
+    if(!row||!row.draft_data)return;
+    const raw=localStorage.getItem('solen_ob_data');
+    const localDate=raw?new Date(JSON.parse(raw)._savedAt||0).getTime():0;
+    const cloudDate=new Date(row.updated_at||0).getTime();
+    if(cloudDate>localDate){
+      const d=row.draft_data;
+      obData=Object.assign({categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}},d);
+      if(d._step)obStep=d._step;
+    }
+  }catch(e){}
+}
+function obClearProgress(){
+  try{
+    localStorage.removeItem('solen_ob_data');
+    localStorage.removeItem('solen_ob_step');
+    if(currentUser&&sb)sb.from('salon_reg_drafts').delete().eq('user_id',currentUser.id).then(()=>{}).catch(()=>{});
+  }catch(e){}
+}
 const OB_CATEGORIES=[
   {id:'barber',label:'Barbershop',color:'#c0392b'},
   {id:'hairsalon',label:'Coiffeur / Friseur',color:'#e07a9a'},
@@ -11806,9 +11854,11 @@ const OB_SOCIALS=[
   {id:'website',label:'Website',icon:'WEB',prefix:'https://'}
 ];
 
-function openOnboarding(){
+async function openOnboarding(){
   if(!currentUser){openAuth('login');return;}
   obRestoreProgress();
+  // Merge with cloud draft if newer (fire-and-forget — render proceeds immediately)
+  obRestoreProgressCloud().catch(()=>{});
   if(!obData.categories)obData={categories:[],services:[],staff:[],socialLinks:[],media:[],exceptions:[],hours:{}};
   // Prefill from current user
   if(currentUser){
@@ -11909,8 +11959,12 @@ function obCollectStepData(step){
     obData.street=document.getElementById('obStreet').value.trim();
     obData.streetNr=document.getElementById('obStreetNr').value.trim();
     obData.plz=document.getElementById('obPLZ').value.trim();
-    obData.city=document.getElementById('obCity').value.trim();
-    obData.canton=document.getElementById('obCanton').value.trim();
+    // Auto-fill city from PLZ map if field is empty or matches a known PLZ
+    const plzMatch=BASEL_PLZ_MAP&&BASEL_PLZ_MAP[obData.plz];
+    const cityField=document.getElementById('obCity');
+    if(plzMatch&&cityField&&!cityField.value.trim()){cityField.value=plzMatch.ort;}
+    obData.city=cityField?cityField.value.trim():'Basel';
+    obData.canton=document.getElementById('obCanton')?.value.trim()||'BS';
     obData.address=(obData.street+(obData.streetNr?' '+obData.streetNr:''))+', '+(obData.plz?obData.plz+' ':'')+obData.city;
   }
   if(step===6){
@@ -12221,6 +12275,7 @@ async function obPublish(){
     type:              obData.type||null,
     address:           obData.address||null,
     phone:             obData.phone||null,
+    email:             obData.email||null,
     owner_email:       obData.email||null,
     description:       obData.description||null,
     opening_hours:     Object.keys(obData.hours).length ? JSON.stringify(obData.hours) : null,
@@ -12255,6 +12310,7 @@ async function obPublish(){
       })));
     }
     obShowSaveStatus('saved');
+    obClearProgress();
     toast('Salon erfolgreich eingereicht! ','success');
     setTimeout(()=>{closeOnboarding();loadStores();},1200);
   }catch(ex){
