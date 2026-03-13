@@ -11050,7 +11050,6 @@ async function submitSalonReg(e){
     address:document.getElementById('reg_street').value.trim()+', '+(document.getElementById('reg_plz')?.value||'4000')+' '+(document.getElementById('reg_ort')?.value||'Basel'),
     website:document.getElementById('reg_web').value.trim()||null,
     description:document.getElementById('reg_desc').value.trim()||null,
-    opening_hours:hours?JSON.stringify(hours):null,
     status:'pending',
     parent_store_id:(()=>{const v=document.getElementById('reg_parent_store_id')?.value||'';return v?(Number(v)||v):null;})(),
     user_id:currentUser?currentUser.id:null
@@ -12171,19 +12170,29 @@ function obRenderPreview(){
 
 // ── Publish ──
 async function obPublish(){
+  // Require login before submitting — prevents orphaned stores with null user_id
+  if(!currentUser){
+    toast('Bitte zuerst einloggen, um deinen Salon einzureichen.','error');
+    obShowSaveStatus('error');
+    openAuth('login');
+    return;
+  }
   obCollectStepData(obStep);
   obShowSaveStatus('saving');
   const storeData={
-    name:obData.name,type:obData.type,
-    address:obData.address,
-    phone:obData.phone||null,
+    name:   obData.name,
+    type:   obData.type||null,
+    address:obData.address||null,
+    phone:  obData.phone||null,
     description:obData.description||null,
-    opening_hours:JSON.stringify(obData.hours),
+    opening_hours:Object.keys(obData.hours).length
+      ? JSON.stringify(obData.hours)
+      : null,
     website:obData.socialLinks.find(s=>s.network==='website')?.url||null,
     instagram:obData.socialLinks.find(s=>s.network==='instagram')?.url||null,
     cancellation_policy:obData.cancelPolicy||null,
-    categories:obData.categories,
-    user_id:currentUser?.id||null,
+    categories:obData.categories.length?obData.categories:null,
+    user_id:currentUser.id,
     status:'pending'
   };
   try{
@@ -12215,7 +12224,7 @@ async function obPublish(){
   }catch(ex){
     console.error('Onboarding publish error:',ex);
     obShowSaveStatus('error');
-    toast('Fehler beim Speichern: '+(ex.message||ex),'error');
+    toast('Fehler beim Speichern: '+(ex.message||JSON.stringify(ex)),'error');
   }
 }
 

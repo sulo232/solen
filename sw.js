@@ -12,7 +12,7 @@
  * Cache versioning: bump CACHE_VERSION on every deploy to invalidate old caches.
  */
 
-const CACHE_VERSION  = 'solen-v17';
+const CACHE_VERSION  = 'solen-v18';
 const SHELL_CACHE    = `${CACHE_VERSION}-shell`;
 const IMAGE_CACHE    = `${CACHE_VERSION}-images`;
 const OFFLINE_URL    = '/offline.html';
