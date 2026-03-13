@@ -12243,6 +12243,7 @@ async function obPublish(){
   obShowSaveStatus('saving');
   const storeData={
     name:              obData.name,
+    cat:               obData.type||(obData.categories&&obData.categories[0])||'other',
     type:              obData.type||null,
     address:           obData.address||null,
     phone:             obData.phone||null,
