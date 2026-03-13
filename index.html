@@ -12180,20 +12180,19 @@ async function obPublish(){
   obCollectStepData(obStep);
   obShowSaveStatus('saving');
   const storeData={
-    name:   obData.name,
-    type:   obData.type||null,
-    address:obData.address||null,
-    phone:  obData.phone||null,
-    description:obData.description||null,
-    opening_hours:Object.keys(obData.hours).length
-      ? JSON.stringify(obData.hours)
-      : null,
-    website:obData.socialLinks.find(s=>s.network==='website')?.url||null,
-    instagram:obData.socialLinks.find(s=>s.network==='instagram')?.url||null,
-    cancellation_policy:obData.cancelPolicy||null,
-    categories:obData.categories.length?obData.categories:null,
-    user_id:currentUser.id,
-    status:'pending'
+    name:              obData.name,
+    type:              obData.type||null,
+    address:           obData.address||null,
+    phone:             obData.phone||null,
+    owner_email:       obData.email||null,
+    description:       obData.description||null,
+    opening_hours:     Object.keys(obData.hours).length ? JSON.stringify(obData.hours) : null,
+    website:           obData.socialLinks.find(s=>s.network==='website')?.url||null,
+    instagram_handle:  obData.socialLinks.find(s=>s.network==='instagram')?.url||null,
+    cancellation_policy: obData.cancelPolicy||null,
+    categories:        obData.categories.length?obData.categories:null,
+    owner_id:          currentUser.id,
+    status:            'pending'
   };
   try{
     const{data,error}=await sb.from('stores').insert([storeData]).select('id').single();

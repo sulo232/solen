@@ -7,6 +7,7 @@ ALTER TABLE stores ADD COLUMN IF NOT EXISTS opening_hours       TEXT;
 ALTER TABLE stores ADD COLUMN IF NOT EXISTS instagram           TEXT;
 ALTER TABLE stores ADD COLUMN IF NOT EXISTS cancellation_policy TEXT;
 ALTER TABLE stores ADD COLUMN IF NOT EXISTS categories          TEXT[];  -- array of category IDs
+ALTER TABLE stores ADD COLUMN IF NOT EXISTS email               TEXT;    -- contact email from onboarding wizard
 
 -- Enable RLS on stores (safe to run even if already enabled)
 ALTER TABLE stores ENABLE ROW LEVEL SECURITY;
