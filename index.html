@@ -13,6 +13,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initPlacesAutocomplete" async defer></script>
+<!-- Vite/React Module Hook for Micro-Frontends -->
+<script type="module" src="/src/react-entry.tsx"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;transition:color .3s var(--ease),background-color .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
 .no-transition,.no-transition *,.no-transition *::before,.no-transition *::after{transition:none!important}
@@ -2935,33 +2937,8 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <h1 data-i18n-html="hero_title">Beauty &amp; Wellness<br><span class="hero-highlight">in Basel buchen</span></h1>
       <p data-i18n="hero_sub">Finde Coiffeure, Kosmetik und Spa in deinem Quartier. Direkt online buchen.</p>
       <!-- Structured Selection Menu (Fresha-inspired) -->
-      <div class="hero-search" id="selectionMenu">
-        <div class="hero-search-field" onclick="toggleSelectionDropdown('service')" id="selFieldService" role="button" tabindex="0" aria-label="Service wählen" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSelectionDropdown('service');}">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12L12 12"/><path d="M20 4L8.12 15.88"/><path d="M14.47 14.48L20 20"/></svg>
-          <div class="hero-search-field-text">
-            <span class="hero-search-field-label" data-i18n="sel_service_label">Service</span>
-            <span class="hero-search-field-value" id="selServiceValue" data-i18n="sel_service_placeholder">Service oder Salon</span>
-          </div>
-          <div class="selection-dropdown" id="selServiceDropdown"></div>
-        </div>
-        <div class="hero-search-field" onclick="toggleSelectionDropdown('quartier')" id="selFieldQuartier" role="button" tabindex="0" aria-label="Quartier wählen" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSelectionDropdown('quartier');}">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <div class="hero-search-field-text">
-            <span class="hero-search-field-label" data-i18n="sel_quartier_label">Quartier</span>
-            <span class="hero-search-field-value" id="selQuartierValue" data-i18n="sel_quartier_placeholder">Quartier w&auml;hlen</span>
-          </div>
-          <div class="selection-dropdown" id="selQuartierDropdown"></div>
-        </div>
-        <div class="hero-search-field" onclick="toggleSelectionDropdown('time')" id="selFieldTime" role="button" tabindex="0" aria-label="Zeit wählen" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSelectionDropdown('time');}">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <div class="hero-search-field-text">
-            <span class="hero-search-field-label" data-i18n="sel_time_label">Wann</span>
-            <span class="hero-search-field-value" id="selTimeValue" data-i18n="sel_time_placeholder">Beliebig</span>
-          </div>
-          <div class="selection-dropdown" id="selTimeDropdown"></div>
-        </div>
-        <button class="hero-search-submit" onclick="applySelectionSearch()" data-i18n="search_btn">Suchen</button>
-      </div>
+      <!-- React Mount Target for ActionSearchBar -->
+      <div id="react-action-search-bar" class="w-full relative z-50"></div>
       <!-- Geo + Map utility buttons -->
       <div style="display:flex;gap:8px;justify-content:flex-start;margin-bottom:8px">
         <button class="hero-utility-btn" onclick="geoLocateMe()" title="Standort verwenden" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-pill);border:1.5px solid var(--c-border);background:var(--c-surface);color:var(--c-text-secondary);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s ease"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Mein Standort</button>
@@ -2984,10 +2961,11 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
           <kbd style="font-size:.6rem;padding:2px 6px;background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:4px;font-family:var(--font-mono);line-height:1.4">⌘K</kbd>
         </button>
       </div>
-      <!-- SOCIAL PROOF BADGE -->
-      <div class="hero-proof-badge" id="heroProofBadge" aria-live="polite" style="position:static;transform:none;margin-top:16px;background:var(--c-surface-alt);border-color:var(--c-border);color:var(--c-text-secondary)">
+      <!-- SOCIAL PROOF BADGE (React Managed) -->
+      <div class="hero-proof-badge" id="heroProofBadge" aria-live="polite" style="position:static;transform:none;margin-top:16px;background:var(--c-surface-alt);border-color:var(--c-border);color:var(--c-text-secondary);display:flex;align-items:center;gap:6px">
         <span class="hero-proof-dot"></span>
-        <span><span class="hero-proof-num" id="heroProofNum" style="color:var(--c-text)">124</span> <span data-i18n="hero_proof_text">Termine heute gebucht</span></span>
+        <div id="react-sliding-number-hero" class="font-bold text-[var(--c-text)]"></div>
+        <span data-i18n="hero_proof_text">Termine heute gebucht</span>
       </div>
     </div>
   </section>
