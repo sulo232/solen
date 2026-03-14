@@ -393,7 +393,10 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3csv
 .lm-scroll>*{scroll-snap-align:start}
 .lm-card{flex:0 0 auto;background:#fff;border-radius:12px;padding:10px 12px;min-width:155px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .lm-img{width:100%;height:70px;object-fit:cover;border-radius:8px;margin-bottom:8px}
-.lm-name{font-size:.82rem;font-weight:600;color:#333;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lm-name{font-size:.82rem;font-weight:600;color:#333;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lm-meta{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.lm-meta-item{font-size:.72rem;color:#666;font-weight:500;white-space:nowrap}
+.lm-svc{background:rgba(155,29,48,.08);color:var(--c-accent,#9B1D30);border-radius:100px;padding:2px 7px;font-weight:600}
 .lm-chips{display:flex;flex-wrap:wrap;gap:6px}
 .lm-chip{background:var(--primary);color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s}
 .lm-chip:hover{opacity:.85}
@@ -1304,8 +1307,10 @@ html,body{overflow-x:hidden;max-width:100vw}
 .partner-cta-inner{max-width:600px;margin:0 auto;text-align:center}
 .btn-partner-cta{background:#9B1D30;color:#fff;border:none;padding:12px 28px;border-radius:100px;font-size:.92rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 2px 12px rgba(155,29,48,.3)}
 /* ═══ B2B FÜR SALONS SECTION (Phase 5.2) ═══ */
-.fur-salons-section{padding:56px 24px;background:linear-gradient(135deg,#1A1714 60%,#2d1a1f);position:relative;overflow:hidden}
-.fur-salons-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(155,29,48,.25),transparent 60%);pointer-events:none}
+.fur-salons-section{padding:80px 24px 72px;background:linear-gradient(180deg,#1c1512 0%,#1A1714 30%,#1A1714 70%,#2d1a1f 100%);position:relative;overflow:hidden}
+.fur-salons-section::before{content:'';position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,var(--c-bg,#FAF9F6),transparent);pointer-events:none;z-index:1}
+.fur-salons-section::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(155,29,48,.25),transparent 60%);pointer-events:none;z-index:0}
+.fur-salons-inner{position:relative;z-index:2}
 .fur-salons-inner{max-width:700px;margin:0 auto;text-align:center;position:relative;z-index:1}
 .fur-salons-badge{display:inline-block;padding:5px 16px;border-radius:var(--r-pill);border:1px solid rgba(212,175,119,.4);color:var(--c-highlight);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px}
 .fur-salons-title{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:400;color:#fff;margin-bottom:14px;letter-spacing:-.02em}
@@ -1324,13 +1329,13 @@ html,body{overflow-x:hidden;max-width:100vw}
 .fur-salons-trust{color:rgba(255,255,255,.4);font-size:.78rem;margin-top:20px;letter-spacing:.02em}
 @media(max-width:640px){.fur-salons-steps{flex-direction:column;gap:8px}.fur-salons-step-arrow{transform:rotate(90deg)}}
 /* ═══ TESTIMONIALS CAROUSEL (Phase 5.3) ═══ */
-.testimonials-section{padding:56px 24px;max-width:1200px;margin:0 auto}
+.testimonials-section{padding:64px 24px 56px;max-width:1200px;margin:0 auto}
 .testimonials-header{text-align:center;margin-bottom:36px}
 .testimonials-header .section-eyebrow{margin-bottom:8px}
 .testimonials-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:400}
-.testimonials-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:4px 0 12px}
+.testimonials-track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:4px 0 20px;align-items:flex-start}
 .testimonials-track::-webkit-scrollbar{display:none}
-.testimonial-card{min-width:300px;max-width:340px;flex-shrink:0;scroll-snap-align:start;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r2);padding:24px;box-shadow:var(--elev-1);transition:transform .22s var(--ease-standard),box-shadow .22s var(--ease-standard)}
+.testimonial-card{min-width:300px;max-width:340px;flex-shrink:0;scroll-snap-align:start;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r2);padding:24px;box-shadow:var(--elev-1);transition:transform .22s var(--ease-standard),box-shadow .22s var(--ease-standard);height:auto;overflow:visible}
 .testimonial-card:hover{transform:translateY(-3px);box-shadow:var(--elev-2)}
 .testimonial-stars{display:flex;gap:3px;margin-bottom:14px}
 .testimonial-stars svg{fill:#D4AF77;stroke:#D4AF77}
@@ -1643,13 +1648,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 .popular-services{max-width:1200px;margin:0 auto;padding:52px 24px 40px}
 .popular-services-header{margin-bottom:28px}
 .popular-services-header h2{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:4px}
-.popular-services-header p{font-size:.92rem;color:var(--c-text-muted)}
+.popular-services-header p{font-size:.92rem;color:var(--c-text-muted);white-space:normal;text-wrap:balance;max-width:480px}
 .services-icon-grid{display:flex;overflow-x:auto;gap:12px;padding-bottom:8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
 .services-icon-grid::-webkit-scrollbar{display:none}
 .service-icon-card{display:flex;flex-direction:column;align-items:center;padding:20px 14px 16px;background:var(--c-surface);border:1.5px solid var(--c-border);border-radius:20px;cursor:pointer;transition:all .2s var(--ease-standard);text-align:center;gap:8px;flex:0 0 auto;min-width:118px;scroll-snap-align:start}
 .service-icon-card:hover{border-color:var(--c-accent);box-shadow:var(--elev-2);transform:translateY(-2px)}
 .service-icon-card:hover .sic-icon{background:var(--c-accent);color:#fff}
-.service-icon-card.active{border-color:var(--c-accent);box-shadow:0 0 0 3px rgba(155,29,48,.15),var(--elev-2);background:var(--c-surface)}
+.service-icon-card.active{border-color:var(--c-accent);outline:2px solid rgba(155,29,48,.2);outline-offset:-1px;box-shadow:var(--elev-2);background:var(--c-surface)}
 .service-icon-card.active .sic-icon{background:var(--c-accent);color:#fff}
 .service-icon-card.active .sic-label{color:var(--c-accent);font-weight:700}
 .sic-icon{width:52px;height:52px;border-radius:50%;background:var(--c-surface-alt);display:flex;align-items:center;justify-content:center;font-size:1.4rem;transition:all .2s var(--ease-standard);flex-shrink:0}
@@ -1673,7 +1678,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 #serviceDetailsPanel{display:none;max-width:1200px;margin:0 auto;padding:0 24px 28px;animation:fadeInDown .25s var(--ease-standard)}
 #serviceDetailsPanel.visible{display:block}
 @keyframes fadeInDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-.svc-detail-card{background:var(--c-surface);border:1.5px solid var(--c-accent);border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(155,29,48,.08)}
+.svc-detail-card{background:var(--c-surface);border:1.5px solid var(--c-border-strong);border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:var(--elev-1)}
 .svc-detail-info{display:flex;flex-direction:column;gap:5px}
 .svc-detail-name{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--c-text)}
 .svc-detail-meta{font-size:.83rem;color:var(--c-text-secondary);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -2444,8 +2449,10 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   box-shadow:0 20px 48px -12px rgba(0,0,0,.25)
 }
 .quartier-photo-card:hover .qpc-bg{transform:scale(1.06)}
-.quartier-coming-soon{opacity:.7;filter:grayscale(.3)}
-.quartier-coming-soon:hover{opacity:.85;filter:grayscale(.1)}
+.quartier-coming-soon{opacity:.65;filter:grayscale(.4);position:relative;overflow:hidden}
+.quartier-coming-soon::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.18) 50%,transparent 100%);background-size:200% 100%;animation:cardShimmer 2.2s ease-in-out infinite;pointer-events:none}
+@keyframes cardShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.quartier-coming-soon:hover{opacity:.8;filter:grayscale(.15)}
 
 /* --- Improved store cards --- */
 .store-card{
@@ -2538,7 +2545,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 .filter-pill.active{background:var(--c-accent);color:#fff;border-color:var(--c-accent)}
 
 /* ═══ STICKY QUICK-FILTER BAR (Phase 3.1) ═══ */
-.sticky-filter-bar{position:sticky;top:64px;z-index:200;background:rgba(var(--bg-rgb),0.92);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--c-border);padding:10px 24px;margin:0 -24px 20px;display:flex;gap:8px;align-items:center;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.sticky-filter-bar{position:sticky;top:64px;z-index:200;background:rgba(var(--bg-rgb),0.95);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);padding:10px 24px;margin:0 0 20px;display:flex;gap:8px;align-items:center;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .sticky-filter-bar::-webkit-scrollbar{display:none}
 .sticky-filter-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:var(--r-pill);border:1.5px solid var(--c-border);background:var(--c-surface);color:var(--c-text-secondary);font-size:.82rem;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .18s var(--ease);flex-shrink:0}
 .sticky-filter-btn:hover{border-color:var(--c-accent);color:var(--c-accent)}
@@ -3076,6 +3083,20 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </div>
   </div>
 
+  <!-- ═══ STICKY QUICK-FILTER BAR ═══ -->
+  <div class="sticky-filter-bar" id="stickyFilterBar">
+    <button class="sticky-filter-btn active" onclick="selectCatPill(this,'');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Alle Services</button>
+    <button class="sticky-filter-btn" onclick="selectServiceFromMenu('hairsalon','Coiffeur');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">✂️ Coiffeur</button>
+    <button class="sticky-filter-btn" onclick="selectServiceFromMenu('barber','Barbershop');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💈 Barbershop</button>
+    <button class="sticky-filter-btn" onclick="selectServiceFromMenu('nails','Nails');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💅 Nails</button>
+    <button class="sticky-filter-btn" onclick="selectServiceFromMenu('spa','Spa & Wellness');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🧖 Spa</button>
+    <button class="sticky-filter-btn" onclick="selectServiceFromMenu('makeup','Make-up');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💄 Make-up</button>
+    <div class="sticky-filter-divider"></div>
+    <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Grossbasel')">📍 Grossbasel</button>
+    <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Kleinbasel')">📍 Kleinbasel</button>
+    <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Gundeldingen')">📍 Gundeli</button>
+  </div>
+
   <!-- ═══ QUARTIER PHOTO CARDS ═══ -->
   <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
     <div class="quartier-discovery-header fade-in-up">
@@ -3172,19 +3193,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 
   <!-- STORES -->
   <div class="stores-section">
-    <!-- ═══ STICKY QUICK-FILTER BAR ═══ -->
-    <div class="sticky-filter-bar" id="stickyFilterBar">
-      <button class="sticky-filter-btn active" onclick="selectCatPill(this,'');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Alle Services</button>
-      <button class="sticky-filter-btn" onclick="selectServiceFromMenu('hairsalon','Coiffeur');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">✂️ Coiffeur</button>
-      <button class="sticky-filter-btn" onclick="selectServiceFromMenu('barber','Barbershop');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💈 Barbershop</button>
-      <button class="sticky-filter-btn" onclick="selectServiceFromMenu('nails','Nails');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💅 Nails</button>
-      <button class="sticky-filter-btn" onclick="selectServiceFromMenu('spa','Spa & Wellness');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🧖 Spa</button>
-      <button class="sticky-filter-btn" onclick="selectServiceFromMenu('makeup','Make-up');document.querySelectorAll('.sticky-filter-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">💄 Make-up</button>
-      <div class="sticky-filter-divider"></div>
-      <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Grossbasel')">📍 Grossbasel</button>
-      <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Kleinbasel')">📍 Kleinbasel</button>
-      <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Gundeldingen')">📍 Gundeli</button>
-    </div>
     <!-- Quartier quick-chips -->
     <div class="quartier-quick-chips" id="quartierQuickChips">
       <button class="quartier-chip active" onclick="selectQuartierAndScroll('');document.querySelectorAll('.quartier-chip').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Alle Quartiere</button>
@@ -3199,7 +3207,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <div class="query-summary" id="querySummary" style="display:none">
       <div class="query-summary-inner">
         <span class="query-summary-text" id="querySummaryText"></span>
-        <button class="query-summary-clear" onclick="clearAllSelections()" data-i18n="clear_all">Zur&uuml;cksetzen</button>
       </div>
     </div>
     <div class="stores-header">
@@ -5268,7 +5275,6 @@ function selectServiceFromMenu(cat,label){
       (info.price?'<span class="sdm-chip price">'+info.price+'</span>':'')+
       (info.time?'<span class="sdm-chip">'+info.time+'</span>':'');
     panel.classList.add('visible');
-    setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'nearest'});},60);
   }
 }
 
@@ -6314,21 +6320,24 @@ function renderStoreCard(s){
   const catName=getTypeName(s.cat||s.type||'');
   const quartier=extractQuartier(s.address||'Basel');
   const distKm=userLat&&userLng&&s.lat&&s.lng?haversine(userLat,userLng,s.lat,s.lng).toFixed(1):null;
-  const locationStr='Basel'+(distKm?' · '+distKm+' km':'');
+  const locationStr='Basel · '+(distKm?distKm+' km':'< 2 km');
   const isEmpf=typeof isEmpfohlen==='function'&&isEmpfohlen(s);
-  // Rating block — prominent
+  // Rating block — prominent; show "Neu" badge when no rating yet
   const ratingHtml=avgR>0
     ?'<span class="card-rating"><svg width="14" height="14" viewBox="0 0 24 24" fill="#D4AF77" stroke="#D4AF77" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <strong>'+avgR.toFixed(1)+'</strong>'+(revCount>0?' <span style="color:var(--c-text-muted);font-weight:500">('+revCount+')</span>':'')+'</span>'
-    :'';
+    :'<span style="font-size:.75rem;font-weight:700;color:var(--c-text-muted);background:var(--c-surface-alt);border-radius:100px;padding:2px 8px">Neu</span>';
+  // Distance: use real distance if available, fallback to "Basel · < 2 km"
+  const distDisplay=distKm?distKm+' km':'< 2 km';
   // Service pills (up to 3)
   const svcPillsHtml=svcs.length>0
     ?'<div class="card-svc-pills">'+svcs.slice(0,3).map(sv=>'<span class="card-svc-pill">'+sv.name+'</span>').join('')+'</div>'
     :'';
-  // Urgency badge — show open status or "Heute noch frei"
+  // Urgency badge — show when open now or when salon has services (availability likely)
   const openStatus=getOpenStatus(s);
   const isOpenNow=openStatus.includes('Offen');
-  const urgencyBadge=isOpenNow
-    ?'<div class="card-urgency-badge"><span class="card-urgency-dot"></span>Heute noch frei</div>'
+  const hasAvailability=isOpenNow||(!s.opening_hours&&svcs.length>0);
+  const urgencyBadge=hasAvailability
+    ?'<div class="card-urgency-badge"><span class="card-urgency-dot"></span>Heute noch Termine frei</div>'
     :'';
   // onerror fallback for broken images
   const fallbackIdx=Math.abs((s.id||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0))%SOLEN_FALLBACK_PHOTOS.length;
@@ -6503,13 +6512,27 @@ async function renderLastMinute(){
   const{data:taken}=await sb.from('bookings').select('store_id,time').eq('date',today).in('status',['confirmed','pending']);
   const takenMap={};
   (taken||[]).forEach(b=>{if(!takenMap[b.store_id])takenMap[b.store_id]=new Set();takenMap[b.store_id].add(b.time);});
-  const stores=allStores.slice(0,8);
+  // Prioritize previously-visited salons at the front of the Last Minute list
+  const visitedIds=getRecentStores();
+  const storePool=allStores.slice(0,20);
+  const stores=[
+    ...storePool.filter(s=>visitedIds.includes(s.id)||visitedIds.includes(String(s.id))),
+    ...storePool.filter(s=>!visitedIds.includes(s.id)&&!visitedIds.includes(String(s.id)))
+  ].slice(0,8);
   let html='';
   for(const s of stores){
     const avail=slots.filter(t=>!takenMap[s.id]?.has(t)).slice(0,3);
     if(!avail.length)continue;
     const photo=s.photo_url||s.image_url||'';
-    html+='<div class="lm-card">'+(photo?'<img src="'+photo+'" class="lm-img" loading="lazy" alt="'+s.name+'">':'')+'<div class="lm-name">'+s.name+'</div><div class="lm-chips">'+avail.map(t=>`<button class="lm-chip" onclick="openBookingModal(allStores.find(x=>x.id==='${s.id}'),'${t}')">${t}</button>`).join('')+'</div></div>';
+    const lmRating=parseFloat(s.avg_rating)||0;
+    const lmRatingHtml=lmRating>0?'<span class="lm-meta-item">⭐ '+lmRating.toFixed(1)+'</span>':'';
+    const lmDist=userLat&&userLng&&s.lat&&s.lng?haversine(userLat,userLng,s.lat,s.lng).toFixed(1)+' km':'< 2 km';
+    const lmSvcs=allServices.filter(x=>x.store_id===s.id||x.salon_id===s.id);
+    const lmSvcName=lmSvcs.length?lmSvcs[0].name:'Termin';
+    html+='<div class="lm-card">'+(photo?'<img src="'+photo+'" class="lm-img" loading="lazy" alt="'+s.name+'">':'')+
+      '<div class="lm-name">'+s.name+'</div>'+
+      '<div class="lm-meta">'+lmRatingHtml+'<span class="lm-meta-item lm-dist">📍 '+lmDist+'</span><span class="lm-meta-item lm-svc">'+lmSvcName+'</span></div>'+
+      '<div class="lm-chips">'+avail.map(t=>`<button class="lm-chip" onclick="openBookingModal(allStores.find(x=>x.id==='${s.id}'),'${t}')">${t}</button>`).join('')+'</div></div>';
   }
   if(!html){section.classList.add('hidden');return;}
   const dow=new Date().toLocaleDateString(getLocale(),{weekday:'long',day:'numeric',month:'long'});
@@ -9189,7 +9212,8 @@ async function renderSalonDashboard(){
       <button class="admin-tab" onclick="showDashTab(this,'dashTabSMS','${salon.id}','${salon.id}');setTimeout(()=>renderSMSReminders('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9A16 16 0 0 0 13 14.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> SMS</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabGCal','${salon.id}','${salon.id}');renderGCalTab('${salon.id}')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Kalender</button>
       <button class="admin-tab" onclick="showDashTab(this,'dashTabExtras','${salon.id}','${salon.id}');setTimeout(()=>renderExtrasTab('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Extras</button>
-      <button class="admin-tab" onclick="showDashTab(this,'dashTabServices','${salon.id}','${salon.id}');setTimeout(()=>renderServicesTeamTab('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Services &amp; Team</button></div>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabServices','${salon.id}','${salon.id}');setTimeout(()=>renderServicesTeamTab('${salon.id}'),50)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Services &amp; Team</button>
+      <button class="admin-tab" onclick="showDashTab(this,'dashTabLastMinute','${salon.id}',null);renderLastMinuteOfferPanel('${salon.id}')">⚡ Last Minute</button></div>
     <div id="dashTabBuchungen">
       ${allBookings.length>0?`<div class="bookings-list">${allBookings.map(b=>`<div class="booking-card">
         <div class="booking-store">${[b.customer_first,b.customer_last].filter(Boolean).join(' ')||'Kunde'}${b.is_first_visit?'<span style="margin-left:8px;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:50px;background:rgba(167,139,250,.15);color:var(--accent-secondary);border:1px solid rgba(167,139,250,.3)">Erstbesuch</span>':''}</div>
@@ -9216,10 +9240,70 @@ async function renderSalonDashboard(){
     <div id="dashTabSMS" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade SMS-Erinnerungen…</div></div>
     <div id="dashTabGCal" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Kalender-Sync…</div></div>
     <div id="dashTabExtras" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Extras…</div></div>
-    <div id="dashTabServices" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Services &amp; Team…</div></div>`;
+    <div id="dashTabServices" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Services &amp; Team…</div></div>
+    <div id="dashTabLastMinute" style="display:none"><div class="panel-loading" style="padding:2rem;text-align:center;color:var(--c-text-muted,#888)">Lade Last Minute…</div></div>`;
 
   if(salon&&salon.id){setTimeout(()=>loadDashStaffSection(salon.id),80);setTimeout(()=>loadDashVacationSection(salon.id),160);
   if(salon&&salon.id)loadDashHoursSection(salon.id);}
+}
+
+// HTML escape helper used by Last Minute panel
+function esc(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+async function renderLastMinuteOfferPanel(salonId){
+  const el=document.getElementById('dashTabLastMinute');
+  if(!el)return;
+  const{data:svcs}=await sb.from('services').select('id,name,price').eq('store_id',salonId);
+  const svcOptions=(svcs||[]).map(s=>`<option value="${esc(s.id)}" data-name="${esc(s.name)}">${esc(s.name)}${s.price?' \u2013 CHF '+esc(s.price):''}</option>`).join('');
+  const now=new Date();now.setMinutes(0,0,0);now.setHours(now.getHours()+1);
+  const defaultTime=now.toISOString().slice(0,16);
+  const{data:existing}=await sb.from('last_minute_offers').select('*').eq('store_id',salonId).gte('start_time',new Date().toISOString()).order('start_time',{ascending:true});
+  const existingHtml=(existing&&existing.length)
+    ?'<div style="margin-top:20px"><div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--c-text-muted);margin-bottom:10px">Aktive Angebote</div>'
+      +existing.map(o=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--c-surface-alt);border-radius:12px;margin-bottom:8px">`
+        +`<div><div style="font-size:.88rem;font-weight:600">${esc(o.service_name||'\u2013')}</div><div style="font-size:.78rem;color:var(--c-text-muted)">${new Date(o.start_time).toLocaleString('de-CH',{weekday:'short',hour:'2-digit',minute:'2-digit'})}</div></div>`
+        +`<button onclick="cancelLastMinuteOffer('${esc(o.id)}')" style="background:none;border:1px solid var(--c-border);border-radius:8px;padding:4px 10px;font-size:.78rem;cursor:pointer;color:var(--c-text-muted)">Entfernen</button></div>`).join('')+'</div>'
+    :'';
+  el.dataset.salonId=salonId;
+  el.innerHTML=`<div style="padding:20px 0">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,#fff7ed,#fef3c7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:1.5px solid #f59e0b">&#x26A1;</div>
+      <div><div style="font-weight:700;font-size:1rem">Last Minute Angebot</div><div style="font-size:.82rem;color:var(--c-text-muted)">Freie Slots direkt auf der Homepage bewerben</div></div>
+    </div>
+    <div class="form-group"><label>Service</label>
+      <select class="form-input" id="lmOfferService">${svcOptions||'<option value="">Keine Services gefunden</option>'}</select>
+    </div>
+    <div class="form-group"><label>Startzeit</label>
+      <input class="form-input" type="datetime-local" id="lmOfferTime" value="${esc(defaultTime)}" min="${esc(defaultTime)}">
+    </div>
+    <button class="btn-primary" onclick="createLastMinuteOffer('${esc(salonId)}')" style="margin-top:4px">&#x26A1; Jetzt ver&ouml;ffentlichen</button>
+    ${existingHtml}
+  </div>`;
+}
+
+async function createLastMinuteOffer(salonId){
+  const svcEl=document.getElementById('lmOfferService');
+  const timeEl=document.getElementById('lmOfferTime');
+  if(!svcEl||!timeEl||!timeEl.value)return toast('Bitte Service und Zeit wählen.','error');
+  const svcOpt=svcEl.options[svcEl.selectedIndex];
+  const svcName=svcOpt?svcOpt.dataset.name||svcOpt.text:'';
+  const svcId=svcEl.value||null;
+  const startTime=new Date(timeEl.value).toISOString();
+  const expiresAt=new Date(timeEl.value);expiresAt.setMinutes(expiresAt.getMinutes()+30);
+  const{error}=await sb.from('last_minute_offers').insert({store_id:salonId,service_id:svcId,service_name:svcName,start_time:startTime,expires_at:expiresAt.toISOString(),created_at:new Date().toISOString()});
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  toast('Last Minute Angebot veröffentlicht! ⚡','success');
+  renderLastMinuteOfferPanel(salonId);
+  renderLastMinute();
+}
+
+async function cancelLastMinuteOffer(offerId){
+  const{error}=await sb.from('last_minute_offers').delete().eq('id',offerId);
+  if(error){toast('Fehler: '+error.message,'error');return;}
+  toast('Angebot entfernt.','info');
+  const tab=document.getElementById('dashTabLastMinute');
+  if(tab&&tab.dataset.salonId)renderLastMinuteOfferPanel(tab.dataset.salonId);
+  renderLastMinute();
 }
 
 function loadDashHoursSection(salonId){
@@ -10529,10 +10613,10 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .salon-reg-dot{flex:1;height:4px;border-radius:4px;background:var(--border);transition:background .3s}
 .salon-reg-dot.active{background:var(--accent2)}
 .salon-reg-dot.done{background:var(--accent)}
-.salon-reg-body{padding:20px 28px 0}
-.salon-reg-body p.step-hint{color:var(--text2);font-size:.85rem;margin:0 0 18px}
-.reg-field{margin-bottom:14px}
-.reg-field label{display:block;font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.salon-reg-body{padding:24px 28px 0}
+.salon-reg-body p.step-hint{color:var(--text2);font-size:.88rem;margin:0 0 20px;font-weight:500}
+.reg-field{margin-bottom:20px}
+.reg-field label{display:block;font-size:.8rem;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
 .reg-field input:not([type=checkbox]):not([type=radio]),.reg-field select,.reg-field textarea{width:100%;background:var(--surfaceAlt);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;box-sizing:border-box;appearance:none;-webkit-appearance:none;min-height:44px}
 .reg-select-wrap{position:relative;display:block}
 .reg-select-wrap select{padding-right:36px!important;background-image:none!important}
@@ -10565,6 +10649,11 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .reg-field.has-error input,.reg-field.has-error select,.reg-field.has-error textarea{border-color:var(--error);box-shadow:0 0 0 2px rgba(192,57,43,.15)}
 .reg-field-error{color:var(--error);font-size:.75rem;margin-top:4px;display:none}
 .reg-field.has-error .reg-field-error{display:block}
+/* Suppress browser autofill decoration icons (gray circles with exclamation marks) */
+.reg-field input::-webkit-contacts-auto-fill-button,.reg-field input::-webkit-credentials-auto-fill-button{visibility:hidden!important;pointer-events:none!important;position:absolute;right:0}
+.reg-field input::-webkit-caps-lock-indicator,.reg-field input::-webkit-password-toggle-indicator{display:none!important}
+.reg-field input[type=number]::-webkit-inner-spin-button,.reg-field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.reg-field input[type=number]{-moz-appearance:textfield}
 /* Form error summary */
 .reg-error-summary{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);border-radius:12px;padding:12px 16px;margin:0 28px 12px;color:var(--error);font-size:.85rem;display:none}
 .reg-error-summary.visible{display:block}
@@ -10586,7 +10675,7 @@ Quartier: <select id="pmNeighbourhood" style="width:100%;padding:10px;border-rad
 .pac-matched{font-weight:700!important}
 .pac-icon{display:none}
 /* Draft autosave indicator */
-.reg-draft-indicator{font-size:.72rem;color:var(--text2);padding:4px 28px;text-align:right;opacity:.7}
+.reg-draft-indicator{font-size:.8rem;color:var(--text2);padding:6px 28px;text-align:right;opacity:.85;font-weight:500}
 .reg-draft-indicator.saving{color:var(--warning)}
 .reg-draft-indicator.saved{color:var(--success)}
 .reg-step{display:none}
@@ -10697,7 +10786,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           <p class="step-hint" data-i18n="reg_step2_hint">Schritt 2 von 5: Standort und Online-Präsenz</p>
           <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
           <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
-            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="postal-code"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gültige PLZ eingeben.</div></div>
+            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" autocomplete="postal-code"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gültige PLZ eingeben.</div></div>
             <div class="reg-field" id="field_reg_ort"><label for="reg_ort" data-i18n="lbl_ort">Ort</label><input type="text" id="reg_ort" placeholder="Basel" readonly style="background:var(--surfaceAlt);opacity:.7"></div>
           </div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
@@ -10712,10 +10801,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
             </select></div>
             <div class="reg-field-error" id="err_reg_nb" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Quartier wählen.</div>
           </div>
-          <div class="reg-field"><label for="reg_web">Website</label><input type="url" id="reg_web" placeholder="https://mein-salon.ch"></div>
-          <div class="reg-field"><label for="reg_ig">Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon"></div>
-          <div class="reg-field"><label for="reg_tiktok">TikTok</label><input type="text" id="reg_tiktok" placeholder="@meinsalon"></div>
-          <div class="reg-field"><label for="reg_fb">Facebook</label><input type="url" id="reg_fb" placeholder="https://facebook.com/meinsalon"></div>
+          <div class="reg-field"><label for="reg_web">Website</label><input type="text" id="reg_web" placeholder="https://mein-salon.ch" autocomplete="off"></div>
+          <div class="reg-field"><label for="reg_ig">Instagram</label><input type="text" id="reg_ig" placeholder="@meinsalon" autocomplete="off"></div>
+          <div class="reg-field"><label for="reg_tiktok">TikTok</label><input type="text" id="reg_tiktok" placeholder="@meinsalon" autocomplete="off"></div>
+          <div class="reg-field"><label for="reg_fb">Facebook</label><input type="text" id="reg_fb" placeholder="https://facebook.com/meinsalon" autocomplete="off"></div>
         </div>
         <div class="salon-reg-footer">
           <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zurück</button>
@@ -11137,6 +11226,7 @@ function regGoTo(step){
     if(d){d.classList.toggle('active',i===step);d.classList.toggle('done',i<step);}
   });
   document.querySelector('.salon-reg-wrap').scrollTop=0;
+  history.replaceState(null,'',location.pathname+'#reg-step-'+step);
   regSaveDraft();
 }
 function regNext(cur){
@@ -12944,9 +13034,9 @@ document.addEventListener('click',function(e){
           if (c > 0) {
             el.textContent = c + (c === 1 ? ' Salon' : ' Salons');
           } else {
-            el.textContent = 'Bald hier';
+            el.textContent = 'Bald verfügbar';
             el.style.fontStyle = 'italic';
-            el.style.opacity = '0.7';
+            el.style.opacity = '0.8';
             var card = el.closest('.quartier-photo-card');
             if (card) card.classList.add('quartier-coming-soon');
           }
