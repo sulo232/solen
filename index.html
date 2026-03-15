@@ -1685,6 +1685,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;op
 .svc-detail-meta .sdm-chip{background:var(--c-surface-alt);border-radius:100px;padding:3px 10px;font-weight:600;font-size:.78rem}
 .svc-detail-meta .sdm-chip.price{color:var(--c-accent)}
 @media(max-width:540px){#serviceDetailsPanel{padding:0 16px 24px}.svc-detail-card{padding:14px 16px}.svc-detail-name{font-size:1rem}}
+.svc-show-btn{background:transparent;border:1.5px solid var(--c-accent);color:var(--c-accent);border-radius:var(--r-pill);padding:6px 18px;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:4px}
+.svc-show-btn:hover{background:var(--c-accent);color:#fff}
 
 /* ── QUARTIER PHOTO CARDS ── */
 .quartier-discovery{max-width:1200px;margin:0 auto;padding:8px 24px 52px}
@@ -2454,6 +2456,19 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 @keyframes cardShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .quartier-coming-soon:hover{opacity:.8;filter:grayscale(.15)}
 
+/* ── QUARTIER AMBER RESTYLE ── */
+.quartier-photo-card{background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 100%);border:1.5px solid #f59e0b}
+.qpc-overlay{display:none}
+.qpc-bg{opacity:.10;mix-blend-mode:multiply}
+.qpc-name{color:#92400e;font-weight:700;text-shadow:none}
+.qpc-count{color:#b45309;text-shadow:none}
+.qpc-count svg{stroke:#b45309}
+.qpc-badge{background:#f59e0b;color:#fff;font-weight:700;text-shadow:none}
+.qpc-heart{background:rgba(245,158,11,.15);backdrop-filter:none;color:#92400e;border:1px solid #f59e0b}
+.qpc-heart:hover{background:rgba(245,158,11,.3)}
+.qpc-content{z-index:1}
+.qpc-rating{font-size:.72rem;color:#b45309;margin-top:4px;font-weight:500}
+
 /* --- Improved store cards --- */
 .store-card{
   border-radius:20px;
@@ -3054,6 +3069,106 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </div>
   </section>
 
+  <!-- ═══ QUARTIER PHOTO CARDS ═══ -->
+  <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
+    <div class="quartier-discovery-header fade-in-up">
+      <div>
+        <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> <span data-i18n="quartier_eyebrow">Dein Quartier</span></div>
+        <h2 data-i18n="quartier_title">Entdecke dein Quartier</h2>
+      </div>
+      <button class="quartier-see-all" onclick="scrollToStores()" aria-label="Alle Quartiere anzeigen">
+        <span data-i18n="quartier_see_all">Alle ansehen</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+    <div class="quartier-cards-scroll" role="list">
+      <div class="quartier-photo-card fade-in-up stagger-1" onclick="selectQuartierAndScroll('Grossbasel')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Grossbasel</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Grossbasel')" aria-label="Grossbasel als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        <div class="qpc-content">
+          <div class="qpc-name">Grossbasel</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Grossbasel">Salons</span>
+          </div>
+          <div class="qpc-rating">⭐ 4.8 · Coiffeur · Barbershop</div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-2" onclick="selectQuartierAndScroll('Kleinbasel')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Kleinbasel</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Kleinbasel')" aria-label="Kleinbasel als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        <div class="qpc-content">
+          <div class="qpc-name">Kleinbasel</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Kleinbasel">Salons</span>
+          </div>
+          <div class="qpc-rating">⭐ 4.7 · Nails · Spa</div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-3" onclick="selectQuartierAndScroll('Gundeldingen')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Gundeli</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Gundeldingen')" aria-label="Gundeldingen als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        <div class="qpc-content">
+          <div class="qpc-name">Gundeldingen</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Gundeldingen">Salons</span>
+          </div>
+          <div class="qpc-rating">⭐ 4.9 · Coiffeur · Make-up</div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-4" onclick="selectQuartierAndScroll('St. Johann')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">St. Johann</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'St. Johann')" aria-label="St. Johann als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        <div class="qpc-content">
+          <div class="qpc-name">St. Johann</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-St. Johann">Salons</span>
+          </div>
+          <div class="qpc-rating">⭐ 4.8 · Barbershop · Spa</div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-5" onclick="selectQuartierAndScroll('Bruderholz')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Bruderholz</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Bruderholz')" aria-label="Bruderholz als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        <div class="qpc-content">
+          <div class="qpc-name">Bruderholz</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Bruderholz">Salons</span>
+          </div>
+          <div class="qpc-rating">⭐ 4.6 · Coiffeur · Nails</div>
+        </div>
+      </div>
+      <div class="quartier-photo-card fade-in-up stagger-6" onclick="selectQuartierAndScroll('Hirzbrunnen')" role="listitem">
+        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1470259078422-826894b933aa?w=400&q=75')"></div>
+        <div class="qpc-overlay"></div>
+        <div class="qpc-badge">Hirzbrunnen</div>
+        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Hirzbrunnen')" aria-label="Hirzbrunnen als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+        <div class="qpc-content">
+          <div class="qpc-name">Hirzbrunnen</div>
+          <div class="qpc-count">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span id="qCount-Hirzbrunnen">Salons</span>
+          </div>
+          <div class="qpc-rating">⭐ 4.7 · Spa · Wellness</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 <section id="discoverySection" class="discovery-section container" style="padding-top:0">
 <div id="weatherWidget" class="weather-bar"></div>
   <!-- Search bar removed: hero search is the single prominent search -->
@@ -3096,100 +3211,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Kleinbasel')">📍 Kleinbasel</button>
     <button class="sticky-filter-btn" onclick="selectQuartierPill(document.querySelector('#quartierFilterPills .filter-pill'),'Gundeldingen')">📍 Gundeli</button>
   </div>
-
-  <!-- ═══ QUARTIER PHOTO CARDS ═══ -->
-  <section class="quartier-discovery" id="quartiereSection" aria-label="Quartiere entdecken">
-    <div class="quartier-discovery-header fade-in-up">
-      <div>
-        <div class="section-eyebrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> <span data-i18n="quartier_eyebrow">Dein Quartier</span></div>
-        <h2 data-i18n="quartier_title">Entdecke dein Quartier</h2>
-      </div>
-      <button class="quartier-see-all" onclick="scrollToStores()" aria-label="Alle Quartiere anzeigen">
-        <span data-i18n="quartier_see_all">Alle ansehen</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </div>
-    <div class="quartier-cards-scroll" role="list">
-      <div class="quartier-photo-card fade-in-up stagger-1" onclick="selectQuartierAndScroll('Grossbasel')" role="listitem">
-        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75')"></div>
-        <div class="qpc-overlay"></div>
-        <div class="qpc-badge">Grossbasel</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Grossbasel')" aria-label="Grossbasel als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-        <div class="qpc-content">
-          <div class="qpc-name">Grossbasel</div>
-          <div class="qpc-count">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span id="qCount-Grossbasel">Salons</span>
-          </div>
-        </div>
-      </div>
-      <div class="quartier-photo-card fade-in-up stagger-2" onclick="selectQuartierAndScroll('Kleinbasel')" role="listitem">
-        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=75')"></div>
-        <div class="qpc-overlay"></div>
-        <div class="qpc-badge">Kleinbasel</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Kleinbasel')" aria-label="Kleinbasel als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-        <div class="qpc-content">
-          <div class="qpc-name">Kleinbasel</div>
-          <div class="qpc-count">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span id="qCount-Kleinbasel">Salons</span>
-          </div>
-        </div>
-      </div>
-      <div class="quartier-photo-card fade-in-up stagger-3" onclick="selectQuartierAndScroll('Gundeldingen')" role="listitem">
-        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=75')"></div>
-        <div class="qpc-overlay"></div>
-        <div class="qpc-badge">Gundeli</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Gundeldingen')" aria-label="Gundeldingen als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-        <div class="qpc-content">
-          <div class="qpc-name">Gundeldingen</div>
-          <div class="qpc-count">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span id="qCount-Gundeldingen">Salons</span>
-          </div>
-        </div>
-      </div>
-      <div class="quartier-photo-card fade-in-up stagger-4" onclick="selectQuartierAndScroll('St. Johann')" role="listitem">
-        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=75')"></div>
-        <div class="qpc-overlay"></div>
-        <div class="qpc-badge">St. Johann</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'St. Johann')" aria-label="St. Johann als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-        <div class="qpc-content">
-          <div class="qpc-name">St. Johann</div>
-          <div class="qpc-count">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span id="qCount-St. Johann">Salons</span>
-          </div>
-        </div>
-      </div>
-      <div class="quartier-photo-card fade-in-up stagger-5" onclick="selectQuartierAndScroll('Bruderholz')" role="listitem">
-        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&q=75')"></div>
-        <div class="qpc-overlay"></div>
-        <div class="qpc-badge">Bruderholz</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Bruderholz')" aria-label="Bruderholz als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-        <div class="qpc-content">
-          <div class="qpc-name">Bruderholz</div>
-          <div class="qpc-count">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span id="qCount-Bruderholz">Salons</span>
-          </div>
-        </div>
-      </div>
-      <div class="quartier-photo-card fade-in-up stagger-6" onclick="selectQuartierAndScroll('Hirzbrunnen')" role="listitem">
-        <div class="qpc-bg" style="background-image:url('https://images.unsplash.com/photo-1470259078422-826894b933aa?w=400&q=75')"></div>
-        <div class="qpc-overlay"></div>
-        <div class="qpc-badge">Hirzbrunnen</div>
-        <button class="qpc-heart" onclick="event.stopPropagation();toggleFavQuartier(this,'Hirzbrunnen')" aria-label="Hirzbrunnen als Favorit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-        <div class="qpc-content">
-          <div class="qpc-name">Hirzbrunnen</div>
-          <div class="qpc-count">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <span id="qCount-Hirzbrunnen">Salons</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- STORES -->
   <div class="stores-section">
@@ -3460,9 +3481,9 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
         <div class="svc-detail-name" id="svcDetailName"></div>
         <div class="svc-detail-meta" id="svcDetailMeta"></div>
       </div>
-      <button class="btn-primary" style="white-space:nowrap;flex-shrink:0" onclick="scrollToStores()">
+      <button class="svc-show-btn" onclick="scrollToStores()">
         Salons anzeigen
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="vertical-align:middle;margin-left:4px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
   </div>
@@ -10784,9 +10805,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="reg-step" id="regStep2">
         <div class="salon-reg-body">
           <p class="step-hint" data-i18n="reg_step2_hint">Schritt 2 von 5: Standort und Online-Präsenz</p>
-          <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
+          <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="off" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
           <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
-            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" autocomplete="postal-code"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gültige PLZ eingeben.</div></div>
+            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" autocomplete="off"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gültige PLZ eingeben.</div></div>
             <div class="reg-field" id="field_reg_ort"><label for="reg_ort" data-i18n="lbl_ort">Ort</label><input type="text" id="reg_ort" placeholder="Basel" readonly style="background:var(--surfaceAlt);opacity:.7"></div>
           </div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
