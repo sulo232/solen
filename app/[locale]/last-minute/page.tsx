@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
-import { createBrowserSupabaseClient } from "@/lib/supabase";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import FilterBar from "@/components/FilterBar";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import Spinner from "@/components/ui/Spinner";

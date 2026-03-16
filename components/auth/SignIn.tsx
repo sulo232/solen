@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { createBrowserSupabaseClient } from "@/lib/supabase";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 
 export default function SignIn() {
