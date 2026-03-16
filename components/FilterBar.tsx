@@ -1,0 +1,163 @@
+"use client";
+
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useCallback, useState } from "react";
+import { SlidersHorizontal, X } from "lucide-react";
+import PriceSlider from "@/components/ui/PriceSlider";
+import type { Quartier } from "@/lib/types";
+
+const QUARTIERS: { value: Quartier; label: string }[] = [
+  { value: "grossbasel", label: "Grossbasel" },
+  { value: "kleinbasel", label: "Kleinbasel" },
+  { value: "gundeli", label: "Gundeli" },
+  { value: "st_johann", label: "St. Johann" },
+  { value: "iselin", label: "Iselin" },
+  { value: "bruderholz", label: "Bruderholz" },
+  { value: "breite", label: "Breite" },
+];
+
+const SORT_OPTIONS = [
+  { value: "relevance", label: "Relevant" },
+  { value: "rating", label: "Beste Bewertung" },
+  { value: "price_asc", label: "Günstigste" },
+  { value: "newest", label: "Neueste" },
+];
+
+const RATING_OPTIONS = [
+  { value: "4", label: "4+ ★" },
+  { value: "4.5", label: "4.5+ ★" },
+];
+
+export default function FilterBar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [priceOpen, setPriceOpen] = useState(false);
+
+  const setParam = useCallback(
+    (key: string, value: string | null) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router, searchParams]
+  );
+
+  const activeQuartier = searchParams.get("quartier");
+  const activeSort = searchParams.get("sort") ?? "relevance";
+  const activeRating = searchParams.get("rating");
+  const activeAvail = searchParams.get("availability");
+
+  const hasFilters =
+    activeQuartier || activeRating || activeAvail ||
+    searchParams.get("min_price") || searchParams.get("max_price");
+
+  return (
+    <div className="sticky top-[57px] z-40 bg-white/90 backdrop-blur-lg border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          {/* Quartier pills */}
+          <div className="flex gap-2 shrink-0">
+            {QUARTIERS.map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setParam("quartier", activeQuartier === value ? null : value)}
+                className={[
+                  "px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-all duration-150 border",
+                  activeQuartier === value
+                    ? "bg-teal text-white border-teal"
+                    : "bg-white text-dark/70 border-gray-200 hover:border-teal",
+                ].join(" ")}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="w-px h-5 bg-gray-200 shrink-0" />
+
+          {/* Price */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setPriceOpen((v) => !v)}
+              className={[
+                "px-3 py-1.5 rounded-pill text-xs font-medium border transition-all duration-150 flex items-center gap-1",
+                priceOpen || searchParams.get("min_price") || searchParams.get("max_price")
+                  ? "bg-teal text-white border-teal"
+                  : "bg-white text-dark/70 border-gray-200 hover:border-teal",
+              ].join(" ")}
+            >
+              <SlidersHorizontal className="w-3 h-3" />
+              Preis
+            </button>
+            {priceOpen && (
+              <div className="absolute top-full left-0 mt-2 w-64 p-4 bg-white rounded-card shadow-card border border-gray-100 z-50">
+                <PriceSlider />
+              </div>
+            )}
+          </div>
+
+          {/* Availability */}
+          <button
+            onClick={() => setParam("availability", activeAvail === "today" ? null : "today")}
+            className={[
+              "px-3 py-1.5 rounded-pill text-xs font-medium border whitespace-nowrap transition-all duration-150 shrink-0",
+              activeAvail === "today"
+                ? "bg-teal text-white border-teal"
+                : "bg-white text-dark/70 border-gray-200 hover:border-teal",
+            ].join(" ")}
+          >
+            Heute verfügbar
+          </button>
+
+          {/* Rating */}
+          {RATING_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              onClick={() => setParam("rating", activeRating === value ? null : value)}
+              className={[
+                "px-3 py-1.5 rounded-pill text-xs font-medium border whitespace-nowrap transition-all duration-150 shrink-0",
+                activeRating === value
+                  ? "bg-teal text-white border-teal"
+                  : "bg-white text-dark/70 border-gray-200 hover:border-teal",
+              ].join(" ")}
+            >
+              {label}
+            </button>
+          ))}
+
+          <div className="w-px h-5 bg-gray-200 shrink-0" />
+
+          {/* Sort */}
+          <select
+            value={activeSort}
+            onChange={(e) => setParam("sort", e.target.value)}
+            className="px-3 py-1.5 rounded-pill text-xs font-medium border border-gray-200 text-dark/70 bg-white hover:border-teal transition-all duration-150 shrink-0 outline-none cursor-pointer"
+          >
+            {SORT_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+
+          {/* Clear all */}
+          {hasFilters && (
+            <button
+              onClick={() => {
+                const params = new URLSearchParams();
+                router.replace(pathname, { scroll: false });
+              }}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-medium text-coral border border-coral/30 bg-coral/5 hover:bg-coral/10 transition-all duration-150 shrink-0"
+            >
+              <X className="w-3 h-3" />
+              Filter löschen
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

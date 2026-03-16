@@ -178,7 +178,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
    - If fixing it requires a **major decision** (e.g. rolling back a whole feature, changing the deployment branch) → stop and ask the user
 7. **Monolith Replacement Protocol**: **NEVER replace or remove the `public/home.html` iframe** mounted in `app/[locale]/page.tsx` without explicit User permission. This iframe powers the live monolith `www.solen.ch`. If you are building a React replacement for a live page, ALWAYS build it on a **new test route** (e.g., `app/[locale]/new-home/page.tsx`) so the user can test it without causing a production crash.
 
----
+----
 
 ## 6. Supabase Schema (New — Migration 014)
 
