@@ -1,4 +1,0 @@
-{
-  "_instructions": "MANDATORY: Every AI agent MUST check this file before editing ANY file. If a file is locked by another agent, DO NOT edit it. Add your lock before starting work, remove it when done.",
-  "locks": []
-}
