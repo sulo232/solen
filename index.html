@@ -5703,7 +5703,7 @@ async function loadStores(){
   let data,error;
   try{
     // Migration 013 dropped the legacy `stores` table; all data now lives in `salons`
-    ({data,error}=await sb.from('salons').select('*').eq('is_active',true).order('name'));
+    ({data,error}=await sb.from('salons').select('*').eq('status','approved').order('name'));
   }catch(e){error=e;}
   if(error&&!data){
     document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><h3>${t('load_failed')}</h3><button onclick="loadStores()" style="margin-top:12px">${t('reload')}</button></div>`;
