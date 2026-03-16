@@ -5110,11 +5110,8 @@ async function onSignIn(user){
     setTimeout(()=>openSalonRegistration(),600);
   }
   // Check if salon owner (existing salon/store record or salon_owner/owner profile role)
-  const[{data:salonData},{data:storeData}]=await Promise.all([
-    sb.from('salons').select('id').eq('owner_id',user.id).limit(1),
-    sb.from('stores').select('id').eq('owner_id',user.id).limit(1)
-  ]);
-  const isSalonOwner=(salonData&&salonData.length>0)||(storeData&&storeData.length>0)||currentProfile?.role==='salon_owner'||currentProfile?.role==='owner';
+  const{data:salonData}=await sb.from('salons').select('id').eq('owner_id',user.id).limit(1);
+  const isSalonOwner=(salonData&&salonData.length>0)||currentProfile?.role==='salon_owner'||currentProfile?.role==='owner';
   if(isSalonOwner){
     document.getElementById('salonDashLink').classList.remove('hidden');
     const addSalonEl=document.getElementById('addSalonLink');if(addSalonEl)addSalonEl.style.display='none';
@@ -5788,17 +5785,25 @@ let _salonPhotosCache = {};
 
 async function loadSalonPhotos(salonId) {
   if (_salonPhotosCache[salonId]) return _salonPhotosCache[salonId];
-  try {
-    const { data, error } = await sb.from('salon_photos')
-      .select('*')
-      .eq('salon_id', salonId)
-      .order('sort_order', { ascending: true });
-    if (!error && data) {
-      _salonPhotosCache[salonId] = data;
-      return data;
-    }
-  } catch (e) {}
+  // New schema: photos live in salons.gallery_urls array + salons.cover_photo_url
+  const store = allStores.find(s => s.id === salonId);
+  if (store) {
+    const photos = buildPhotoCacheFromSalon(store);
+    _salonPhotosCache[salonId] = photos;
+    return photos;
+  }
   return [];
+}
+
+function buildPhotoCacheFromSalon(store) {
+  const photos = [];
+  const cover = store.cover_photo_url || store.image_url;
+  const gallery = Array.isArray(store.gallery_urls) ? store.gallery_urls : [];
+  if (cover) photos.push({ id: store.id + '_cover', url: cover, is_cover: true, sort_order: 0 });
+  gallery.forEach((url, i) => {
+    if (url && url !== cover) photos.push({ id: store.id + '_g' + i, url, is_cover: false, sort_order: i + 1 });
+  });
+  return photos;
 }
 
 function getSalonMainPhoto(store) {
@@ -5807,22 +5812,17 @@ function getSalonMainPhoto(store) {
     const cover = photos.find(p => p.is_cover);
     return cover ? cover.url : photos[0].url;
   }
-  return null;
+  return store.cover_photo_url || store.image_url || null;
 }
 
-// Preload salon photos for all stores
+// Preload salon photos for all stores — now uses salons data already loaded
 async function preloadAllSalonPhotos() {
-  try {
-    const { data, error } = await sb.from('salon_photos')
-      .select('*')
-      .order('sort_order', { ascending: true });
-    if (!error && data) {
-      data.forEach(p => {
-        if (!_salonPhotosCache[p.salon_id]) _salonPhotosCache[p.salon_id] = [];
-        _salonPhotosCache[p.salon_id].push(p);
-      });
+  // No network call needed — build cache from allStores which already has cover_photo_url & gallery_urls
+  (allStores || []).forEach(store => {
+    if (!_salonPhotosCache[store.id]) {
+      _salonPhotosCache[store.id] = buildPhotoCacheFromSalon(store);
     }
-  } catch (e) {}
+  });
 }
 
 // Upload photos for a salon
@@ -5848,23 +5848,18 @@ async function uploadSalonPhoto(salonId, file) {
   const isCover = existing.length === 0;
   const sortOrder = existing.length;
 
-  const { data: photoData, error: insertErr } = await sb.from('salon_photos').insert({
-    salon_id: salonId, url: publicUrl, storage_path: fileName,
-    is_cover: isCover, sort_order: sortOrder, uploaded_by: currentUser?.id || null
-  }).select().single();
+  // New schema: update gallery_urls array on salons table
+  const store = allStores.find(s => s.id === salonId);
+  const currentGallery = Array.isArray(store?.gallery_urls) ? store.gallery_urls : [];
+  const newGallery = isCover ? [publicUrl, ...currentGallery] : [...currentGallery, publicUrl];
+  const updateFields = { gallery_urls: newGallery };
+  if (isCover) updateFields.cover_photo_url = publicUrl;
+  await sb.from('salons').update(updateFields).eq('id', salonId);
 
-  if (insertErr) { toast('Foto konnte nicht gespeichert werden', 'error'); return null; }
-
-  // Update cache
+  const photoData = { id: salonId + '_' + Date.now(), url: publicUrl, storage_path: fileName, is_cover: isCover, sort_order: sortOrder };
   if (!_salonPhotosCache[salonId]) _salonPhotosCache[salonId] = [];
   _salonPhotosCache[salonId].push(photoData);
-
-  // Also update the store's photo_url if this is the cover
-  if (isCover) {
-    await sb.from('stores').update({ photo_url: publicUrl }).eq('id', salonId);
-    const store = allStores.find(s => s.id === salonId);
-    if (store) store.photo_url = publicUrl;
-  }
+  if (store) { store.gallery_urls = newGallery; if (isCover) store.cover_photo_url = publicUrl; }
 
   return photoData;
 }
@@ -5879,21 +5874,20 @@ async function deleteSalonPhoto(photoId, salonId) {
     await sb.storage.from('salon-photos').remove([photo.storage_path]);
   }
 
-  // Delete from DB
-  await sb.from('salon_photos').delete().eq('id', photoId);
-
-  // Update cache
+  // Update gallery_urls on salons table
   _salonPhotosCache[salonId] = photos.filter(p => p.id !== photoId);
-
-  // If deleted photo was cover, make next one cover
-  if (photo.is_cover && _salonPhotosCache[salonId].length > 0) {
-    const newCover = _salonPhotosCache[salonId][0];
-    await sb.from('salon_photos').update({ is_cover: true }).eq('id', newCover.id);
-    newCover.is_cover = true;
-    await sb.from('stores').update({ photo_url: newCover.url }).eq('id', salonId);
-    const store = allStores.find(s => s.id === salonId);
-    if (store) store.photo_url = newCover.url;
+  const store = allStores.find(s => s.id === salonId);
+  const remaining = _salonPhotosCache[salonId];
+  const updateFields = { gallery_urls: remaining.map(p => p.url) };
+  if (photo.is_cover && remaining.length > 0) {
+    remaining[0].is_cover = true;
+    updateFields.cover_photo_url = remaining[0].url;
+    if (store) store.cover_photo_url = remaining[0].url;
+  } else if (photo.is_cover) {
+    updateFields.cover_photo_url = null;
   }
+  await sb.from('salons').update(updateFields).eq('id', salonId);
+  if (store) store.gallery_urls = updateFields.gallery_urls;
 
   toast('Foto geloscht', 'info');
 }
@@ -5902,21 +5896,13 @@ async function setCoverPhoto(photoId, salonId) {
   const photos = _salonPhotosCache[salonId] || [];
 
   // Unset all covers
-  for (const p of photos) {
-    if (p.is_cover) {
-      await sb.from('salon_photos').update({ is_cover: false }).eq('id', p.id);
-      p.is_cover = false;
-    }
-  }
-
-  // Set new cover
+  photos.forEach(p => { p.is_cover = false; });
   const photo = photos.find(p => p.id === photoId);
   if (photo) {
-    await sb.from('salon_photos').update({ is_cover: true }).eq('id', photoId);
     photo.is_cover = true;
-    await sb.from('stores').update({ photo_url: photo.url }).eq('id', salonId);
+    await sb.from('salons').update({ cover_photo_url: photo.url }).eq('id', salonId);
     const store = allStores.find(s => s.id === salonId);
-    if (store) store.photo_url = photo.url;
+    if (store) store.cover_photo_url = photo.url;
   }
 
   toast('Cover-Foto aktualisiert', 'success');
@@ -5924,14 +5910,14 @@ async function setCoverPhoto(photoId, salonId) {
 
 async function reorderSalonPhotos(salonId, orderedIds) {
   const photos = _salonPhotosCache[salonId] || [];
-  for (let i = 0; i < orderedIds.length; i++) {
-    const p = photos.find(x => x.id === orderedIds[i]);
-    if (p) {
-      p.sort_order = i;
-      await sb.from('salon_photos').update({ sort_order: i }).eq('id', orderedIds[i]);
-    }
+  const ordered = orderedIds.map(id => photos.find(x => x.id === id)).filter(Boolean);
+  ordered.forEach((p, i) => { p.sort_order = i; });
+  _salonPhotosCache[salonId] = ordered;
+  const store = allStores.find(s => s.id === salonId);
+  if (store) {
+    store.gallery_urls = ordered.map(p => p.url);
+    await sb.from('salons').update({ gallery_urls: store.gallery_urls }).eq('id', salonId);
   }
-  _salonPhotosCache[salonId] = photos.sort((a, b) => a.sort_order - b.sort_order);
 }
 
 // Render photo manager UI for salon dashboard
@@ -8831,13 +8817,11 @@ async function loadAdminTab(tab){
 async function loadAdminStores(){
   const el=document.getElementById('adminStores');
   el.innerHTML='<div class="spinner"></div>';
-  const{data,error:storesErr}=await sb.from('stores').select('*').order('name');
-  if(storesErr){el.textContent='Fehler: '+storesErr.message;return;}
   const{data:salons,error:salonsErr}=await sb.from('salons').select('*').order('created_at',{ascending:false});
-  if(salonsErr)console.warn('Salons table error:',salonsErr.message);
-  const stores=data||[];
-  const pendingSalons=(salons||[]).filter(s=>s.status==='pending');
-  const approvedSalons=(salons||[]).filter(s=>s.status!=='pending');
+  if(salonsErr){el.textContent='Fehler: '+salonsErr.message;return;}
+  const stores=[];
+  const pendingSalons=(salons||[]).filter(s=>s.status==='pending'||!s.is_active);
+  const approvedSalons=(salons||[]).filter(s=>s.status!=='pending'&&s.is_active!==false);
   let html=`<button class="add-btn" onclick="openEditStore(null)">+ Salon hinzufugen</button>`;
   if(pendingSalons.length){
     html+=`<h3 style="margin:20px 0 12px;font-size:1rem;font-weight:700;color:var(--accent)">Ausstehende Genehmigungen (${pendingSalons.length})</h3>`;
@@ -13299,7 +13283,14 @@ async function deleteGalleryPhoto(photoId,storeId){
   if(!confirm('Foto loschen?'))return;
   const photo=galleryItems.find(p=>p.id===photoId);
   if(photo?.storage_path){await sb.storage.from('salon-photos').remove([photo.storage_path]).catch(()=>{});}
-  await sb.from('salon_photos').delete().eq('id',photoId);
+  // Remove from gallery_urls on salons table
+  const store=allStores.find(s=>s.id===storeId);
+  if(store&&photo?.url){
+    const newGallery=(store.gallery_urls||[]).filter(u=>u!==photo.url);
+    await sb.from('salons').update({gallery_urls:newGallery}).eq('id',storeId);
+    store.gallery_urls=newGallery;
+    if(_salonPhotosCache[storeId])_salonPhotosCache[storeId]=_salonPhotosCache[storeId].filter(p=>p.id!==photoId);
+  }
   loadGalleryItems(storeId);
 }
 
@@ -13312,8 +13303,8 @@ async function deleteGalleryItem(i){
 async function loadPendingSalons(){var panel=document.getElementById("adminPendingList");if(!panel)return;try{var r=await supabase.from("stores").select("*").eq("status","pending").order("created_at",{ascending:false}),data=r.data;if(!data||!data.length){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3>Alle erledigt</h3></div>';return;}panel.innerHTML=data.map(function(s){return'<div class="admin-pending-card" id="pending-'+s.id+'"><strong>'+s.name+'</strong><div style="font-size:.85rem;color:var(--c-text-muted);margin:4px 0">'+(s.address||"")+' · '+(s.contact_email||"")+'</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" style="flex:1" onclick="approveStore(this,\''+ s.id+'\')">Genehmigen</button><button class="btn" style="flex:1;border-color:#dc2626;color:#dc2626" onclick="rejectStoreAdmin(this,\''+ s.id+'\')">Ablehnen</button></div></div>';}).join("");}catch(e){panel.innerHTML="Fehler: "+e.message;}}
 async function approveStore(btn,sid){await supabase.from("stores").update({status:"approved",approved_at:new Date().toISOString()}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#16a34a;font-weight:600">✓ Genehmigt</span>';showToast&&showToast("Salon genehmigt!");}
 async function rejectStoreAdmin(btn,sid){var reason=prompt("Ablehnungsgrund:")||"";await supabase.from("stores").update({status:"rejected",rejection_reason:reason}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#dc2626;font-weight:600">✗ Abgelehnt</span>';showToast&&showToast("Salon abgelehnt.");}
-async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await supabase.from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veroffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
-async function checkVerifiedStatus(storeId){var r=await supabase.from("bookings").select("id",{count:"exact"}).eq("store_id",storeId).eq("status","confirmed"),isVerified=(r.count||0)>=10;if(isVerified)await supabase.from("stores").update({is_verified:true}).eq("id",storeId);return isVerified;}
+async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await (window.sb||supabase).from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veroffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
+async function checkVerifiedStatus(storeId){var r=await (window.sb||supabase).from("bookings").select("id",{count:"exact"}).eq("store_id",storeId).eq("status","confirmed"),isVerified=(r.count||0)>=10;if(isVerified)await (window.sb||supabase).from("salons").update({last_verified_at:new Date().toISOString()}).eq("id",storeId);return isVerified;}
 // ── GOOGLE CALENDAR SYNC + iCal export ──
 async function exportIcal(storeId){
   const {data}=await sb.from('bookings').select('*').eq('store_id',storeId).eq('status','confirmed');
