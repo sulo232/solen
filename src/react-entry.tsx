@@ -1,7 +1,5 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-
 // Import components (to be implemented)
 import { ActionSearchBar } from './components/ui/action-search-bar';
 import { ExpandableTabs } from './components/ui/expandable-tabs';

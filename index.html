@@ -2960,7 +2960,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       </div>
       <div id="navUser" class="nav-user hidden">
         <div class="nav-menu" id="navMenu">
-          <div class="avatar" id="navAvatar" onclick="toggleNavMenu()" role="button" aria-label="Benutzermenü" tabindex="0">?</div>
+          <div class="avatar" id="navAvatar" onclick="toggleNavMenu()" role="button" aria-label="Benutzermenu" tabindex="0">?</div>
           <div class="nav-dropdown" id="navDropdown" data-dropdown="" role="menu">
             <a href="#" onclick="showPage('profile');return false" data-i18n="nav_my_profile" role="menuitem">Mein Profil</a>
             <a href="#" onclick="openProfileModal();return false" data-i18n="nav_edit_profile" role="menuitem">Profil bearbeiten</a>
@@ -3039,7 +3039,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       </div>
       <!-- ACTION SEARCH TRIGGER -->
       <div style="margin-top:12px">
-        <button id="actionSearchTrigger" onclick="openActionSearch()" aria-label="Schnellaktionen öffnen">
+        <button id="actionSearchTrigger" onclick="openActionSearch()" aria-label="Schnellaktionen offnen">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <span style="flex:1;text-align:left">Schnellaktionen…</span>
           <kbd style="font-size:.6rem;padding:2px 6px;background:var(--c-surface-alt);border:1px solid var(--c-border);border-radius:4px;font-family:var(--font-mono);line-height:1.4">⌘K</kbd>
@@ -3300,7 +3300,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       </div>
     </div>
     <!-- Mobile Filter FAB -->
-    <button class="filter-fab" id="filterFab" onclick="openFilterSheet()" aria-label="Filter öffnen">
+    <button class="filter-fab" id="filterFab" onclick="openFilterSheet()" aria-label="Filter offnen">
       <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
     </button>
     <div id="lastMinuteSection" class="lm-section hidden"></div>
@@ -3314,10 +3314,10 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   <div class="carousel-header">
     <div>
       <h2 data-i18n="carousel_new_title">Neu auf solen</h2>
-      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px" data-i18n="carousel_new_sub">Zuletzt hinzugefügt</p>
+      <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px" data-i18n="carousel_new_sub">Zuletzt hinzugefugt</p>
     </div>
     <div class="carousel-nav">
-      <button class="carousel-nav-btn" onclick="scrollCarousel('neuTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="carousel-nav-btn" onclick="scrollCarousel('neuTrack',-1)" aria-label="Zuruck"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <button class="carousel-nav-btn" onclick="scrollCarousel('neuTrack',1)" aria-label="Weiter"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
     </div>
   </div>
@@ -3328,7 +3328,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   </div>
 </section>
 
-<!-- ═══ IN DEINER NÄHE CAROUSEL ═══ -->
+<!-- ═══ IN DEINER NgHE CAROUSEL ═══ -->
 <div class="section-divider"></div>
 <section class="carousel-section reveal" id="inDeinerNaeheSection" aria-label="In deiner Nähe">
   <div class="carousel-header">
@@ -3337,7 +3337,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <p style="color:var(--c-text-secondary);font-size:.92rem;margin-top:4px" data-i18n="carousel_nearby_sub">Basierend auf deinem Standort</p>
     </div>
     <div class="carousel-nav">
-      <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',-1)" aria-label="Zurück"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',-1)" aria-label="Zuruck"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
       <button class="carousel-nav-btn" onclick="scrollCarousel('naeheTrack',1)" aria-label="Weiter"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
     </div>
   </div>
@@ -3479,7 +3479,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <!-- PROFILE PAGE -->
 <div id="pageProfile" class="page">
   <div class="page-title" data-i18n="profile_title">Mein Profil</div>
-  <div class="page-sub" data-i18n="profile_sub">Verwalte deine persönlichen Daten und Präferenzen</div>
+  <div class="page-sub" data-i18n="profile_sub">Verwalte deine personlichen Daten und Präferenzen</div>
   <div id="profileContent"><div class="spinner"></div></div>
 </div>
 
@@ -3540,7 +3540,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <!-- ANALYTICS PAGE -->
 <div id="pageDashboardAnalytics" class="page">
   <div class="page-title">Statistiken</div>
-  <div class="page-sub">Buchungsübersicht für deinen Salon</div>
+  <div class="page-sub">Buchungsubersicht fur deinen Salon</div>
   <button class="btn-sm" onclick="showPage('salon-dashboard')" style="margin-bottom:16px">← Dashboard</button>
   <div id="analyticsPageContent"><div class="spinner"></div></div>
 </div>
@@ -3560,7 +3560,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <div class="bp-hero-bg" id="bpHeroBg"></div>
     <div class="bp-hero-overlay"></div>
     <div class="bp-hero-content">
-      <button class="bp-back-btn" id="bpBackBtn" onclick="bpGoBack()" style="display:none" aria-label="Zurück">
+      <button class="bp-back-btn" id="bpBackBtn" onclick="bpGoBack()" style="display:none" aria-label="Zuruck">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div>
@@ -3593,7 +3593,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     <div class="bk-main">
       <div id="bookPageBody"></div>
     </div>
-    <aside class="bk-sidebar" id="bkSidebar" aria-label="Buchungsübersicht">
+    <aside class="bk-sidebar" id="bkSidebar" aria-label="Buchungsubersicht">
       <div class="bk-sidebar-title">Übersicht</div>
       <div id="bkSumItems" class="bk-sum-items">
         <div class="bk-empty-hint">Wähle einen Service,<br>um die Zusammenfassung zu sehen.</div>
@@ -3702,13 +3702,13 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       </div>
 <!-- PASSWORD RESET -->
       <div id="formPasswordReset" class="hidden">
-        <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px" data-i18n="reset_desc">Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen.</p>
+        <p style="font-size:.9rem;color:var(--text2);margin-bottom:16px" data-i18n="reset_desc">Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurucksetzen.</p>
         <div class="form-group">
           <label data-i18n="lbl_email">E-Mail</label>
           <input class="form-input" type="email" id="resetEmail" placeholder="deine@email.com" autocomplete="email">
         </div>
         <button class="btn-primary" id="btnPasswordReset" onclick="doPasswordReset()" data-i18n="btn_reset_send">Reset senden</button>
-          <div id="resetSentHint" class="hidden" style="background:rgba(155,29,48,.1);border:1px solid rgba(155,29,48,.3);border-radius:10px;padding:12px 16px;margin-top:12px;font-size:.84rem;color:var(--text2);line-height:1.5">&#10003; Link gesendet! Bitte prüfe deinen Posteingang (und Spam-Ordner).<br><a id="resendResetLink" onclick="resendPasswordReset()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline;margin-top:4px;display:inline-block">Erneut senden</a></div>
+          <div id="resetSentHint" class="hidden" style="background:rgba(155,29,48,.1);border:1px solid rgba(155,29,48,.3);border-radius:10px;padding:12px 16px;margin-top:12px;font-size:.84rem;color:var(--text2);line-height:1.5">&#10003; Link gesendet! Bitte prufe deinen Posteingang (und Spam-Ordner).<br><a id="resendResetLink" onclick="resendPasswordReset()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline;margin-top:4px;display:inline-block">Erneut senden</a></div>
         <div class="auth-switch" style="margin-top:12px"><a onclick="openAuth('login')" style="cursor:pointer;font-weight:700;text-decoration:underline" data-i18n="back_to_login">Zur&uuml;ck zur Anmeldung</a></div>
       </div>
 
@@ -3789,7 +3789,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
           <p style="font-size:.82rem;color:var(--text2)" data-i18n="verify_code_no_code">Keinen Code erhalten?</p>
           <a onclick="resendVerificationCode()" style="font-size:.82rem;color:var(--accent);cursor:pointer;font-weight:600" data-i18n="verify_code_resend">Erneut senden</a>
         </div>
-        <div class="auth-switch" style="margin-top:16px"><a onclick="openAuth('login')" style="cursor:pointer" data-i18n="back_to_login">Zurück zur Anmeldung</a></div>
+        <div class="auth-switch" style="margin-top:16px"><a onclick="openAuth('login')" style="cursor:pointer" data-i18n="back_to_login">Zuruck zur Anmeldung</a></div>
       </div>
     </div>
   </div>
@@ -3862,7 +3862,6 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 </div>
 
 <!-- BOOKING MODAL (new) -->
-<div 
 <div id="calOverlay" class="cal-overlay hidden" onclick="if(event.target===this)closeCalendarOverlay()" role="dialog" aria-modal="true" aria-label="Termin buchen">
   <div class="cal-overlay-inner">
     <div class="cal-header">
@@ -3981,7 +3980,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 
 </main>
 <!-- MOBILE BOOKING SUMMARY BAR (Theme 9) -->
-<div class="bk-mob-bar" id="bkMobBar" role="complementary" aria-label="Buchungsübersicht">
+<div class="bk-mob-bar" id="bkMobBar" role="complementary" aria-label="Buchungsubersicht">
   <div class="bk-mob-bar-info">
     <div class="bk-mob-service" id="bkMobService">Wähle einen Service</div>
     <div class="bk-mob-total" id="bkMobTotal"></div>
@@ -3997,7 +3996,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
   <div class="testimonials-track" id="testimonialsTrack">
     <div class="testimonial-card">
       <div class="testimonial-stars"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-      <p class="testimonial-quote">„Endlich eine Plattform, die wirklich lokale Salons in Basel zeigt. Hab meinen neuen Lieblingscoiffeur in Gundeldingen über solen gefunden!"</p>
+      <p class="testimonial-quote">„Endlich eine Plattform, die wirklich lokale Salons in Basel zeigt. Hab meinen neuen Lieblingscoiffeur in Gundeldingen uber solen gefunden!"</p>
       <div class="testimonial-author">
         <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80" alt="Laura M." loading="lazy">
         <div><div class="testimonial-name">Laura M.</div><div class="testimonial-meta">Grossbasel · Coiffeur</div></div>
@@ -4013,7 +4012,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
     </div>
     <div class="testimonial-card">
       <div class="testimonial-stars"><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-      <p class="testimonial-quote">„Hatte spontan Lust auf eine Massage und über solen direkt einen Last-minute-Termin am selben Tag gefunden. Unglaublich praktisch!"</p>
+      <p class="testimonial-quote">„Hatte spontan Lust auf eine Massage und uber solen direkt einen Last-minute-Termin am selben Tag gefunden. Unglaublich praktisch!"</p>
       <div class="testimonial-author">
         <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80" alt="Marc T." loading="lazy">
         <div><div class="testimonial-name">Marc T.</div><div class="testimonial-meta">St. Johann · Spa & Massage</div></div>
@@ -4041,9 +4040,9 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
 <!-- B2B "FÜR SALONS" SECTION (Phase 5.2) -->
 <section class="fur-salons-section" id="partnerCta">
   <div class="fur-salons-inner">
-    <div class="fur-salons-badge">Für Salonbesitzer/innen</div>
+    <div class="fur-salons-badge">Fur Salonbesitzer/innen</div>
     <h2 class="fur-salons-title">Dein Salon. Sichtbar in Basel.</h2>
-    <p class="fur-salons-sub">Trete dem führenden Beauty-Netzwerk der Region bei — kostenlos, ohne Vertragsbindung, mit echten Kunden aus deinem Quartier.</p>
+    <p class="fur-salons-sub">Trete dem fuhrenden Beauty-Netzwerk der Region bei — kostenlos, ohne Vertragsbindung, mit echten Kunden aus deinem Quartier.</p>
     <div class="fur-salons-steps">
       <div class="fur-salons-step">
         <div class="fur-salons-step-num">1</div>
@@ -4076,7 +4075,7 @@ body.is-authenticated .analytics-tab-auth{display:inline-flex!important}
       <div class="footer-brand-logo">solen<span>.</span></div>
       <p class="footer-brand-desc" data-i18n="footer_brand_desc">Lokale Beauty- und Wellness-Salons in Basel. Coiffeur, Nails, Spa und mehr online buchen.</p>
       <div class="footer-app-promo">
-        <span class="footer-app-label" data-i18n="footer_app_soon">App bald verfügbar</span>
+        <span class="footer-app-label" data-i18n="footer_app_soon">App bald verfugbar</span>
         <div class="footer-app-badges">
           <button class="footer-app-badge" onclick="showToast('App Store Version kommt bald!','info')">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
@@ -4335,7 +4334,7 @@ const T={
     nav_salon_dash:'Mein Salon',nav_admin:'Verwaltung',nav_register_salon:'Salon eintragen',
     hero_badge:'Dein n\u00e4chster Lieblingsort wartet.',hero_title:'Beauty & Wellness<br><span class="hero-highlight">in Basel buchen</span>',
     hero_sub:'Finde Coiffeure, Kosmetik und Spa in deinem Quartier. Direkt online buchen.',
-    search_placeholder:'z.B. Balayage, Maniküre, Massage...',search_btn:'Suchen',
+    search_placeholder:'z.B. Balayage, Manikure, Massage...',search_btn:'Suchen',
     stat_salons:'Lokale Salons',stat_services:'Behandlungen',stat_location:'Dein Quartier',
     nav_salons:'Salons',nav_quartiere:'Quartiere',nav_about:'\u00dcber uns',
     cat_all:'Alle',cat_hairsalon:'Coiffeur',cat_cosmetik:'Kosmetik',stores_title:'Alle Salons',
@@ -4382,7 +4381,7 @@ const T={
     back_to_login:'Zur\u00fcck zur Anmeldung',reset_email_sent:'Reset-Link gesendet! Pr\u00fcfe dein Postfach.',
     book_now:'Jetzt buchen',select_service:'Service w\u00e4hlen',select_date:'Datum w\u00e4hlen',select_time:'Uhrzeit w\u00e4hlen',
     guest_info:'Gastinformationen',booking_confirmed:'Dein Termin steht!',write_review:'Bewertung abgeben',
-    rating_filter:'Min. Bewertung',no_results:'Hmm, dazu haben wir noch nichts',reset_filters:'Filter zurücksetzen',filter_title:'Filter',filter_show_results:'Ergebnisse anzeigen',more_discover:'Mehr entdecken ▼',less_discover:'Weniger anzeigen ▲',
+    rating_filter:'Min. Bewertung',no_results:'Hmm, dazu haben wir noch nichts',reset_filters:'Filter zurucksetzen',filter_title:'Filter',filter_show_results:'Ergebnisse anzeigen',more_discover:'Mehr entdecken ▼',less_discover:'Weniger anzeigen ▲',
     use_location:'Standort',neighbourhood:'Quartier',neighbourhood_all:'Alle Quartiere',
     impressum:'Impressum',privacy:'Datenschutz',nearest_slot_tomorrow:'N\u00e4chster: Morgen',
     add_to_calendar:'Zu Google Kalender hinzuf\u00fcgen',sort_distance:'Entfernung',
@@ -4458,7 +4457,7 @@ const T={
     lbl_plz:'PLZ (Pflichtfeld)',lbl_ort:'Ort',err_plz_invalid:'Bitte g\u00fcltige PLZ eingeben (z.B. 4000).',
     lbl_pause:'Pause',btn_add_pause:'+ Pause',btn_remove_pause:'\u00d7 Pause',
     reg_step1_hint:'Schritt 1 von 5: Basis-Informationen',reg_step2_hint:'Schritt 2 von 5: Standort und Online-Präsenz',reg_step3_hint:'Schritt 3 von 5: Deine Services',reg_step4_hint:'Schritt 4 von 5: Dein Team',reg_step5_hint:'Schritt 5 von 5: Beschreibung und Öffnungszeiten',
-    reg_team_hint:'Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.',reg_add_staff:'+ Mitarbeiter hinzufügen',reg_staff_name:'Name',reg_staff_role:'Rolle',reg_staff_bookable:'Online buchbar',reg_staff_hours_toggle:'Verfügbarkeit festlegen',
+    reg_team_hint:'Fuge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.',reg_add_staff:'+ Mitarbeiter hinzufugen',reg_staff_name:'Name',reg_staff_role:'Rolle',reg_staff_bookable:'Online buchbar',reg_staff_hours_toggle:'Verfugbarkeit festlegen',
   },
   en:{
     nav_login:'Sign in',nav_register:'Register',nav_logout:'Sign out',nav_theme:'Light / Dark',
@@ -4723,60 +4722,58 @@ const T={
     reg_team_hint:'Ajoutez votre \u00e9quipe. Vous pourrez toujours modifier le personnel plus tard.',reg_add_staff:'+ Ajouter un membre',reg_staff_name:'Nom',reg_staff_role:'R\u00f4le',reg_staff_bookable:'R\u00e9servable en ligne',reg_staff_hours_toggle:'D\u00e9finir la disponibilit\u00e9',
   },
   tr:{
-    nav_login:'GiriÅ Yap',nav_register:'Kayıt Ol',nav_logout:'ÇıkıÅ Yap',nav_theme:'Açık / Koyu',
-    nav_my_profile:'Profilim',nav_edit_profile:'Profili Düzenle',nav_my_bookings:'Rezervasyonlarım',
-    nav_salon_dash:'Salonum',nav_admin:'Y\u00f6netim',nav_register_salon:'Salon kaydet',
-    hero_badge:'Bir sonraki favori yerin seni bekliyor.',hero_title:'G\u00fczellik & Bak\u0131m<br><span class="hero-highlight">Basel\'de</span>',
-    hero_sub:'Mahallenizde kuaf\u00f6r, kozmetik ve spa bulun. Online randevu al\u0131n.',
+    nav_login:'Giris Yap',nav_register:'Kayit Ol',nav_logout:'Cikis Yap',nav_theme:'Acik / Koyu',
+    nav_my_profile:'Profilim',nav_edit_profile:'Profili Duzenle',nav_my_bookings:'Rezervasyonlarim',
+    nav_salon_dash:'Salonum',nav_admin:'Yonetim',nav_register_salon:'Salon kaydet',
+    hero_badge:'Bir sonraki favori yerin seni bekliyor.',hero_title:'Guzellik & Bakim<br><span class="hero-highlight">Basel\'de</span>',
+    hero_sub:'Mahallenizde kuafor, kozmetik ve spa bulun. Online randevu alin.',
     search_placeholder:'Hizmet, salon veya kategori...',search_btn:'Ara',
-    stat_salons:'Yerel Salon',stat_services:'Hizmet',stat_location:'Senin B\u00f6lgen',
-    nav_salons:'Salonlar',nav_quartiere:'Mahalleler',nav_about:'Hakk\u0131m\u0131zda',
-    cat_all:'T\u00fcm\u00fc',cat_hairsalon:'Kuaf\u00f6r',cat_cosmetik:'Kozmetik',stores_title:'T\u00fcm Salonlar',
-    profile_title:'Profilim',profile_sub:'KiÅisel bilgilerinizi ve tercihlerinizi yönetin',
-    bookings_title:'Rezervasyonlarım',bookings_sub:'GeçmiÅ ve gelecek randevularınız',
-    admin_title:'Y\u00f6netim',admin_sub:'Salonlar\u0131, hizmetleri ve rezervasyonlar\u0131 y\u00f6netin',
-    salon_dash_title:'Salonum',salon_dash_sub:'Randevular\u0131, mesajlar\u0131 ve ayarlar\u0131 y\u00f6netin',
-    auth_login_title:'GiriÅ Yap',auth_register_title:'Kayıt Ol',auth_customer_title:'MüÅteri Kaydı',auth_salon_title:'Salon Kaydı',
-    btn_login:'GiriÅ Yap',btn_create_account:'Hesap OluÅtur',btn_book:'Rezervasyon',btn_book_now:'Åimdi Rezervasyon',btn_book_appointment:'Randevu Al',
-    btn_confirm:'Randevuyu Onayla',btn_cancel:'İptal',btn_back:'Geri',btn_next:'İleri',btn_save:'Profili Kaydet',btn_skip:'Atla',
-    lbl_email:'E-posta',lbl_password:'Åifre',lbl_firstname:'Ad',lbl_lastname:'Soyad',
+    stat_salons:'Yerel Salon',stat_services:'Hizmet',stat_location:'Senin Bolgen',
+    nav_salons:'Salonlar',nav_quartiere:'Mahalleler',nav_about:'Hakkimizda',
+    cat_all:'Tumu',cat_hairsalon:'Kuafor',cat_cosmetik:'Kozmetik',stores_title:'Tum Salonlar',
+    profile_title:'Profilim',profile_sub:'Kisisel bilgilerinizi ve tercihlerinizi yonetin',
+    bookings_title:'Rezervasyonlarim',bookings_sub:'Gecmis ve gelecek randevulariniz',
+    admin_title:'Yonetim',admin_sub:'Salonlari, hizmetleri ve rezervasyonlari yonetin',
+    salon_dash_title:'Salonum',salon_dash_sub:'Randevulari, mesajlari ve ayarlari yonetin',
+    auth_login_title:'Giris Yap',auth_register_title:'Kayit Ol',auth_customer_title:'Musteri Kaydi',auth_salon_title:'Salon Kaydi',
+    btn_login:'Giris Yap',btn_create_account:'Hesap Olustur',btn_book:'Rezervasyon',btn_book_now:'Simdi Rezervasyon',btn_book_appointment:'Randevu Al',
+    btn_confirm:'Randevuyu Onayla',btn_cancel:'Iptal',btn_back:'Geri',btn_next:'Ileri',btn_save:'Profili Kaydet',btn_skip:'Atla',
+    lbl_email:'E-posta',lbl_password:'Sifre',lbl_firstname:'Ad',lbl_lastname:'Soyad',
     wiz_service:'Hizmet',wiz_date:'Tarih',wiz_time:'Saat',wiz_details:'Detaylar',wiz_confirm:'Onayla',
-    wiz_choose_service:'Hizmet Seç',wiz_choose_date:'Tarih Seç',wiz_choose_time:'Saat Seç',wiz_your_details:'Bilgileriniz',wiz_confirm_booking:'Rezervasyonu Onayla',
-    wiz_summary:'Özet',wiz_salon:'Salon',wiz_service_lbl:'Hizmet',wiz_date_lbl:'Tarih',wiz_time_lbl:'Saat',wiz_duration:'Süre',wiz_price:'Fiyat',
-    toast_welcome:'Tekrar hoÅ geldiniz',toast_signedout:'ÇıkıÅ yapıldı',toast_booked:'Rezervasyon yapıldı! Referans:',toast_profile_saved:'Profil kaydedildi!',
-    toast_booking_failed:'Rezervasyon baÅarısız. Lütfen tekrar deneyin.',
-    empty_no_salon:'Salon bulunamadı',empty_try_other:'Farklı bir arama terimi deneyin veya baÅka bir kategori seçin.',empty_show_all:'Tüm salonları göster',
-    empty_no_bookings:'Henüz rezervasyon yok',empty_book_first:'İlk randevunuzu alın',empty_discover:'Salonları KeÅfet',
-    empty_no_reviews:'Hen\u00fcz yorum yok \u2013 ilk sen ol!',empty_search_no_results:'Hi\u00e7bir \u015fey bulamad\u0131k. Ba\u015fka bir terim dene.',
-    auth_no_account:'Hesabınız yok mu?',auth_already:'Zaten kayıtlı mısınız?',auth_register_now:'Åimdi kayıt ol',auth_login_now:'GiriÅ yap',
-    auth_google_login:'Google ile giriÅ yap',auth_google_register:'Google ile kayıt ol',auth_or:'veya',
-    auth_choose:'EriÅim türünü seçin',auth_customer_or_owner:'MüÅteri misiniz yoksa salon sahibi mi?',
-    auth_as_customer:'MüÅteri Olarak',auth_customer_desc:'Randevu alın, salonları keÅfedin, profilinizi yönetin',auth_free_register:'Ücretsiz kayıt',
-    auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonları yönetin, müÅteri kazanın',auth_register_salon:'Salon kaydı',
-    bn_home:'Ana Sayfa',bn_discover:'Ke\u015ffet',bn_bookings:'Rezervasyonlar',bn_messages:'Mesajlar',bn_profile:'Profil',
-    recently_viewed:'Son görüntülenenler',resume_at:'Devam et',
-    status_confirmed:'Onaylandı',status_pending:'Beklemede',status_cancelled:'İptal edildi',cancel_booking:'Randevuyu iptal et',booking_cancelled:'Randevu iptal edildi.',
+    wiz_choose_service:'Hizmet Sec',wiz_choose_date:'Tarih Sec',wiz_choose_time:'Saat Sec',wiz_your_details:'Bilgileriniz',wiz_confirm_booking:'Rezervasyonu Onayla',
+    wiz_summary:'Ozet',wiz_salon:'Salon',wiz_service_lbl:'Hizmet',wiz_date_lbl:'Tarih',wiz_time_lbl:'Saat',wiz_duration:'Sure',wiz_price:'Fiyat',
+    toast_welcome:'Tekrar hos geldiniz',toast_signedout:'Cikis yapildi',toast_booked:'Rezervasyon yapildi! Referans:',toast_profile_saved:'Profil kaydedildi!',
+    toast_booking_failed:'Rezervasyon basarisiz. Lutfen tekrar deneyin.',
+    empty_no_salon:'Salon bulunamadi',empty_try_other:'Farkli bir arama terimi deneyin veya baska bir kategori secin.',empty_show_all:'Tum salonlari goster',
+    empty_no_bookings:'Henuz rezervasyon yok',empty_book_first:'Ilk randevunuzu alin',empty_discover:'Salonlari Kesfet',
+    empty_no_reviews:'Henuz yorum yok – ilk sen ol!',empty_search_no_results:'Hicbir sey bulamadik. Baska bir terim dene.',
+    auth_no_account:'Hesabiniz yok mu?',auth_already:'Zaten kayitli misiniz?',auth_register_now:'Simdi kayit ol',auth_login_now:'Giris yap',
+    auth_google_login:'Google ile giris yap',auth_google_register:'Google ile kayit ol',auth_or:'veya',
+    auth_choose:'Erisim turunu secin',auth_customer_or_owner:'Musteri misiniz yoksa salon sahibi mi?',
+    auth_as_customer:'Musteri Olarak',auth_customer_desc:'Randevu alin, salonlari kesfedin, profilinizi yonetin',auth_free_register:'Ucretsiz kayit',
+    auth_as_owner:'Salon Sahibi Olarak',auth_owner_desc:'Salonunuzu listeleyin, rezervasyonlari yonetin, musteri kazanin',auth_register_salon:'Salon kaydi',
+    bn_home:'Ana Sayfa',bn_discover:'Kesfet',bn_bookings:'Rezervasyonlar',bn_messages:'Mesajlar',bn_profile:'Profil',
+    recently_viewed:'Son goruntulenenler',resume_at:'Devam et',
+    status_confirmed:'Onaylandi',status_pending:'Beklemede',status_cancelled:'Iptal edildi',cancel_booking:'Randevuyu iptal et',booking_cancelled:'Randevu iptal edildi.',
     rebook:'Tekrar rezervasyon',salon_count_one:'Salon',salon_count_other:'Salon',
-    see_all_services:'T\u00fcm hizmetler',clear_all:'S\u0131f\u0131rla',
+    see_all_services:'Tum hizmetler',clear_all:'Sifirla',
     sel_service_label:'Hizmet',sel_service_placeholder:'Hizmet veya salon',
-    sel_quartier_label:'Konum',sel_quartier_placeholder:'Semt se\u00e7in',
+    sel_quartier_label:'Konum',sel_quartier_placeholder:'Semt secin',
     sel_time_label:'Ne zaman',sel_time_placeholder:'Herhangi bir zaman',
-    venue_tab_services:'Hizmetler',venue_tab_reviews:'Yorumlar',venue_tab_about:'Hakk\u0131nda',
-    err_email_pw:'Lütfen e-posta ve Åifre girin.',err_fill_all:'Lütfen tüm alanları doldurun.',err_pw_min:'Åifre en az 6 karakter olmalıdır.',
-    err_wrong_pw:'YanlıÅ Åifre veya e-posta.',err_confirm_email:'Lütfen önce e-posta adresinizi onaylayın.',
-    err_invalid_email:'Lütfen geçerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayıtlı deÄil.',err_generic:'Bir hata oluÅtu. Lütfen tekrar deneyin.',
-    err_already_registered:'Bu e-posta zaten kayıtlı.',err_signup_failed:'Kayıt baÅarısız. Lütfen tekrar deneyin.',
-    confirm_email_sent:'Onay e-postası gönderildi! Lütfen gelen kutunuzu kontrol edin.',
+    err_wrong_pw:'Yanlis sifre veya e-posta.',err_confirm_email:'Lutfen once e-posta adresinizi onaylayin.',
+    err_invalid_email:'Lutfen gecerli bir e-posta adresi girin.',err_email_not_registered:'Bu e-posta adresi kayitli degil.',err_generic:'Bir hata olustu. Lutfen tekrar deneyin.',
+    err_already_registered:'Bu e-posta zaten kayitli.',err_signup_failed:'Kayit basarisiz. Lutfen tekrar deneyin.',
+    confirm_email_sent:'Onay e-postasi gonderildi! Lutfen gelen kutunuzu kontrol edin.',
     verify_code_title:'Kodu girin',verify_code_hint:'E-posta ile 6 haneli bir kod g\u00f6nderdik.',verify_code_btn:'Onayla',verify_code_resend:'Tekrar g\u00f6nder',verify_code_invalid:'Kod ge\u00e7ersiz. L\u00fctfen tekrar deneyin.',verify_code_no_code:'Kod almad\u0131n\u0131z m\u0131?',verify_code_resent:'Kod tekrar g\u00f6nderildi!',
-    setup_title:'Profil OluÅtur',setup_welcome:'HoÅ geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili düzenle',
-    setup_desc:'Kısa bir profil, salonun ziyaretine hazırlanmasına yardımcı olur',
-    forgot_password:'Åifremi unuttum?',reset_desc:'E-posta adresinizi girin, size sıfırlama baÄlantısı gönderelim.',
-    back_to_login:'GiriÅe geri dön',reset_email_sent:'Sıfırlama baÄlantısı gönderildi!',
-    book_now:'Åimdi Rezervasyon',select_service:'Hizmet Seçin',select_date:'Tarih Seçin',select_time:'Saat Seçin',
-    guest_info:'Misafir bilgileri',booking_confirmed:'Randevun hazır!',write_review:'Yorum yaz',
-    rating_filter:'Min. puan',no_results:'Hmm, henüz bir şey yok',reset_filters:'Filtreleri sıfırla',filter_title:'Filtreler',filter_show_results:'Sonuçları göster',more_discover:'Daha fazlasını keşfet ▼',less_discover:'Daha az göster ▲',
-    use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'Tüm mahalleler',
-    impressum:'Künye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: Yarın',
+    setup_title:'Profil Olustur',setup_welcome:'Hos geldiniz! Profilinizi kurmak ister misiniz?',setup_edit:'Profili duzenle',
+    setup_desc:'Kisa bir profil, salonun ziyaretine hazirlanmasina yardimci olur',
+    forgot_password:'sifremi unuttum?',reset_desc:'E-posta adresinizi girin, size sifirlama baglantisi gonderelim.',
+    back_to_login:'Girise geri don',reset_email_sent:'Sifirlama baglantisi gonderildi!',
+    book_now:'simdi Rezervasyon',select_service:'Hizmet Secin',select_date:'Tarih Secin',select_time:'Saat Secin',
+    guest_info:'Misafir bilgileri',booking_confirmed:'Randevun hazir!',write_review:'Yorum yaz',
+    rating_filter:'Min. puan',no_results:'Hmm, henuz bir şey yok',reset_filters:'Filtreleri sifirla',filter_title:'Filtreler',filter_show_results:'Sonuclari goster',more_discover:'Daha fazlasini keşfet ▼',less_discover:'Daha az goster ▲',
+    use_location:'Konum',neighbourhood:'Mahalle',neighbourhood_all:'Tum mahalleler',
+    impressum:'Kunye',privacy:'Gizlilik',nearest_slot_tomorrow:'Sonraki: Yarin',
     add_to_calendar:'Google Takvime Ekle',sort_distance:'Mesafe',
     location_unavailable:'Konum mevcut de\u011fil',load_failed:'Salonlar y\u00fcklenemedi',reload:'Yenile',
     cat_barber:'Berberhane',cat_hairsalon:'Kuaf\u00f6r',cat_nails:'T\u0131rnak St\u00fcdyosu',cat_spa:'Spa & Wellness',cat_makeup:'Makyaj',cat_eyebrows:'Ka\u015f',
@@ -4889,7 +4886,7 @@ function switchLang(lang){
   });
   applyTranslations();
   if(lang!=='de')translateVisibleDescriptions(lang);
-  const langNames={de:'Deutsch',en:'English',fr:'Français',tr:'Türkçe'};
+  const langNames={de:'Deutsch',en:'English',fr:'Francais',tr:'Turkce'};
   toast(langNames[lang]||lang,'info');
 }
 // Alias so both switchLang() and setLang() work
@@ -4911,16 +4908,16 @@ function setLang(lang){switchLang(lang);}
 // DEMO DATA fallback
 const DEMO_STORES=[
   {id:'d1',name:'Barber King',type:'barber',description:'Premium Barbershop in Basel Mitte. Klassische Schnitte, Rasuren und Bartpflege.',rating:4.8,image_url:'',address:'Freie Str. 14, Basel'},
-  {id:'d2',name:'Studio Elle',type:'hairsalon',description:'Moderner Friseursalon für Damen und Herren. Spezialisiert auf Colorationen.',rating:4.7,image_url:'',address:'Steinenvorstadt 22, Basel'},
+  {id:'d2',name:'Studio Elle',type:'hairsalon',description:'Moderner Friseursalon fur Damen und Herren. Spezialisiert auf Colorationen.',rating:4.7,image_url:'',address:'Steinenvorstadt 22, Basel'},
   {id:'d3',name:'Nail Art Basel',type:'nails',description:'Professionelles Nagelstudio mit den neuesten Trends aus Japan und Korea.',rating:4.9,image_url:'',address:'Marktplatz 8, Basel'},
-  {id:'d4',name:'Hammam Spa',type:'spa',description:'Orientalisches Wellness-Erlebnis im Herzen von Basel. Massage, Dampfbad und mehr.',rating:4.6,image_url:'',address:'Güterstr. 89, Basel'},
+  {id:'d4',name:'Hammam Spa',type:'spa',description:'Orientalisches Wellness-Erlebnis im Herzen von Basel. Massage, Dampfbad und mehr.',rating:4.6,image_url:'',address:'Guterstr. 89, Basel'},
   {id:'d5',name:'Cut & Style',type:'hairsalon',description:'Familiärer Friseursalon – Kinder, Teens und Erwachsene willkommen.',rating:4.5,image_url:'',address:'Dornacherstr. 12, Basel'},
   {id:'d6',name:'Brow Studio Basel',type:'eyebrows',description:'Augenbrauen-Shaping, Tinting und Lash-Lifting von echten Profis.',rating:4.8,image_url:'',address:'Feldbergstr. 55, Basel'}
 ];
 const DEMO_SERVICES={
   d1:[{id:'s1',store_id:'d1',name:'Herrenhaarschnitt',price:35,duration:30,category:'barber'},{id:'s2',store_id:'d1',name:'Kinderhaarschnitt',price:22,duration:25,category:'barber'},{id:'s3',store_id:'d1',name:'Bart trimmen',price:18,duration:20,category:'barber'},{id:'s4',store_id:'d1',name:'Rasur',price:28,duration:30,category:'barber'}],
   d2:[{id:'s5',store_id:'d2',name:'Damenhaarschnitt',price:55,duration:45,category:'hairsalon'},{id:'s6',store_id:'d2',name:'Herrenhaarschnitt',price:38,duration:35,category:'hairsalon'},{id:'s7',store_id:'d2',name:'Balayage',price:120,duration:120,category:'hairsalon'},{id:'s8',store_id:'d2',name:'Coloration',price:85,duration:90,category:'hairsalon'}],
-  d3:[{id:'s9',store_id:'d3',name:'Gel-Nägel',price:65,duration:60,category:'nails'},{id:'s10',store_id:'d3',name:'Nageldesign',price:45,duration:45,category:'nails'},{id:'s11',store_id:'d3',name:'Maniküre',price:35,duration:40,category:'nails'},{id:'s12',store_id:'d3',name:'Pediküre',price:40,duration:45,category:'nails'}],
+  d3:[{id:'s9',store_id:'d3',name:'Gel-Nägel',price:65,duration:60,category:'nails'},{id:'s10',store_id:'d3',name:'Nageldesign',price:45,duration:45,category:'nails'},{id:'s11',store_id:'d3',name:'Manikure',price:35,duration:40,category:'nails'},{id:'s12',store_id:'d3',name:'Pedikure',price:40,duration:45,category:'nails'}],
   d4:[{id:'s13',store_id:'d4',name:'Klassische Massage',price:80,duration:60,category:'spa'},{id:'s14',store_id:'d4',name:'Dampfbad',price:30,duration:45,category:'spa'},{id:'s15',store_id:'d4',name:'Peeling',price:55,duration:45,category:'spa'}],
   d5:[{id:'s16',store_id:'d5',name:'Kinderhaarschnitt',price:20,duration:25,category:'hairsalon'},{id:'s17',store_id:'d5',name:'Teenager-Schnitt',price:30,duration:30,category:'hairsalon'},{id:'s18',store_id:'d5',name:'Damenhaarschnitt',price:50,duration:45,category:'hairsalon'},{id:'s19',store_id:'d5',name:'Herrenhaarschnitt',price:35,duration:35,category:'hairsalon'}],
   d6:[{id:'s20',store_id:'d6',name:'Brow Shaping',price:28,duration:30,category:'eyebrows'},{id:'s21',store_id:'d6',name:'Brow Tinting',price:22,duration:25,category:'eyebrows'},{id:'s22',store_id:'d6',name:'Lash Lifting',price:65,duration:60,category:'eyebrows'}]
@@ -5499,7 +5496,7 @@ async function doSalonSignup(){
   const salonDesc=document.getElementById('salonDesc').value.trim();
   const agb=document.getElementById('salonAgb').checked;
 
-  if(!first||!email||!pw||!salonName)return showAuthMsg('Bitte alle Pflichtfelder ausfüllen.');
+  if(!first||!email||!pw||!salonName)return showAuthMsg('Bitte alle Pflichtfelder ausfullen.');
   if(pw.length<6)return showAuthMsg('Passwort muss mindestens 6 Zeichen haben.');
   if(!agb)return showAuthMsg('Bitte die AGB akzeptieren.');
 
@@ -5581,7 +5578,7 @@ async function doPasswordReset(){
   else{
     const hint=document.getElementById('resetSentHint');
     if(hint)hint.classList.remove('hidden');
-    showAuthMsg(t('reset_email_sent')||'Reset-Link gesendet! Prüfe dein Postfach.','success');
+    showAuthMsg(t('reset_email_sent')||'Reset-Link gesendet! Prufe dein Postfach.','success');
   }
 }
 // PHONE AUTH
@@ -5647,7 +5644,7 @@ async function doUpdatePassword(){
   const pw2=document.getElementById('newPw2').value;
   const msgEl=document.getElementById('newPwMsg');
   if(pw1.length<8){msgEl.innerHTML='<div class="msg error" role="alert">Passwort muss mindestens 8 Zeichen haben.</div>';return;}
-  if(pw1!==pw2){msgEl.innerHTML='<div class="msg error" role="alert">Passwörter stimmen nicht überein.</div>';return;}
+  if(pw1!==pw2){msgEl.innerHTML='<div class="msg error" role="alert">Passworter stimmen nicht uberein.</div>';return;}
   const btn=document.querySelector('#newPasswordOverlay .btn-primary');
   btn.disabled=true;btn.textContent='...';
   const{error}=await sb.auth.updateUser({password:pw1});
@@ -5898,7 +5895,7 @@ async function deleteSalonPhoto(photoId, salonId) {
     if (store) store.photo_url = newCover.url;
   }
 
-  toast('Foto gelöscht', 'info');
+  toast('Foto geloscht', 'info');
 }
 
 async function setCoverPhoto(photoId, salonId) {
@@ -5966,12 +5963,12 @@ function renderPhotoManager(salonId) {
               <img src="${p.url}" alt="Salon Foto" loading="lazy">
               <div class="photo-actions">
                 ${!p.is_cover ? `<button class="photo-action-btn" onclick="event.stopPropagation();setCoverAndRefresh('${p.id}','${salonId}')" title="Als Cover setzen">&#9733;</button>` : ''}
-                <button class="photo-action-btn delete" onclick="event.stopPropagation();confirmDeletePhoto('${p.id}','${salonId}')" title="Löschen">&#10005;</button>
+                <button class="photo-action-btn delete" onclick="event.stopPropagation();confirmDeletePhoto('${p.id}','${salonId}')" title="Loschen">&#10005;</button>
               </div>
             </div>
           `).join('')}
         </div>
-        <p style="font-size:.78rem;color:var(--c-text-muted);margin-top:12px">Drag & Drop zum Sortieren · Hover für Aktionen · Erstes Foto wird automatisch als Cover gesetzt</p>
+        <p style="font-size:.78rem;color:var(--c-text-muted);margin-top:12px">Drag & Drop zum Sortieren · Hover fur Aktionen · Erstes Foto wird automatisch als Cover gesetzt</p>
       ` : `
         <div class="photo-upload-zone" id="photoDropZone_${salonId}"
           onclick="triggerPhotoUpload('${salonId}')"
@@ -6029,11 +6026,11 @@ function confirmDeletePhoto(photoId, salonId) {
   dialog.className = 'confirm-dialog';
   dialog.innerHTML = `
     <div class="confirm-dialog-content">
-      <h3>Foto löschen?</h3>
-      <p>Dieses Foto wird unwiderruflich gelöscht.</p>
+      <h3>Foto loschen?</h3>
+      <p>Dieses Foto wird unwiderruflich geloscht.</p>
       <div class="confirm-dialog-actions">
         <button class="confirm-dialog-cancel" onclick="this.closest('.confirm-dialog').remove()">Abbrechen</button>
-        <button class="confirm-dialog-delete" onclick="execDeletePhoto('${photoId}','${salonId}');this.closest('.confirm-dialog').remove()">Löschen</button>
+        <button class="confirm-dialog-delete" onclick="execDeletePhoto('${photoId}','${salonId}');this.closest('.confirm-dialog').remove()">Loschen</button>
       </div>
     </div>`;
   document.body.appendChild(dialog);
@@ -6866,7 +6863,7 @@ function restoreCategoryFilter(){
     }
   }catch(e){}
 }
-function slugify(str){return str.toLowerCase().replace(/[äöü]/g,c=>({'ä':'ae','ö':'oe','ü':'ue'})[c]||c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function slugify(str){return str.toLowerCase().replace(/[äou]/g,c=>({'ä':'ae','o':'oe','u':'ue'})[c]||c).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 function updateSalonSEO(s){
   const slug=slugify(s.name);
   const url='/?s='+slug+'-'+s.id;
@@ -7100,7 +7097,7 @@ function renderWizStep(step){
   let html='';
   if(step===1){
     html=`<h3 class="wiz-step-header">${t('wiz_choose_service')}</h3>`;
-    if(ordered.length===0){html+='<p class="text-muted">Keine Services verfügbar.</p>';}
+    if(ordered.length===0){html+='<p class="text-muted">Keine Services verfugbar.</p>';}
     else{
       const prefs=currentProfile?.preferred_services||[];
       const hasPreferred=prefs.length>0&&ordered.some(s=>prefs.some(p=>s.name.toLowerCase().includes(p.toLowerCase())));
@@ -7148,8 +7145,8 @@ function renderWizStep(step){
       <div class="bk-bleach-toggle" role="button" tabindex="0" aria-pressed="${_bleachOn}" onclick="toggleBleaching(this)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleBleaching(this)">
         <div class="bk-bleach-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
         <div class="bk-bleach-label">
-          <strong>Bleaching / Strähnen / Farbe gewünscht?</strong>
-          <span>Optionaler Zusatzservice — kann übersprungen werden</span>
+          <strong>Bleaching / Strähnen / Farbe gewunscht?</strong>
+          <span>Optionaler Zusatzservice — kann ubersprungen werden</span>
         </div>
         <button class="bk-toggle-pill${_bleachOn?' on':''}" id="bkBleachPill" aria-label="Bleaching aktivieren" tabindex="-1" onclick="event.stopPropagation();toggleBleaching(document.querySelector('.bk-bleach-toggle'))"></button>
       </div>
@@ -7337,7 +7334,7 @@ function wizNext(step){
 async function confirmBooking(){
   if(!_rl.check('booking',3,60000)){toast('Please wait before making another booking','error');return;}
   if(!bookingState.firstName?.trim()||!bookingState.phone?.trim()){toast(t('toast_name_phone_required')||'Name und Telefonnummer sind erforderlich','error');return;}
-  if(!bookingState.date||!bookingState.time||!bookingState.service){toast(t('toast_booking_incomplete')||'Bitte alle Felder ausfüllen','error');return;}
+  if(!bookingState.date||!bookingState.time||!bookingState.service){toast(t('toast_booking_incomplete')||'Bitte alle Felder ausfullen','error');return;}
   const btn=document.querySelector('#wizContent .btn-primary');
   if(btn){btn.disabled=true;btn.textContent='Buchen...';}
   const s=bookingState.service;
@@ -7347,7 +7344,7 @@ async function confirmBooking(){
   let _noteBase=bookingState.note||'';
   if(bookingState.wantsBleaching){
     const _addonNames=(bookingState.selectedAddons||[]).map(a=>a.name).join(', ');
-    const _extrasLine='[Bleaching/Farbe gewünscht'+(_addonNames?'; Extras: '+_addonNames:'')+']';
+    const _extrasLine='[Bleaching/Farbe gewunscht'+(_addonNames?'; Extras: '+_addonNames:'')+']';
     _noteBase=_noteBase?_noteBase+'\n'+_extrasLine:_extrasLine;
   }
   const{data:bkData,error}=await sb.from('bookings').insert({
@@ -7555,7 +7552,7 @@ function loadPageContent(page){
   else if(page==='admin')renderAdmin();
   else if(page==='salon-dashboard'||page==='salon/setup'||page==='dashboard/analytics'||page==='dashboard/staff'){
     var _isOwner=!!(currentUser&&currentProfile&&(currentProfile.role==='salon_owner'||currentProfile.is_salon_owner));
-    if(!_isOwner){toast(t('owner_only')||'Nur für Salon-Inhaber.','error');showPage('home');return;}
+    if(!_isOwner){toast(t('owner_only')||'Nur fur Salon-Inhaber.','error');showPage('home');return;}
     if(page==='salon-dashboard')renderSalonDashboard();
     else if(page==='salon/setup')renderSalonSetupPage();
     else if(page==='dashboard/analytics')renderAnalyticsPage();
@@ -7581,7 +7578,7 @@ async function renderPartnerPage(){
   const grid=document.getElementById('regHoursGrid');
   if(grid&&!grid.dataset.built){
     const days=[['Mo','Montag'],['Di','Dienstag'],['Mi','Mittwoch'],['Do','Donnerstag'],['Fr','Freitag'],['Sa','Samstag'],['So','Sonntag']];
-    grid.innerHTML=days.map(([k,label])=>`<div class="reg-day-row" data-day="${k}"><input type="checkbox" id="rh_${k}" checked aria-label="${label} geöffnet"><label class="reg-day-lbl" for="rh_${k}">${k}</label><div class="reg-time-inputs"><label class="sr-only" for="rh_${k}_f">${label} von</label><input type="time" id="rh_${k}_f" value="09:00" aria-label="${label} Öffnungszeit von"><span class="reg-time-dash" aria-hidden="true">–</span><label class="sr-only" for="rh_${k}_t">${label} bis</label><input type="time" id="rh_${k}_t" value="19:00" aria-label="${label} Öffnungszeit bis"></div><button type="button" class="reg-break-toggle" onclick="toggleRegBreak(this,'${k}')" style="font-size:.72rem;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;margin-left:6px">+ Pause</button></div>`).join('');
+    grid.innerHTML=days.map(([k,label])=>`<div class="reg-day-row" data-day="${k}"><input type="checkbox" id="rh_${k}" checked aria-label="${label} geoffnet"><label class="reg-day-lbl" for="rh_${k}">${k}</label><div class="reg-time-inputs"><label class="sr-only" for="rh_${k}_f">${label} von</label><input type="time" id="rh_${k}_f" value="09:00" aria-label="${label} Öffnungszeit von"><span class="reg-time-dash" aria-hidden="true">–</span><label class="sr-only" for="rh_${k}_t">${label} bis</label><input type="time" id="rh_${k}_t" value="19:00" aria-label="${label} Öffnungszeit bis"></div><button type="button" class="reg-break-toggle" onclick="toggleRegBreak(this,'${k}')" style="font-size:.72rem;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;margin-left:6px">+ Pause</button></div>`).join('');
     grid.dataset.built='1';
   }
   // Populate parent store dropdown
@@ -7604,7 +7601,7 @@ function renderSalonSetupPage(){
   const target=document.getElementById('setupPageContent');
   if(!target)return;
   const isWelcome=_setupIsWelcome;
-  const headingTxt=isWelcome?'Willkommen! Möchtest du dein Profil einrichten?':'Profil bearbeiten';
+  const headingTxt=isWelcome?'Willkommen! Mochtest du dein Profil einrichten?':'Profil bearbeiten';
   const titleTxt=isWelcome?'Profil einrichten':'Profil bearbeiten';
   const prefs=currentProfile?.preferred_services||[];
   const chips=['Haarschnitt','Färben','Styling','Bartpflege','Nägel','Hautpflege','Massage','Make-up','Augenbrauen'];
@@ -7689,7 +7686,7 @@ async function renderStaffPage(){
   const salonId=_currentDashSalonId;
   // Staff section (store_staff table)
   const{data,error}=await sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name');
-  let staffHtml='<div class="dash-section-hd" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h3>Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div>';
+  let staffHtml='<div class="dash-section-hd" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h3>Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufugen</button></div>';
   if(!error&&data&&data.length>0){
     staffHtml+='<div class="staff-grid">'+data.map(m=>{
       const initials=m.name.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
@@ -7907,11 +7904,11 @@ function renderBPStep(step){
     const _egalSel=!bmState.staffId;
     html+=`<div class="stylist-picker-section">
       <h4 class="stylist-picker-title">Wer schneidet? <span style="font-size:.74rem;font-weight:400;color:var(--text2);margin-left:5px">optional</span></h4>
-      <p class="stylist-picker-sub">Wähle deinen Wunsch-Stylisten – oder lass uns den Besten für dich auswählen.</p>
+      <p class="stylist-picker-sub">Wähle deinen Wunsch-Stylisten – oder lass uns den Besten fur dich auswählen.</p>
       <div class="stylist-card-grid" id="stylistPickerCards">
         <div class="stylist-card${_egalSel?' selected':''}" onclick="selectStylistCard(null,null,this)">
           <div class="sc-photo"><div class="sc-photo-placeholder" style="background:linear-gradient(135deg,#9B1D30,#c4384d)">✂</div></div>
-          <div class="sc-body"><div class="sc-name">Egal</div><div class="sc-stars">★★★★★</div><div class="sc-count">Bester Verfügbarer</div></div>
+          <div class="sc-body"><div class="sc-name">Egal</div><div class="sc-stars">★★★★★</div><div class="sc-count">Bester Verfugbarer</div></div>
           <span class="sc-badge">Empfohlen</span>
         </div>
       </div>
@@ -7923,13 +7920,13 @@ function renderBPStep(step){
     let html=`<h3 class="bp-step-title">Datum &amp; Zeit</h3>`;
     // Stylist-specific banner
     if(bmState.staffId&&bmState.staffName){
-      html+=`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(45,122,79,.08);border:1.5px solid rgba(45,122,79,.3);border-radius:var(--r);margin-bottom:16px;font-size:.85rem;color:var(--c-success)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Zeige Verfügbarkeit von <strong>${bmState.staffName}</strong></span></div>`;
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(45,122,79,.08);border:1.5px solid rgba(45,122,79,.3);border-radius:var(--r);margin-bottom:16px;font-size:.85rem;color:var(--c-success)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Zeige Verfugbarkeit von <strong>${bmState.staffName}</strong></span></div>`;
     }
     // Inline calendar with availability dots
     html+=renderBmCal();
     // Loading indicator while availability is being fetched
     if(!bmState.availLoaded){
-      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:16px;height:16px;border-width:2px;flex-shrink:0"></div><span style="font-size:.82rem">Verfügbarkeit wird geladen…</span></div>`;
+      html+=`<div class="bp-slots-loading"><div class="spinner" style="width:16px;height:16px;border-width:2px;flex-shrink:0"></div><span style="font-size:.82rem">Verfugbarkeit wird geladen…</span></div>`;
     }
     // Time slots (duration auto-calculated from service + add-ons)
     html+=renderBmTimeSlots();
@@ -7971,7 +7968,7 @@ function renderBPStep(step){
     </div>
     <div class="form-row">
       <div class="form-group"><label>E-Mail</label><input class="form-input" id="bmGuestEmail" value="${bmState.guestEmail||''}" type="email" placeholder="E-Mail"></div>
-      <div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes||''}" placeholder="Besondere Wünsche"></div>
+      <div class="form-group"><label>Notizen</label><input class="form-input" id="bmNotes" value="${bmState.notes||''}" placeholder="Besondere Wunsche"></div>
     </div>`;
     html+=`<div class="form-group" style="margin-bottom:14px">
       <label style="font-size:.85rem;font-weight:700;margin-bottom:8px;display:block">Besuchstyp</label>
@@ -7987,7 +7984,7 @@ function renderBPStep(step){
       <label style="display:flex;align-items:center;gap:8px;font-size:.88rem;cursor:pointer;font-weight:600;margin-bottom:${bmState.isRecurring?'10px':'0'}"><input type="checkbox" id="bmRecurring" ${bmState.isRecurring?'checked':''} onchange="bmState.isRecurring=this.checked;renderBPStep(3)"> Wiederkehrender Termin</label>
       ${bmState.isRecurring?`<div style="display:flex;gap:12px;flex-wrap:wrap">
         <div class="form-group" style="flex:1;min-width:120px"><label style="font-size:.8rem">Intervall</label><select class="form-input" style="font-size:.85rem" onchange="bmState.recurrenceWeeks=+this.value">
-          <option value="1" ${bmState.recurrenceWeeks===1?'selected':''}>Wöchentlich</option>
+          <option value="1" ${bmState.recurrenceWeeks===1?'selected':''}>Wochentlich</option>
           <option value="2" ${bmState.recurrenceWeeks===2?'selected':''}>Alle 2 Wochen</option>
           <option value="4" ${bmState.recurrenceWeeks===4?'selected':''}>Monatlich</option>
         </select></div>
@@ -8019,7 +8016,7 @@ async function renderProfile(){
   const hairInfo=[p.hair_type,p.hair_length,p.hair_thickness,p.hair_condition].filter(Boolean);
   const prefs=p.preferred_services||[];
   const isSalonOwner=!!(p.role==='salon_owner'||p.is_salon_owner);
-  const langMap={de:'Deutsch',en:'English',fr:'Français',tr:'Türkçe'};
+  const langMap={de:'Deutsch',en:'English',fr:'Francais',tr:'Turkce'};
   const userLang=langMap[p.preferred_language||currentLang]||(p.preferred_language||'–');
   const el=document.getElementById('profileContent');
   el.textContent='';
@@ -8841,7 +8838,7 @@ async function loadAdminStores(){
   const stores=data||[];
   const pendingSalons=(salons||[]).filter(s=>s.status==='pending');
   const approvedSalons=(salons||[]).filter(s=>s.status!=='pending');
-  let html=`<button class="add-btn" onclick="openEditStore(null)">+ Salon hinzufügen</button>`;
+  let html=`<button class="add-btn" onclick="openEditStore(null)">+ Salon hinzufugen</button>`;
   if(pendingSalons.length){
     html+=`<h3 style="margin:20px 0 12px;font-size:1rem;font-weight:700;color:var(--accent)">Ausstehende Genehmigungen (${pendingSalons.length})</h3>`;
     html+=`<div class="table-wrap"><table class="data-table">
@@ -8867,7 +8864,7 @@ async function loadAdminStores(){
         <td>${s.address||'—'}</td>
         <td style="display:flex;gap:8px">
           <button class="btn-sm" onclick="openEditStore('${s.id}')">Bearbeiten</button>
-          <button class="btn-danger" onclick="deleteStore('${s.id}','${s.name.replace(/'/g,"\\'")}')">Löschen</button>
+          <button class="btn-danger" onclick="deleteStore('${s.id}','${s.name.replace(/'/g,"\\'")}')">Loschen</button>
         </td>
       </tr>`).join('')}</tbody>
     </table></div>`:'<p class="text-muted">Keine Stores.</p>';
@@ -8881,7 +8878,7 @@ async function loadAdminStores(){
         <td>${s.address||'—'}</td>
         <td><span class="booking-status status-confirmed">${s.status}</span></td>
         <td style="display:flex;gap:8px">
-          <button class="btn-danger" onclick="deleteSalon('${s.id}','${s.name.replace(/'/g,"\\'")}')">Löschen</button>
+          <button class="btn-danger" onclick="deleteSalon('${s.id}','${s.name.replace(/'/g,"\\'")}')">Loschen</button>
         </td>
       </tr>`).join('')}</tbody>
     </table></div>`;
@@ -8900,10 +8897,10 @@ async function rejectSalon(id){
   else{toast('Salon abgelehnt.','info');loadAdminStores();}
 }
 async function deleteSalon(id,name){
-  if(!confirm('Salon "'+name+'" wirklich löschen?'))return;
+  if(!confirm('Salon "'+name+'" wirklich loschen?'))return;
   const{error}=await sb.from('salons').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Salon gelöscht.','info');loadAdminStores();loadStores();}
+  else{toast('Salon geloscht.','info');loadAdminStores();loadStores();}
 }
 
 async function loadAdminServices(){
@@ -8912,7 +8909,7 @@ async function loadAdminServices(){
   const{data:stores}=await sb.from('stores').select('id,name').order('name');
   const{data:svcs}=await sb.from('services').select('*,stores(name)').order('name');
   el.innerHTML=`
-    <button class="add-btn" onclick="openAddService()">+ Service hinzufügen</button>
+    <button class="add-btn" onclick="openAddService()">+ Service hinzufugen</button>
     ${svcs&&svcs.length?`<div class="table-wrap"><table class="data-table">
       <thead><tr><th>Name</th><th>Salon</th><th>Preis</th><th>Dauer</th><th>Aktionen</th></tr></thead>
       <tbody>${svcs.map(s=>`<tr>
@@ -8920,7 +8917,7 @@ async function loadAdminServices(){
         <td>${s.stores?.name||'—'}</td>
         <td>CHF ${s.price}</td>
         <td>${s.duration} Min.</td>
-        <td><button class="btn-danger" onclick="deleteService('${s.id}')">Löschen</button></td>
+        <td><button class="btn-danger" onclick="deleteService('${s.id}')">Loschen</button></td>
       </tr>`).join('')}</tbody>
     </table></div>`:'<p class="text-muted" style="margin-top:20px">Noch keine Services in der Datenbank.</p>'}`;
 }
@@ -8987,9 +8984,9 @@ async function loadAdminUsers(){
       <td><strong>${u.display_name||u.name||'—'}</strong><br><span style="font-size:.75rem;color:var(--muted)">${u.id.substring(0,8)}...</span></td>
       <td><span class="badge" style="background:${u.role==='salon_owner'?'var(--accent2)':u.is_admin?'var(--accent)':'var(--surfaceAlt)'};color:${u.role==='salon_owner'||u.is_admin?'white':'var(--text)'};padding:3px 10px;border-radius:50px;font-size:.75rem">${u.is_admin?'Admin':u.role||'customer'}</span></td>
       <td>${regDate}</td>
-      <td><button class="btn-danger" onclick="deleteProfile('${u.id}','${(u.display_name||u.name||'').replace(/'/g,"\\'")}')">Löschen</button></td>
+      <td><button class="btn-danger" onclick="deleteProfile('${u.id}','${(u.display_name||u.name||'').replace(/'/g,"\\'")}')">Loschen</button></td>
     </tr>`;}).join('')}</tbody>
-  </table></div>`:'<p class="text-muted" style="margin-top:20px">Tabelle user_profiles nicht gefunden. Bitte SQL in Supabase ausführen (siehe Quellcode-Kommentar).</p>';
+  </table></div>`:'<p class="text-muted" style="margin-top:20px">Tabelle user_profiles nicht gefunden. Bitte SQL in Supabase ausfuhren (siehe Quellcode-Kommentar).</p>';
   }
   el.innerHTML=html;
 }
@@ -9000,10 +8997,10 @@ async function toggleBanUser(userId,ban){
 }
 
 async function deleteProfile(id,name){
-  if(!confirm('Profil von "'+name+'" wirklich löschen? (Nur Profildaten, nicht der Auth-Account)'))return;
+  if(!confirm('Profil von "'+name+'" wirklich loschen? (Nur Profildaten, nicht der Auth-Account)'))return;
   const{error}=await sb.from('profiles').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Profil gelöscht.','info');loadAdminUsers();}
+  else{toast('Profil geloscht.','info');loadAdminUsers();}
 }
 
 // EDIT STORE MODAL
@@ -9014,7 +9011,7 @@ async function openEditStore(storeId){
     const{data}=await sb.from('stores').select('*').eq('id',storeId).single();
     if(data)s=data;
   }
-  document.getElementById('editStoreTitle').textContent=storeId?'Salon bearbeiten':'Salon hinzufügen';
+  document.getElementById('editStoreTitle').textContent=storeId?'Salon bearbeiten':'Salon hinzufugen';
   document.getElementById('editStoreBody').innerHTML=`
     <div class="form-group"><label for="esName">Name</label><input class="form-input" id="esName" value="${s.name||''}"></div>
     <div class="form-group"><label for="esType">Typ</label>
@@ -9048,10 +9045,10 @@ async function saveStore(){
 }
 
 async function deleteStore(id,name){
-  if(!confirm(`Salon "${name}" wirklich löschen?`))return;
+  if(!confirm(`Salon "${name}" wirklich loschen?`))return;
   const{error}=await sb.from('stores').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Salon gelöscht.','info');loadStores();loadAdminTab('adminStores');}
+  else{toast('Salon geloscht.','info');loadStores();loadAdminTab('adminStores');}
 }
 
 async function cancelBooking(id){
@@ -9084,7 +9081,7 @@ async function saveEditBooking(){
 }
 
 function openAddService(){
-  document.getElementById('editStoreTitle').textContent='Service hinzufügen';
+  document.getElementById('editStoreTitle').textContent='Service hinzufugen';
   sb.from('stores').select('id,name').order('name').then(({data})=>{
     document.getElementById('editStoreBody').innerHTML=`
       <div class="form-group"><label for="asStoreId">Salon</label>
@@ -9123,10 +9120,10 @@ async function saveService(){
 }
 
 async function deleteService(id){
-  if(!confirm('Diesen Service wirklich löschen?'))return;
+  if(!confirm('Diesen Service wirklich loschen?'))return;
   const{error}=await sb.from('services').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
-  else{toast('Service gelöscht.','info');loadAdminTab('adminServices');}
+  else{toast('Service geloscht.','info');loadAdminTab('adminServices');}
 }
 
 // SALON OWNER DASHBOARD
@@ -9134,7 +9131,7 @@ async function renderSalonDashboard(){
   const el=document.getElementById('salonDashContent');
   if(!currentUser){el.innerHTML='<p class="text-muted">'+(t('auth_required')||'Bitte anmelden.')+'</p>';return;}
   var _salonOwner=!!(currentProfile&&(currentProfile.role==='salon_owner'||currentProfile.is_salon_owner));
-  if(!_salonOwner){el.innerHTML='<p class="text-muted">'+(t('owner_only')||'Nur für Salon-Inhaber.')+'</p>';return;}
+  if(!_salonOwner){el.innerHTML='<p class="text-muted">'+(t('owner_only')||'Nur fur Salon-Inhaber.')+'</p>';return;}
   el.innerHTML='<div class="spinner"></div>';
   const{data:mySalons}=await sb.from('salons').select('*').eq('owner_id',currentUser.id);
   if(!mySalons||mySalons.length===0){
@@ -9143,7 +9140,7 @@ async function renderSalonDashboard(){
     if(!myStores||myStores.length===0){
       el.innerHTML=`<div class="profile-card">
         <h3 style="margin-bottom:4px">Salon-Profil erstellen</h3>
-        <p style="color:var(--muted);font-size:.9rem;margin-bottom:20px">Trage deinen Salon ein, damit Kunden dich finden können.</p>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:20px">Trage deinen Salon ein, damit Kunden dich finden konnen.</p>
         <form id="salonProfileForm" onsubmit="submitSalonProfile(event)" novalidate>
           <div class="form-group"><label>Salonname (Pflichtfeld)</label><input class="form-input" id="sp_name" placeholder="z.B. Studio Bella" required></div>
           <div class="form-group"><label>Kategorie (Pflichtfeld)</label>
@@ -9303,7 +9300,7 @@ async function createLastMinuteOffer(salonId){
   const expiresAt=new Date(timeEl.value);expiresAt.setMinutes(expiresAt.getMinutes()+30);
   const{error}=await sb.from('last_minute_offers').insert({store_id:salonId,service_id:svcId,service_name:svcName,start_time:startTime,expires_at:expiresAt.toISOString(),created_at:new Date().toISOString()});
   if(error){toast('Fehler: '+error.message,'error');return;}
-  toast('Last Minute Angebot veröffentlicht! ⚡','success');
+  toast('Last Minute Angebot veroffentlicht! ⚡','success');
   renderLastMinuteOfferPanel(salonId);
   renderLastMinute();
 }
@@ -9482,11 +9479,11 @@ const SVCTEAM_HERREN=[
   {key:'h_skinfade',name:'Skin Fade',duration:40,price:50},
 ];
 const SVCTEAM_DAMEN=[
-  {key:'d_waschen',name:'Waschen & Föhnen',duration:45,price:45},
+  {key:'d_waschen',name:'Waschen & Fohnen',duration:45,price:45},
   {key:'d_schnitt',name:'Damenschnitt',duration:60,price:65},
   {key:'d_balayage',name:'Balayage',duration:150,price:180},
   {key:'d_highlights',name:'Highlights / Strähnen',duration:120,price:150},
-  {key:'d_coloration',name:'Tönung / Coloration',duration:90,price:90},
+  {key:'d_coloration',name:'Tonung / Coloration',duration:90,price:90},
   {key:'d_dauerwelle',name:'Dauerwelle',duration:120,price:120},
   {key:'d_keratin',name:'Keratin-Behandlung',duration:180,price:200},
   {key:'d_hochsteck',name:'Hochsteckfrisur',duration:60,price:80},
@@ -9556,7 +9553,7 @@ async function addSvcTeamStylist(salonId) {
   const bookable=document.getElementById('svcteamBookable')?.checked!==false;
   const {error}=await sb.from('store_staff').insert([{store_id:salonId,name,role:role||null,photo_url:photo||null,specialties:spec||null,bookable,active:true}]);
   if(error){toast('Fehler: '+error.message,'error');return;}
-  toast('Stylist hinzugefügt','success');
+  toast('Stylist hinzugefugt','success');
   renderServicesTeamTab(salonId);
 }
 
@@ -9940,7 +9937,7 @@ function renderBookingModal(){
         <textarea class="form-input" id="reviewComment_pbr_${reviewSalonId}" rows="2" placeholder="Wie war dein Besuch?" style="margin-bottom:8px;font-size:.88rem"></textarea>
         <label class="review-photo-label" style="font-size:.82rem;margin-bottom:8px;display:block">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          Foto hinzufügen (optional)
+          Foto hinzufugen (optional)
           <input type="file" id="reviewPhoto_pbr_${reviewSalonId}" accept="image/*" style="display:none" onchange="previewReviewPhoto('pbr_${reviewSalonId}')">
         </label>
         <div id="reviewPhotoPreview_pbr_${reviewSalonId}" style="margin-bottom:8px"></div>
@@ -9986,7 +9983,7 @@ function renderBookingModal(){
     html+=`<div class="bm-confirm-row"><span class="lbl">Uhrzeit</span><span class="val">${bmState.time} Uhr</span></div>`;
     if(durMin)html+=`<div class="bm-confirm-row"><span class="lbl">Dauer</span><span class="val">${durMin} Min.</span></div>`;
     if(bmState.staffName)html+=`<div class="bm-confirm-row"><span class="lbl">Stylist</span><span class="val">${bmState.staffName}</span></div>`;
-    if(_confirmFee>0)html+=`<div class="bm-confirm-row"><span class="lbl" style="color:var(--c-success)">Stylist-Auswahlgebühr</span><span class="val" style="color:var(--c-success)">CHF ${_confirmFee % 1===0?_confirmFee:_confirmFee.toFixed(2)} <small style="color:var(--c-text-muted);font-size:.75rem;font-weight:400">– wird später abgerechnet</small></span></div>`;
+    if(_confirmFee>0)html+=`<div class="bm-confirm-row"><span class="lbl" style="color:var(--c-success)">Stylist-Auswahlgebuhr</span><span class="val" style="color:var(--c-success)">CHF ${_confirmFee % 1===0?_confirmFee:_confirmFee.toFixed(2)} <small style="color:var(--c-text-muted);font-size:.75rem;font-weight:400">– wird später abgerechnet</small></span></div>`;
     html+=`<div class="bm-confirm-row"><span class="lbl">Name</span><span class="val">${bmState.guestName}</span></div>`;
     html+=`<div class="bm-confirm-row"><span class="lbl">Telefon</span><span class="val">${bmState.guestPhone}</span></div>`;
     if(bmState.guestEmail)html+=`<div class="bm-confirm-row"><span class="lbl">E-Mail</span><span class="val">${bmState.guestEmail}</span></div>`;
@@ -10000,7 +9997,7 @@ function renderBookingModal(){
     html+=`<button class="btn-book-glass" onclick="insertBooking()">Termin jetzt buchen</button>`;
     // 5. Cancellation policy
     html+=`<p class="bm-cancel-policy">&#128274; ${cancelPolicy}</p>`;
-    html+=`<button class="btn-secondary" style="width:100%;margin-top:12px;min-height:40px;font-size:.88rem" onclick="bmState.step='service';renderBookingModal()">&#8592; Zurück bearbeiten</button>`;
+    html+=`<button class="btn-secondary" style="width:100%;margin-top:12px;min-height:40px;font-size:.88rem" onclick="bmState.step='service';renderBookingModal()">&#8592; Zuruck bearbeiten</button>`;
     html+=`</div>`;
     _bmBody().innerHTML=html;
     return;
@@ -10035,7 +10032,7 @@ function renderBookingModal(){
       html+=`<div class="bm-haircut-tabs"><button class="bm-haircut-tab${_tab==='herren'?' active':''}" onclick="bmSetHaircutTab('herren')">✂ Herren</button><button class="bm-haircut-tab${_tab==='damen'?' active':''}" onclick="bmSetHaircutTab('damen')">✂ Damen</button></div>`;
       if(bmState.haircutTabFromProfile){html+=`<p class="bm-haircut-tab-hint">Basierend auf deinem Profil – du kannst jederzeit wechseln</p>`;}
       // Filter services by active tab; neutral services (no gender keyword) show in both tabs
-      const _filteredSvcs=svcs.filter(sv=>{const n=sv.name.toLowerCase();const _isH=n.includes('herren')||n.includes('bart')||n.includes('rasur')||n.includes('männer');const _isD=n.includes('damen')||n.includes('farb')||n.includes('color')||n.includes('balayage')||n.includes('tönung')||n.includes('highlights')||n.includes('strähnen');if(_tab==='herren')return _isH||!_isD;return _isD||!_isH;});
+      const _filteredSvcs=svcs.filter(sv=>{const n=sv.name.toLowerCase();const _isH=n.includes('herren')||n.includes('bart')||n.includes('rasur')||n.includes('männer');const _isD=n.includes('damen')||n.includes('farb')||n.includes('color')||n.includes('balayage')||n.includes('tonung')||n.includes('highlights')||n.includes('strähnen');if(_tab==='herren')return _isH||!_isD;return _isD||!_isH;});
       const _displaySvcs=_filteredSvcs.length?_filteredSvcs:svcs;
       html+=`<div class="bm-service-grid">${_displaySvcs.map(sv=>`<div class="bm-svc-card ${bmState.service?.id===sv.id?'selected':''}" onclick="bmSelectService('${sv.id}')"><div class="svc-name" data-de="${sv.name.replace(/"/g,'&quot;')}">${sv.name}</div><div class="svc-price">CHF ${sv.price}</div></div>`).join('')}</div>`;
     } else {
@@ -10058,14 +10055,14 @@ function renderBookingModal(){
   const egalSelected=!bmState.staffId;
   html+=`<div class="stylist-picker-section">
     <h4 class="stylist-picker-title">Wer schneidet? <span style="font-size:.74rem;font-weight:400;color:var(--text2);margin-left:5px">optional</span></h4>
-    <p class="stylist-picker-sub">Wähle deinen Wunsch-Stylisten – oder lass uns den Besten für dich auswählen.</p>
+    <p class="stylist-picker-sub">Wähle deinen Wunsch-Stylisten – oder lass uns den Besten fur dich auswählen.</p>
     <div class="stylist-card-grid" id="stylistPickerCards">
       <div class="stylist-card${egalSelected?' selected':''}" onclick="selectStylistCard(null,null,this,0)">
         <div class="sc-photo"><div class="sc-photo-placeholder" style="background:linear-gradient(135deg,#9B1D30,#c4384d)">✂</div></div>
         <div class="sc-body">
           <div class="sc-name">Egal</div>
           <div class="sc-stars">★★★★★</div>
-          <div class="sc-count">Bester Verfügbarer</div>
+          <div class="sc-count">Bester Verfugbarer</div>
         </div>
         <span class="sc-badge">Empfohlen</span>
       </div>
@@ -10114,7 +10111,7 @@ function renderBookingModal(){
   if(_isHairStore&&bmState.activeHaircutTab)html+=`<div class="row"><span>Kategorie</span><span>${bmState.activeHaircutTab==='damen'?'Damen':'Herren'}</span></div>`;
   html+=`<div class="row"><span>Datum</span><span>${bmState.date?formatDate(bmState.date):'-'}</span></div>`;
   html+=`<div class="row"><span>Uhrzeit</span><span>${bmState.time||'-'}</span></div>`;
-  html+=`<div class="row" id="summaryStylstRow"><span>Stylist</span><span id="summaryStylstVal">${bmState.staffName||'Bester Verfügbarer'}</span></div>`;
+  html+=`<div class="row" id="summaryStylstRow"><span>Stylist</span><span id="summaryStylstVal">${bmState.staffName||'Bester Verfugbarer'}</span></div>`;
   html+=`<div class="row"><span>Adresse</span><span>${s.address||'Basel'}</span></div>`;
   html+=`<div class="row"><span>Stornierung</span><span>${s.cancellation_policy||'24h Stornierungsfrist'}</span></div>`;
   html+=`</div>`;
@@ -10443,7 +10440,7 @@ function renderReviewsSection(salonId,reviews){
   let html=`<div class="reviews-section"><div class="section-hd"><h3>Das sagen Kunden (${totalCount})</h3><button class="btn-sm" onclick="toggleReviewForm('${salonId}')">${t('write_review')}</button></div>`;
   html+=`<div id="reviewForm_${salonId}" class="hidden"><div class="review-form"><div class="star-input" id="starInput_${salonId}">`;
   for(let i=1;i<=5;i++) html+=`<span onclick="setReviewStar('${salonId}',${i})" data-star="${i}" style="cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline;vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>`;
-  html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Wie war dein Besuch?"></textarea></div><div class="form-group"><label class="review-photo-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Foto hinzufügen (optional)<input type="file" id="reviewPhoto_${salonId}" accept="image/*" style="display:none" onchange="previewReviewPhoto('${salonId}')"></label><div id="reviewPhotoPreview_${salonId}" style="margin-top:6px"></div></div><button class="btn-primary" onclick="submitReview('${salonId}')">Bewertung abgeben</button></div></div>`;
+  html+=`</div><div class="form-group"><input class="form-input" id="reviewName_${salonId}" placeholder="Dein Name" value="${currentProfile?.display_name||''}"></div><div class="form-group"><textarea class="form-input" id="reviewComment_${salonId}" rows="2" placeholder="Wie war dein Besuch?"></textarea></div><div class="form-group"><label class="review-photo-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Foto hinzufugen (optional)<input type="file" id="reviewPhoto_${salonId}" accept="image/*" style="display:none" onchange="previewReviewPhoto('${salonId}')"></label><div id="reviewPhotoPreview_${salonId}" style="margin-top:6px"></div></div><button class="btn-primary" onclick="submitReview('${salonId}')">Bewertung abgeben</button></div></div>`;
   manualReviews.forEach(r=>{html+=renderReviewCard(r,salonId);});
   if(googleReviews.length){
     html+=`<div class="google-reviews-divider"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="vertical-align:middle;margin-right:6px"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google Bewertungen</div>`;
@@ -10528,7 +10525,7 @@ async function submitPostBookingReview(salonId,bookingId){
   const store=allStores.find(s=>String(s.id)===String(salonId));
   if(store){const rc=(parseInt(store.review_count)||0)+1;const ar=((parseFloat(store.avg_rating)||0)*(rc-1)+rating)/rc;store.review_count=rc;store.avg_rating=ar;}
   const box=document.getElementById('postBookingReview');
-  if(box)box.innerHTML='<div style="text-align:center;padding:16px 0"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><p style="margin:8px 0 0;font-weight:700">Danke für deine Bewertung!</p></div>';
+  if(box)box.innerHTML='<div style="text-align:center;padding:16px 0"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><p style="margin:8px 0 0;font-weight:700">Danke fur deine Bewertung!</p></div>';
   toast('Bewertung gespeichert!','success');
 }
 
@@ -10592,7 +10589,7 @@ document.getElementById('bookingModal')?.addEventListener('click',e=>{if(e.targe
 </div>
 
 <!-- PROFILE EDIT MODAL -->
-<div id="profileEditModal" role="dialog" aria-modal="true" aria-label="Profil bearbeiten" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:10000;overflow-y:auto"
+<div id="profileEditModal" role="dialog" aria-modal="true" aria-label="Profil bearbeiten" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:10000;overflow-y:auto">
 <div style="max-width:480px;margin:40px auto;background:var(--card);border-radius:20px;padding:32px;position:relative">
 <button onclick="closeProfileModal()" style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-muted);width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%">x</button>
 <div style="text-align:center;margin-bottom:24px"><div id="profileAvatar" style="width:72px;height:72px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;margin-bottom:8px">S</div><h2 style="margin:0;font-size:20px;color:var(--text)">Mein Profil</h2></div>
@@ -10797,7 +10794,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           <p class="step-hint" data-i18n="reg_step2_hint">Schritt 2 von 5: Standort und Online-Präsenz</p>
           <div class="reg-field" id="field_reg_street"><label for="reg_street">Strasse &amp; Hausnummer (Pflichtfeld)</label><input type="text" id="reg_street" placeholder="Hauptstrasse 12" autocomplete="street-address" aria-describedby="err_reg_street"><div class="reg-field-error" id="err_reg_street" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte Strasse eingeben.</div></div>
           <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px">
-            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" autocomplete="postal-code"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gültige PLZ eingeben.</div></div>
+            <div class="reg-field" id="field_reg_plz"><label for="reg_plz" data-i18n="lbl_plz">PLZ (Pflichtfeld)</label><input type="text" id="reg_plz" placeholder="4000" maxlength="4" inputmode="numeric" autocomplete="postal-code"><div class="reg-field-error" id="err_reg_plz" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Bitte gultige PLZ eingeben.</div></div>
             <div class="reg-field" id="field_reg_ort"><label for="reg_ort" data-i18n="lbl_ort">Ort</label><input type="text" id="reg_ort" placeholder="Basel" readonly style="background:var(--surfaceAlt);opacity:.7"></div>
           </div>
           <div class="reg-field" id="field_reg_nb"><label for="reg_nb">Quartier (Pflichtfeld)</label>
@@ -10818,7 +10815,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           <div class="reg-field"><label for="reg_fb">Facebook</label><input type="text" id="reg_fb" placeholder="https://facebook.com/meinsalon" autocomplete="off"></div>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zurück</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(2)">← Zuruck</button>
           <button type="button" class="reg-btn-next" onclick="regNext(2)">Weiter →</button>
         </div>
       </div>
@@ -10826,7 +10823,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="reg-step" id="regStep3">
         <div class="salon-reg-body">
           <p class="step-hint" data-i18n="reg_step3_hint">Schritt 3 von 5: Deine Services</p>
-          <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Trage mindestens einen Service ein, den du anbietest. Du kannst später weitere hinzufügen.</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Trage mindestens einen Service ein, den du anbietest. Du kannst später weitere hinzufugen.</p>
           <div id="regServicesContainer">
             <div class="reg-service-row" data-idx="0">
               <div class="reg-field" style="flex:2"><label>Service-Name</label><input type="text" class="reg-svc-name" placeholder="z.B. Herrenschnitt"></div>
@@ -10834,10 +10831,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
               <div class="reg-field" style="flex:1"><label>Dauer (Min.)</label><input type="number" class="reg-svc-dur" placeholder="30" min="5"></div>
             </div>
           </div>
-          <button type="button" onclick="regAddServiceRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px">+ Weiteren Service hinzufügen</button>
+          <button type="button" onclick="regAddServiceRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px">+ Weiteren Service hinzufugen</button>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zurück</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(3)">← Zuruck</button>
           <button type="button" class="reg-btn-next" onclick="regNext(3)">Weiter →</button>
         </div>
       </div>
@@ -10845,12 +10842,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
       <div class="reg-step" id="regStep4">
         <div class="salon-reg-body">
           <p class="step-hint" data-i18n="reg_step4_hint">Schritt 4 von 5: Dein Team</p>
-          <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px" data-i18n="reg_team_hint">Füge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:14px" data-i18n="reg_team_hint">Fuge dein Team hinzu. Du kannst später jederzeit Mitarbeiter ändern.</p>
           <div id="regStaffContainer"></div>
-          <button type="button" onclick="regAddStaffRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px" data-i18n="reg_add_staff">+ Mitarbeiter hinzufügen</button>
+          <button type="button" onclick="regAddStaffRow()" style="font-size:.82rem;background:none;border:1.5px dashed var(--border2);color:var(--text2);padding:12px 16px;border-radius:var(--r);cursor:pointer;margin-top:8px;width:100%;min-height:44px" data-i18n="reg_add_staff">+ Mitarbeiter hinzufugen</button>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(4)">← Zurück</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(4)">← Zuruck</button>
           <button type="button" class="reg-btn-next" onclick="regNext(4)">Weiter →</button>
         </div>
       </div>
@@ -10872,7 +10869,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent
           </div>
         </div>
         <div class="salon-reg-footer">
-          <button type="button" class="reg-btn-back" onclick="regPrev(5)">← Zurück</button>
+          <button type="button" class="reg-btn-back" onclick="regPrev(5)">← Zuruck</button>
           <button type="submit" class="reg-btn-next" id="regSubmitBtn"> Jetzt eintragen</button>
         </div>
       </div>
@@ -11305,7 +11302,7 @@ function regAddStaffRow(){
   const details=document.createElement('details');details.style.marginTop='8px';
   const summary=document.createElement('summary');
   summary.style.cssText='font-size:.82rem;font-weight:600;color:var(--text2);cursor:pointer';
-  summary.setAttribute('data-i18n','reg_staff_hours_toggle');summary.textContent='Verfügbarkeit festlegen';
+  summary.setAttribute('data-i18n','reg_staff_hours_toggle');summary.textContent='Verfugbarkeit festlegen';
   details.appendChild(summary);
   const hoursDiv=document.createElement('div');hoursDiv.className='reg-staff-hours';hoursDiv.style.marginTop='8px';
   details.appendChild(hoursDiv);
@@ -11321,7 +11318,7 @@ function renderRegStaffHours(container){
     const k=pair[0],label=pair[1];
     const row=document.createElement('div');row.className='reg-day-row';
     const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;
-    cb.setAttribute('aria-label',label+' verfügbar');
+    cb.setAttribute('aria-label',label+' verfugbar');
     cb.style.cssText='appearance:checkbox;-webkit-appearance:checkbox';
     row.appendChild(cb);
     const lbl=document.createElement('span');lbl.className='reg-day-lbl';lbl.textContent=k;
@@ -11352,7 +11349,7 @@ function toggleStaffBreak(btn){
     row.appendChild(breakDiv);btn.textContent='\u00d7 Pause';
   }
 }
-async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfüllen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,owner_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
+async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfullen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,owner_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
   e.preventDefault();
   solenTrack('partner_reg_submit',{});
@@ -11406,7 +11403,7 @@ async function submitSalonReg(e){
     document.getElementById('regSuccess').style.display='block';
     const ind=document.getElementById('regDraftIndicator');
     if(ind)ind.textContent='';
-    toast('Dein Salon wurde erfolgreich eingereicht! Wir prüfen deine Angaben.','success');
+    toast('Dein Salon wurde erfolgreich eingereicht! Wir prufen deine Angaben.','success');
   }catch(ex){
     console.error('Reg error:',ex);
     btn.classList.remove('loading');
@@ -11424,9 +11421,9 @@ async function submitSalonReg(e){
       regShowErrorSummary(['E-Mail-Fehler: '+(ex&&ex.message||msg)]);
     }else if(msg.includes('name')){
       regShowFieldError('field_reg_name');
-      regShowErrorSummary(['Salonname ungültig oder bereits vergeben.']);
+      regShowErrorSummary(['Salonname ungultig oder bereits vergeben.']);
     }else if(ex&&ex.code&&String(ex.code).startsWith('5')){
-      regShowErrorSummary(['Vorübergehendes Problem. Bitte erneut versuchen.']);
+      regShowErrorSummary(['Vorubergehendes Problem. Bitte erneut versuchen.']);
     }else{
       regShowErrorSummary(['Fehler beim Senden: '+(msg||'Unbekannter Fehler')+'. Bitte erneut versuchen.']);
     }
@@ -11438,11 +11435,11 @@ async function submitSalonReg(e){
 <!-- ADD STAFF MODAL -->
 <div id="addStaffMdl">
   <div class="asm-wrap">
-    <h3> Personal hinzufügen</h3>
+    <h3> Personal hinzufugen</h3>
     <form onsubmit="submitAddStaff(event)">
       <div class="asm-field">
         <label>Name (Pflichtfeld)</label>
-        <input id="asmName" type="text" required placeholder="z.B. Maria Müller">
+        <input id="asmName" type="text" required placeholder="z.B. Maria Muller">
       </div>
       <div class="asm-field">
         <label>Funktion / Rolle</label>
@@ -11455,7 +11452,7 @@ async function submitSalonReg(e){
       <input type="hidden" id="asmStoreId">
       <div class="asm-actions">
         <button type="button" class="btn-secondary btn-sm" onclick="closeAddStaffMdl()">Abbrechen</button>
-        <button type="submit" class="btn-primary btn-sm">Hinzufügen</button>
+        <button type="submit" class="btn-primary btn-sm">Hinzufugen</button>
       </div>
     </form>
   </div>
@@ -11474,7 +11471,7 @@ async function loadDashStaffSection(salonId){
   const sec=document.createElement('div');
   sec.id='dashStaffSection';
   sec.className='';
-  sec.innerHTML='<div class="dash-section-hd"><h3> Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufügen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
+  sec.innerHTML='<div class="dash-section-hd"><h3> Personal</h3><button class="btn-primary btn-sm" onclick="openAddStaffMdl()">+ Hinzufugen</button></div><div id="dashStaffGrid" class="staff-grid"><div class="spinner"></div></div>';
   el.appendChild(sec);
   const{data,error}=await sb.from('store_staff').select('*').eq('store_id',salonId).eq('active',true).order('name');
   const grid=document.getElementById('dashStaffGrid');
@@ -11512,7 +11509,7 @@ async function submitAddStaff(e){
   const{error}=await sb.from('store_staff').insert([{store_id:sId,name,role:role||null,photo_url:photo||null,active:true}]);
   if(error){toast('Fehler: '+error.message,'error');return;}
   closeAddStaffMdl();
-  toast('Personal hinzugefügt','success');
+  toast('Personal hinzugefugt','success');
   if(document.getElementById('pageDashboardStaff')?.classList.contains('active'))renderStaffPage();
   else loadDashStaffSection(sId);
 }
@@ -11623,7 +11620,7 @@ async function loadStaffPickerInBooking(storeId){
     <div class="sc-body">
       <div class="sc-name">Egal</div>
       <div class="sc-stars">★★★★★</div>
-      <div class="sc-count">Bester Verfügbarer</div>
+      <div class="sc-count">Bester Verfugbarer</div>
     </div>
     <span class="sc-badge">Empfohlen</span>
   </div>`;
@@ -11660,7 +11657,7 @@ function selectStylistCard(id,name,el,fee){
     }
   }
   const summaryVal=document.getElementById('summaryStylstVal');
-  if(summaryVal)summaryVal.textContent=name||'Bester Verfügbarer';
+  if(summaryVal)summaryVal.textContent=name||'Bester Verfugbarer';
   // When stylist changes, reset calendar state and show loading spinner
   if(String(prevId||'')!==String(id||'')){
     bmState.time='';
@@ -11707,7 +11704,7 @@ async function loadBookingAddons(storeId) {
 function _isHairService(svc) {
   if (!svc) return false;
   const n = (svc.name || '').toLowerCase();
-  return n.includes('haar') || n.includes('schnitt') || n.includes('cut') || n.includes('color') || n.includes('farb') || n.includes('blond') || n.includes('bleach') || n.includes('tönung') || n.includes('styling') || n.includes('coiffeur');
+  return n.includes('haar') || n.includes('schnitt') || n.includes('cut') || n.includes('color') || n.includes('farb') || n.includes('blond') || n.includes('bleach') || n.includes('tonung') || n.includes('styling') || n.includes('coiffeur');
 }
 
 function updateBookingSummary() {
@@ -11773,7 +11770,7 @@ function updateBookingSummary() {
     rows += `<div class="bk-sum-row"><span class="bk-sum-label">Stylist</span><span class="bk-sum-value">${staff}</span></div>`;
   }
   if (stylistFee > 0) {
-    rows += `<div class="bk-sum-row"><span class="bk-sum-label" style="color:var(--c-success)">Stylist-Auswahlgebühr</span><span class="bk-sum-value" style="color:var(--c-success)">+ CHF ${stylistFee % 1 === 0 ? stylistFee : stylistFee.toFixed(2)}</span></div>`;
+    rows += `<div class="bk-sum-row"><span class="bk-sum-label" style="color:var(--c-success)">Stylist-Auswahlgebuhr</span><span class="bk-sum-value" style="color:var(--c-success)">+ CHF ${stylistFee % 1 === 0 ? stylistFee : stylistFee.toFixed(2)}</span></div>`;
   }
   if (bleaching) {
     rows += `<div class="bk-sum-row"><span class="bk-sum-label">Bleaching</span><span class="bk-sum-value">+ CHF ${bleachPrice}</span></div>`;
@@ -12210,7 +12207,7 @@ function obValidateStep(step){
   if(step===1){
     const em=document.getElementById('obEmail');
     if(em&&em.value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value)){
-      errors.push('Ungültige E-Mail-Adresse');
+      errors.push('Ungultige E-Mail-Adresse');
       em.classList.add('ob-field-error');
     }
   }
@@ -12317,12 +12314,12 @@ function obAddressAutocomplete(q){
   if(q.length<3){box.classList.remove('open');return;}
   _obAddrTimer=setTimeout(()=>{
     // Simulated Swiss address suggestions
-    const cities=['Basel','Zürich','Bern','Luzern','Winterthur','St. Gallen','Lausanne','Biel','Thun','Köniz'];
+    const cities=['Basel','Zurich','Bern','Luzern','Winterthur','St. Gallen','Lausanne','Biel','Thun','Koniz'];
     const matches=[];
     const plzMatch=q.match(/^(\d{4})/);
     if(plzMatch){
       matches.push({text:plzMatch[1]+' Basel',street:'',plz:plzMatch[1],city:'Basel',canton:'BS'});
-      matches.push({text:plzMatch[1]+' Zürich',street:'',plz:plzMatch[1],city:'Zürich',canton:'ZH'});
+      matches.push({text:plzMatch[1]+' Zurich',street:'',plz:plzMatch[1],city:'Zurich',canton:'ZH'});
     }else{
       cities.filter(c=>c.toLowerCase().includes(q.toLowerCase())).forEach(c=>{
         matches.push({text:q.split(',')[0]+', '+c,street:q.split(',')[0],plz:'4000',city:c,canton:'BS'});
@@ -12368,7 +12365,7 @@ function obAddService(){
 function obRenderServicesList(){
   const el=document.getElementById('obServicesList');
   if(!el)return;
-  if(!obData.services.length){el.innerHTML='<p style="color:var(--muted);font-size:.88rem">Noch keine Services. Klicke "+ Service hinzufügen".</p>';return;}
+  if(!obData.services.length){el.innerHTML='<p style="color:var(--muted);font-size:.88rem">Noch keine Services. Klicke "+ Service hinzufugen".</p>';return;}
   el.innerHTML=obData.services.map((s,i)=>
     '<div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:end">'+
     '<div class="form-group" style="margin:0"><label style="font-size:.78rem">Name</label><input class="form-input" value="'+(s.name||'')+'" onchange="obData.services['+i+'].name=this.value" placeholder="z.B. Damenhaarschnitt"></div>'+
@@ -12388,7 +12385,7 @@ function obAddStaffCard(){
 function obRenderStaffGrid(){
   const el=document.getElementById('obStaffGrid');
   if(!el)return;
-  if(!obData.staff.length){el.innerHTML='<p style="color:var(--muted);font-size:.88rem">Noch keine Mitarbeiter. Klicke "+ Mitarbeiter hinzufügen".</p>';return;}
+  if(!obData.staff.length){el.innerHTML='<p style="color:var(--muted);font-size:.88rem">Noch keine Mitarbeiter. Klicke "+ Mitarbeiter hinzufugen".</p>';return;}
   el.innerHTML=obData.staff.map((s,i)=>
     '<div class="staff-setup-card">'+
     '<div class="staff-photo-upload" title="Foto wählen"><span style="font-size:1.5rem;color:var(--muted)"></span></div>'+
@@ -12693,7 +12690,7 @@ function exportAnalytics(format){
       const blob=new Blob([csv],{type:'text/csv'});
       const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='analytics.csv';a.click();
     }else{
-      toast('PDF-Export wird in einer zukünftigen Version unterstützt.','info');
+      toast('PDF-Export wird in einer zukunftigen Version unterstutzt.','info');
     }
   },500);
 }
@@ -12701,7 +12698,7 @@ function exportAnalytics(format){
 // ── NATIONWIDE SEARCH ──────────────────────────────────────────────
 const CH_CITIES=[
   {name:'Basel',canton:'BS',plz:'4000',lat:47.5596,lng:7.5886},
-  {name:'Zürich',canton:'ZH',plz:'8000',lat:47.3769,lng:8.5417},
+  {name:'Zurich',canton:'ZH',plz:'8000',lat:47.3769,lng:8.5417},
   {name:'Bern',canton:'BE',plz:'3000',lat:46.9480,lng:7.4474},
   {name:'Luzern',canton:'LU',plz:'6000',lat:47.0502,lng:8.3093},
   {name:'Lausanne',canton:'VD',plz:'1000',lat:46.5197,lng:6.6323},
@@ -12710,7 +12707,7 @@ const CH_CITIES=[
   {name:'Biel/Bienne',canton:'BE',plz:'2502',lat:47.1368,lng:7.2467},
   {name:'Thun',canton:'BE',plz:'3600',lat:46.7580,lng:7.6280},
   {name:'Aarau',canton:'AG',plz:'5000',lat:47.3925,lng:8.0444},
-  {name:'Köniz',canton:'BE',plz:'3098',lat:46.9209,lng:7.4145},
+  {name:'Koniz',canton:'BE',plz:'3098',lat:46.9209,lng:7.4145},
   {name:'Schaffhausen',canton:'SH',plz:'8200',lat:47.6960,lng:8.6362},
   {name:'Chur',canton:'GR',plz:'7000',lat:46.8499,lng:9.5329},
   {name:'Fribourg',canton:'FR',plz:'1700',lat:46.8065,lng:7.1620}
@@ -12903,7 +12900,7 @@ document.addEventListener('click',function(e){
         var hint = document.createElement('div');
         hint.id = 'mapViewHint';
         hint.className = 'map-view-hint active';
-        hint.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg><br>Kartenansicht demnächst verfügbar<br><small style="font-size:.8rem;margin-top:8px;display:block">Momentan werden alle Salons als Liste angezeigt.</small>';
+        hint.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg><br>Kartenansicht demnächst verfugbar<br><small style="font-size:.8rem;margin-top:8px;display:block">Momentan werden alle Salons als Liste angezeigt.</small>';
         if (grid && grid.parentNode) grid.parentNode.insertBefore(hint, grid.nextSibling);
       } else {
         mapHint.classList.add('active');
@@ -12950,7 +12947,7 @@ document.addEventListener('click',function(e){
       favQuartiers.push(quartier);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
       btn.classList.add('fav');
-      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefügt');
+      if (window.showToast) showToast(quartier + ' zu Favoriten hinzugefugt');
     } else {
       favQuartiers.splice(idx, 1);
       btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
@@ -13045,7 +13042,7 @@ document.addEventListener('click',function(e){
           if (c > 0) {
             el.textContent = c + (c === 1 ? ' Salon' : ' Salons');
           } else {
-            el.textContent = 'Bald verfügbar';
+            el.textContent = 'Bald verfugbar';
             el.style.fontStyle = 'italic';
             el.style.opacity = '0.8';
             var card = el.closest('.quartier-photo-card');
@@ -13116,7 +13113,7 @@ function clearSearch(){var inp=document.getElementById('searchNlp');if(inp)inp.v
 function executeSearch(){var q=(document.getElementById('searchNlp')||{}).value||'';q=q.toLowerCase().trim();var b=document.getElementById('searchSuggestions');if(b)b.classList.add('hidden');if(!q){if(window.renderStores)renderStores(window.allStores||[]);return;}var f=(window.allStores||[]).filter(function(s){var t=((s.name||'')+' '+(s.category||'')+' '+(s.neighbourhood||'')+' '+((s.services||[]).map(function(sv){return sv.name||sv;}).join(' '))).toLowerCase();return q.split(' ').every(function(w){return t.includes(w);});});if(window.renderStores)renderStores(f);}
 function scrollToHeroSearch(){showPage('home');setTimeout(function(){var el=document.querySelector('.hero-search')||document.getElementById('selectionMenu');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});var inp=el.querySelector('input');if(inp)inp.focus();}},200);}
 /* === GEO + MAP === */
-function geoLocateMe(){if(!navigator.geolocation){toast('Geolocation nicht verfügbar','error');return;}toast('Standort wird ermittelt…','info');navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude,lng=pos.coords.longitude;if(window._salonMap){window._salonMap.setView([lat,lng],14);L.circle([lat,lng],{radius:300,color:getComputedStyle(document.documentElement).getPropertyValue('--c-teal').trim()}).addTo(window._salonMap);}var nb=(window.allStores||[]).filter(function(s){return s.lat&&s.lng&&Math.hypot(s.lat-lat,s.lng-lng)<0.05;});if(window.renderStores&&nb.length)renderStores(nb);else toast('Keine Salons in deiner Nähe gefunden.','info');},function(){toast('Standort konnte nicht ermittelt werden','error');});}
+function geoLocateMe(){if(!navigator.geolocation){toast('Geolocation nicht verfugbar','error');return;}toast('Standort wird ermittelt…','info');navigator.geolocation.getCurrentPosition(function(pos){var lat=pos.coords.latitude,lng=pos.coords.longitude;if(window._salonMap){window._salonMap.setView([lat,lng],14);L.circle([lat,lng],{radius:300,color:getComputedStyle(document.documentElement).getPropertyValue('--c-teal').trim()}).addTo(window._salonMap);}var nb=(window.allStores||[]).filter(function(s){return s.lat&&s.lng&&Math.hypot(s.lat-lat,s.lng-lng)<0.05;});if(window.renderStores&&nb.length)renderStores(nb);else toast('Keine Salons in deiner Nähe gefunden.','info');},function(){toast('Standort konnte nicht ermittelt werden','error');});}
 function toggleMapView(){var el=document.getElementById('salonMap');if(!el)return;el.classList.toggle('hidden');if(!el.classList.contains('hidden'))initSalonMap();}
 function initSalonMap(){var el=document.getElementById('salonMap');if(!el||window._salonMap)return;window._salonMap=L.map('salonMap').setView([47.5596,7.5886],13);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00a9 OpenStreetMap'}).addTo(window._salonMap);updateMapMarkers(window.allStores||[]);}
 function updateMapMarkers(stores){if(!window._salonMap)return;(window._mapMarkers||[]).forEach(function(m){m.remove();});window._mapMarkers=[];(stores||[]).filter(function(s){return s.lat&&s.lng;}).forEach(function(s){var m=L.marker([s.lat,s.lng]).addTo(window._salonMap).bindPopup('<strong>'+s.name+'</strong><br>'+(s.category||''));window._mapMarkers.push(m);});}
@@ -13152,11 +13149,11 @@ function openLastChat(){var fab=document.getElementById('chatFab');if(fab)fab.cl
 function toggleChatSearch(){var bar=document.getElementById('chatSearchBar');if(bar)bar.classList.toggle('hidden');}
 function filterChatMessages(q){document.querySelectorAll('.chat-msg').forEach(function(m){var txt=(m.querySelector('.chat-bubble')||{}).textContent||'';m.style.display=txt.toLowerCase().includes(q.toLowerCase())?'':'none';});}
 function triggerChatMedia(){var inp=document.getElementById('chatMediaInput');if(inp)inp.click();}
-function uploadChatMedia(input){if(input&&input.files&&input.files[0])toast('Bild-Upload in Kürze verfügbar.','info');}
+function uploadChatMedia(input){if(input&&input.files&&input.files[0])toast('Bild-Upload in Kurze verfugbar.','info');}
 function openReportModal(msgId){window._reportMsgId=msgId;var m=document.getElementById('reportModal');if(m){m._triggerEl=document.activeElement;m.classList.remove('hidden');document.body.classList.add('modal-open');setTimeout(function(){trapFocus(m.querySelector('.report-inner')||m);},100);}}
 function closeReportModal(){var m=document.getElementById('reportModal');if(m){releaseFocus(m);m.classList.add('hidden');_checkModalOpen();}}
 async function submitReport(reason){if(window._reportMsgId&&window._sb)await window._sb.from('reports').insert([{message_id:window._reportMsgId,reason:reason}]);closeReportModal();toast('Gemeldet. Danke!','success');}
-function translateMsg(msgId){toast('Übersetzung in Kürze verfügbar.','info');}
+function translateMsg(msgId){toast('Übersetzung in Kurze verfugbar.','info');}
 function setQuickReply(text){var inp=document.getElementById('chatInput');if(inp){inp.value=text;inp.focus();}}
 function openOfferPicker(){var box=document.getElementById('offerPicker');var list=document.getElementById('offerList');var offers=[{title:'10% Rabatt',desc:'Einmalig'},{title:'Gratis Beratung',desc:'30 Min'},{title:'Treue-Bonus',desc:'5. Besuch gratis'}];if(list)list.innerHTML=offers.map(function(o,i){return '<div class="offer-item" onclick="sendOffer('+i+')">'+o.title+'<br><span style="font-size:11px;color:#94a3b8">'+o.desc+'</span></div>';}).join('');if(box)box.classList.remove('hidden');}
 function closeOfferPicker(){var b=document.getElementById('offerPicker');if(b)b.classList.add('hidden');}
@@ -13176,7 +13173,7 @@ async function loadCRMFromBookings(storeId){try{var r=await supabase.from("booki
 function renderCRMPanel(storeId){var panel=document.getElementById("crmClientList");if(!panel)return;var clients=Object.values(crmData[storeId]||{});if(!clients.length){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon">👥</div><h3>Noch keine Kunden</h3><p>Kunden erscheinen hier nach Buchungen.</p></div>';return;}panel.innerHTML=clients.map(function(c){return'<div class="crm-client-card"><div class="crm-client-name">'+( c.name||"Unbekannt")+'</div><div class="crm-client-meta">'+(c.visits||0)+' Besuche'+( c.lastVisit ? ' · '+ c.lastVisit : "")+'</div><div class="crm-client-tags">'+(c.tags||[]).map(function(t){return '<span class="crm-tag">'+t+'</span>';}).join("")+'</div><textarea class="crm-notes-area" placeholder="Notizen..." onchange="saveCRMNote(\''+ c.id+'\',this.value,\''+ storeId+'\')">'+( c.notes||"")+'</textarea></div>';}).join("");}
 function saveCRMNote(clientId,notes,storeId){if(!crmData[storeId]||!crmData[storeId][clientId])return;crmData[storeId][clientId].notes=notes;saveCRM();}
 async function loadStaffCommission(storeId){try{var sr=await supabase.from("staff").select("*").eq("store_id",storeId),br=await supabase.from("bookings").select("staff_id,price,status").eq("store_id",storeId).eq("status","confirmed"),staff=sr.data,bookings=br.data,cm={};if(bookings)bookings.forEach(function(b){if(b.staff_id)cm[b.staff_id]=(cm[b.staff_id]||0)+(b.price||0);});var panel=document.getElementById("staffCommissionList");if(!panel||!staff){return;}var tot=Object.values(cm).reduce(function(a,b){return a+b;},0)||1;panel.innerHTML=staff.length?staff.map(function(s){var rev=cm[s.id]||0,pct=Math.round(rev/tot*100);return'<div class="staff-commission-card"><div style="display:flex;justify-content:space-between"><strong>'+s.name+'</strong><span class="chf">CHF '+rev.toFixed(2)+'</span></div><div class="commission-bar"><div class="commission-bar-fill" style="width:'+pct+'%"></div></div><div style="font-size:.75rem;color:var(--c-text-muted)">'+pct+'% des Umsatzes</div></div>';}).join(""):'<div class="empty-state"><div class="empty-state-icon">👤</div><h3>Keine Mitarbeitende</h3></div>';}catch(e){console.error("Commission",e);}}
-async function sendMarketingBlast(){var sub=document.getElementById("blastSubject"),msg=document.getElementById("blastMessage");if(!sub||!msg||!sub.value||!msg.value){showToast&&showToast("Bitte alle Felder ausfüllen.");return;}var btn=document.getElementById("btnSendBlast");if(btn){btn.disabled=true;btn.textContent="Sendet...";}try{var storeId=window.currentStoreId||window.ownerStoreId,br=await supabase.from("bookings").select("customer_email,customer_name").eq("store_id",storeId),bk=br.data||[],emails=[...new Set(bk.filter(function(b){return b.customer_email;}).map(function(b){return b.customer_email;}))];if(!emails.length){showToast&&showToast("Keine E-Mails.");return;}var res=await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:emails.map(function(e){return{email:e};}),subject:sub.value,html:"<p>"+msg.value+"</p>",from:"Solen.ch"})});showToast&&showToast(res.ok?"Blast an "+emails.length+" Kunden gesendet!":"Sendefehler.");}catch(e){showToast&&showToast("Fehler: "+e.message);}finally{if(btn){btn.disabled=false;btn.textContent="Blast senden";}}}
+async function sendMarketingBlast(){var sub=document.getElementById("blastSubject"),msg=document.getElementById("blastMessage");if(!sub||!msg||!sub.value||!msg.value){showToast&&showToast("Bitte alle Felder ausfullen.");return;}var btn=document.getElementById("btnSendBlast");if(btn){btn.disabled=true;btn.textContent="Sendet...";}try{var storeId=window.currentStoreId||window.ownerStoreId,br=await supabase.from("bookings").select("customer_email,customer_name").eq("store_id",storeId),bk=br.data||[],emails=[...new Set(bk.filter(function(b){return b.customer_email;}).map(function(b){return b.customer_email;}))];if(!emails.length){showToast&&showToast("Keine E-Mails.");return;}var res=await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:emails.map(function(e){return{email:e};}),subject:sub.value,html:"<p>"+msg.value+"</p>",from:"Solen.ch"})});showToast&&showToast(res.ok?"Blast an "+emails.length+" Kunden gesendet!":"Sendefehler.");}catch(e){showToast&&showToast("Fehler: "+e.message);}finally{if(btn){btn.disabled=false;btn.textContent="Blast senden";}}}
 // ── INVENTORY: Supabase-backed (replaces old localStorage version) ──
 async function renderInventory(storeId){
   const panel=document.getElementById('dashTabInventar');
@@ -13188,7 +13185,7 @@ async function renderInventory(storeId){
       <div><label>Bestand</label><input id="invStock" type="number" min="0" value="0"></div>
       <div><label>Mindest</label><input id="invMin" type="number" min="0" value="5"></div>
       <div><label>Preis CHF</label><input id="invPrice" type="number" min="0" step="0.01" value="0"></div>
-      <div style="display:flex;align-items:flex-end"><button class="inv-add-btn" onclick="addInventoryItem('${storeId}')">+ Hinzufügen</button></div>
+      <div style="display:flex;align-items:flex-end"><button class="inv-add-btn" onclick="addInventoryItem('${storeId}')">+ Hinzufugen</button></div>
     </div>
     <div style="overflow-x:auto">
       <table class="inventory-table">
@@ -13204,7 +13201,7 @@ async function loadInventoryItems(storeId){
   const tbl=document.getElementById('invTableBody');if(!tbl)return;
   const {data,error}=await sb.from('inventory').select('*').eq('salon_id',storeId).order('name');
   if(error){tbl.innerHTML=`<tr><td colspan="6" style="color:#e74c3c;padding:1rem">${error.message}</td></tr>`;return;}
-  if(!data||!data.length){tbl.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--c-text-muted)">Noch keine Produkte. Füge oben das erste hinzu.</td></tr>';return;}
+  if(!data||!data.length){tbl.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--c-text-muted)">Noch keine Produkte. Fuge oben das erste hinzu.</td></tr>';return;}
   tbl.innerHTML=data.map(p=>{
     const low=p.stock<p.min_stock;
     return `<tr>
@@ -13213,7 +13210,7 @@ async function loadInventoryItems(storeId){
       <td>${p.min_stock}</td>
       <td class="chf">CHF ${parseFloat(p.price||0).toFixed(2)}</td>
       <td>${low?`<button class="btn-reorder" onclick="reorderInventoryItem('${p.id}',${p.min_stock},'${storeId}')">Nachbestellen</button>`:'<span style="color:#16a34a;font-weight:600">OK</span>'}</td>
-      <td><button style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:1rem" title="Löschen" onclick="deleteInventoryItem('${p.id}','${storeId}')">&#10005;</button></td>
+      <td><button style="background:none;border:none;cursor:pointer;color:#e74c3c;font-size:1rem" title="Loschen" onclick="deleteInventoryItem('${p.id}','${storeId}')">&#10005;</button></td>
     </tr>`;
   }).join('');
 }
@@ -13230,7 +13227,7 @@ async function addInventoryItem(storeId){
   document.getElementById('invStock').value='0';
   document.getElementById('invMin').value='5';
   document.getElementById('invPrice').value='0';
-  toast('Produkt hinzugefügt','success');
+  toast('Produkt hinzugefugt','success');
   loadInventoryItems(storeId);
 }
 
@@ -13242,7 +13239,7 @@ async function reorderInventoryItem(id,minStock,storeId){
 }
 
 async function deleteInventoryItem(id,storeId){
-  if(!confirm('Produkt löschen?'))return;
+  if(!confirm('Produkt loschen?'))return;
   await sb.from('inventory').delete().eq('id',id);
   loadInventoryItems(storeId);
 }
@@ -13299,7 +13296,7 @@ async function uploadGalleryPhoto(inp){
 }
 
 async function deleteGalleryPhoto(photoId,storeId){
-  if(!confirm('Foto löschen?'))return;
+  if(!confirm('Foto loschen?'))return;
   const photo=galleryItems.find(p=>p.id===photoId);
   if(photo?.storage_path){await sb.storage.from('salon-photos').remove([photo.storage_path]).catch(()=>{});}
   await sb.from('salon_photos').delete().eq('id',photoId);
@@ -13315,7 +13312,7 @@ async function deleteGalleryItem(i){
 async function loadPendingSalons(){var panel=document.getElementById("adminPendingList");if(!panel)return;try{var r=await supabase.from("stores").select("*").eq("status","pending").order("created_at",{ascending:false}),data=r.data;if(!data||!data.length){panel.innerHTML='<div class="empty-state"><div class="empty-state-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--c-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3>Alle erledigt</h3></div>';return;}panel.innerHTML=data.map(function(s){return'<div class="admin-pending-card" id="pending-'+s.id+'"><strong>'+s.name+'</strong><div style="font-size:.85rem;color:var(--c-text-muted);margin:4px 0">'+(s.address||"")+' · '+(s.contact_email||"")+'</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary" style="flex:1" onclick="approveStore(this,\''+ s.id+'\')">Genehmigen</button><button class="btn" style="flex:1;border-color:#dc2626;color:#dc2626" onclick="rejectStoreAdmin(this,\''+ s.id+'\')">Ablehnen</button></div></div>';}).join("");}catch(e){panel.innerHTML="Fehler: "+e.message;}}
 async function approveStore(btn,sid){await supabase.from("stores").update({status:"approved",approved_at:new Date().toISOString()}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#16a34a;font-weight:600">✓ Genehmigt</span>';showToast&&showToast("Salon genehmigt!");}
 async function rejectStoreAdmin(btn,sid){var reason=prompt("Ablehnungsgrund:")||"";await supabase.from("stores").update({status:"rejected",rejection_reason:reason}).eq("id",sid);var card=document.getElementById("pending-"+sid);if(card)card.querySelector("div:last-child").innerHTML='<span style="color:#dc2626;font-weight:600">✗ Abgelehnt</span>';showToast&&showToast("Salon abgelehnt.");}
-async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await supabase.from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veröffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
+async function submitReviewReply(rid){var inp=document.getElementById("replyText-"+rid);if(!inp||!inp.value.trim())return;var r=await supabase.from("reviews").update({owner_reply:inp.value.trim(),reply_at:new Date().toISOString()}).eq("id",rid);if(!r.error){showToast&&showToast("Antwort veroffentlicht!");var rb=document.getElementById("replyBox-"+rid);if(rb)rb.innerHTML='<div class="review-reply"><div class="review-reply-author">Salon-Antwort</div>'+inp.value+'</div>';}}
 async function checkVerifiedStatus(storeId){var r=await supabase.from("bookings").select("id",{count:"exact"}).eq("store_id",storeId).eq("status","confirmed"),isVerified=(r.count||0)>=10;if(isVerified)await supabase.from("stores").update({is_verified:true}).eq("id",storeId);return isVerified;}
 // ── GOOGLE CALENDAR SYNC + iCal export ──
 async function exportIcal(storeId){
@@ -13367,12 +13364,12 @@ function renderGCalTab(storeId){
   panel.innerHTML=`<div style="padding:1.5rem">
     <div class="panel-header"><h3>Kalender-Sync</h3></div>
     <p style="font-size:.875rem;color:var(--c-text-muted);margin-bottom:1.25rem">
-      Exportiere deine bestätigten Termine in deinen Kalender oder füge sie direkt in Google Calendar hinzu.
+      Exportiere deine bestätigten Termine in deinen Kalender oder fuge sie direkt in Google Calendar hinzu.
     </p>
     <div class="gcal-row">
       <button class="btn-gcal" onclick="openInGoogleCalendar('${storeId}')">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="#4285F4" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#4285F4" stroke-width="2"/><line x1="8" y1="2" x2="8" y2="6" stroke="#4285F4" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="#4285F4" stroke-width="2"/></svg>
-        Google Calendar öffnen
+        Google Calendar offnen
       </button>
       <button class="btn-ics" onclick="exportIcal('${storeId}')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -13553,7 +13550,7 @@ async function renderServicesTeamTab(salonId) {
     <div class="svcteam-section">
       <div class="svcteam-section-hd">
         <h3>Team (Stylisten)</h3>
-        <button class="btn-primary btn-sm" onclick="document.getElementById('svcteamAddForm').style.display=document.getElementById('svcteamAddForm').style.display==='none'?'block':'none'">+ Stylist hinzufügen</button>
+        <button class="btn-primary btn-sm" onclick="document.getElementById('svcteamAddForm').style.display=document.getElementById('svcteamAddForm').style.display==='none'?'block':'none'">+ Stylist hinzufugen</button>
       </div>
       <div class="stylist-grid" id="svcteamStylistGrid">
         ${staffList.length===0?'<p style="color:var(--c-text-muted);font-size:.88rem">Noch keine Stylisten eingetragen.</p>':
@@ -13578,7 +13575,7 @@ async function renderServicesTeamTab(salonId) {
                 <span>Buchbar</span>
               </div>
               <div style="margin-top:8px;width:100%">
-                <label style="font-size:.72rem;color:var(--c-text-secondary);font-weight:600;display:block;margin-bottom:3px">Auswahlgebühr CHF</label>
+                <label style="font-size:.72rem;color:var(--c-text-secondary);font-weight:600;display:block;margin-bottom:3px">Auswahlgebuhr CHF</label>
                 <input type="number" class="form-input" style="font-size:.82rem;padding:5px 8px;text-align:center" min="0" max="20" step="1" value="${curFee}" placeholder="0" onchange="updateStylistSelectionFee('${s.id}',this.value)">
               </div>
               <button class="btn-cal-edit" onclick="openStylistCalendarModal('${s.id}','${s.name}','${salonId}')">
@@ -13591,11 +13588,11 @@ async function renderServicesTeamTab(salonId) {
       </div>
       <!-- Add stylist form (hidden by default) -->
       <div class="stylist-add-form" id="svcteamAddForm" style="display:none">
-        <h4 style="font-size:.88rem;font-weight:700;margin-bottom:12px;color:var(--c-text)">Neuen Stylisten hinzufügen</h4>
+        <h4 style="font-size:.88rem;font-weight:700;margin-bottom:12px;color:var(--c-text)">Neuen Stylisten hinzufugen</h4>
         <div class="form-row">
           <div class="form-group" style="margin:0">
             <label style="font-size:.8rem;color:var(--c-text-secondary)">Name (Pflichtfeld)</label>
-            <input class="form-input" id="svcteamName" placeholder="z.B. Maria Müller">
+            <input class="form-input" id="svcteamName" placeholder="z.B. Maria Muller">
           </div>
           <div class="form-group" style="margin:0">
             <label style="font-size:.8rem;color:var(--c-text-secondary)">Rolle</label>
@@ -13614,7 +13611,7 @@ async function renderServicesTeamTab(salonId) {
         </div>
         <div class="form-row" style="margin-bottom:10px">
           <div class="form-group" style="margin:0">
-            <label style="font-size:.8rem;color:var(--c-text-secondary)">Auswahlgebühr CHF <span style="color:var(--c-text-muted)">(0–20, Standard 0)</span></label>
+            <label style="font-size:.8rem;color:var(--c-text-secondary)">Auswahlgebuhr CHF <span style="color:var(--c-text-muted)">(0–20, Standard 0)</span></label>
             <input class="form-input" id="svcteamSelFee" type="number" min="0" max="20" step="1" placeholder="0" value="0">
           </div>
         </div>
@@ -13623,7 +13620,7 @@ async function renderServicesTeamTab(salonId) {
           <span style="font-size:.85rem;color:var(--c-text-secondary)">In Buchung wählbar</span>
         </div>
         <div style="display:flex;gap:10px">
-          <button class="btn-primary btn-sm" onclick="addSvcTeamStylist('${salonId}')">Hinzufügen</button>
+          <button class="btn-primary btn-sm" onclick="addSvcTeamStylist('${salonId}')">Hinzufugen</button>
           <button class="btn-secondary btn-sm" onclick="document.getElementById('svcteamAddForm').style.display='none'">Abbrechen</button>
         </div>
       </div>
@@ -13633,10 +13630,10 @@ async function renderServicesTeamTab(salonId) {
     <div class="svcteam-section">
       <div class="svcteam-section-hd">
         <h3>Kalender pro Stylist</h3>
-        <span style="font-size:.78rem;color:var(--c-text-muted)">Wöchentliche Verfügbarkeit & Ausnahmen</span>
+        <span style="font-size:.78rem;color:var(--c-text-muted)">Wochentliche Verfugbarkeit & Ausnahmen</span>
       </div>
       ${staffList.length===0
-        ? '<p style="color:var(--c-text-muted);font-size:.88rem">Füge zuerst Stylisten hinzu, um ihre Kalender zu bearbeiten.</p>'
+        ? '<p style="color:var(--c-text-muted);font-size:.88rem">Fuge zuerst Stylisten hinzu, um ihre Kalender zu bearbeiten.</p>'
         : '<div class="stylist-grid" style="margin:0">' + staffList.map(s=>{
             const initials=(s.name||'?').split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
             const av=s.photo_url?`<img src="${s.photo_url}" alt="${s.name}" onerror="this.style.display='none';this.parentNode.textContent='${initials}'">`:`<span>${initials}</span>`;
@@ -13683,7 +13680,7 @@ async function renderServicesTeamTab(salonId) {
     <div style="display:flex;align-items:center;gap:16px;padding-top:8px">
       <button class="svcteam-save-btn" onclick="saveServicesTeamTab('${salonId}')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Änderungen speichern
+        gnderungen speichern
       </button>
       <span id="svcteamSaveStatus" style="font-size:.82rem;color:var(--c-text-muted)"></span>
     </div>
@@ -13701,15 +13698,15 @@ async function addSvcTeamStylist(salonId) {
   const selection_fee=Math.min(20,Math.max(0,selFeeRaw));
   const {error}=await sb.from('store_staff').insert([{store_id:salonId,name,role:role||null,photo_url:photo||null,specialties:spec||null,bookable,active:true,selection_fee}]);
   if(error){toast('Fehler: '+error.message,'error');return;}
-  toast('Stylist hinzugefügt','success');
+  toast('Stylist hinzugefugt','success');
   renderServicesTeamTab(salonId);
 }
 
 async function updateStylistSelectionFee(staffId,rawVal){
   const fee=Math.min(20,Math.max(0,parseFloat(rawVal)||0));
   const {error}=await sb.from('store_staff').update({selection_fee:fee}).eq('id',staffId);
-  if(error){toast('Fehler beim Speichern der Gebühr','error');}
-  else{toast('Auswahlgebühr gespeichert','success');}
+  if(error){toast('Fehler beim Speichern der Gebuhr','error');}
+  else{toast('Auswahlgebuhr gespeichert','success');}
 }
 
 async function deleteSvcTeamStylist(staffId,salonId) {
@@ -13802,7 +13799,7 @@ async function openStylistCalendarModal(stylistId,stylistName,salonId){
             <input type="checkbox" id="scSameAll" onchange="onStyCalSameAll()">
             <span class="toggle-slider"></span>
           </label>
-          <span>Gleiche Zeiten für alle Tage</span>
+          <span>Gleiche Zeiten fur alle Tage</span>
         </div>
         <!-- Column headers -->
         <div class="stylist-cal-week-grid header">
@@ -13816,7 +13813,7 @@ async function openStylistCalendarModal(stylistId,stylistName,salonId){
           <div class="stylist-cal-exc-add">
             <input type="date" id="scExcDate" class="stylist-cal-time-input" style="width:auto">
             <input type="text" id="scExcLabel" class="stylist-cal-time-input" placeholder="Grund (z.B. Urlaub)" style="flex:1;min-width:120px">
-            <button class="btn-secondary btn-sm" onclick="_styCalAddExc('${stylistId}')">+ Hinzufügen</button>
+            <button class="btn-secondary btn-sm" onclick="_styCalAddExc('${stylistId}')">+ Hinzufugen</button>
           </div>
         </div>
       </div>
@@ -13871,7 +13868,7 @@ async function _styCalAddExc(stylistId){
     :_styCalExceptions.map((e,i)=>`<div class="stylist-cal-exc-chip"><span>${e.date} – ${e.label}</span><button onclick="_styCalRemoveExc(${i},'${stylistId}')">×</button></div>`).join('');
   document.getElementById('scExcDate').value='';
   document.getElementById('scExcLabel').value='';
-  toast('Ausnahme hinzugefügt','success');
+  toast('Ausnahme hinzugefugt','success');
 }
 
 async function _styCalRemoveExc(idx,stylistId){
@@ -13971,7 +13968,7 @@ async function renderStaffCommission(storeId){
       </div>
       <div id="staffSelector" class="staff-selector"></div>
       <div id="staffWeekGrid" style="overflow-x:auto;margin-bottom:1.5rem"></div>
-      <h4 style="margin-bottom:1rem">Abrechnungsübersicht</h4>
+      <h4 style="margin-bottom:1rem">Abrechnungsubersicht</h4>
       <div id="staffCommSummary"></div>
     </div>`;
   _staffCalWeekOffset=0;
@@ -14138,7 +14135,7 @@ async function renderMarketingBlast(storeId){
           <option value="both">SMS + E-Mail</option>
         </select>
         <label>Betreff / Absender-Anzeige</label>
-        <input id="mktSubject" class="mkt-input" placeholder="z.B. Frühlingsangebot – 20% auf alle Services!" maxlength="80">
+        <input id="mktSubject" class="mkt-input" placeholder="z.B. Fruhlingsangebot – 20% auf alle Services!" maxlength="80">
         <label>Nachricht</label>
         <textarea id="mktMessage" class="mkt-textarea" rows="4" maxlength="320" placeholder="Deine Nachricht an die Kunden…"></textarea>
         <div class="mkt-preview-hint" id="mktPreviewHint"></div>
@@ -14250,10 +14247,10 @@ async function loadWeatherWidget(){
     const isSunny=code<=1;
     // All strings below are hardcoded — no user input interpolated
     const configs={
-      rainy:{icon:'🌧️',label:'Regentag in Basel? Perfekt für Spa & Massage!',cta:'Massage buchen',cat:'spa',cls:'weather-rainy'},
-      snowy:{icon:'❄️',label:'Schneetag in Basel — Zeit für Wärme & Wellness!',cta:'Spa buchen',cat:'spa',cls:'weather-snowy'},
-      sunny:{icon:'☀️',label:'Schöner Tag in Basel — lass dich verwöhnen!',cta:'Coiffeur buchen',cat:'hairsalon',cls:'weather-sunny'},
-      default:{icon:'⛅',label:'Heute in Basel — Zeit für etwas Gutes!',cta:'Salons entdecken',cat:'',cls:'weather-cloudy'}
+      rainy:{icon:'🌧️',label:'Regentag in Basel? Perfekt fur Spa & Massage!',cta:'Massage buchen',cat:'spa',cls:'weather-rainy'},
+      snowy:{icon:'❄️',label:'Schneetag in Basel — Zeit fur Wärme & Wellness!',cta:'Spa buchen',cat:'spa',cls:'weather-snowy'},
+      sunny:{icon:'☀️',label:'Schoner Tag in Basel — lass dich verwohnen!',cta:'Coiffeur buchen',cat:'hairsalon',cls:'weather-sunny'},
+      default:{icon:'⛅',label:'Heute in Basel — Zeit fur etwas Gutes!',cta:'Salons entdecken',cat:'',cls:'weather-cloudy'}
     };
     const cfg=isSnowy?configs.snowy:isRainy?configs.rainy:isSunny?configs.sunny:configs.default;
     // Build DOM safely — only safe hardcoded strings + numeric temp via textContent
@@ -14318,7 +14315,7 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
 
 <!-- PWA Install Banner -->
 <div id="pwaBanner" class="pwa-banner" role="complementary" aria-label="App installieren">
-  <div class="pwa-banner-text">solen als App installieren<small>Schneller Zugriff, kein Browser nötig</small></div>
+  <div class="pwa-banner-text">solen als App installieren<small>Schneller Zugriff, kein Browser notig</small></div>
   <div style="display:flex;gap:8px;align-items:center">
     <button class="btn-pwa-install" onclick="installPWA()">Installieren</button>
     <button class="btn-pwa-dismiss" onclick="dismissPWABanner()" aria-label="Schließen">×</button>
@@ -14371,7 +14368,7 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
       <h3 style="font-family:var(--font-display,serif)">Produktlager</h3>
       <button onclick="document.getElementById('inventoryPanel').style.display='none'" style="background:none;border:none;font-size:24px;cursor:pointer">×</button>
     </div>
-    <button class="btn btn-primary" onclick="addInventoryProduct()" style="margin-bottom:16px">+ Produkt hinzufügen</button>
+    <button class="btn btn-primary" onclick="addInventoryProduct()" style="margin-bottom:16px">+ Produkt hinzufugen</button>
     <div style="overflow-x:auto">
     <table class="inventory-table"><thead><tr><th>Produkt</th><th>Bestand</th><th>Mindest</th><th>Preis</th><th>Status</th></tr></thead>
     <tbody id="inventoryTableBody"><tr><td colspan="5" style="text-align:center;padding:24px">Noch keine Produkte.</td></tr></tbody></table>
@@ -14379,7 +14376,7 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
   </div>
 </div>
 <!-- Gallery Panel -->
-<div id="galleryPanel" role="dialog" aria-modal="true" aria-label="Fotogalerie" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:8000;overflow-y:auto" onclick="if(event.target===this){this.style.display='none';_checkModalOpen()}"
+<div id="galleryPanel" role="dialog" aria-modal="true" aria-label="Fotogalerie" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);z-index:8000;overflow-y:auto" onclick="if(event.target===this){this.style.display='none';_checkModalOpen()}">
   <div style="background:var(--c-bg,#fff);max-width:600px;margin:40px auto;border-radius:var(--r-xl,24px);padding:24px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <h3 style="font-family:var(--font-display,serif)">Fotogalerie</h3>
@@ -14400,7 +14397,7 @@ function showToast(msg,duration){duration=duration||2800;let tc=document.getElem
     <div class="filter-sheet-title" data-i18n="filter_title">Filter</div>
     <div id="filterSheetContent"></div>
     <div class="filter-sheet-footer">
-      <button class="btn-secondary" onclick="resetFiltersFromPanel();closeFilterSheet()" data-i18n="reset_filters">Zurücksetzen</button>
+      <button class="btn-secondary" onclick="resetFiltersFromPanel();closeFilterSheet()" data-i18n="reset_filters">Zurucksetzen</button>
       <button class="btn-primary" onclick="closeFilterSheet()" data-i18n="filter_show_results">Ergebnisse anzeigen</button>
     </div>
   </div>
