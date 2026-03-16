@@ -5708,15 +5708,25 @@ async function loadStores(){
   renderSkeletons();
   let data,error;
   try{
-    ({data,error}=await sb.from('stores').select('*').neq('status','pending').neq('status','rejected').order('name'));
+    // Migration 013 dropped the legacy `stores` table; all data now lives in `salons`
+    ({data,error}=await sb.from('salons').select('*').eq('is_active',true).order('name'));
   }catch(e){error=e;}
   if(error&&!data){
     document.getElementById('storesGrid').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--c-warning)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><h3>${t('load_failed')}</h3><button onclick="loadStores()" style="margin-top:12px">${t('reload')}</button></div>`;
     return;
   }
-  // Also load approved salons
-  const{data:salons}=await sb.from('salons').select('*').eq('status','approved').order('name');
-  const dbStores=(data||[]).concat((salons||[]).map(s=>({...s,store_id:s.id})));
+  // Normalise new schema column names to the legacy names used throughout the frontend
+  const dbStores=(data||[]).map(s=>({
+    ...s,
+    cat:Array.isArray(s.categories)?s.categories[0]:s.categories,
+    lat:s.latitude,
+    lng:s.longitude,
+    avg_rating:s.average_rating,
+    image_url:s.cover_photo_url,
+    instagram:s.instagram_url,
+    neighbourhood:s.quartier,
+    store_id:s.id
+  }));
   if(dbStores.length===0){allStores=DEMO_STORES;}
   else allStores=dbStores;
   // Assign default Basel coords for stores without lat/lng
@@ -5724,15 +5734,16 @@ async function loadStores(){
     if(!s.lat||!s.lng){s.lat=47.5596+(Math.random()-0.5)*0.02;s.lng=7.5886+(Math.random()-0.5)*0.02;}
   });
   const{data:svcs}=await sb.from('services').select('*');
-  allServices=svcs||[];
+  // Map new schema service names (name_de/name_en) to the legacy `name` field used in render code
+  allServices=(svcs||[]).map(sv=>({...sv,name:sv.name_de||sv.name_en||sv.name||''}));
   if(allServices.length===0){
     allServices=Object.values(DEMO_SERVICES).flat();
   }
   // Track visited stores
   userBookedStores=new Set();
   if(currentUser){
-    const{data:bookings}=await sb.from('bookings').select('store_id,salon_id').eq('user_id',currentUser.id);
-    (bookings||[]).forEach(b=>{if(b.store_id)userBookedStores.add(b.store_id);if(b.salon_id)userBookedStores.add(b.salon_id);});
+    const{data:bookings}=await sb.from('bookings').select('salon_id').eq('user_id',currentUser.id);
+    (bookings||[]).forEach(b=>{if(b.salon_id)userBookedStores.add(b.salon_id);});
   }
   const el1=document.getElementById('statSalons');
   const el2=document.getElementById('statServices');
