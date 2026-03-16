@@ -1,20 +1,4 @@
 {
   "_instructions": "MANDATORY: Every AI agent MUST check this file before editing ANY file. If a file is locked by another agent, DO NOT edit it. Add your lock before starting work, remove it when done.",
-  "locks": [
-    {
-      "agent": "feature-agent",
-      "files": [
-        "app/[locale]/salon/[slug]/page.tsx",
-        "components/BookingCalendar.tsx",
-        "components/ChatWindow.tsx",
-        "components/auth/SignIn.tsx",
-        "app/[locale]/auth/login/page.tsx",
-        "app/[locale]/auth/register/page.tsx",
-        "app/[locale]/account/page.tsx",
-        "app/[locale]/account/messages/page.tsx"
-      ],
-      "reason": "Dev 2 — Phases 4 (Salon Profile + BookingCalendar), 5 (Auth), 6 (Chat), 7 (Account)",
-      "locked_at": "2026-03-16T12:30:00Z"
-    }
-  ]
+  "locks": []
 }
