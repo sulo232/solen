@@ -25,6 +25,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.13.1",
     "react-use-measure": "^2.1.7",
+    "recharts": "^3.8.0",
     "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
