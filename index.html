@@ -13125,7 +13125,7 @@ function showWalkinStatus(entry){var p=document.getElementById('walkinStatus');i
 function closeWalkinModal(){var m=document.getElementById('walkinModal');if(m)m.classList.add('hidden');}
 async function leaveWalkinQueue(id){if(!id)return;await window._sb.from('walk_in_queue').update({status:'left'}).eq('id',id);closeWalkinModal();window._walkinId=null;}
 /* === ADMIN PANEL === */
-async function loadAdminPanel(){var box=document.getElementById('adminPanelContent');if(!box)return;var r=await window._sb.from('salons').select('id,name,categories,status').eq('status','pending').order('created_at');var data=r.data;if(!data||!data.length){box.innerHTML='<p style="text-align:center;color:#94a3b8;">Keine ausstehenden Salons.</p>';return;}box.innerHTML=data.map(function(s){return '<div class="admin-store-item"><div><strong>'+s.name+'</strong><br><span style="font-size:12px;color:#94a3b8;">'+(Array.isArray(s.categories)?s.categories.join(', '):(s.categories||''))+'</span></div><div class="admin-actions"><button class="btn-admin-approve" onclick="adminApproveStore('"+s.id+"')">&checkmark; Genehmigen</button><button class="btn-admin-reject" onclick="adminRejectStore('"+s.id+"')">&times; Ablehnen</button></div></div>';}).join('');}
+async function loadAdminPanel(){var box=document.getElementById('adminPanelContent');if(!box)return;var r=await window._sb.from('salons').select('id,name,categories,status').eq('status','pending').order('created_at');var data=r.data;if(!data||!data.length){box.innerHTML='<p style="text-align:center;color:#94a3b8;">Keine ausstehenden Salons.</p>';return;}box.innerHTML=data.map(function(s){return '<div class="admin-store-item"><div><strong>'+s.name+'</strong><br><span style="font-size:12px;color:#94a3b8;">'+(Array.isArray(s.categories)?s.categories.join(', '):(s.categories||''))+'</span></div><div class="admin-actions"><button class="btn-admin-approve" onclick="adminApproveStore('"+s.id+"')">✓ Genehmigen</button><button class="btn-admin-reject" onclick="adminRejectStore('"+s.id+"')">✗ Ablehnen</button></div></div>';}).join('');}
 async function adminApproveStore(id){await window._sb.from('salons').update({status:'approved',is_active:true}).eq('id',id);loadAdminPanel();}
 async function adminRejectStore(id){await window._sb.from('salons').update({status:'rejected',is_active:false}).eq('id',id);loadAdminPanel();}
 /* === CHAT HELPERS === */
@@ -13233,8 +13233,9 @@ async function deleteInventoryItem(id,storeId){
 var galleryItems=[];
 async function loadGalleryItems(storeId){
   try{
-    const {data}=await sb.from('salon_photos').select('*').eq('salon_id',storeId).order('sort_order');
-    galleryItems=(data||[]);
+    // New schema: photos are in salons.gallery_urls via photo cache
+    const photos=_salonPhotosCache[storeId]||await loadSalonPhotos(storeId);
+    galleryItems=photos.map(p=>({...p,photo_type:p.photo_type||'gallery'}));
     renderGalleryGrid(storeId);
   }catch(e){galleryItems=[];renderGalleryGrid(storeId);}
 }
@@ -13268,7 +13269,13 @@ async function uploadGalleryPhotoTyped(inp,storeId,photoType){
     const {error:upErr}=await sb.storage.from('salon-photos').upload(path,file,{upsert:true});
     if(upErr)throw upErr;
     const {data:{publicUrl}}=sb.storage.from('salon-photos').getPublicUrl(path);
-    await sb.from('salon_photos').insert({salon_id:storeId,url:publicUrl,storage_path:path,photo_type:photoType,sort_order:galleryItems.length});
+    const store=allStores.find(s=>s.id===storeId);
+    const gallery=Array.isArray(store?.gallery_urls)?store.gallery_urls:[];
+    const newGallery=[...gallery,publicUrl];
+    await sb.from('salons').update({gallery_urls:newGallery}).eq('id',storeId);
+    if(store)store.gallery_urls=newGallery;
+    if(!_salonPhotosCache[storeId])_salonPhotosCache[storeId]=[];
+    _salonPhotosCache[storeId].push({id:storeId+'_g'+Date.now(),url:publicUrl,storage_path:path,photo_type:photoType,is_cover:false,sort_order:galleryItems.length});
     toast('Foto hochgeladen','success');
     loadGalleryItems(storeId);
   }catch(e){toast('Fehler: '+e.message,'error');}
