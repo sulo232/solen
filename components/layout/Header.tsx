@@ -68,7 +68,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         {/* Right actions */}
         <div className="flex items-center gap-3">
           {/* Messages with unread dot */}
-          <Link href={`/${locale}/account/messages`} className="relative p-1.5">
+          <Link href={`/${locale}/account/messages`} className="relative p-1.5" id="tour-messages">
             <MessageCircle className="w-5 h-5 text-dark/70" />
             {unreadCount > 0 && (
               <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-coral" />

@@ -4,18 +4,101 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { Calendar, Heart, MessageCircle, User, Star, MapPin, X } from "lucide-react";
+import { Calendar, Heart, MessageCircle, User, Star, MapPin, X, RotateCcw } from "lucide-react";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import Spinner from "@/components/ui/Spinner";
 import type { Profile, Booking, SalonCard } from "@/lib/types";
+
+// ─────────────────────────────────────────
+// Cancel modal
+// ─────────────────────────────────────────
+
+function CancelModal({
+  bookingId,
+  salonName,
+  startsAt,
+  onClose,
+  onCancelled,
+}: {
+  bookingId: string;
+  salonName: string;
+  startsAt: string;
+  onClose: () => void;
+  onCancelled: (id: string) => void;
+}) {
+  const [reason, setReason] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleCancel = async () => {
+    setLoading(true);
+    try {
+      await fetch(`/api/bookings/${bookingId}/cancel`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: reason.trim() || null }),
+      });
+      onCancelled(bookingId);
+      onClose();
+    } catch { /* ignore */ } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+      <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
+        <div className="flex items-start justify-between mb-4">
+          <h3 className="font-heading font-bold text-base text-dark">Termin stornieren</h3>
+          <button onClick={onClose} className="text-dark/30 hover:text-dark transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+        <p className="text-sm text-dark/60 mb-1">
+          {salonName} — {new Date(startsAt).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" })}{" "}
+          um {new Date(startsAt).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+        </p>
+        <p className="text-xs text-dark/40 mb-4">Kostenlose Stornierung bis 24h vor dem Termin.</p>
+
+        <div className="mb-5">
+          <label className="block text-xs font-medium text-dark/50 mb-1">Grund (optional)</label>
+          <textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            rows={2}
+            placeholder="z. B. persönlicher Termin, Krankheit..."
+            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-coral resize-none"
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={onClose}
+            className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60 hover:bg-gray-50 transition-colors"
+          >
+            Abbrechen
+          </button>
+          <button
+            onClick={handleCancel}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium hover:bg-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading && <Spinner size="sm" invert />}
+            Stornieren
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────
 // Bookings tab
 // ─────────────────────────────────────────
 
 function BookingsTab({ locale }: { locale: string }) {
-  const [bookings, setBookings] = useState<(Booking & { salon_name: string; service_name: string })[]>([]);
+  const [bookings, setBookings] = useState<(Booking & { salon_name: string; service_name: string; salon_slug?: string })[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cancelTarget, setCancelTarget] = useState<(typeof bookings)[0] | null>(null);
 
   useEffect(() => {
     fetch("/api/bookings?limit=20")
@@ -52,26 +135,91 @@ function BookingsTab({ locale }: { locale: string }) {
     no_show: "text-dark/30",
   };
 
+  const hoursUntil = (startsAt: string) =>
+    (new Date(startsAt).getTime() - Date.now()) / 3_600_000;
+
+  const handleCancelled = (id: string) => {
+    setBookings((prev) =>
+      prev.map((b) => b.id === id ? { ...b, status: "cancelled" as const } : b)
+    );
+  };
+
   return (
-    <div className="space-y-3 py-4">
-      {bookings.map((b) => (
-        <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4 flex justify-between items-start gap-4">
-          <div>
-            <p className="font-medium text-sm text-dark">{b.salon_name}</p>
-            <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
-            <p className="text-xs text-dark/40 mt-1">
-              {new Date(b.starts_at).toLocaleDateString("de-CH", {
-                weekday: "short", day: "numeric", month: "short",
-              })}{" "}
-              um {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
-            </p>
-          </div>
-          <span className={["text-xs font-medium", statusColor[b.status] ?? "text-dark/40"].join(" ")}>
-            {statusLabel[b.status] ?? b.status}
-          </span>
-        </div>
-      ))}
-    </div>
+    <>
+      {cancelTarget && (
+        <CancelModal
+          bookingId={cancelTarget.id}
+          salonName={cancelTarget.salon_name}
+          startsAt={cancelTarget.starts_at}
+          onClose={() => setCancelTarget(null)}
+          onCancelled={handleCancelled}
+        />
+      )}
+      <div className="space-y-3 py-4">
+        {bookings.map((b) => {
+          const canCancel = b.status === "confirmed" && hoursUntil(b.starts_at) > 24;
+          const tooLate = b.status === "confirmed" && hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
+
+          return (
+            <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4">
+              <div className="flex justify-between items-start gap-4">
+                <div>
+                  <p className="font-medium text-sm text-dark">{b.salon_name}</p>
+                  <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
+                  <p className="text-xs text-dark/40 mt-1">
+                    {new Date(b.starts_at).toLocaleDateString("de-CH", {
+                      weekday: "short", day: "numeric", month: "short",
+                    })}{" "}
+                    um {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+                <span className={["text-xs font-medium", statusColor[b.status] ?? "text-dark/40"].join(" ")}>
+                  {statusLabel[b.status] ?? b.status}
+                </span>
+              </div>
+
+              {/* Action row */}
+              {(b.status === "confirmed" || b.salon_slug) && (
+                <div className="flex gap-2 mt-3 pt-3 border-t border-gray-50">
+                  {b.salon_slug && (
+                    <a
+                      href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-teal hover:border-teal transition-colors"
+                    >
+                      <RotateCcw size={12} />
+                      Nochmal buchen
+                    </a>
+                  )}
+
+                  {canCancel && (
+                    <button
+                      onClick={() => setCancelTarget(b)}
+                      className="px-3 py-1.5 rounded-button border border-coral/30 text-xs text-coral hover:bg-coral/5 transition-colors"
+                    >
+                      Stornieren
+                    </button>
+                  )}
+
+                  {tooLate && (
+                    <div className="relative group">
+                      <button
+                        disabled
+                        className="px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/20 cursor-not-allowed"
+                      >
+                        Stornieren
+                      </button>
+                      <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-dark text-white text-xs rounded-lg px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                        Stornierung nicht mehr möglich (weniger als 24h)
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 

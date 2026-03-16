@@ -10,6 +10,7 @@ import ServiceTile from "@/components/ServiceTile";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import Spinner from "@/components/ui/Spinner";
 import Header from "@/components/layout/Header";
+import TutorialTour from "@/components/TutorialTour";
 import type { SalonCard as SalonCardType, LastMinuteSlot, SalonCategory } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -153,7 +154,7 @@ function SearchBar({ locale, userName }: SearchBarProps) {
         {greeting}
       </h1>
 
-      <div className="relative">
+      <div className="relative" id="tour-search">
         <div className="flex items-center gap-3 bg-white rounded-pill shadow-card px-5 py-3.5 border border-gray-100 focus-within:border-teal transition-colors">
           <Search className="w-5 h-5 text-dark/30 shrink-0" />
           <input
@@ -412,6 +413,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <TutorialTour isLoggedIn={isLoggedIn} />
       <Header locale={locale} />
 
       {/* Weather banner */}
@@ -465,7 +467,7 @@ export default function HomePage() {
       </section>
 
       {/* Services */}
-      <section className="py-10 px-4 sm:px-6 bg-white">
+      <section className="py-10 px-4 sm:px-6 bg-white" id="tour-services">
         <div className="max-w-7xl mx-auto">
           <h2 className="font-heading font-semibold text-xl text-dark mb-4">Was suchst du heute?</h2>
           <div
@@ -487,7 +489,7 @@ export default function HomePage() {
 
       {/* Last-Minute Teaser */}
       {(loadingLM || lastMinuteSlots.length > 0) && (
-        <section className="py-10 px-4 sm:px-6">
+        <section className="py-10 px-4 sm:px-6" id="tour-last-minute">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">

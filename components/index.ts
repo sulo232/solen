@@ -19,3 +19,4 @@ export { default as MapView } from "@/components/MapView";
 export { default as BookingCalendar } from "@/components/BookingCalendar";
 export { default as ChatWindow } from "@/components/ChatWindow";
 export { default as SignIn } from "@/components/auth/SignIn";
+export { default as TutorialTour } from "@/components/TutorialTour";
