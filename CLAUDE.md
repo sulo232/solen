@@ -168,6 +168,15 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 3. **No Blind Deletions**: The monolith has 14k lines. Understand before deleting.
 4. **Supabase Awareness**: Check table schema before modifying any Supabase JS. Key table: `salons` (not `stores` — migration 013 dropped the old table).
 5. **index.html ↔ public/home.html sync**: After editing `index.html`, always `cp index.html public/home.html`. The Next.js page serves `public/home.html` via iframe — they MUST stay in sync.
+6. **Vercel Deployment Check (MANDATORY after every `git push`)**: After pushing to main or promoting a deployment, check `https://vercel.com/sulo232s-projects/solen/deployments` and verify:
+   - The **latest deployment name/commit SHA** matches what you just pushed (confirm it's not serving a stale/old commit)
+   - The **timestamp** matches — if the deployment is older than expected, the push may not have triggered correctly
+   - The **status** is "Ready" (not "Error" or "Building" stuck)
+   - If **build errors** → read the error log, fix the issue, and push again immediately without asking
+   - If the **wrong deployment is in production** (e.g. a preview was promoted instead of main) → promote the correct one via the three-dot menu
+   - If there is a **conflict between two agents' deployments** (e.g. two branches both promoted to production) → revert the wrong one and ask the user which branch should be live before proceeding
+   - If fixing it requires a **major decision** (e.g. rolling back a whole feature, changing the deployment branch) → stop and ask the user
+
 
 ---
 
