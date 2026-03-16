@@ -210,6 +210,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 
 ```
 _tasks/
+├── INCOMPLETE_FEATURES.md              # ⚠️ NEVER DELETE. Append blocked/partially built features here.
 ├── roadmap-dev2-customer-frontend.md   # Dev 2 execution plan
 ├── roadmap-dev3-salon-dashboard.md     # Dev 3 execution plan
 └── completed/                          # Archive of finished tasks
@@ -221,6 +222,17 @@ _tasks/
 START → Note intent in .agent-comms.md
 DONE  → Move task file to _tasks/completed/ + note in .agent-comms.md
 ```
+
+### 8.3 Incomplete Features Protocol (MANDATORY)
+
+If you cannot finish a feature (e.g., missing API route, missing dependency, lack of context):
+1. **DO NOT** delete the feature from the roadmap or hide the failure.
+2. **DO NOT** delete or overwrite `_tasks/INCOMPLETE_FEATURES.md`.
+3. **APPEND** an entry to `_tasks/INCOMPLETE_FEATURES.md` detailing:
+   - **Feature**: What you were trying to build.
+   - **File/Line**: Exactly where you stopped (e.g. `path/to/file.tsx:42`).
+   - **Blocker**: Why you couldn't finish it (e.g., "Missing `POST /api/stuff` route from Dev 1").
+   - **Next Steps**: What the next agent or user needs to do to unblock it.
 
 ---
 
