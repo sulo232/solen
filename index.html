@@ -7683,8 +7683,9 @@ async function renderStaffPage(){
     staffHtml+='<p style="color:var(--muted);font-size:.88rem">Noch kein Personal eingetragen.</p>';
   }
   // Staff commission section
-  const{data:store}=await sb.from('stores').select('staff_list').eq('id',salonId).single();
-  const staffList=store?.staff_list||[];
+  // staff_list stored on salons table (new schema)
+  const{data:salonRecord}=await sb.from('salons').select('staff_list').eq('id',salonId).single();
+  const staffList=salonRecord?.staff_list||[];
   staffHtml+='<hr style="margin:1.5rem 0"><div class="dash-section-hd" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h4>Provisionen</h4><button class="btn-primary btn-sm" onclick="openAddStaffComm(\''+salonId+'\')">+ Mitarbeiter</button></div>';
   if(staffList.length){
     staffHtml+='<div id="staffCommList">'+staffList.map((s,i)=>'<div class="staff-comm-row"><div class="staff-avatar-sm">'+s.name.charAt(0)+'</div><div class="staff-comm-info"><strong>'+s.name+'</strong><span>'+(s.role||'Stylist')+'</span></div><div class="staff-comm-rate"><label>Provision %</label><input type="number" class="comm-input" value="'+(s.commission||0)+'" min="0" max="100" onchange="updateStaffCommission(\''+salonId+'\','+i+',this.value)"></div><button class="btn-remove-staff-sm" onclick="removeStaffMember(\''+salonId+'\','+i+')">Entfernen</button></div>').join('')+'</div>';
@@ -8890,8 +8891,8 @@ async function deleteSalon(id,name){
 async function loadAdminServices(){
   const el=document.getElementById('adminServices');
   el.innerHTML='<div class="spinner"></div>';
-  const{data:stores}=await sb.from('stores').select('id,name').order('name');
-  const{data:svcs}=await sb.from('services').select('*,stores(name)').order('name');
+  const{data:stores}=await sb.from('salons').select('id,name').order('name');
+  const{data:svcs}=await sb.from('services').select('*,salons(name)').order('name');
   el.innerHTML=`
     <button class="add-btn" onclick="openAddService()">+ Service hinzufugen</button>
     ${svcs&&svcs.length?`<div class="table-wrap"><table class="data-table">
@@ -8992,7 +8993,7 @@ async function openEditStore(storeId){
   editingStore=storeId;
   let s={name:'',type:'hairsalon',description:'',address:'',image_url:''};
   if(storeId){
-    const{data}=await sb.from('stores').select('*').eq('id',storeId).single();
+    const{data}=await sb.from('salons').select('*').eq('id',storeId).single();
     if(data)s=data;
   }
   document.getElementById('editStoreTitle').textContent=storeId?'Salon bearbeiten':'Salon hinzufugen';
@@ -9022,15 +9023,15 @@ async function saveStore(){
   };
   if(!d.name)return toast('Name ist erforderlich.','error');
   let error;
-  if(editingStore){({error}=await sb.from('stores').update(d).eq('id',editingStore));}
-  else{({error}=await sb.from('stores').insert(d));}
+  if(editingStore){({error}=await sb.from('salons').update(d).eq('id',editingStore));}
+  else{({error}=await sb.from('salons').insert({...d,is_active:true,owner_id:currentUser?.id}));}
   if(error)toast('Fehler: '+error.message,'error');
   else{toast('Salon gespeichert!','success');closeEditStore();loadStores();loadAdminTab('adminStores');}
 }
 
 async function deleteStore(id,name){
   if(!confirm(`Salon "${name}" wirklich loschen?`))return;
-  const{error}=await sb.from('stores').delete().eq('id',id);
+  const{error}=await sb.from('salons').delete().eq('id',id);
   if(error)toast('Fehler: '+error.message,'error');
   else{toast('Salon geloscht.','info');loadStores();loadAdminTab('adminStores');}
 }
@@ -9066,7 +9067,7 @@ async function saveEditBooking(){
 
 function openAddService(){
   document.getElementById('editStoreTitle').textContent='Service hinzufugen';
-  sb.from('stores').select('id,name').order('name').then(({data})=>{
+  sb.from('salons').select('id,name').order('name').then(({data})=>{
     document.getElementById('editStoreBody').innerHTML=`
       <div class="form-group"><label for="asStoreId">Salon</label>
         <select class="form-input" id="asStoreId">
@@ -9119,8 +9120,8 @@ async function renderSalonDashboard(){
   el.innerHTML='<div class="spinner"></div>';
   const{data:mySalons}=await sb.from('salons').select('*').eq('owner_id',currentUser.id);
   if(!mySalons||mySalons.length===0){
-    // Also check stores table by owner_id (owner created via salon profile form)
-    const{data:myStores}=await sb.from('stores').select('*').eq('owner_id',currentUser.id).limit(1);
+    // Fallback: also check salons table (owner_id match) - stores table removed
+    const{data:myStores}=await sb.from('salons').select('*').eq('owner_id',currentUser.id).limit(1);
     if(!myStores||myStores.length===0){
       el.innerHTML=`<div class="profile-card">
         <h3 style="margin-bottom:4px">Salon-Profil erstellen</h3>
@@ -9354,7 +9355,7 @@ async function saveDashHours(salonId){
       oh[d]=entry;
     }else{oh[d]={closed:true};}
   });
-  const {error}=await sb.from('stores').update({opening_hours:oh}).eq('id',salonId);
+  const {error}=await sb.from('salons').update({opening_hours:oh}).eq('id',salonId);
   if(error){toast('Fehler beim Speichern','error');return;}
   const idx=allStores.findIndex(s=>s.id==salonId);
   if(idx>=0)allStores[idx].opening_hours=oh;
@@ -9865,8 +9866,8 @@ function closeBookingModal(){
 async function loadBranchesForBooking(){
   if(!bmState.store)return;
   bmState.branches=null;
-  const{data}=await sb.from('stores').select('id,name,address,type').eq('parent_store_id',bmState.store.id).eq('status','approved');
-  if(data&&data.length>0)bmState.branches=data;
+  const{data}=await sb.from('salons').select('id,name,address,categories').eq('owner_id',bmState.store.owner_id||'').eq('is_active',true);
+  if(data&&data.length>1)bmState.branches=data.filter(x=>x.id!==bmState.store.id);
 }
 function selectBranch(branchId){
   if(!bmState.branches)return;
@@ -10519,7 +10520,7 @@ async function checkAndSetVerifiedAfterBooking(storeId){
   try{
     const{count}=await sb.from('bookings').select('id',{count:'exact',head:true}).eq('salon_id',storeId).eq('status','confirmed');
     if((count||0)>=10){
-      const{error}=await sb.from('stores').update({is_verified:true}).eq('id',storeId).eq('is_verified',false);
+      const{error}=await sb.from('salons').update({last_verified_at:new Date().toISOString()}).eq('id',storeId);
       if(!error){
         const store=allStores.find(s=>String(s.id)===String(storeId));
         if(store&&!store.is_verified){store.is_verified=true;toast('Verifiziert! Dieses Salon hat das Verifiziert-Abzeichen erhalten.','success');}
@@ -11333,7 +11334,7 @@ function toggleStaffBreak(btn){
     row.appendChild(breakDiv);btn.textContent='\u00d7 Pause';
   }
 }
-async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfullen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('stores').insert([{name,type,address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,parent_store_id:parentId||null,owner_id:currentUser.id,status:'pending'}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
+async function submitSalonProfile(e){ e.preventDefault(); const btn=document.getElementById('sp_submit'); if(btn){btn.disabled=true;btn.textContent='Wird gespeichert...';} const name=(document.getElementById('sp_name')?.value||'').trim(); const type=(document.getElementById('sp_type')?.value||'').trim(); const address=(document.getElementById('sp_address')?.value||'').trim(); if(!name||!type||!address){toast('Bitte Pflichtfelder ausfullen.','error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} const parentRaw=document.getElementById('sp_parent_store_id')?.value||''; const parentId=parentRaw?Number(parentRaw)||parentRaw:null; const{error}=await sb.from('salons').insert([{name,categories:[type],address,phone:document.getElementById('sp_phone')?.value||null,description:document.getElementById('sp_desc')?.value||null,opening_hours:document.getElementById('sp_hours')?.value||null,website:document.getElementById('sp_website')?.value||null,owner_id:currentUser.id,status:'pending',is_active:false}]); if(error){toast('Fehler: '+error.message,'error');if(btn){btn.disabled=false;btn.textContent='Salon eintragen';}return;} toast('Salon eingetragen','success'); renderSalonDashboard(); }
 async function submitSalonReg(e){
   e.preventDefault();
   solenTrack('partner_reg_submit',{});
@@ -11368,7 +11369,7 @@ async function submitSalonReg(e){
   };
   try{
     let newStoreId=null;
-    const{data:inserted,error:insertErr}=await sb.from('stores').insert([storeInsert]).select('id').single();
+    const{data:inserted,error:insertErr}=await sb.from('salons').insert([storeInsert]).select('id').single();
     if(insertErr&&insertErr.code!=='23505')throw insertErr;
     if(inserted)newStoreId=inserted.id;
     // Insert staff members from Step 4
@@ -12546,7 +12547,7 @@ async function obPublish(){
     status:            'pending'
   };
   try{
-    const{data,error}=await sb.from('stores').insert([storeData]).select('id').single();
+    const{data,error}=await sb.from('salons').insert([storeData]).select('id').single();
     if(error)throw error;
     const storeId=data.id;
     // Insert services
@@ -13106,9 +13107,9 @@ var calState={storeId:null,serviceName:'',year:0,month:0,selectedDate:null,selec
 function openCalendarOverlay(storeId,serviceName){var now=new Date();calState={storeId:storeId,serviceName:serviceName||'',year:now.getFullYear(),month:now.getMonth(),selectedDate:null,selectedTime:null,staffId:null,addons:[],recurring:false,recurrenceWeeks:4,groupSize:1};var ov=document.getElementById('calOverlay');if(ov)ov.classList.remove('hidden');document.body.classList.add('modal-open');renderCalGrid();loadCalStaff(storeId);loadCalAddons(storeId);var rc=document.getElementById('calRecurCheck');if(rc)rc.checked=false;var ro=document.getElementById('calRecurOptions');if(ro)ro.classList.add('hidden');var gs=document.getElementById('calGroupSize');if(gs)gs.textContent='1';}
 function closeCalendarOverlay(){var ov=document.getElementById('calOverlay');if(ov)ov.classList.add('hidden');_checkModalOpen();}
 function calNav(dir){calState.month+=dir;if(calState.month>11){calState.month=0;calState.year++;}if(calState.month<0){calState.month=11;calState.year--;}renderCalGrid();}
-function renderCalGrid(){var ml=document.getElementById('calMonthLabel');var grid=document.getElementById('calGrid');if(!grid)return;var lbl=new Date(calState.year,calState.month,1).toLocaleDateString(getLocale(),{month:'long',year:'numeric'});if(ml)ml.textContent=lbl;var days=['Mo','Di','Mi','Do','Fr','Sa','So'];var html=days.map(function(d){return '<div class="cal-day-header">'+d+'</div>';}).join('');var first=new Date(calState.year,calState.month,1);var startDow=first.getDay()-1;if(startDow<0)startDow=6;var dim=new Date(calState.year,calState.month+1,0).getDate();var today=new Date();today.setHours(0,0,0,0);for(var i=0;i<startDow;i++)html+='<div></div>';for(var d=1;d<=dim;d++){var dt=new Date(calState.year,calState.month,d);var ds=dt.toISOString().split('T')[0];var isPast=dt<today;var isSel=calState.selectedDate===ds;var isTod=dt.getTime()===today.getTime();var cls='cal-day'+(isPast?' disabled':'')+(isSel?' selected':'')+(isTod?' today':'');var oc=isPast?'':'selectCalDay(\''+ds+'\')';html+='<div class="'+cls+'" onclick="'+oc+'">'+d+'</div>';}grid.innerHTML=html;var slts=document.getElementById('calSlots');if(slts)slts.innerHTML='';}
+function renderCalGrid(){var ml=document.getElementById('calMonthLabel');var grid=document.getElementById('calGrid');if(!grid)return;var lbl=new Date(calState.year,calState.month,1).toLocaleDateString(getLocale(),{month:'long',year:'numeric'});if(ml)ml.textContent=lbl;var days=['Mo','Di','Mi','Do','Fr','Sa','So'];var html=days.map(function(d){return '<div class="cal-day-header">'+d+'</div>';}).join('');var first=new Date(calState.year,calState.month,1);var startDow=first.getDay()-1;if(startDow<0)startDow=6;var dim=new Date(calState.year,calState.month+1,0).getDate();var today=new Date();today.setHours(0,0,0,0);for(var i=0;i<startDow;i++)html+='<div></div>';for(var d=1;d<=dim;d++){var dt=new Date(calState.year,calState.month,d);var ds=dt.toISOString().split('T')[0];var isPast=dt<today;var isSel=calState.selectedDate===ds;var isTod=dt.getTime()===today.getTime();var cls='cal-day'+(isPast?' disabled':'')+(isSel?' selected':'')+(isTod?' today':'');var oc=isPast?'':"selectCalDay('"+ds+"')";html+='<div class="'+cls+'" onclick="'+oc+'">'+d+'</div>';}grid.innerHTML=html;var slts=document.getElementById('calSlots');if(slts)slts.innerHTML='';}
 function selectCalDay(ds){calState.selectedDate=ds;renderCalGrid();renderAvailSlots();}
-function renderAvailSlots(){var slots=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];var box=document.getElementById('calSlots');if(!box)return;box.innerHTML=slots.map(function(t){var sel=calState.selectedTime===t?' selected':'';return '<div class="cal-slot'+sel+'" onclick="selectCalTime(\'' +t+ '\')">'+t+'</div>';}).join('');}
+function renderAvailSlots(){var slots=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];var box=document.getElementById('calSlots');if(!box)return;box.innerHTML=slots.map(function(t){var sel=calState.selectedTime===t?' selected':'';return '<div class="cal-slot'+sel+'" onclick="selectCalTime(\''+t+'\')" >'+t+'</div>';}).join('');}
 function selectCalTime(t){calState.selectedTime=t;renderAvailSlots();}
 async function loadCalStaff(storeId){var box=document.getElementById('calStaff');if(!box)return;try{var r=await window._sb.from('staff').select('id,name,avatar_url').eq('store_id',storeId).order('name');var data=r.data;if(!data||!data.length){box.innerHTML='';return;}box.innerHTML='<div style="width:100%;font-size:12px;font-weight:600;margin-bottom:4px;">Mitarbeiter</div>'+data.map(function(m){var sel=calState.staffId===m.id?' selected':'';return '<div class="cal-staff-chip'+sel+'" onclick="selectCalStaff('+m.id+',this)"><span style="font-size:20px">&#128100;</span><span>'+m.name+'</span></div>';}).join('');}catch(e){box.innerHTML='';}}
 function selectCalStaff(id,el){calState.staffId=id;document.querySelectorAll('.cal-staff-chip').forEach(function(c){c.classList.toggle('selected',c===el);});}
@@ -13124,9 +13125,9 @@ function showWalkinStatus(entry){var p=document.getElementById('walkinStatus');i
 function closeWalkinModal(){var m=document.getElementById('walkinModal');if(m)m.classList.add('hidden');}
 async function leaveWalkinQueue(id){if(!id)return;await window._sb.from('walk_in_queue').update({status:'left'}).eq('id',id);closeWalkinModal();window._walkinId=null;}
 /* === ADMIN PANEL === */
-async function loadAdminPanel(){var box=document.getElementById('adminPanelContent');if(!box)return;var r=await window._sb.from('stores').select('id,name,category,status').eq('status','pending').order('created_at');var data=r.data;if(!data||!data.length){box.innerHTML='<p style="text-align:center;color:#94a3b8;">Keine ausstehenden Salons.</p>';return;}box.innerHTML=data.map(function(s){return '<div class="admin-store-item"><div><strong>'+s.name+'</strong><br><span style="font-size:12px;color:#94a3b8;">'+( s.category||'')+'</span></div><div class="admin-actions"><button class="btn-admin-approve" onclick="adminApproveStore('+s.id+')">&#10003; Genehmigen</button><button class="btn-admin-reject" onclick="adminRejectStore('+s.id+')">&#10005; Ablehnen</button></div></div>';}).join('');}
-async function adminApproveStore(id){await window._sb.from('stores').update({status:'approved'}).eq('id',id);loadAdminPanel();}
-async function adminRejectStore(id){await window._sb.from('stores').update({status:'rejected'}).eq('id',id);loadAdminPanel();}
+async function loadAdminPanel(){var box=document.getElementById('adminPanelContent');if(!box)return;var r=await window._sb.from('salons').select('id,name,categories,status').eq('status','pending').order('created_at');var data=r.data;if(!data||!data.length){box.innerHTML='<p style="text-align:center;color:#94a3b8;">Keine ausstehenden Salons.</p>';return;}box.innerHTML=data.map(function(s){return '<div class="admin-store-item"><div><strong>'+s.name+'</strong><br><span style="font-size:12px;color:#94a3b8;">'+(Array.isArray(s.categories)?s.categories.join(', '):(s.categories||''))+'</span></div><div class="admin-actions"><button class="btn-admin-approve" onclick="adminApproveStore('"+s.id+"')">&checkmark; Genehmigen</button><button class="btn-admin-reject" onclick="adminRejectStore('"+s.id+"')">&times; Ablehnen</button></div></div>';}).join('');}
+async function adminApproveStore(id){await window._sb.from('salons').update({status:'approved',is_active:true}).eq('id',id);loadAdminPanel();}
+async function adminRejectStore(id){await window._sb.from('salons').update({status:'rejected',is_active:false}).eq('id',id);loadAdminPanel();}
 /* === CHAT HELPERS === */
 function updateChatFab(unread){var fab=document.getElementById('chatFab');var badge=document.getElementById('chatFabBadge');if(!fab)return;if(unread>0){fab.classList.remove('hidden');if(badge){badge.classList.remove('hidden');badge.textContent=unread>9?'9+':unread;}}else{if(badge)badge.classList.add('hidden');}}
 function openLastChat(){var fab=document.getElementById('chatFab');if(fab)fab.classList.add('hidden');var panel=document.getElementById('chatPanel');if(panel)panel.classList.toggle('hidden');}
@@ -13969,8 +13970,8 @@ async function renderStaffCommission(storeId){
 
 async function renderStaffCommList(sid){
   const list=document.getElementById('staffCommList');if(!list)return;
-  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
-  const staffList=store?.staff_list||[];
+  const {data:salonRec}=await sb.from('salons').select('staff_list').eq('id',sid).single();
+  const staffList=salonRec?.staff_list||[];
   if(!staffList.length){
     list.innerHTML='<div style="padding:1rem;color:var(--c-text-muted)">Noch keine Mitarbeiter. Klicke &ldquo;+ Mitarbeiter&rdquo; um zu beginnen.</div>';
   } else {
@@ -14085,23 +14086,23 @@ function openAddStaffComm(sid){
   addStaffToStore(sid,{name:name.trim(),role,commission:Math.min(100,Math.max(0,comm))});
 }
 async function addStaffToStore(sid,sm){
-  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
-  const list=store?.staff_list||[];list.push(sm);
-  await sb.from('stores').update({staff_list:list}).eq('id',sid);
+  const {data:salonRec}=await sb.from('salons').select('staff_list').eq('id',sid).single();
+  const list=salonRec?.staff_list||[];list.push(sm);
+  await sb.from('salons').update({staff_list:list}).eq('id',sid);
   renderStaffCommList(sid);
 }
 async function removeStaffMember(sid,idx){
   if(!confirm('Mitarbeiter entfernen?'))return;
-  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
-  const list=store?.staff_list||[];list.splice(idx,1);
-  await sb.from('stores').update({staff_list:list}).eq('id',sid);
+  const {data:salonRec}=await sb.from('salons').select('staff_list').eq('id',sid).single();
+  const list=salonRec?.staff_list||[];list.splice(idx,1);
+  await sb.from('salons').update({staff_list:list}).eq('id',sid);
   renderStaffCommList(sid);
 }
 async function updateStaffCommission(sid,idx,val){
-  const {data:store}=await sb.from('stores').select('staff_list').eq('id',sid).single();
-  const list=store?.staff_list||[];
+  const {data:salonRec}=await sb.from('salons').select('staff_list').eq('id',sid).single();
+  const list=salonRec?.staff_list||[];
   if(list[idx])list[idx].commission=parseInt(val)||0;
-  await sb.from('stores').update({staff_list:list}).eq('id',sid);
+  await sb.from('salons').update({staff_list:list}).eq('id',sid);
 }
 
 // ── MARKETING BLAST: SMS + Email to past clients ──
@@ -14262,7 +14263,7 @@ async function loadWeatherWidget(){
   }catch(e){const wEl=document.getElementById('weatherWidget');if(wEl)wEl.textContent='';}
 }
 async function checkAndSetVerified(storeId){
-  try{const {count}=await window._sb.from('bookings').select('id',{count:'exact',head:true}).eq('store_id',storeId).eq('status','confirmed');if(count>=10){await window._sb.from('stores').update({is_verified:true}).eq('id',storeId).is('is_verified',null);}}catch(e){}
+  try{const {count}=await window._sb.from('bookings').select('id',{count:'exact',head:true}).eq('store_id',storeId).eq('status','confirmed');if(count>=10){await window._sb.from('salons').update({last_verified_at:new Date().toISOString()}).eq('id',storeId);}}catch(e){}
 }
 // Init weather on page load
 document.addEventListener('DOMContentLoaded',function(){loadWeatherWidget();initTestimonialsCarousel();});
