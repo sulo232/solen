@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:vite": "tsc -b && vite build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -12,12 +13,16 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.4",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.36.0",
     "lucide-react": "^0.577.0",
-    "next": "^15.5.12",
+    "motion": "^12.36.0",
+    "next": "15.2.4",
     "next-intl": "^4.8.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.13.1"
+    "react-router-dom": "^7.13.1",
+    "react-use-measure": "^2.1.7",
+    "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.17.30",
@@ -26,9 +31,12 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.2.4",
+    "globals": "^15.13.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.0.0",
+    "@vitejs/plugin-react": "^4.3.4"
   },
   "packageManager": "pnpm@9.15.9"
 }
