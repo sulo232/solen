@@ -18,16 +18,17 @@ You (Claude Code) previously completed Phase 1 and Phase 3, but the code pushed 
 **YOUR NEW INSTRUCTIONS:**
 1. `git checkout feature/customer-frontend` and pull the latest. **DO NOT push to `main`.** ALL work must happen on the feature branch.
 2. The dependencies you were blocked on (`@radix-ui/react-slider`, `mapbox-gl`, `driver.js`) are now **installed**.
-3. **Phase 1 and Phase 3 are partially done but UNSTABLE.** Before starting Phase 2, review your code on `feature/customer-frontend`, fix whatever broke the site (likely Next.js layout/page conflicts with the `index.html` iframe, or build errors), and test it locally.
-4. Once stable, proceed to Phase 2 (Homepage).
+3. **Root Cause of the breakage:** You prematurely replaced the live `public/home.html` iframe in `app/[locale]/page.tsx` with your `<HomePage />` component. The live site relies on that iframe. 
+4. **Phase 1 and Phase 3 are partially done but UNSTABLE.** Review your code on `feature/customer-frontend`, revert `app/[locale]/page.tsx` back to the iframe, and test locally.
+5. Once stable, proceed to Phase 2 (Homepage). **Do NOT touch `app/[locale]/page.tsx`. Build your new React homepage on a test route: `app/[locale]/new-home/page.tsx`** so the user can test it without breaking production.
 
 ---
 
 ## Current State
 All `app/[locale]/` pages are **empty stubs** (`return null`). No `components/` dir. The entire live site runs on `public/home.html` (vanilla JS iframe). This roadmap migrates each piece to proper Next.js.
 
-> [!IMPORTANT]
-> Keep the iframe in `app/[locale]/page.tsx` until Phase 5 is done. The homepage stays as iframe until the React homepage is complete and tested.
+> [!CAUTION]
+> **NEVER touch `app/[locale]/page.tsx`**. The homepage MUST remain an iframe pointing to `/home.html`. Build all React replacements on test routes (e.g. `/new-home`) until the User explicitly tells you to swap them.
 
 ---
 
@@ -75,7 +76,7 @@ npm install -D @types/mapbox-gl
 ## Phase 2 — Homepage
 *Estimated: ~2 days*
 
-**File:** `app/[locale]/page.tsx` — replace iframe stub at END of this phase.
+**File:** `app/[locale]/new-home/page.tsx` — Build the React `<HomePage />` here on a TEST route. **Do NOT touch the real `page.tsx` iframe.**
 
 ### Sections
 
