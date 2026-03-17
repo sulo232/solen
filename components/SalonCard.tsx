@@ -101,10 +101,16 @@ export default function SalonCard({ salon, variant = "default", locale = "de" }:
             <MapPin className="w-3.5 h-3.5 shrink-0" />
             <span className="text-xs font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</span>
           </div>
-          <div className="flex items-center gap-1 mt-2">
+          <div className="flex items-center gap-1 mt-2 flex-wrap">
             <Star className="w-4 h-4 fill-coral text-coral" />
             <span className="text-sm font-data font-medium text-dark">{salon.average_rating.toFixed(1)}</span>
             <span className="text-xs text-dark/40 font-body">({salon.review_count})</span>
+            {salon.avg_price != null && salon.avg_price > 0 && (
+              <>
+                <span className="text-xs text-dark/30 font-body">·</span>
+                <span className="text-xs font-data text-dark/60">Ø CHF {salon.avg_price}</span>
+              </>
+            )}
           </div>
         </div>
       </Link>

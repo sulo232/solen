@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from("salons")
-    .select("*", { count: "exact" })
+    .select("*, services(price)", { count: "exact" })
     .eq("is_active", true);
 
   if (category) query = query.contains("categories", [category]);
@@ -41,5 +41,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ items: [], total: 0, page, limit });
   }
 
-  return NextResponse.json({ items: data, total: count ?? 0, page, limit });
+  // Compute avg_price from joined services, then strip services from response
+  const items = (data ?? []).map((salon: Record<string, unknown>) => {
+    const services = salon.services as { price: number }[] | null;
+    const prices = (services ?? []).map((s) => s.price).filter((p) => typeof p === "number" && p > 0);
+    const avg_price = prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { services: _services, ...rest } = salon;
+    return { ...rest, avg_price };
+  });
+
+  return NextResponse.json({ items, total: count ?? 0, page, limit });
 }
