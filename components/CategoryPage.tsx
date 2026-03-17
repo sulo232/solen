@@ -8,6 +8,7 @@ import { ChevronRight, Phone, Globe, Building2, Star, Scissors } from "lucide-re
 import FilterBar from "@/components/FilterBar";
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
@@ -226,7 +227,9 @@ export default function CategoryPage({ category }: CategoryPageProps) {
       {/* Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {loading ? (
-          <div className="flex justify-center py-20"><Spinner size="lg" /></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
+          </div>
         ) : salons.length === 0 && dirEntries.length === 0 ? (
           <EmptyState
             icon={Scissors}

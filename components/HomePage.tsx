@@ -13,7 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
-import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import SearchBar from "@/components/ui/SearchBar";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
@@ -182,8 +182,8 @@ export default function HomePage() {
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-16">
-              <Spinner size="lg" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
             </div>
           ) : salons.length === 0 ? (
             <EmptyState

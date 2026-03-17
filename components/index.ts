@@ -11,6 +11,7 @@ export { default as AnimatedButton } from "@/components/ui/AnimatedButton";
 export { default as EmptyState } from "@/components/ui/EmptyState";
 export { default as SearchBar } from "@/components/ui/SearchBar";
 export { default as InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+export { default as Skeleton } from "@/components/ui/Skeleton";
 export { default as SocialProofStrip } from "@/components/ui/SocialProofStrip";
 export { default as TrustBadges } from "@/components/ui/TrustBadges";
 export { ToastProvider, useToast } from "@/components/ui/Toast";
