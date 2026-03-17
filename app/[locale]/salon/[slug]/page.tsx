@@ -152,6 +152,16 @@ export default function SalonProfilePage() {
       .catch(() => setLoading(false));
   }, [slug]);
 
+  // Track salon page view (fire-and-forget, rate-limited by session cookie)
+  useEffect(() => {
+    if (!salon?.id) return;
+    fetch("/api/analytics/track-view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ salon_id: salon.id, source: "direct" }),
+    }).catch(() => {});
+  }, [salon?.id]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
   }
