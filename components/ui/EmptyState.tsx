@@ -1,11 +1,18 @@
+import Image from "next/image";
 import { type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const ILLUSTRATIONS = {
+  "no-results": "/illustrations/no-results.svg",
+  "coming-soon": "/illustrations/coming-soon.svg",
+} as const;
 
 interface EmptyStateProps {
   icon: LucideIcon;
   title: string;
   message?: string;
   action?: React.ReactNode;
+  illustration?: keyof typeof ILLUSTRATIONS;
   className?: string;
 }
 
@@ -13,7 +20,7 @@ interface EmptyStateProps {
  * Empty state with a lucide-react icon, title, optional message, and optional CTA.
  * Used when lists/grids have no results.
  */
-export default function EmptyState({ icon: Icon, title, message, action, className }: EmptyStateProps) {
+export default function EmptyState({ icon: Icon, title, message, action, illustration, className }: EmptyStateProps) {
   return (
     <div
       className={cn(
@@ -21,6 +28,16 @@ export default function EmptyState({ icon: Icon, title, message, action, classNa
         className
       )}
     >
+      {illustration && (
+        <Image
+          src={ILLUSTRATIONS[illustration]}
+          alt=""
+          width={120}
+          height={120}
+          className="mb-4 opacity-80"
+          priority={false}
+        />
+      )}
       <div className="relative mb-5">
         {/* Soft halo behind icon */}
         <div className="absolute inset-0 rounded-full bg-teal/10 scale-[1.8] blur-xl" />
