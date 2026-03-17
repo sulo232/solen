@@ -18,7 +18,8 @@ import EmptyState from "@/components/ui/EmptyState";
 import SearchBar from "@/components/ui/SearchBar";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
-import type { SalonCard as SalonCardType } from "@/lib/types";
+import LastMinuteCard from "@/components/LastMinuteCard";
+import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -76,6 +77,7 @@ export default function HomePage() {
   const locale = useLocale();
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
 
   useEffect(() => {
     fetch("/api/salons?limit=8&sort=rating")
@@ -83,6 +85,11 @@ export default function HomePage() {
       .then((data) => setSalons(data.items ?? []))
       .catch(() => setSalons([]))
       .finally(() => setLoading(false));
+
+    fetch("/api/salons?sort=last_minute&limit=4")
+      .then((r) => r.json())
+      .then((data) => setLastMinuteSlots(data.items ?? []))
+      .catch(() => setLastMinuteSlots([]));
   }, []);
 
   return (
@@ -198,40 +205,57 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Last-Minute Teaser ─────────────────────────────────────────────── */}
+      {/* ── Last-Minute Section ────────────────────────────────────────────── */}
       <section className="py-10">
         <div className="max-w-5xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="rounded-2xl bg-gradient-to-r from-coral/5 to-coral/10 border border-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
-          >
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock size={20} style={{ color: "#FF6B6B" }} />
-                <h2
-                  className="font-heading font-bold text-xl text-dark"
-                  style={{ fontFamily: "Syne, sans-serif" }}
-                >
-                  Last-Minute Angebote
-                </h2>
-              </div>
-              <p
-                className="text-sm text-dark/60 font-body"
-                style={{ fontFamily: "DM Sans, sans-serif" }}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-1">
+              <Clock size={20} className="text-coral" />
+              <h2
+                className="font-heading font-bold text-2xl text-dark"
+                style={{ fontFamily: "Syne, sans-serif" }}
               >
-                Spare bis zu 50% auf kurzfristige Termine
-              </p>
+                Last-Minute Angebote
+              </h2>
             </div>
-            <Link href={`/${locale}/last-minute`} className="shrink-0">
-              <InteractiveHoverButton
-                text="Angebote ansehen"
-                className="w-44 border-teal/20"
-              />
-            </Link>
-          </motion.div>
+            <p
+              className="text-sm text-dark/60 font-body"
+              style={{ fontFamily: "DM Sans, sans-serif" }}
+            >
+              Spare bis zu 50% auf kurzfristige Termine
+            </p>
+          </div>
+
+          {lastMinuteSlots.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {lastMinuteSlots.map((slot) => (
+                <LastMinuteCard key={slot.id} slot={slot} locale={locale} />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="rounded-2xl bg-gradient-to-r from-coral/5 to-coral/10 border border-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+            >
+              <div className="flex-1">
+                <p
+                  className="text-sm text-dark/60 font-body"
+                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                >
+                  Aktuell keine Last-Minute Angebote — schau bald wieder vorbei!
+                </p>
+              </div>
+              <Link href={`/${locale}/last-minute`} className="shrink-0">
+                <InteractiveHoverButton
+                  text="Angebote ansehen"
+                  className="w-44 border-teal/20"
+                />
+              </Link>
+            </motion.div>
+          )}
         </div>
       </section>
 
