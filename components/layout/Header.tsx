@@ -27,6 +27,9 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Hide global header on dashboard and auth pages (they have their own navigation)
+  if (pathname.includes("/dashboard") || pathname.includes("/auth/")) return null;
+
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handler, { passive: true });
