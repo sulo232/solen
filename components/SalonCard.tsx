@@ -3,8 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Star, MapPin } from "lucide-react";
+import {
+  Star, MapPin, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
+  Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { SalonCard as SalonCardType } from "@/lib/types";
+
+const BADGE_ICONS: Record<string, LucideIcon> = {
+  Star, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
+  Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal,
+};
 import { cardPopIn } from "@/lib/animations";
 
 interface SalonCardProps {
@@ -97,6 +106,28 @@ export default function SalonCard({ salon, variant = "default", locale = "de" }:
         {/* Info row */}
         <div className="p-4">
           <h3 className="font-heading font-semibold text-dark text-base leading-tight">{salon.name}</h3>
+          {salon.badges && salon.badges.length > 0 && (
+            <div className="flex items-center gap-1 mt-1 flex-wrap">
+              {salon.badges.slice(0, 3).map((b, i) => {
+                const Ic = BADGE_ICONS[b.icon] ?? Star;
+                return (
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-medium"
+                    style={{ color: b.color, backgroundColor: b.bg_color }}
+                  >
+                    <Ic size={10} />
+                    {b.name_de}
+                  </span>
+                );
+              })}
+              {salon.badges.length > 3 && (
+                <span className="px-1.5 py-0.5 rounded-pill bg-gray-100 text-dark/40 text-[10px] font-medium">
+                  +{salon.badges.length - 3}
+                </span>
+              )}
+            </div>
+          )}
           <div className="flex items-center gap-1 mt-1 text-dark/50">
             <MapPin className="w-3.5 h-3.5 shrink-0" />
             <span className="text-xs font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</span>

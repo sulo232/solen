@@ -233,12 +233,20 @@ export interface LastMinuteSlot extends AvailabilitySlot {
   discounted_price: number;
 }
 
+export interface SalonBadge {
+  icon: string;
+  name_de: string;
+  color: string;
+  bg_color: string;
+}
+
 /** Salon card — enriched with services count for list views */
 export interface SalonCard extends Salon {
   services?: Service[];
   staff?: StaffMember[];
   reviews?: Review[];
   avg_price?: number | null;
+  badges?: SalonBadge[];
 }
 
 // ---------------------------------------------------------------------------
