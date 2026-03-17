@@ -17,6 +17,7 @@ export async function GET(
     .from("reviews")
     .select("*, profiles!user_id(display_name, avatar_url), staff_members(name)", { count: "exact" })
     .eq("salon_id", salon_id)
+    .eq("is_hidden", false)
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
