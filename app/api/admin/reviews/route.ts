@@ -1,0 +1,31 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+
+// GET /api/admin/reviews?flagged=true — admin only
+export async function GET(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { data: profile } = await supabase
+    .from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const flagged = req.nextUrl.searchParams.get("flagged") === "true";
+  const admin = createAdminSupabaseClient();
+
+  let query = admin
+    .from("reviews")
+    .select("*, profiles!user_id(display_name), salons!salon_id(name)")
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  if (flagged) {
+    query = query.eq("is_flagged", true);
+  }
+
+  const { data, error } = await query;
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ reviews: data ?? [] });
+}
