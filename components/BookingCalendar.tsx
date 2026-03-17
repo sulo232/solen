@@ -6,6 +6,9 @@ import { useLocale } from "next-intl";
 import { RotateCcw, Info } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
+import SolenDatePicker from "@/components/ui/date-picker";
+import { today as ariaToday, getLocalTimeZone, CalendarDate } from "@internationalized/date";
+import type { DateValue } from "react-aria-components";
 import type { AvailabilitySlot, RecurringFrequency, StaffMember } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -61,11 +64,16 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const locale = useLocale();
   const router = useRouter();
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const days = Array.from({ length: 14 }, (_, i) => addDays(today, i));
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
+  const [selectedDate, setSelectedDate] = useState<Date>(todayDate);
+
+  // Convert between JS Date and react-aria DateValue
+  const toCalendarDate = (d: Date) => new CalendarDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+  const fromCalendarDate = (d: DateValue) => new Date(d.year, d.month - 1, d.day);
+  const ariaMinDate = ariaToday(getLocalTimeZone());
+  const ariaMaxDate = toCalendarDate(addDays(todayDate, 30));
   const [slots, setSlots] = useState<SlotWithRelations[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<SlotWithRelations | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<string>(staffMemberId ?? "any");
@@ -210,35 +218,15 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         </div>
       )}
 
-      {/* 14-day date strip */}
-      <div
-        className="flex gap-2 px-4 py-4 overflow-x-auto no-scrollbar"
-        style={{ scrollSnapType: "x mandatory" }}
-      >
-        {days.map((day) => {
-          const iso = isoDate(day);
-          const isToday = iso === isoDate(today);
-          const isSelected = iso === isoDate(selectedDate);
-          const dayLabel = day.toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", { weekday: "short" });
-          return (
-            <button
-              key={iso}
-              onClick={() => setSelectedDate(day)}
-              style={{ scrollSnapAlign: "start" }}
-              className={[
-                "flex-shrink-0 flex flex-col items-center gap-1 w-12 py-2.5 rounded-button transition-all duration-150",
-                isSelected
-                  ? "bg-teal text-white ring-2 ring-teal ring-offset-1"
-                  : isToday
-                  ? "bg-teal/10 text-teal font-semibold"
-                  : "bg-gray-50 text-dark/60 hover:bg-gray-100",
-              ].join(" ")}
-            >
-              <span className="text-[10px] uppercase tracking-wide">{dayLabel}</span>
-              <span className="text-sm font-semibold font-data">{day.getDate()}</span>
-            </button>
-          );
-        })}
+      {/* Date picker */}
+      <div className="px-4 py-4">
+        <SolenDatePicker
+          label="Datum wählen"
+          value={toCalendarDate(selectedDate)}
+          onChange={(d) => setSelectedDate(fromCalendarDate(d))}
+          minValue={ariaMinDate}
+          maxValue={ariaMaxDate}
+        />
       </div>
 
       {/* Time slots */}
