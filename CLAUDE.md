@@ -15,8 +15,8 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | Hybrid: Vanilla HTML/CSS/JS monolith (`index.html`, 14k+ lines) + Next.js App Router (`app/`) |
-| **Styling** | CSS Variables (design tokens in `index.html` `<style>`) + Tailwind CSS (`tailwind.config.js`) |
+| **Frontend** | Next.js App Router (`app/`) + React components (`components/`) |
+| **Styling** | Tailwind CSS (`tailwind.config.js`) + CSS Variables |
 | **Language** | TypeScript (`tsconfig.json`) and JavaScript |
 | **Backend/DB** | [Supabase](https://supabase.com/) — PostgreSQL, Auth (Google OAuth + Email), Storage |
 | **Payments** | [Stripe](https://stripe.com/) — Payment Intents, Connect, Webhooks |
@@ -29,20 +29,23 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 
 ## 3. Architecture
 
-### 3.1 The Hybrid Monolith
+### 3.1 Architecture
 
-The app has two parallel systems:
+The app is a **Next.js App Router** application:
 
-1. **Legacy Monolith** — `index.html` contains the entire SPA (HTML + embedded CSS + embedded JS). This is the **live production app** served by Vercel as `public/home.html` via a Next.js iframe. It handles: hero, salon cards, booking wizard, registration flow, admin dashboard, DM chat, profiles, and more.
+- **Homepage**: `app/[locale]/page.tsx` renders `<HomePage />` (React component in `components/HomePage.tsx`)
+- **All pages**: Next.js App Router pages in `app/[locale]/`
+- **Components**: React components in `components/`, exported from `components/index.ts`
+- **API**: Next.js API routes in `app/api/`
 
-2. **Next.js Layer** — The `app/` directory contains Next.js App Router pages. Currently being migrated from the monolith. React components in `components/` are exported from `components/index.ts`.
+> **Note**: The old monolith (`index.html`, 14k lines, wine-red design) has been archived to `_archive/monolith-v1.html`. It is NOT used anywhere. Do not reference it, do not try to restore it. The homepage is 100% Next.js now.
 
 ### 3.2 Key Directories
 
 ```
 solen/
-├── index.html          # ⚠️ THE MONOLITH — 14k lines, sync to public/home.html
-├── public/home.html    # ⚠️ THE DEPLOYED FILE — served as /home.html by Next.js iframe
+├── _archive/           # Archived old code (DO NOT USE)
+│   └── monolith-v1.html # Old 14k-line monolith (wine-red design, retired 2026-03-17)
 ├── CLAUDE.md           # THIS FILE — master instructions
 ├── .agent-lock.json    # File locks for multi-agent coordination (gitignored)
 ├── .agent-comms.md     # Inter-agent communication log
@@ -77,12 +80,9 @@ solen/
 - **Glass nav**: `bg-white/80 backdrop-blur-lg border-b border-gray-100`
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
 
-### 3.4 Design System (Legacy — Monolith)
+### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
-- **Aesthetic**: "Quiet Luxury" + Glassmorphism
-- **Colors**: accent `#9B1D30` (wine red), gold `#D4AF77`, teal `#4ECDC4`
-- **Fonts**: `DM Serif Display` (headings), `DM Sans` (body), `JetBrains Mono` (prices)
-- **Dark Mode**: Via `[data-theme="dark"]` data attributes
+> ⚠️ The old monolith design (wine-red `#9B1D30`, gold, DM Serif Display) is **retired**. It lives in `_archive/monolith-v1.html` for reference only. **ALL new code must use the Next.js design system (Section 3.3).**
 
 ### 3.5 Key Features
 
@@ -151,8 +151,6 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 
 | File | Risk | Why |
 |---|---|---|
-| `index.html` | 🔴 CRITICAL | 14k-line monolith. **Always lock before editing.** |
-| `public/home.html` | 🔴 CRITICAL | Must stay in sync with `index.html`. Always `cp index.html public/home.html` after editing. |
 | `supabase/migrations/*` | 🔴 CRITICAL | Conflicting migrations = broken DB. |
 | `.env.local` | 🟡 HIGH | Secrets. Never commit, never overwrite. |
 | `package.json` | 🟡 HIGH | Affects all agents. Lock before editing. |
@@ -173,9 +171,9 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 
 1. **Plan First**: Generate an Implementation Plan artifact before writing code.
 2. **Verify**: Never mark done without checking logs. Run `npm run build` if touching Next.js files.
-3. **No Blind Deletions**: The monolith has 14k lines. Understand before deleting.
+3. **No Blind Deletions**: Understand code before deleting. Check git blame and grep for usages.
 4. **Supabase Awareness**: Check table schema before modifying any Supabase JS. Key table: `salons` (not `stores` — migration 013 dropped the old table).
-5. **index.html ↔ public/home.html sync**: After editing `index.html`, always `cp index.html public/home.html`. The Next.js page serves `public/home.html` via iframe — they MUST stay in sync.
+5. **Homepage is Next.js**: The homepage is `app/[locale]/page.tsx` → `<HomePage />` component. There is NO iframe, NO monolith. All homepage changes go in `components/HomePage.tsx`.
 6. **Vercel Deployment Check (MANDATORY after every `git push`)**: After pushing to main or promoting a deployment, check `https://vercel.com/sulo232s-projects/solen/deployments` and verify:
    - The **latest deployment name/commit SHA** matches what you just pushed (confirm it's not serving a stale/old commit)
    - The **timestamp** matches — if the deployment is older than expected, the push may not have triggered correctly
@@ -184,7 +182,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
    - If the **wrong deployment is in production** (e.g. a preview was promoted instead of main) → promote the correct one via the three-dot menu
    - If there is a **conflict between two agents' deployments** (e.g. two branches both promoted to production) → revert the wrong one and ask the user which branch should be live before proceeding
    - If fixing it requires a **major decision** (e.g. rolling back a whole feature, changing the deployment branch) → stop and ask the user
-7. **Monolith Replacement Protocol**: **NEVER replace or remove the `public/home.html` iframe** mounted in `app/[locale]/page.tsx` without explicit User permission. This iframe powers the live monolith `www.solen.ch`. If you are building a React replacement for a live page, ALWAYS build it on a **new test route** (e.g., `app/[locale]/new-home/page.tsx`) so the user can test it without causing a production crash.
+7. **Homepage Protection**: The homepage (`components/HomePage.tsx`) is the live production page. If building a replacement, build it on a **new test route** (e.g., `app/[locale]/new-home/page.tsx`) so the user can test it without causing a production crash. Also note any incomplete features in `_tasks/INCOMPLETE_FEATURES.md` so they are not forgotten.
 8. **Knowledge Sync (MANDATORY)**: Before asking the user clarification questions or generating a new roadmap, **ALWAYS read the files in `_tasks/completed/`**. This prevents agents from repeatedly asking about configurations, integrations (e.g., Supabase Auth, Stripe), or UI decisions that have already been finalized in previous tasks.
 
 ----
@@ -216,8 +214,8 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 
 - **Platform**: Vercel (auto-deploys from `main` branch)
 - **Build**: Vercel runs `npm run build` (Next.js + Tailwind)
-- **Homepage**: `app/[locale]/page.tsx` serves `public/home.html` via `<iframe src="/home.html">`
-- **New pages**: `app/[locale]/*/page.tsx` are proper Next.js React pages (no iframe)
+- **Homepage**: `app/[locale]/page.tsx` renders `<HomePage />` (fully React, no iframe)
+- **All pages**: `app/[locale]/*/page.tsx` are Next.js React pages
 
 ---
 
@@ -404,12 +402,13 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
   ```
 - **NEVER** change an existing API's response structure without grepping for all `fetch("/api/that-route")` calls first
 
-### Rule 12: MONOLITH AWARENESS
-- The monolith (`index.html` / `public/home.html`) has its OWN design system (Section 3.4) that is DIFFERENT from the Next.js design system (Section 3.3)
-- If editing monolith code → use monolith styles (DM Serif Display, wine red `#9B1D30`, etc.)
-- If editing Next.js pages → use Next.js styles (Syne, teal `#4ECDC4`, etc.)
-- **NEVER** mix the two design systems
-- After editing `index.html` → ALWAYS run `cp index.html public/home.html` (also stated in Workflow Rule 5)
+### Rule 12: SINGLE DESIGN SYSTEM
+- There is only ONE design system: **Next.js** (Section 3.3)
+- Colors: teal `#4ECDC4` (primary), coral `#FF6B6B` (accent), dark `#1A1A2E`
+- Fonts: Syne (headings), DM Sans (body), Space Grotesk (data/prices)
+- The old monolith design (wine red `#9B1D30`, gold, DM Serif Display) is **RETIRED** and archived in `_archive/monolith-v1.html`
+- **NEVER** use wine red, gold, or DM Serif Display in any new code
+- **NEVER** reference `index.html` or `public/home.html` — they no longer exist
 
 ---
 
