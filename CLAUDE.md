@@ -19,6 +19,9 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 | **Styling** | CSS Variables (design tokens in `index.html` `<style>`) + Tailwind CSS (`tailwind.config.js`) |
 | **Language** | TypeScript (`tsconfig.json`) and JavaScript |
 | **Backend/DB** | [Supabase](https://supabase.com/) — PostgreSQL, Auth (Google OAuth + Email), Storage |
+| **Payments** | [Stripe](https://stripe.com/) — Payment Intents, Connect, Webhooks |
+| **Rate Limiting** | [Upstash Redis](https://upstash.com/) via `@upstash/ratelimit` |
+| **Validation** | [Zod](https://zod.dev/) — API input validation schemas in `lib/validations.ts` |
 | **Deployment** | Vercel (`vercel.json`) |
 | **PWA** | `manifest.json` + `sw.js` (Service Worker) |
 
@@ -53,6 +56,11 @@ solen/
 │   ├── dashboard/      # Dev 3's dashboard-specific components
 │   └── ui/             # Shared UI primitives
 ├── lib/                # Utility libraries (Dev 1 owns)
+│   ├── supabase.ts     # Supabase client helpers (server + admin)
+│   ├── ratelimit.ts    # Upstash rate limiters (from security roadmap Phase 4)
+│   ├── feature-flags.ts # Kill switch + ban check (from security roadmap Phase 5)
+│   ├── validations.ts  # Zod schemas for all API inputs (from security roadmap Phase 6)
+│   └── audit.ts        # Admin action audit logging (from security roadmap Phase 9)
 ├── public/             # Static assets
 ├── supabase/           # Migrations + Edge Functions (Dev 1 owns)
 ├── messages/           # i18n translation files
@@ -181,7 +189,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 
 ----
 
-## 6. Supabase Schema (New — Migration 014)
+## 6. Supabase Schema (New — Migration 014+)
 
 | Table | Key Columns | Notes |
 |---|---|---|
@@ -190,9 +198,17 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `staff_members` | `id`, `salon_id`, `name`, `avatar_url`, `specialties[]`, `is_active` | |
 | `availability_slots` | `id`, `salon_id`, `service_id`, `staff_member_id`, `starts_at`, `ends_at`, `status` | status: available/booked/blocked |
 | `bookings` | `id`, `user_id`, `salon_id`, `service_id`, `slot_id`, `starts_at`, `ends_at`, `price_paid`, `status`, `is_first_visit`, `is_recurring` | |
-| `profiles` | `id`, `display_name`, `avatar_url`, `role`, `onboarding_completed` | role: customer/salon_owner/admin |
+| `profiles` | `id`, `display_name`, `avatar_url`, `role`, `onboarding_completed`, `banned_at`, `ban_reason` | role: customer/salon_owner/admin. `banned_at` = user banned. |
 | `conversations` | `id`, `customer_id`, `salon_id`, `unread_count_salon` | |
 | `messages` | `id`, `conversation_id`, `sender_id`, `content`, `message_type` | |
+| `salon_directory` | `name`, `phone`, `email`, `address`, `google_place_id`, `claim_code` | RLS enabled (read-only for public, admin-only writes). |
+| `feature_flags` | `key` (PK), `enabled`, `description`, `updated_by` | Kill switch. `maintenance_mode` = global off switch. |
+| `audit_log` | `actor_id`, `action`, `target_type`, `target_id`, `metadata`, `ip_address` | Logs admin actions. Admin-only read. |
+| `data_deletion_log` | `user_email`, `requested_at`, `completed_at`, `tables_cleared` | GDPR compliance. Admin-only read. |
+
+| View | Columns | Notes |
+|---|---|---|
+| `public_profiles` | `id`, `display_name`, `avatar_url` | Safe public view. Use this (not `profiles`) when displaying OTHER users' names/avatars. |
 
 ---
 
@@ -343,4 +359,292 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 - If you need a component that doesn't exist → STOP and ask if you should create it or use something else
 - If an API endpoint isn't available → STOP and note it in `_tasks/INCOMPLETE_FEATURES.md`
 - **NEVER** guess or improvise — broken production is worse than a paused task
+
+### Rule 8: NEVER REBUILD FROM SCRATCH
+> **INCIDENT**: An AI agent was asked to modify existing pages but instead created entirely new pages/layouts, overwriting working UI with generic templates that didn't match the Solen design system.
+
+- **ALWAYS** read the existing file content FIRST before editing
+- **ALWAYS** use existing components (`DashboardLayout`, `SalonCard`, `Spinner`, etc.) — do NOT create replacements
+- **ALWAYS** match the existing styling patterns (read `UI_RULES.md` + look at `dashboard/page.tsx` for reference)
+- **NEVER** replace a working page with a new one built from scratch
+- **NEVER** create a new layout component when `DashboardLayout` already exists
+- **NEVER** create a new card component when `SalonCard` or the dashboard card pattern already exists
+- If you think the existing component is wrong → STOP and ask the user before replacing it
+
+### Rule 9: VERIFY PREVIEW ENVIRONMENTS
+> **INCIDENT**: Preview deployments crashed because `NEXT_PUBLIC_SUPABASE_URL` was only set for Production in Vercel, not Preview. The middleware tried to init Supabase with `undefined` → instant `MIDDLEWARE_INVOCATION_FAILED`.
+
+- When adding NEW environment variables, remind the user to set them for **ALL environments** (Production + Preview + Development) in Vercel
+- If a build works locally but preview fails → check if the env vars are set for Preview in Vercel
+- **NEVER** assume an env var is available — always use fallbacks or early-exit checks:
+  ```typescript
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    throw new Error("NEXT_PUBLIC_SUPABASE_URL is not set");
+  }
+  ```
+
+### Rule 10: TEST API ROUTES AFTER CREATING THEM
+> **INCIDENT**: 41 API routes were built but never tested. They looked correct in code but failed at runtime because of missing env vars, wrong response formats, and broken function calls.
+
+- After creating or modifying an API route, verify it works by checking:
+  - All imported functions/modules exist
+  - All env vars it depends on are set (or gracefully handled if not)
+  - The response format matches what the frontend expects
+- If you can't test a route, add it to `_tasks/INCOMPLETE_FEATURES.md` with a note like: "Route created but untested — needs manual verification"
+
+### Rule 11: API RESPONSE FORMAT CONSISTENCY
+> **INCIDENT**: DM Chat broke because one route returned `{ data: profile }` but the frontend expected `profile` directly. Another returned `{ items: [...] }` but the frontend expected `{ messages: [...] }`.
+
+- **ALWAYS** check what the frontend expects before changing an API response format
+- **ALWAYS** return data in the format the consumer expects — if changing the format, update ALL consumers
+- When in doubt, return BOTH keys for backwards compatibility:
+  ```typescript
+  // ✅ SAFE — supports both old and new consumers
+  return NextResponse.json({ messages: data, items: data, data });
+  ```
+- **NEVER** change an existing API's response structure without grepping for all `fetch("/api/that-route")` calls first
+
+### Rule 12: MONOLITH AWARENESS
+- The monolith (`index.html` / `public/home.html`) has its OWN design system (Section 3.4) that is DIFFERENT from the Next.js design system (Section 3.3)
+- If editing monolith code → use monolith styles (DM Serif Display, wine red `#9B1D30`, etc.)
+- If editing Next.js pages → use Next.js styles (Syne, teal `#4ECDC4`, etc.)
+- **NEVER** mix the two design systems
+- After editing `index.html` → ALWAYS run `cp index.html public/home.html` (also stated in Workflow Rule 5)
+
+---
+
+## 11. 🔒 SECURITY RULES (MANDATORY — ALL API ROUTES)
+
+> **CONTEXT**: A full security audit on 2026-03-17 found zero rate limiting, zero input validation, exposed credentials in git, and disabled RLS on critical tables. These rules exist to prevent security regressions.
+>
+> **NOTE**: All security utility files are implemented and mandatory. See `lib/ratelimit.ts`, `lib/feature-flags.ts`, `lib/validations.ts`, `lib/audit.ts`. Every API route MUST include all security layers — no exceptions, no TODOs.
+
+### Rule S1: EVERY NEW API ROUTE MUST HAVE THESE LAYERS
+
+When creating or modifying ANY API route in `app/api/`, you MUST include these checks **in this exact order**:
+
+```typescript
+// ✅ CORRECT — Full security stack
+export async function POST(req: NextRequest) {
+  // 1. Feature flag check (is this feature enabled?)
+  const disabled = await checkFeatureEnabled("bookings");
+  if (disabled) return disabled;
+
+  // 2. Auth check
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // 3. Ban check
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
+
+  // 4. Rate limit check
+  const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
+
+  // 5. Input validation (zod)
+  const body = await req.json();
+  const { data, error } = validateBody(createBookingSchema, body);
+  if (error) return NextResponse.json({ message: error.message, code: "VALIDATION_ERROR" }, { status: 400 });
+
+  // 6. Business logic...
+}
+```
+
+```typescript
+// ❌ WRONG — No security layers
+export async function POST(req: NextRequest) {
+  const body = await req.json();  // No auth, no rate limit, no validation
+  const { data } = await supabase.from("bookings").insert(body);
+  return NextResponse.json({ data });
+}
+```
+
+**For public (unauthenticated) GET routes**, use IP-based rate limiting:
+
+```typescript
+// ✅ CORRECT — Public route with IP rate limit
+export async function GET(req: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+  // ... query logic
+}
+```
+
+### Rule S2: NEVER EXPOSE SECRETS
+
+- **NEVER** hardcode API keys, tokens, or secrets in source code
+- **NEVER** use `SUPABASE_SERVICE_ROLE_KEY` in client-side code or `NEXT_PUBLIC_` variables
+- **NEVER** commit `.env`, `.env.local`, or files containing tokens to git
+- **ALWAYS** use `process.env.VARIABLE_NAME` server-side only
+- **ALWAYS** use `createAdminSupabaseClient()` (service role) ONLY in API routes, never in components
+
+```typescript
+// ✅ CORRECT — Server-side only, from env
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+// ❌ WRONG — Hardcoded secret
+const stripe = new Stripe("sk_live_abc123...");
+
+// ❌ WRONG — Service role key in a client component
+const admin = createAdminSupabaseClient(); // This bypasses RLS!
+```
+
+### Rule S3: RLS IS NON-NEGOTIABLE
+
+When creating new Supabase tables or modifying migrations:
+- **ALWAYS** enable RLS: `ALTER TABLE public.tablename ENABLE ROW LEVEL SECURITY;`
+- **ALWAYS** add explicit SELECT/INSERT/UPDATE/DELETE policies
+- **NEVER** use `USING (true)` for write operations (INSERT/UPDATE/DELETE)
+- **NEVER** grant `DELETE` or `TRUNCATE` to the `anon` role
+- `USING (true)` for SELECT is acceptable ONLY for genuinely public read data (salons, reviews)
+
+```sql
+-- ✅ CORRECT — Scoped policies
+CREATE POLICY "bookings_select_own" ON public.bookings
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- ❌ WRONG — Anyone can read/write anything
+CREATE POLICY "bookings_yolo" ON public.bookings
+  FOR ALL USING (true);
+```
+
+### Rule S4: VALIDATE ALL USER INPUT
+
+- **ALWAYS** validate request bodies with zod schemas from `lib/validations.ts`
+- **ALWAYS** validate UUID parameters (don't trust URL path params)
+- **NEVER** pass raw user input directly into SQL or `.ilike()` without length limits
+- **NEVER** trust `req.json()` without schema validation
+
+### Rule S5: SECURITY UTILITIES — MANDATORY IMPORTS
+
+When writing API routes, these utilities MUST be available (created in the security roadmap):
+
+| Utility | Import | Purpose |
+|---|---|---|
+| Rate limiting | `import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit"` | Prevent abuse |
+| Feature flags | `import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags"` | Kill switch |
+| Validation | `import { validateBody, schemaName } from "@/lib/validations"` | Input validation |
+| Audit logging | `import { logAuditEvent } from "@/lib/audit"` | Admin action tracking |
+
+All four utility files exist and are mandatory in every API route. There are no exceptions.
+
+### Rule S6: ADMIN ROUTES MUST DOUBLE-CHECK ROLE
+
+Every route under `app/api/admin/` MUST verify the user's role from the database. Never trust client-provided role claims.
+
+```typescript
+// ✅ CORRECT — Check role from DB
+const { data: profile } = await supabase
+  .from("profiles").select("role").eq("id", user.id).single();
+if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+// ❌ WRONG — Trusting client header or JWT claim alone
+if (req.headers.get("x-role") !== "admin") return ...
+```
+
+---
+
+## 12. 📋 ROADMAP CREATION STANDARDS (MANDATORY FOR ALL ROADMAPS)
+
+> **CONTEXT**: Multiple roadmaps were created with varying quality — some had vague steps that broke production, others lacked risk warnings. This standard ensures EVERY roadmap is safe for Claude Code to execute.
+
+When creating a NEW roadmap (stored in `_tasks/roadmap-*.md`), you MUST include ALL of these sections. Reference `_tasks/roadmap-security-hardening.md` as the gold standard.
+
+### R1: BREAKAGE RISK ASSESSMENT (at the top)
+
+**Every roadmap MUST start with a risk table** listing each phase's risk level:
+
+```markdown
+| Phase | Risk Level | Could Break | How to Prevent |
+|---|---|---|---|
+| Phase 1 | 🟢 SAFE | Nothing | — |
+| Phase 2 | 🔴 HIGH | Salon card display | Must update X before Y |
+| Phase 3 | 🟡 MEDIUM | Runtime crash if env var missing | Set env var first |
+```
+
+For any 🔴 HIGH or 🟡 MEDIUM phase: grep the codebase for affected patterns, list the **exact files** at risk, and explain how to avoid breakage.
+
+### R2: SEPARATE MANUAL VS CODE PHASES
+
+Split every roadmap into:
+- **🤖 CLAUDE CODE PHASES** — Pure code/migration changes. No external accounts needed.
+- **🧑 MANUAL PHASES** — Require dashboard access, API key creation, DNS config, or human verification. List these separately with step-by-step dashboard instructions.
+
+### R3: ⚠️ BE CAREFUL BLOCK ON EVERY PHASE
+
+Every phase MUST end with a `> ⚠️ **BE CAREFUL**:` block. Include:
+- What could go wrong in this specific phase
+- Common mistakes Claude Code might make
+- Files/routes that should NOT be touched
+- Edge cases and gotchas
+- What to verify after completing the phase
+
+### R4: ✅ DO / ❌ DON'T EXAMPLES
+
+Every phase that involves writing code MUST include:
+- A `✅ DO` code example showing the correct pattern
+- A `❌ DON'T` code example showing what NOT to do
+- If modifying existing code: show the BEFORE and AFTER diff
+
+### R5: EXACT FILE PATHS AND TAGS
+
+Every file mentioned in the roadmap must have:
+- `[NEW]` tag for new files
+- `[MODIFY]` tag for modified files
+- `[DELETE]` tag for deleted files
+- Full relative path from project root (e.g., `app/api/bookings/route.ts`, not just "the bookings route")
+
+### R6: DEPENDENCY ORDERING TABLE
+
+End the roadmap with an execution order summary:
+
+```markdown
+| Step | Type | What | Depends On |
+|---|---|---|---|
+| Manual A | 🧑 | Create Upstash Redis | Nothing |
+| Phase 1 | 🤖 | Git cleanup | Nothing |
+| Phase 2 | 🤖 | Rate limiting | Manual A |
+```
+
+### R7: VERIFICATION STEPS PER PHASE
+
+Each phase must specify:
+- The exact `git commit` command with a descriptive message
+- What to verify after deployment (curl command, expected HTTP status, etc.)
+- If the phase creates API routes: how to test them
+
+### R8: FINAL PHASE UPDATES CLAUDE.md
+
+If the roadmap introduces:
+- New utility files (e.g., `lib/something.ts`)
+- New tables or views in Supabase
+- New environment variables
+- New patterns that future code must follow
+
+Then the LAST phase of the roadmap MUST update:
+- `CLAUDE.md` Section 2 (Tech Stack) — if new dependencies
+- `CLAUDE.md` Section 3.2 (Directory Tree) — if new lib files
+- `CLAUDE.md` Section 6 (Schema Table) — if new tables/views
+- `CLAUDE.md` Section 11 (Security Rules) — if new security patterns
+- `.env.example` — if new env vars
+
+### R9: ROADMAP FILE NAMING
+
+Save all roadmaps in `_tasks/` with the naming pattern:
+```
+_tasks/roadmap-{topic}.md
+```
+Examples: `roadmap-security-hardening.md`, `roadmap-payment-system.md`, `roadmap-french-translation.md`
+
+### R10: BEFORE WRITING THE ROADMAP — SCAN FIRST
+
+Before writing ANY phase:
+1. **Grep for affected patterns** — search the codebase for code that will be impacted
+2. **List exact files** that need to change (don't say "update all routes" — list each one)
+3. **Check existing `_tasks/INCOMPLETE_FEATURES.md`** for related unfinished work
+4. **Read `_tasks/completed/`** for past decisions that affect the new feature
+5. **Verify all imports/components/APIs** referenced in the roadmap actually exist
+
 
