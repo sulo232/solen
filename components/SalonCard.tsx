@@ -20,6 +20,9 @@ interface SalonCardProps {
   salon: SalonCardType;
   variant?: "default" | "compact";
   locale?: string;
+  showCompare?: boolean;
+  compareSelected?: boolean;
+  onCompareToggle?: (salonId: string) => void;
 }
 
 const quartierLabels: Record<string, string> = {
@@ -32,7 +35,7 @@ const quartierLabels: Record<string, string> = {
   breite: "Breite",
 };
 
-export default function SalonCard({ salon, variant = "default", locale = "de" }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle }: SalonCardProps) {
   const href = `/${locale}/salon/${salon.slug}`;
 
   if (variant === "compact") {
@@ -93,6 +96,23 @@ export default function SalonCard({ salon, variant = "default", locale = "de" }:
               </span>
             ))}
           </div>
+          {/* Compare checkbox */}
+          {showCompare && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onCompareToggle?.(salon.id); }}
+              className={[
+                "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors z-10",
+                compareSelected
+                  ? "bg-teal border-teal text-white"
+                  : "bg-white/80 backdrop-blur-sm border-white/60 text-transparent hover:border-teal/50",
+              ].join(" ")}
+            >
+              {compareSelected && (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              )}
+            </button>
+          )}
           {/* Last-minute badge */}
           {salon.last_minute_discount_percent > 0 && (
             <div className="absolute top-2 right-2">
