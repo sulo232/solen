@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
 
 export async function DELETE(
@@ -29,9 +29,10 @@ export async function DELETE(
       .update({ status: "cancelled", cancellation_reason: "Slot removed by salon", cancelled_at: new Date().toISOString() })
       .eq("id", slot.booking_id);
 
-    // Notify the customer
-    const { data: bookedUser } = await supabase.from("profiles").select("id").eq("id", slot.booked_by).single();
-    const { data: authUser } = await supabase.auth.admin.getUserById(slot.booked_by ?? "");
+    // Notify the customer (use admin client — RLS restricts profiles to own data)
+    const admin = createAdminSupabaseClient();
+    const { data: bookedUser } = await admin.from("profiles").select("id").eq("id", slot.booked_by).single();
+    const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
       try {
         await sendEmail(bookingCancellation(authUser.user.email, {
