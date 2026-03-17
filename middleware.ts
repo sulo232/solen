@@ -33,13 +33,42 @@ function getLocaleFromRequest(request: NextRequest): string {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip static files, API routes, Next.js internals
+  // Skip static files, Next.js internals
   if (
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
     pathname.includes(".") // static files
   ) {
     return NextResponse.next();
+  }
+
+  // CORS headers for API routes
+  if (pathname.startsWith("/api")) {
+    const origin = request.headers.get("origin") ?? "";
+    const allowedOrigins = [
+      "https://solen.ch",
+      "https://www.solen.ch",
+      ...(process.env.NODE_ENV === "development" ? ["http://localhost:3000"] : []),
+    ];
+
+    // Handle preflight OPTIONS requests
+    if (request.method === "OPTIONS") {
+      const preflight = new NextResponse(null, { status: 204 });
+      if (allowedOrigins.includes(origin)) {
+        preflight.headers.set("Access-Control-Allow-Origin", origin);
+        preflight.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+        preflight.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        preflight.headers.set("Access-Control-Max-Age", "86400");
+      }
+      return preflight;
+    }
+
+    const response = NextResponse.next();
+    if (allowedOrigins.includes(origin)) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    }
+    return response;
   }
 
   // Step 1: Locale redirect — if no locale prefix, redirect with detected locale
