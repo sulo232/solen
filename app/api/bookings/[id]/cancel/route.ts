@@ -51,8 +51,35 @@ export async function POST(
     .update({ status: "available", booked_by: null, booking_id: null })
     .eq("id", booking.slot_id);
 
-  // Send cancellation emails to customer + salon owner
+  // Notify waitlist entries for the freed slot
   const { createAdminSupabaseClient } = await import("@/lib/supabase");
+  const adminForWaitlist = createAdminSupabaseClient();
+  const cancelledDate = new Date(booking.starts_at).toISOString().split("T")[0];
+  const { data: waitlistEntries } = await adminForWaitlist
+    .from("waitlist")
+    .select("id, user_id")
+    .eq("salon_id", booking.salon_id)
+    .eq("service_id", booking.service_id)
+    .eq("preferred_date", cancelledDate)
+    .is("notified_at", null)
+    .order("created_at", { ascending: true })
+    .limit(3);
+
+  for (const entry of waitlistEntries ?? []) {
+    const { data: waitlistUser } = await adminForWaitlist.auth.admin.getUserById(entry.user_id);
+    if (waitlistUser?.user?.email) {
+      try {
+        await sendEmail({
+          to: waitlistUser.user.email,
+          subject: `Ein Termin ist frei geworden bei ${booking.salons?.name ?? "einem Salon"}!`,
+          html: `<p>Ein Termin für <strong>${booking.services?.name_de ?? "deinen Service"}</strong> am <strong>${new Date(booking.starts_at).toLocaleDateString("de-CH")}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
+        });
+      } catch { /* non-fatal */ }
+    }
+    await adminForWaitlist.from("waitlist").update({ notified_at: new Date().toISOString() }).eq("id", entry.id);
+  }
+
+  // Send cancellation emails to customer + salon owner
   const admin = createAdminSupabaseClient();
   const { data: profile } = await admin.from("profiles").select("locale").eq("id", user.id).single();
   const locale = (profile?.locale as "de" | "en" | "fr") ?? "de";
