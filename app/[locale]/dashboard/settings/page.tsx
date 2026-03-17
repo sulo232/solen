@@ -247,6 +247,122 @@ function QuickRepliesTab() {
 }
 
 // ─────────────────────────────────────────
+// Cancellation Tab
+// ─────────────────────────────────────────
+
+const CANCEL_HOURS_OPTIONS = [6, 12, 24, 48, 72] as const;
+type FeeType = "free" | "flat" | "percentage";
+
+function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { cancellation_fee_type?: FeeType; cancellation_fee_value?: number; free_cancel_hours?: number };
+  const [feeType, setFeeType] = useState<FeeType>(ext.cancellation_fee_type ?? "free");
+  const [feeValue, setFeeValue] = useState(ext.cancellation_fee_value ?? 0);
+  const [freeHours, setFreeHours] = useState(ext.free_cancel_hours ?? 24);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave({
+      cancellation_fee_type: feeType,
+      cancellation_fee_value: feeType === "free" ? 0 : feeValue,
+      free_cancel_hours: freeHours,
+    } as Partial<Salon>);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const feeOptions: { id: FeeType; label: string; desc: string }[] = [
+    { id: "free", label: "Kostenlos", desc: "Keine Stornogebühr" },
+    { id: "flat", label: "Pauschale", desc: "Fester Betrag in CHF" },
+    { id: "percentage", label: "Prozentual", desc: "% des Buchungspreises" },
+  ];
+
+  const previewText = feeType === "free"
+    ? `Kunden können bis ${freeHours}h vor dem Termin kostenlos stornieren.`
+    : feeType === "flat"
+      ? `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet CHF ${feeValue.toFixed(2)}.`
+      : `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet ${feeValue}% des Buchungspreises.`;
+
+  return (
+    <div className="py-4 max-w-md space-y-6">
+      {/* Fee type cards */}
+      <div>
+        <label className="block text-xs font-medium text-dark/50 mb-2">Stornogebühr-Typ</label>
+        <div className="grid grid-cols-3 gap-2">
+          {feeOptions.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => setFeeType(opt.id)}
+              className={[
+                "rounded-card border p-3 text-left transition-colors",
+                feeType === opt.id
+                  ? "border-teal bg-teal/5"
+                  : "border-gray-200 hover:border-gray-300",
+              ].join(" ")}
+            >
+              <p className={["text-sm font-medium", feeType === opt.id ? "text-teal" : "text-dark"].join(" ")}>
+                {opt.label}
+              </p>
+              <p className="text-[10px] text-dark/40 mt-0.5">{opt.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Fee value input */}
+      {feeType !== "free" && (
+        <div>
+          <label className="block text-xs font-medium text-dark/50 mb-1">
+            {feeType === "flat" ? "Betrag (CHF)" : "Prozentsatz (%)"}
+          </label>
+          <input
+            type="number"
+            min={0}
+            max={feeType === "percentage" ? 100 : 500}
+            step={feeType === "percentage" ? 5 : 1}
+            value={feeValue}
+            onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
+            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm font-data focus:outline-none focus:border-teal"
+          />
+        </div>
+      )}
+
+      {/* Free cancel window */}
+      <div>
+        <label className="block text-xs font-medium text-dark/50 mb-1">Kostenlose Stornierung bis</label>
+        <select
+          value={freeHours}
+          onChange={(e) => setFreeHours(Number(e.target.value))}
+          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+        >
+          {CANCEL_HOURS_OPTIONS.map((h) => (
+            <option key={h} value={h}>{h} Stunden vor dem Termin</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Preview */}
+      <div className="bg-gray-50 rounded-card px-4 py-3">
+        <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest mb-1">Vorschau für Kunden</p>
+        <p className="text-sm text-dark/70">{previewText}</p>
+      </div>
+
+      {/* Save */}
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving}
+          className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          {saving && <Spinner size="sm" invert />}Speichern
+        </button>
+        {saved && <span className="text-sm text-teal">Gespeichert ✓</span>}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
 // Verification Tab (Phase 11)
 // ─────────────────────────────────────────
 
@@ -489,16 +605,7 @@ export default function SettingsPage() {
               { id: "payments", label: "Zahlungen", content: <PaymentsTab salon={salon} onSave={handleSave} /> },
               { id: "quickreplies", label: "Schnellantworten", content: <QuickRepliesTab /> },
               { id: "verification", label: "Verifizierung", content: <VerificationTab salon={salon} /> },
-              {
-                id: "cancellation",
-                label: "Stornierung",
-                content: (
-                  <div className="py-4 text-sm text-dark/60 max-w-md">
-                    <p>Kunden können bis <strong>24 Stunden</strong> vor dem Termin kostenlos stornieren.</p>
-                    <p className="text-xs text-dark/30 mt-2">V1: nicht konfigurierbar.</p>
-                  </div>
-                ),
-              },
+              { id: "cancellation", label: "Stornierung", content: <CancellationTab salon={salon} onSave={handleSave} /> },
             ]}
           />
         </div>
