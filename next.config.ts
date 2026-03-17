@@ -1,3 +1,4 @@
+// Next.js + Sentry + next-intl configuration
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
