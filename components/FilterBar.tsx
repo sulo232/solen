@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
-import { SlidersHorizontal, X, CreditCard } from "lucide-react";
+import { SlidersHorizontal, X, CreditCard, ChevronDown, Check } from "lucide-react";
 import PriceSlider from "@/components/ui/PriceSlider";
 import type { Quartier } from "@/lib/types";
 
@@ -17,11 +17,10 @@ const QUARTIERS: { value: Quartier; label: string }[] = [
 ];
 
 const SORT_OPTIONS = [
-  { value: "relevance", label: "Beliebt" },
-  { value: "rating", label: "Beste Bewertung" },
-  { value: "price_asc", label: "Preis ↑" },
-  { value: "price_desc", label: "Preis ↓" },
-  { value: "newest", label: "Neueste" },
+  { value: "rating",    label: "Beliebteste"        },
+  { value: "price",     label: "Preis (tief → hoch)" },
+  { value: "nearest",   label: "Nächste"             },
+  { value: "newest",    label: "Neueste"              },
 ];
 
 const RATING_OPTIONS = [
@@ -42,6 +41,7 @@ export default function FilterBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [priceOpen, setPriceOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
 
   const setParam = useCallback(
     (key: string, value: string | null) => {
@@ -149,19 +149,33 @@ export default function FilterBar() {
           <div className="w-px h-5 bg-gray-200/80 shrink-0" />
 
           {/* Sort dropdown */}
-          <select
-            value={activeSort}
-            onChange={(e) => setParam("sort", e.target.value)}
-            className={[
-              pillBase,
-              "shrink-0 outline-none cursor-pointer pr-6 appearance-none",
-              pillInactive,
-            ].join(" ")}
-          >
-            {SORT_OPTIONS.map(({ value, label }) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setSortOpen((v) => !v)}
+              className={[
+                pillBase,
+                "flex items-center gap-1.5",
+                activeSort !== "rating" ? pillActive : pillInactive,
+              ].join(" ")}
+            >
+              {SORT_OPTIONS.find((o) => o.value === activeSort)?.label ?? "Beliebteste"}
+              <ChevronDown className={`w-3 h-3 transition-transform duration-150 ${sortOpen ? "rotate-180" : ""}`} />
+            </button>
+            {sortOpen && (
+              <div className="absolute top-full right-0 mt-2 w-52 bg-white shadow-lg rounded-xl border border-gray-100 py-1 z-50">
+                {SORT_OPTIONS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => { setParam("sort", value); setSortOpen(false); }}
+                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-dark/80 hover:bg-gray-50 transition-colors"
+                  >
+                    {label}
+                    {activeSort === value && <Check className="w-3.5 h-3.5" style={{ color: "#4ECDC4" }} />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Clear all */}
           {hasFilters && (
