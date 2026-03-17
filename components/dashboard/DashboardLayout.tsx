@@ -13,6 +13,7 @@ import {
   MessageSquareWarning, Star, PieChart,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -108,96 +109,70 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* ── Desktop Sidebar ── */}
-      <aside className="hidden md:flex flex-col fixed left-0 top-0 h-full w-60 bg-white/90 backdrop-blur-lg border-r border-gray-100 z-30">
-        {/* Logo */}
-        <div className="px-6 py-5 border-b border-gray-100">
-          <Link href={`/${locale}`} className="font-heading font-bold text-xl text-dark">
-            solen<span className="text-teal">.</span>ch
-          </Link>
-          <p className="text-xs text-dark/40 mt-0.5">Salon Dashboard</p>
-        </div>
-
-        {/* Salon identity */}
-        {salonName && (
-          <div className="px-4 py-3 border-b border-gray-50 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center overflow-hidden shrink-0">
-              {salonAvatar ? (
-                <Image src={salonAvatar} alt="" width={32} height={32} className="object-cover w-full h-full" />
-              ) : (
-                <span className="text-xs font-bold text-teal">{salonName[0]}</span>
-              )}
-            </div>
-            <span className="text-sm font-medium text-dark truncate">{salonName}</span>
+      {/* ── Desktop Sidebar (animated) ── */}
+      <Sidebar>
+        <SidebarBody>
+          {/* Logo */}
+          <div className="px-4 py-5 border-b border-gray-100">
+            <Link href={`/${locale}`} className="font-heading font-bold text-xl text-dark whitespace-nowrap">
+              solen<span className="text-teal">.</span>ch
+            </Link>
           </div>
-        )}
 
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2">
-          {NAV.map(({ label, href, icon: Icon }) => {
-            const active = isActive(href);
-            const isMessages = href === "/dashboard/messages";
-            return (
-              <Link
-                key={href}
-                href={`/${locale}${href}`}
-                className={[
-                  "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5 relative",
-                  active ? "text-teal" : "text-dark/60 hover:bg-gray-50 hover:text-dark",
-                ].join(" ")}
-              >
-                {active && (
-                  <motion.div
-                    layoutId="nav-indicator"
-                    className="absolute inset-0 rounded-button bg-teal/10"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
+          {/* Salon identity */}
+          {salonName && (
+            <div className="px-3 py-3 border-b border-gray-50 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center overflow-hidden shrink-0">
+                {salonAvatar ? (
+                  <Image src={salonAvatar} alt="" width={32} height={32} className="object-cover w-full h-full" />
+                ) : (
+                  <span className="text-xs font-bold text-teal">{salonName[0]}</span>
                 )}
-                <Icon size={16} className="relative z-10" />
-                <span className="relative z-10 flex-1">{label}</span>
-                {isMessages && unreadCount > 0 && (
-                  <span className="relative z-10 ml-auto w-2 h-2 rounded-full bg-coral" />
-                )}
-                {active && <ChevronRight size={14} className="relative z-10 ml-auto opacity-40" />}
-              </Link>
-            );
-          })}
-        </nav>
+              </div>
+            </div>
+          )}
 
-        {/* Admin nav */}
-        {role === "admin" && (
-          <div className="px-2 pb-3 border-t border-gray-100 pt-3">
-            <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest px-3 mb-1">Admin</p>
-            {ADMIN_NAV.map(({ label, href, icon: Icon }) => {
+          {/* Nav */}
+          <nav className="flex-1 overflow-y-auto py-3 px-2">
+            {NAV.map(({ label, href, icon: Icon }) => {
               const active = isActive(href);
+              const isMessages = href === "/dashboard/messages";
               return (
-                <Link
+                <SidebarLink
                   key={href}
-                  href={`/${locale}${href}`}
-                  className={[
-                    "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5 relative",
-                    active ? "bg-coral/10 text-coral" : "text-dark/60 hover:bg-gray-50 hover:text-dark",
-                  ].join(" ")}
-                >
-                  <Icon size={16} />
-                  {label}
-                  {active && <ChevronRight size={14} className="ml-auto opacity-40" />}
-                </Link>
+                  link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
+                  active={active}
+                  badge={isMessages && unreadCount > 0 ? <span className="w-2 h-2 rounded-full bg-coral" /> : undefined}
+                />
               );
             })}
-          </div>
-        )}
+          </nav>
 
-        {/* Footer */}
-        <div className="px-4 py-3 border-t border-gray-100">
-          <Link
-            href={`/${locale}`}
-            className="text-xs text-dark/30 hover:text-teal transition-colors"
-          >
-            ← Zur Website
-          </Link>
-        </div>
-      </aside>
+          {/* Admin nav */}
+          {role === "admin" && (
+            <div className="px-2 pb-3 border-t border-gray-100 pt-3">
+              {ADMIN_NAV.map(({ label, href, icon: Icon }) => (
+                <SidebarLink
+                  key={href}
+                  link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
+                  active={isActive(href)}
+                  className={isActive(href) ? "text-coral" : undefined}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="px-3 py-3 border-t border-gray-100">
+            <Link
+              href={`/${locale}`}
+              className="text-xs text-dark/30 hover:text-teal transition-colors whitespace-nowrap"
+            >
+              ← Zur Website
+            </Link>
+          </div>
+        </SidebarBody>
+      </Sidebar>
 
       {/* ── Mobile sidebar overlay ── */}
       <AnimatePresence>
@@ -268,7 +243,7 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* ── Main content ── */}
-      <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
+      <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-dark/60">
