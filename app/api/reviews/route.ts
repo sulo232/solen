@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkReview } from "@/lib/automod";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { validateBody, createReviewSchema } from "@/lib/validations";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("reviews");
@@ -19,14 +20,10 @@ export async function POST(request: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const body = await request.json();
-  const { booking_id, rating, comment, staff_member_id } = body;
+  const { data: validated, error: valError } = validateBody(createReviewSchema, body);
+  if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  if (!booking_id || !rating) {
-    return NextResponse.json({ message: "booking_id and rating required", code: "VALIDATION_ERROR" }, { status: 400 });
-  }
-  if (rating < 1 || rating > 5) {
-    return NextResponse.json({ message: "Rating must be between 1 and 5", code: "VALIDATION_ERROR" }, { status: 400 });
-  }
+  const { booking_id, rating, comment, staff_member_id } = validated;
 
   // Verify booking belongs to user and is completed
   const { data: booking } = await supabase

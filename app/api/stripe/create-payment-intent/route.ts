@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { stripe, toRappen, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { validateBody, createPaymentIntentSchema } from "@/lib/validations";
 
 // POST /api/stripe/create-payment-intent
 // Body: { salon_id, service_name, estimated_price, deposit_amount }
@@ -21,11 +22,11 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { salon_id, service_name, estimated_price, deposit_amount } = await req.json();
+  const body = await req.json();
+  const { data: validated, error: valError } = validateBody(createPaymentIntentSchema, body);
+  if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  if (!salon_id || !estimated_price || !deposit_amount) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-  }
+  const { salon_id, service_name, estimated_price, deposit_amount } = validated;
 
   const admin = createAdminSupabaseClient();
   const { data: salon } = await admin

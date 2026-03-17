@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { sendEmail, newMessageNotification } from "@/lib/email";
 import { applyRateLimit, messageLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { validateBody, createMessageSchema } from "@/lib/validations";
 
 export async function GET(
   request: NextRequest,
@@ -66,9 +67,10 @@ export async function POST(
   if (rateLimited) return rateLimited;
 
   const body = await request.json();
-  const { content, message_type = "text", image_url } = body;
+  const { data: validated, error: valError } = validateBody(createMessageSchema, body);
+  if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  if (!content?.trim()) return NextResponse.json({ message: "content required", code: "VALIDATION_ERROR" }, { status: 400 });
+  const { content, message_type, image_url } = validated;
 
   const { data: message, error } = await supabase
     .from("messages")

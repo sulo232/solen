@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { validateBody, createConversationSchema } from "@/lib/validations";
 
 export async function GET(_request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -32,8 +33,11 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
-  const { salon_id } = await request.json();
-  if (!salon_id) return NextResponse.json({ message: "salon_id required", code: "VALIDATION_ERROR" }, { status: 400 });
+  const body = await request.json();
+  const { data: validated, error: valError } = validateBody(createConversationSchema, body);
+  if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
+
+  const { salon_id } = validated;
 
   // Upsert — one conversation per customer+salon pair
   const { data, error } = await supabase

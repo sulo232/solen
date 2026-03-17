@@ -3,6 +3,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation } from "@/lib/email";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { validateBody, createBookingSchema } from "@/lib/validations";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -45,11 +46,10 @@ export async function POST(request: NextRequest) {
   if (rateLimited) return rateLimited;
 
   const body = await request.json();
-  const { slot_id, service_id, staff_member_id, is_first_visit } = body;
+  const { data: validated, error: valError } = validateBody(createBookingSchema, body);
+  if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  if (!slot_id || !service_id) {
-    return NextResponse.json({ message: "slot_id and service_id required", code: "VALIDATION_ERROR" }, { status: 400 });
-  }
+  const { slot_id, service_id, staff_member_id, is_first_visit } = validated;
 
   // 1. Verify slot is available
   const { data: slot, error: slotError } = await supabase
