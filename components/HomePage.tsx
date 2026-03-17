@@ -9,6 +9,7 @@ import QuartierTile from "@/components/QuartierTile";
 import ServiceTile from "@/components/ServiceTile";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import Spinner from "@/components/ui/Spinner";
+import Header from "@/components/layout/Header";
 import TutorialTour from "@/components/TutorialTour";
 import type { SalonCard as SalonCardType, LastMinuteSlot, SalonCategory } from "@/lib/types";
 
@@ -413,6 +414,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <TutorialTour isLoggedIn={isLoggedIn} />
+      <Header locale={locale} />
 
       {/* Weather banner */}
       <WeatherBanner locale={locale} />

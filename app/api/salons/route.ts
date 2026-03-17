@@ -36,10 +36,7 @@ export async function GET(request: NextRequest) {
   query = query.range(offset, offset + limit - 1);
 
   const { data, error, count } = await query;
-  if (error) {
-    console.error("[api/salons]", error.message);
-    return NextResponse.json({ items: [], total: 0, page, limit });
-  }
+  if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
   return NextResponse.json({ items: data, total: count ?? 0, page, limit });
 }

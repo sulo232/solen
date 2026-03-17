@@ -258,7 +258,7 @@ export default function CheckoutPage() {
         <div className="flex items-center justify-center gap-4 text-xs text-dark/30 pb-8 flex-wrap">
           <span className="flex items-center gap-1"><Lock size={11} /> 256-bit SSL</span>
           <span>·</span>
-          <span className="flex items-center gap-1"><CreditCard size={11} /> Card, TWINT, Apple Pay, Google Pay</span>
+          <span className="flex items-center gap-1"><CreditCard size={11} /> Card, TWINT, Apple Pay</span>
           <span>·</span>
           <span className="flex items-center gap-1"><Shield size={11} /> Powered by Stripe</span>
         </div>
