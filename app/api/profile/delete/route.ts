@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { logAuditEvent } from "@/lib/audit";
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
@@ -66,6 +67,9 @@ export async function DELETE() {
     completed_at: new Date().toISOString(),
     tables_cleared: tablesCleared,
   });
+
+  // Audit log
+  await logAuditEvent(req, user.id, "account.delete", "user", user.id, { email: userEmail, tables_cleared: tablesCleared });
 
   // 5. Delete profile (cascade handles related records)
   await admin.from("profiles").delete().eq("id", user.id);

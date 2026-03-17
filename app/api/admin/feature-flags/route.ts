@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function GET() {
   const supabase = await createServerSupabaseClient();
@@ -51,6 +52,8 @@ export async function PATCH(req: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAuditEvent(req, user.id, "feature_flag.toggle", "feature_flag", key, { enabled });
 
   return NextResponse.json({ flag: data });
 }

@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, salonApproved } from "@/lib/email";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function PATCH(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -33,6 +34,8 @@ export async function PATCH(
   }).eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAuditEvent(req, user.id, "salon.approve", "salon", id, { salon_name: salon.name });
 
   // Send approval email to salon owner
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, salonRejected } from "@/lib/email";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
 
 export async function PATCH(
   req: NextRequest,
@@ -34,6 +35,8 @@ export async function PATCH(
   }).eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAuditEvent(req, user.id, "salon.reject", "salon", id, { salon_name: salon.name, reason });
 
   // Send rejection email to salon owner
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
