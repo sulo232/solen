@@ -30,6 +30,7 @@ interface BookingIntent {
   estimated_price: number;
   deposit_amount: number;
   slot_id?: string;
+  free_cancel_hours?: number;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -89,7 +90,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
       </button>
 
       <p className="text-xs text-center text-dark/40">
-        Kostenlose Stornierung bis 24 Stunden vorher
+        Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24} Stunden vorher
       </p>
     </form>
   );
@@ -178,7 +179,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* Booking summary card */}
-        <div className="bg-white rounded-card shadow-card p-5">
+        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
           <h1 className="font-heading font-bold text-lg text-dark mb-4">Buchungsübersicht</h1>
 
           <div className="space-y-2.5 text-sm">
@@ -224,7 +225,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Payment card */}
-        <div className="bg-white rounded-card shadow-card p-5">
+        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
           <h2 className="font-heading font-bold text-base text-dark mb-4">Zahlung</h2>
 
           {clientSecret ? (
