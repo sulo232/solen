@@ -28,13 +28,16 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Hide global header on dashboard and auth pages (they have their own navigation)
-  if (pathname.includes("/dashboard") || pathname.includes("/auth/")) return null;
+  const isHidden = pathname.includes("/dashboard") || pathname.includes("/auth/");
 
   useEffect(() => {
+    if (isHidden) return;
     const handler = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
-  }, []);
+  }, [isHidden]);
+
+  if (isHidden) return null;
 
   // Glass nav token from roadmap
   const base = "bg-white/80 backdrop-blur-lg border-b border-gray-100";
