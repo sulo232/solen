@@ -1,9 +1,9 @@
+import HomePage from "@/components/HomePage";
+
 export default function Page() {
   return (
-    <iframe
-      src="/home.html"
-      style={{ width: "100%", height: "100vh", border: "none", display: "block" }}
-      title="Solen"
-    />
+    <div className="pt-16">
+      <HomePage />
+    </div>
   );
 }
