@@ -139,8 +139,98 @@ Deno.serve(async () => {
       }
     }
 
+    // ─── Badge auto-computation ───
+    let badgesAssigned = 0;
+    let badgesRemoved = 0;
+
+    const { data: systemBadges } = await admin
+      .from("salon_badges")
+      .select("id, auto_rule")
+      .eq("is_system", true)
+      .not("auto_rule", "is", null);
+
+    if (systemBadges && systemBadges.length > 0) {
+      // Fetch all salons with their stats for badge evaluation
+      const { data: allSalons } = await admin
+        .from("salons")
+        .select("id, average_rating, review_count, created_at, approved_at")
+        .eq("is_active", true);
+
+      for (const salon of allSalons ?? []) {
+        for (const badge of systemBadges) {
+          const rule = badge.auto_rule as Record<string, unknown>;
+          let qualifies = false;
+
+          if (rule.type === "rating_and_reviews") {
+            qualifies =
+              salon.average_rating >= (rule.min_rating as number) &&
+              salon.review_count >= (rule.min_reviews as number);
+          } else if (rule.type === "bookings_growth") {
+            // Compare this week vs last week bookings
+            const weekAgo = new Date(now.getTime() - 7 * 86400000).toISOString();
+            const twoWeeksAgo = new Date(now.getTime() - 14 * 86400000).toISOString();
+            const { count: thisWeek } = await admin
+              .from("bookings").select("id", { count: "exact", head: true })
+              .eq("salon_id", salon.id).gte("starts_at", weekAgo);
+            const { count: lastWeek } = await admin
+              .from("bookings").select("id", { count: "exact", head: true })
+              .eq("salon_id", salon.id).gte("starts_at", twoWeeksAgo).lt("starts_at", weekAgo);
+            const growth = (lastWeek ?? 0) > 0
+              ? (((thisWeek ?? 0) - (lastWeek ?? 0)) / (lastWeek ?? 1)) * 100
+              : 0;
+            qualifies = growth >= (rule.min_percent as number);
+          } else if (rule.type === "created_within_days") {
+            const cutoff = new Date(now.getTime() - (rule.days as number) * 86400000);
+            qualifies = new Date(salon.created_at) > cutoff;
+          } else if (rule.type === "verified_within_months") {
+            if (salon.approved_at) {
+              const cutoff = new Date(now.getTime() - (rule.months as number) * 30 * 86400000);
+              qualifies = new Date(salon.approved_at) > cutoff;
+            }
+          }
+
+          // Check for override removal
+          const { data: existing } = await admin
+            .from("salon_badge_assignments")
+            .select("assigned_by, is_override_removal")
+            .eq("salon_id", salon.id)
+            .eq("badge_id", badge.id)
+            .maybeSingle();
+
+          if (qualifies) {
+            if (existing?.is_override_removal) continue; // Admin blocked this badge
+            if (!existing) {
+              await admin.from("salon_badge_assignments").insert({
+                salon_id: salon.id,
+                badge_id: badge.id,
+                assigned_by: null, // auto-assigned
+                is_override_removal: false,
+              });
+              badgesAssigned++;
+            }
+          } else {
+            // Only remove auto-assigned badges (assigned_by IS NULL)
+            if (existing && !existing.is_override_removal && existing.assigned_by === null) {
+              await admin
+                .from("salon_badge_assignments")
+                .delete()
+                .eq("salon_id", salon.id)
+                .eq("badge_id", badge.id);
+              badgesRemoved++;
+            }
+          }
+        }
+      }
+    }
+
     return new Response(
-      JSON.stringify({ ok: true, salons_processed: salons.length, rows_upserted: processed }),
+      JSON.stringify({
+        ok: true,
+        salons_processed: salons.length,
+        rows_upserted: processed,
+        badges_assigned: badgesAssigned,
+        badges_removed: badgesRemoved,
+      }),
       { headers: { "Content-Type": "application/json" } }
     );
   } catch (err) {
