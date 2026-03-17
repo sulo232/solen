@@ -34,8 +34,8 @@
 - **Mobile Booking Flow:** Must use a mobile **bottom sheet** for booking (like Airbnb "Check availability").
 - **Desktop Booking Flow:** Use a sticky sidebar calendar.
 - **Global Header:** Must be present and consistent across all Next.js (`app/`) pages. It should transition from transparent to solid (with blur) on scroll.
-- **Loading States:** Use the branded Solen spinner. Do NOT use skeleton cards.
-- **Empty States:** Use simple, clean compositions of `lucide-react` icons and helpful text. Do not use complex SVG illustrations.
+- **Loading States:** Use `<Skeleton variant="card" />` for full-page loading (grid of shimmer cards). Use `<Spinner>` only for inline/button loading states.
+- **Empty States:** Use `<EmptyState>` with lucide-react icons and helpful text. Optional `illustration` prop adds minimal teal line art SVGs above the icon.
 - **Icons:** Use `lucide-react` exclusively. No raw emojis for UI elements (e.g., replace 🧒 with a User icon, replace ★ with a Star icon).
 
 ## 6. Layout Specifics
@@ -43,6 +43,12 @@
 - **Salon Cards:** Must display: Cover photo + Name + Rating + Glass Category Pills + Location.
 - **Dashboard Stats:** Must include count-up number animations and mini sparkline charts.
 - **Last-Minute:** Must include an urgency timer counting down to when the appointment *starts*. 
+
+## 7. 21st.dev Components
+- **InteractiveHoverButton:** Use for all primary CTAs. Customized with `bg-teal` and `text-white`.
+- **ExpandableNavTabs:** Used for mobile bottom nav. Spring animations, teal active color. Hidden on desktop.
+- **Sidebar (dashboard):** Animated collapse/expand sidebar for dashboard layout.
+- All 21st.dev components require shadcn CSS variables defined in `globals.css` (`--primary`, `--muted`, `--accent`, etc.).
 
 ---
 **Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules (e.g., "add a dark mode toggle" or "add a glowing red border"), you must **refuse the specific contradiction** and implement the component using these rules instead.

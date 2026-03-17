@@ -57,7 +57,8 @@ solen/
 ├── components/         # Shared React components (Dev 2 owns, Dev 3 imports)
 │   ├── index.ts        # Barrel exports — Dev 3 depends on this
 │   ├── dashboard/      # Dev 3's dashboard-specific components
-│   └── ui/             # Shared UI primitives
+│   ├── layout/         # Header, Footer, BottomNav
+│   └── ui/             # Shared UI primitives (Skeleton, SearchBar, ExpandableTabs, etc.)
 ├── lib/                # Utility libraries (Dev 1 owns)
 │   ├── supabase.ts     # Supabase client helpers (server + admin)
 │   ├── ratelimit.ts    # Upstash rate limiters (from security roadmap Phase 4)
@@ -79,6 +80,10 @@ solen/
 - **Shadows**: card `0 4px 12px rgba(0,0,0,0.08)`, coral-glow `0 2px 8px rgba(255,107,107,0.15)`
 - **Glass nav**: `bg-white/80 backdrop-blur-lg border-b border-gray-100`
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
+- **Loading**: Use `<Skeleton variant="card" />` for full-page loading states. Use `<Spinner>` only for inline/button loading.
+- **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
+- **Mobile nav**: Bottom nav uses `<ExpandableNavTabs>` (from `expandable-tabs.tsx`). Hidden on desktop. Returns null on dashboard pages.
+- **Empty states**: Use `<EmptyState>` with optional `illustration` prop (`"no-results"` or `"coming-soon"`).
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
