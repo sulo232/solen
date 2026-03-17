@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { generalLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export async function GET(request: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
+  if (rateLimited) return rateLimited;
+
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category");
   const quartier = searchParams.get("quartier");

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { generalLimiter, applyRateLimit, getClientIp } from "@/lib/ratelimit";
 
 const DEFAULT_LIMIT = 12;
 
@@ -7,6 +8,9 @@ const DEFAULT_LIMIT = 12;
 // Public route — no auth required. Excludes claimed entries.
 // Uses anon client (salon_directory is public data — no service_role key needed).
 export async function GET(req: NextRequest) {
+  const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  if (rateLimited) return rateLimited;
+
   const { searchParams } = req.nextUrl;
   const category = searchParams.get("category");
   const quartier = searchParams.get("quartier");
