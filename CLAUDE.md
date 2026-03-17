@@ -22,6 +22,8 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 | **Payments** | [Stripe](https://stripe.com/) — Payment Intents, Connect, Webhooks |
 | **Rate Limiting** | [Upstash Redis](https://upstash.com/) via `@upstash/ratelimit` |
 | **Validation** | [Zod](https://zod.dev/) — API input validation schemas in `lib/validations.ts` |
+| **UI Components** | 21st.dev components (InteractiveHoverButton, ExpandableNavTabs, Sidebar, DatePicker) |
+| **Date Picker** | `react-aria-components` + `@internationalized/date` |
 | **Deployment** | Vercel (`vercel.json`) |
 | **PWA** | `manifest.json` + `sw.js` (Service Worker) |
 
@@ -84,6 +86,9 @@ solen/
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
 - **Mobile nav**: Bottom nav uses `<ExpandableNavTabs>` (from `expandable-tabs.tsx`). Hidden on desktop. Returns null on dashboard pages.
 - **Empty states**: Use `<EmptyState>` with optional `illustration` prop (`"no-results"` or `"coming-soon"`).
+- **Social proof**: `<SocialProofStrip>` between hero and content. `<TrustBadges>` in footer.
+- **Dashboard sidebar**: Animated `<Sidebar>` from `sidebar.tsx` — collapses to 60px icons, expands on hover.
+- **Date picker**: `<SolenDatePicker>` from `date-picker.tsx` — react-aria-components calendar with teal theme.
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
