@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { stripe, toRappen, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
+import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 
 // POST /api/stripe/create-payment-intent
 // Body: { salon_id, service_name, estimated_price, deposit_amount }
@@ -9,6 +10,9 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { salon_id, service_name, estimated_price, deposit_amount } = await req.json();
 

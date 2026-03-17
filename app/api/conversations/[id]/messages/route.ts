@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, newMessageNotification } from "@/lib/email";
+import { applyRateLimit, messageLimiter } from "@/lib/ratelimit";
 
 export async function GET(
   request: NextRequest,
@@ -53,6 +54,9 @@ export async function POST(
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimited = await applyRateLimit(messageLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const body = await request.json();
   const { content, message_type = "text", image_url } = body;

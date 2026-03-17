@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 
 export async function POST(request: NextRequest) {
+  const rateLimited = await applyRateLimit(authLimiter, { ip: getClientIp(request) });
+  if (rateLimited) return rateLimited;
+
   const body = await request.json();
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;

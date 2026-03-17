@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, salonRejected } from "@/lib/email";
+import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 
 export async function PATCH(
   req: NextRequest,
@@ -14,6 +15,9 @@ export async function PATCH(
   const { data: profile } = await supabase
     .from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
+  if (rateLimited) return rateLimited;
 
   const { reason } = await req.json();
   if (!reason?.trim()) return NextResponse.json({ error: "Rejection reason required" }, { status: 400 });
