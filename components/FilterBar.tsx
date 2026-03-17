@@ -170,7 +170,7 @@ export default function FilterBar() {
                     className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-dark/80 hover:bg-gray-50 transition-colors"
                   >
                     {label}
-                    {activeSort === value && <Check className="w-3.5 h-3.5" style={{ color: "#4ECDC4" }} />}
+                    {activeSort === value && <Check className="w-3.5 h-3.5 text-teal" />}
                   </button>
                 ))}
               </div>

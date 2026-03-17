@@ -12,7 +12,7 @@
 
 ## 2. Colors & Branding
 - **Primary Colors:** 
-  - Teal: `#4ECDC4`
+  - Teal: `#38B2AC`
   - Coral: `#FF6B6B` (Use for urgency, e.g., Last-Minute countdowns)
   - Dark: `#1A1A2E` (Use for primary text on light backgrounds)
 - **Google Auth:** The Google login button must use the **full-color** Google G logo, not a monochrome version.

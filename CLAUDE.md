@@ -73,7 +73,7 @@ solen/
 
 ### 3.3 Design System (New — Next.js)
 
-- **Colors**: teal `#4ECDC4` (primary), coral `#FF6B6B` (accent/urgency), dark `#1A1A2E`
+- **Colors**: teal `#38B2AC` (primary), coral `#FF6B6B` (accent/urgency), dark `#1A1A2E`
 - **Fonts**: Syne (heading), DM Sans (body), Space Grotesk (data/numbers/prices)
 - **Radii**: card `12px`, pill `9999px`, button `8px`
 - **Shadows**: card `0 4px 12px rgba(0,0,0,0.08)`, coral-glow `0 2px 8px rgba(255,107,107,0.15)`
@@ -404,7 +404,7 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 
 ### Rule 12: SINGLE DESIGN SYSTEM
 - There is only ONE design system: **Next.js** (Section 3.3)
-- Colors: teal `#4ECDC4` (primary), coral `#FF6B6B` (accent), dark `#1A1A2E`
+- Colors: teal `#38B2AC` (primary), coral `#FF6B6B` (accent), dark `#1A1A2E`
 - Fonts: Syne (headings), DM Sans (body), Space Grotesk (data/prices)
 - The old monolith design (wine red `#9B1D30`, gold, DM Serif Display) is **RETIRED** and archived in `_archive/monolith-v1.html`
 - **NEVER** use wine red, gold, or DM Serif Display in any new code

@@ -128,7 +128,6 @@ export default function HomePage() {
                 <Icon
                   size={32}
                   className="text-teal group-hover:scale-110 transition-transform duration-200"
-                  style={{ color: "#4ECDC4" }}
                 />
                 <span
                   className="font-heading font-medium text-dark text-sm text-center leading-tight"
@@ -238,10 +237,8 @@ export default function HomePage() {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <span
-                className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body"
+                className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body bg-teal/[0.125] text-teal"
                 style={{
-                  backgroundColor: "#4ECDC420",
-                  color: "#4ECDC4",
                   fontFamily: "DM Sans, sans-serif",
                 }}
               >
@@ -257,7 +254,7 @@ export default function HomePage() {
             <Link
               href={`/${locale}/coiffeur`}
               className="text-sm text-teal hover:underline font-body shrink-0 ml-4"
-              style={{ color: "#4ECDC4", fontFamily: "DM Sans, sans-serif" }}
+              style={{ fontFamily: "DM Sans, sans-serif" }}
             >
               Alle ansehen →
             </Link>
