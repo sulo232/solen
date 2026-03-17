@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { checkReview } from "@/lib/automod";
 
 export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -31,9 +32,27 @@ export async function POST(request: NextRequest) {
   const { data: existing } = await supabase.from("reviews").select("id").eq("booking_id", booking_id).maybeSingle();
   if (existing) return NextResponse.json({ message: "Already reviewed", code: "REVIEW_EXISTS" }, { status: 409 });
 
+  // Auto-moderation check
+  const modResult = await checkReview({
+    comment: comment ?? "",
+    rating,
+    user_id: user.id,
+    salon_id: booking.salon_id,
+  });
+
   const { data, error } = await supabase
     .from("reviews")
-    .insert({ salon_id: booking.salon_id, user_id: user.id, booking_id, rating, comment: comment ?? null, staff_member_id: staff_member_id ?? null })
+    .insert({
+      salon_id: booking.salon_id,
+      user_id: user.id,
+      booking_id,
+      rating,
+      comment: comment ?? null,
+      staff_member_id: staff_member_id ?? null,
+      is_flagged: modResult.flagged,
+      is_hidden: modResult.hidden,
+      flag_reason: modResult.reason,
+    })
     .select()
     .single();
 
