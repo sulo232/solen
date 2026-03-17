@@ -223,6 +223,40 @@ Deno.serve(async () => {
       }
     }
 
+    // ─── Platform-wide stats ───
+    const { count: totalSalons } = await admin.from("salons").select("id", { count: "exact", head: true }).eq("is_active", true);
+    const { count: totalUsers } = await admin.from("profiles").select("id", { count: "exact", head: true });
+    const { data: allBookings } = await admin.from("bookings").select("price_paid").in("status", ["confirmed", "completed"]);
+    const totalBookings = allBookings?.length ?? 0;
+    const avgSpending = totalBookings > 0 ? (allBookings ?? []).reduce((s: number, b: { price_paid: number | null }) => s + (b.price_paid ?? 0), 0) / totalBookings : 0;
+
+    for (const [key, val] of Object.entries({
+      total_salons: totalSalons ?? 0,
+      total_users: totalUsers ?? 0,
+      total_bookings: totalBookings,
+      avg_spending: Math.round(avgSpending * 100) / 100,
+    })) {
+      await admin.from("platform_stats").upsert({ key, value: val, computed_at: new Date().toISOString() }, { onConflict: "key" });
+    }
+
+    // ─── Salon explore score ───
+    for (const salon of salons) {
+      const { data: analytics } = await admin.from("salon_analytics")
+        .select("total_bookings, total_reviews, avg_rating")
+        .eq("salon_id", salon.id)
+        .order("period_end", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const rating = analytics?.avg_rating ?? 0;
+      const bookings = analytics?.total_bookings ?? 0;
+      const reviews = analytics?.total_reviews ?? 0;
+
+      const score = (0.4 * rating) + (0.3 * Math.min(bookings / 10, 3)) + (0.2 * Math.min(reviews / 5, 2)) + (0.1 * Math.min(0, 1));
+
+      await admin.from("salons").update({ explore_score: Math.round(score * 100) / 100 }).eq("id", salon.id);
+    }
+
     return new Response(
       JSON.stringify({
         ok: true,
