@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase";
 
 const DEFAULT_LIMIT = 12;
 
 // GET /api/directory?category=coiffeur&quartier=Gundeldingen&search=...&page=1&limit=12
 // Public route — no auth required. Excludes claimed entries.
+// Uses anon client (salon_directory is public data — no service_role key needed).
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const category = searchParams.get("category");
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(50, parseInt(searchParams.get("limit") ?? String(DEFAULT_LIMIT), 10));
   const offset = (page - 1) * limit;
 
-  const admin = createAdminSupabaseClient();
+  const admin = await createServerSupabaseClient();
 
   let query = admin
     .from("salon_directory")
