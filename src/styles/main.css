@@ -1,0 +1,19 @@
+/**
+ * Main stylesheet entry point.
+ *
+ * Imports all CSS layers in the correct cascade order:
+ *   1. variables  — design tokens / custom properties
+ *   2. base       — resets, body, typography, accessibility
+ *   3. layout     — nav, hero, page sections, footer, responsive breakpoints
+ *   4. components — UI components (cards, modals, forms, DM, booking, etc.)
+ *   5. utilities  — keyframe animations, utility classes, scroll reveal
+ *
+ * This file is the single @import in src/main.js so Vite can process,
+ * bundle, and hash the full stylesheet.
+ */
+
+@import './variables.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './utilities.css';

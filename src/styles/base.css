@@ -1,0 +1,59 @@
+/*
+ * base.css
+ * Global resets, html/body defaults, typography rules, accessibility base,
+ * and skip-link styles. Assumes variables.css is already loaded.
+ */
+
+/* ── RESET ── */
+*{box-sizing:border-box;margin:0;padding:0;transition:color .3s var(--ease),background-color .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
+.no-transition,.no-transition *,.no-transition *::before,.no-transition *::after{transition:none!important}
+
+/* ── REDUCED MOTION ── */
+@media(prefers-reduced-motion:reduce){*{transition-duration:0.01ms!important;animation-duration:0.01ms!important}}
+
+/* ── HTML / BODY ── */
+html,body{overflow-x:hidden;max-width:100vw}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:var(--lh-body);display:flex;flex-direction:column;overflow-wrap:break-word;word-break:break-word;-webkit-hyphens:auto;hyphens:auto;font-size:17px;line-height:1.6}
+@media(max-width:768px){body{padding-bottom:68px}}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.65%27 numOctaves=%273%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27300%27 height=%27300%27 filter=%27url(%23n)%27/%3E%3C/svg%3E");background-size:300px 300px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.035;background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');background-size:150px;}
+
+/* ── TYPOGRAPHY ── */
+h1,h2,h3,h4,.page-title,.section-title,.modal-hd h2,.store-name,.hero h1{font-family:var(--font-display);line-height:var(--lh-heading);hyphens:none}
+h1,h2,h3,h4{font-family:var(--font-display,serif);letter-spacing:-.02em;}
+body{font-family:var(--font-body,system-ui);}
+.nav,.nav-link,.btn-nav-ghost,.btn-nav-primary,.bottom-nav-item,.filter-pill,.lang-btn,.footer-col-title{hyphens:none;word-break:normal;overflow-wrap:normal}
+.store-price-range,.store-price,.price-label,[class*="price"]{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.price,.amount,.chf{font-variant-numeric:tabular-nums;font-family:var(--font-mono,monospace);}
+
+/* ── LINKS & INTERACTIVE ELEMENTS ── */
+a{text-decoration:none;color:inherit}
+button,a,[role="button"],[role="link"],[onclick],.bottom-nav-item,.close-btn,.hamburger,.theme-toggle,.fav-btn,.chip,.cat-pill,.neighbourhood-chip,.lang-btn,.avatar,.reg-choice-card,.svc-card,.cal-day,.slot{cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none}
+.store-card,.sort-trigger,.view-toggle-btn,.filter-panel-trigger,.filter-pill,.cat-tab,.quartier-photo-card,.service-icon-card,.store-card-see-all-btn{pointer-events:auto;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+img{max-width:100%;display:block}
+
+/* ── ACCESSIBILITY ── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ── SKIP LINK ── */
+.skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:12px 24px;background:var(--c-accent);color:var(--c-accent-fg);border-radius:var(--r);font-weight:700;font-size:.95rem;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:12px}
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+.skip-link:focus{position:fixed;top:12px;left:12px;z-index:10000;padding:8px 16px;background:var(--c-cta);color:#fff;border-radius:var(--r-md,12px);width:auto;height:auto;font-weight:600;}
+
+/* ── FOCUS INDICATORS ── */
+*:focus-visible{outline:3px solid var(--c-focus);outline-offset:2px}
+:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px;border-radius:4px}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px;border-radius:4px}
+
+/* ── TOUCH TARGETS ── */
+button,a[role="button"],[type="submit"],[type="button"],.chip,.cat-pill,.rating-chip,.neighbourhood-chip,.bottom-nav-item,.lang-btn,.svc-card,.cal-day,.slot,.vt-opt{min-height:44px}
+input,select,textarea{font-family:inherit;min-height:44px}
+button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-primary{min-height:48px}
+@media(min-width:769px){button,.btn-book,.btn-primary,.btn-secondary,.btn-sm{min-height:52px}}
+
+/* ── FORM INPUTS FOCUS ── */
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent) !important;box-shadow:0 0 0 3px rgba(155,29,48,.12) !important}
+
+/* ── DARK MODE BODY ── */
+[data-theme=dark] body{background:var(--c-bg,#0F0F0F);color:var(--c-text,#EFEFEF)}

@@ -1,0 +1,39 @@
+{
+  "name": "Solen · Beauty & Wellness Basel",
+  "short_name": "Solen",
+  "description": "Lokale Coiffeure, Kosmetik und Spa in Basel online buchen. Dein Beauty-Assistent für das Quartier.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#9B1D30",
+  "background_color": "#F8F4ED",
+  "lang": "de",
+  "categories": ["lifestyle", "health", "beauty"],
+  "icons": [
+    { "src": "/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Salons entdecken",
+      "short_name": "Entdecken",
+      "description": "Alle Salons in Basel",
+      "url": "/?view=salons",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Meine Termine",
+      "short_name": "Termine",
+      "description": "Deine Buchungen",
+      "url": "/?view=bookings",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}
