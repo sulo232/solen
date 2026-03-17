@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Scissors,
   Sparkles,
@@ -22,22 +22,22 @@ import type { SalonCard as SalonCardType } from "@/lib/types";
 // Animation variants
 // ─────────────────────────────────────────────────────────────────────────────
 
-const containerVariants: Variants = {
+const containerVariants = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.07 },
   },
-};
+} as const;
 
-const itemVariants: Variants = {
+const itemVariants = {
   hidden: { opacity: 0, y: 16 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
-};
+} as const;
 
-const fadeUp: Variants = {
+const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
-};
+} as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Category grid data
