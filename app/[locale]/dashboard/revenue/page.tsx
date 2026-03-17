@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, DollarSign, Calendar, ArrowUpRight } from "lucide-react";
+import { TrendingUp, DollarSign, Calendar, ArrowUpRight, Percent, CreditCard } from "lucide-react";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
@@ -48,7 +48,7 @@ export default function RevenuePage() {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="font-heading font-bold text-2xl text-dark">Umsatz</h1>
-          <p className="text-sm text-dark/40 mt-0.5">Plattform-Umsatzübersicht</p>
+          <p className="text-sm text-dark/40 mt-0.5">Plattform-Einnahmen</p>
         </div>
         {/* Period picker */}
         <div className="flex rounded-button overflow-hidden border border-gray-200 bg-white shadow-card shrink-0">
@@ -82,25 +82,25 @@ export default function RevenuePage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               {
-                label: "Gesamtumsatz",
+                label: "GMV (Gesamtumsatz)",
                 value: `CHF ${fmt(data.total_revenue)}`,
                 icon: DollarSign,
                 color: "text-teal",
                 bg: "bg-teal/5",
               },
               {
-                label: "Buchungen",
-                value: data.total_bookings.toString(),
-                icon: Calendar,
-                color: "text-dark",
-                bg: "bg-dark/5",
-              },
-              {
-                label: "Ø Buchungswert",
-                value: `CHF ${fmt(data.avg_booking_value)}`,
-                icon: TrendingUp,
+                label: "Plattform-Gebühr (1%)",
+                value: `CHF ${fmt(data.total_revenue * 0.01)}`,
+                icon: Percent,
                 color: "text-coral",
                 bg: "bg-coral/5",
+              },
+              {
+                label: "Transaktionen",
+                value: data.total_bookings.toString(),
+                icon: CreditCard,
+                color: "text-dark",
+                bg: "bg-dark/5",
               },
               {
                 label: "Wachstum",
@@ -152,7 +152,7 @@ export default function RevenuePage() {
                     width={40}
                   />
                   <Tooltip
-                    formatter={(v: number) => [`CHF ${fmt(v)}`, "Umsatz"]}
+                    formatter={(v: unknown) => [`CHF ${fmt(Number(v))}`, "Umsatz"]}
                     labelFormatter={(d) => new Date(d).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" })}
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #f0f0f0" }}
                   />
