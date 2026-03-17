@@ -10,6 +10,7 @@ import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
   BarChart, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
+  MessageSquareWarning, Star,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import type { Profile, UserRole } from "@/lib/types";
@@ -26,6 +27,7 @@ const ADMIN_NAV = [
   { label: "Plattform Statistiken", href: "/dashboard/platform-analytics", icon: BarChart3 },
   { label: "Badges",              href: "/dashboard/badge-manager",       icon: Award },
   { label: "Inhalte",             href: "/dashboard/content-editor",     icon: FileEdit },
+  { label: "Bewertungen",         href: "/dashboard/review-moderation",  icon: MessageSquareWarning },
 ] as const;
 
 const NAV = [
@@ -36,6 +38,7 @@ const NAV = [
   { label: "Team",         href: "/dashboard/staff",      icon: Users },
   { label: "Services",     href: "/dashboard/services",   icon: Scissors },
   { label: "Statistiken",  href: "/dashboard/analytics",  icon: BarChart },
+  { label: "Bewertungen", href: "/dashboard/reviews",    icon: Star },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
 ] as const;
 
