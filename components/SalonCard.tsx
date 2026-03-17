@@ -23,6 +23,8 @@ interface SalonCardProps {
   showCompare?: boolean;
   compareSelected?: boolean;
   onCompareToggle?: (salonId: string) => void;
+  showAvailability?: boolean;
+  showDistance?: boolean;
 }
 
 const quartierLabels: Record<string, string> = {
@@ -35,7 +37,7 @@ const quartierLabels: Record<string, string> = {
   breite: "Breite",
 };
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance }: SalonCardProps) {
   const href = `/${locale}/salon/${salon.slug}`;
 
   if (variant === "compact") {
@@ -121,6 +123,14 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               </span>
             </div>
           )}
+          {/* Availability badge */}
+          {showAvailability && salon.next_available_slot && (
+            <div className="absolute top-2 right-2" style={salon.last_minute_discount_percent > 0 ? { top: "2rem" } : undefined}>
+              <span className="px-2 py-0.5 rounded-pill bg-emerald-500 text-white text-[10px] font-body font-medium">
+                Verfügbar heute
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Info row */}
@@ -151,7 +161,15 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           <div className="flex items-center gap-1 mt-1 text-dark/50">
             <MapPin className="w-3.5 h-3.5 shrink-0" />
             <span className="text-xs font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</span>
+            {showDistance && salon.distance_km != null && (
+              <span className="text-xs text-dark/50 font-body">{salon.distance_km.toFixed(1)} km</span>
+            )}
           </div>
+          {showAvailability && salon.next_available_slot && (
+            <div className="mt-1">
+              <span className="text-xs text-teal font-medium font-body">{salon.next_available_slot}</span>
+            </div>
+          )}
           <div className="flex items-center gap-1 mt-2 flex-wrap">
             <Star className="w-4 h-4 fill-coral text-coral" />
             <span className="text-sm font-data font-medium text-dark">{salon.average_rating.toFixed(1)}</span>

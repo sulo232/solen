@@ -247,6 +247,8 @@ export interface SalonCard extends Salon {
   reviews?: Review[];
   avg_price?: number | null;
   badges?: SalonBadge[];
+  next_available_slot?: string;
+  distance_km?: number;
 }
 
 // ---------------------------------------------------------------------------

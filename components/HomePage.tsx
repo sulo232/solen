@@ -182,15 +182,15 @@ export default function HomePage() {
             />
           ) : (
             <div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4"
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
             >
               {salons.map((salon) => (
                 <div
                   key={salon.id}
-                  className="snap-start shrink-0 w-[280px] sm:w-[300px]"
+                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink"
                 >
-                  <SalonCard salon={salon} locale={locale} />
+                  <SalonCard salon={salon} locale={locale} showAvailability showDistance />
                 </div>
               ))}
             </div>
