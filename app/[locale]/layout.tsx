@@ -4,6 +4,7 @@ import { getMessages } from "next-intl/server";
 import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { ToastProvider } from "@/components/ui/Toast";
+import Header from "@/components/layout/Header";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
@@ -27,10 +28,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body style={{ margin: 0, padding: 0, overflow: "hidden" }}>
+      <body style={{ margin: 0, padding: 0 }}>
         <NextIntlClientProvider messages={messages}>
           <PostHogProvider>
             <ToastProvider>
+              <Header locale={locale} />
               {children}
             </ToastProvider>
           </PostHogProvider>
