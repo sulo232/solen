@@ -18,6 +18,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import SearchBar from "@/components/ui/SearchBar";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
+import SocialProofStrip from "@/components/ui/SocialProofStrip";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 
@@ -122,6 +123,9 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* ── Social Proof ─────────────────────────────────────────────────── */}
+      <SocialProofStrip />
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-4 py-10">

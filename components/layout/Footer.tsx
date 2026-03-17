@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Instagram } from "lucide-react";
+import TrustBadges from "@/components/ui/TrustBadges";
 
 const CATEGORIES = [
   { key: "coiffeur",   label: "Coiffeur"     },
@@ -128,6 +129,9 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+        {/* Trust Badges */}
+        <TrustBadges />
 
         {/* Divider */}
         <div className="border-t border-white/10 pt-6">
