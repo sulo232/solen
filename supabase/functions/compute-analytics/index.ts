@@ -257,6 +257,83 @@ Deno.serve(async () => {
       await admin.from("salons").update({ explore_score: Math.round(score * 100) / 100 }).eq("id", salon.id);
     }
 
+    // ─── Customer segment computation ───
+    let segmentsComputed = 0;
+
+    const { data: customerSegments } = await admin.from("customer_segments").select("id, auto_rule");
+    const { data: allProfiles } = await admin.from("profiles").select("id, created_at").eq("role", "customer");
+
+    for (const segment of customerSegments ?? []) {
+      const rule = segment.auto_rule as Record<string, unknown>;
+
+      for (const profile of allProfiles ?? []) {
+        let qualifies = false;
+
+        if (rule.type === "bookings_gte") {
+          const cutoff = new Date(now.getTime() - ((rule.period_days as number) ?? 30) * 86400000).toISOString();
+          const { count } = await admin.from("bookings")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", profile.id)
+            .in("status", ["confirmed", "completed"])
+            .gte("starts_at", cutoff);
+          qualifies = (count ?? 0) >= ((rule.value as number) ?? 3);
+
+        } else if (rule.type === "avg_price_gte") {
+          const { data: userBookings } = await admin.from("bookings")
+            .select("price_paid")
+            .eq("user_id", profile.id)
+            .in("status", ["confirmed", "completed"]);
+          const prices = (userBookings ?? []).map((b: { price_paid: number | null }) => b.price_paid ?? 0);
+          const avg = prices.length > 0 ? prices.reduce((a: number, b: number) => a + b, 0) / prices.length : 0;
+          qualifies = avg >= ((rule.value as number) ?? 80);
+
+        } else if (rule.type === "inactive_days") {
+          const { count: totalBookings } = await admin.from("bookings")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", profile.id)
+            .in("status", ["confirmed", "completed"]);
+          if ((totalBookings ?? 0) >= ((rule.min_bookings as number) ?? 3)) {
+            const { data: lastBooking } = await admin.from("bookings")
+              .select("starts_at")
+              .eq("user_id", profile.id)
+              .in("status", ["confirmed", "completed"])
+              .order("starts_at", { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            if (lastBooking) {
+              const daysSince = (now.getTime() - new Date(lastBooking.starts_at).getTime()) / 86400000;
+              qualifies = daysSince >= ((rule.inactive_days as number) ?? 45);
+            }
+          }
+
+        } else if (rule.type === "registered_within_days") {
+          const cutoff = new Date(now.getTime() - ((rule.days as number) ?? 14) * 86400000);
+          qualifies = new Date(profile.created_at) > cutoff;
+
+        } else if (rule.type === "total_bookings_gte") {
+          const { count } = await admin.from("bookings")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", profile.id)
+            .in("status", ["confirmed", "completed"]);
+          qualifies = (count ?? 0) >= ((rule.value as number) ?? 10);
+        }
+
+        if (qualifies) {
+          await admin.from("customer_segment_members").upsert(
+            { segment_id: segment.id, user_id: profile.id, computed_at: now.toISOString() },
+            { onConflict: "segment_id,user_id" }
+          );
+          segmentsComputed++;
+        } else {
+          // Remove if no longer qualifies
+          await admin.from("customer_segment_members")
+            .delete()
+            .eq("segment_id", segment.id)
+            .eq("user_id", profile.id);
+        }
+      }
+    }
+
     return new Response(
       JSON.stringify({
         ok: true,
@@ -264,6 +341,7 @@ Deno.serve(async () => {
         rows_upserted: processed,
         badges_assigned: badgesAssigned,
         badges_removed: badgesRemoved,
+        segments_computed: segmentsComputed,
       }),
       { headers: { "Content-Type": "application/json" } }
     );
