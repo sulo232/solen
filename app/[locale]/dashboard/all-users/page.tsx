@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Users, Search, ShieldCheck, Scissors, User } from "lucide-react";
+import { Users, Search, ShieldCheck, Scissors, User, X, Ban, CheckCircle } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import EmptyState from "@/components/ui/EmptyState";
@@ -17,26 +17,115 @@ interface AdminUser {
   created_at: string;
   onboarding_completed: boolean;
   avatar_url: string | null;
+  is_suspended: boolean;
 }
 
 const ROLE_MAP: Record<UserRole, { label: string; icon: React.ElementType; cls: string }> = {
-  customer:    { label: "Kunde",        icon: User,       cls: "bg-dark/5 text-dark/60" },
-  salon_owner: { label: "Salon-Inhaber",icon: Scissors,   cls: "bg-teal/10 text-teal" },
-  admin:       { label: "Admin",        icon: ShieldCheck, cls: "bg-coral/10 text-coral" },
+  customer:    { label: "Kunde",          icon: User,       cls: "bg-gray-100 text-dark/50" },
+  salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-teal/10 text-teal" },
+  admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-coral/10 text-coral" },
 };
 
+const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
+  { value: "customer", label: "Kunde" },
+  { value: "salon_owner", label: "Salonbesitzer" },
+  { value: "admin", label: "Admin" },
+];
+
+/* ─── Confirmation Modal ─── */
+function ConfirmModal({
+  title,
+  message,
+  confirmLabel,
+  confirmCls,
+  onConfirm,
+  onClose,
+  loading,
+}: {
+  title: string;
+  message: string;
+  confirmLabel: string;
+  confirmCls: string;
+  onConfirm: () => void;
+  onClose: () => void;
+  loading: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+      <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
+        <div className="flex items-start justify-between mb-3">
+          <h3 className="font-heading font-bold text-base text-dark">{title}</h3>
+          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+        </div>
+        <p className="text-sm text-dark/50 mb-5">{message}</p>
+        <div className="flex gap-2">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">
+            Abbrechen
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className={`flex-1 py-2.5 rounded-button text-sm font-medium text-white disabled:opacity-50 flex items-center justify-center gap-2 ${confirmCls}`}
+          >
+            {loading && <Spinner size="sm" invert />}
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Page ─── */
 export default function AllUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
+  const [suspendTarget, setSuspendTarget] = useState<AdminUser | null>(null);
 
-  useEffect(() => {
+  const fetchUsers = useCallback(() => {
+    setLoading(true);
     fetch("/api/admin/users")
       .then((r) => r.json())
       .then((d) => setUsers(d.users ?? []))
-      .catch(() => {})
+      .catch(() => setUsers([]))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleRoleChange = async (userId: string, newRole: UserRole) => {
+    await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: userId, role: newRole }),
+    });
+    setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, role: newRole } : u));
+  };
+
+  const handleSuspendToggle = async () => {
+    if (!suspendTarget) return;
+    setActionLoading(true);
+    const newSuspended = !suspendTarget.is_suspended;
+    try {
+      await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: suspendTarget.id, is_suspended: newSuspended }),
+      });
+      setUsers((prev) =>
+        prev.map((u) => u.id === suspendTarget.id ? { ...u, is_suspended: newSuspended } : u)
+      );
+      setSuspendTarget(null);
+    } catch {
+      // silently fail
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   const filtered = users.filter(
     (u) =>
@@ -44,46 +133,44 @@ export default function AllUsersPage() {
       (u.email ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
-  const roleCounts = users.reduce<Record<string, number>>((acc, u) => {
-    acc[u.role] = (acc[u.role] ?? 0) + 1;
-    return acc;
-  }, {});
-
   return (
     <DashboardLayout>
+      {/* Suspend/unsuspend modal */}
+      {suspendTarget && (
+        <ConfirmModal
+          title={suspendTarget.is_suspended ? "Benutzer freigeben" : "Benutzer sperren"}
+          message={
+            suspendTarget.is_suspended
+              ? `Benutzer "${suspendTarget.display_name ?? suspendTarget.email}" wieder freigeben?`
+              : `Benutzer "${suspendTarget.display_name ?? suspendTarget.email}" sperren? Der Benutzer kann sich nicht mehr anmelden.`
+          }
+          confirmLabel={suspendTarget.is_suspended ? "Freigeben" : "Sperren"}
+          confirmCls={suspendTarget.is_suspended ? "bg-teal" : "bg-coral"}
+          onConfirm={handleSuspendToggle}
+          onClose={() => setSuspendTarget(null)}
+          loading={actionLoading}
+        />
+      )}
+
+      {/* Header */}
       <div className="mb-6">
         <h1 className="font-heading font-bold text-2xl text-dark">Alle Nutzer</h1>
-        <p className="text-sm text-dark/40 mt-0.5">{users.length} Nutzer registriert</p>
+        <p className="text-sm text-dark/40 mt-0.5">Registrierte Benutzer verwalten</p>
       </div>
-
-      {/* Role summary pills */}
-      {!loading && users.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-5">
-          {(["customer", "salon_owner", "admin"] as UserRole[]).map((role) => {
-            const { label, icon: RoleIcon, cls } = ROLE_MAP[role];
-            const count = roleCounts[role] ?? 0;
-            return (
-              <span key={role} className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-semibold ${cls}`}>
-                <RoleIcon size={12} />
-                {label}: {count}
-              </span>
-            );
-          })}
-        </div>
-      )}
 
       {/* Search */}
       <div className="relative mb-5 max-w-sm">
         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30" />
         <input
           type="text"
-          placeholder="Name oder E-Mail suchen…"
+          placeholder="Name oder E-Mail suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-teal/60 transition-colors shadow-card"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-teal transition-colors"
         />
       </div>
 
+      {/* Content */}
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : filtered.length === 0 ? (
@@ -93,61 +180,96 @@ export default function AllUsersPage() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="bg-white rounded-card border border-gray-100 shadow-card overflow-hidden"
+          className="space-y-3"
         >
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/80">
-                <th className="text-left px-4 py-3 text-xs font-semibold text-dark/40 uppercase tracking-wide">Nutzer</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-dark/40 uppercase tracking-wide">Rolle</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-dark/40 uppercase tracking-wide hidden sm:table-cell">Onboarding</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-dark/40 uppercase tracking-wide hidden md:table-cell">Erstellt</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((user) => {
-                const { label, icon: RoleIcon, cls } = ROLE_MAP[user.role];
-                return (
-                  <motion.tr
-                    key={user.id}
-                    variants={itemVariants}
-                    className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors"
-                  >
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center shrink-0 text-xs font-bold text-teal overflow-hidden">
-                          {user.avatar_url ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            (user.display_name ?? user.email ?? "?")[0].toUpperCase()
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-dark truncate">{user.display_name ?? "—"}</p>
-                          {user.email && <p className="text-xs text-dark/40 truncate">{user.email}</p>}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-bold ${cls}`}>
-                        <RoleIcon size={10} />
-                        {label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 hidden sm:table-cell">
-                      <span className={`text-xs font-medium ${user.onboarding_completed ? "text-teal" : "text-dark/30"}`}>
-                        {user.onboarding_completed ? "Abgeschlossen" : "Ausstehend"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-dark/40 text-xs hidden md:table-cell">
-                      {new Date(user.created_at).toLocaleDateString("de-CH")}
-                    </td>
-                  </motion.tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {filtered.map((u) => {
+            const { label, icon: RoleIcon, cls } = ROLE_MAP[u.role];
+            return (
+              <motion.div
+                key={u.id}
+                variants={itemVariants}
+                className={`bg-white rounded-card border shadow-card p-4 ${
+                  u.is_suspended ? "border-coral/30 bg-coral/[0.02]" : "border-gray-100"
+                }`}
+              >
+                <div className="flex gap-3 items-start">
+                  {/* Avatar */}
+                  <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center shrink-0 text-xs font-bold text-teal overflow-hidden">
+                    {u.avatar_url ? (
+                      <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      (u.display_name ?? u.email ?? "?")[0].toUpperCase()
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-sm text-dark truncate">
+                        {u.display_name ?? "—"}
+                      </p>
+                      {u.is_suspended && (
+                        <span className="px-1.5 py-0.5 rounded-pill bg-coral/10 text-coral text-[10px] font-bold">
+                          GESPERRT
+                        </span>
+                      )}
+                    </div>
+                    {u.email && (
+                      <p className="text-xs text-dark/40 truncate">{u.email}</p>
+                    )}
+                    <p className="text-[10px] text-dark/30 mt-0.5">
+                      Registriert: {new Date(u.created_at).toLocaleDateString("de-CH", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom actions */}
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50 gap-2">
+                  {/* Role pill */}
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-bold ${cls}`}>
+                    <RoleIcon size={10} />
+                    {label}
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    {/* Role change dropdown */}
+                    <select
+                      value={u.role}
+                      onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
+                      className="px-2 py-1.5 rounded-button border border-gray-200 text-xs text-dark/60 bg-white focus:outline-none focus:border-teal cursor-pointer"
+                    >
+                      {ROLE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+
+                    {/* Suspend/unsuspend button */}
+                    {u.is_suspended ? (
+                      <button
+                        onClick={() => setSuspendTarget(u)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-teal/30 text-teal text-xs font-medium hover:bg-teal/5 transition-colors"
+                      >
+                        <CheckCircle size={12} />
+                        Freigeben
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setSuspendTarget(u)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-coral/30 text-coral text-xs font-medium hover:bg-coral/5 transition-colors"
+                      >
+                        <Ban size={12} />
+                        Sperren
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
       )}
     </DashboardLayout>
