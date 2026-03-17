@@ -304,3 +304,78 @@ export function newMessageNotification(
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
+
+// ---------------------------------------------------------------------------
+// Re-booking nudge
+// ---------------------------------------------------------------------------
+
+export function rebookingNudge(
+  to: string,
+  vars: { service: string; salon: string; daysSince: number },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects = {
+    de: `Zeit für einen neuen Termin bei ${vars.salon}?`,
+    en: `Time for a new appointment at ${vars.salon}?`,
+    fr: `Prêt(e) pour un nouveau rendez-vous chez ${vars.salon} ?`,
+  };
+  const bodies = {
+    de: `<p>Dein letzter <strong>${vars.service}</strong>-Termin bei <strong>${vars.salon}</strong> war vor ${vars.daysSince} Tagen.</p><p><a href="https://solen.ch">Neuen Termin buchen →</a></p>`,
+    en: `<p>Your last <strong>${vars.service}</strong> appointment at <strong>${vars.salon}</strong> was ${vars.daysSince} days ago.</p><p><a href="https://solen.ch">Book a new appointment →</a></p>`,
+    fr: `<p>Votre dernier rendez-vous <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> remonte à ${vars.daysSince} jours.</p><p><a href="https://solen.ch">Réserver un nouveau rendez-vous →</a></p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Review prompt
+// ---------------------------------------------------------------------------
+
+export function reviewPrompt(
+  to: string,
+  vars: { service: string; salon: string; reviewUrl: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects = {
+    de: `Wie war dein Besuch bei ${vars.salon}?`,
+    en: `How was your visit at ${vars.salon}?`,
+    fr: `Comment était votre visite chez ${vars.salon} ?`,
+  };
+  const bodies = {
+    de: `<p>Vielen Dank für deinen <strong>${vars.service}</strong>-Termin bei <strong>${vars.salon}</strong>!</p><p>Hilf anderen Kunden und teile deine Erfahrung.</p><p><a href="${vars.reviewUrl}">Bewertung schreiben →</a></p>`,
+    en: `<p>Thanks for your <strong>${vars.service}</strong> appointment at <strong>${vars.salon}</strong>!</p><p>Help other customers by sharing your experience.</p><p><a href="${vars.reviewUrl}">Write a review →</a></p>`,
+    fr: `<p>Merci pour votre rendez-vous <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> !</p><p>Aidez les autres clients en partageant votre expérience.</p><p><a href="${vars.reviewUrl}">Écrire un avis →</a></p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Welcome series (3 steps)
+// ---------------------------------------------------------------------------
+
+export function welcomeEmail(
+  to: string,
+  vars: { name: string },
+  locale: EmailLocale = "de",
+  step: 1 | 2 | 3 = 1
+): EmailPayload {
+  const steps = {
+    de: [
+      { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/explore">Entdecke Salons in deiner Nähe →</a></p>` },
+      { subject: `Entdecke Last-Minute-Angebote, ${vars.name}`, html: `<p>Wusstest du, dass viele Salons Last-Minute-Rabatte anbieten? Spare bis zu 50 % auf freie Termine.</p><p><a href="https://solen.ch/de/explore?filter=lastminute">Last-Minute-Angebote ansehen →</a></p>` },
+      { subject: `Dein Profil vervollständigen`, html: `<p>Vervollständige dein Profil, um personalisierte Empfehlungen zu erhalten und schneller zu buchen.</p><p><a href="https://solen.ch/de/account">Profil bearbeiten →</a></p>` },
+    ],
+    en: [
+      { subject: `Welcome to solen.ch, ${vars.name}!`, html: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p><a href="https://solen.ch/en/explore">Discover salons near you →</a></p>` },
+      { subject: `Discover last-minute deals, ${vars.name}`, html: `<p>Did you know many salons offer last-minute discounts? Save up to 50% on available slots.</p><p><a href="https://solen.ch/en/explore?filter=lastminute">View last-minute deals →</a></p>` },
+      { subject: `Complete your profile`, html: `<p>Complete your profile to get personalized recommendations and faster bookings.</p><p><a href="https://solen.ch/en/account">Edit profile →</a></p>` },
+    ],
+    fr: [
+      { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/explore">Découvrir les salons →</a></p>` },
+      { subject: `Offres de dernière minute, ${vars.name}`, html: `<p>Saviez-vous que de nombreux salons proposent des réductions de dernière minute ? Économisez jusqu'à 50 %.</p><p><a href="https://solen.ch/fr/explore?filter=lastminute">Voir les offres →</a></p>` },
+      { subject: `Complétez votre profil`, html: `<p>Complétez votre profil pour des recommandations personnalisées.</p><p><a href="https://solen.ch/fr/account">Modifier le profil →</a></p>` },
+    ],
+  };
+  const s = steps[locale][step - 1];
+  return { to, subject: s.subject, html: s.html };
+}
