@@ -25,6 +25,7 @@ export async function PATCH(
   if (fetchErr || !salon) return NextResponse.json({ error: "Salon not found" }, { status: 404 });
 
   const { error } = await admin.from("salons").update({
+    is_active: false,
     rejection_reason: reason,
   }).eq("id", id);
 
