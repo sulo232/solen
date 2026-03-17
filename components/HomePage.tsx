@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
@@ -80,8 +80,9 @@ export default function HomePage() {
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     fetch("/api/salons?limit=8&sort=rating")
       .then((r) => r.json())
       .then((data) => setSalons(data.items ?? []))
@@ -94,8 +95,50 @@ export default function HomePage() {
       .catch(() => setLastMinuteSlots([]));
   }, []);
 
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Pull-to-refresh (touch only)
+  useEffect(() => {
+    let startY = 0;
+    let pulling = false;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+      }
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (pulling && e.changedTouches[0].clientY - startY > 80) {
+        setRefreshing(true);
+        fetchData();
+        setTimeout(() => setRefreshing(false), 800);
+      }
+      pulling = false;
+    };
+
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [fetchData]);
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
+
+      {/* ── Pull-to-refresh indicator ─────────────────────────────────────── */}
+      {refreshing && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          className="flex justify-center py-2"
+        >
+          <div className="w-5 h-5 rounded-full border-2 border-teal border-t-transparent animate-spin" />
+        </motion.div>
+      )}
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="bg-gradient-to-br from-teal/8 via-white to-orange-50/5 pt-24 pb-14">
@@ -140,7 +183,7 @@ export default function HomePage() {
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-teal/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 group"
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-teal/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
               >
                 <Icon
                   size={32}
@@ -200,7 +243,7 @@ export default function HomePage() {
               {salons.map((salon) => (
                 <div
                   key={salon.id}
-                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink"
+                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]"
                 >
                   <SalonCard salon={salon} locale={locale} showAvailability showDistance />
                 </div>
