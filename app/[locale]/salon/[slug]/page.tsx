@@ -10,7 +10,6 @@ import {
   Star, MapPin, Phone, Instagram, Clock, ChevronRight, ChevronLeft,
   Scissors, User, Sparkles, Waves, Palette, Zap, X
 } from "lucide-react";
-import Header from "@/components/layout/Header";
 import BookingCalendar from "@/components/BookingCalendar";
 import Spinner from "@/components/ui/Spinner";
 import { motion, AnimatePresence } from "framer-motion";
@@ -152,6 +151,16 @@ export default function SalonProfilePage() {
       .catch(() => setLoading(false));
   }, [slug]);
 
+  // Track page view — fire-and-forget, once per salon load
+  useEffect(() => {
+    if (!salon?.id) return;
+    fetch("/api/analytics/track-view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ salon_id: salon.id, source: "direct" }),
+    }).catch(() => {});
+  }, [salon?.id]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
   }
@@ -182,8 +191,6 @@ export default function SalonProfilePage() {
     <>
       <JsonLd salon={salon} />
       <div className="min-h-screen bg-white">
-        <Header locale={locale} />
-
         {/* Breadcrumb */}
         <nav className="max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-2 text-xs text-dark/40">
           <Link href={`/${locale}`} className="hover:text-teal">Home</Link>

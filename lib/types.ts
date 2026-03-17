@@ -238,6 +238,7 @@ export interface SalonCard extends Salon {
   services?: Service[];
   staff?: StaffMember[];
   reviews?: Review[];
+  avg_price?: number | null;
 }
 
 // ---------------------------------------------------------------------------

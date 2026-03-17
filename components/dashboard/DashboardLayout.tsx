@@ -8,7 +8,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
-  BarChart, Settings, Menu, X, ChevronRight,
+  BarChart, BarChart3, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
@@ -19,10 +19,11 @@ import type { Profile, UserRole } from "@/lib/types";
 // ─────────────────────────────────────────
 
 const ADMIN_NAV = [
-  { label: "Genehmigungen", href: "/dashboard/approvals",  icon: ShieldCheck },
-  { label: "Alle Salons",   href: "/dashboard/all-salons", icon: Store },
-  { label: "Alle Nutzer",   href: "/dashboard/all-users",  icon: UsersRound },
-  { label: "Umsatz",        href: "/dashboard/revenue",    icon: DollarSign },
+  { label: "Genehmigungen",       href: "/dashboard/approvals",           icon: ShieldCheck },
+  { label: "Alle Salons",         href: "/dashboard/all-salons",          icon: Store },
+  { label: "Alle Nutzer",         href: "/dashboard/all-users",           icon: UsersRound },
+  { label: "Umsatz",              href: "/dashboard/revenue",             icon: DollarSign },
+  { label: "Plattform Statistiken", href: "/dashboard/platform-analytics", icon: BarChart3 },
 ] as const;
 
 const NAV = [

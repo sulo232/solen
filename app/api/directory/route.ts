@@ -39,7 +39,10 @@ export async function GET(req: NextRequest) {
   }
 
   const { data, error, count } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("[api/directory]", error.message);
+    return NextResponse.json({ items: [], total: 0, page, limit });
+  }
 
   return NextResponse.json({ items: data ?? [], total: count ?? 0, page, limit });
 }
