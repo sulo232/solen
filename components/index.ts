@@ -14,9 +14,12 @@ export { default as InteractiveHoverButton } from "@/components/ui/interactive-h
 export { default as Skeleton } from "@/components/ui/Skeleton";
 export { default as SocialProofStrip } from "@/components/ui/SocialProofStrip";
 export { default as TrustBadges } from "@/components/ui/TrustBadges";
+export { default as ExpandableNavTabs } from "@/components/ui/expandable-tabs";
+export { default as StickyMobileCTA } from "@/components/ui/StickyMobileCTA";
 export { ToastProvider, useToast } from "@/components/ui/Toast";
 
 export { default as Header } from "@/components/layout/Header";
+export { default as BottomNav } from "@/components/layout/BottomNav";
 
 export { default as SalonCard } from "@/components/SalonCard";
 export { default as QuartierTile } from "@/components/QuartierTile";

@@ -19,6 +19,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
+import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 
@@ -334,6 +335,9 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}
+      <StickyMobileCTA />
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <Footer />

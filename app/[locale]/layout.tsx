@@ -5,6 +5,7 @@ import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import Header from "@/components/layout/Header";
+import BottomNav from "@/components/layout/BottomNav";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
@@ -33,7 +34,10 @@ export default async function LocaleLayout({
           <PostHogProvider>
             <ToastProvider>
               <Header locale={locale} />
-              {children}
+              <div className="pb-16 md:pb-0">
+                {children}
+              </div>
+              <BottomNav />
             </ToastProvider>
           </PostHogProvider>
         </NextIntlClientProvider>
