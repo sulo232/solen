@@ -15,6 +15,8 @@ import {
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
 import EmptyState from "@/components/ui/EmptyState";
+import SearchBar from "@/components/ui/SearchBar";
+import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
@@ -87,7 +89,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white overflow-x-hidden">
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-teal/10 via-white to-white pt-24 pb-14">
+      <section className="bg-gradient-to-br from-teal/8 via-white to-orange-50/5 pt-24 pb-14">
         <motion.div
           className="max-w-4xl mx-auto text-center px-4"
           variants={containerVariants}
@@ -108,6 +110,9 @@ export default function HomePage() {
           >
             Coiffeur, Barbershop, Nails, Spa &amp; mehr
           </motion.p>
+          <motion.div variants={fadeUp} className="mt-8">
+            <SearchBar />
+          </motion.div>
         </motion.div>
       </section>
 
@@ -220,12 +225,11 @@ export default function HomePage() {
                 Spare bis zu 50% auf kurzfristige Termine
               </p>
             </div>
-            <Link
-              href={`/${locale}/last-minute`}
-              className="shrink-0 px-6 py-3 rounded-lg text-sm font-medium text-white transition-all duration-200 hover:opacity-90 hover:shadow-md"
-              style={{ backgroundColor: "#FF6B6B", fontFamily: "DM Sans, sans-serif" }}
-            >
-              Angebote ansehen →
+            <Link href={`/${locale}/last-minute`} className="shrink-0">
+              <InteractiveHoverButton
+                text="Angebote ansehen"
+                className="w-44 border-teal/20"
+              />
             </Link>
           </motion.div>
         </div>

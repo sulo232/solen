@@ -9,6 +9,8 @@ export { default as GlassCard } from "@/components/ui/GlassCard";
 export { default as GlassModal } from "@/components/ui/GlassModal";
 export { default as AnimatedButton } from "@/components/ui/AnimatedButton";
 export { default as EmptyState } from "@/components/ui/EmptyState";
+export { default as SearchBar } from "@/components/ui/SearchBar";
+export { default as InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
 export { ToastProvider, useToast } from "@/components/ui/Toast";
 
 export { default as Header } from "@/components/layout/Header";
