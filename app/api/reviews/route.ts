@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { checkReview } from "@/lib/automod";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 export async function POST(request: NextRequest) {
+  const disabled = await checkFeatureEnabled("reviews");
+  if (disabled) return disabled;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;

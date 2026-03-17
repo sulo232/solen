@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation } from "@/lib/email";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
+import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -30,9 +31,15 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const disabled = await checkFeatureEnabled("bookings");
+  if (disabled) return disabled;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const rateLimited = await applyRateLimit(bookingLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;

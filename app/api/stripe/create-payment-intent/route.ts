@@ -2,14 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { stripe, toRappen, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
+import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 // POST /api/stripe/create-payment-intent
 // Body: { salon_id, service_name, estimated_price, deposit_amount }
 // Returns: { client_secret, payment_intent_id }
 export async function POST(req: NextRequest) {
+  const disabled = await checkFeatureEnabled("payments");
+  if (disabled) return disabled;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const rateLimited = await applyRateLimit(paymentLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;

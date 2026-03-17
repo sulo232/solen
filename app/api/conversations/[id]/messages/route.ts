@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, newMessageNotification } from "@/lib/email";
 import { applyRateLimit, messageLimiter } from "@/lib/ratelimit";
+import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 export async function GET(
   request: NextRequest,
@@ -51,9 +52,15 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  const disabled = await checkFeatureEnabled("messaging");
+  if (disabled) return disabled;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
+
+  const banned = await checkUserBanned(user.id);
+  if (banned) return banned;
 
   const rateLimited = await applyRateLimit(messageLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
