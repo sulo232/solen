@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
   BarChart, Settings, Menu, X, ChevronRight,
-  ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award,
+  ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import type { Profile, UserRole } from "@/lib/types";
@@ -25,6 +25,7 @@ const ADMIN_NAV = [
   { label: "Umsatz",              href: "/dashboard/revenue",             icon: DollarSign },
   { label: "Plattform Statistiken", href: "/dashboard/platform-analytics", icon: BarChart3 },
   { label: "Badges",              href: "/dashboard/badge-manager",       icon: Award },
+  { label: "Inhalte",             href: "/dashboard/content-editor",     icon: FileEdit },
 ] as const;
 
 const NAV = [
