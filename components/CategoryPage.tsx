@@ -52,7 +52,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-card bg-white border border-gray-100 overflow-hidden hover:border-teal/30 hover:shadow-card transition-all duration-200"
+      className="rounded-card bg-gray-50 border border-gray-100 overflow-hidden hover:border-teal/20 hover:shadow-card transition-all duration-200 opacity-80"
     >
       <div className="h-36 bg-gray-100 relative overflow-hidden">
         {entry.photo_url ? (
@@ -62,8 +62,8 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
             <Building2 className="w-10 h-10" />
           </div>
         )}
-        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-xs text-dark/50 px-2 py-0.5 rounded-pill border border-gray-200 font-body">
-          Noch nicht auf Solen
+        <div className="absolute top-2 right-2 text-xs text-white px-2.5 py-0.5 rounded-full font-medium font-body" style={{ backgroundColor: "#FF6B6B" }}>
+          Nicht buchbar
         </div>
       </div>
       <div className="p-3">
@@ -80,18 +80,15 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
         )}
         <div className="flex items-center gap-1.5 mt-3 flex-wrap">
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-gray-50 border border-gray-100 text-xs text-dark/70 hover:bg-gray-100 font-body transition-colors">
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-gray-100 text-xs text-dark/70 hover:bg-gray-100 font-body transition-colors">
               <Phone className="w-3 h-3" />Anrufen
             </a>
           )}
           {entry.website && (
-            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-gray-50 border border-gray-100 text-xs text-dark/70 hover:bg-gray-100 font-body transition-colors">
+            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-gray-100 text-xs text-dark/70 hover:bg-gray-100 font-body transition-colors">
               <Globe className="w-3 h-3" />Website
             </a>
           )}
-          <a href={`/de/directory?claim=${entry.id}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button border border-coral/50 bg-coral/5 text-xs text-coral hover:bg-coral/10 font-body font-medium transition-colors ml-auto">
-            Mein Salon
-          </a>
         </div>
       </div>
     </motion.div>
@@ -237,60 +234,45 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             message="Versuche andere Filteroptionen oder wähle ein anderes Quartier."
           />
         ) : (
-          <div className="flex flex-col gap-12">
-            {salons.length > 0 && (
-              <div>
-                <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {salons.map((salon) => (
-                    <SalonCard key={salon.id} salon={salon} locale={locale} />
-                  ))}
-                </motion.div>
-                <AnimatePresence>
-                  {hasMore && (
-                    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
-                      <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-teal hover:shadow-teal-glow transition-all disabled:opacity-50">
-                        {loadingMore ? <Spinner size="sm" /> : null}
-                        {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
+          <div>
+            {/* Unified grid: registered salons first, then directory entries */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+            >
+              {salons.map((salon) => (
+                <SalonCard key={salon.id} salon={salon} locale={locale} />
+              ))}
+              {!dirLoading && dirEntries.map((entry) => (
+                <DirectoryCard key={entry.id} entry={entry} />
+              ))}
+            </motion.div>
 
-            {(dirLoading || dirEntries.length > 0) && (
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <h2 className="font-heading font-bold text-xl text-dark">Weitere Salons in Basel</h2>
-                  <span className="text-xs text-dark/40 bg-gray-100 px-2.5 py-1 rounded-pill border border-gray-200 font-body">Verzeichnis</span>
-                </div>
-                <p className="text-sm text-dark/50 mb-6 font-body">
-                  Diese Salons sind noch nicht auf Solen buchbar. Inhaber können ihren Salon{" "}
-                  <a href="/de/directory" className="text-teal underline-offset-2 hover:underline">kostenlos beanspruchen</a>.
-                </p>
-                {dirLoading ? (
-                  <div className="flex justify-center py-10"><Spinner size="lg" /></div>
-                ) : (
-                  <div className="flex flex-col gap-5">
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                      {dirEntries.map((entry) => (
-                        <DirectoryCard key={entry.id} entry={entry} />
-                      ))}
-                    </motion.div>
-                    <AnimatePresence>
-                      {hasDirMore && (
-                        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
-                          <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-gray-300 transition-colors disabled:opacity-50">
-                            {dirLoadingMore ? <Spinner size="sm" /> : null}
-                            {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Load more for registered salons */}
+            <AnimatePresence>
+              {hasMore && (
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
+                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-teal hover:shadow-teal-glow transition-all disabled:opacity-50">
+                    {loadingMore ? <Spinner size="sm" /> : null}
+                    {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Load more for directory entries */}
+            <AnimatePresence>
+              {!dirLoading && hasDirMore && (
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
+                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-gray-300 transition-colors disabled:opacity-50">
+                    {dirLoadingMore ? <Spinner size="sm" /> : null}
+                    {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>
