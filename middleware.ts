@@ -121,7 +121,12 @@ export async function middleware(request: NextRequest) {
       const url = request.nextUrl.clone();
       url.pathname = `/${currentLocale}/auth/login`;
       url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
+      const redirect = NextResponse.redirect(url);
+      // Carry over any auth cookies that were refreshed
+      response.cookies.getAll().forEach((cookie) => {
+        redirect.cookies.set(cookie.name, cookie.value);
+      });
+      return redirect;
     }
 
     // Fetch user role from profiles table
@@ -137,7 +142,11 @@ export async function middleware(request: NextRequest) {
     if (role !== "salon_owner" && role !== "admin") {
       const url = request.nextUrl.clone();
       url.pathname = `/${currentLocale}`;
-      return NextResponse.redirect(url);
+      const redirect = NextResponse.redirect(url);
+      response.cookies.getAll().forEach((cookie) => {
+        redirect.cookies.set(cookie.name, cookie.value);
+      });
+      return redirect;
     }
 
     // Admin-only routes
@@ -152,7 +161,11 @@ export async function middleware(request: NextRequest) {
     if (isAdminRoute && role !== "admin") {
       const url = request.nextUrl.clone();
       url.pathname = `/${currentLocale}`;
-      return NextResponse.redirect(url);
+      const redirect = NextResponse.redirect(url);
+      response.cookies.getAll().forEach((cookie) => {
+        redirect.cookies.set(cookie.name, cookie.value);
+      });
+      return redirect;
     }
   }
 
