@@ -53,7 +53,6 @@ module.exports = {
       fontFamily: {
         heading: ["Syne", "sans-serif"],
         body: ["DM Sans", "sans-serif"],
-        data: ["Space Grotesk", "monospace"],
         display: ["Bebas Neue", "sans-serif"],
       },
       borderRadius: {

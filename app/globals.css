@@ -55,10 +55,7 @@
   .font-body {
     font-family: "DM Sans", sans-serif;
   }
-  .font-data {
-    font-family: "Space Grotesk", monospace;
-  }
-  .font-display {
+.font-display {
     font-family: "Bebas Neue", sans-serif;
   }
   .data-text {
