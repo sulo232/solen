@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocale } from "next-intl";
-import { ChevronLeft, ChevronRight, Plus, X, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -220,6 +220,109 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
 }
 
 // ─────────────────────────────────────────
+// Slot Detail / Reschedule Modal
+// ─────────────────────────────────────────
+
+interface SlotDetailModalProps {
+  slot: AvailabilitySlot;
+  staff: { id: string; name: string }[];
+  onClose: () => void;
+  onReschedule: (slotId: string, newDate: string, newTime: string) => void;
+  onDelete: (slotId: string) => void;
+}
+
+function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotDetailModalProps) {
+  const [rescheduleMode, setRescheduleMode] = useState(false);
+  const [newDate, setNewDate] = useState(slot.starts_at.split("T")[0]);
+  const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
+  const [loading, setLoading] = useState(false);
+
+  const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name ?? "—";
+  const startTime = new Date(slot.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+  const endTime = new Date(slot.ends_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+
+  const handleReschedule = async () => {
+    setLoading(true);
+    try {
+      onReschedule(slot.id, newDate, newTime);
+      onClose();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+      <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
+        <div className="flex items-start justify-between mb-4">
+          <h3 className="font-heading font-bold text-base">
+            {rescheduleMode ? "Termin verschieben" : "Termin-Details"}
+          </h3>
+          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+        </div>
+
+        {rescheduleMode ? (
+          <div className="space-y-3 mb-5">
+            <div>
+              <label className="block text-xs font-medium text-dark/50 mb-1">Neues Datum</label>
+              <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark/50 mb-1">Neue Uhrzeit</label>
+              <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button onClick={() => setRescheduleMode(false)}
+                className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Zurück</button>
+              <button onClick={handleReschedule} disabled={loading}
+                className="flex-1 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
+                {loading && <Spinner size="sm" invert />}
+                <ArrowRight size={14} /> Verschieben
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="space-y-2 mb-5 text-sm text-dark/70">
+              <p><span className="text-dark/40">Status:</span> <span className="font-medium">{slot.status === "booked" ? "Gebucht" : slot.status === "blocked" ? "Blockiert" : "Frei"}</span></p>
+              <p><span className="text-dark/40">Zeit:</span> {startTime} – {endTime}</p>
+              <p><span className="text-dark/40">Datum:</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
+              <p><span className="text-dark/40">Mitarbeiter:</span> {staffName}</p>
+            </div>
+            <div className="flex gap-2">
+              {slot.status !== "blocked" && (
+                <button onClick={() => setRescheduleMode(true)}
+                  className="flex-1 py-2.5 rounded-button border border-teal text-teal text-sm font-medium flex items-center justify-center gap-1 hover:bg-teal/5 transition-colors">
+                  <Clock size={14} /> Verschieben
+                </button>
+              )}
+              <button onClick={() => { onDelete(slot.id); onClose(); }}
+                className="flex-1 py-2.5 rounded-button border border-coral text-coral text-sm font-medium hover:bg-coral/5 transition-colors">
+                Löschen
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Staff color palette
+const STAFF_COLORS = [
+  "bg-teal/15 border-teal/30 text-teal",
+  "bg-blue-100 border-blue-300 text-blue-700",
+  "bg-purple-100 border-purple-300 text-purple-700",
+  "bg-amber-100 border-amber-300 text-amber-700",
+  "bg-pink-100 border-pink-300 text-pink-700",
+  "bg-emerald-100 border-emerald-300 text-emerald-700",
+  "bg-orange-100 border-orange-300 text-orange-700",
+  "bg-cyan-100 border-cyan-300 text-cyan-700",
+];
+
+// ─────────────────────────────────────────
 // Main Calendar
 // ─────────────────────────────────────────
 
@@ -233,6 +336,7 @@ export default function CalendarPage() {
   const [staff, setStaff] = useState<{ id: string; name: string }[]>([]);
   const [createModal, setCreateModal] = useState<{ date: string; time: string } | null>(null);
   const [bulkModal, setBulkModal] = useState(false);
+  const [detailSlot, setDetailSlot] = useState<AvailabilitySlot | null>(null);
   const contextTarget = useRef<string | null>(null);
 
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -281,6 +385,19 @@ export default function CalendarPage() {
     setSlots((prev) => prev.filter((s) => s.id !== id));
   };
 
+  const rescheduleSlot = async (slotId: string, newDate: string, newTime: string) => {
+    await fetch(`/api/slots/${slotId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: newDate, start_time: newTime }),
+    });
+    loadSlots();
+  };
+
+  // Map staff IDs to colors
+  const staffColorMap = new Map<string, string>();
+  staff.forEach((s, i) => staffColorMap.set(s.id, STAFF_COLORS[i % STAFF_COLORS.length]));
+
   const blockDay = async (dateStr: string) => {
     await fetch("/api/slots/bulk", {
       method: "POST",
@@ -301,6 +418,10 @@ export default function CalendarPage() {
     if (s.status === "blocked") return "bg-gray-100 border border-dashed border-gray-300";
     if (s.status === "booked") return "bg-dark text-white";
     if (s.price_override !== null) return "bg-teal border-2 border-coral"; // last-minute
+    // Color by staff member
+    if (s.staff_member_id && staffColorMap.has(s.staff_member_id)) {
+      return staffColorMap.get(s.staff_member_id)! + " border";
+    }
     return "bg-teal/15 border border-teal/30 text-teal";
   };
 
@@ -323,6 +444,15 @@ export default function CalendarPage() {
           salonId={salonId}
           onClose={() => setBulkModal(false)}
           onCreated={loadSlots}
+        />
+      )}
+      {detailSlot && (
+        <SlotDetailModal
+          slot={detailSlot}
+          staff={staff}
+          onClose={() => setDetailSlot(null)}
+          onReschedule={rescheduleSlot}
+          onDelete={deleteSlot}
         />
       )}
 
@@ -406,21 +536,25 @@ export default function CalendarPage() {
                         onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}
                         onContextMenu={(e) => { e.preventDefault(); setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` }); }}
                       >
-                        {cellSlots.map((s) => (
-                          <div
-                            key={s.id}
-                            onClick={(e) => e.stopPropagation()}
-                            className={["relative rounded text-[9px] px-1 py-0.5 mb-0.5 cursor-default group/slot", slotBg(s)].join(" ")}
-                          >
-                            {s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
-                            <button
-                              onClick={() => deleteSlot(s.id)}
-                              className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"
+                        {cellSlots.map((s) => {
+                          const staffMember = staff.find((st) => st.id === s.staff_member_id);
+                          return (
+                            <div
+                              key={s.id}
+                              onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
+                              className={["relative rounded text-[9px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot", slotBg(s)].join(" ")}
+                              title={staffMember ? staffMember.name : undefined}
                             >
-                              <X size={8} />
-                            </button>
-                          </div>
-                        ))}
+                              {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
+                              <button
+                                onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
+                                className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"
+                              >
+                                <X size={8} />
+                              </button>
+                            </div>
+                          );
+                        })}
                         {cellSlots.length === 0 && (
                           <div className="opacity-0 group-hover:opacity-100 text-[9px] text-teal flex items-center justify-center h-full">
                             <Plus size={10} />
@@ -437,11 +571,22 @@ export default function CalendarPage() {
       </div>
 
       {/* Legend */}
-      <div className="flex gap-4 mt-3 text-xs text-dark/40">
+      <div className="flex flex-wrap gap-4 mt-3 text-xs text-dark/40">
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-teal/15 border border-teal/30" />Frei</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-dark" />Gebucht</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-gray-100 border border-dashed border-gray-300" />Blockiert</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-teal border-2 border-coral" />Last-Minute</span>
+        {staff.length > 0 && (
+          <>
+            <span className="w-px h-4 bg-gray-200" />
+            {staff.map((s, i) => (
+              <span key={s.id} className="flex items-center gap-1.5">
+                <span className={`w-3 h-3 rounded border ${STAFF_COLORS[i % STAFF_COLORS.length].split(" ").slice(0, 2).join(" ")}`} />
+                {s.name.split(" ")[0]}
+              </span>
+            ))}
+          </>
+        )}
       </div>
     </DashboardLayout>
   );
