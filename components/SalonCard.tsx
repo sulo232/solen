@@ -154,7 +154,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
         {/* Info row */}
         <div className="p-4">
-          <h3 className="font-heading font-semibold text-dark text-base leading-tight">{salon.name}</h3>
+          <h3 className="font-heading font-semibold text-dark dark:text-dm-text text-base leading-tight">{salon.name}</h3>
+          {(salon as any).group_name && (
+            <span className="inline-flex items-center gap-1 text-[10px] text-teal font-medium mt-0.5">
+              Teil von {(salon as any).group_name}
+            </span>
+          )}
           {salon.badges && salon.badges.length > 0 && (
             <div className="flex items-center gap-1 mt-1 flex-wrap">
               {salon.badges.slice(0, 3).map((b, i) => {
