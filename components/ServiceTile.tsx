@@ -29,17 +29,17 @@ export default function ServiceTile({ category, minPrice, isFavorite = false, lo
       className="relative flex-shrink-0 flex flex-col items-center justify-center gap-2 w-28 h-28 rounded-card bg-white shadow-card hover:shadow-md hover:scale-[1.02] transition-all duration-200 p-3"
     >
       {isFavorite && (
-        <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-pill bg-coral text-white text-[9px] font-medium leading-none">
+        <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-pill bg-s-coral text-white text-[9px] font-medium leading-none">
           Favorit
         </span>
       )}
-      <div className="w-10 h-10 rounded-pill bg-teal/10 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-teal" />
+      <div className="w-10 h-10 rounded-pill bg-s-coral/10 flex items-center justify-center">
+        <Icon className="w-5 h-5 text-s-coral" />
       </div>
       <div className="text-center">
         <p className="text-xs font-medium text-dark">{label}</p>
         {minPrice != null && (
-          <p className="text-[10px] font-data text-dark/50 mt-0.5">ab CHF {minPrice}</p>
+          <p className="text-[10px] data-text text-dark/50 mt-0.5">ab CHF {minPrice}</p>
         )}
       </div>
     </Link>

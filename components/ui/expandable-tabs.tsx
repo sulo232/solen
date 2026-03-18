@@ -46,7 +46,7 @@ const transition = { type: "spring", bounce: 0.15, duration: 0.5 };
 
 export default function ExpandableNavTabs({
   tabs,
-  activeColor = "text-teal",
+  activeColor = "text-s-coral",
   className,
   onTabChange,
   activeIndex: controlledIndex,
@@ -96,7 +96,7 @@ export default function ExpandableNavTabs({
             transition={transition}
             className={cn(
               "relative flex items-center rounded-xl py-2.5 text-sm font-medium font-body transition-colors",
-              isSelected ? `${activeColor} bg-teal/10` : "text-dark/40 hover:text-dark/60"
+              isSelected ? `${activeColor} bg-s-coral/10` : "text-dark/40 hover:text-dark/60"
             )}
           >
             <Icon size={18} />

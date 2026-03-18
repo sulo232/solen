@@ -16,13 +16,13 @@ interface AnimatedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-teal text-white shadow-teal-glow hover:bg-teal-dark active:bg-teal-dark",
+    "bg-s-coral text-white shadow-teal-glow hover:bg-s-coral-dark active:bg-s-coral-dark",
   secondary:
-    "bg-white border border-gray-200 text-dark shadow-card hover:border-teal/40 hover:shadow-teal-glow",
+    "bg-white border border-gray-200 text-dark shadow-card hover:border-s-coral/40 hover:shadow-teal-glow",
   ghost:
     "bg-transparent text-dark/60 hover:bg-dark/5 hover:text-dark",
   danger:
-    "bg-coral text-white shadow-coral-glow hover:bg-coral-dark active:bg-coral-dark",
+    "bg-s-coral text-white shadow-warm-md hover:bg-s-coral-dark active:bg-s-coral-dark",
 };
 
 const sizeClasses: Record<Size, string> = {
@@ -56,7 +56,7 @@ const AnimatedButton = forwardRef<HTMLButtonElement, AnimatedButtonProps>(
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={cn(
         "inline-flex items-center justify-center font-body font-medium",
-        "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/50",
+        "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral/50",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         variantClasses[variant],
         sizeClasses[size],

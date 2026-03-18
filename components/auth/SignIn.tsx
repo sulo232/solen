@@ -81,8 +81,8 @@ export default function SignIn() {
   if (resetSent) {
     return (
       <div className="text-center py-6 flex flex-col items-center gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-teal/10 flex items-center justify-center">
-          <Mail size={26} className="text-teal" strokeWidth={1.5} />
+        <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center">
+          <Mail size={26} className="text-s-coral" strokeWidth={1.5} />
         </div>
         <p className="font-heading font-semibold text-dark text-lg">Link gesendet</p>
         <p className="text-sm text-dark/50 font-body">
@@ -90,7 +90,7 @@ export default function SignIn() {
         </p>
         <button
           onClick={() => { setResetMode(false); setResetSent(false); }}
-          className="text-sm text-teal hover:underline font-body mt-2"
+          className="text-sm text-s-coral hover:underline font-body mt-2"
         >
           Zurück zur Anmeldung
         </button>
@@ -115,12 +115,12 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+            className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
           />
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 shadow-teal-glow"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors disabled:opacity-50 shadow-teal-glow"
           >
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
@@ -171,7 +171,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+          className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
         <div className="relative">
           <input
@@ -180,7 +180,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full px-4 py-2.5 pr-10 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+            className="w-full px-4 py-2.5 pr-10 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
           />
           <button
             type="button"
@@ -194,7 +194,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 shadow-teal-glow"
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors disabled:opacity-50 shadow-teal-glow"
         >
           {loading ? <Spinner size="sm" invert /> : <Loader2 size={15} className="hidden" />}
           Anmelden
@@ -203,7 +203,7 @@ export default function SignIn() {
 
       <button
         onClick={() => setResetMode(true)}
-        className="text-sm text-teal hover:underline font-body text-center"
+        className="text-sm text-s-coral hover:underline font-body text-center"
       >
         Passwort vergessen?
       </button>

@@ -27,8 +27,8 @@ const STATUS_LABEL: Record<string, string> = {
   no_show: "Nicht erschienen",
 };
 const STATUS_COLOR: Record<string, string> = {
-  confirmed: "text-teal",
-  cancelled: "text-coral",
+  confirmed: "text-s-coral",
+  cancelled: "text-s-coral",
   completed: "text-dark/50",
   no_show: "text-dark/30",
 };
@@ -87,7 +87,7 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-coral resize-none"
+          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
@@ -98,7 +98,7 @@ function CancelModal({
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium hover:bg-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
           Stornieren
@@ -178,13 +178,13 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
                 <span
                   className={[
                     "w-7 h-7 flex items-center justify-center rounded-full text-xs",
-                    isToday(d) ? "bg-teal text-white font-bold" : "text-dark/70",
+                    isToday(d) ? "bg-s-coral text-white font-bold" : "text-dark/70",
                   ].join(" ")}
                 >
                   {d}
                 </span>
                 {hasBooking(d) && (
-                  <span className="absolute bottom-0 w-1 h-1 rounded-full bg-coral" />
+                  <span className="absolute bottom-0 w-1 h-1 rounded-full bg-s-coral" />
                 )}
               </>
             ) : (
@@ -282,7 +282,7 @@ export default function TerminePage() {
           animate={{ opacity: 1, y: 0 }}
           className="font-heading font-bold text-xl text-dark mb-6 flex items-center gap-2"
         >
-          <Calendar size={20} className="text-teal" />
+          <Calendar size={20} className="text-s-coral" />
           Meine Termine
         </motion.h1>
 
@@ -303,7 +303,7 @@ export default function TerminePage() {
                 <div className="bg-white rounded-card border border-gray-100 p-8 text-center text-dark/40">
                   <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
                   <p className="text-sm font-medium">Keine anstehenden Termine</p>
-                  <Link href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+                  <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
                     Termin buchen →
                   </Link>
                 </div>
@@ -330,7 +330,7 @@ export default function TerminePage() {
                               um {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                             </p>
                           </div>
-                          <span className="text-xs font-medium text-teal">
+                          <span className="text-xs font-medium text-s-coral">
                             {STATUS_LABEL[b.status] ?? b.status}
                           </span>
                         </div>
@@ -339,7 +339,7 @@ export default function TerminePage() {
                           {canCancel && (
                             <button
                               onClick={() => setCancelTarget(b)}
-                              className="px-3 py-1.5 rounded-button border border-coral/30 text-xs text-coral hover:bg-coral/5 transition-colors"
+                              className="px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
                             >
                               Absagen
                             </button>
@@ -357,7 +357,7 @@ export default function TerminePage() {
                           {b.salon_slug && (
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&reschedule=${b.id}`}
-                              className="px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-teal hover:border-teal transition-colors"
+                              className="px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
                             >
                               Verschieben
                             </Link>
@@ -409,7 +409,7 @@ export default function TerminePage() {
                           <div className="mt-3 pt-3 border-t border-gray-50">
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-teal hover:border-teal transition-colors w-fit"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
                             >
                               <RotateCcw size={12} />
                               Nochmal buchen

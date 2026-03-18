@@ -16,7 +16,7 @@ export default function TrustBadges() {
           key={label}
           className="flex items-center gap-3 px-4 py-3 rounded-card bg-white/5 backdrop-blur-sm border border-white/10"
         >
-          <Icon size={18} className="text-teal shrink-0" />
+          <Icon size={18} className="text-s-coral shrink-0" />
           <div>
             <p className="text-xs font-medium text-white/80 font-body">{label}</p>
             <p className="text-[10px] text-white/40 font-body">{desc}</p>

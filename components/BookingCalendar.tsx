@@ -242,11 +242,11 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
   if (confirmed) {
     return (
-      <div className="rounded-card border border-teal/20 bg-teal/5 p-8 flex flex-col items-center gap-4 text-center">
+      <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center">
         <span className="text-5xl">🎉</span>
         <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
         <p className="text-sm text-dark/60">Du erhältst eine Bestätigungs-E-Mail.</p>
-        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors">
+        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
           Meine Buchungen
         </a>
       </div>
@@ -261,7 +261,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <select
             value={selectedStaff}
             onChange={(e) => setSelectedStaff(e.target.value)}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm text-dark bg-white outline-none focus:border-teal transition-colors"
+            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm text-dark bg-white outline-none focus:border-s-coral transition-colors"
             aria-label="Mitarbeiter wählen"
           >
             <option value="any">Egal (wer verfügbar ist)</option>
@@ -293,7 +293,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <p className="text-sm text-dark/40">Keine freien Slots an diesem Tag.</p>
             <button
               onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
-              className="inline-flex items-center gap-1.5 text-sm text-teal hover:text-teal/80 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
             >
               <ClipboardList className="w-4 h-4" />
               Auf Warteliste setzen
@@ -322,17 +322,17 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           key={slot.id}
                           onClick={() => setSelectedSlot(isSelected ? null : slot)}
                           className={[
-                            "px-3 py-1.5 rounded-button text-sm font-data font-medium transition-all duration-150",
+                            "px-3 py-1.5 rounded-button text-sm data-text font-medium transition-all duration-150",
                             isSelected
-                              ? "bg-teal text-white shadow-card"
-                              : "bg-gray-100 text-dark hover:bg-teal/10 hover:text-teal",
+                              ? "bg-s-coral text-white shadow-card"
+                              : "bg-gray-100 text-dark hover:bg-s-coral/10 hover:text-s-coral",
                           ].join(" ")}
                           aria-label={`Termin um ${timeStr}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
                         >
                           {timeStr}
                           {discount > 0 && (
-                            <span className="ml-1.5 text-[10px] text-coral">-{discount}%</span>
+                            <span className="ml-1.5 text-[10px] text-s-coral">-{discount}%</span>
                           )}
                         </button>
                       );
@@ -368,13 +368,13 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               className="w-4 h-4 rounded accent-teal"
             />
             <span className="text-sm text-dark/70">Serienbuchung</span>
-            <RotateCcw className="w-3.5 h-3.5 text-teal" />
+            <RotateCcw className="w-3.5 h-3.5 text-s-coral" />
           </label>
           {recurring && (
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="text-sm px-3 py-1.5 rounded-button border border-gray-200 bg-white outline-none focus:border-teal"
+              className="text-sm px-3 py-1.5 rounded-button border border-gray-200 bg-white outline-none focus:border-s-coral"
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -397,13 +397,13 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 })}
               </p>
             </div>
-            <span className="font-data font-bold text-lg text-dark">
+            <span className="data-text font-bold text-lg text-dark">
               CHF {selectedSlot.price_override ?? selectedSlot.services?.price ?? "–"}
             </span>
           </div>
 
           {/* Cancellation policy banner */}
-          <div className="flex items-center gap-1.5 text-xs text-teal bg-teal/5 rounded-button px-3 py-2">
+          <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/5 rounded-button px-3 py-2">
             <Info className="w-3.5 h-3.5 shrink-0" />
             Kostenlose Stornierung bis 24h vor dem Termin
           </div>
@@ -413,12 +413,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
 
-          {error && <p className="text-xs text-coral">{error}</p>}
+          {error && <p className="text-xs text-s-coral">{error}</p>}
 
           <button
             onClick={handleConfirm}
             disabled={confirming}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-coral text-white font-semibold text-sm hover:bg-coral/90 transition-colors disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
           >
             {confirming && <Spinner size="sm" invert />}
             {confirming ? "Buchen…" : "Termin bestätigen"}
@@ -431,13 +431,13 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowWaitlist(false)}>
           <div className="bg-white rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
-              <ClipboardList className="w-5 h-5 text-teal" />
+              <ClipboardList className="w-5 h-5 text-s-coral" />
               <h3 className="font-heading font-bold text-dark">Warteliste</h3>
             </div>
             {waitlistDone ? (
               <div className="text-center py-4">
                 <p className="text-sm text-dark/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
-                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-button bg-teal text-white text-sm hover:bg-teal/90 transition-colors">
+                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-button bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors">
                   Schliessen
                 </button>
               </div>
@@ -449,7 +449,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 <button
                   onClick={handleWaitlistSubmit}
                   disabled={waitlistSubmitting}
-                  className="w-full py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+                  className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
                 >
                   {waitlistSubmitting ? "Wird eingetragen…" : "Benachrichtige mich"}
                 </button>

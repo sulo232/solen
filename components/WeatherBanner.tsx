@@ -98,15 +98,15 @@ export default function WeatherBanner() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-4">
-      <div className="flex items-center gap-3 px-4 py-3 rounded-card bg-teal/5 border border-teal/15">
-        <Icon size={18} className="text-teal shrink-0" />
+      <div className="flex items-center gap-3 px-4 py-3 rounded-card bg-s-coral/5 border border-s-coral/15">
+        <Icon size={18} className="text-s-coral shrink-0" />
         <p className="flex-1 text-sm text-dark/70 font-body">
           <span className="mr-1">{config.emoji}</span>
           {config.text}
         </p>
         <Link
           href={`/${locale}/${config.link}`}
-          className="shrink-0 px-3 py-1.5 rounded-button bg-teal text-white text-xs font-medium hover:bg-teal/90 transition-colors"
+          className="shrink-0 px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
         >
           Entdecken
         </Link>

@@ -56,8 +56,8 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
         className={cn(
           "flex flex-col justify-between rounded-card bg-white shadow-card overflow-hidden h-52 border-l-2",
           isUrgent
-            ? "border-coral animate-coral-pulse"
-            : "border-coral/40"
+            ? "border-s-coral animate-coral-pulse"
+            : "border-s-coral/40"
         )}
       >
         <div className="p-4 flex-1">
@@ -66,21 +66,21 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
               {slot.salon.name}
             </p>
             {isUrgent && (
-              <Zap size={14} className="text-coral shrink-0 mt-0.5 fill-coral" />
+              <Zap size={14} className="text-s-coral shrink-0 mt-0.5 fill-s-coral" />
             )}
           </div>
           <p className="text-xs text-dark/50 mt-0.5 font-body">{serviceName}</p>
 
           {/* Time */}
           <div className="mt-3 flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-coral animate-pulse" />
-            <span className="font-data font-semibold text-coral text-base">{timeStr}</span>
+            <div className="w-2 h-2 rounded-full bg-s-coral animate-pulse" />
+            <span className="data-text font-semibold text-s-coral text-base">{timeStr}</span>
           </div>
 
           {/* Countdown */}
           <div className="flex items-center gap-1 mt-1 text-dark/40">
             <Clock className="w-3 h-3" />
-            <span className={cn("text-xs font-body", isUrgent && "text-coral font-semibold")}>
+            <span className={cn("text-xs font-body", isUrgent && "text-s-coral font-semibold")}>
               in {timeLeft.label}
             </span>
           </div>
@@ -88,11 +88,11 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
 
         {/* Footer */}
         <div className="px-4 pb-4 flex items-center justify-between">
-          <span className="font-data font-bold text-dark text-sm">
+          <span className="data-text font-bold text-dark text-sm">
             CHF {slot.discounted_price}
           </span>
           {slot.price_override && slot.price_override > slot.discounted_price && (
-            <span className="text-xs text-dark/30 line-through font-data">
+            <span className="text-xs text-dark/30 line-through data-text">
               CHF {slot.price_override}
             </span>
           )}

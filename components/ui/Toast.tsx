@@ -29,8 +29,8 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const icons: Record<ToastType, React.ReactNode> = {
-  success: <CheckCircle size={18} className="text-teal flex-shrink-0" />,
-  error: <XCircle size={18} className="text-coral flex-shrink-0" />,
+  success: <CheckCircle size={18} className="text-s-coral flex-shrink-0" />,
+  error: <XCircle size={18} className="text-s-coral flex-shrink-0" />,
   info: <Info size={18} className="text-dark/50 flex-shrink-0" />,
 };
 
@@ -56,8 +56,8 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
         "flex items-center gap-3 min-w-[260px] max-w-[360px]",
         "bg-white/95 backdrop-blur-glass border border-white/80",
         "rounded-2xl shadow-glass px-4 py-3",
-        item.type === "error" && "border-coral/20",
-        item.type === "success" && "border-teal/20"
+        item.type === "error" && "border-s-coral/20",
+        item.type === "success" && "border-s-coral/20"
       )}
     >
       {icons[item.type]}

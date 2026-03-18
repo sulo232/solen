@@ -42,7 +42,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
       <div className="bg-white dark:bg-dm-surface rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <ClipboardList className="w-5 h-5 text-teal" />
+            <ClipboardList className="w-5 h-5 text-s-coral" />
             <h3 className="font-heading font-bold text-dark dark:text-dm-text">Warteliste</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
@@ -57,7 +57,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             </p>
             <button
               onClick={onClose}
-              className="mt-3 px-4 py-2 rounded-button bg-teal text-white text-sm hover:bg-teal/90 transition-colors"
+              className="mt-3 px-4 py-2 rounded-button bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors"
             >
               Schliessen
             </button>
@@ -67,11 +67,11 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             <p className="text-sm text-dark/60 dark:text-dm-text/60 mb-4">
               Am {date} sind leider keine Termine frei. Möchtest du benachrichtigt werden, wenn ein Platz frei wird?
             </p>
-            {error && <p className="text-xs text-coral mb-3">{error}</p>}
+            {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
             >
               {submitting && <Spinner size="sm" invert />}
               {submitting ? "Wird eingetragen…" : "Benachrichtige mich"}

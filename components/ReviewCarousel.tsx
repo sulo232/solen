@@ -22,7 +22,7 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
-const COLORS = ["bg-teal", "bg-coral", "bg-purple-500", "bg-blue-500", "bg-amber-500", "bg-rose-500"];
+const COLORS = ["bg-s-coral", "bg-s-coral", "bg-purple-500", "bg-blue-500", "bg-amber-500", "bg-rose-500"];
 
 export default function ReviewCarousel() {
   const [reviews, setReviews] = useState<FeaturedReview[]>([]);
@@ -40,10 +40,10 @@ export default function ReviewCarousel() {
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-6">
-          <h2 className="font-heading font-bold text-2xl text-dark" style={{ fontFamily: "Syne, sans-serif" }}>
+          <h2 className="font-heading font-bold text-2xl text-dark">
             Was Basler:innen sagen
           </h2>
-          <p className="text-sm text-dark/50 mt-1 font-body" style={{ fontFamily: "DM Sans, sans-serif" }}>
+          <p className="text-sm text-dark/50 mt-1 font-body">
             Echte Bewertungen von echten Kund:innen
           </p>
         </div>

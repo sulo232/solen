@@ -73,7 +73,7 @@ export default function CookieBanner() {
         <div className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6">
           <div className="max-w-2xl mx-auto bg-white dark:bg-dm-surface rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 p-5">
             <div className="flex items-start gap-3">
-              <Cookie className="w-5 h-5 text-teal shrink-0 mt-0.5" />
+              <Cookie className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm text-dark dark:text-dm-text font-medium mb-1">
                   Wir verwenden Cookies
@@ -81,7 +81,7 @@ export default function CookieBanner() {
                 <p className="text-xs text-dark/60 dark:text-dm-text/60 leading-relaxed">
                   Wir nutzen Cookies für die Funktion der Website und optional für Analytics.
                   Mehr dazu in unserer{" "}
-                  <a href="/de/datenschutz" className="text-teal hover:underline">
+                  <a href="/de/datenschutz" className="text-s-coral hover:underline">
                     Datenschutzerklärung
                   </a>.
                 </p>
@@ -90,7 +90,7 @@ export default function CookieBanner() {
             <div className="flex items-center gap-2 mt-4">
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
                 aria-label="Cookies akzeptieren"
               >
                 Akzeptieren
@@ -137,7 +137,7 @@ export default function CookieBanner() {
                   <p className="text-sm font-medium text-dark dark:text-dm-text">Notwendig</p>
                   <p className="text-xs text-dark/40 dark:text-dm-text/40">Erforderlich für die Grundfunktion</p>
                 </div>
-                <div className="w-10 h-5 rounded-full bg-teal flex items-center justify-end px-0.5 opacity-60 cursor-not-allowed">
+                <div className="w-10 h-5 rounded-full bg-s-coral flex items-center justify-end px-0.5 opacity-60 cursor-not-allowed">
                   <div className="w-4 h-4 rounded-full bg-white" />
                 </div>
               </div>
@@ -151,7 +151,7 @@ export default function CookieBanner() {
                 <button
                   onClick={() => setAnalytics(!analytics)}
                   className={`w-10 h-5 rounded-full flex items-center px-0.5 transition-colors ${
-                    analytics ? "bg-teal justify-end" : "bg-gray-200 dark:bg-white/20 justify-start"
+                    analytics ? "bg-s-coral justify-end" : "bg-gray-200 dark:bg-white/20 justify-start"
                   }`}
                 >
                   <div className="w-4 h-4 rounded-full bg-white shadow-sm" />
@@ -167,7 +167,7 @@ export default function CookieBanner() {
                 <button
                   onClick={() => setMarketing(!marketing)}
                   className={`w-10 h-5 rounded-full flex items-center px-0.5 transition-colors ${
-                    marketing ? "bg-teal justify-end" : "bg-gray-200 dark:bg-white/20 justify-start"
+                    marketing ? "bg-s-coral justify-end" : "bg-gray-200 dark:bg-white/20 justify-start"
                   }`}
                 >
                   <div className="w-4 h-4 rounded-full bg-white shadow-sm" />
@@ -178,7 +178,7 @@ export default function CookieBanner() {
             <div className="flex gap-2 mt-6">
               <button
                 onClick={saveSettings}
-                className="flex-1 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
               >
                 Einstellungen speichern
               </button>

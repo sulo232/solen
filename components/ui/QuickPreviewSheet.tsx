@@ -137,8 +137,8 @@ function SheetContent({
       <h3 className="font-heading font-bold text-xl text-dark dark:text-dm-text">{salon.name}</h3>
       <div className="flex items-center gap-2 mt-1.5">
         <div className="flex items-center gap-1">
-          <Star className="w-4 h-4 fill-coral text-coral" />
-          <span className="font-data font-semibold text-sm text-dark dark:text-dm-text">{salon.average_rating.toFixed(1)}</span>
+          <Star className="w-4 h-4 fill-s-coral text-s-coral" />
+          <span className="data-text font-semibold text-sm text-dark dark:text-dm-text">{salon.average_rating.toFixed(1)}</span>
           <span className="text-xs text-dark/40 dark:text-dm-text/40">({salon.review_count})</span>
         </div>
         <span className="text-dark/20 dark:text-dm-text/20">·</span>
@@ -169,7 +169,7 @@ function SheetContent({
                   </p>
                   <p className="text-xs text-dark/40 dark:text-dm-text/40">{svc.duration_minutes} Min.</p>
                 </div>
-                <span className="font-data font-semibold text-sm text-dark dark:text-dm-text">CHF {svc.price}</span>
+                <span className="data-text font-semibold text-sm text-dark dark:text-dm-text">CHF {svc.price}</span>
               </div>
             ))}
           </div>
@@ -181,14 +181,14 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-button border border-gray-200 dark:border-white/10 text-sm font-medium text-dark dark:text-dm-text text-center hover:border-teal/50 transition-colors"
+          className="flex-1 py-3 rounded-button border border-gray-200 dark:border-white/10 text-sm font-medium text-dark dark:text-dm-text text-center hover:border-s-coral/50 transition-colors"
         >
           Mehr anzeigen
         </Link>
         <Link
           href={`/${locale}/salon/${salon.slug}?book=true`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-button bg-coral text-white text-sm font-medium text-center shadow-coral-glow hover:bg-coral/90 transition-colors"
+          className="flex-1 py-3 rounded-button bg-s-coral text-white text-sm font-medium text-center shadow-warm-md hover:bg-s-coral/90 transition-colors"
         >
           Buchen
         </Link>

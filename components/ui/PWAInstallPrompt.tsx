@@ -64,8 +64,8 @@ export default function PWAInstallPrompt() {
       <div className="bg-white dark:bg-dm-surface rounded-card shadow-lg border border-gray-100 dark:border-white/10 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal/10 flex items-center justify-center shrink-0">
-              <Download className="w-5 h-5 text-teal" />
+            <div className="w-10 h-10 rounded-xl bg-s-coral/10 flex items-center justify-center shrink-0">
+              <Download className="w-5 h-5 text-s-coral" />
             </div>
             <div>
               <p className="font-heading font-semibold text-sm text-dark dark:text-dm-text">
@@ -83,13 +83,13 @@ export default function PWAInstallPrompt() {
 
         {isIOS ? (
           <div className="mt-3 flex items-center gap-2 text-xs text-dark/60 dark:text-dm-text/60 bg-gray-50 dark:bg-white/5 rounded-button p-2.5">
-            <Share className="w-4 h-4 shrink-0 text-teal" />
+            <Share className="w-4 h-4 shrink-0 text-s-coral" />
             <span>Tippe auf <strong>Teilen</strong> → <strong>Zum Home-Bildschirm</strong></span>
           </div>
         ) : (
           <button
             onClick={handleInstall}
-            className="mt-3 w-full py-2 bg-teal text-white text-sm font-medium rounded-button hover:bg-teal/90 transition-colors"
+            className="mt-3 w-full py-2 bg-s-coral text-white text-sm font-medium rounded-button hover:bg-s-coral/90 transition-colors"
           >
             App installieren
           </button>

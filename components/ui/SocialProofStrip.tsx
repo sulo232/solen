@@ -41,14 +41,14 @@ function StatCounter({ item, isVisible }: { item: StatItem; isVisible: boolean }
   return (
     <div className="flex items-center gap-2">
       <span
-        className="font-data font-bold text-base text-teal tabular-nums"
-        style={{ fontFamily: "Space Grotesk, monospace" }}
+        className="data-text font-bold text-base text-s-coral tabular-nums"
+       
       >
         {count.toLocaleString("de-CH")}+
       </span>
       <span
         className="text-xs text-dark/60 font-body font-medium"
-        style={{ fontFamily: "DM Sans, sans-serif" }}
+       
       >
         {item.label}
       </span>
@@ -90,7 +90,7 @@ export default function SocialProofStrip() {
   }, []);
 
   return (
-    <div ref={ref} className="bg-teal/5 border-y border-teal/10">
+    <div ref={ref} className="bg-s-coral/5 border-y border-s-coral/10">
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-center gap-6 sm:gap-10 flex-wrap">
         {stats.map((item) => (
           <StatCounter key={item.label} item={item} isVisible={isVisible} />

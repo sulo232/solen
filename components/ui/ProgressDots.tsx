@@ -19,9 +19,9 @@ export default function ProgressDots({ total, current, onDotClick }: ProgressDot
             disabled={!isCompleted}
             className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
               isCurrent
-                ? "bg-teal scale-125"
+                ? "bg-s-coral scale-125"
                 : isCompleted
-                ? "bg-teal/50 cursor-pointer hover:bg-teal/70"
+                ? "bg-s-coral/50 cursor-pointer hover:bg-s-coral/70"
                 : "bg-gray-200"
             }`}
             aria-label={`Step ${i + 1}`}

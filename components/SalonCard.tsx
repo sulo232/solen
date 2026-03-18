@@ -29,7 +29,7 @@ interface SalonCardProps {
   isFavorited?: boolean;
   onFavoriteToggle?: (salonId: string) => void;
   stampProgress?: { current: number; total: number } | null;
-  solenTier?: "gold" | "teal" | "grey" | "dark" | null;
+  solenTier?: "gold" | "coral" | "grey" | "dark" | null;
   availableToday?: number | null;
 }
 
@@ -62,8 +62,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           <p className="font-heading font-medium text-sm text-dark truncate">{salon.name}</p>
           <p className="text-xs text-dark/50 font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</p>
           <div className="flex items-center gap-1 mt-0.5">
-            <Star className="w-3 h-3 fill-coral text-coral" />
-            <span className="text-xs font-data text-dark/70">{salon.average_rating.toFixed(1)}</span>
+            <Star className="w-3 h-3 fill-s-coral text-s-coral" />
+            <span className="text-xs data-text text-dark/70">{salon.average_rating.toFixed(1)}</span>
           </div>
         </div>
       </Link>
@@ -127,8 +127,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               className={[
                 "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors z-10",
                 compareSelected
-                  ? "bg-teal border-teal text-white"
-                  : "bg-white/80 backdrop-blur-sm border-white/60 text-transparent hover:border-teal/50",
+                  ? "bg-s-coral border-s-coral text-white"
+                  : "bg-white/80 backdrop-blur-sm border-white/60 text-transparent hover:border-s-coral/50",
               ].join(" ")}
             >
               {compareSelected && (
@@ -145,14 +145,14 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               aria-label={isFavorited ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
             >
               <Heart
-                className={`w-4 h-4 transition-colors ${isFavorited ? "fill-coral text-coral" : "text-dark/50"}`}
+                className={`w-4 h-4 transition-colors ${isFavorited ? "fill-s-coral text-s-coral" : "text-dark/50"}`}
               />
             </button>
           )}
           {/* Last-minute badge */}
           {salon.last_minute_discount_percent > 0 && (
             <div className={`absolute ${onFavoriteToggle ? "top-12" : "top-2"} right-2`}>
-              <span className="px-2 py-0.5 rounded-pill bg-coral text-white text-[10px] font-body font-semibold shadow-coral-glow">
+              <span className="px-2 py-0.5 rounded-pill bg-s-coral text-white text-[10px] font-body font-semibold shadow-warm-md">
                 -{salon.last_minute_discount_percent}%
               </span>
             </div>
@@ -171,7 +171,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         <div className="p-4">
           <h3 className="font-heading font-semibold text-dark dark:text-dm-text text-base leading-tight">{salon.name}</h3>
           {(salon as any).group_name && (
-            <span className="inline-flex items-center gap-1 text-[10px] text-teal font-medium mt-0.5">
+            <span className="inline-flex items-center gap-1 text-[10px] text-s-coral font-medium mt-0.5">
               Teil von {(salon as any).group_name}
             </span>
           )}
@@ -206,17 +206,17 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
           {showAvailability && salon.next_available_slot && (
             <div className="mt-1">
-              <span className="text-xs text-teal font-medium font-body">{salon.next_available_slot}</span>
+              <span className="text-xs text-s-coral font-medium font-body">{salon.next_available_slot}</span>
             </div>
           )}
           <div className="flex items-center gap-1 mt-2 flex-wrap">
-            <Star className="w-4 h-4 fill-coral text-coral" />
-            <span className="text-sm font-data font-medium text-dark">{salon.average_rating.toFixed(1)}</span>
+            <Star className="w-4 h-4 fill-s-coral text-s-coral" />
+            <span className="text-sm data-text font-medium text-dark">{salon.average_rating.toFixed(1)}</span>
             <span className="text-xs text-dark/40 font-body">({salon.review_count})</span>
             {salon.avg_price != null && salon.avg_price > 0 && (
               <>
                 <span className="text-xs text-dark/30 font-body">·</span>
-                <span className="text-xs font-data text-dark/60">Ø CHF {salon.avg_price}</span>
+                <span className="text-xs data-text text-dark/60">Ø CHF {salon.avg_price}</span>
               </>
             )}
           </div>

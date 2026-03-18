@@ -119,7 +119,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             padding:3px 8px;border-radius:9999px;font-size:12px;font-weight:700;
             white-space:nowrap;box-shadow:0 2px 8px rgba(212,175,55,0.35);
             transform:scale(1.3);z-index:10;
-            background:${isSelected ? "#FF6B6B" : "#D4AF37"};
+            background:${isSelected ? "#E8624A" : "#D4AF37"};
             color:white;border:2px solid white;
           `;
           pin.textContent = minPrice && minPrice > 0 ? `ab ${minPrice}` : "⭐";
@@ -140,21 +140,21 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           `;
         } else if (minPrice && minPrice > 0) {
           // Price badge pin with color coding
-          const priceColor = minPrice < 50 ? "#22C55E" : minPrice <= 100 ? "#EAB308" : "#FF6B6B";
+          const priceColor = minPrice < 50 ? "#22C55E" : minPrice <= 100 ? "#EAB308" : "#E8624A";
           const opacity = isGrey ? "0.75" : "1";
           el.style.cssText += `
             display:flex;align-items:center;justify-content:center;
             padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;
             white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.1);
             opacity:${opacity};
-            background:${isSelected ? "#FF6B6B" : "white"};
+            background:${isSelected ? "#E8624A" : "white"};
             color:${isSelected ? "white" : priceColor};
-            border:1.5px solid ${isSelected ? "#FF6B6B" : priceColor + "40"};
+            border:1.5px solid ${isSelected ? "#E8624A" : priceColor + "40"};
           `;
           el.textContent = `ab CHF ${minPrice}`;
         } else {
           // Dot pin (no price)
-          const dotColor = isSelected ? "#FF6B6B" : "#38B2AC";
+          const dotColor = isSelected ? "#E8624A" : "#E8624A";
           const opacity = isGrey ? "0.75" : "1";
           el.style.cssText += `
             width:14px;height:14px;border-radius:50%;
@@ -233,7 +233,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
               onClick={() => { setActiveCategory(chip.key); setShowAreaSearch(false); }}
               className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium shadow-sm transition-colors ${
                 activeCategory === chip.key
-                  ? "bg-teal text-white shadow-md"
+                  ? "bg-s-coral text-white shadow-md"
                   : "bg-white/95 text-dark/70 hover:bg-white border border-gray-200"
               }`}
             >
@@ -252,7 +252,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           onClick={handleAreaSearch}
           className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-dark text-sm font-medium shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
         >
-          <MapPin size={14} className="text-teal" />
+          <MapPin size={14} className="text-s-coral" />
           In diesem Bereich suchen
         </button>
       )}

@@ -53,7 +53,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
     container.style.cssText = "position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden";
     document.body.appendChild(container);
 
-    const colors = ["#38B2AC", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF"];
+    const colors = ["#E8624A", "#D4870A", "#FFD93D", "#6BCB77", "#6BA3C8"];
     for (let i = 0; i < 50; i++) {
       const el = document.createElement("div");
       const size = Math.random() * 8 + 4;
@@ -127,8 +127,8 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="max-w-md mx-auto text-center py-8 px-4"
     >
-      <div className="w-16 h-16 rounded-full bg-teal/10 flex items-center justify-center mx-auto mb-4">
-        <CheckCircle size={32} className="text-teal" />
+      <div className="w-16 h-16 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
+        <CheckCircle size={32} className="text-s-coral" />
       </div>
 
       <h2 className="font-heading font-bold text-2xl text-dark mb-2">Termin gebucht!</h2>
@@ -142,13 +142,13 @@ export default function BookingSuccess(props: BookingSuccessProps) {
           <span>{timeStr} Uhr</span>
           <span>{props.duration} Min.</span>
         </div>
-        <p className="font-data font-semibold text-dark mt-2">CHF {props.price.toFixed(2)}</p>
+        <p className="data-text font-semibold text-dark mt-2">CHF {props.price.toFixed(2)}</p>
       </div>
 
       <div className="flex flex-col gap-2">
         <button
           onClick={handleCalendarDownload}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
         >
           <Calendar size={16} />
           Zum Kalender hinzufügen
@@ -156,7 +156,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-gray-200 text-sm font-medium text-dark/70 hover:border-teal transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-gray-200 text-sm font-medium text-dark/70 hover:border-s-coral transition-colors"
         >
           <Share2 size={16} />
           Mit Freund:in teilen
@@ -164,7 +164,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={() => router.push(`/${locale}/salon/${props.salonSlug}`)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-gray-200 text-sm font-medium text-dark/70 hover:border-teal transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-gray-200 text-sm font-medium text-dark/70 hover:border-s-coral transition-colors"
         >
           <RotateCcw size={16} />
           Nochmal buchen

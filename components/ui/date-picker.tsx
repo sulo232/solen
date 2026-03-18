@@ -50,12 +50,12 @@ export default function SolenDatePicker({
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-dark/60 font-body">{label}</Label>
-      <Group className="flex items-center rounded-button border border-gray-200 bg-white px-3 py-2 text-sm focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
+      <Group className="flex items-center rounded-button border border-gray-200 bg-white px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-all">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
               segment={segment}
-              className="rounded px-0.5 tabular-nums font-data text-dark outline-none focus:bg-teal/10 focus:text-teal placeholder-shown:text-dark/40"
+              className="rounded px-0.5 tabular-nums data-text text-dark outline-none focus:bg-s-coral/10 focus:text-s-coral placeholder-shown:text-dark/40"
             />
           )}
         </DateInput>
@@ -97,12 +97,12 @@ export default function SolenDatePicker({
                     date={date}
                     className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                       cn(
-                        "w-9 h-9 flex items-center justify-center rounded-button text-sm font-data transition-colors cursor-pointer outline-none",
-                        isSelected && "bg-teal text-white font-semibold",
-                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-teal/10 text-dark",
+                        "w-9 h-9 flex items-center justify-center rounded-button text-sm data-text transition-colors cursor-pointer outline-none",
+                        isSelected && "bg-s-coral text-white font-semibold",
+                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-dark",
                         isUnavailable && "text-dark/20 bg-gray-100 cursor-default line-through",
                         isDisabled && !isUnavailable && "text-dark/20 cursor-default",
-                        isFocusVisible && "ring-2 ring-teal ring-offset-1"
+                        isFocusVisible && "ring-2 ring-s-coral ring-offset-1"
                       )
                     }
                   />

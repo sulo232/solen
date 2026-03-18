@@ -120,7 +120,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder="Service oder Salon suchen…"
-          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-gray-200 text-sm text-dark placeholder:text-dark/30 focus:outline-none focus:border-teal/50 focus:ring-1 focus:ring-teal/20 transition-colors"
+          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-gray-200 text-sm text-dark placeholder:text-dark/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
         />
         {query && (
           <button
@@ -144,11 +144,11 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
-                    activeIndex === i ? "bg-teal/10 text-teal" : "text-dark/80 hover:bg-gray-50"
+                    activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-gray-50"
                   }`}
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
-                  <span className="text-xs text-dark/40 font-data shrink-0 ml-2">
+                  <span className="text-xs text-dark/40 data-text shrink-0 ml-2">
                     CHF {service.price}
                   </span>
                 </button>
@@ -169,7 +169,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${
-                      activeIndex === idx ? "bg-teal/10 text-teal" : "text-dark/80 hover:bg-gray-50"
+                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-gray-50"
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden shrink-0">

@@ -115,18 +115,18 @@ export default function DashboardLayout({
           {/* Logo */}
           <div className="px-4 py-5 border-b border-gray-100">
             <Link href={`/${locale}`} className="font-heading font-bold text-xl text-dark whitespace-nowrap">
-              solen<span className="text-teal">.</span>ch
+              solen<span className="text-s-coral">.</span>ch
             </Link>
           </div>
 
           {/* Salon identity */}
           {salonName && (
             <div className="px-3 py-3 border-b border-gray-50 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center overflow-hidden shrink-0">
                 {salonAvatar ? (
                   <Image src={salonAvatar} alt="" width={32} height={32} className="object-cover w-full h-full" />
                 ) : (
-                  <span className="text-xs font-bold text-teal">{salonName[0]}</span>
+                  <span className="text-xs font-bold text-s-coral">{salonName[0]}</span>
                 )}
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function DashboardLayout({
                   key={href}
                   link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
                   active={active}
-                  badge={isMessages && unreadCount > 0 ? <span className="w-2 h-2 rounded-full bg-coral" /> : undefined}
+                  badge={isMessages && unreadCount > 0 ? <span className="w-2 h-2 rounded-full bg-s-coral" /> : undefined}
                 />
               );
             })}
@@ -156,7 +156,7 @@ export default function DashboardLayout({
                   key={href}
                   link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
                   active={isActive(href)}
-                  className={isActive(href) ? "text-coral" : undefined}
+                  className={isActive(href) ? "text-s-coral" : undefined}
                 />
               ))}
             </div>
@@ -166,7 +166,7 @@ export default function DashboardLayout({
           <div className="px-3 py-3 border-t border-gray-100">
             <Link
               href={`/${locale}`}
-              className="text-xs text-dark/30 hover:text-teal transition-colors whitespace-nowrap"
+              className="text-xs text-dark/30 hover:text-s-coral transition-colors whitespace-nowrap"
             >
               ← Zur Website
             </Link>
@@ -195,7 +195,7 @@ export default function DashboardLayout({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <span className="font-heading font-bold text-lg">solen<span className="text-teal">.</span>ch</span>
+                <span className="font-heading font-bold text-lg">solen<span className="text-s-coral">.</span>ch</span>
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-dark/40" /></button>
               </div>
               <nav className="py-3 px-2">
@@ -208,12 +208,12 @@ export default function DashboardLayout({
                       onClick={() => setMobileSidebarOpen(false)}
                       className={[
                         "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5",
-                        active ? "bg-teal/10 text-teal" : "text-dark/60",
+                        active ? "bg-s-coral/10 text-s-coral" : "text-dark/60",
                       ].join(" ")}
                     >
                       <Icon size={16} />{label}
                       {href === "/dashboard/messages" && unreadCount > 0 && (
-                        <span className="ml-auto w-2 h-2 rounded-full bg-coral" />
+                        <span className="ml-auto w-2 h-2 rounded-full bg-s-coral" />
                       )}
                     </Link>
                   );
@@ -228,7 +228,7 @@ export default function DashboardLayout({
                         onClick={() => setMobileSidebarOpen(false)}
                         className={[
                           "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5",
-                          isActive(href) ? "bg-coral/10 text-coral" : "text-dark/60",
+                          isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-dark/60",
                         ].join(" ")}
                       >
                         <Icon size={16} />{label}
@@ -249,7 +249,7 @@ export default function DashboardLayout({
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-dark/60">
             <Menu size={20} />
           </button>
-          <span className="font-heading font-bold text-base">solen<span className="text-teal">.</span>ch</span>
+          <span className="font-heading font-bold text-base">solen<span className="text-s-coral">.</span>ch</span>
         </div>
 
         <main className="flex-1 px-4 sm:px-6 py-6 md:py-8">
@@ -268,13 +268,13 @@ export default function DashboardLayout({
               href={`/${locale}${href}`}
               className={[
                 "flex-1 flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors relative",
-                active ? "text-teal" : "text-dark/40",
+                active ? "text-s-coral" : "text-dark/40",
               ].join(" ")}
             >
               <div className="relative">
                 <Icon size={20} />
                 {isMessages && unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-coral" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-coral" />
                 )}
               </div>
               {label}

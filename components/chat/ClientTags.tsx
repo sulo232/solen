@@ -19,7 +19,7 @@ const COLOR_MAP: Record<string, string> = {
   gray: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
   red: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
   orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
-  teal: "bg-teal/10 text-teal dark:bg-teal/20",
+  teal: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",
   blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
   purple: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
 };
@@ -147,7 +147,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder="Eigenes Tag…"
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-button border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-teal bg-white dark:bg-dm-surface dark:text-white"
+              className="flex-1 px-2.5 py-1.5 rounded-button border border-gray-200 dark:border-white/10 text-xs focus:outline-none focus:border-s-coral bg-white dark:bg-dm-surface dark:text-white"
             />
             <select
               value={newColor}
@@ -164,7 +164,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
             <button
               onClick={() => handleAdd()}
               disabled={!newTag.trim() || adding}
-              className="px-3 py-1.5 rounded-button bg-teal text-white text-xs font-medium disabled:opacity-50"
+              className="px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50"
             >
               +
             </button>

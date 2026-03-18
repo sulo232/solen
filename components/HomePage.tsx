@@ -67,9 +67,9 @@ const CATEGORIES = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 const QUARTIERS = [
-  { slug: "grossbasel",  name: "Grossbasel",  bg: "from-teal/40 to-teal/10"   },
+  { slug: "grossbasel",  name: "Grossbasel",  bg: "from-s-coral/40 to-s-coral/10"   },
   { slug: "kleinbasel",  name: "Kleinbasel",  bg: "from-coral/40 to-coral/10" },
-  { slug: "gundeli",     name: "Gundeli",     bg: "from-teal/30 to-blue-200"  },
+  { slug: "gundeli",     name: "Gundeli",     bg: "from-s-coral/30 to-blue-200"  },
   { slug: "st_johann",   name: "St. Johann",  bg: "from-amber-300/40 to-amber-100/10" },
   { slug: "iselin",      name: "Iselin",      bg: "from-purple-300/40 to-purple-100/10" },
   { slug: "bruderholz",  name: "Bruderholz",  bg: "from-green-300/40 to-green-100/10" },
@@ -209,14 +209,14 @@ export default function HomePage() {
             <motion.h1
               variants={fadeUp}
               className="font-heading font-bold text-3xl sm:text-5xl leading-tight"
-              style={{ fontFamily: "Syne, sans-serif" }}
+             
             >
               {userName ? `Willkommen zurück, ${userName}!` : "Dein Beauty-Termin in Basel"}
             </motion.h1>
             <motion.p
               variants={fadeUp}
               className="mt-4 text-base sm:text-lg text-white/80"
-              style={{ fontFamily: "DM Sans, sans-serif" }}
+             
             >
               {userName && nextBooking
                 ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
@@ -243,10 +243,10 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
-            className="flex items-center gap-4 p-4 rounded-card bg-teal/5 border border-teal/15"
+            className="flex items-center gap-4 p-4 rounded-card bg-s-coral/5 border border-s-coral/15"
           >
-            <div className="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center shrink-0">
-              <RefreshCw size={18} className="text-teal" />
+            <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0">
+              <RefreshCw size={18} className="text-s-coral" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-heading font-semibold text-dark text-sm">Wieder buchen?</p>
@@ -256,7 +256,7 @@ export default function HomePage() {
             </div>
             <Link
               href={`/${locale}/salon/${lastBookedSalon.slug}`}
-              className="shrink-0 px-4 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+              className="shrink-0 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
             >
               Nochmal buchen
             </Link>
@@ -279,21 +279,21 @@ export default function HomePage() {
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-teal/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
               >
                 <Icon
                   size={32}
-                  className="text-teal group-hover:scale-110 transition-transform duration-200"
+                  className="text-s-coral group-hover:scale-110 transition-transform duration-200"
                 />
                 <span
                   className="font-heading font-medium text-dark text-sm text-center leading-tight"
-                  style={{ fontFamily: "Syne, sans-serif" }}
+                 
                 >
                   {label}
                 </span>
                 <span
                   className="text-xs text-dark/40 font-body"
-                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                 
                 >
                   Entdecken
                 </span>
@@ -309,13 +309,13 @@ export default function HomePage() {
           <div className="mb-6">
             <h2
               className="font-heading font-bold text-2xl text-dark"
-              style={{ fontFamily: "Syne, sans-serif" }}
+             
             >
               Beliebte Salons
             </h2>
             <p
               className="text-sm text-dark/50 mt-1 font-body"
-              style={{ fontFamily: "DM Sans, sans-serif" }}
+             
             >
               Die bestbewerteten Salons in Basel
             </p>
@@ -365,12 +365,12 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-1">
-                <Sparkles size={20} className="text-teal" />
-                <h2 className="font-heading font-bold text-2xl text-dark" style={{ fontFamily: "Syne, sans-serif" }}>
+                <Sparkles size={20} className="text-s-coral" />
+                <h2 className="font-heading font-bold text-2xl text-dark">
                   Neue Salons
                 </h2>
               </div>
-              <p className="text-sm text-dark/50 font-body" style={{ fontFamily: "DM Sans, sans-serif" }}>
+              <p className="text-sm text-dark/50 font-body">
                 Frisch auf Solen — entdecke die neuesten Salons in Basel
               </p>
             </div>
@@ -394,17 +394,17 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-1">
-              <Clock size={20} className="text-coral" />
+              <Clock size={20} className="text-s-coral" />
               <h2
                 className="font-heading font-bold text-2xl text-dark"
-                style={{ fontFamily: "Syne, sans-serif" }}
+               
               >
                 Last-Minute Angebote
               </h2>
             </div>
             <p
               className="text-sm text-dark/60 font-body"
-              style={{ fontFamily: "DM Sans, sans-serif" }}
+             
             >
               Spare bis zu 50% auf kurzfristige Termine
             </p>
@@ -422,12 +422,12 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-2xl bg-gradient-to-r from-coral/5 to-coral/10 border border-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+              className="rounded-2xl bg-gradient-to-r from-coral/5 to-coral/10 border border-s-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
             >
               <div className="flex-1">
                 <p
                   className="text-sm text-dark/60 font-body"
-                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                 
                 >
                   Aktuell keine Last-Minute Angebote — schau bald wieder vorbei!
                 </p>
@@ -435,7 +435,7 @@ export default function HomePage() {
               <Link href={`/${locale}/last-minute`} className="shrink-0">
                 <InteractiveHoverButton
                   text="Angebote ansehen"
-                  className="w-44 border-teal/20"
+                  className="w-44 border-s-coral/20"
                 />
               </Link>
             </motion.div>
@@ -449,7 +449,7 @@ export default function HomePage() {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <span
-                className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body bg-teal/[0.125] text-teal"
+                className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body bg-s-coral/[0.125] text-s-coral"
                 style={{
                   fontFamily: "DM Sans, sans-serif",
                 }}
@@ -458,15 +458,15 @@ export default function HomePage() {
               </span>
               <h2
                 className="font-heading font-bold text-2xl text-dark"
-                style={{ fontFamily: "Syne, sans-serif" }}
+               
               >
                 Entdecke dein Quartier
               </h2>
             </div>
             <Link
               href={`/${locale}/coiffeur`}
-              className="text-sm text-teal hover:underline font-body shrink-0 ml-4"
-              style={{ fontFamily: "DM Sans, sans-serif" }}
+              className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4"
+             
             >
               Alle ansehen →
             </Link>
@@ -499,13 +499,13 @@ export default function HomePage() {
                     <div className="absolute bottom-4 left-4 right-4">
                       <p
                         className="font-heading font-bold text-white text-base leading-tight"
-                        style={{ fontFamily: "Syne, sans-serif" }}
+                       
                       >
                         {name}
                       </p>
                       <p
                         className="text-white/70 text-xs mt-0.5 font-body"
-                        style={{ fontFamily: "DM Sans, sans-serif" }}
+                       
                       >
                         {count > 0
                           ? `${count} ${count === 1 ? "Salon" : "Salons"}`

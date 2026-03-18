@@ -66,7 +66,7 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
               onClick={() => switchLocale(key)}
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                 key === locale
-                  ? "text-teal font-medium bg-teal/5"
+                  ? "text-s-coral font-medium bg-s-coral/5"
                   : "text-dark/70 hover:bg-gray-50 dark:text-dm-text/70 dark:hover:bg-white/5"
               }`}
             >

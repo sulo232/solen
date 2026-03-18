@@ -29,12 +29,12 @@ const categoryLabels: Record<SalonCategory, string> = {
 };
 
 const categoryGradients: Record<SalonCategory, string> = {
-  coiffeur: "from-teal/10 via-white to-transparent",
+  coiffeur: "from-s-coral/10 via-white to-transparent",
   barbershop: "from-dark/5 via-white to-transparent",
   nails: "from-coral/8 via-white to-transparent",
-  spa: "from-teal/8 via-white to-transparent",
+  spa: "from-s-coral/8 via-white to-transparent",
   makeup: "from-coral/10 via-white to-transparent",
-  waxing: "from-teal/6 via-white to-transparent",
+  waxing: "from-s-coral/6 via-white to-transparent",
 };
 
 interface CategoryPageProps {
@@ -57,7 +57,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-card bg-gray-50 border border-gray-100 overflow-hidden hover:border-teal/20 hover:shadow-card transition-all duration-200 opacity-80"
+      className="rounded-card bg-gray-50 border border-gray-100 overflow-hidden hover:border-s-coral/20 hover:shadow-card transition-all duration-200 opacity-80"
     >
       <div className="h-36 bg-gray-100 relative overflow-hidden">
         {entry.photo_url ? (
@@ -67,7 +67,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
             <Building2 className="w-10 h-10" />
           </div>
         )}
-        <div className="absolute top-2 right-2 text-xs text-white px-2.5 py-0.5 rounded-full font-medium font-body" style={{ backgroundColor: "#FF6B6B" }}>
+        <div className="absolute top-2 right-2 text-xs text-white px-2.5 py-0.5 rounded-full font-medium font-body bg-s-coral">
           Nicht buchbar
         </div>
       </div>
@@ -77,7 +77,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
         {entry.google_rating != null && (
           <div className="flex items-center gap-1 mt-1.5">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-            <span className="text-xs font-data font-medium text-dark/70">{entry.google_rating}</span>
+            <span className="text-xs data-text font-medium text-dark/70">{entry.google_rating}</span>
             {entry.google_review_count != null && entry.google_review_count > 0 && (
               <span className="text-xs text-dark/40 font-body">({entry.google_review_count})</span>
             )}
@@ -218,11 +218,11 @@ export default function CategoryPage({ category }: CategoryPageProps) {
       {/* Quartier banner */}
       {topQuartierBanner && !bannerDismissed && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-2">
-          <div className="flex items-center justify-between bg-teal/10 border border-teal/20 rounded-card px-4 py-2.5 text-sm">
-            <span className="text-teal font-body font-medium">
+          <div className="flex items-center justify-between bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-2.5 text-sm">
+            <span className="text-s-coral font-body font-medium">
               Zeige Salons in {topQuartierBanner} — dein meistbesuchtes Quartier
             </span>
-            <button onClick={() => setBannerDismissed(true)} className="text-teal/60 hover:text-teal ml-4 text-xs font-body">
+            <button onClick={() => setBannerDismissed(true)} className="text-s-coral/60 hover:text-s-coral ml-4 text-xs font-body">
               Ausblenden
             </button>
           </div>
@@ -244,7 +244,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             }
             routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-sm font-body font-medium text-dark/70 hover:border-teal hover:text-teal transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-sm font-body font-medium text-dark/70 hover:border-s-coral hover:text-s-coral transition-colors"
         >
           {isMapView ? <List size={16} /> : <MapIcon size={16} />}
           {isMapView ? "Liste" : "Karte"}
@@ -294,7 +294,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             <AnimatePresence>
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
-                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-teal hover:shadow-teal-glow transition-all disabled:opacity-50">
+                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-s-coral hover:shadow-teal-glow transition-all disabled:opacity-50">
                     {loadingMore ? <Spinner size="sm" /> : null}
                     {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
                   </button>

@@ -13,7 +13,7 @@ const sizeMap = {
 };
 
 export default function Spinner({ size = "md", invert = false, className = "" }: SpinnerProps) {
-  const color = invert ? "border-white/30 border-t-white" : "border-teal/30 border-t-teal";
+  const color = invert ? "border-white/30 border-t-white" : "border-s-coral/30 border-t-teal";
   return (
     <div
       role="status"

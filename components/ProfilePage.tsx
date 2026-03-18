@@ -77,7 +77,7 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-coral resize-none"
+          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
@@ -91,7 +91,7 @@ function CancelModal({
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium hover:bg-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
           Stornieren
@@ -114,8 +114,8 @@ const STATUS_LABEL: Record<string, string> = {
   no_show: "Nicht erschienen",
 };
 const STATUS_COLOR: Record<string, string> = {
-  confirmed: "text-teal",
-  cancelled: "text-coral",
+  confirmed: "text-s-coral",
+  cancelled: "text-s-coral",
   completed: "text-dark/50",
   no_show: "text-dark/30",
 };
@@ -159,7 +159,7 @@ function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-teal hover:border-teal transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
             >
               <RotateCcw size={12} />
               Nochmal buchen
@@ -169,7 +169,7 @@ function BookingCard({
           {canCancel && (
             <button
               onClick={() => onCancel(b)}
-              className="px-3 py-1.5 rounded-button border border-coral/30 text-xs text-coral hover:bg-coral/5 transition-colors"
+              className="px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
             >
               Stornieren
             </button>
@@ -238,7 +238,7 @@ function SettingsSection({
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Avatar + name */}
       <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-teal/10 overflow-hidden shrink-0 flex items-center justify-center text-xl font-heading text-teal">
+        <div className="w-14 h-14 rounded-full bg-s-coral/10 overflow-hidden shrink-0 flex items-center justify-center text-xl font-heading text-s-coral">
           {avatar ? (
             <Image src={avatar} alt="" width={56} height={56} className="object-cover w-full h-full" />
           ) : (
@@ -250,7 +250,7 @@ function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder="Avatar-URL (optional)"
-          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -260,7 +260,7 @@ function SettingsSection({
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -270,7 +270,7 @@ function SettingsSection({
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           rows={2}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal resize-none"
+          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
@@ -283,7 +283,7 @@ function SettingsSection({
             <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Bestätigungen, Erinnerungen, Stornierungen</p>
           </div>
           <button type="button" onClick={() => setEmailOn(!emailOn)}
-            className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-teal" : "bg-gray-200 dark:bg-white/10"].join(" ")}
+            className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-gray-200 dark:bg-white/10"].join(" ")}
             aria-pressed={emailOn}>
             <span className={["absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform", emailOn ? "translate-x-5" : "translate-x-0"].join(" ")} />
           </button>
@@ -320,8 +320,8 @@ function SettingsSection({
               className={[
                 "px-4 py-2 rounded-button text-sm font-medium border transition-colors",
                 lang === l
-                  ? "bg-teal text-white border-teal"
-                  : "border-gray-200 text-dark/60 hover:border-teal hover:text-teal dark:border-white/10 dark:text-dm-text/60",
+                  ? "bg-s-coral text-white border-s-coral"
+                  : "border-gray-200 text-dark/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-dm-text/60",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -334,12 +334,12 @@ function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Spinner size="sm" invert />}
           Speichern
         </button>
-        {saved && <span className="text-sm text-teal font-medium">Gespeichert ✓</span>}
+        {saved && <span className="text-sm text-s-coral font-medium">Gespeichert ✓</span>}
       </div>
     </form>
   );
@@ -445,7 +445,7 @@ export default function ProfilePage() {
           transition={{ duration: 0.35 }}
           className="flex items-center gap-4 mb-8"
         >
-          <div className="w-16 h-16 rounded-full bg-teal/10 overflow-hidden flex items-center justify-center text-2xl font-heading text-teal shrink-0">
+          <div className="w-16 h-16 rounded-full bg-s-coral/10 overflow-hidden flex items-center justify-center text-2xl font-heading text-s-coral shrink-0">
             {profile.avatar_url ? (
               <Image src={profile.avatar_url} alt="" width={64} height={64} className="object-cover w-full h-full" />
             ) : (
@@ -458,7 +458,7 @@ export default function ProfilePage() {
           </div>
           <Link
             href={`/${locale}/account/messages`}
-            className="ml-auto relative p-2 rounded-button border border-gray-200 hover:border-teal transition-colors"
+            className="ml-auto relative p-2 rounded-button border border-gray-200 hover:border-s-coral transition-colors"
           >
             <MessageCircle size={18} className="text-dark/50" />
           </Link>
@@ -472,14 +472,14 @@ export default function ProfilePage() {
           className="mb-6"
         >
           <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
-            <Calendar size={16} className="text-teal" />
+            <Calendar size={16} className="text-s-coral" />
             Nächste Termine
           </h2>
           {upcoming.length === 0 ? (
             <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
               <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Noch keine Buchungen</p>
-              <Link href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+              <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
                 Termin buchen →
               </Link>
             </div>
@@ -530,14 +530,14 @@ export default function ProfilePage() {
           className="mb-6"
         >
           <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
-            <Heart size={16} className="text-coral" />
+            <Heart size={16} className="text-s-coral" />
             Favoriten
           </h2>
           {favorites.length === 0 ? (
             <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
               <Heart className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Noch keine Favoriten</p>
-              <Link href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+              <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
                 Salons entdecken →
               </Link>
             </div>
@@ -551,7 +551,7 @@ export default function ProfilePage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-dark hover:text-teal transition-colors truncate block">
+                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-dark hover:text-s-coral transition-colors truncate block">
                       {salon.name}
                     </Link>
                     <p className="text-xs text-dark/40 flex items-center gap-1 mt-0.5">
@@ -564,7 +564,7 @@ export default function ProfilePage() {
                   </div>
                   <button
                     onClick={() => removeFav(salon.id)}
-                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-dark/20 hover:text-coral hover:bg-coral/10 transition-colors opacity-0 group-hover:opacity-100"
+                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-dark/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100"
                     title="Aus Favoriten entfernen"
                   >
                     <X size={12} />
@@ -591,7 +591,7 @@ export default function ProfilePage() {
             <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
               <Trophy className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Du hast noch keine Stempel</p>
-              <Link href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+              <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
                 Buche jetzt bei einem Salon!
               </Link>
             </div>
@@ -619,22 +619,22 @@ export default function ProfilePage() {
           transition={{ duration: 0.4, delay: 0.15 }}
         >
           <h2 className="font-heading font-bold text-base text-dark dark:text-white mb-3 flex items-center gap-2">
-            <Wallet size={16} className="text-teal" />
+            <Wallet size={16} className="text-s-coral" />
             Guthaben & Empfehlung
           </h2>
           <div className="bg-white dark:bg-white/5 rounded-card border border-gray-100 dark:border-white/10 p-4 space-y-3">
             <Link
               href="/de/profile/referral"
-              className="flex items-center justify-between p-3 rounded-button bg-teal/5 border border-teal/15 hover:bg-teal/10 transition-colors group"
+              className="flex items-center justify-between p-3 rounded-button bg-s-coral/5 border border-s-coral/15 hover:bg-s-coral/10 transition-colors group"
             >
               <div className="flex items-center gap-3">
-                <Gift className="w-5 h-5 text-teal" />
+                <Gift className="w-5 h-5 text-s-coral" />
                 <div>
                   <p className="text-sm font-medium text-dark dark:text-white">Freunde einladen</p>
                   <p className="text-xs text-dark/50 dark:text-white/50">Beide erhalten CHF 10 Guthaben</p>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-teal group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-s-coral group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
         </motion.section>

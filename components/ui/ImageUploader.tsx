@@ -126,7 +126,7 @@ export default function ImageUploader({
           <button
             type="button"
             onClick={clearImage}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-dark/60 hover:text-coral transition-colors shadow-sm"
+            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-dark/60 hover:text-s-coral transition-colors shadow-sm"
             aria-label="Bild entfernen"
           >
             <X size={14} />
@@ -134,7 +134,7 @@ export default function ImageUploader({
           {uploading && (
             <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-200">
               <div
-                className="h-full bg-teal rounded-full transition-all duration-300"
+                className="h-full bg-s-coral rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -147,17 +147,17 @@ export default function ImageUploader({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           disabled={uploading}
-          className="w-full h-48 rounded-card border-2 border-dashed border-gray-200 hover:border-teal transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full h-48 rounded-card border-2 border-dashed border-gray-200 hover:border-s-coral transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {uploading ? (
             <>
-              <Loader2 size={24} className="text-teal animate-spin" />
+              <Loader2 size={24} className="text-s-coral animate-spin" />
               <span className="text-xs text-dark/40">Wird hochgeladen…</span>
             </>
           ) : (
             <>
-              <div className="w-12 h-12 rounded-full bg-teal/10 flex items-center justify-center">
-                <Camera size={20} className="text-teal" />
+              <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center">
+                <Camera size={20} className="text-s-coral" />
               </div>
               <span className="text-sm font-medium text-dark/60">{label}</span>
               <span className="text-xs text-dark/30">
@@ -170,7 +170,7 @@ export default function ImageUploader({
       )}
 
       {error && (
-        <p className="text-xs text-coral mt-1.5">{error}</p>
+        <p className="text-xs text-s-coral mt-1.5">{error}</p>
       )}
     </div>
   );

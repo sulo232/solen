@@ -14,21 +14,21 @@ interface ScoreDetails {
 
 interface SolenScoreData {
   solen_score: number;
-  solen_tier: "gold" | "teal" | "grey" | "dark";
+  solen_tier: "gold" | "coral" | "grey" | "dark";
   score_details: ScoreDetails;
 }
 
 const TIER_CONFIG = {
   gold: { label: "Top Salon", color: "#D4AF37", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-700", icon: "⭐" },
-  teal: { label: "Verifiziert", color: "#38B2AC", bg: "bg-teal/5 dark:bg-teal/10", border: "border-teal/20 dark:border-teal/30", icon: "🔵" },
+  coral: { label: "Verifiziert", color: "#E8624A", bg: "bg-s-coral/5 dark:bg-s-coral/10", border: "border-s-coral/20 dark:border-s-coral/30", icon: "🔵" },
   grey: { label: "Aktiv", color: "#9CA3AF", bg: "bg-gray-50 dark:bg-gray-800", border: "border-gray-200 dark:border-gray-700", icon: "⚪" },
   dark: { label: "Starter", color: "#6B7280", bg: "bg-gray-50 dark:bg-gray-800", border: "border-gray-200 dark:border-gray-700", icon: "🔘" },
 };
 
 const FACTOR_CONFIG = [
   { key: "rating" as const, label: "Bewertung", max: 30, Icon: Star, color: "text-amber-400" },
-  { key: "reviews" as const, label: "Anzahl Reviews", max: 15, Icon: MessageCircle, color: "text-coral" },
-  { key: "response" as const, label: "Antwortzeit", max: 15, Icon: Clock, color: "text-teal" },
+  { key: "reviews" as const, label: "Anzahl Reviews", max: 15, Icon: MessageCircle, color: "text-s-coral" },
+  { key: "response" as const, label: "Antwortzeit", max: 15, Icon: Clock, color: "text-s-coral" },
   { key: "profile" as const, label: "Profil-Vollständigkeit", max: 15, Icon: UserCheck, color: "text-blue-500" },
   { key: "bookings" as const, label: "Buchungen", max: 15, Icon: Briefcase, color: "text-purple-500" },
   { key: "activity" as const, label: "Aktivität", max: 10, Icon: Activity, color: "text-emerald-500" },
@@ -62,7 +62,7 @@ function ScoreMeter({ score, tier }: { score: number; tier: SolenScoreData["sole
           className="transition-all duration-1000 ease-out" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-data font-bold text-3xl text-dark dark:text-dm-text">{score}</span>
+        <span className="data-text font-bold text-3xl text-dark dark:text-dm-text">{score}</span>
         <span className="text-[10px] text-dark/40 dark:text-dm-text/40 uppercase tracking-wide">Score</span>
       </div>
     </div>
@@ -138,7 +138,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-xs text-dark/60 dark:text-dm-text/60 truncate">{f.label}</span>
-                  <span className="text-xs font-data font-medium text-dark dark:text-dm-text">{value}/{f.max}</span>
+                  <span className="text-xs data-text font-medium text-dark dark:text-dm-text">{value}/{f.max}</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
                   <div
@@ -156,7 +156,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
       {data.solen_score < 80 && (
         <div className="mt-4 p-3 rounded-lg bg-white/60 dark:bg-white/5 border border-gray-100 dark:border-white/5">
           <div className="flex items-start gap-2">
-            <TrendingUp size={14} className="text-teal shrink-0 mt-0.5" />
+            <TrendingUp size={14} className="text-s-coral shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-medium text-dark dark:text-dm-text">Tipp zur Verbesserung</p>
               <p className="text-xs text-dark/50 dark:text-dm-text/50 mt-0.5">

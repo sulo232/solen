@@ -11,7 +11,7 @@ const CATEGORY_CONFIG: Record<SalonCategory, { label: string; subtitle: string; 
   coiffeur: {
     label: "Coiffeur",
     subtitle: "Die besten Coiffeure in Basel",
-    gradient: "from-teal/15 via-teal/5 to-transparent",
+    gradient: "from-s-coral/15 via-s-coral/5 to-transparent",
   },
   barbershop: {
     label: "Barbershop",
@@ -26,7 +26,7 @@ const CATEGORY_CONFIG: Record<SalonCategory, { label: string; subtitle: string; 
   spa: {
     label: "Spa & Massage",
     subtitle: "Wellness und Entspannung in Basel",
-    gradient: "from-teal/12 via-blue-100/30 to-transparent",
+    gradient: "from-s-coral/12 via-blue-100/30 to-transparent",
   },
   makeup: {
     label: "Makeup",
@@ -51,7 +51,7 @@ export default function CategoryHero({ category, salonCount }: CategoryHeroProps
         </h1>
         <p className="text-sm text-dark/50 mt-2 font-body">{config.subtitle}</p>
         {salonCount > 0 && (
-          <p className="text-xs text-dark/40 mt-1 font-data" style={{ fontFamily: "Space Grotesk, monospace" }}>
+          <p className="text-xs text-dark/40 mt-1 data-text">
             {salonCount} {salonCount === 1 ? "Salon" : "Salons"} verfügbar
           </p>
         )}

@@ -106,7 +106,7 @@ export default function PromoManager() {
         <h2 className="font-heading font-bold text-lg text-dark dark:text-white">Promo-Codes</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Neuer Code
@@ -114,7 +114,7 @@ export default function PromoManager() {
       </div>
 
       {error && (
-        <div className="rounded-button bg-coral/10 border border-coral/20 px-3 py-2.5 text-sm text-coral">
+        <div className="rounded-button bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
           {error}
         </div>
       )}
@@ -131,7 +131,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none"
+                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
               />
             </div>
             <div>
@@ -194,7 +194,7 @@ export default function PromoManager() {
             <button
               type="submit"
               disabled={creating}
-              className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-60 flex items-center gap-1.5"
+              className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center gap-1.5"
             >
               {creating ? <Spinner size="sm" /> : <Plus className="w-3.5 h-3.5" />}
               Erstellen
@@ -224,17 +224,17 @@ export default function PromoManager() {
               className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-gray-100 dark:border-white/10 p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-button flex items-center justify-center ${promo.is_active ? "bg-teal/10 text-teal" : "bg-gray-100 text-dark/30"}`}>
+                <div className={`w-9 h-9 rounded-button flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-gray-100 text-dark/30"}`}>
                   {promo.discount_type === "percent" ? <Percent className="w-4 h-4" /> : <Tag className="w-4 h-4" />}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-data font-semibold text-sm text-dark dark:text-white">{promo.code}</span>
+                    <span className="data-text font-semibold text-sm text-dark dark:text-white">{promo.code}</span>
                     <button
                       onClick={() => copyCode(promo.code, promo.id)}
                       className="p-0.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors"
                     >
-                      {copiedId === promo.id ? <Check className="w-3 h-3 text-teal" /> : <Copy className="w-3 h-3 text-dark/30" />}
+                      {copiedId === promo.id ? <Check className="w-3 h-3 text-s-coral" /> : <Copy className="w-3 h-3 text-dark/30" />}
                     </button>
                   </div>
                   <p className="text-xs text-dark/50 dark:text-white/50">
@@ -244,7 +244,7 @@ export default function PromoManager() {
                   </p>
                 </div>
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-teal/10 text-teal" : "bg-gray-100 text-dark/40"}`}>
+              <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-gray-100 text-dark/40"}`}>
                 {promo.is_active ? "Aktiv" : "Inaktiv"}
               </span>
             </div>

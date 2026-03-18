@@ -28,14 +28,14 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
   };
 
   return (
-    <div className="mx-4 mb-2 p-3 rounded-card bg-teal/5 border border-teal/15 flex items-center gap-3">
-      <Calendar size={18} className="text-teal shrink-0" />
+    <div className="mx-4 mb-2 p-3 rounded-card bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
+      <Calendar size={18} className="text-s-coral shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-dark dark:text-white">Termin buchen bei {salonName}</p>
       </div>
       <Link
         href={`/${locale}/salon/${salonSlug}`}
-        className="shrink-0 px-3 py-1.5 rounded-button bg-teal text-white text-xs font-medium hover:bg-teal/90 transition-colors"
+        className="shrink-0 px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
       >
         Jetzt buchen
       </Link>

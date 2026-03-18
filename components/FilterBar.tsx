@@ -34,9 +34,9 @@ const RATING_OPTIONS = [
 const pillBase =
   "px-3 py-1.5 min-h-12 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border flex items-center";
 const pillActive =
-  "bg-teal text-white border-teal shadow-teal-glow";
+  "bg-s-coral text-white border-s-coral shadow-teal-glow";
 const pillInactive =
-  "bg-white/70 backdrop-blur-sm text-dark/70 border-white/60 hover:border-teal/50 hover:bg-white/90 shadow-sm";
+  "bg-white/70 backdrop-blur-sm text-dark/70 border-white/60 hover:border-s-coral/50 hover:bg-white/90 shadow-sm";
 
 export default function FilterBar() {
   const router = useRouter();
@@ -202,7 +202,7 @@ export default function FilterBar() {
                     aria-label={`Sortieren nach ${label}`}
                   >
                     {label}
-                    {activeSort === value && <Check className="w-3.5 h-3.5 text-teal" />}
+                    {activeSort === value && <Check className="w-3.5 h-3.5 text-s-coral" />}
                   </button>
                 ))}
               </div>
@@ -213,7 +213,7 @@ export default function FilterBar() {
           {hasFilters && (
             <button
               onClick={() => router.replace(pathname, { scroll: false })}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-body font-medium text-coral border border-coral/30 bg-coral/5 hover:bg-coral/10 transition-all duration-150 shrink-0"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-body font-medium text-s-coral border border-s-coral/30 bg-s-coral/5 hover:bg-s-coral/10 transition-all duration-150 shrink-0"
             >
               <X className="w-3 h-3" aria-hidden="true" />
               Filter löschen

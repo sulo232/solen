@@ -15,8 +15,8 @@ interface StampCardProps {
 }
 
 const CONFETTI_COLORS = [
-  "#38B2AC", "#FF6B6B", "#F6E05E", "#68D391", "#63B3ED",
-  "#FC8181", "#B794F4", "#F687B3", "#4FD1C5", "#FBD38D",
+  "#E8624A", "#D4870A", "#F6E05E", "#68D391", "#6BA3C8",
+  "#FC8181", "#B794F4", "#F687B3", "#7BA688", "#FBD38D",
   "#9AE6B4", "#FEB2B2",
 ];
 
@@ -89,7 +89,7 @@ export default function StampCard({
                 className={[
                   "w-9 h-9 rounded-full flex items-center justify-center transition-all",
                   isFilled
-                    ? "bg-teal text-white"
+                    ? "bg-s-coral text-white"
                     : "border-2 border-dashed border-gray-200 dark:border-white/20",
                   isNewest ? "stamp-new" : "",
                 ].join(" ")}
@@ -106,15 +106,15 @@ export default function StampCard({
         <p className="text-xs text-dark/60 dark:text-dm-text/60 font-body">
           {rewardText}
         </p>
-        <span className="text-xs font-data font-medium text-dark/50 dark:text-dm-text/50 whitespace-nowrap">
+        <span className="text-xs data-text font-medium text-dark/50 dark:text-dm-text/50 whitespace-nowrap">
           {stampsCollected} von {stampsTotal} Stempel
         </span>
       </div>
 
       {/* Complete overlay */}
       {isComplete && (
-        <div className="absolute bottom-0 left-0 right-0 bg-teal/10 dark:bg-teal/20 border-t border-teal/20 px-4 py-2 text-center">
-          <p className="text-xs font-medium text-teal">
+        <div className="absolute bottom-0 left-0 right-0 bg-s-coral/10 dark:bg-s-coral/20 border-t border-s-coral/20 px-4 py-2 text-center">
+          <p className="text-xs font-medium text-s-coral">
             Belohnung freigeschaltet!
           </p>
         </div>

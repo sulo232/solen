@@ -17,7 +17,7 @@ export default function InteractiveHoverButton({
   return (
     <button
       className={cn(
-        "group relative w-32 cursor-pointer overflow-hidden rounded-button border border-teal/20 bg-white p-2 text-center font-body font-medium",
+        "group relative w-32 cursor-pointer overflow-hidden rounded-button border border-s-coral/20 bg-white p-2 text-center font-body font-medium",
         className
       )}
       {...props}
@@ -29,7 +29,7 @@ export default function InteractiveHoverButton({
         <span>{text}</span>
         <ArrowRight size={16} />
       </div>
-      <div className="absolute left-[20%] top-[40%] h-2 w-2 scale-[1] rounded-full bg-teal transition-all duration-300 group-hover:left-[0%] group-hover:top-[0%] group-hover:h-full group-hover:w-full group-hover:scale-[1.8] group-hover:bg-teal" />
+      <div className="absolute left-[20%] top-[40%] h-2 w-2 scale-[1] rounded-full bg-s-coral transition-all duration-300 group-hover:left-[0%] group-hover:top-[0%] group-hover:h-full group-hover:w-full group-hover:scale-[1.8] group-hover:bg-s-coral" />
     </button>
   );
 }

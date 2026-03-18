@@ -40,9 +40,9 @@ export default function EmptyState({ icon: Icon, title, message, action, illustr
       )}
       <div className="relative mb-5">
         {/* Soft halo behind icon */}
-        <div className="absolute inset-0 rounded-full bg-teal/10 scale-[1.8] blur-xl" />
-        <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-teal/10">
-          <Icon size={28} className="text-teal" strokeWidth={1.5} />
+        <div className="absolute inset-0 rounded-full bg-s-coral/10 scale-[1.8] blur-xl" />
+        <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-s-coral/10">
+          <Icon size={28} className="text-s-coral" strokeWidth={1.5} />
         </div>
       </div>
       <h3 className="font-heading font-semibold text-dark text-lg mb-1.5">{title}</h3>

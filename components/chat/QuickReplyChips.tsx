@@ -37,7 +37,7 @@ export default function QuickReplyChips({ salonId, onSelectTemplate }: QuickRepl
           key={i}
           type="button"
           onClick={() => onSelectTemplate(text)}
-          className="px-3 py-1.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-sm whitespace-nowrap cursor-pointer hover:bg-teal-100 dark:hover:bg-teal-800/50 transition-colors shrink-0"
+          className="px-3 py-1.5 rounded-full bg-s-coral-50 dark:bg-s-coral-900/30 text-s-coral-700 dark:text-s-coral-300 text-sm whitespace-nowrap cursor-pointer hover:bg-s-coral-100 dark:hover:bg-s-coral-800/50 transition-colors shrink-0"
         >
           {text}
         </button>

@@ -47,21 +47,21 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
       Icon: Star,
       render: (s) => (
         <div className="flex items-center gap-1">
-          <Star size={12} className="fill-coral text-coral" />
-          <span className="font-data font-semibold text-dark">{s.average_rating?.toFixed(1) ?? "–"}</span>
+          <Star size={12} className="fill-s-coral text-s-coral" />
+          <span className="data-text font-semibold text-dark">{s.average_rating?.toFixed(1) ?? "–"}</span>
         </div>
       ),
     },
     {
       label: "Anzahl Bewertungen",
       Icon: MessageCircle,
-      render: (s) => <span className="font-data text-dark">{s.review_count ?? 0}</span>,
+      render: (s) => <span className="data-text text-dark">{s.review_count ?? 0}</span>,
     },
     {
       label: "Günstigster Service",
       Icon: Trophy,
       render: (s) => (
-        <span className="font-data font-semibold text-dark">
+        <span className="data-text font-semibold text-dark">
           {s.min_price ? `CHF ${s.min_price}` : "–"}
         </span>
       ),
@@ -75,7 +75,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
       label: "Entfernung",
       Icon: MapPin,
       render: (s) => (
-        <span className="font-data text-dark">
+        <span className="data-text text-dark">
           {s.distance_km ? `${s.distance_km.toFixed(1)} km` : "–"}
         </span>
       ),
@@ -122,7 +122,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     {salons.map((salon, i) => (
                       <th key={salon.id} className="p-3 text-center relative min-w-[140px]">
                         {i === bestIdx && salons.length > 1 && (
-                          <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-b-lg bg-coral text-white text-[10px] font-bold whitespace-nowrap">
+                          <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-b-lg bg-s-coral text-white text-[10px] font-bold whitespace-nowrap">
                             🏆 Empfehlung
                           </div>
                         )}
@@ -139,12 +139,12 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     <tr key={row.label} className="border-t border-gray-50 dark:border-white/5">
                       <td className="sticky left-0 bg-white/95 dark:bg-dm-surface/95 backdrop-blur-sm px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <row.Icon size={13} className="text-teal shrink-0" />
+                          <row.Icon size={13} className="text-s-coral shrink-0" />
                           <span className="text-xs text-dark/50 dark:text-dm-text/50 whitespace-nowrap">{row.label}</span>
                         </div>
                       </td>
                       {salons.map((salon, i) => (
-                        <td key={salon.id} className={`px-4 py-3 text-center text-sm ${i === bestIdx && salons.length > 1 ? "bg-coral/5" : ""}`}>
+                        <td key={salon.id} className={`px-4 py-3 text-center text-sm ${i === bestIdx && salons.length > 1 ? "bg-s-coral/5" : ""}`}>
                           {row.render(salon, i)}
                         </td>
                       ))}
@@ -157,7 +157,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                       <td key={salon.id} className="px-4 py-4 text-center">
                         <a
                           href={`/de/salon/${salon.slug}`}
-                          className="inline-block px-4 py-2 rounded-button bg-teal text-white text-xs font-semibold hover:bg-teal/90 transition-colors"
+                          className="inline-block px-4 py-2 rounded-button bg-s-coral text-white text-xs font-semibold hover:bg-s-coral/90 transition-colors"
                         >
                           Jetzt buchen
                         </a>

@@ -33,7 +33,7 @@ export default function PriceSlider({ min = 0, max = 200, step = 5 }: PriceSlide
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="flex justify-between text-xs font-data text-dark/60">
+      <div className="flex justify-between text-xs data-text text-dark/60">
         <span>CHF {values[0]}</span>
         <span>CHF {values[1]}</span>
       </div>
@@ -47,14 +47,14 @@ export default function PriceSlider({ min = 0, max = 200, step = 5 }: PriceSlide
         className="relative flex items-center w-full h-5"
       >
         <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-pill bg-gray-200">
-          <SliderPrimitive.Range className="absolute h-full bg-teal" />
+          <SliderPrimitive.Range className="absolute h-full bg-s-coral" />
         </SliderPrimitive.Track>
         <SliderPrimitive.Thumb
-          className="block h-4 w-4 rounded-full border-2 border-teal bg-white shadow-card ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 cursor-grab active:cursor-grabbing"
+          className="block h-4 w-4 rounded-full border-2 border-s-coral bg-white shadow-card ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 cursor-grab active:cursor-grabbing"
           aria-label="Mindestpreis"
         />
         <SliderPrimitive.Thumb
-          className="block h-4 w-4 rounded-full border-2 border-teal bg-white shadow-card ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 cursor-grab active:cursor-grabbing"
+          className="block h-4 w-4 rounded-full border-2 border-s-coral bg-white shadow-card ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral focus-visible:ring-offset-2 cursor-grab active:cursor-grabbing"
           aria-label="Maximalpreis"
         />
       </SliderPrimitive.Root>

@@ -96,7 +96,7 @@ export default function BottomNav() {
     >
       <ExpandableNavTabs
         tabs={tabs}
-        activeColor="text-teal"
+        activeColor="text-s-coral"
         className="w-full justify-center bg-white/90 dark:bg-dm-surface/90 backdrop-blur-lg shadow-glass border-gray-100 dark:border-white/5 min-h-12"
         onTabChange={handleTabChange}
         aria-label="Hauptnavigation"
