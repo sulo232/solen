@@ -1,0 +1,175 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
+import { CheckCircle, Calendar, Share2, RotateCcw } from "lucide-react";
+import { motion } from "framer-motion";
+
+interface BookingSuccessProps {
+  bookingId: string;
+  salonName: string;
+  salonSlug: string;
+  serviceName: string;
+  dateTime: string; // ISO string
+  duration: number; // minutes
+  price: number;
+}
+
+function generateICS(props: BookingSuccessProps): string {
+  const start = new Date(props.dateTime);
+  const end = new Date(start.getTime() + props.duration * 60 * 1000);
+
+  const fmt = (d: Date) =>
+    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Solen.ch//Booking//DE",
+    "BEGIN:VEVENT",
+    `DTSTART:${fmt(start)}`,
+    `DTEND:${fmt(end)}`,
+    `SUMMARY:${props.serviceName} bei ${props.salonName}`,
+    `DESCRIPTION:Gebucht über solen.ch`,
+    `LOCATION:${props.salonName}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
+
+export default function BookingSuccess(props: BookingSuccessProps) {
+  const locale = useLocale();
+  const router = useRouter();
+  const confettiRef = useRef(false);
+
+  // Simple CSS confetti on mount
+  useEffect(() => {
+    if (confettiRef.current) return;
+    confettiRef.current = true;
+
+    // Create confetti particles
+    const container = document.createElement("div");
+    container.style.cssText = "position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden";
+    document.body.appendChild(container);
+
+    const colors = ["#38B2AC", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF"];
+    for (let i = 0; i < 50; i++) {
+      const el = document.createElement("div");
+      const size = Math.random() * 8 + 4;
+      el.style.cssText = `
+        position:absolute;
+        width:${size}px;height:${size}px;
+        background:${colors[i % colors.length]};
+        border-radius:${Math.random() > 0.5 ? "50%" : "2px"};
+        left:${Math.random() * 100}%;
+        top:-10px;
+        animation:confetti-fall ${1.5 + Math.random() * 2}s ease-out forwards;
+        animation-delay:${Math.random() * 0.5}s;
+      `;
+      container.appendChild(el);
+    }
+
+    // Add confetti keyframes
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes confetti-fall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(${360 + Math.random() * 360}deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    setTimeout(() => {
+      container.remove();
+      style.remove();
+    }, 4000);
+  }, []);
+
+  const dateStr = new Date(props.dateTime).toLocaleDateString("de-CH", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  const timeStr = new Date(props.dateTime).toLocaleTimeString("de-CH", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const handleCalendarDownload = () => {
+    const ics = generateICS(props);
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `solen-termin-${props.bookingId.slice(0, 8)}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: `Termin bei ${props.salonName}`,
+      text: `Ich habe einen Termin für ${props.serviceName} bei ${props.salonName} am ${dateStr} um ${timeStr} Uhr gebucht!`,
+      url: `https://www.solen.ch/${locale}/salon/${props.salonSlug}`,
+    };
+    if (navigator.share) {
+      await navigator.share(shareData).catch(() => {});
+    } else {
+      await navigator.clipboard.writeText(shareData.url);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="max-w-md mx-auto text-center py-8 px-4"
+    >
+      <div className="w-16 h-16 rounded-full bg-teal/10 flex items-center justify-center mx-auto mb-4">
+        <CheckCircle size={32} className="text-teal" />
+      </div>
+
+      <h2 className="font-heading font-bold text-2xl text-dark mb-2">Termin gebucht!</h2>
+      <p className="text-sm text-dark/50 mb-6">Dein Termin wurde erfolgreich bestätigt.</p>
+
+      <div className="bg-gray-50 rounded-card p-4 mb-6 text-left">
+        <p className="font-medium text-dark">{props.serviceName}</p>
+        <p className="text-sm text-dark/60 mt-1">{props.salonName}</p>
+        <div className="flex items-center gap-4 mt-3 text-sm text-dark/50">
+          <span>{dateStr}</span>
+          <span>{timeStr} Uhr</span>
+          <span>{props.duration} Min.</span>
+        </div>
+        <p className="font-data font-semibold text-dark mt-2">CHF {props.price.toFixed(2)}</p>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={handleCalendarDownload}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+        >
+          <Calendar size={16} />
+          Zum Kalender hinzufügen
+        </button>
+
+        <button
+          onClick={handleShare}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-gray-200 text-sm font-medium text-dark/70 hover:border-teal transition-colors"
+        >
+          <Share2 size={16} />
+          Mit Freund:in teilen
+        </button>
+
+        <button
+          onClick={() => router.push(`/${locale}/salon/${props.salonSlug}`)}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-gray-200 text-sm font-medium text-dark/70 hover:border-teal transition-colors"
+        >
+          <RotateCcw size={16} />
+          Nochmal buchen
+        </button>
+      </div>
+    </motion.div>
+  );
+}
