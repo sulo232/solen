@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { RotateCcw, Info } from "lucide-react";
+import { RotateCcw, Info, ClipboardList } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 import SolenDatePicker from "@/components/ui/date-picker";
@@ -85,7 +85,60 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const [confirming, setConfirming] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fullyBookedDates, setFullyBookedDates] = useState<Set<string>>(new Set());
+  const [showWaitlist, setShowWaitlist] = useState(false);
+  const [waitlistDate, setWaitlistDate] = useState<string | null>(null);
+  const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
+  const [waitlistDone, setWaitlistDone] = useState(false);
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
+
+  // Fetch fully booked dates for the 30-day window
+  useEffect(() => {
+    const from = isoDate(todayDate);
+    const to = isoDate(addDays(todayDate, 30));
+    fetch(`/api/availability/${salonId}?date_from=${from}&date_to=${to}`)
+      .then((r) => r.json())
+      .then((d) => {
+        const booked = new Set<string>(d.fully_booked_dates ?? []);
+        setFullyBookedDates(booked);
+        // Auto-select next available date
+        if (booked.has(isoDate(todayDate))) {
+          for (let i = 1; i <= 30; i++) {
+            const candidate = addDays(todayDate, i);
+            if (!booked.has(isoDate(candidate))) {
+              setSelectedDate(candidate);
+              break;
+            }
+          }
+        }
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salonId]);
+
+  // Check if a calendar date is fully booked
+  const isDateFullyBooked = useCallback((date: DateValue) => {
+    const iso = `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+    return fullyBookedDates.has(iso);
+  }, [fullyBookedDates]);
+
+  // Waitlist submit handler
+  const handleWaitlistSubmit = async () => {
+    if (!waitlistDate) return;
+    setWaitlistSubmitting(true);
+    try {
+      const res = await fetch("/api/bookings/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId, service_id: serviceId, preferred_date: waitlistDate }),
+      });
+      if (res.ok) setWaitlistDone(true);
+    } catch {
+      // silent fail
+    } finally {
+      setWaitlistSubmitting(false);
+    }
+  };
 
   // Fetch staff list once
   useEffect(() => {
@@ -226,6 +279,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           onChange={(d) => setSelectedDate(fromCalendarDate(d))}
           minValue={ariaMinDate}
           maxValue={ariaMaxDate}
+          isDateUnavailable={isDateFullyBooked}
         />
       </div>
 
@@ -234,7 +288,16 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         {loadingSlots ? (
           <div className="flex justify-center py-10"><Spinner size="md" /></div>
         ) : availableSlots.length === 0 ? (
-          <p className="text-center text-sm text-dark/40 py-10">Keine freien Slots an diesem Tag.</p>
+          <div className="text-center py-8 flex flex-col items-center gap-3">
+            <p className="text-sm text-dark/40">Keine freien Slots an diesem Tag.</p>
+            <button
+              onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
+              className="inline-flex items-center gap-1.5 text-sm text-teal hover:text-teal/80 transition-colors"
+            >
+              <ClipboardList className="w-4 h-4" />
+              Auf Warteliste setzen
+            </button>
+          </div>
         ) : (
           <div className="flex flex-col gap-4">
             {(["morning", "afternoon", "evening"] as const).map((group) => {
@@ -336,9 +399,15 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             </span>
           </div>
 
+          {/* Cancellation policy banner */}
+          <div className="flex items-center gap-1.5 text-xs text-teal bg-teal/5 rounded-button px-3 py-2">
+            <Info className="w-3.5 h-3.5 shrink-0" />
+            Kostenlose Stornierung bis 24h vor dem Termin
+          </div>
+
           <div className="flex items-center gap-1.5 text-xs text-dark/40">
             <Info className="w-3.5 h-3.5 shrink-0" />
-            Kostenlose Stornierung bis 24h vor Termin
+            Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
 
           {error && <p className="text-xs text-coral">{error}</p>}
@@ -351,6 +420,39 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             {confirming && <Spinner size="sm" invert />}
             {confirming ? "Buchen…" : "Termin bestätigen"}
           </button>
+        </div>
+      )}
+
+      {/* Waitlist Modal */}
+      {showWaitlist && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowWaitlist(false)}>
+          <div className="bg-white rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-2 mb-3">
+              <ClipboardList className="w-5 h-5 text-teal" />
+              <h3 className="font-heading font-bold text-dark">Warteliste</h3>
+            </div>
+            {waitlistDone ? (
+              <div className="text-center py-4">
+                <p className="text-sm text-dark/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
+                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-button bg-teal text-white text-sm hover:bg-teal/90 transition-colors">
+                  Schliessen
+                </button>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-dark/60 mb-4">
+                  Am {waitlistDate} sind leider keine Termine frei. Möchtest du benachrichtigt werden, wenn ein Platz frei wird?
+                </p>
+                <button
+                  onClick={handleWaitlistSubmit}
+                  disabled={waitlistSubmitting}
+                  className="w-full py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+                >
+                  {waitlistSubmitting ? "Wird eingetragen…" : "Benachrichtige mich"}
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>

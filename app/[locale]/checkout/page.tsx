@@ -30,7 +30,10 @@ interface BookingIntent {
   estimated_price: number;
   deposit_amount: number;
   slot_id?: string;
+  service_id?: string;
+  staff_member_id?: string;
   free_cancel_hours?: number;
+  payment_mode?: "prepay" | "deposit" | "at_salon";
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -107,6 +110,8 @@ export default function CheckoutPage() {
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [confirmingAtSalon, setConfirmingAtSalon] = useState(false);
+  const [atSalonConfirmed, setAtSalonConfirmed] = useState(false);
 
   useEffect(() => {
     const raw = searchParams.get("booking_intent");
@@ -120,6 +125,15 @@ export default function CheckoutPage() {
     }
     setIntent(parsed);
 
+    // For at_salon mode: no Stripe needed
+    if (parsed.payment_mode === "at_salon") {
+      setLoading(false);
+      return;
+    }
+
+    // For prepay: charge full amount, for deposit: charge deposit_amount
+    const chargeAmount = parsed.payment_mode === "prepay" ? parsed.estimated_price : parsed.deposit_amount;
+
     // Create payment intent
     fetch("/api/stripe/create-payment-intent", {
       method: "POST",
@@ -128,7 +142,7 @@ export default function CheckoutPage() {
         salon_id: parsed.salon_id,
         service_name: parsed.service_name,
         estimated_price: parsed.estimated_price,
-        deposit_amount: parsed.deposit_amount,
+        deposit_amount: chargeAmount,
       }),
     })
       .then((r) => r.json())
@@ -140,6 +154,29 @@ export default function CheckoutPage() {
       .catch(() => setError("Fehler beim Laden der Zahlungsseite."))
       .finally(() => setLoading(false));
   }, [searchParams]);
+
+  // Handle at_salon booking confirmation (no payment)
+  const handleAtSalonConfirm = async () => {
+    if (!intent?.slot_id) return;
+    setConfirmingAtSalon(true);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slot_id: intent.slot_id,
+          service_id: intent.service_id,
+          staff_member_id: intent.staff_member_id,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      setAtSalonConfirmed(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Buchung fehlgeschlagen");
+    } finally {
+      setConfirmingAtSalon(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -161,7 +198,25 @@ export default function CheckoutPage() {
     );
   }
 
-  const remainder = intent.estimated_price - intent.deposit_amount;
+  const paymentMode = intent.payment_mode ?? "at_salon";
+  const chargeAmount = paymentMode === "prepay" ? intent.estimated_price : intent.deposit_amount;
+  const remainder = intent.estimated_price - chargeAmount;
+
+  // At-salon confirmed success
+  if (atSalonConfirmed) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="rounded-card border border-teal/20 bg-teal/5 p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full">
+          <span className="text-5xl">🎉</span>
+          <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
+          <p className="text-sm text-dark/60">Du zahlst direkt im Salon. Bis bald!</p>
+          <a href="/de/profile" className="mt-2 px-6 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors">
+            Meine Buchungen
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -204,64 +259,107 @@ export default function CheckoutPage() {
               <span className="text-dark/60">{intent.service_name}</span>
               <span className="font-medium text-dark">CHF {intent.estimated_price.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-dark/60">
-              <span>Kaution (No-Show-Schutz)</span>
-              <span>– CHF {intent.deposit_amount.toFixed(2)}</span>
-            </div>
-            <div className="border-t border-gray-100 pt-2 flex justify-between">
-              <span className="text-dark/50 text-xs">Restbetrag vor Ort</span>
-              <span className="text-dark/50 text-xs">CHF {remainder.toFixed(2)}</span>
-            </div>
+            {paymentMode === "deposit" && (
+              <>
+                <div className="flex justify-between text-dark/60">
+                  <span>Anzahlung ({Math.round((chargeAmount / intent.estimated_price) * 100)}%)</span>
+                  <span>CHF {chargeAmount.toFixed(2)}</span>
+                </div>
+                <div className="border-t border-gray-100 pt-2 flex justify-between">
+                  <span className="text-dark/50 text-xs">Restbetrag vor Ort</span>
+                  <span className="text-dark/50 text-xs">CHF {remainder.toFixed(2)}</span>
+                </div>
+              </>
+            )}
+            {paymentMode === "at_salon" && (
+              <div className="flex justify-between text-teal">
+                <span>Zahlung vor Ort</span>
+                <span className="font-medium">CHF {intent.estimated_price.toFixed(2)}</span>
+              </div>
+            )}
           </div>
 
           {/* What you pay now */}
-          <div className="mt-3 bg-teal/5 border border-teal/15 rounded-button p-3 flex items-center justify-between">
-            <div>
-              <p className="text-xs text-teal font-semibold">Jetzt zu zahlen (Kaution)</p>
-              <p className="text-xs text-dark/40 mt-0.5">Wird bei Erscheinen auf den Gesamtpreis angerechnet</p>
+          {paymentMode !== "at_salon" && (
+            <div className="mt-3 bg-teal/5 border border-teal/15 rounded-button p-3 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-teal font-semibold">
+                  {paymentMode === "prepay" ? "Jetzt zu zahlen" : "Anzahlung jetzt"}
+                </p>
+                <p className="text-xs text-dark/40 mt-0.5">
+                  {paymentMode === "prepay"
+                    ? "Voller Betrag wird jetzt belastet"
+                    : "Wird bei Erscheinen auf den Gesamtpreis angerechnet"}
+                </p>
+              </div>
+              <span className="font-heading font-bold text-lg text-teal">CHF {chargeAmount.toFixed(2)}</span>
             </div>
-            <span className="font-heading font-bold text-lg text-teal">CHF {intent.deposit_amount.toFixed(2)}</span>
-          </div>
-        </div>
-
-        {/* Payment card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
-          <h2 className="font-heading font-bold text-base text-dark mb-4">Zahlung</h2>
-
-          {clientSecret ? (
-            <Elements
-              stripe={stripePromise}
-              options={{
-                clientSecret,
-                appearance: {
-                  theme: "stripe",
-                  variables: {
-                    colorPrimary: "#4ECDC4",
-                    colorDanger: "#FF6B6B",
-                    borderRadius: "8px",
-                    fontFamily: "DM Sans, sans-serif",
-                  },
-                },
-              }}
-            >
-              <CheckoutForm
-                intent={intent}
-                paymentIntentId={paymentIntentId!}
-                onSuccess={() => {}}
-              />
-            </Elements>
-          ) : (
-            <div className="flex justify-center py-8"><Spinner size="lg" /></div>
           )}
         </div>
 
-        {/* Trust badges */}
+        {/* Payment card — or at_salon confirm */}
+        {paymentMode === "at_salon" ? (
+          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
+            <h2 className="font-heading font-bold text-base text-dark mb-3">Zahlung vor Ort</h2>
+            <p className="text-sm text-dark/60 mb-4">
+              Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.
+            </p>
+            {error && (
+              <div className="rounded-button bg-coral/10 border border-coral/20 px-3 py-2.5 text-sm text-coral mb-3">
+                {error}
+              </div>
+            )}
+            <button
+              onClick={handleAtSalonConfirm}
+              disabled={confirmingAtSalon}
+              className="w-full py-3.5 rounded-button bg-teal text-white font-semibold text-sm hover:bg-teal/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {confirmingAtSalon ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
+              {confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
+            </button>
+            <p className="text-xs text-center text-dark/40 mt-3">
+              Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24} Stunden vorher
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
+            <h2 className="font-heading font-bold text-base text-dark mb-4">Zahlung</h2>
+
+            {clientSecret ? (
+              <Elements
+                stripe={stripePromise}
+                options={{
+                  clientSecret,
+                  appearance: {
+                    theme: "stripe",
+                    variables: {
+                      colorPrimary: "#4ECDC4",
+                      colorDanger: "#FF6B6B",
+                      borderRadius: "8px",
+                      fontFamily: "DM Sans, sans-serif",
+                    },
+                  },
+                }}
+              >
+                <CheckoutForm
+                  intent={intent}
+                  paymentIntentId={paymentIntentId!}
+                  onSuccess={() => {}}
+                />
+              </Elements>
+            ) : (
+              <div className="flex justify-center py-8"><Spinner size="lg" /></div>
+            )}
+          </div>
+        )}
+
+        {/* Payment method icons */}
         <div className="flex items-center justify-center gap-4 text-xs text-dark/30 pb-8 flex-wrap">
           <span className="flex items-center gap-1"><Lock size={11} /> 256-bit SSL</span>
           <span>·</span>
-          <span className="flex items-center gap-1"><CreditCard size={11} /> Card, Apple Pay, Google Pay</span>
+          <span className="flex items-center gap-1"><CreditCard size={11} /> Visa, Mastercard, Apple Pay</span>
           <span>·</span>
-          <span className="text-dark/20">TWINT — coming soon</span>
+          <span>TWINT</span>
           <span>·</span>
           <span className="flex items-center gap-1"><Shield size={11} /> Powered by Stripe</span>
         </div>

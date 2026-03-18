@@ -37,5 +37,23 @@ export async function GET(
     grouped[date].push(slot);
   }
 
-  return NextResponse.json({ data: grouped });
+  // Compute fully booked dates for the month (dates with 0 available slots)
+  // Query ALL slots (any status) in the range, then find dates where none are 'available'
+  const { data: allSlots } = await supabase
+    .from("availability_slots")
+    .select("starts_at, status")
+    .eq("salon_id", salon_id)
+    .gte("starts_at", date_from)
+    .lte("starts_at", date_to);
+
+  const dateHasAvailable = new Set<string>();
+  const allDatesWithSlots = new Set<string>();
+  for (const slot of allSlots ?? []) {
+    const d = slot.starts_at.split("T")[0];
+    allDatesWithSlots.add(d);
+    if (slot.status === "available") dateHasAvailable.add(d);
+  }
+  const fully_booked_dates = [...allDatesWithSlots].filter(d => !dateHasAvailable.has(d));
+
+  return NextResponse.json({ data: grouped, fully_booked_dates });
 }

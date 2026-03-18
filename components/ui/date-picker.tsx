@@ -27,6 +27,7 @@ interface SolenDatePickerProps {
   onChange?: (date: DateValue) => void;
   minValue?: DateValue;
   maxValue?: DateValue;
+  isDateUnavailable?: (date: DateValue) => boolean;
   className?: string;
 }
 
@@ -36,6 +37,7 @@ export default function SolenDatePicker({
   onChange,
   minValue,
   maxValue,
+  isDateUnavailable,
   className,
 }: SolenDatePickerProps) {
   return (
@@ -44,6 +46,7 @@ export default function SolenDatePicker({
       onChange={(v) => v && onChange?.(v)}
       minValue={minValue}
       maxValue={maxValue}
+      isDateUnavailable={isDateUnavailable}
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-dark/60 font-body">{label}</Label>
@@ -92,12 +95,13 @@ export default function SolenDatePicker({
                 {(date) => (
                   <CalendarCell
                     date={date}
-                    className={({ isSelected, isDisabled, isFocusVisible }) =>
+                    className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                       cn(
                         "w-9 h-9 flex items-center justify-center rounded-button text-sm font-data transition-colors cursor-pointer outline-none",
                         isSelected && "bg-teal text-white font-semibold",
-                        !isSelected && !isDisabled && "hover:bg-teal/10 text-dark",
-                        isDisabled && "text-dark/20 cursor-default",
+                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-teal/10 text-dark",
+                        isUnavailable && "text-dark/20 bg-gray-100 cursor-default line-through",
+                        isDisabled && !isUnavailable && "text-dark/20 cursor-default",
                         isFocusVisible && "ring-2 ring-teal ring-offset-1"
                       )
                     }
