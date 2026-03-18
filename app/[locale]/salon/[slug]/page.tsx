@@ -7,13 +7,14 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
-  Star, MapPin, Phone, Instagram, Clock, ChevronRight, ChevronLeft,
-  Scissors, User, Sparkles, Waves, Palette, Zap, X
+  Star, MapPin, Phone, Instagram, Clock, ChevronRight, ChevronLeft, ChevronDown,
+  Scissors, User, Sparkles, Waves, Palette, Zap, X, Info
 } from "lucide-react";
 import BookingCalendar from "@/components/BookingCalendar";
+import StaffPortfolio from "@/components/StaffPortfolio";
 import Spinner from "@/components/ui/Spinner";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory } from "@/lib/types";
+import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory, OpeningHours } from "@/lib/types";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -142,6 +143,8 @@ export default function SalonProfilePage() {
   const [reviewPage, setReviewPage] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("angebot");
+  const [openAccordion, setOpenAccordion] = useState<string | null>("angebot");
 
   useEffect(() => {
     if (!slug) return;
@@ -186,6 +189,23 @@ export default function SalonProfilePage() {
 
   // Build a SalonCard-compatible object for MapView
   const mapSalon: SalonCard = { ...salon };
+
+  // Open/closed status indicator
+  const now = new Date();
+  const dayKey = DAY_KEYS[now.getDay()];
+  const todayHours = salon.opening_hours?.[dayKey] as OpeningHours | null | undefined;
+  const isOpen = (() => {
+    if (!todayHours) return false;
+    const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    return currentTime >= todayHours.open && currentTime <= todayHours.close;
+  })();
+
+  const TABS = [
+    { key: "angebot", label: "Angebot" },
+    { key: "bewertungen", label: "Bewertungen" },
+    { key: "team", label: "Team" },
+    { key: "standort", label: "Standort" },
+  ] as const;
 
   return (
     <>
@@ -255,7 +275,13 @@ export default function SalonProfilePage() {
 
               {/* Name + meta */}
               <div>
-                <h1 className="font-heading font-bold text-2xl sm:text-3xl text-dark">{salon.name}</h1>
+                <div className="flex items-center gap-3">
+                  <h1 className="font-heading font-bold text-2xl sm:text-3xl text-dark">{salon.name}</h1>
+                  <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-emerald-600" : "text-dark/40"}`}>
+                    <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500 animate-pulse" : "bg-gray-300"}`} />
+                    {isOpen ? "Geöffnet" : "Geschlossen"}
+                  </span>
+                </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {salon.categories.map((cat) => {
                     const Icon = CATEGORY_ICONS[cat];
@@ -299,6 +325,21 @@ export default function SalonProfilePage() {
                 </div>
               </div>
 
+              {/* Desktop tab bar */}
+              <div className="hidden md:flex items-center gap-1 border-b border-gray-100 sticky top-[57px] bg-white z-10">
+                {TABS.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => { setActiveTab(key); document.getElementById(`section-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+                    className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+                      activeTab === key ? "border-teal text-teal" : "border-transparent text-dark/50 hover:text-dark"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
               {/* Opening hours */}
               {Object.keys(salon.opening_hours ?? {}).length > 0 && (
                 <div>
@@ -322,64 +363,91 @@ export default function SalonProfilePage() {
                 </div>
               )}
 
-              {/* Staff grid */}
+              {/* Staff / Team */}
               {salon.staff.length > 0 && (
-                <div>
-                  <h2 className="font-heading font-semibold text-base text-dark mb-3">Team</h2>
-                  <div className="flex flex-wrap gap-3">
-                    {salon.staff.map((m) => (
-                      <button key={m.id}
-                        onClick={() => { setSelectedStaff(m.id); setCalendarOpen(true); }}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-card border transition-all duration-150 ${selectedStaff === m.id ? "border-teal bg-teal/5" : "border-gray-100 hover:border-teal/30"}`}
-                      >
-                        <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center text-xs font-medium text-dark/40">
-                          {m.avatar_url
-                            ? <Image src={m.avatar_url} alt={m.name} width={32} height={32} className="object-cover" />
-                            : m.name[0]}
+                <div id="section-team">
+                  {/* Mobile accordion header */}
+                  <button
+                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-gray-100"
+                    onClick={() => setOpenAccordion(openAccordion === "team" ? null : "team")}
+                  >
+                    <h2 className="font-heading font-semibold text-base text-dark">Team</h2>
+                    <ChevronDown size={18} className={`text-dark/40 transition-transform ${openAccordion === "team" ? "rotate-180" : ""}`} />
+                  </button>
+                  <h2 className="hidden md:block font-heading font-semibold text-base text-dark mb-3">Team</h2>
+
+                  <div className={`${openAccordion === "team" || typeof window !== "undefined" && window.innerWidth >= 768 ? "" : "hidden md:block"}`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
+                      {salon.staff.map((m) => (
+                        <StaffPortfolio
+                          key={m.id}
+                          member={m}
+                          salonSlug={slug}
+                          onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Services / Angebot */}
+              {salon.services.length > 0 && (
+                <div id="section-angebot">
+                  {/* Mobile accordion header */}
+                  <button
+                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-gray-100"
+                    onClick={() => setOpenAccordion(openAccordion === "angebot" ? null : "angebot")}
+                  >
+                    <h2 className="font-heading font-semibold text-base text-dark">Angebot</h2>
+                    <ChevronDown size={18} className={`text-dark/40 transition-transform ${openAccordion === "angebot" ? "rotate-180" : ""}`} />
+                  </button>
+                  <h2 className="hidden md:block font-heading font-semibold text-base text-dark mb-3">Leistungen</h2>
+
+                  <div className={`${openAccordion === "angebot" ? "" : "hidden md:block"}`}>
+                    {Object.entries(servicesByCategory).map(([cat, svcs]) => (
+                      <div key={cat} className="mb-4 mt-3 md:mt-0">
+                        <p className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-2 capitalize">{cat}</p>
+                        <div className="divide-y divide-gray-50">
+                          {svcs.map((svc) => (
+                            <button key={svc.id}
+                              onClick={() => { setSelectedService(svc.id); setCalendarOpen(true); }}
+                              className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-gray-50 transition-colors ${selectedService === svc.id ? "bg-teal/5" : ""}`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <div>
+                                  <p className="text-sm font-medium text-dark">
+                                    {locale === "de" ? svc.name_de : svc.name_en}
+                                  </p>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="flex items-center gap-1 text-xs text-dark/40">
+                                      <Clock size={10} /> {svc.duration_minutes} Min.
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <span className="font-data font-semibold text-sm text-dark shrink-0 ml-4">CHF {svc.price}</span>
+                            </button>
+                          ))}
                         </div>
-                        <div className="text-left">
-                          <p className="text-sm font-medium text-dark">{m.name}</p>
-                          {m.specialties?.length > 0 && (
-                            <p className="text-xs text-dark/40 truncate max-w-[120px]">{m.specialties.slice(0, 2).join(", ")}</p>
-                          )}
-                        </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Services */}
-              {salon.services.length > 0 && (
-                <div>
-                  <h2 className="font-heading font-semibold text-base text-dark mb-3">Leistungen</h2>
-                  {Object.entries(servicesByCategory).map(([cat, svcs]) => (
-                    <div key={cat} className="mb-4">
-                      <p className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-2 capitalize">{cat}</p>
-                      <div className="divide-y divide-gray-50">
-                        {svcs.map((svc) => (
-                          <button key={svc.id}
-                            onClick={() => { setSelectedService(svc.id); setCalendarOpen(true); }}
-                            className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-gray-50 transition-colors ${selectedService === svc.id ? "bg-teal/5" : ""}`}
-                          >
-                            <div>
-                              <p className="text-sm font-medium text-dark">
-                                {locale === "de" ? svc.name_de : svc.name_en}
-                              </p>
-                              <p className="text-xs text-dark/40 mt-0.5">{svc.duration_minutes} Min.</p>
-                            </div>
-                            <span className="font-data font-semibold text-sm text-dark shrink-0 ml-4">ab CHF {svc.price}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Reviews */}
-              <div>
-                <h2 className="font-heading font-semibold text-base text-dark mb-4">Bewertungen</h2>
+              {/* Reviews / Bewertungen */}
+              <div id="section-bewertungen">
+                {/* Mobile accordion header */}
+                <button
+                  className="md:hidden w-full flex items-center justify-between py-3 border-b border-gray-100"
+                  onClick={() => setOpenAccordion(openAccordion === "bewertungen" ? null : "bewertungen")}
+                >
+                  <h2 className="font-heading font-semibold text-base text-dark">Bewertungen</h2>
+                  <ChevronDown size={18} className={`text-dark/40 transition-transform ${openAccordion === "bewertungen" ? "rotate-180" : ""}`} />
+                </button>
+                <h2 className="hidden md:block font-heading font-semibold text-base text-dark mb-4">Bewertungen</h2>
+                <div className={`${openAccordion === "bewertungen" ? "" : "hidden md:block"} mt-3 md:mt-0`}>
                 {salon.reviews.length === 0 ? (
                   <p className="text-sm text-dark/40">Noch keine Bewertungen.</p>
                 ) : (
@@ -431,11 +499,12 @@ export default function SalonProfilePage() {
                     )}
                   </>
                 )}
+                </div>
               </div>
 
-              {/* Mini Map */}
+              {/* Standort / Mini Map */}
               {salon.latitude && salon.longitude && (
-                <div>
+                <div id="section-standort">
                   <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-teal" />Standort
                   </h2>
