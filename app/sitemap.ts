@@ -13,6 +13,10 @@ const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priorit
   { path: "/spa",         freq: "weekly",  priority: 0.8 },
   { path: "/makeup",      freq: "weekly",  priority: 0.8 },
   { path: "/waxing",      freq: "weekly",  priority: 0.8 },
+  { path: "/partner",     freq: "weekly",  priority: 0.7 },
+  { path: "/impressum",   freq: "weekly",  priority: 0.3 },
+  { path: "/agb",         freq: "weekly",  priority: 0.3 },
+  { path: "/datenschutz", freq: "weekly",  priority: 0.3 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -45,6 +49,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           lastModified:    new Date(salon.updated_at),
           changeFrequency: "daily",
           priority:        0.9,
+        });
+      }
+    }
+    // Treatment category pages from service_categories
+    const { data: categories } = await supabase
+      .from("service_categories")
+      .select("slug")
+      .is("parent_id", null);
+
+    for (const cat of categories ?? []) {
+      for (const locale of LOCALES) {
+        entries.push({
+          url:             `${APP_URL}/${locale}/behandlungen/${cat.slug}`,
+          lastModified:    new Date(),
+          changeFrequency: "weekly",
+          priority:        0.7,
         });
       }
     }

@@ -57,10 +57,10 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {[
-                { label: "Über uns",    href: "#" },
-                { label: "Kontakt",     href: "#" },
-                { label: "Impressum",   href: "#" },
-                { label: "Datenschutz", href: "#" },
+                { label: "Impressum",   href: `/${locale}/impressum` },
+                { label: "AGB",         href: `/${locale}/agb` },
+                { label: "Datenschutz", href: `/${locale}/datenschutz` },
+                { label: "Hilfe",       href: `/${locale}/help` },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <Link
@@ -84,6 +84,15 @@ export default function Footer() {
               Für Salons
             </h3>
             <ul className="space-y-2">
+              <li>
+                <Link
+                  href={`/${locale}/partner`}
+                  className="text-sm text-white/70 hover:text-white transition-colors font-body"
+                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                >
+                  Partner werden
+                </Link>
+              </li>
               <li>
                 <Link
                   href={`/${locale}/onboarding/salon`}
