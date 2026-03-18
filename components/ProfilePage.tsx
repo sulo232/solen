@@ -264,46 +264,56 @@ function SettingsSection({
       </div>
 
       {/* Notifications */}
-      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-        <div>
-          <p className="text-sm font-medium text-dark">E-Mail-Benachrichtigungen</p>
-          <p className="text-xs text-dark/40 mt-0.5">Buchungsbestätigungen, Erinnerungen</p>
+      <div className="pt-2 border-t border-gray-100 space-y-3">
+        <p className="text-xs font-medium text-dark/50 dark:text-dm-text/50">E-Mail-Benachrichtigungen</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-dark dark:text-dm-text">Buchungen</p>
+            <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Bestätigungen, Erinnerungen, Stornierungen</p>
+          </div>
+          <button type="button" onClick={() => setEmailOn(!emailOn)}
+            className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-teal" : "bg-gray-200 dark:bg-white/10"].join(" ")}
+            aria-pressed={emailOn}>
+            <span className={["absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform", emailOn ? "translate-x-5" : "translate-x-0"].join(" ")} />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setEmailOn(!emailOn)}
-          className={[
-            "relative w-11 h-6 rounded-full transition-colors shrink-0",
-            emailOn ? "bg-teal" : "bg-gray-200",
-          ].join(" ")}
-          aria-pressed={emailOn}
-        >
-          <span
-            className={[
-              "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform",
-              emailOn ? "translate-x-5" : "translate-x-0",
-            ].join(" ")}
-          />
-        </button>
+        <div className="flex items-center justify-between opacity-60">
+          <div>
+            <p className="text-sm font-medium text-dark dark:text-dm-text">Angebote & Deals</p>
+            <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Last-Minute und Sonderangebote</p>
+          </div>
+          <div className="relative w-11 h-6 rounded-full bg-gray-200 dark:bg-white/10 shrink-0">
+            <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
+          </div>
+        </div>
+        <div className="flex items-center justify-between opacity-60">
+          <div>
+            <p className="text-sm font-medium text-dark dark:text-dm-text">Neue Salons</p>
+            <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Wenn neue Salons in deiner Nähe öffnen</p>
+          </div>
+          <div className="relative w-11 h-6 rounded-full bg-gray-200 dark:bg-white/10 shrink-0">
+            <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
+          </div>
+        </div>
       </div>
 
       {/* Language */}
       <div>
-        <p className="text-sm font-medium text-dark mb-2">Sprache</p>
-        <div className="flex gap-2">
-          {(["de", "en", "fr"] as const).map((l) => (
+        <p className="text-sm font-medium text-dark dark:text-dm-text mb-2">Sprache</p>
+        <div className="flex gap-2 flex-wrap">
+          {(["de", "en", "fr", "it"] as const).map((l) => (
             <button
               key={l}
               type="button"
-              onClick={() => setLang(l)}
+              onClick={() => setLang(l as any)}
               className={[
                 "px-4 py-2 rounded-button text-sm font-medium border transition-colors",
                 lang === l
                   ? "bg-teal text-white border-teal"
-                  : "border-gray-200 text-dark/60 hover:border-teal hover:text-teal",
+                  : "border-gray-200 text-dark/60 hover:border-teal hover:text-teal dark:border-white/10 dark:text-dm-text/60",
               ].join(" ")}
             >
-              {l === "de" ? "Deutsch" : l === "en" ? "English" : "Français"}
+              {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
             </button>
           ))}
         </div>

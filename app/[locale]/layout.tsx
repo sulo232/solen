@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
 import CookieBanner from "@/components/ui/CookieBanner";
+import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -31,6 +32,7 @@ export default async function LocaleLayout({
           </div>
           <BottomNav />
           <CookieBanner />
+          <PWAInstallPrompt />
         </ToastProvider>
       </PostHogProvider>
     </NextIntlClientProvider>
