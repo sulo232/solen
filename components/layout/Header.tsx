@@ -102,7 +102,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6" aria-label="Hauptnavigation">
           {NAV_LINKS.map(({ key, href }) => {
             const isActive = pathname.includes(href);
             return (
@@ -125,7 +125,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           <ThemeToggle />
 
           {/* Messages with unread dot */}
-          <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center" id="tour-messages">
+          <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center" id="tour-messages" aria-label="Nachrichten">
             <MessageCircle className="w-5 h-5 text-dark/70 dark:text-dm-text/70" />
             {unreadCount > 0 && (
               <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-coral" />
