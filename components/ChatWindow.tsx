@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import { Send, Image as ImageIcon, X } from "lucide-react";
+import { Send, Image as ImageIcon, X, Paperclip, DollarSign } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 import type { Message } from "@/lib/types";
@@ -22,8 +22,10 @@ export default function ChatWindow({ conversationId, perspective, currentUserId 
   const [text, setText] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadMessages = useCallback(async () => {
     try {
@@ -89,6 +91,48 @@ export default function ChatWindow({ conversationId, perspective, currentUserId 
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { alert("Datei zu gross (max 10MB)"); return; }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(`/api/conversations/${conversationId}/upload`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) { const err = await res.json(); alert(err.error || "Upload fehlgeschlagen"); return; }
+      const { url } = await res.json();
+
+      // Send as image message
+      const optimistic: Message = {
+        id: `optimistic-${Date.now()}`,
+        conversation_id: conversationId,
+        sender_id: currentUserId,
+        content: url,
+        message_type: "image",
+        image_url: url,
+        read_at: null,
+        created_at: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, optimistic]);
+
+      await fetch(`/api/conversations/${conversationId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: url, message_type: "image", image_url: url }),
+      });
+    } catch {
+      alert("Upload fehlgeschlagen");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage("text"); }
   };
@@ -123,6 +167,11 @@ export default function ChatWindow({ conversationId, perspective, currentUserId 
                 <div className="rounded-xl overflow-hidden max-w-[200px]">
                   <Image src={msg.image_url} alt="Bild" width={200} height={150} className="object-cover" />
                 </div>
+              ) : msg.message_type === "price_offer" ? (
+                <div className="flex items-center gap-2 bg-white/20 rounded-lg p-2">
+                  <DollarSign className="w-4 h-4 shrink-0" />
+                  <p className="whitespace-pre-wrap break-words text-xs">{msg.content}</p>
+                </div>
               ) : (
                 <p className="whitespace-pre-wrap break-words">{msg.content}</p>
               )}
@@ -152,11 +201,28 @@ export default function ChatWindow({ conversationId, perspective, currentUserId 
         </div>
       )}
 
+      {/* Hidden file input for uploads */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime"
+        className="hidden"
+        onChange={handleFileUpload}
+      />
+
       {/* Compose bar */}
       <div className="px-4 py-3 border-t border-gray-100 flex items-end gap-2">
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="p-2 rounded-button text-dark/30 hover:text-teal hover:bg-teal/5 transition-colors shrink-0 disabled:opacity-40"
+          title="Datei anhängen"
+        >
+          {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
+        </button>
         <button onClick={() => setShowImageInput((s) => !s)}
           className="p-2 rounded-button text-dark/30 hover:text-teal hover:bg-teal/5 transition-colors shrink-0"
-          title="Bild senden">
+          title="Bild-URL senden">
           <ImageIcon size={18} />
         </button>
         <textarea ref={inputRef} value={text} onChange={(e) => setText(e.target.value)}

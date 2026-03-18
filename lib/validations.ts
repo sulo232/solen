@@ -33,7 +33,7 @@ export const createReviewSchema = z.object({
 
 export const createMessageSchema = z.object({
   content: z.string().min(1).max(2000),
-  message_type: z.enum(["text", "image", "system"]).default("text"),
+  message_type: z.enum(["text", "image", "system", "price_offer"]).default("text"),
   image_url: z.string().url().optional().nullable(),
 });
 

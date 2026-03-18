@@ -29,7 +29,7 @@ export type BookingStatus = "confirmed" | "cancelled" | "completed" | "no_show";
 
 export type RecurringFrequency = "weekly" | "biweekly" | "monthly" | "custom";
 
-export type MessageType = "text" | "image" | "booking_link";
+export type MessageType = "text" | "image" | "booking_link" | "price_offer";
 
 export type HairType = "straight" | "wavy" | "curly" | "coily" | "unknown";
 
