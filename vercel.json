@@ -2,7 +2,8 @@
   "framework": "nextjs",
   "crons": [
     { "path": "/api/cron/reminders", "schedule": "0 * * * *" },
-    { "path": "/api/cron/review-prompt", "schedule": "0 9 * * *" }
+    { "path": "/api/cron/review-prompt", "schedule": "0 9 * * *" },
+    { "path": "/api/cron/late-cancel", "schedule": "*/30 * * * *" }
   ],
   "headers": [
     {
