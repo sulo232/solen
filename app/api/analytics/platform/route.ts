@@ -4,7 +4,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 // GET /api/analytics/platform — admin only
 export async function GET() {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
 
   if (!user) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ salo
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Verify salon ownership
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sal
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);
@@ -122,7 +122,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
   const { salonId } = await params;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);

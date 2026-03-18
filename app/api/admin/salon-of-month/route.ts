@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const authSupabase = await createServerSupabaseClient();
-  const { data: { user } } = await authSupabase.auth.getUser();
+  const { data: { session } } = await authSupabase.auth.getSession(); const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Verify admin

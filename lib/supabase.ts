@@ -31,6 +31,17 @@ export async function createServerSupabaseClient() {
 }
 
 /**
+ * Get the authenticated user from the session cookie (no network call).
+ * Use this in API routes instead of supabase.auth.getUser() which makes
+ * a network request to Supabase that can timeout on Vercel Edge.
+ */
+export async function getSessionUser() {
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  return { supabase, user: session?.user ?? null };
+}
+
+/**
  * Admin Supabase client — uses service_role key. Server-side only.
  * Bypasses RLS. Only for Edge Functions and trusted server operations.
  */
