@@ -15,6 +15,7 @@ import GlassModal from "@/components/ui/GlassModal";
 import Spinner from "@/components/ui/Spinner";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import StampCard from "@/components/loyalty/StampCard";
+import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import type { Profile, Booking, SalonCard } from "@/lib/types";
 
 interface LoyaltyCard {
@@ -584,6 +585,7 @@ export default function ProfilePage() {
           <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
             <Trophy size={16} className="text-amber-500" />
             Deine Stempelkarten
+            <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch!" />
           </h2>
           {loyaltyCards.length === 0 ? (
             <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">

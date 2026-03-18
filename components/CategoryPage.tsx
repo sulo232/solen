@@ -11,6 +11,7 @@ import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
+import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
 
@@ -231,7 +232,8 @@ export default function CategoryPage({ category }: CategoryPageProps) {
       <FilterBar />
 
       {/* Map/List toggle */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex justify-end">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-end gap-2">
+        <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
         <button
           onClick={() => {
             const params = new URLSearchParams(searchParams.toString());
