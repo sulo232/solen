@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Plus, Trash2, ChevronRight, ChevronLeft, PartyPopper } from "lucide-react";
+import { Check, Plus, Trash2, ChevronRight, ChevronLeft, PartyPopper, Clock, Pencil, Loader2 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { slideSwitch } from "@/lib/animations";
+import { serviceTemplates, DURATION_OPTIONS } from "@/lib/service-templates";
+import type { ServiceTemplate } from "@/lib/service-templates";
+import ImageUploader from "@/components/ui/ImageUploader";
+import { validateStep, step1Schema, step2Schema, step3Schema, step4Schema } from "@/lib/registration-validation";
 import type { SalonCategory, AgeGroup, Gender } from "@/lib/types";
+import { createBrowserSupabaseClient } from "@/lib/supabase";
 
 // ─────────────────────────────────────────
 // Constants
@@ -60,13 +65,14 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
 
 interface BasicsData {
   name: string;
+  email: string;
   categories: SalonCategory[];
   quartier: string;
   address: string;
   phone: string;
 }
 
-function Step1({ data, onChange }: { data: BasicsData; onChange: (d: BasicsData) => void }) {
+function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: BasicsData) => void; errors: Record<string, string> }) {
   const toggleCat = (c: SalonCategory) => {
     const next = data.categories.includes(c)
       ? data.categories.filter((x) => x !== c)
@@ -80,12 +86,24 @@ function Step1({ data, onChange }: { data: BasicsData; onChange: (d: BasicsData)
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Salon-Name *</label>
           <input
-            required
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal ${errors.name ? "border-coral" : "border-gray-200"}`}
             placeholder="z. B. Salon Lumière"
           />
+          {errors.name && <p className="text-xs text-coral mt-0.5">{errors.name}</p>}
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-dark/50 mb-1">E-Mail *</label>
+          <input
+            type="email"
+            value={data.email}
+            onChange={(e) => onChange({ ...data, email: e.target.value })}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal ${errors.email ? "border-coral" : "border-gray-200"}`}
+            placeholder="dein@salon.ch"
+          />
+          {errors.email && <p className="text-xs text-coral mt-0.5">{errors.email}</p>}
         </div>
 
         <div>
@@ -107,6 +125,7 @@ function Step1({ data, onChange }: { data: BasicsData; onChange: (d: BasicsData)
               </button>
             ))}
           </div>
+          {errors.categories && <p className="text-xs text-coral mt-1">{errors.categories}</p>}
         </div>
 
         <div>
@@ -114,24 +133,25 @@ function Step1({ data, onChange }: { data: BasicsData; onChange: (d: BasicsData)
           <select
             value={data.quartier}
             onChange={(e) => onChange({ ...data, quartier: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal bg-white"
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal bg-white ${errors.quartier ? "border-coral" : "border-gray-200"}`}
           >
             <option value="">Bitte wählen…</option>
             {QUARTIERE.map((q) => (
               <option key={q.value} value={q.value}>{q.label}</option>
             ))}
           </select>
+          {errors.quartier && <p className="text-xs text-coral mt-0.5">{errors.quartier}</p>}
         </div>
 
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Adresse *</label>
           <input
-            required
             value={data.address}
             onChange={(e) => onChange({ ...data, address: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal ${errors.address ? "border-coral" : "border-gray-200"}`}
             placeholder="Musterstrasse 12, 4051 Basel"
           />
+          {errors.address && <p className="text-xs text-coral mt-0.5">{errors.address}</p>}
         </div>
 
         <div>
@@ -188,47 +208,58 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
     <StepContainer title="Salon-Profil" subtitle="Diese Infos sehen deine Kunden.">
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Cover-Foto URL *</label>
-          <input
-            required
-            value={data.cover_photo_url}
-            onChange={(e) => onChange({ ...data, cover_photo_url: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
-            placeholder="https://…"
+          <label className="block text-xs font-medium text-dark/50 mb-1">Cover-Foto *</label>
+          <ImageUploader
+            bucket="salon-photos"
+            label="Titelbild hochladen"
+            currentImageUrl={data.cover_photo_url || undefined}
+            onUpload={(url) => onChange({ ...data, cover_photo_url: url })}
           />
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="text-xs font-medium text-dark/50">Galerie (max. 5)</label>
-            {data.gallery_urls.length < 5 && (
-              <button type="button" onClick={addGallery} className="text-xs text-teal flex items-center gap-1">
-                <Plus size={12} /> Foto hinzufügen
-              </button>
-            )}
           </div>
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {data.gallery_urls.map((url, i) => (
-              <div key={i} className="flex gap-2">
-                <input
-                  value={url}
-                  onChange={(e) => {
-                    const next = [...data.gallery_urls];
-                    next[i] = e.target.value;
-                    onChange({ ...data, gallery_urls: next });
-                  }}
-                  className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
-                  placeholder="https://…"
-                />
-                <button
-                  type="button"
-                  onClick={() => onChange({ ...data, gallery_urls: data.gallery_urls.filter((_, j) => j !== i) })}
-                  className="p-2 text-dark/30 hover:text-coral transition-colors"
-                >
-                  <Trash2 size={14} />
-                </button>
+              <div key={i} className="relative">
+                {url ? (
+                  <div className="relative rounded-card overflow-hidden border border-gray-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt={`Galerie ${i + 1}`} className="w-full h-24 object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => onChange({ ...data, gallery_urls: data.gallery_urls.filter((_, j) => j !== i) })}
+                      className="absolute top-1 right-1 p-1 rounded-full bg-white/90 text-dark/60 hover:text-coral"
+                      aria-label="Bild entfernen"
+                    >
+                      <Trash2 size={10} />
+                    </button>
+                  </div>
+                ) : (
+                  <ImageUploader
+                    bucket="salon-photos"
+                    label=""
+                    maxSizeMB={5}
+                    onUpload={(uploadedUrl) => {
+                      const next = [...data.gallery_urls];
+                      next[i] = uploadedUrl;
+                      onChange({ ...data, gallery_urls: next });
+                    }}
+                  />
+                )}
               </div>
             ))}
+            {data.gallery_urls.length < 5 && (
+              <button
+                type="button"
+                onClick={addGallery}
+                className="h-24 rounded-card border-2 border-dashed border-gray-200 hover:border-teal transition-colors flex items-center justify-center"
+              >
+                <Plus size={16} className="text-dark/30" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -318,16 +349,19 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
 interface ServiceDraft {
   name_de: string;
   name_en: string;
+  name_fr: string;
+  name_it: string;
   category: SalonCategory | "";
   duration_minutes: number;
   price: number;
   description_de: string;
   suitable_for: AgeGroup[];
   suitable_gender: Gender[];
+  _autoTranslated?: boolean;
 }
 
 const EMPTY_SERVICE: ServiceDraft = {
-  name_de: "", name_en: "", category: "", duration_minutes: 60, price: 80,
+  name_de: "", name_en: "", name_fr: "", name_it: "", category: "", duration_minutes: 60, price: 80,
   description_de: "", suitable_for: [], suitable_gender: [],
 };
 
@@ -345,60 +379,214 @@ function Step3({ services, onChange, salonCategories }: {
   onChange: (s: ServiceDraft[]) => void;
   salonCategories: SalonCategory[];
 }) {
+  const [adding, setAdding] = useState(false);
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
   const [draft, setDraft] = useState<ServiceDraft>(EMPTY_SERVICE);
-  const [adding, setAdding] = useState(services.length === 0);
+  const [translating, setTranslating] = useState(false);
 
-  const toggleArr = <T,>(arr: T[], val: T): T[] =>
-    arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
+  // Templates filtered by selected salon categories
+  const availableTemplates = salonCategories.flatMap(cat => serviceTemplates[cat] || []);
 
-  const save = () => {
+  // Check if a template is already added (by name_de match)
+  const isTemplateAdded = (t: ServiceTemplate) =>
+    services.some(s => s.name_de === t.name_de);
+
+  const addFromTemplate = (t: ServiceTemplate) => {
+    if (isTemplateAdded(t)) return;
+    onChange([...services, {
+      name_de: t.name_de,
+      name_en: t.name_en,
+      name_fr: t.name_fr,
+      name_it: t.name_it,
+      category: t.category as SalonCategory,
+      duration_minutes: t.duration,
+      price: t.price,
+      description_de: "",
+      suitable_for: [],
+      suitable_gender: [],
+    }]);
+  };
+
+  // Auto-translate on blur of name_de
+  const autoTranslate = async (text: string) => {
+    if (!text || text.length < 2) return;
+    setTranslating(true);
+    try {
+      const res = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, from: "de", to: ["en", "fr", "it"] }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.translations) {
+          setDraft(prev => ({
+            ...prev,
+            name_en: data.translations.en || prev.name_en,
+            name_fr: data.translations.fr || prev.name_fr,
+            name_it: data.translations.it || prev.name_it,
+            _autoTranslated: true,
+          }));
+        }
+      }
+    } catch { /* fail silently */ }
+    setTranslating(false);
+  };
+
+  const saveCustom = () => {
     if (!draft.name_de || !draft.category) return;
-    onChange([...services, draft]);
+    if (editingIdx !== null) {
+      const next = [...services];
+      next[editingIdx] = draft;
+      onChange(next);
+      setEditingIdx(null);
+    } else {
+      onChange([...services, draft]);
+    }
     setDraft(EMPTY_SERVICE);
     setAdding(false);
   };
 
-  return (
-    <StepContainer title="Deine Services" subtitle="Füge mindestens einen Service hinzu.">
-      {/* Service list */}
-      <div className="space-y-2 mb-4">
-        {services.map((s, i) => (
-          <div key={i} className="flex items-center justify-between bg-gray-50 rounded-card px-4 py-3">
-            <div>
-              <p className="text-sm font-medium text-dark">{s.name_de}</p>
-              <p className="text-xs text-dark/40">{s.category} · {s.duration_minutes} min · CHF {s.price}</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onChange(services.filter((_, j) => j !== i))}
-              className="text-dark/30 hover:text-coral transition-colors"
-            >
-              <Trash2 size={14} />
-            </button>
-          </div>
-        ))}
-      </div>
+  const startEdit = (i: number) => {
+    setDraft(services[i]);
+    setEditingIdx(i);
+    setAdding(true);
+  };
 
+  const cancelEdit = () => {
+    setDraft(EMPTY_SERVICE);
+    setEditingIdx(null);
+    setAdding(false);
+  };
+
+  return (
+    <StepContainer title="Deine Services" subtitle="Wähle aus Vorlagen oder erstelle eigene Services.">
+      {/* Template grid */}
+      {availableTemplates.length > 0 && (
+        <div className="mb-5">
+          <p className="text-xs font-medium text-dark/50 mb-2">Vorlagen für deine Kategorien</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {availableTemplates.map((t) => {
+              const added = isTemplateAdded(t);
+              return (
+                <button
+                  key={`${t.category}-${t.name_de}`}
+                  type="button"
+                  disabled={added}
+                  onClick={() => addFromTemplate(t)}
+                  className={[
+                    "flex items-center justify-between px-3 py-2.5 rounded-card border text-left transition-all",
+                    added
+                      ? "bg-teal/5 border-teal/20 opacity-60 cursor-default"
+                      : "border-gray-200 hover:border-teal hover:bg-teal/5 cursor-pointer",
+                  ].join(" ")}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-dark truncate">{t.name_de}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="inline-flex items-center gap-0.5 text-[10px] text-dark/40">
+                        <Clock size={10} /> {t.duration} min
+                      </span>
+                      <span className="text-xs font-data font-semibold text-dark/60">CHF {t.price}</span>
+                    </div>
+                  </div>
+                  {added ? (
+                    <Check size={14} className="text-teal shrink-0 ml-2" />
+                  ) : (
+                    <Plus size={14} className="text-teal shrink-0 ml-2" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Added services list */}
+      {services.length > 0 && (
+        <div className="mb-4">
+          <p className="text-xs font-medium text-dark/50 mb-2">Deine Services ({services.length})</p>
+          <div className="space-y-2">
+            {services.map((s, i) => (
+              <div key={i} className="flex items-center justify-between bg-gray-50 rounded-card px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-dark truncate">{s.name_de}</p>
+                  <p className="text-xs text-dark/40">{s.duration_minutes} min · CHF {s.price}</p>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                  <button
+                    type="button"
+                    onClick={() => startEdit(i)}
+                    className="p-1.5 text-dark/30 hover:text-teal transition-colors"
+                    aria-label="Service bearbeiten"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onChange(services.filter((_, j) => j !== i))}
+                    className="p-1.5 text-dark/30 hover:text-coral transition-colors"
+                    aria-label="Service entfernen"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Custom add / edit form */}
       {adding ? (
         <div className="border border-gray-200 rounded-card p-4 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+          <p className="text-xs font-medium text-dark/50">
+            {editingIdx !== null ? "Service bearbeiten" : "Eigener Service"}
+          </p>
+          <div>
+            <label className="block text-xs font-medium text-dark/50 mb-1">Name DE *</label>
+            <input
+              value={draft.name_de}
+              onChange={(e) => setDraft({ ...draft, name_de: e.target.value, _autoTranslated: false })}
+              onBlur={() => { if (draft.name_de && !draft._autoTranslated) autoTranslate(draft.name_de); }}
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+              placeholder="z. B. Waschen + Schneiden"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Name DE *</label>
-              <input
-                value={draft.name_de}
-                onChange={(e) => setDraft({ ...draft, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Name EN</label>
+              <label className="block text-xs font-medium text-dark/50 mb-1">EN</label>
               <input
                 value={draft.name_en}
                 onChange={(e) => setDraft({ ...draft, name_en: e.target.value })}
                 className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
               />
             </div>
+            <div>
+              <label className="block text-xs font-medium text-dark/50 mb-1">FR</label>
+              <input
+                value={draft.name_fr}
+                onChange={(e) => setDraft({ ...draft, name_fr: e.target.value })}
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-dark/50 mb-1">IT</label>
+              <input
+                value={draft.name_it}
+                onChange={(e) => setDraft({ ...draft, name_it: e.target.value })}
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+              />
+            </div>
           </div>
+          {translating && (
+            <p className="text-[10px] text-dark/40 flex items-center gap-1">
+              <Loader2 size={10} className="animate-spin" /> Automatisch übersetzen…
+            </p>
+          )}
+          {draft._autoTranslated && !translating && (
+            <p className="text-[10px] text-dark/40">Automatisch übersetzt — du kannst die Übersetzungen anpassen.</p>
+          )}
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-dark/50 mb-1">Kategorie *</label>
@@ -414,15 +602,16 @@ function Step3({ services, onChange, salonCategories }: {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Dauer (Min)</label>
-              <input
-                type="number"
-                min={15}
-                step={15}
+              <label className="block text-xs font-medium text-dark/50 mb-1">Dauer</label>
+              <select
                 value={draft.duration_minutes}
                 onChange={(e) => setDraft({ ...draft, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
-              />
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal bg-white"
+              >
+                {DURATION_OPTIONS.map((d) => (
+                  <option key={d} value={d}>{d} min</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-dark/50 mb-1">Preis CHF</label>
@@ -435,68 +624,22 @@ function Step3({ services, onChange, salonCategories }: {
               />
             </div>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Beschreibung</label>
-            <textarea
-              value={draft.description_de}
-              onChange={(e) => setDraft({ ...draft, description_de: e.target.value })}
-              rows={2}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal resize-none"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Geeignet für</label>
-              <div className="flex flex-wrap gap-1">
-                {AGE_OPTIONS.map((a) => (
-                  <button
-                    key={a.value}
-                    type="button"
-                    onClick={() => setDraft({ ...draft, suitable_for: toggleArr(draft.suitable_for, a.value) })}
-                    className={["px-2 py-1 rounded-pill text-xs border transition-colors",
-                      draft.suitable_for.includes(a.value) ? "bg-teal text-white border-teal" : "border-gray-200 text-dark/50",
-                    ].join(" ")}
-                  >{a.label}</button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Geschlecht</label>
-              <div className="flex flex-wrap gap-1">
-                {GENDER_OPTIONS.map((g) => (
-                  <button
-                    key={g.value}
-                    type="button"
-                    onClick={() => setDraft({ ...draft, suitable_gender: toggleArr(draft.suitable_gender, g.value) })}
-                    className={["px-2 py-1 rounded-pill text-xs border transition-colors",
-                      draft.suitable_gender.includes(g.value) ? "bg-teal text-white border-teal" : "border-gray-200 text-dark/50",
-                    ].join(" ")}
-                  >{g.label}</button>
-                ))}
-              </div>
-            </div>
-          </div>
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => { setAdding(false); setDraft(EMPTY_SERVICE); }}
-              className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60"
-            >Abbrechen</button>
-            <button
-              type="button"
-              onClick={save}
-              disabled={!draft.name_de || !draft.category}
-              className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50"
-            >Hinzufügen</button>
+            <button type="button" onClick={cancelEdit}
+              className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+            <button type="button" onClick={saveCustom} disabled={!draft.name_de || !draft.category}
+              className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50">
+              {editingIdx !== null ? "Speichern" : "Hinzufügen"}
+            </button>
           </div>
         </div>
       ) : (
         <button
           type="button"
-          onClick={() => setAdding(true)}
+          onClick={() => { setEditingIdx(null); setDraft(EMPTY_SERVICE); setAdding(true); }}
           className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-teal hover:text-teal transition-colors flex items-center justify-center gap-2"
         >
-          <Plus size={16} /> Service hinzufügen
+          <Plus size={16} /> Eigener Service erstellen
         </button>
       )}
     </StepContainer>
@@ -507,18 +650,49 @@ function Step3({ services, onChange, salonCategories }: {
 // Step 4 — Team
 // ─────────────────────────────────────────
 
-interface StaffDraft { name: string; avatar_url: string; specialties: string[] }
-const EMPTY_STAFF: StaffDraft = { name: "", avatar_url: "", specialties: [] };
+interface StaffDraft { name: string; avatar_url: string; role: string; specialties: string[] }
+const EMPTY_STAFF: StaffDraft = { name: "", avatar_url: "", role: "", specialties: [] };
 
-function Step4({ staff, onChange }: { staff: StaffDraft[]; onChange: (s: StaffDraft[]) => void }) {
+// Role suggestions based on salon categories
+const ROLE_SUGGESTIONS: Record<string, string[]> = {
+  barbershop: ["Barbier", "Junior Barbier", "Senior Barbier"],
+  coiffeur: ["Stylist:in", "Colorist:in", "Junior Stylist:in", "Senior Stylist:in"],
+  nails: ["Nageldesigner:in", "Pediküre-Spezialist:in"],
+  spa: ["Masseur:in", "Kosmetiker:in", "Therapeut:in"],
+  makeup: ["Visagist:in", "Lash Artist", "Brow Artist"],
+  waxing: ["Waxing-Spezialist:in", "Kosmetiker:in"],
+};
+
+// Specialty suggestions based on categories
+const SPECIALTY_SUGGESTIONS: Record<string, string[]> = {
+  barbershop: ["Fade", "Beard Design", "Razor Shave", "Kids"],
+  coiffeur: ["Balayage", "Coloring", "Updos", "Extensions", "Keratin"],
+  nails: ["Gel", "Acryl", "Nail Art", "Medical Pedicure"],
+  spa: ["Deep Tissue", "Hot Stone", "Facial", "Lymphdrainage"],
+  makeup: ["Bridal", "Lash Extensions", "Microblading", "Permanent Makeup"],
+  waxing: ["Brazilian", "Full Body", "Sugaring"],
+};
+
+function Step4({ staff, onChange, salonCategories }: {
+  staff: StaffDraft[];
+  onChange: (s: StaffDraft[]) => void;
+  salonCategories: SalonCategory[];
+}) {
   const [draft, setDraft] = useState<StaffDraft>(EMPTY_STAFF);
   const [adding, setAdding] = useState(staff.length === 0);
-  const [specInput, setSpecInput] = useState("");
 
-  const addSpec = () => {
-    if (!specInput.trim()) return;
-    setDraft({ ...draft, specialties: [...draft.specialties, specInput.trim()] });
-    setSpecInput("");
+  // Merge suggestions from all salon categories
+  const roles = [...new Set(salonCategories.flatMap(c => ROLE_SUGGESTIONS[c] || []))];
+  const specialties = [...new Set(salonCategories.flatMap(c => SPECIALTY_SUGGESTIONS[c] || []))];
+
+  const toggleSpecialty = (spec: string) => {
+    const has = draft.specialties.includes(spec);
+    setDraft({
+      ...draft,
+      specialties: has
+        ? draft.specialties.filter(s => s !== spec)
+        : [...draft.specialties, spec],
+    });
   };
 
   const save = () => {
@@ -535,9 +709,9 @@ function Step4({ staff, onChange }: { staff: StaffDraft[]; onChange: (s: StaffDr
           <div key={i} className="flex items-center justify-between bg-gray-50 rounded-card px-4 py-3">
             <div>
               <p className="text-sm font-medium text-dark">{s.name}</p>
-              {s.specialties.length > 0 && (
-                <p className="text-xs text-dark/40 mt-0.5">{s.specialties.join(", ")}</p>
-              )}
+              <p className="text-xs text-dark/40 mt-0.5">
+                {[s.role, ...s.specialties].filter(Boolean).join(" · ") || "Keine Rolle"}
+              </p>
             </div>
             <button
               type="button"
@@ -558,41 +732,40 @@ function Step4({ staff, onChange }: { staff: StaffDraft[]; onChange: (s: StaffDr
               value={draft.name}
               onChange={(e) => setDraft({ ...draft, name: e.target.value })}
               className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+              placeholder="z. B. Maria"
             />
           </div>
-          <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Foto URL (optional)</label>
-            <input
-              value={draft.avatar_url}
-              onChange={(e) => setDraft({ ...draft, avatar_url: e.target.value })}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Spezialitäten</label>
-            <div className="flex gap-2 mb-2">
-              <input
-                value={specInput}
-                onChange={(e) => setSpecInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
-                placeholder="z. B. Balayage, Färben…"
-                className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
-              />
-              <button type="button" onClick={addSpec} className="px-3 py-2 rounded-button bg-gray-100 text-sm text-dark/60">
-                <Plus size={14} />
-              </button>
+
+          {roles.length > 0 && (
+            <div>
+              <label className="block text-xs font-medium text-dark/50 mb-1.5">Rolle</label>
+              <div className="flex flex-wrap gap-1.5">
+                {roles.map((r) => (
+                  <button key={r} type="button" onClick={() => setDraft({ ...draft, role: draft.role === r ? "" : r })}
+                    className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
+                      draft.role === r ? "bg-teal text-white border-teal" : "border-gray-200 text-dark/50 hover:border-teal",
+                    ].join(" ")}
+                  >{r}</button>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1">
-              {draft.specialties.map((s, i) => (
-                <span key={i} className="flex items-center gap-1 px-2 py-0.5 bg-teal/10 text-teal text-xs rounded-pill">
-                  {s}
-                  <button type="button" onClick={() => setDraft({ ...draft, specialties: draft.specialties.filter((_, j) => j !== i) })}>
-                    ×
-                  </button>
-                </span>
-              ))}
+          )}
+
+          {specialties.length > 0 && (
+            <div>
+              <label className="block text-xs font-medium text-dark/50 mb-1.5">Spezialitäten</label>
+              <div className="flex flex-wrap gap-1.5">
+                {specialties.map((s) => (
+                  <button key={s} type="button" onClick={() => toggleSpecialty(s)}
+                    className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
+                      draft.specialties.includes(s) ? "bg-teal/10 text-teal border-teal/30" : "border-gray-200 text-dark/40 hover:border-teal",
+                    ].join(" ")}
+                  >{s}</button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
           <div className="flex gap-2">
             <button type="button" onClick={() => { setAdding(false); setDraft(EMPTY_STAFF); }}
               className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
@@ -607,7 +780,7 @@ function Step4({ staff, onChange }: { staff: StaffDraft[]; onChange: (s: StaffDr
             <Plus size={16} /> Mitarbeiter hinzufügen
           </button>
           {staff.length === 0 && (
-            <button type="button" onClick={() => onChange([{ name: "Nur ich", avatar_url: "", specialties: [] }])}
+            <button type="button" onClick={() => onChange([{ name: "Nur ich", avatar_url: "", role: "Inhaber:in", specialties: [] }])}
               className="w-full py-2 rounded-button text-sm text-dark/40 hover:text-teal transition-colors">
               Nur ich (solo) →
             </button>
@@ -622,8 +795,10 @@ function Step4({ staff, onChange }: { staff: StaffDraft[]; onChange: (s: StaffDr
 // Step 5 — Availability
 // ─────────────────────────────────────────
 
+interface BreakSlot { start: string; end: string }
+interface AvailDayData { start: string; end: string; breaks?: BreakSlot[] }
 interface AvailData {
-  template: Record<string, { start: string; end: string } | null>;
+  template: Record<string, AvailDayData | null>;
 }
 
 function Step5({ data, onChange, slotCount }: {
@@ -633,34 +808,79 @@ function Step5({ data, onChange, slotCount }: {
 }) {
   const toggleDay = (key: string) => {
     const curr = data.template[key];
-    onChange({ template: { ...data.template, [key]: curr ? null : { start: "09:00", end: "18:00" } } });
+    onChange({ template: { ...data.template, [key]: curr ? null : { start: "09:00", end: "18:00", breaks: [] } } });
+  };
+
+  const addBreak = (key: string) => {
+    const slot = data.template[key];
+    if (!slot) return;
+    const breaks = [...(slot.breaks || []), { start: "12:00", end: "13:00" }];
+    onChange({ template: { ...data.template, [key]: { ...slot, breaks } } });
+  };
+
+  const updateBreak = (key: string, idx: number, field: "start" | "end", val: string) => {
+    const slot = data.template[key];
+    if (!slot) return;
+    const breaks = [...(slot.breaks || [])];
+    breaks[idx] = { ...breaks[idx], [field]: val };
+    onChange({ template: { ...data.template, [key]: { ...slot, breaks } } });
+  };
+
+  const removeBreak = (key: string, idx: number) => {
+    const slot = data.template[key];
+    if (!slot) return;
+    const breaks = (slot.breaks || []).filter((_, i) => i !== idx);
+    onChange({ template: { ...data.template, [key]: { ...slot, breaks } } });
   };
 
   return (
     <StepContainer title="Verfügbarkeit" subtitle="Wöchentliche Vorlage für die nächsten 14 Tage.">
-      <div className="space-y-2 mb-6">
+      <div className="space-y-3 mb-6">
         {DAY_KEYS.map((key, i) => {
           const slot = data.template[key];
           return (
-            <div key={key} className="flex items-center gap-3">
-              <button type="button" onClick={() => toggleDay(key)}
-                className={["w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                  slot ? "bg-teal text-white" : "bg-gray-100 text-dark/40"].join(" ")}>
-                {DAYS[i]}
-              </button>
-              {slot ? (
-                <>
-                  <input type="time" value={slot.start}
-                    onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, start: e.target.value } } })}
-                    className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal" />
+            <div key={key}>
+              <div className="flex items-center gap-3">
+                <button type="button" onClick={() => toggleDay(key)}
+                  className={["w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
+                    slot ? "bg-teal text-white" : "bg-gray-100 text-dark/40"].join(" ")}>
+                  {DAYS[i]}
+                </button>
+                {slot ? (
+                  <>
+                    <input type="time" value={slot.start}
+                      onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, start: e.target.value } } })}
+                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal" />
+                    <span className="text-xs text-dark/30">–</span>
+                    <input type="time" value={slot.end}
+                      onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, end: e.target.value } } })}
+                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal" />
+                    <button type="button" onClick={() => addBreak(key)}
+                      className="text-[10px] text-teal hover:underline shrink-0 ml-1">
+                      + Pause
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-xs text-dark/30">Nicht verfügbar</span>
+                )}
+              </div>
+              {/* Break rows */}
+              {slot?.breaks?.map((brk, bi) => (
+                <div key={bi} className="flex items-center gap-2 ml-[52px] mt-1.5">
+                  <span className="text-[10px] text-dark/40 w-10 shrink-0">Pause</span>
+                  <input type="time" value={brk.start}
+                    onChange={(e) => updateBreak(key, bi, "start", e.target.value)}
+                    className="px-1.5 py-0.5 rounded-button border border-coral/30 text-xs focus:outline-none focus:border-coral" />
                   <span className="text-xs text-dark/30">–</span>
-                  <input type="time" value={slot.end}
-                    onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, end: e.target.value } } })}
-                    className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal" />
-                </>
-              ) : (
-                <span className="text-xs text-dark/30">Nicht verfügbar</span>
-              )}
+                  <input type="time" value={brk.end}
+                    onChange={(e) => updateBreak(key, bi, "end", e.target.value)}
+                    className="px-1.5 py-0.5 rounded-button border border-coral/30 text-xs focus:outline-none focus:border-coral" />
+                  <button type="button" onClick={() => removeBreak(key, bi)}
+                    className="text-dark/30 hover:text-coral transition-colors">
+                    <Trash2 size={10} />
+                  </button>
+                </div>
+              ))}
             </div>
           );
         })}
@@ -746,12 +966,30 @@ export default function SalonOnboardingPage() {
   const [dir, setDir] = useState<1 | -1>(1);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [stepErrors, setStepErrors] = useState<Record<string, string>>({});
 
-  const goNext = () => { setDir(1); setStep((s) => s + 1); };
-  const goPrev = () => { setDir(-1); setStep((s) => s - 1); };
+  const goNext = () => {
+    const errors = validateCurrentStep();
+    if (Object.keys(errors).length > 0) {
+      setStepErrors(errors);
+      return;
+    }
+    setStepErrors({});
+    setDir(1);
+    setStep((s) => s + 1);
+  };
+  const goPrev = () => { setStepErrors({}); setDir(-1); setStep((s) => s - 1); };
+
+  const validateCurrentStep = (): Record<string, string> => {
+    if (step === 1) return validateStep(step1Schema, basics);
+    if (step === 2) return validateStep(step2Schema, profile);
+    if (step === 3) return validateStep(step3Schema, { services });
+    if (step === 4) return validateStep(step4Schema, { staff: staffList });
+    return {};
+  };
 
   const [basics, setBasics] = useState<BasicsData>({
-    name: "", categories: [], quartier: "", address: "", phone: "",
+    name: "", email: "", categories: [], quartier: "", address: "", phone: "",
   });
   const [profile, setProfile] = useState<ProfileData>({
     cover_photo_url: "", gallery_urls: [], description_de: "", description_en: "",
@@ -761,15 +999,26 @@ export default function SalonOnboardingPage() {
   const [services, setServices] = useState<ServiceDraft[]>([]);
   const [staffList, setStaffList] = useState<StaffDraft[]>([]);
   const [avail, setAvail] = useState<AvailData>({
-    template: Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00" } : null])),
+    template: Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00", breaks: [] } : null])),
   });
   const [lm, setLm] = useState<LMData>({ enabled: true, discount_percent: 10, window_hours: 6 });
+
+  // Pre-fill email from authenticated user (Google OAuth or existing session)
+  useEffect(() => {
+    const sb = createBrowserSupabaseClient();
+    sb.auth.getUser().then(({ data: { user } }) => {
+      if (user?.email && !basics.email) {
+        setBasics((prev) => ({ ...prev, email: user.email! }));
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Compute slot count preview for step 5
   const slotCount = Object.values(avail.template).filter(Boolean).length * 2 * 14; // approx
 
   const canProceed = () => {
-    if (step === 1) return !!(basics.name && basics.categories.length && basics.quartier && basics.address);
+    if (step === 1) return !!(basics.name && basics.email && basics.categories.length && basics.quartier && basics.address);
     if (step === 2) return !!profile.cover_photo_url;
     if (step === 3) return services.length >= 1;
     if (step === 4) return staffList.length >= 1;
@@ -871,10 +1120,10 @@ export default function SalonOnboardingPage() {
             animate="animate"
             exit="exit"
           >
-            {step === 1 && <Step1 data={basics} onChange={setBasics} />}
+            {step === 1 && <Step1 data={basics} onChange={setBasics} errors={stepErrors} />}
             {step === 2 && <Step2 data={profile} onChange={setProfile} />}
             {step === 3 && <Step3 services={services} onChange={setServices} salonCategories={basics.categories} />}
-            {step === 4 && <Step4 staff={staffList} onChange={setStaffList} />}
+            {step === 4 && <Step4 staff={staffList} onChange={setStaffList} salonCategories={basics.categories} />}
             {step === 5 && <Step5 data={avail} onChange={setAvail} slotCount={slotCount} />}
             {step === 6 && <Step6 data={lm} onChange={setLm} />}
           </motion.div>
@@ -895,7 +1144,7 @@ export default function SalonOnboardingPage() {
           )}
           <button
             type="button"
-            disabled={!canProceed() || submitting}
+            disabled={submitting}
             onClick={step < TOTAL_STEPS ? goNext : handleSubmit}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
           >

@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;
 
-  // Google OAuth
+  // Google OAuth — KEEP AS-IS
   if (body.provider === "google") {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -22,17 +22,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: data.url });
   }
 
-  // Email magic link
-  if (body.email) {
-    const { error } = await supabase.auth.signInWithOtp({
+  // Email + Password login (replaces magic link)
+  if (body.email && body.password) {
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: body.email,
-      options: {
-        emailRedirectTo: `${origin}/api/auth/callback`,
-      },
+      password: body.password,
     });
     if (error) return NextResponse.json({ message: error.message }, { status: 400 });
-    return NextResponse.json({ message: "Magic link sent" });
+    return NextResponse.json({ session: data.session });
   }
 
-  return NextResponse.json({ message: "email or provider required" }, { status: 400 });
+  // Password reset
+  if (body.email && body.resetPassword) {
+    const { error } = await supabase.auth.resetPasswordForEmail(body.email, {
+      redirectTo: `${origin}/de/auth/reset-password`,
+    });
+    if (error) return NextResponse.json({ message: error.message }, { status: 400 });
+    return NextResponse.json({ message: "Reset link sent" });
+  }
+
+  return NextResponse.json({ message: "email and password required" }, { status: 400 });
 }

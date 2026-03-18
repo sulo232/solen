@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2 } from "lucide-react";
+import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2, Palmtree, Globe, Facebook } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import SalonCard from "@/components/SalonCard";
@@ -61,12 +61,16 @@ function HoursEditor({ hours, onChange }: {
 // ─────────────────────────────────────────
 
 function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { facebook_url?: string; tiktok_url?: string; website_url?: string };
   const [form, setForm] = useState({
     name: salon.name,
     description_de: salon.description_de ?? "",
     description_en: salon.description_en ?? "",
     phone: salon.phone ?? "",
     instagram_url: salon.instagram_url ?? "",
+    facebook_url: ext.facebook_url ?? "",
+    tiktok_url: ext.tiktok_url ?? "",
+    website_url: ext.website_url ?? "",
     cover_photo_url: salon.cover_photo_url ?? "",
     opening_hours: salon.opening_hours ?? {},
   });
@@ -114,8 +118,27 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Instagram</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
+            placeholder="https://instagram.com/..."
             className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
         </div>
+        <div>
+          <label className="block text-xs font-medium text-dark/50 mb-1">Facebook</label>
+          <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
+            placeholder="https://facebook.com/..."
+            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-dark/50 mb-1">TikTok</label>
+          <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
+            placeholder="https://tiktok.com/@..."
+            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+        </div>
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-dark/50 mb-1">Website</label>
+        <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
+          placeholder="https://..."
+          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
       </div>
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-2">Öffnungszeiten</label>
@@ -493,6 +516,91 @@ function VerificationTab({ salon }: { salon: Salon }) {
 }
 
 // ─────────────────────────────────────────
+// Vacation Mode Tab
+// ─────────────────────────────────────────
+
+function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { vacation_start?: string | null; vacation_end?: string | null };
+  const [start, setStart] = useState(ext.vacation_start ?? "");
+  const [end, setEnd] = useState(ext.vacation_end ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const isActive = !!start && !!end && new Date(end) >= new Date();
+  const todayStr = new Date().toISOString().split("T")[0];
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave({ vacation_start: start || null, vacation_end: end || null } as any);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleClear = async () => {
+    setSaving(true);
+    setStart("");
+    setEnd("");
+    await onSave({ vacation_start: null, vacation_end: null } as any);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="py-4 max-w-sm space-y-5">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-teal/5 flex items-center justify-center">
+          <Palmtree size={18} className="text-teal" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-dark">Ferienmodus</p>
+          <p className="text-xs text-dark/40">Während der Ferien werden keine Buchungen angenommen.</p>
+        </div>
+      </div>
+
+      {isActive && (
+        <div className="bg-amber-50 border border-amber-200 rounded-card px-4 py-3 flex items-center gap-3">
+          <Palmtree size={16} className="text-amber-500 shrink-0" />
+          <p className="text-sm text-amber-700">
+            Ferienmodus aktiv: {new Date(start).toLocaleDateString("de-CH")} – {new Date(end).toLocaleDateString("de-CH")}
+          </p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-medium text-dark/50 mb-1">Von</label>
+          <input type="date" value={start} min={todayStr}
+            onChange={(e) => setStart(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-dark/50 mb-1">Bis</label>
+          <input type="date" value={end} min={start || todayStr}
+            onChange={(e) => setEnd(e.target.value)}
+            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving}
+          className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          {saving && <Spinner size="sm" invert />}Speichern
+        </button>
+        {(start || end) && (
+          <button onClick={handleClear} disabled={saving}
+            className="px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark/50 hover:border-coral hover:text-coral transition-colors">
+            Deaktivieren
+          </button>
+        )}
+        {saved && <span className="text-sm text-teal">Gespeichert ✓</span>}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
 // Page
 // ─────────────────────────────────────────
 
@@ -733,6 +841,12 @@ export default function SettingsPage() {
           <div className="bg-white border border-red-200 rounded-card p-8 text-center max-w-sm shadow-xl">
             <AlertTriangle size={32} className="text-red-500 mx-auto mb-3" />
             <h2 className="font-heading font-bold text-lg text-dark mb-2">Salon eingefroren</h2>
+            {(salon as any).frozen_reason && (
+              <p className="text-sm text-dark/80 mb-2 bg-red-50 rounded-button px-3 py-2">{(salon as any).frozen_reason}</p>
+            )}
+            {(salon as any).warning_count > 0 && (
+              <p className="text-xs text-red-400 mb-2">{(salon as any).warning_count}/3 Warnungen erhalten</p>
+            )}
             <p className="text-sm text-dark/60">Kontaktiere support@solen.ch für weitere Informationen.</p>
           </div>
         </div>
@@ -762,6 +876,7 @@ export default function SettingsPage() {
               { id: "payments", label: "Zahlungen", content: <PaymentsTab salon={salon} onSave={handleSave} /> },
               { id: "quickreplies", label: "Schnellantworten", content: <QuickRepliesTab /> },
               { id: "verification", label: "Verifizierung", content: <VerificationTab salon={salon} /> },
+              { id: "vacation", label: "Ferien", content: <VacationTab salon={salon} onSave={handleSave} /> },
               { id: "sms", label: "SMS-Erinnerungen", content: <SmsRemindersTab salon={salon} onSave={handleSave} /> },
               { id: "cancellation", label: "Stornierung", content: <CancellationTab salon={salon} onSave={handleSave} /> },
             ]}

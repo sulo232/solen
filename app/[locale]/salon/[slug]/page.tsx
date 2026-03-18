@@ -8,12 +8,14 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   Star, MapPin, Phone, Instagram, Clock, ChevronRight, ChevronLeft, ChevronDown,
-  Scissors, User, Sparkles, Waves, Palette, Zap, X, Info, ShieldCheck, Bus, Droplets, Award
+  Scissors, User, Sparkles, Waves, Palette, Zap, X, Info, ShieldCheck, Bus, Droplets, Award,
+  Facebook, Globe
 } from "lucide-react";
 import BookingCalendar from "@/components/BookingCalendar";
 import StaffPortfolio from "@/components/StaffPortfolio";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
 import NearbySalons from "@/components/NearbySalons";
+import BottomSheet from "@/components/ui/BottomSheet";
 import Spinner from "@/components/ui/Spinner";
 import { trackSalonView } from "@/components/RecentlyViewed";
 import { motion, AnimatePresence } from "framer-motion";
@@ -63,56 +65,6 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   );
 }
 
-/** Mobile bottom sheet for booking */
-function BookingBottomSheet({
-  open,
-  onClose,
-  children,
-}: {
-  open: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
-  useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
-  return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <motion.div
-            className="absolute inset-0 bg-dark/40 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-          <motion.div
-            className="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-glass-hover overscroll-contain max-h-[90vh] overflow-y-auto"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 backdrop-blur-sm z-10">
-              <div className="w-10 h-1 rounded-full bg-gray-200" />
-            </div>
-            <div className="flex items-center justify-between px-6 pb-3">
-              <h3 className="font-heading font-semibold text-dark">Termin buchen</h3>
-              <button onClick={onClose} className="p-1.5 rounded-full text-dark/40 hover:text-dark hover:bg-gray-100 transition-colors">
-                <X size={16} />
-              </button>
-            </div>
-            <div className="px-4 pb-8">{children}</div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
-  );
-}
 
 // ─────────────────────────────────────────────────
 // JSON-LD
@@ -417,6 +369,25 @@ export default function SalonProfilePage() {
                     <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
                       <Instagram className="w-4 h-4" />Instagram
+                    </a>
+                  )}
+                  {(salon as any).facebook_url && (
+                    <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      <Facebook className="w-4 h-4" />Facebook
+                    </a>
+                  )}
+                  {(salon as any).tiktok_url && (
+                    <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
+                      TikTok
+                    </a>
+                  )}
+                  {(salon as any).website_url && (
+                    <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      <Globe className="w-4 h-4" />Website
                     </a>
                   )}
                 </div>
@@ -777,20 +748,25 @@ export default function SalonProfilePage() {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setMobileSheetOpen(true)}
-            className="w-full py-3.5 rounded-card bg-coral text-white font-body font-semibold text-base shadow-coral-glow"
+            className="w-full py-3.5 rounded-card bg-coral text-white font-body font-semibold text-base shadow-coral-glow flex items-center justify-center gap-2"
           >
-            Verfügbarkeit prüfen
+            <span>Termin buchen</span>
+            {salon.services.length > 0 && (
+              <span className="text-white/80 font-data text-sm">
+                — ab CHF {Math.min(...salon.services.map((s) => s.price))}
+              </span>
+            )}
           </motion.button>
         </div>
 
         {/* Mobile bottom sheet */}
-        <BookingBottomSheet open={mobileSheetOpen} onClose={() => setMobileSheetOpen(false)}>
+        <BottomSheet isOpen={mobileSheetOpen} onClose={() => setMobileSheetOpen(false)} title="Termin buchen">
           <BookingCalendar
             salonId={salon.id}
             serviceId={selectedService}
             staffMemberId={selectedStaff}
           />
-        </BookingBottomSheet>
+        </BottomSheet>
 
         {/* Photo lightbox */}
         <AnimatePresence>

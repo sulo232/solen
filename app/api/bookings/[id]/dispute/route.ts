@@ -3,6 +3,37 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 
+// GET /api/bookings/[id]/dispute — Fetch dispute for approval page
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: bookingId } = await params;
+
+  const supabase = await createServerSupabaseClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { data: dispute } = await supabase
+    .from("price_disputes")
+    .select("*, bookings(user_id, salon_id, salons(name), services(name_de))")
+    .eq("booking_id", bookingId)
+    .single();
+
+  if (!dispute) return NextResponse.json({ dispute: null });
+
+  const booking = dispute.bookings as any;
+  if (booking?.user_id !== user.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  return NextResponse.json({
+    dispute: {
+      ...dispute,
+      bookings: undefined,
+      salon_name: booking?.salons?.name,
+      service_name: booking?.services?.name_de,
+    },
+  });
+}
+
 // POST /api/bookings/[id]/dispute — Salon creates a price adjustment request
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: bookingId } = await params;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, type EmailLocale } from "@/lib/email";
+import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
 
 export const runtime = "nodejs";
 
@@ -103,6 +104,30 @@ export async function POST(req: NextRequest) {
         // Free the slot
         await admin.from("availability_slots").update({ status: "available" })
           .eq("id", pi.metadata?.slot_id ?? "");
+
+        // Notify customer about payment failure
+        const { data: booking } = await admin
+          .from("bookings")
+          .select("user_id, starts_at, services(name_de), salons(name)")
+          .eq("id", bookingId)
+          .single();
+
+        if (booking) {
+          const { data: profile } = await admin
+            .from("profiles")
+            .select("locale")
+            .eq("id", booking.user_id)
+            .single();
+          const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
+          const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
+          const email = authUser?.user?.email;
+          if (email) {
+            const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+            const serviceName = (booking.services as any)?.name_de ?? "Service";
+            const salonName = (booking.salons as any)?.name ?? "Salon";
+            await sendEmail(paymentFailedNotification(email, { service: serviceName, salon: salonName, date: dateStr }, locale)).catch(() => {});
+          }
+        }
       }
       break;
     }

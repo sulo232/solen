@@ -28,7 +28,7 @@ export default function Page() {
 
         <p className="text-center text-xs text-dark/30 font-body mt-6">
           Noch kein Konto?{" "}
-          <a href="/de/auth/register" className="text-teal hover:underline">
+          <a href="/de/auth/signup" className="text-teal hover:underline">
             Registrieren
           </a>
         </p>

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
-import { Mail } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Mail, Eye, EyeOff, Loader2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 import { useToast } from "@/components/ui/Toast";
@@ -11,12 +11,16 @@ import { useToast } from "@/components/ui/Toast";
 export default function SignIn() {
   const t = useTranslations("auth");
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirect = searchParams.get("redirect") ?? "/";
   const toast = useToast();
 
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resetMode, setResetMode] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   const supabase = createBrowserSupabaseClient();
 
@@ -30,29 +34,105 @@ export default function SignIn() {
     setLoading(false);
   };
 
-  const handleMagicLink = async (e: React.FormEvent) => {
+  const handlePasswordLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/api/auth/callback?redirect=${encodeURIComponent(redirect)}` },
-    });
-    if (error) {
-      toast(error.message, "error");
-    } else {
-      setSent(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast(data.message || "Anmeldung fehlgeschlagen", "error");
+      } else {
+        // Refresh session in browser client then redirect
+        await supabase.auth.refreshSession();
+        router.push(redirect);
+      }
+    } catch {
+      toast("Netzwerkfehler", "error");
     }
     setLoading(false);
   };
 
-  if (sent) {
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, resetPassword: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast(data.message || "Fehler beim Senden", "error");
+      } else {
+        setResetSent(true);
+      }
+    } catch {
+      toast("Netzwerkfehler", "error");
+    }
+    setLoading(false);
+  };
+
+  // Password reset sent confirmation
+  if (resetSent) {
     return (
       <div className="text-center py-6 flex flex-col items-center gap-3">
         <div className="w-14 h-14 rounded-2xl bg-teal/10 flex items-center justify-center">
           <Mail size={26} className="text-teal" strokeWidth={1.5} />
         </div>
-        <p className="font-heading font-semibold text-dark text-lg">{t("magic_link_sent")}</p>
-        <p className="text-sm text-dark/50 font-body">Schau in deinem Postfach nach.</p>
+        <p className="font-heading font-semibold text-dark text-lg">Link gesendet</p>
+        <p className="text-sm text-dark/50 font-body">
+          Schau in deinem Postfach nach einem Link zum Zurücksetzen.
+        </p>
+        <button
+          onClick={() => { setResetMode(false); setResetSent(false); }}
+          className="text-sm text-teal hover:underline font-body mt-2"
+        >
+          Zurück zur Anmeldung
+        </button>
+      </div>
+    );
+  }
+
+  // Password reset form
+  if (resetMode) {
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        <div className="text-center mb-2">
+          <p className="font-heading font-semibold text-dark text-lg">Passwort vergessen?</p>
+          <p className="text-sm text-dark/50 font-body mt-1">
+            Gib deine E-Mail ein und wir senden dir einen Reset-Link.
+          </p>
+        </div>
+        <form onSubmit={handlePasswordReset} className="flex flex-col gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("email_placeholder")}
+            required
+            className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+          />
+          <button
+            type="submit"
+            disabled={loading || !email}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 shadow-teal-glow"
+          >
+            {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
+            Reset-Link senden
+          </button>
+        </form>
+        <button
+          onClick={() => setResetMode(false)}
+          className="text-sm text-dark/50 hover:text-dark font-body text-center"
+        >
+          Zurück zur Anmeldung
+        </button>
       </div>
     );
   }
@@ -84,8 +164,8 @@ export default function SignIn() {
         <div className="flex-1 h-px bg-gray-100" />
       </div>
 
-      {/* Magic link — secondary */}
-      <form onSubmit={handleMagicLink} className="flex flex-col gap-3">
+      {/* Email + Password login */}
+      <form onSubmit={handlePasswordLogin} className="flex flex-col gap-3">
         <input
           type="email"
           value={email}
@@ -94,15 +174,40 @@ export default function SignIn() {
           required
           className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
         />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Passwort"
+            required
+            className="w-full px-4 py-2.5 pr-10 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-dark/30 hover:text-dark/60 transition-colors"
+            aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
         <button
           type="submit"
-          disabled={loading || !email}
+          disabled={loading || !email || !password}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 shadow-teal-glow"
         >
-          {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
-          {t("continue_with_email")}
+          {loading ? <Spinner size="sm" invert /> : <Loader2 size={15} className="hidden" />}
+          Anmelden
         </button>
       </form>
+
+      <button
+        onClick={() => setResetMode(true)}
+        className="text-sm text-teal hover:underline font-body text-center"
+      >
+        Passwort vergessen?
+      </button>
 
       <p className="text-xs text-dark/30 text-center font-body">{t("terms")}</p>
     </div>

@@ -5,10 +5,11 @@ import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Calendar, MessageCircle, Users, TrendingUp, AlertTriangle,
+  Calendar, MessageCircle, Users, TrendingUp, AlertTriangle, ShieldAlert,
   Plus, Scissors, Star, PartyPopper,
 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import MiniSparkline from "@/components/dashboard/MiniSparkline";
 import Spinner from "@/components/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { Booking } from "@/lib/types";
@@ -36,15 +37,22 @@ interface StatCardProps {
   color: string;
   bg: string;
   isRating?: boolean;
+  sparklineData?: number[];
+  sparklineColor?: string;
 }
 
-function StatCard({ label, value, Icon, color, bg, isRating }: StatCardProps) {
+function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, sparklineColor }: StatCardProps) {
   const count = useCountUp(value);
   const display = isRating ? (count / 10).toFixed(1) : count;
   return (
     <motion.div variants={itemVariants} className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
-      <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center mb-3`}>
-        <Icon size={15} className={color} />
+      <div className="flex items-start justify-between mb-3">
+        <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center`}>
+          <Icon size={15} className={color} />
+        </div>
+        {sparklineData && sparklineData.length > 1 && (
+          <MiniSparkline data={sparklineData} color={sparklineColor} width={64} height={24} />
+        )}
       </div>
       <p className="font-data font-bold text-2xl text-dark">{display}</p>
       <p className="text-xs text-dark/40 mt-0.5 leading-tight">{label}</p>
@@ -59,6 +67,13 @@ interface DashboardStats {
   average_rating: number;
   low_slots_warning: boolean;
   pending_cancellations: number;
+  trends?: {
+    bookings: number[];
+    revenue: number[];
+    new_customers: number[];
+    rating: number[];
+  };
+  verification_overdue?: boolean;
 }
 
 interface EnrichedBooking extends Booking {
@@ -148,10 +163,10 @@ export default function DashboardPage() {
               className="grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
               {[
-                { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-teal", bg: "bg-teal/5" },
-                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-dark", bg: "bg-dark/5" },
-                { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-coral", bg: "bg-coral/5" },
-                { label: "Bewertung", value: Math.round(stats.average_rating * 10), Icon: Star, color: "text-amber-400", bg: "bg-amber-50", isRating: true },
+                { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-teal", bg: "bg-teal/5", sparklineData: stats.trends?.bookings, sparklineColor: "#38B2AC" },
+                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-dark", bg: "bg-dark/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1A2E" },
+                { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-coral", bg: "bg-coral/5", sparklineData: stats.trends?.new_customers, sparklineColor: "#FF6B6B" },
+                { label: "Bewertung", value: Math.round(stats.average_rating * 10), Icon: Star, color: "text-amber-400", bg: "bg-amber-50", isRating: true, sparklineData: stats.trends?.rating, sparklineColor: "#F59E0B" },
               ].map((s) => (
                 <StatCard key={s.label} {...s} />
               ))}
@@ -159,9 +174,19 @@ export default function DashboardPage() {
           )}
 
           {/* Alerts */}
-          {stats && (stats.low_slots_warning || stats.pending_cancellations > 0) && (
+          {stats && (stats.low_slots_warning || stats.pending_cancellations > 0 || stats.verification_overdue) && (
             <div className="space-y-2">
               <h2 className="text-xs font-medium text-dark/40 uppercase tracking-wide">Handlungsbedarf</h2>
+              {stats.verification_overdue && (
+                <div className="bg-coral/5 border border-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
+                  <ShieldAlert size={16} className="text-coral shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-dark">Verifizierung überfällig</p>
+                    <p className="text-xs text-dark/50">Dein Salon wurde seit über 90 Tagen nicht verifiziert.</p>
+                  </div>
+                  <a href={`/${locale}/dashboard/settings?tab=verification`} className="text-xs text-teal font-medium">Verifizieren →</a>
+                </div>
+              )}
               {stats.low_slots_warning && (
                 <div className="bg-coral/5 border border-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
                   <AlertTriangle size={16} className="text-coral shrink-0" />
