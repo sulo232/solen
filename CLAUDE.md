@@ -553,6 +553,24 @@ if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, 
 if (req.headers.get("x-role") !== "admin") return ...
 ```
 
+### Rule 13: CODE REVIEW PROTOCOL
+
+Before EVERY push:
+1. `npm run build` — must pass
+2. `npx tsc --noEmit` — zero type errors
+3. `git diff --stat` — review changed files, ensure no unintended changes
+
+After EVERY push:
+1. Wait 60s for Vercel deploy
+2. `curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/` — must be 200 or 307
+3. Curl critical routes: /de, /de/coiffeur, /de/barbershop, /de/dashboard
+
+After ALL phases complete:
+1. Visual browser check on every new page
+2. Lighthouse: performance > 70, accessibility > 90
+3. Minor UI bugs → fix immediately
+4. Major design issues → STOP and ask user
+
 ---
 
 ## 12. 📋 ROADMAP CREATION STANDARDS (MANDATORY FOR ALL ROADMAPS)
