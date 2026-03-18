@@ -96,10 +96,18 @@ solen/
 
 ### 3.5 Key Features
 
-1. **Discovery & Booking**: Salon cards + multi-step booking wizard.
-2. **Direct Messaging**: In-app chat connecting users with salon owners.
+1. **Discovery & Booking**: Salon cards + multi-step booking wizard with multi-service, add-ons, guest checkout.
+2. **Direct Messaging**: In-app chat with media upload, price offers, and dispute resolution.
 3. **Authentication**: Supabase-powered (Google OAuth, Email magic link).
-4. **Last Minute Offers**: Salon owners expose canceled slots to a prioritized feed.
+4. **Last Minute Offers**: Salon owners expose canceled slots with category filters and price range filtering.
+5. **Favorites & Retention**: Heart button on SalonCards, "Wieder buchen?" widget, top-rated badge auto-assign.
+6. **Loyalty System**: Stamp cards with per-salon rewards and progress tracking.
+7. **Client Notes (CRM)**: Salon owners can add permanent/booking notes for clients.
+8. **Review Replies**: Salon owners can reply to reviews (public or private).
+9. **Off-Peak Discounts**: Salons set discounted hours for specific days of the week.
+10. **Help Center**: Public help articles with admin CMS, search, and category sections.
+11. **Dark Mode**: System/manual toggle via `ThemeToggle` in Header. `darkMode: 'class'` in Tailwind.
+12. **Dashboard Calendar**: Weekly grid with staff colors, slot detail modal, reschedule, and day blocking.
 
 ### 3.6 Commands
 
@@ -213,6 +221,18 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `feature_flags` | `key` (PK), `enabled`, `description`, `updated_by` | Kill switch. `maintenance_mode` = global off switch. |
 | `audit_log` | `actor_id`, `action`, `target_type`, `target_id`, `metadata`, `ip_address` | Logs admin actions. Admin-only read. |
 | `data_deletion_log` | `user_email`, `requested_at`, `completed_at`, `tables_cleared` | GDPR compliance. Admin-only read. |
+| `staff_portfolio_images` | `id`, `staff_member_id`, `image_url`, `caption`, `sort_order` | Instagram-style staff gallery. RLS: public read, salon owner manage. |
+| `service_addons` | `id`, `service_id`, `name`, `price`, `duration_minutes` | Add-on suggestions during booking. |
+| `favorites` | `user_id`, `salon_id`, `created_at` | User favorites. RLS: own only. |
+| `notification_preferences` | `user_id` (PK), `rebooking_enabled` | User notification settings. |
+| `price_offers` | `id`, `conversation_id`, `salon_id`, `customer_id`, `amount_chf`, `status`, `stripe_payment_intent_id`, `expires_at` | In-chat price negotiation. |
+| `price_disputes` | `id`, `booking_id` (UNIQUE), `original_amount`, `requested_amount`, `salon_reason`, `status`, `auto_approve_at` | Post-visit upcharge disputes. Max 50% upcharge. |
+| `loyalty_cards` | `id`, `salon_id`, `stamps_needed`, `reward_text`, `is_active` | Salon stamp card definitions. |
+| `loyalty_stamps` | `id`, `loyalty_card_id`, `customer_id`, `stamped_at` | Individual stamps collected. |
+| `client_notes` | `id`, `salon_id`, `customer_id`, `note`, `note_type`, `booking_id`, `created_by` | CRM notes (permanent/booking). |
+| `review_replies` | `id`, `review_id` (UNIQUE), `salon_id`, `reply_text`, `is_public` | Salon owner replies to reviews. |
+| `off_peak_slots` | `id`, `salon_id`, `day_of_week`, `start_time`, `end_time`, `discount_percent`, `is_active` | Off-peak discount hours. |
+| `help_articles` | `id`, `slug`, `title`, `content`, `category`, `locale`, `published`, `sort_order` | Help center articles. Admin CMS. |
 
 | View | Columns | Notes |
 |---|---|---|

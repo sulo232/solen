@@ -54,5 +54,25 @@
 - **Sidebar (dashboard):** Animated collapse/expand sidebar for dashboard layout.
 - All 21st.dev components require shadcn CSS variables defined in `globals.css` (`--primary`, `--muted`, `--accent`, etc.).
 
+## 8. New Components (Phase 6–14)
+- **ThemeToggle** (`components/ui/ThemeToggle.tsx`): Moon/Sun icon in Header, cycles light → dark → system. Stores in `localStorage('solen_theme')`.
+- **ThemeScript** (`components/ui/ThemeScript.tsx`): Inline script in `<head>` to prevent theme flash. No XSS risk (static content).
+- **TutorialTour** (`components/TutorialTour.tsx`): 4 full-screen welcome slides + driver.js tooltip tour. Shows once after first login (`localStorage('solen_tour_done')`).
+- **Help Center** (`app/[locale]/help/`): Public help articles grouped by category (Für Kunden, Für Salons, Kontakt) with search.
+- **Help Editor** (`app/[locale]/dashboard/help-editor/`): Admin CMS for creating/editing/publishing help articles.
+- **ChatWindow** (`components/ChatWindow.tsx`): Now supports media upload (Paperclip button, 10MB limit) and price offer messages.
+- **Dashboard Calendar** (`app/[locale]/dashboard/calendar/`): Weekly grid with staff-colored slots, click-to-reschedule modal, day blocking.
+- **SalonCard** (`components/SalonCard.tsx`): Heart button for favorites, hover prefetch, lazy image loading, dark mode surface.
+- **Last-Minute Page** (`app/[locale]/last-minute/`): Category chip filters + price range pills + client-side filtering.
+
+## 9. Dark Mode Tokens
+| Token | Light | Dark |
+|---|---|---|
+| Background | `bg-white` | `dark:bg-dm-bg` (#0F0F1A) |
+| Surface | `bg-white` | `dark:bg-dm-surface` (#1A1A2E) |
+| Text | `text-dark` | `dark:text-dm-text` (#E2E8F0) |
+| Border | `border-gray-100` | `dark:border-white/5` |
+| Nav glass | `bg-white/80` | `dark:bg-dm-surface/80` |
+
 ---
-**Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules (e.g., "add a dark mode toggle" or "add a glowing red border"), you must **refuse the specific contradiction** and implement the component using these rules instead.
+**Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules, you must **refuse the specific contradiction** and implement the component using these rules instead.
