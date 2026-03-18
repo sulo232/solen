@@ -1,0 +1,98 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { Check, X, Loader2 } from "lucide-react";
+
+interface AISuggestionProps {
+  conversationId: string;
+  salonName: string;
+  salonServices: string[];
+  lastCustomerMessage: string | null;
+  onAccept: (text: string) => void;
+  visible: boolean;
+}
+
+export default function AISuggestion({
+  conversationId,
+  salonName,
+  salonServices,
+  lastCustomerMessage,
+  onAccept,
+  visible,
+}: AISuggestionProps) {
+  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const lastMsgRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!visible || !lastCustomerMessage || lastCustomerMessage === lastMsgRef.current) return;
+    setDismissed(false);
+
+    const timeout = setTimeout(async () => {
+      lastMsgRef.current = lastCustomerMessage;
+      setLoading(true);
+      setSuggestion(null);
+
+      try {
+        const res = await fetch("/api/chat/suggest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            customerMessage: lastCustomerMessage,
+            salonName,
+            salonServices,
+          }),
+        });
+
+        if (res.status === 204 || !res.ok) {
+          setSuggestion(null);
+          return;
+        }
+
+        const data = await res.json();
+        if (data.suggestion) setSuggestion(data.suggestion);
+      } catch {
+        setSuggestion(null);
+      } finally {
+        setLoading(false);
+      }
+    }, 1000); // debounce 1s
+
+    return () => clearTimeout(timeout);
+  }, [lastCustomerMessage, visible, salonName, salonServices]);
+
+  if (!visible || dismissed || (!loading && !suggestion)) return null;
+
+  return (
+    <div className="mx-4 mb-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3">
+      {loading ? (
+        <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm">
+          <Loader2 size={14} className="animate-spin" />
+          <span>Antwort wird vorgeschlagen…</span>
+        </div>
+      ) : suggestion ? (
+        <div>
+          <p className="text-sm text-blue-800 dark:text-blue-200 mb-2">
+            <span className="font-medium">Vorgeschlagene Antwort: </span>
+            {suggestion}
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { onAccept(suggestion); setDismissed(true); }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-button bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-300 text-xs font-medium hover:bg-blue-200 dark:hover:bg-blue-700/50 transition-colors"
+            >
+              <Check size={12} /> Übernehmen
+            </button>
+            <button
+              onClick={() => setDismissed(true)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-button bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <X size={12} /> Verwerfen
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}

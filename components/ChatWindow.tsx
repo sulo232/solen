@@ -2,20 +2,26 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import { Send, Image as ImageIcon, X, Paperclip, DollarSign } from "lucide-react";
+import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
+import QuickReplyChips from "@/components/chat/QuickReplyChips";
+import AISuggestion from "@/components/chat/AISuggestion";
+import PhotoGallery from "@/components/chat/PhotoGallery";
 import type { Message } from "@/lib/types";
 
 interface ChatWindowProps {
   conversationId: string;
   perspective: "customer" | "salon";
   currentUserId: string;
+  salonId?: string;
+  salonName?: string;
+  salonServices?: string[];
 }
 
 const PAGE_SIZE = 30;
 
-export default function ChatWindow({ conversationId, perspective, currentUserId }: ChatWindowProps) {
+export default function ChatWindow({ conversationId, perspective, currentUserId, salonId, salonName, salonServices }: ChatWindowProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -23,9 +29,12 @@ export default function ChatWindow({ conversationId, perspective, currentUserId 
   const [imageUrl, setImageUrl] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"chat" | "photos">("chat");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isSalonOwner = perspective === "salon";
 
   const loadMessages = useCallback(async () => {
     try {
@@ -139,100 +148,182 @@ export default function ChatWindow({ conversationId, perspective, currentUserId 
 
   const isOwn = (msg: Message) => msg.sender_id === currentUserId;
 
+  // Get last customer message for AI suggestion
+  const lastCustomerMessage = isSalonOwner
+    ? [...messages].reverse().find((m) => m.sender_id !== currentUserId && m.message_type === "text")?.content ?? null
+    : null;
+
+  // Photo-based quoting: open price offer form with photo URL
+  const handleCreatePhotoOffer = (photoUrl: string) => {
+    const offerDescription = window.prompt("Beschreibung für das Angebot:");
+    if (!offerDescription) return;
+    const offerAmount = window.prompt("Preis in CHF:");
+    if (!offerAmount || isNaN(Number(offerAmount))) return;
+
+    fetch(`/api/conversations/${conversationId}/price-offer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        description: offerDescription,
+        amount_chf: Number(offerAmount),
+        photo_url: photoUrl,
+      }),
+    })
+      .then((r) => { if (r.ok) loadMessages(); })
+      .catch(() => {});
+  };
+
   return (
-    <div className="flex flex-col h-full min-h-[400px] bg-white rounded-card border border-gray-100">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-100">
-        <span className="text-xs text-dark/40 font-medium uppercase tracking-wide">
-          {perspective === "salon" ? "Kundennachricht" : "Nachricht ans Salon"}
-        </span>
+    <div className="flex flex-col h-full min-h-[400px] bg-white dark:bg-dm-surface rounded-card border border-gray-100 dark:border-white/5">
+      {/* Tab header */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => setActiveTab("chat")}
+          className={["flex-1 py-2 text-sm font-medium transition-colors",
+            activeTab === "chat" ? "text-teal border-b-2 border-teal" : "text-gray-500 dark:text-gray-400"
+          ].join(" ")}
+        >
+          Chat
+        </button>
+        <button
+          onClick={() => setActiveTab("photos")}
+          className={["flex-1 py-2 text-sm font-medium transition-colors",
+            activeTab === "photos" ? "text-teal border-b-2 border-teal" : "text-gray-500 dark:text-gray-400"
+          ].join(" ")}
+        >
+          <Camera size={14} className="inline mr-1 -mt-0.5" />
+          Fotos
+        </button>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {loading ? (
-          <div className="flex justify-center py-8"><Spinner size="sm" /></div>
-        ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-32 text-dark/30 text-sm">
-            <p>Noch keine Nachrichten.</p>
-            <p className="text-xs mt-1">Starte das Gespräch!</p>
-          </div>
-        ) : messages.map((msg) => (
-          <div key={msg.id} className={["flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
-            <div className={[
-              "max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-relaxed",
-              isOwn(msg) ? "bg-teal text-white rounded-tr-sm" : "bg-gray-100 text-dark rounded-tl-sm",
-            ].join(" ")}>
-              {msg.message_type === "image" && msg.image_url ? (
-                <div className="rounded-xl overflow-hidden max-w-[200px]">
-                  <Image src={msg.image_url} alt="Bild" width={200} height={150} className="object-cover" />
-                </div>
-              ) : msg.message_type === "price_offer" ? (
-                <div className="flex items-center gap-2 bg-white/20 rounded-lg p-2">
-                  <DollarSign className="w-4 h-4 shrink-0" />
-                  <p className="whitespace-pre-wrap break-words text-xs">{msg.content}</p>
-                </div>
-              ) : (
-                <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-              )}
-              <p className={["text-[10px] mt-0.5", isOwn(msg) ? "text-white/60 text-right" : "text-dark/30"].join(" ")}>
-                {new Date(msg.created_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
-                {msg.id.startsWith("optimistic") && " · Senden..."}
-              </p>
+      {/* Photo Gallery (hidden, not unmounted, to preserve chat scroll) */}
+      <div style={{ display: activeTab === "photos" ? "block" : "none" }} className="flex-1 overflow-y-auto">
+        <PhotoGallery
+          conversationId={conversationId}
+          isSalonOwner={isSalonOwner}
+          onCreateOffer={handleCreatePhotoOffer}
+        />
+      </div>
+
+      {/* Chat content (hidden when photos tab is active) */}
+      <div style={{ display: activeTab === "chat" ? "flex" : "none" }} className="flex flex-col flex-1 min-h-0">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+          {loading ? (
+            <div className="flex justify-center py-8"><Spinner size="sm" /></div>
+          ) : messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-32 text-dark/30 dark:text-white/30 text-sm">
+              <p>Noch keine Nachrichten.</p>
+              <p className="text-xs mt-1">Starte das Gespräch!</p>
             </div>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
+          ) : messages.map((msg) => (
+            <div key={msg.id} className={["flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
+              <div className={[
+                "max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-relaxed",
+                isOwn(msg) ? "bg-teal text-white rounded-tr-sm" : "bg-gray-100 dark:bg-gray-800 text-dark dark:text-white rounded-tl-sm",
+              ].join(" ")}>
+                {msg.message_type === "image" && msg.image_url ? (
+                  <div>
+                    <div className="rounded-xl overflow-hidden max-w-[200px]">
+                      <Image src={msg.image_url} alt="Bild" width={200} height={150} className="object-cover" />
+                    </div>
+                    {isSalonOwner && (
+                      <button
+                        onClick={() => handleCreatePhotoOffer(msg.image_url!)}
+                        className="mt-1 text-xs text-teal-200 hover:text-white hover:underline flex items-center gap-1"
+                        aria-label="Angebot für dieses Foto erstellen"
+                      >
+                        <Camera size={12} /> Angebot erstellen
+                      </button>
+                    )}
+                  </div>
+                ) : msg.message_type === "price_offer" ? (
+                  <div className="flex items-center gap-2 bg-white/20 rounded-lg p-2">
+                    <DollarSign className="w-4 h-4 shrink-0" />
+                    <p className="whitespace-pre-wrap break-words text-xs">{msg.content}</p>
+                  </div>
+                ) : (
+                  <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                )}
+                <p className={["text-[10px] mt-0.5", isOwn(msg) ? "text-white/60 text-right" : "text-dark/30 dark:text-white/30"].join(" ")}>
+                  {new Date(msg.created_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                  {msg.id.startsWith("optimistic") && " · Senden..."}
+                </p>
+              </div>
+            </div>
+          ))}
+          <div ref={bottomRef} />
+        </div>
 
-      {/* Image URL input */}
-      {showImageInput && (
-        <div className="px-4 pb-2 flex gap-2">
-          <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
-            placeholder="Bild-URL eingeben..."
-            className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-button focus:outline-none focus:border-teal"
-            autoFocus />
-          <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
-            className="px-3 py-2 rounded-button bg-teal text-white text-sm disabled:opacity-50">Senden</button>
-          <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-            className="px-2 py-2 rounded-button border border-gray-200 text-dark/40 hover:text-dark">
-            <X size={14} />
+        {/* Image URL input */}
+        {showImageInput && (
+          <div className="px-4 pb-2 flex gap-2">
+            <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="Bild-URL eingeben..."
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-button focus:outline-none focus:border-teal bg-white dark:bg-dm-surface dark:text-white"
+              autoFocus />
+            <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
+              className="px-3 py-2 rounded-button bg-teal text-white text-sm disabled:opacity-50">Senden</button>
+            <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
+              className="px-2 py-2 rounded-button border border-gray-200 dark:border-gray-700 text-dark/40 dark:text-white/40 hover:text-dark dark:hover:text-white">
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* Hidden file input for uploads */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime"
+          className="hidden"
+          onChange={handleFileUpload}
+        />
+
+        {/* AI Suggestion (salon side only) */}
+        {isSalonOwner && salonName && (
+          <AISuggestion
+            conversationId={conversationId}
+            salonName={salonName}
+            salonServices={salonServices ?? []}
+            lastCustomerMessage={lastCustomerMessage}
+            onAccept={(suggestion) => setText(suggestion)}
+            visible={isSalonOwner}
+          />
+        )}
+
+        {/* Quick Reply Chips (salon side only) */}
+        {isSalonOwner && salonId && (
+          <QuickReplyChips
+            salonId={salonId}
+            onSelectTemplate={(tmpl) => setText(tmpl)}
+          />
+        )}
+
+        {/* Compose bar */}
+        <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 flex items-end gap-2">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="p-2 rounded-button text-dark/30 dark:text-white/30 hover:text-teal hover:bg-teal/5 transition-colors shrink-0 disabled:opacity-40"
+            title="Datei anhängen"
+          >
+            {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
+          </button>
+          <button onClick={() => setShowImageInput((s) => !s)}
+            className="p-2 rounded-button text-dark/30 dark:text-white/30 hover:text-teal hover:bg-teal/5 transition-colors shrink-0"
+            title="Bild-URL senden">
+            <ImageIcon size={18} />
+          </button>
+          <textarea ref={inputRef} value={text} onChange={(e) => setText(e.target.value)}
+            onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
+            className="flex-1 resize-none px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-button focus:outline-none focus:border-teal max-h-32 overflow-y-auto bg-white dark:bg-dm-surface dark:text-white"
+            style={{ minHeight: "38px" }} />
+          <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
+            className="p-2 rounded-full bg-teal text-white disabled:opacity-40 hover:bg-teal/90 transition-colors shrink-0">
+            {sending ? <Spinner size="sm" invert /> : <Send size={16} />}
           </button>
         </div>
-      )}
-
-      {/* Hidden file input for uploads */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/quicktime"
-        className="hidden"
-        onChange={handleFileUpload}
-      />
-
-      {/* Compose bar */}
-      <div className="px-4 py-3 border-t border-gray-100 flex items-end gap-2">
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="p-2 rounded-button text-dark/30 hover:text-teal hover:bg-teal/5 transition-colors shrink-0 disabled:opacity-40"
-          title="Datei anhängen"
-        >
-          {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
-        </button>
-        <button onClick={() => setShowImageInput((s) => !s)}
-          className="p-2 rounded-button text-dark/30 hover:text-teal hover:bg-teal/5 transition-colors shrink-0"
-          title="Bild-URL senden">
-          <ImageIcon size={18} />
-        </button>
-        <textarea ref={inputRef} value={text} onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
-          className="flex-1 resize-none px-3 py-2 text-sm border border-gray-200 rounded-button focus:outline-none focus:border-teal max-h-32 overflow-y-auto"
-          style={{ minHeight: "38px" }} />
-        <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
-          className="p-2 rounded-full bg-teal text-white disabled:opacity-40 hover:bg-teal/90 transition-colors shrink-0">
-          {sending ? <Spinner size="sm" invert /> : <Send size={16} />}
-        </button>
       </div>
     </div>
   );
