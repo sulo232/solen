@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
 import Spinner from "@/components/ui/Spinner";
+import RecentlyViewed from "@/components/RecentlyViewed";
 import type { Profile, Booking, SalonCard } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -563,6 +564,9 @@ export default function ProfilePage() {
             <SettingsSection profile={profile} onSave={handleSaveProfile} />
           </div>
         </motion.section>
+
+        {/* ── Recently Viewed ── */}
+        <RecentlyViewed />
       </div>
     </div>
   );

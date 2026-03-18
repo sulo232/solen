@@ -8,11 +8,14 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   Star, MapPin, Phone, Instagram, Clock, ChevronRight, ChevronLeft, ChevronDown,
-  Scissors, User, Sparkles, Waves, Palette, Zap, X, Info
+  Scissors, User, Sparkles, Waves, Palette, Zap, X, Info, ShieldCheck, Bus, Droplets, Award
 } from "lucide-react";
 import BookingCalendar from "@/components/BookingCalendar";
 import StaffPortfolio from "@/components/StaffPortfolio";
+import ReviewBreakdown from "@/components/ReviewBreakdown";
+import NearbySalons from "@/components/NearbySalons";
 import Spinner from "@/components/ui/Spinner";
+import { trackSalonView } from "@/components/RecentlyViewed";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory, OpeningHours } from "@/lib/types";
 
@@ -22,10 +25,16 @@ const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 // Types
 // ─────────────────────────────────────────────────
 
+interface ReviewPhoto {
+  id: string;
+  photo_url: string;
+  sort_order: number;
+}
+
 interface SalonDetail extends Salon {
   services: Service[];
   staff: StaffMember[];
-  reviews: (Review & { profiles?: { display_name: string; avatar_url: string | null } })[];
+  reviews: (Review & { profiles?: { display_name: string; avatar_url: string | null }; review_photos?: ReviewPhoto[] })[];
 }
 
 // ─────────────────────────────────────────────────
@@ -143,8 +152,11 @@ export default function SalonProfilePage() {
   const [reviewPage, setReviewPage] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+  const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("angebot");
   const [openAccordion, setOpenAccordion] = useState<string | null>("angebot");
+  const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
+  const [hoursExpanded, setHoursExpanded] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -162,7 +174,17 @@ export default function SalonProfilePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ salon_id: salon.id, source: "direct" }),
     }).catch(() => {});
-  }, [salon?.id]);
+
+    // Track for "Recently Viewed" (localStorage)
+    trackSalonView({
+      id: salon.id,
+      slug: salon.slug,
+      name: salon.name,
+      cover_photo_url: salon.cover_photo_url,
+      average_rating: salon.average_rating,
+      categories: salon.categories,
+    });
+  }, [salon?.id, salon?.slug, salon?.name, salon?.cover_photo_url, salon?.average_rating, salon?.categories]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
@@ -178,7 +200,19 @@ export default function SalonProfilePage() {
   }
 
   const photos = [salon.cover_photo_url, ...(salon.gallery_urls ?? [])].filter(Boolean) as string[];
-  const reviewsVisible = salon.reviews.slice(0, reviewPage * 5);
+  // Sort reviews based on selected sort
+  const sortedReviews = [...salon.reviews].sort((a, b) => {
+    if (reviewSort === "highest") return b.rating - a.rating;
+    if (reviewSort === "lowest") return a.rating - b.rating;
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+  const reviewsVisible = sortedReviews.slice(0, reviewPage * 5);
+
+  const scrollToReviews = () => {
+    setActiveTab("bewertungen");
+    setOpenAccordion("bewertungen");
+    document.getElementById("section-bewertungen")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   const servicesByCategory = salon.services.reduce<Record<string, Service[]>>((acc, s) => {
     (acc[s.category] = acc[s.category] ?? []).push(s);
     return acc;
@@ -296,7 +330,7 @@ export default function SalonProfilePage() {
                   <div className="flex items-center gap-1.5">
                     <Stars rating={salon.average_rating} />
                     <span className="font-data font-semibold text-dark text-sm">{salon.average_rating.toFixed(1)}</span>
-                    <span className="text-dark/40 text-xs">({salon.review_count})</span>
+                    <button onClick={scrollToReviews} className="text-dark/40 text-xs hover:text-teal transition-colors">({salon.review_count})</button>
                   </div>
                   <span className="flex items-center gap-1 text-dark/50 text-sm">
                     <MapPin className="w-3.5 h-3.5" />
@@ -340,13 +374,42 @@ export default function SalonProfilePage() {
                 ))}
               </div>
 
-              {/* Opening hours */}
+              {/* Opening hours — mobile: collapsed with today preview */}
               {Object.keys(salon.opening_hours ?? {}).length > 0 && (
                 <div>
                   <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
                     <Clock className="w-4 h-4 text-teal" />Öffnungszeiten
                   </h2>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
+                  {/* Mobile: today preview + expand */}
+                  <div className="md:hidden">
+                    <button
+                      onClick={() => setHoursExpanded(!hoursExpanded)}
+                      className="w-full flex items-center justify-between py-2 text-sm"
+                    >
+                      <span className="text-dark/70">
+                        Heute: {todayHours ? `${todayHours.open}–${todayHours.close}` : "Geschlossen"}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 text-dark/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`} />
+                    </button>
+                    {hoursExpanded && (
+                      <div className="grid grid-cols-1 gap-y-1.5 mt-1">
+                        {DAY_KEYS.map((key, i) => {
+                          const h = salon.opening_hours[key];
+                          const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
+                          return (
+                            <div key={key} className="flex justify-between text-sm">
+                              <span className="text-dark/50">{label}</span>
+                              <span className={h ? "font-data text-dark" : "text-dark/25"}>
+                                {h ? `${h.open}–${h.close}` : "Zu"}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  {/* Desktop: full grid */}
+                  <div className="hidden md:grid grid-cols-2 gap-x-8 gap-y-1.5">
                     {DAY_KEYS.map((key, i) => {
                       const h = salon.opening_hours[key];
                       const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
@@ -359,6 +422,53 @@ export default function SalonProfilePage() {
                         </div>
                       );
                     })}
+                  </div>
+                </div>
+              )}
+
+              {/* Saloninfo — atmosphere, expertise, products, transport */}
+              {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
+                <div>
+                  <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-teal" />Saloninfo
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {(salon as any).atmosphere && (
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                        <Sparkles className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Atmosphäre</p>
+                          <p className="text-sm text-dark mt-0.5">{(salon as any).atmosphere}</p>
+                        </div>
+                      </div>
+                    )}
+                    {(salon as any).expertise && (
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                        <Award className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Expertise</p>
+                          <p className="text-sm text-dark mt-0.5">{(salon as any).expertise}</p>
+                        </div>
+                      </div>
+                    )}
+                    {(salon as any).products && (
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                        <Droplets className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Produkte</p>
+                          <p className="text-sm text-dark mt-0.5">{(salon as any).products}</p>
+                        </div>
+                      </div>
+                    )}
+                    {(salon as any).nearest_transport && (
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                        <Bus className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">ÖV-Anbindung</p>
+                          <p className="text-sm text-dark mt-0.5">{(salon as any).nearest_transport}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -426,7 +536,10 @@ export default function SalonProfilePage() {
                                   </div>
                                 </div>
                               </div>
-                              <span className="font-data font-semibold text-sm text-dark shrink-0 ml-4">CHF {svc.price}</span>
+                              <div className="flex items-center gap-3 shrink-0 ml-4">
+                                <span className="font-data font-semibold text-sm text-dark">CHF {svc.price}</span>
+                                <span className="text-xs text-teal font-medium hidden sm:inline">Buchen</span>
+                              </div>
                             </button>
                           ))}
                         </div>
@@ -452,24 +565,31 @@ export default function SalonProfilePage() {
                   <p className="text-sm text-dark/40">Noch keine Bewertungen.</p>
                 ) : (
                   <>
-                    <div className="flex gap-6 items-center mb-6">
-                      <div className="text-center shrink-0">
-                        <p className="font-data font-bold text-4xl text-dark">{salon.average_rating.toFixed(1)}</p>
-                        <Stars rating={salon.average_rating} />
-                        <p className="text-xs text-dark/40 mt-1">{salon.review_count} Bewertungen</p>
-                      </div>
-                      <div className="flex-1 flex flex-col gap-1.5">
-                        {ratingBreakdown.map(({ r, count }) => (
-                          <div key={r} className="flex items-center gap-2 text-xs">
-                            <span className="text-dark/40 w-2">{r}</span>
-                            <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-coral rounded-full" style={{ width: salon.review_count > 0 ? `${(count / salon.review_count) * 100}%` : "0%" }} />
-                            </div>
-                            <span className="text-dark/30 w-4">{count}</span>
-                          </div>
-                        ))}
-                      </div>
+                    <ReviewBreakdown
+                      reviews={salon.reviews}
+                      averageRating={salon.average_rating}
+                      reviewCount={salon.review_count}
+                      onReviewCountClick={scrollToReviews}
+                    />
+
+                    {/* Review sort */}
+                    <div className="flex items-center gap-2 mt-4 mb-4">
+                      <span className="text-xs text-dark/40">Sortieren:</span>
+                      {(["newest", "highest", "lowest"] as const).map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => { setReviewSort(s); setReviewPage(1); }}
+                          className={`px-2.5 py-1 rounded-pill text-xs font-medium transition-colors ${
+                            reviewSort === s
+                              ? "bg-teal/10 text-teal"
+                              : "text-dark/50 hover:text-dark"
+                          }`}
+                        >
+                          {s === "newest" ? "Neueste" : s === "highest" ? "Beste" : "Schlechteste"}
+                        </button>
+                      ))}
                     </div>
+
                     <div className="flex flex-col gap-4">
                       {reviewsVisible.map((rev) => (
                         <div key={rev.id} className="border border-gray-100 rounded-card p-4">
@@ -481,10 +601,30 @@ export default function SalonProfilePage() {
                                   : (rev.profiles?.display_name?.[0] ?? "?")}
                               </div>
                               <span className="text-sm font-medium text-dark">{rev.profiles?.display_name ?? "Anonym"}</span>
+                              {(rev as any).booking_id && (
+                                <span className="flex items-center gap-0.5 text-xs text-emerald-600">
+                                  <ShieldCheck className="w-3 h-3" />Verifiziert
+                                </span>
+                              )}
                             </div>
                             <Stars rating={rev.rating} size="sm" />
                           </div>
                           {rev.comment && <p className="text-sm text-dark/70 leading-relaxed">{rev.comment}</p>}
+                          {/* Review photos */}
+                          {rev.review_photos && rev.review_photos.length > 0 && (
+                            <div className="flex gap-2 mt-3">
+                              {rev.review_photos.map((photo) => (
+                                <button
+                                  key={photo.id}
+                                  onClick={() => setLightboxPhoto(photo.photo_url)}
+                                  className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity"
+                                  aria-label="Foto vergrössern"
+                                >
+                                  <Image src={photo.photo_url} alt="Review Foto" fill className="object-cover" sizes="64px" />
+                                </button>
+                              ))}
+                            </div>
+                          )}
                           <p className="text-xs text-dark/30 mt-2">
                             {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB")}
                           </p>
@@ -518,6 +658,9 @@ export default function SalonProfilePage() {
                   </a>
                 </div>
               )}
+
+              {/* Nearby salons — lazy loaded */}
+              <NearbySalons salonSlug={slug} />
             </div>
 
             {/* ── Right: sticky booking sidebar (desktop only) */}
@@ -573,6 +716,42 @@ export default function SalonProfilePage() {
             staffMemberId={selectedStaff}
           />
         </BookingBottomSheet>
+
+        {/* Photo lightbox */}
+        <AnimatePresence>
+          {lightboxPhoto && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] flex items-center justify-center bg-dark/80 backdrop-blur-sm p-4"
+              onClick={() => setLightboxPhoto(null)}
+            >
+              <button
+                onClick={() => setLightboxPhoto(null)}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                aria-label="Foto schliessen"
+              >
+                <X size={20} />
+              </button>
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.9 }}
+                className="relative max-w-3xl max-h-[80vh] w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Image
+                  src={lightboxPhoto}
+                  alt="Review Foto"
+                  width={1200}
+                  height={800}
+                  className="rounded-xl object-contain w-full h-auto max-h-[80vh]"
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

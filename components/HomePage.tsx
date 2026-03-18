@@ -22,6 +22,7 @@ import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
 import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
+import RecentlyViewed from "@/components/RecentlyViewed";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -239,6 +240,9 @@ export default function HomePage() {
           </motion.div>
         </section>
       )}
+
+      {/* ── Recently Viewed (returning users) ────────────────────────────── */}
+      <RecentlyViewed />
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-4 py-10">
