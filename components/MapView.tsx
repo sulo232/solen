@@ -3,23 +3,46 @@
 // Must be loaded with: dynamic(() => import('@/components/MapView'), { ssr: false })
 // Requires NEXT_PUBLIC_MAPBOX_TOKEN in env.
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { MapPin } from "lucide-react";
 import type { SalonCard } from "@/lib/types";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
+
+const CATEGORY_CHIPS = [
+  { key: "all", label: "Alle" },
+  { key: "coiffeur", label: "Haare" },
+  { key: "nails", label: "Nails" },
+  { key: "spa", label: "Spa" },
+  { key: "barbershop", label: "Barber" },
+  { key: "makeup", label: "Kosmetik" },
+  { key: "waxing", label: "Waxing" },
+] as const;
 
 interface MapViewProps {
   salons: SalonCard[];
   selectedId?: string;
   onSelect?: (id: string) => void;
+  /** When true, shows category chips + area search. False for mini-maps (salon profile). */
+  enhanced?: boolean;
+  /** Callback when user clicks "In diesem Bereich suchen" with map bounds */
+  onAreaSearch?: (bounds: { north: number; south: number; east: number; west: number }) => void;
 }
 
-export default function MapView({ salons, selectedId, onSelect }: MapViewProps) {
+export default function MapView({ salons, selectedId, onSelect, enhanced = false, onAreaSearch }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [showAreaSearch, setShowAreaSearch] = useState(false);
+  const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Filter salons by category
+  const filteredSalons = activeCategory === "all"
+    ? salons
+    : salons.filter((s) => s.categories?.includes(activeCategory as any));
 
   // Init map once
   useEffect(() => {
@@ -37,13 +60,24 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
     mapRef.current = map;
 
+    // Show area search button on pan/zoom (debounced)
+    if (enhanced) {
+      const handleMove = () => {
+        if (moveTimeoutRef.current) clearTimeout(moveTimeoutRef.current);
+        moveTimeoutRef.current = setTimeout(() => {
+          setShowAreaSearch(true);
+        }, 500);
+      };
+      map.on("moveend", handleMove);
+    }
+
     return () => {
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [enhanced]);
 
-  // Sync markers whenever salons or selection change
+  // Sync markers whenever salons, selection, or category change
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -54,7 +88,7 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
       markersRef.current.clear();
 
       // Sort salons so gold pins render last (on top)
-      const sorted = [...salons].sort((a, b) => {
+      const sorted = [...filteredSalons].sort((a, b) => {
         const tierOrder: Record<string, number> = { dark: 0, grey: 1, teal: 2, gold: 3 };
         const aT = (a as any).solen_tier ?? "grey";
         const bT = (b as any).solen_tier ?? "grey";
@@ -66,7 +100,6 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
         const minPrice = (salon as SalonCard & { min_price?: number }).min_price;
         const tier: string = (salon as any).solen_tier ?? "grey";
 
-        // Tier-based pin styling
         const isGold = tier === "gold";
         const isDark = tier === "dark";
         const isGrey = tier === "grey";
@@ -106,7 +139,8 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
             box-shadow:0 1px 3px rgba(0,0,0,0.1);opacity:0.7;
           `;
         } else if (minPrice && minPrice > 0) {
-          // Teal/Grey: price badge pin
+          // Price badge pin with color coding
+          const priceColor = minPrice < 50 ? "#22C55E" : minPrice <= 100 ? "#EAB308" : "#FF6B6B";
           const opacity = isGrey ? "0.75" : "1";
           el.style.cssText += `
             display:flex;align-items:center;justify-content:center;
@@ -114,12 +148,12 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
             white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.1);
             opacity:${opacity};
             background:${isSelected ? "#FF6B6B" : "white"};
-            color:${isSelected ? "white" : "#1A1A2E"};
-            border:1.5px solid ${isSelected ? "#FF6B6B" : "#E5E7EB"};
+            color:${isSelected ? "white" : priceColor};
+            border:1.5px solid ${isSelected ? "#FF6B6B" : priceColor + "40"};
           `;
-          el.textContent = `ab ${minPrice}`;
+          el.textContent = `ab CHF ${minPrice}`;
         } else {
-          // Teal/Grey: dot pin (no price)
+          // Dot pin (no price)
           const dotColor = isSelected ? "#FF6B6B" : "#38B2AC";
           const opacity = isGrey ? "0.75" : "1";
           el.style.cssText += `
@@ -151,9 +185,9 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
       });
 
       // Fit bounds
-      if (salons.length > 0) {
+      if (filteredSalons.length > 0) {
         const bounds = new mapboxgl.LngLatBounds();
-        salons.forEach((s) => bounds.extend([s.longitude, s.latitude]));
+        filteredSalons.forEach((s) => bounds.extend([s.longitude, s.latitude]));
         map.fitBounds(bounds, { padding: 48, maxZoom: 15, duration: 500 });
       }
     };
@@ -163,19 +197,65 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
     } else {
       map.once("load", render);
     }
-  }, [salons, selectedId, onSelect]);
+  }, [filteredSalons, selectedId, onSelect]);
 
   // Pan + popup on selection change
   useEffect(() => {
     if (!selectedId || !mapRef.current) return;
-    const salon = salons.find((s) => s.id === selectedId);
+    const salon = filteredSalons.find((s) => s.id === selectedId);
     if (!salon) return;
     mapRef.current.easeTo({ center: [salon.longitude, salon.latitude], zoom: 15, duration: 400 });
     const marker = markersRef.current.get(selectedId);
     if (marker && !marker.getPopup()?.isOpen()) marker.togglePopup();
-  }, [selectedId, salons]);
+  }, [selectedId, filteredSalons]);
+
+  const handleAreaSearch = useCallback(() => {
+    const map = mapRef.current;
+    if (!map || !onAreaSearch) return;
+    const bounds = map.getBounds();
+    onAreaSearch({
+      north: bounds.getNorth(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      west: bounds.getWest(),
+    });
+    setShowAreaSearch(false);
+  }, [onAreaSearch]);
 
   return (
-    <div ref={containerRef} className="w-full h-full min-h-[400px] rounded-card overflow-hidden" />
+    <div className="relative w-full h-full min-h-[400px]">
+      {/* Category filter chips */}
+      {enhanced && (
+        <div className="absolute top-3 left-3 right-12 z-10 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
+          {CATEGORY_CHIPS.map((chip) => (
+            <button
+              key={chip.key}
+              onClick={() => { setActiveCategory(chip.key); setShowAreaSearch(false); }}
+              className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium shadow-sm transition-colors ${
+                activeCategory === chip.key
+                  ? "bg-teal text-white shadow-md"
+                  : "bg-white/95 text-dark/70 hover:bg-white border border-gray-200"
+              }`}
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Map container */}
+      <div ref={containerRef} className="w-full h-full min-h-[400px] rounded-card overflow-hidden" />
+
+      {/* "In diesem Bereich suchen" floating button */}
+      {enhanced && showAreaSearch && onAreaSearch && (
+        <button
+          onClick={handleAreaSearch}
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-dark text-sm font-medium shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+        >
+          <MapPin size={14} className="text-teal" />
+          In diesem Bereich suchen
+        </button>
+      )}
+    </div>
   );
 }
