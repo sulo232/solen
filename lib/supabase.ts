@@ -1,12 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { createBrowserClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 
 /**
  * Server-side Supabase client — use in Server Components, API routes, and Edge Functions.
  * Reads/writes auth cookies automatically via next/headers.
  */
 export async function createServerSupabaseClient() {
+  const { cookies } = await import("next/headers");
   const cookieStore = await cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

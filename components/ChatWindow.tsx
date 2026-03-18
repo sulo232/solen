@@ -2,12 +2,15 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera } from "lucide-react";
+import { useLocale } from "next-intl";
+import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, CheckCheck, Languages } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
+import { TypingIndicator } from "@/components/ui/TypingIndicator";
 import QuickReplyChips from "@/components/chat/QuickReplyChips";
 import AISuggestion from "@/components/chat/AISuggestion";
 import PhotoGallery from "@/components/chat/PhotoGallery";
+import BookingBubble from "@/components/chat/BookingBubble";
 import type { Message } from "@/lib/types";
 
 interface ChatWindowProps {
@@ -16,12 +19,14 @@ interface ChatWindowProps {
   currentUserId: string;
   salonId?: string;
   salonName?: string;
+  salonSlug?: string;
   salonServices?: string[];
 }
 
 const PAGE_SIZE = 30;
 
-export default function ChatWindow({ conversationId, perspective, currentUserId, salonId, salonName, salonServices }: ChatWindowProps) {
+export default function ChatWindow({ conversationId, perspective, currentUserId, salonId, salonName, salonSlug, salonServices }: ChatWindowProps) {
+  const locale = useLocale();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -30,9 +35,13 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   const [showImageInput, setShowImageInput] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "photos">("chat");
+  const [remoteTyping, setRemoteTyping] = useState<string | null>(null);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translating, setTranslating] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isSalonOwner = perspective === "salon";
 
@@ -52,7 +61,30 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Supabase Realtime — new messages
+  // Mark messages as read when conversation is opened
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const unreadIds = messages
+      .filter((m) => m.sender_id !== currentUserId && !m.read_at)
+      .map((m) => m.id)
+      .filter((id) => !id.startsWith("optimistic"));
+    if (unreadIds.length === 0) return;
+
+    fetch(`/api/conversations/${conversationId}/messages/read`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message_ids: unreadIds }),
+    }).catch(() => {});
+
+    // Update local state
+    setMessages((prev) =>
+      prev.map((m) =>
+        unreadIds.includes(m.id) ? { ...m, read_at: new Date().toISOString() } : m
+      )
+    );
+  }, [messages.length, conversationId, currentUserId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Supabase Realtime — new messages + read receipt updates
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
     const channel = supabase
@@ -64,9 +96,50 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         const m = payload.new as Message;
         setMessages((prev) => prev.some((x) => x.id === m.id) ? prev : [...prev, m]);
       })
+      .on("postgres_changes", {
+        event: "UPDATE", schema: "public", table: "messages",
+        filter: `conversation_id=eq.${conversationId}`,
+      }, (payload) => {
+        const updated = payload.new as Message;
+        setMessages((prev) =>
+          prev.map((m) => m.id === updated.id ? { ...m, read_at: updated.read_at } : m)
+        );
+      })
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [conversationId]);
+
+    // Presence for typing indicator
+    const presenceChannel = supabase
+      .channel(`presence:${conversationId}`)
+      .on("presence", { event: "sync" }, () => {
+        const state = presenceChannel.presenceState();
+        const others = Object.values(state).flat().filter(
+          (p: any) => p.user_id !== currentUserId && p.typing
+        );
+        if (others.length > 0) {
+          setRemoteTyping((others[0] as any).name ?? "Jemand");
+        } else {
+          setRemoteTyping(null);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+      supabase.removeChannel(presenceChannel);
+    };
+  }, [conversationId, currentUserId]);
+
+  // Broadcast typing state
+  const broadcastTyping = useCallback(() => {
+    const supabase = createBrowserSupabaseClient();
+    const channel = supabase.channel(`presence:${conversationId}`);
+    channel.track({ user_id: currentUserId, typing: true, name: isSalonOwner ? salonName : "Kunde" });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      channel.track({ user_id: currentUserId, typing: false, name: "" });
+    }, 2000);
+  }, [conversationId, currentUserId, isSalonOwner, salonName]);
 
   const sendMessage = async (type: "text" | "image" = "text") => {
     const content = type === "image" ? imageUrl.trim() : text.trim();
@@ -116,7 +189,6 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
       if (!res.ok) { const err = await res.json(); alert(err.error || "Upload fehlgeschlagen"); return; }
       const { url } = await res.json();
 
-      // Send as image message
       const optimistic: Message = {
         id: `optimistic-${Date.now()}`,
         conversation_id: conversationId,
@@ -146,14 +218,46 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage("text"); }
   };
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
+    broadcastTyping();
+  };
+
   const isOwn = (msg: Message) => msg.sender_id === currentUserId;
+
+  // Translation
+  const handleTranslate = async (msgId: string, msgContent: string) => {
+    const cacheKey = `translate_${msgId}_${locale}`;
+    const cached = typeof window !== "undefined" ? localStorage.getItem(cacheKey) : null;
+    if (cached) {
+      setTranslations((prev) => ({ ...prev, [msgId]: cached }));
+      return;
+    }
+
+    setTranslating(msgId);
+    try {
+      const res = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: msgContent, to: locale }),
+      });
+      if (res.status === 204) return;
+      const data = await res.json();
+      if (data.translation) {
+        setTranslations((prev) => ({ ...prev, [msgId]: data.translation }));
+        localStorage.setItem(cacheKey, data.translation);
+      }
+    } catch { /* ignore */ } finally {
+      setTranslating(null);
+    }
+  };
 
   // Get last customer message for AI suggestion
   const lastCustomerMessage = isSalonOwner
     ? [...messages].reverse().find((m) => m.sender_id !== currentUserId && m.message_type === "text")?.content ?? null
     : null;
 
-  // Photo-based quoting: open price offer form with photo URL
+  // Photo-based quoting
   const handleCreatePhotoOffer = (photoUrl: string) => {
     const offerDescription = window.prompt("Beschreibung für das Angebot:");
     if (!offerDescription) return;
@@ -196,7 +300,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         </button>
       </div>
 
-      {/* Photo Gallery (hidden, not unmounted, to preserve chat scroll) */}
+      {/* Photo Gallery */}
       <div style={{ display: activeTab === "photos" ? "block" : "none" }} className="flex-1 overflow-y-auto">
         <PhotoGallery
           conversationId={conversationId}
@@ -205,7 +309,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         />
       </div>
 
-      {/* Chat content (hidden when photos tab is active) */}
+      {/* Chat content */}
       <div style={{ display: activeTab === "chat" ? "flex" : "none" }} className="flex flex-col flex-1 min-h-0">
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
@@ -243,17 +347,62 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                     <p className="whitespace-pre-wrap break-words text-xs">{msg.content}</p>
                   </div>
                 ) : (
-                  <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                  <div>
+                    <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                    {/* Translation */}
+                    {translations[msg.id] && (
+                      <p className="text-xs italic mt-1 opacity-75 border-t border-current/10 pt-1">
+                        {translations[msg.id]}
+                        <span className="ml-1 opacity-50">Übersetzt</span>
+                      </p>
+                    )}
+                  </div>
                 )}
-                <p className={["text-[10px] mt-0.5", isOwn(msg) ? "text-white/60 text-right" : "text-dark/30 dark:text-white/30"].join(" ")}>
-                  {new Date(msg.created_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
-                  {msg.id.startsWith("optimistic") && " · Senden..."}
-                </p>
+                <div className={["flex items-center gap-1 mt-0.5", isOwn(msg) ? "justify-end" : ""].join(" ")}>
+                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-dark/30 dark:text-white/30"].join(" ")}>
+                    {new Date(msg.created_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                    {msg.id.startsWith("optimistic") && " · Senden..."}
+                  </span>
+                  {/* Read receipts */}
+                  {isOwn(msg) && !msg.id.startsWith("optimistic") && (
+                    msg.read_at ? (
+                      <CheckCheck size={12} className="text-teal-200" />
+                    ) : (
+                      <Check size={12} className="text-white/40" />
+                    )
+                  )}
+                  {/* Translate button */}
+                  {msg.message_type === "text" && !translations[msg.id] && (
+                    <button
+                      onClick={() => handleTranslate(msg.id, msg.content)}
+                      disabled={translating === msg.id}
+                      className={["ml-1 opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
+                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-dark/20 dark:text-white/20 hover:text-dark/50 dark:hover:text-white/50"
+                      ].join(" ")}
+                      title="Übersetzen"
+                      style={{ opacity: translating === msg.id ? 1 : undefined }}
+                    >
+                      {translating === msg.id ? <Spinner size="sm" /> : <Languages size={10} />}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
+          {/* Typing indicator */}
+          {remoteTyping && <TypingIndicator name={remoteTyping} />}
           <div ref={bottomRef} />
         </div>
+
+        {/* Booking bubble (customer side, after 3+ messages) */}
+        {!isSalonOwner && salonName && salonSlug && (
+          <BookingBubble
+            salonName={salonName}
+            salonSlug={salonSlug}
+            conversationId={conversationId}
+            messageCount={messages.length}
+          />
+        )}
 
         {/* Image URL input */}
         {showImageInput && (
@@ -271,7 +420,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           </div>
         )}
 
-        {/* Hidden file input for uploads */}
+        {/* Hidden file input */}
         <input
           ref={fileInputRef}
           type="file"
@@ -315,7 +464,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             title="Bild-URL senden">
             <ImageIcon size={18} />
           </button>
-          <textarea ref={inputRef} value={text} onChange={(e) => setText(e.target.value)}
+          <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
             className="flex-1 resize-none px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-button focus:outline-none focus:border-teal max-h-32 overflow-y-auto bg-white dark:bg-dm-surface dark:text-white"
             style={{ minHeight: "38px" }} />

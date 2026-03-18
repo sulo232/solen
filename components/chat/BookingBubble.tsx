@@ -1,0 +1,51 @@
+"use client";
+
+import { useState } from "react";
+import { Calendar, X } from "lucide-react";
+import Link from "next/link";
+import { useLocale } from "next-intl";
+
+interface BookingBubbleProps {
+  salonName: string;
+  salonSlug: string;
+  conversationId: string;
+  messageCount: number;
+}
+
+export default function BookingBubble({ salonName, salonSlug, conversationId, messageCount }: BookingBubbleProps) {
+  const locale = useLocale();
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem(`booking_bubble_${conversationId}`) === "1";
+  });
+
+  // Only show after 3+ messages
+  if (messageCount < 3 || dismissed) return null;
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    localStorage.setItem(`booking_bubble_${conversationId}`, "1");
+  };
+
+  return (
+    <div className="mx-4 mb-2 p-3 rounded-card bg-teal/5 border border-teal/15 flex items-center gap-3">
+      <Calendar size={18} className="text-teal shrink-0" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-dark dark:text-white">Termin buchen bei {salonName}</p>
+      </div>
+      <Link
+        href={`/${locale}/salon/${salonSlug}`}
+        className="shrink-0 px-3 py-1.5 rounded-button bg-teal text-white text-xs font-medium hover:bg-teal/90 transition-colors"
+      >
+        Jetzt buchen
+      </Link>
+      <button
+        onClick={handleDismiss}
+        className="shrink-0 p-1 text-dark/30 dark:text-white/30 hover:text-dark/60 dark:hover:text-white/60"
+        aria-label="Schliessen"
+      >
+        <X size={14} />
+      </button>
+    </div>
+  );
+}

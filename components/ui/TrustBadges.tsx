@@ -1,25 +1,26 @@
 "use client";
 
-import { Lock, Flag, ShieldCheck } from "lucide-react";
+import { Shield, Flag, CheckCircle } from "lucide-react";
 
 const BADGES = [
-  { Icon: Lock,        label: "Sichere Zahlung" },
-  { Icon: Flag,        label: "Swiss Made" },
-  { Icon: ShieldCheck, label: "nDSG Konform" },
+  { Icon: Shield, label: "Sichere Zahlung", desc: "Stripe verschlüsselt" },
+  { Icon: Flag, label: "Swiss Made", desc: "Entwickelt in Basel 🇨🇭" },
+  { Icon: CheckCircle, label: "nDSG Konform", desc: "Datenschutzkonform" },
 ] as const;
 
 export default function TrustBadges() {
   return (
-    <div className="flex items-center justify-center gap-6 sm:gap-8 flex-wrap py-4">
-      {BADGES.map(({ Icon, label }) => (
-        <div key={label} className="flex items-center gap-2">
-          <Icon size={14} className="text-white/40 shrink-0" />
-          <span
-            className="text-xs text-white/50 font-body font-medium"
-            style={{ fontFamily: "DM Sans, sans-serif" }}
-          >
-            {label}
-          </span>
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 py-6">
+      {BADGES.map(({ Icon, label, desc }) => (
+        <div
+          key={label}
+          className="flex items-center gap-3 px-4 py-3 rounded-card bg-white/5 backdrop-blur-sm border border-white/10"
+        >
+          <Icon size={18} className="text-teal shrink-0" />
+          <div>
+            <p className="text-xs font-medium text-white/80 font-body">{label}</p>
+            <p className="text-[10px] text-white/40 font-body">{desc}</p>
+          </div>
         </div>
       ))}
     </div>

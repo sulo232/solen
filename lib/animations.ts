@@ -93,3 +93,21 @@ export const toastVariants: Variants = {
     transition: { duration: 0.25, ease: "easeIn" },
   },
 };
+
+/** Fade in + slide up — general purpose */
+export const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4 },
+};
+
+/** Stagger container — for lists */
+export const staggerContainer = {
+  animate: { transition: { staggerChildren: 0.1 } },
+};
+
+/** Press animation — tactile button feedback */
+export const pressAnimation = {
+  whileTap: { scale: 0.95 },
+  transition: { type: "spring", stiffness: 400, damping: 17 },
+};

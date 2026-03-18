@@ -59,7 +59,7 @@ module.exports = {
         card: "0 4px 12px rgba(0,0,0,0.08)",
         "card-hover": "0 8px 24px rgba(0,0,0,0.12)",
         "coral-glow": "0 2px 8px rgba(255,107,107,0.15)",
-        "teal-glow": "0 2px 8px rgba(56,178,172,0.20)",
+        "teal-glow": "0 0 20px rgba(56, 178, 172, 0.3)",
         glass: "0 8px 32px rgba(0,0,0,0.06)",
         "glass-hover": "0 16px 48px rgba(0,0,0,0.10)",
       },

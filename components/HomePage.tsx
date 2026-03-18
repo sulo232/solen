@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
@@ -23,6 +24,8 @@ import SocialProofStrip from "@/components/ui/SocialProofStrip";
 import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import WeatherBanner from "@/components/WeatherBanner";
+import ReviewCarousel from "@/components/ReviewCarousel";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -73,6 +76,8 @@ const QUARTIERS = [
   { slug: "breite",      name: "Breite",      bg: "from-rose-300/40 to-rose-100/10" },
 ] as const;
 
+const DEFAULT_HERO_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&q=80";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -82,10 +87,12 @@ export default function HomePage() {
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [newSalons, setNewSalons] = useState<SalonCardType[]>([]);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
+  const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
 
   const fetchData = useCallback(() => {
     fetch("/api/salons?limit=8&sort=rating")
@@ -110,6 +117,31 @@ export default function HomePage() {
       })
       .catch(() => {});
 
+    // Fetch user profile for dynamic hero text
+    fetch("/api/profile")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.display_name) {
+          const firstName = data.display_name.split(" ")[0];
+          setUserName(firstName);
+        }
+      })
+      .catch(() => {});
+
+    // Fetch next upcoming booking for hero subtext
+    fetch("/api/bookings?status=confirmed&limit=1&sort=upcoming")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const booking = data?.bookings?.[0] ?? data?.items?.[0];
+        if (booking?.starts_at && booking?.salon_name) {
+          setNextBooking({
+            date: new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" }),
+            salon: booking.salon_name,
+          });
+        }
+      })
+      .catch(() => {});
+
     // Fetch user favorites
     fetch("/api/profile/favorites")
       .then((r) => r.ok ? r.json() : null)
@@ -124,6 +156,14 @@ export default function HomePage() {
       .then((r) => r.json())
       .then((data) => setNewSalons(data.items ?? []))
       .catch(() => setNewSalons([]));
+
+    // Fetch quartier counts
+    fetch("/api/salons/quartier-counts")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.counts) setQuartierCounts(data.counts);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -146,79 +186,55 @@ export default function HomePage() {
     });
   }, []);
 
-  // Pull-to-refresh (touch only)
-  useEffect(() => {
-    let startY = 0;
-    let pulling = false;
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        pulling = true;
-      }
-    };
-    const onTouchEnd = (e: TouchEvent) => {
-      if (pulling && e.changedTouches[0].clientY - startY > 80) {
-        setRefreshing(true);
-        fetchData();
-        setTimeout(() => setRefreshing(false), 800);
-      }
-      pulling = false;
-    };
-
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    return () => {
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
-    };
-  }, [fetchData]);
-
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
 
-      {/* ── Pull-to-refresh indicator ─────────────────────────────────────── */}
-      {refreshing && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          className="flex justify-center py-2"
-        >
-          <div className="w-5 h-5 rounded-full border-2 border-teal border-t-transparent animate-spin" />
-        </motion.div>
-      )}
-
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="bg-gradient-to-br from-teal/8 via-white to-orange-50/5 pt-24 pb-14">
-        <motion.div
-          className="max-w-4xl mx-auto text-center px-4"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.h1
-            variants={fadeUp}
-            className="font-heading font-bold text-3xl sm:text-5xl text-dark leading-tight"
-            style={{ fontFamily: "Syne, sans-serif" }}
+      {/* ── Hero with background image ─────────────────────────────────────── */}
+      <section className="relative h-[500px] md:h-[600px]">
+        <Image
+          src={DEFAULT_HERO_IMAGE}
+          alt="Solen.ch — Beauty & Wellness in Basel"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4">
+          <motion.div
+            className="max-w-4xl mx-auto text-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            Finde deinen Salon in Basel
-          </motion.h1>
-          <motion.p
-            variants={fadeUp}
-            className="mt-4 text-base sm:text-lg font-body text-dark/50"
-            style={{ fontFamily: "DM Sans, sans-serif" }}
-          >
-            Coiffeur, Barbershop, Nails, Spa &amp; mehr
-          </motion.p>
-          <motion.div variants={fadeUp} className="mt-8">
-            <SearchBar />
+            <motion.h1
+              variants={fadeUp}
+              className="font-heading font-bold text-3xl sm:text-5xl leading-tight"
+              style={{ fontFamily: "Syne, sans-serif" }}
+            >
+              {userName ? `Willkommen zurück, ${userName}!` : "Dein Beauty-Termin in Basel"}
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="mt-4 text-base sm:text-lg text-white/80"
+              style={{ fontFamily: "DM Sans, sans-serif" }}
+            >
+              {userName && nextBooking
+                ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
+                : "Coiffeur, Barbershop, Nails, Spa & mehr"
+              }
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-8">
+              <SearchBar />
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* ── Social Proof ─────────────────────────────────────────────────── */}
       <SocialProofStrip />
+
+      {/* ── Weather Banner ─────────────────────────────────────────────── */}
+      <WeatherBanner />
 
       {/* ── Wieder buchen? (logged-in users with past booking) ───────────── */}
       {lastBookedSalon && (
@@ -340,18 +356,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Review Carousel ──────────────────────────────────────────────── */}
+      <ReviewCarousel />
+
       {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
       {newSalons.length > 0 && (
-        <section className="py-10">
+        <section className="py-10 bg-gray-50/50">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={20} className="text-teal" />
-                <h2 className="font-heading font-bold text-2xl text-dark dark:text-dm-text" style={{ fontFamily: "Syne, sans-serif" }}>
+                <h2 className="font-heading font-bold text-2xl text-dark" style={{ fontFamily: "Syne, sans-serif" }}>
                   Neue Salons
                 </h2>
               </div>
-              <p className="text-sm text-dark/50 dark:text-dm-text/50 font-body" style={{ fontFamily: "DM Sans, sans-serif" }}>
+              <p className="text-sm text-dark/50 font-body" style={{ fontFamily: "DM Sans, sans-serif" }}>
                 Frisch auf Solen — entdecke die neuesten Salons in Basel
               </p>
             </div>
@@ -371,13 +390,13 @@ export default function HomePage() {
       )}
 
       {/* ── Last-Minute Section ────────────────────────────────────────────── */}
-      <section className="py-10 bg-gray-50/50 dark:bg-dm-surface/50">
+      <section className="py-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-1">
               <Clock size={20} className="text-coral" />
               <h2
-                className="font-heading font-bold text-2xl text-dark dark:text-dm-text"
+                className="font-heading font-bold text-2xl text-dark"
                 style={{ fontFamily: "Syne, sans-serif" }}
               >
                 Last-Minute Angebote
@@ -461,37 +480,43 @@ export default function HomePage() {
             className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4"
             style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
           >
-            {QUARTIERS.map(({ slug, name, bg }) => (
-              <motion.div
-                key={slug}
-                variants={itemVariants}
-                className="snap-start shrink-0"
-              >
-                <Link
-                  href={`/${locale}/coiffeur?quartier=${slug}`}
-                  className="block w-[200px] h-[250px] rounded-2xl overflow-hidden relative group"
+            {QUARTIERS.map(({ slug, name, bg }) => {
+              const count = quartierCounts[slug] ?? 0;
+              return (
+                <motion.div
+                  key={slug}
+                  variants={itemVariants}
+                  className="snap-start shrink-0"
                 >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${bg}`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <p
-                      className="font-heading font-bold text-white text-base leading-tight"
-                      style={{ fontFamily: "Syne, sans-serif" }}
-                    >
-                      {name}
-                    </p>
-                    <p
-                      className="text-white/70 text-xs mt-0.5 font-body"
-                      style={{ fontFamily: "DM Sans, sans-serif" }}
-                    >
-                      Bald hier
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    href={`/${locale}/coiffeur?quartier=${slug}`}
+                    className="block w-[200px] h-[250px] rounded-2xl overflow-hidden relative group"
+                  >
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${bg}`}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-transparent to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <p
+                        className="font-heading font-bold text-white text-base leading-tight"
+                        style={{ fontFamily: "Syne, sans-serif" }}
+                      >
+                        {name}
+                      </p>
+                      <p
+                        className="text-white/70 text-xs mt-0.5 font-body"
+                        style={{ fontFamily: "DM Sans, sans-serif" }}
+                      >
+                        {count > 0
+                          ? `${count} ${count === 1 ? "Salon" : "Salons"}`
+                          : "Bald hier"
+                        }
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
