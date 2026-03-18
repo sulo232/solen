@@ -7,24 +7,24 @@
 
 @layer base {
   :root {
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 174 51% 46%;
-    --background: 0 0% 100%;
-    --foreground: 224 39% 14%;
-    --primary: 174 51% 46%;
+    --border: 30 15% 85%;
+    --input: 30 15% 85%;
+    --ring: 10 78% 60%;
+    --background: 34 44% 95%;
+    --foreground: 28 30% 7%;
+    --primary: 10 78% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 224 39% 14%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 224 39% 14%;
+    --secondary: 34 30% 92%;
+    --secondary-foreground: 28 30% 7%;
+    --muted: 34 25% 90%;
+    --muted-foreground: 30 15% 40%;
+    --accent: 36 92% 44%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 39% 14%;
+    --popover-foreground: 28 30% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 224 39% 14%;
+    --card-foreground: 28 30% 7%;
     --radius: 12px;
   }
 
@@ -39,8 +39,8 @@
 
   body {
     font-family: "DM Sans", sans-serif;
-    color: #1A1A2E;
-    background: #fff;
+    color: #1A1209;
+    background: #FAF6EF;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -67,19 +67,19 @@
     font-weight: 500;
   }
 
-  /* Glass utilities */
+  /* Glass utilities — warm-tinted */
   .glass {
-    background: rgba(255, 255, 255, 0.80);
+    background: rgba(250, 246, 239, 0.88);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.60);
+    border: 1px solid rgba(26, 18, 9, 0.08);
   }
 
   .glass-strong {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(250, 246, 239, 0.95);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.80);
+    border: 1px solid rgba(26, 18, 9, 0.12);
   }
 
   /* Coral pulse animation */
@@ -88,8 +88,8 @@
   }
 
   @keyframes coral-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(255, 107, 107, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232, 98, 74, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(232, 98, 74, 0); }
   }
 
   /* will-change hints for animated cards */
@@ -107,7 +107,7 @@
   textarea:focus-visible,
   select:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid rgba(56, 178, 172, 0.5);
+    outline: 2px solid rgba(232, 98, 74, 0.5);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -119,7 +119,7 @@
   .dark textarea:focus-visible,
   .dark select:focus-visible,
   .dark [tabindex]:focus-visible {
-    outline-color: rgba(56, 178, 172, 0.9);
+    outline-color: rgba(232, 98, 74, 0.9);
   }
 }
 
