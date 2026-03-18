@@ -18,6 +18,8 @@ export { default as ExpandableNavTabs } from "@/components/ui/expandable-tabs";
 export { default as StickyMobileCTA } from "@/components/ui/StickyMobileCTA";
 export { default as SolenDatePicker } from "@/components/ui/date-picker";
 export { ToastProvider, useToast } from "@/components/ui/Toast";
+export { default as CategoryTree } from "@/components/ui/CategoryTree";
+export { default as QuickPreviewSheet } from "@/components/ui/QuickPreviewSheet";
 
 export { default as Header } from "@/components/layout/Header";
 export { default as BottomNav } from "@/components/layout/BottomNav";

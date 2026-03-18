@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
-import { SlidersHorizontal, X, CreditCard, ChevronDown, Check } from "lucide-react";
+import { SlidersHorizontal, X, CreditCard, ChevronDown, Check, Tag } from "lucide-react";
 import PriceSlider from "@/components/ui/PriceSlider";
 import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
 import type { Quartier } from "@/lib/types";
@@ -22,6 +22,7 @@ const SORT_OPTIONS = [
   { value: "price",     label: "Preis (tief → hoch)" },
   { value: "nearest",   label: "Nächste"             },
   { value: "newest",    label: "Neueste"              },
+  { value: "next_slot", label: "Nächster Termin"      },
 ];
 
 const RATING_OPTIONS = [
@@ -62,9 +63,10 @@ export default function FilterBar() {
   const activeRating = searchParams.get("rating");
   const activeAvail = searchParams.get("availability");
   const activePayment = searchParams.get("accepts_payment");
+  const activeOffPeak = searchParams.get("off_peak");
 
   const hasFilters =
-    activeQuartier || activeRating || activeAvail || activePayment ||
+    activeQuartier || activeRating || activeAvail || activePayment || activeOffPeak ||
     searchParams.get("min_price") || searchParams.get("max_price");
 
   return (
@@ -156,6 +158,19 @@ export default function FilterBar() {
           >
             <CreditCard className="w-3 h-3" />
             Online-Zahlung
+          </button>
+
+          {/* Off-peak / Nebenzeiten */}
+          <button
+            onClick={() => setParam("off_peak", activeOffPeak === "true" ? null : "true")}
+            className={[
+              pillBase,
+              "shrink-0 flex items-center gap-1.5",
+              activeOffPeak === "true" ? pillActive : pillInactive,
+            ].join(" ")}
+          >
+            <Tag className="w-3 h-3" />
+            Nebenzeiten
           </button>
 
           <div className="w-px h-5 bg-gray-200/80 shrink-0" />
