@@ -30,7 +30,7 @@ const RATING_OPTIONS = [
 
 // Shared pill classes
 const pillBase =
-  "px-3 py-1.5 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border";
+  "px-3 py-1.5 min-h-12 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border flex items-center";
 const pillActive =
   "bg-teal text-white border-teal shadow-teal-glow";
 const pillInactive =
