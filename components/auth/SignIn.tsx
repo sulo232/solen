@@ -38,18 +38,16 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      // Sign in directly via browser client so cookies are properly set
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      const data = await res.json();
-      if (!res.ok) {
-        toast(data.message || "Anmeldung fehlgeschlagen", "error");
-      } else {
-        // Refresh session in browser client then redirect
-        await supabase.auth.refreshSession();
+      if (error) {
+        toast(error.message || "Anmeldung fehlgeschlagen", "error");
+      } else if (data.session) {
         router.push(redirect);
+        router.refresh();
       }
     } catch {
       toast("Netzwerkfehler", "error");
