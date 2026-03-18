@@ -12,7 +12,7 @@ import type { ServiceTemplate } from "@/lib/service-templates";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { validateStep, step1Schema, step2Schema, step3Schema, step4Schema } from "@/lib/registration-validation";
 import type { SalonCategory, AgeGroup, Gender } from "@/lib/types";
-import { createBrowserSupabaseClient } from "@/lib/supabase";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 // ─────────────────────────────────────────
 // Constants
