@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Scissors } from "lucide-react";
+import { Scissors, Sparkles, Droplets, Palette, Zap, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import FilterBar from "@/components/FilterBar";
 import LastMinuteCard from "@/components/LastMinuteCard";
@@ -21,7 +21,35 @@ export default function LastMinutePage() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
+
+  const FILTER_CATEGORIES = [
+    { key: "coiffeur", label: "Coiffeur", Icon: Scissors },
+    { key: "nails", label: "Nails", Icon: Sparkles },
+    { key: "spa", label: "Spa", Icon: Droplets },
+    { key: "makeup", label: "Makeup", Icon: Palette },
+    { key: "waxing", label: "Waxing", Icon: Zap },
+  ];
+
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
+
+  const filteredSlots = slots.filter((slot) => {
+    if (selectedCategories.length > 0) {
+      const slotCategory = (slot as LastMinuteSlot & { category?: string }).category;
+      if (slotCategory && !selectedCategories.includes(slotCategory)) return false;
+    }
+    if (maxPrice !== null) {
+      const price = (slot as LastMinuteSlot & { discounted_price?: number }).discounted_price ?? slot.original_price;
+      if (price > maxPrice) return false;
+    }
+    return true;
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -98,12 +126,57 @@ export default function LastMinutePage() {
 
       <FilterBar />
 
+      {/* Category chips + price filter */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          {FILTER_CATEGORIES.map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              onClick={() => toggleCategory(key)}
+              className={[
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium transition-colors",
+                selectedCategories.includes(key)
+                  ? "bg-teal text-white"
+                  : "bg-gray-100 text-dark/60 hover:bg-gray-200",
+              ].join(" ")}
+            >
+              <Icon size={12} />
+              {label}
+            </button>
+          ))}
+          <span className="w-px h-5 bg-gray-200 mx-1" />
+          {[30, 50, 80, 100].map((price) => (
+            <button
+              key={price}
+              onClick={() => setMaxPrice(maxPrice === price ? null : price)}
+              className={[
+                "px-3 py-1.5 rounded-pill text-xs font-data font-medium transition-colors",
+                maxPrice === price
+                  ? "bg-coral text-white"
+                  : "bg-gray-100 text-dark/60 hover:bg-gray-200",
+              ].join(" ")}
+            >
+              {"< CHF " + price}
+            </button>
+          ))}
+          {(selectedCategories.length > 0 || maxPrice !== null) && (
+            <button
+              onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
+              className="inline-flex items-center gap-1 px-2 py-1.5 rounded-pill text-xs text-dark/40 hover:text-dark/60"
+            >
+              <X size={12} />
+              Zurücksetzen
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {loading ? (
           <div className="flex justify-center py-20">
             <Spinner size="lg" />
           </div>
-        ) : slots.length === 0 ? (
+        ) : filteredSlots.length === 0 ? (
           <EmptyState
             icon={Scissors}
             title="Gerade keine Last-Minute Slots"
@@ -124,7 +197,7 @@ export default function LastMinutePage() {
               className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
             >
               <AnimatePresence mode="popLayout">
-                {slots.map((slot) => (
+                {filteredSlots.map((slot) => (
                   <LastMinuteCard key={slot.id} slot={slot} locale={locale} />
                 ))}
               </AnimatePresence>
