@@ -193,7 +193,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         <span className="text-5xl">🎉</span>
         <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
         <p className="text-sm text-dark/60">Du erhältst eine Bestätigungs-E-Mail.</p>
-        <a href={`/${locale}/account`} className="mt-2 px-6 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors">
+        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors">
           Meine Buchungen
         </a>
       </div>

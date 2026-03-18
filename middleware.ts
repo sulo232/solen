@@ -108,7 +108,53 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refresh session — keeps auth tokens alive
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // ── Auth guards for dashboard routes ──
+  const currentLocale = locales.find(
+    (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
+  );
+
+  if (currentLocale && pathname.startsWith(`/${currentLocale}/dashboard`)) {
+    // No session → redirect to login
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${currentLocale}/auth/login`;
+      url.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(url);
+    }
+
+    // Fetch user role from profiles table
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    const role = profile?.role;
+
+    // Must be salon_owner or admin to access dashboard
+    if (role !== "salon_owner" && role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${currentLocale}`;
+      return NextResponse.redirect(url);
+    }
+
+    // Admin-only routes
+    const adminOnlyPaths = [
+      "/all-salons", "/all-users", "/platform-analytics",
+      "/badge-manager", "/content-editor", "/segments",
+      "/revenue", "/review-moderation", "/approvals",
+    ];
+    const dashboardSubpath = pathname.slice(`/${currentLocale}/dashboard`.length);
+    const isAdminRoute = adminOnlyPaths.some((p) => dashboardSubpath.startsWith(p));
+
+    if (isAdminRoute && role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${currentLocale}`;
+      return NextResponse.redirect(url);
+    }
+  }
 
   return response;
 }

@@ -52,7 +52,7 @@ export default function ApproveIncreasePage() {
       });
       if (!res.ok) throw new Error("Fehler beim Bestätigen.");
       setApproved(true);
-      setTimeout(() => router.push(`/${locale}/account`), 2500);
+      setTimeout(() => router.push(`/${locale}/profile`), 2500);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Unbekannter Fehler.");
     } finally {
@@ -74,7 +74,7 @@ export default function ApproveIncreasePage() {
         <div className="text-center">
           <AlertTriangle size={32} className="text-coral mx-auto mb-3" />
           <p className="text-dark font-medium">{error ?? "Buchung nicht gefunden."}</p>
-          <button onClick={() => router.push(`/${locale}/account`)} className="mt-4 text-teal text-sm underline">
+          <button onClick={() => router.push(`/${locale}/profile`)} className="mt-4 text-teal text-sm underline">
             Zurück zum Konto
           </button>
         </div>
@@ -88,7 +88,7 @@ export default function ApproveIncreasePage() {
         <div className="text-center">
           <CheckCircle size={32} className="text-teal mx-auto mb-3" />
           <p className="text-dark font-medium">Keine ausstehende Preiserhöhung.</p>
-          <button onClick={() => router.push(`/${locale}/account`)} className="mt-4 text-teal text-sm underline">
+          <button onClick={() => router.push(`/${locale}/profile`)} className="mt-4 text-teal text-sm underline">
             Zurück zum Konto
           </button>
         </div>
@@ -191,7 +191,7 @@ export default function ApproveIncreasePage() {
               Preis akzeptieren · CHF {booking.final_price.toFixed(2)}
             </AnimatedButton>
             <button
-              onClick={() => router.push(`/${locale}/account`)}
+              onClick={() => router.push(`/${locale}/profile`)}
               className="w-full py-2.5 rounded-button border border-gray-200 text-sm text-dark/60 hover:bg-gray-50 transition-colors"
             >
               Ablehnen &amp; zurück

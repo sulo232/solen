@@ -83,7 +83,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
           {/* Account */}
           <Link
-            href={`/${locale}/account`}
+            href={`/${locale}/profile`}
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
           >
             <User className="w-4 h-4" />

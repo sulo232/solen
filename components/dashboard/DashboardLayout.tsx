@@ -85,7 +85,7 @@ export default function DashboardLayout({
         if (!p?.id) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
         } else if (p.role === "customer") {
-          router.push(`/${locale}/account`);
+          router.push(`/${locale}/profile`);
         } else {
           setRole(p.role);
           setAuthChecked(true);
