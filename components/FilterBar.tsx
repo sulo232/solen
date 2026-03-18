@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 import { SlidersHorizontal, X, CreditCard, ChevronDown, Check } from "lucide-react";
 import PriceSlider from "@/components/ui/PriceSlider";
+import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
 import type { Quartier } from "@/lib/types";
 
 const QUARTIERS: { value: Quartier; label: string }[] = [
@@ -70,6 +71,17 @@ export default function FilterBar() {
     <div className="sticky top-[57px] z-40 bg-white/80 backdrop-blur-glass border-b border-gray-100/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          {/* Search autocomplete */}
+          <div className="shrink-0">
+            <SearchAutocomplete
+              onServiceSelect={(service) => {
+                setParam("service", service.name_de);
+              }}
+            />
+          </div>
+
+          <div className="w-px h-5 bg-gray-200/80 shrink-0" />
+
           {/* Quartier pills */}
           <div className="flex gap-2 shrink-0">
             {QUARTIERS.map(({ value, label }) => (

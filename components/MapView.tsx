@@ -55,19 +55,33 @@ export default function MapView({ salons, selectedId, onSelect }: MapViewProps) 
 
       salons.forEach((salon) => {
         const isSelected = salon.id === selectedId;
+        const minPrice = (salon as SalonCard & { min_price?: number }).min_price;
 
+        // Price pin element
         const el = document.createElement("div");
-        el.className = [
-          "w-4 h-4 rounded-full border-2 border-white shadow-card cursor-pointer transition-all duration-150",
-          isSelected ? "bg-coral scale-125" : "bg-teal hover:scale-110",
-        ].join(" ");
+        if (minPrice && minPrice > 0) {
+          // Price badge pin
+          el.className = [
+            "flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold shadow-md cursor-pointer transition-all duration-150 whitespace-nowrap",
+            isSelected
+              ? "bg-coral text-white scale-110"
+              : "bg-white text-dark border border-gray-200 hover:bg-teal hover:text-white hover:border-teal",
+          ].join(" ");
+          el.textContent = `ab ${minPrice}`;
+        } else {
+          // Dot pin (no price available)
+          el.className = [
+            "w-4 h-4 rounded-full border-2 border-white shadow-card cursor-pointer transition-all duration-150",
+            isSelected ? "bg-coral scale-125" : "bg-teal hover:scale-110",
+          ].join(" ");
+        }
         el.addEventListener("click", () => onSelect?.(salon.id));
 
-        const popup = new mapboxgl.Popup({ offset: 10, closeButton: false, maxWidth: "180px" }).setHTML(
+        const popup = new mapboxgl.Popup({ offset: 10, closeButton: false, maxWidth: "200px" }).setHTML(
           `<div style="padding:8px">
              <p style="font-weight:600;font-size:13px;color:#1A1A2E;margin:0 0 2px">${salon.name}</p>
              <p style="font-size:11px;color:#888;margin:0 0 4px">${salon.quartier}</p>
-             <p style="font-size:11px;color:#333;margin:0">⭐ ${salon.average_rating.toFixed(1)}</p>
+             <p style="font-size:11px;color:#333;margin:0">⭐ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab CHF ${minPrice}` : ""}</p>
            </div>`
         );
 

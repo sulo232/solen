@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Phone, Globe, Building2, Star, Scissors } from "lucide-react";
+import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List } from "lucide-react";
+import dynamic from "next/dynamic";
 import FilterBar from "@/components/FilterBar";
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
@@ -12,6 +13,8 @@ import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
+
+const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
 const PAGE_SIZE = 12;
 
@@ -99,6 +102,9 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
 export default function CategoryPage({ category }: CategoryPageProps) {
   const locale = useLocale();
   const searchParams = useSearchParams();
+  const routerNav = useRouter();
+  const currentPathname = usePathname();
+  const isMapView = searchParams.get("view") === "map";
 
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [total, setTotal] = useState(0);
@@ -224,9 +230,38 @@ export default function CategoryPage({ category }: CategoryPageProps) {
 
       <FilterBar />
 
-      {/* Grid */}
+      {/* Map/List toggle */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex justify-end">
+        <button
+          onClick={() => {
+            const params = new URLSearchParams(searchParams.toString());
+            if (isMapView) {
+              params.delete("view");
+            } else {
+              params.set("view", "map");
+            }
+            routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-sm font-body font-medium text-dark/70 hover:border-teal hover:text-teal transition-colors"
+        >
+          {isMapView ? <List size={16} /> : <MapIcon size={16} />}
+          {isMapView ? "Liste" : "Karte"}
+        </button>
+      </div>
+
+      {/* Grid / Map */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        {loading ? (
+        {isMapView && !loading && salons.length > 0 ? (
+          <div className="h-[500px] rounded-card overflow-hidden">
+            <MapView
+              salons={salons}
+              onSelect={(id) => {
+                const salon = salons.find((s) => s.id === id);
+                if (salon) routerNav.push(`/${locale}/salon/${salon.slug ?? id}`);
+              }}
+            />
+          </div>
+        ) : loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
           </div>

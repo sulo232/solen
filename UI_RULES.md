@@ -30,7 +30,7 @@
 - **Lists/Grids:** Use `containerVariants` to stagger children elements (200ms stagger) when loading grids.
 
 ## 5. Structural Rules
-- **Category Pages:** Must use an Airbnb-style searchable and sortable grid. DO NOT use map views (we have no map API).
+- **Category Pages:** Must use an Airbnb-style searchable and sortable grid. Map view available via toggle button (`?view=map`) using Mapbox integration (`components/MapView.tsx`). List is default; map is opt-in.
 - **Mobile Booking Flow:** Must use a mobile **bottom sheet** for booking (like Airbnb "Check availability").
 - **Desktop Booking Flow:** Use a sticky sidebar calendar.
 - **Global Header:** Must be present and consistent across all Next.js (`app/`) pages. It should transition from transparent to solid (with blur) on scroll.
