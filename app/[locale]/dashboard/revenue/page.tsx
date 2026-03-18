@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingUp, DollarSign, Calendar, ArrowUpRight, Percent, CreditCard } from "lucide-react";
+import { TrendingUp, DollarSign, Calendar, ArrowUpRight, Percent, CreditCard, Banknote } from "lucide-react";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
@@ -21,6 +21,9 @@ interface RevenueStats {
   total_bookings: number;
   avg_booking_value: number;
   growth_percent: number;
+  total_commission: number;
+  total_net_to_salons: number;
+  current_commission_rate: number;
   daily: DailyRevenue[];
   top_salons: { name: string; revenue: number; bookings: number }[];
 }
@@ -79,7 +82,7 @@ export default function RevenuePage() {
           className="space-y-5"
         >
           {/* KPI cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
               {
                 label: "GMV (Gesamtumsatz)",
@@ -89,16 +92,30 @@ export default function RevenuePage() {
                 bg: "bg-teal/5",
               },
               {
-                label: "Plattform-Gebühr (1%)",
-                value: `CHF ${fmt(data.total_revenue * 0.01)}`,
+                label: `Kommission (${data.current_commission_rate > 0 ? `${data.current_commission_rate.toFixed(1)}%` : "—"})`,
+                value: `CHF ${fmt(data.total_commission)}`,
                 icon: Percent,
                 color: "text-coral",
                 bg: "bg-coral/5",
               },
               {
+                label: "Netto an Salons",
+                value: `CHF ${fmt(data.total_net_to_salons)}`,
+                icon: Banknote,
+                color: "text-teal",
+                bg: "bg-teal/5",
+              },
+              {
                 label: "Transaktionen",
                 value: data.total_bookings.toString(),
                 icon: CreditCard,
+                color: "text-dark",
+                bg: "bg-dark/5",
+              },
+              {
+                label: "Ø Buchungswert",
+                value: `CHF ${fmt(data.avg_booking_value)}`,
+                icon: Calendar,
                 color: "text-dark",
                 bg: "bg-dark/5",
               },

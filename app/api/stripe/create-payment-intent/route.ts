@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { stripe, toRappen, PLATFORM_FEE_PERCENT } from "@/lib/stripe";
+import { stripe, toRappen } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createPaymentIntentSchema } from "@/lib/validations";
@@ -41,7 +41,15 @@ export async function POST(req: NextRequest) {
   }
 
   const depositRappen = toRappen(deposit_amount);
-  const platformFeeRappen = Math.round(depositRappen * PLATFORM_FEE_PERCENT);
+
+  // Fetch configurable commission rate from platform_settings (default 15%)
+  const { data: commissionSetting } = await admin
+    .from("platform_settings")
+    .select("value")
+    .eq("key", "commission")
+    .single();
+  const commissionRate = (commissionSetting?.value?.rate_percent ?? 15) / 100;
+  const platformFeeRappen = Math.round(depositRappen * commissionRate);
 
   const intentParams: Parameters<typeof stripe.paymentIntents.create>[0] = {
     amount: depositRappen,

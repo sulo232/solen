@@ -38,6 +38,31 @@ export async function POST(req: NextRequest) {
           payment_status: "deposit_held",
         }).eq("payment_intent_id", pi.id);
 
+        // Record commission payout for Stripe-processed bookings
+        const grossAmount = (pi.amount ?? 0) / 100; // Rappen → CHF
+        if (grossAmount > 0 && pi.metadata?.salon_id) {
+          // Fetch configurable commission rate from platform_settings
+          const { data: commissionSetting } = await admin
+            .from("platform_settings")
+            .select("value")
+            .eq("key", "commission")
+            .single();
+          const commissionPercent = commissionSetting?.value?.rate_percent ?? 15;
+          const commissionAmount = Math.round(grossAmount * (commissionPercent / 100) * 100) / 100;
+          const netAmount = Math.round((grossAmount - commissionAmount) * 100) / 100;
+
+          await admin.from("salon_payouts").insert({
+            booking_id: bookingId,
+            salon_id: pi.metadata.salon_id,
+            stripe_payment_intent_id: pi.id,
+            gross_amount: grossAmount,
+            commission_percent: commissionPercent,
+            commission_amount: commissionAmount,
+            net_amount: netAmount,
+            status: "recorded",
+          });
+        }
+
         // Send booking confirmation email to customer
         const { data: booking } = await admin
           .from("bookings")

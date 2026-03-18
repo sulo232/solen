@@ -59,6 +59,18 @@ export async function GET(req: NextRequest) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, revenue]) => ({ date, revenue, bookings: allBookings.filter((b) => b.starts_at.startsWith(date)).length }));
 
+  // Commission totals from salon_payouts
+  const { data: payouts } = await admin
+    .from("salon_payouts")
+    .select("gross_amount, commission_amount, net_amount")
+    .gte("created_at", since.toISOString());
+  const allPayouts = payouts ?? [];
+  const total_commission = allPayouts.reduce((sum, p) => sum + Number(p.commission_amount ?? 0), 0);
+  const total_net_to_salons = allPayouts.reduce((sum, p) => sum + Number(p.net_amount ?? 0), 0);
+  const current_commission_rate = allPayouts.length > 0
+    ? Math.round((total_commission / allPayouts.reduce((s, p) => s + Number(p.gross_amount ?? 0), 0)) * 10000) / 100
+    : 0;
+
   // Top salons
   const salonMap = new Map<string, { revenue: number; bookings: number }>();
   for (const b of allBookings) {
@@ -79,6 +91,9 @@ export async function GET(req: NextRequest) {
     total_bookings,
     avg_booking_value,
     growth_percent,
+    total_commission,
+    total_net_to_salons,
+    current_commission_rate,
     daily,
     top_salons,
   });
