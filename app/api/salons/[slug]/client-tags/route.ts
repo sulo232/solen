@@ -17,9 +17,9 @@ const deleteTagSchema = z.object({
   tag_id: z.string().uuid(),
 });
 
-// GET /api/salons/[salonId]/client-tags?customer_id=X — Get tags for a client
-export async function GET(req: NextRequest, { params }: { params: Promise<{ salonId: string }> }) {
-  const { salonId } = await params;
+// GET /api/salons/[slug]/client-tags?customer_id=X — Get tags for a client
+export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   const disabled = await checkFeatureEnabled("bookings");
   if (disabled) return disabled;
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ salo
   const { data: salon } = await supabase
     .from("salons")
     .select("id")
-    .eq("id", salonId)
+    .eq("id", slug)
     .eq("owner_id", user.id)
     .single();
 
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ salo
   const query = supabase
     .from("client_tags")
     .select("*")
-    .eq("salon_id", salonId)
+    .eq("salon_id", slug)
     .order("created_at", { ascending: true });
 
   if (customerId) {
@@ -60,9 +60,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ salo
   });
 }
 
-// POST /api/salons/[salonId]/client-tags — Add a tag
-export async function POST(req: NextRequest, { params }: { params: Promise<{ salonId: string }> }) {
-  const { salonId } = await params;
+// POST /api/salons/[slug]/client-tags — Add a tag
+export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   const disabled = await checkFeatureEnabled("bookings");
   if (disabled) return disabled;
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sal
   const { data: salon } = await supabase
     .from("salons")
     .select("id")
-    .eq("id", salonId)
+    .eq("id", slug)
     .eq("owner_id", user.id)
     .single();
 
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sal
   const { data: tag, error } = await supabase
     .from("client_tags")
     .insert({
-      salon_id: salonId,
+      salon_id: slug,
       customer_id: data.customer_id,
       tag: data.tag,
       color,
@@ -117,9 +117,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sal
   return NextResponse.json({ tag }, { status: 201 });
 }
 
-// DELETE /api/salons/[salonId]/client-tags — Remove a tag
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ salonId: string }> }) {
-  const { salonId } = await params;
+// DELETE /api/salons/[slug]/client-tags — Remove a tag
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
@@ -136,7 +136,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
   const { data: salon } = await supabase
     .from("salons")
     .select("id")
-    .eq("id", salonId)
+    .eq("id", slug)
     .eq("owner_id", user.id)
     .single();
 
@@ -146,7 +146,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
     .from("client_tags")
     .delete()
     .eq("id", data.tag_id)
-    .eq("salon_id", salonId);
+    .eq("salon_id", slug);
 
   return NextResponse.json({ success: true });
 }

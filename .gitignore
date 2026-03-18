@@ -49,3 +49,4 @@ supabase/.temp/
 .env.development
 
 _archive/
+node_modules_old/
