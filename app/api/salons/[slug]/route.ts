@@ -25,7 +25,7 @@ export async function GET(
     supabase.from("staff_members").select("*").eq("salon_id", salon.id).eq("is_active", true),
     supabase
       .from("reviews")
-      .select("*, profiles(display_name, avatar_url)")
+      .select("*, profiles(display_name, avatar_url), review_replies(id, reply_text, is_public)")
       .eq("salon_id", salon.id)
       .order("created_at", { ascending: false })
       .limit(20),
