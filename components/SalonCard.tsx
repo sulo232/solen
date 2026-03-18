@@ -25,6 +25,8 @@ interface SalonCardProps {
   onCompareToggle?: (salonId: string) => void;
   showAvailability?: boolean;
   showDistance?: boolean;
+  isFavorited?: boolean;
+  onFavoriteToggle?: (salonId: string) => void;
 }
 
 const quartierLabels: Record<string, string> = {
@@ -37,7 +39,7 @@ const quartierLabels: Record<string, string> = {
   breite: "Breite",
 };
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle }: SalonCardProps) {
   const href = `/${locale}/salon/${salon.slug}`;
 
   if (variant === "compact") {
@@ -115,9 +117,22 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               )}
             </button>
           )}
+          {/* Favorite heart */}
+          {onFavoriteToggle && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
+              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-white/90"
+              aria-label={isFavorited ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${isFavorited ? "fill-coral text-coral" : "text-dark/50"}`}
+              />
+            </button>
+          )}
           {/* Last-minute badge */}
           {salon.last_minute_discount_percent > 0 && (
-            <div className="absolute top-2 right-2">
+            <div className={`absolute ${onFavoriteToggle ? "top-12" : "top-2"} right-2`}>
               <span className="px-2 py-0.5 rounded-pill bg-coral text-white text-[10px] font-body font-semibold shadow-coral-glow">
                 -{salon.last_minute_discount_percent}%
               </span>
@@ -125,7 +140,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
           {/* Availability badge */}
           {showAvailability && salon.next_available_slot && (
-            <div className="absolute top-2 right-2" style={salon.last_minute_discount_percent > 0 ? { top: "2rem" } : undefined}>
+            <div className="absolute right-2" style={{ top: onFavoriteToggle ? (salon.last_minute_discount_percent > 0 ? "5rem" : "3rem") : (salon.last_minute_discount_percent > 0 ? "2rem" : "0.5rem") }}>
               <span className="px-2 py-0.5 rounded-pill bg-emerald-500 text-white text-[10px] font-body font-medium">
                 Verfügbar heute
               </span>

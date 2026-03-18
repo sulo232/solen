@@ -11,6 +11,7 @@ import {
   Palette,
   Zap,
   Clock,
+  RefreshCw,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -81,6 +82,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
   const fetchData = useCallback(() => {
     fetch("/api/salons?limit=8&sort=rating")
@@ -93,9 +96,47 @@ export default function HomePage() {
       .then((r) => r.json())
       .then((data) => setLastMinuteSlots(data.items ?? []))
       .catch(() => setLastMinuteSlots([]));
+
+    // Fetch last completed booking for "Wieder buchen?" widget
+    fetch("/api/bookings?status=completed&limit=1&sort=recent")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const booking = data?.bookings?.[0] ?? data?.items?.[0];
+        if (booking?.salon_name && booking?.salon_slug) {
+          setLastBookedSalon({ name: booking.salon_name, slug: booking.salon_slug });
+        }
+      })
+      .catch(() => {});
+
+    // Fetch user favorites
+    fetch("/api/profile/favorites")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const favs = data?.favorites ?? [];
+        setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  const handleFavoriteToggle = useCallback((salonId: string) => {
+    setFavoriteIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(salonId)) {
+        next.delete(salonId);
+        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch(() => {});
+      } else {
+        next.add(salonId);
+        fetch("/api/profile/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ salon_id: salonId }),
+        }).catch(() => {});
+      }
+      return next;
+    });
+  }, []);
 
   // Pull-to-refresh (touch only)
   useEffect(() => {
@@ -171,6 +212,34 @@ export default function HomePage() {
       {/* ── Social Proof ─────────────────────────────────────────────────── */}
       <SocialProofStrip />
 
+      {/* ── Wieder buchen? (logged-in users with past booking) ───────────── */}
+      {lastBookedSalon && (
+        <section className="max-w-5xl mx-auto px-4 pt-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="flex items-center gap-4 p-4 rounded-card bg-teal/5 border border-teal/15"
+          >
+            <div className="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center shrink-0">
+              <RefreshCw size={18} className="text-teal" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-heading font-semibold text-dark text-sm">Wieder buchen?</p>
+              <p className="text-xs text-dark/50 font-body truncate">
+                Dein letzter Besuch: {lastBookedSalon.name}
+              </p>
+            </div>
+            <Link
+              href={`/${locale}/salon/${lastBookedSalon.slug}`}
+              className="shrink-0 px-4 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+            >
+              Nochmal buchen
+            </Link>
+          </motion.div>
+        </section>
+      )}
+
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-4 py-10">
         <motion.div
@@ -245,7 +314,14 @@ export default function HomePage() {
                   key={salon.id}
                   className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]"
                 >
-                  <SalonCard salon={salon} locale={locale} showAvailability showDistance />
+                  <SalonCard
+                    salon={salon}
+                    locale={locale}
+                    showAvailability
+                    showDistance
+                    isFavorited={favoriteIds.has(salon.id)}
+                    onFavoriteToggle={handleFavoriteToggle}
+                  />
                 </div>
               ))}
             </div>
