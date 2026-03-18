@@ -91,12 +91,14 @@ export default function CookieBanner() {
               <button
                 onClick={acceptAll}
                 className="flex-1 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+                aria-label="Cookies akzeptieren"
               >
                 Akzeptieren
               </button>
               <button
                 onClick={rejectAll}
                 className="flex-1 py-2.5 rounded-button border border-gray-200 dark:border-white/10 text-sm font-medium text-dark/70 dark:text-dm-text/70 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                aria-label="Cookies ablehnen"
               >
                 Ablehnen
               </button>

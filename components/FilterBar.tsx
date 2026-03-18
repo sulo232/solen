@@ -94,6 +94,8 @@ export default function FilterBar() {
                   pillBase,
                   activeQuartier === value ? pillActive : pillInactive,
                 ].join(" ")}
+                aria-label={`Quartier ${label} ${activeQuartier === value ? "entfernen" : "filtern"}`}
+                aria-pressed={activeQuartier === value}
               >
                 {label}
               </button>
@@ -114,7 +116,7 @@ export default function FilterBar() {
                   : pillInactive,
               ].join(" ")}
             >
-              <SlidersHorizontal className="w-3 h-3" />
+              <SlidersHorizontal className="w-3 h-3" aria-hidden="true" />
               Preis
             </button>
             {priceOpen && (
@@ -128,6 +130,8 @@ export default function FilterBar() {
           <button
             onClick={() => setParam("availability", activeAvail === "today" ? null : "today")}
             className={[pillBase, activeAvail === "today" ? pillActive : pillInactive].join(" ")}
+            aria-label="Heute verfügbare Salons filtern"
+            aria-pressed={activeAvail === "today"}
           >
             Heute verfügbar
           </button>
@@ -195,6 +199,7 @@ export default function FilterBar() {
                     key={value}
                     onClick={() => { setParam("sort", value); setSortOpen(false); }}
                     className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-dark/80 hover:bg-gray-50 transition-colors"
+                    aria-label={`Sortieren nach ${label}`}
                   >
                     {label}
                     {activeSort === value && <Check className="w-3.5 h-3.5 text-teal" />}
@@ -210,7 +215,7 @@ export default function FilterBar() {
               onClick={() => router.replace(pathname, { scroll: false })}
               className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-body font-medium text-coral border border-coral/30 bg-coral/5 hover:bg-coral/10 transition-all duration-150 shrink-0"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3 h-3" aria-hidden="true" />
               Filter löschen
             </button>
           )}

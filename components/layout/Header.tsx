@@ -87,7 +87,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Logo + Sub-site icon */}
         <div className="flex items-center gap-2 shrink-0">
-          <Link href={`/${locale}`} className="flex items-center gap-2">
+          <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
             <span className="font-heading font-bold text-xl text-dark dark:text-dm-text tracking-tight">
               solen<span className="text-teal">.</span>ch
             </span>
@@ -136,6 +136,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           <Link
             href={profileHref}
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+            aria-label="Konto"
           >
             <User className="w-4 h-4" />
             {t("account")}
@@ -145,7 +146,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           <button
             onClick={() => setMobileOpen((v) => !v)}
             className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-dark/70 dark:text-dm-text/70"
-            aria-label="Menu"
+            aria-label={mobileOpen ? "Menü schliessen" : "Menü öffnen"}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>

@@ -262,6 +262,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             value={selectedStaff}
             onChange={(e) => setSelectedStaff(e.target.value)}
             className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm text-dark bg-white outline-none focus:border-teal transition-colors"
+            aria-label="Mitarbeiter wählen"
           >
             <option value="any">Egal (wer verfügbar ist)</option>
             {staffList.map((s) => (
@@ -326,6 +327,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                               ? "bg-teal text-white shadow-card"
                               : "bg-gray-100 text-dark hover:bg-teal/10 hover:text-teal",
                           ].join(" ")}
+                          aria-label={`Termin um ${timeStr}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
+                          aria-pressed={isSelected}
                         >
                           {timeStr}
                           {discount > 0 && (

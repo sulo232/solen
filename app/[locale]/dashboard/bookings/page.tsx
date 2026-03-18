@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck } from "lucide-react";
+import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
+import ClientTags from "@/components/chat/ClientTags";
 import type { Booking, BookingStatus } from "@/lib/types";
 
 interface EnrichedBooking extends Booking {
@@ -101,6 +102,7 @@ export default function BookingsPage() {
   const searchParams = useSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [salonId, setSalonId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">(
     (searchParams.get("status") as BookingStatus) ?? "all"
   );
@@ -114,7 +116,11 @@ export default function BookingsPage() {
     setLoading(true);
     fetch(`/api/bookings?${params}`)
       .then((r) => r.json())
-      .then((d) => setBookings(d.bookings ?? []))
+      .then((d) => {
+        const items = d.bookings ?? [];
+        setBookings(items);
+        if (items.length > 0 && !salonId) setSalonId(items[0].salon_id);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [statusFilter]);
@@ -209,6 +215,11 @@ export default function BookingsPage() {
                       </span>
                     )}
                   </div>
+                  {salonId && b.user_id && (
+                    <div className="mt-1">
+                      <ClientTags salonId={salonId} customerId={b.user_id} compact />
+                    </div>
+                  )}
                   <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
                   {b.staff_name && <p className="text-xs text-dark/30">{b.staff_name}</p>}
                   <p className="text-xs font-data text-dark/50 mt-1">CHF {b.price_paid}</p>
