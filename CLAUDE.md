@@ -587,7 +587,16 @@ if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, 
 if (req.headers.get("x-role") !== "admin") return ...
 ```
 
-### Rule 13: CODE REVIEW PROTOCOL
+### Rule 13: VERIFY YOUR BRANCH NAME BEFORE WORKING
+
+> **INCIDENT**: On 2026-03-18, a parallel session agent was told to create `moat/session2` but ended up on `moat/session3` (created by another agent running in parallel). All Session 2 commits landed on the wrong branch, causing confusion during merge.
+
+- After running `git checkout -b <branch>`, **IMMEDIATELY verify** the branch name with `git branch --show-current`
+- If the branch already exists (error: `fatal: A branch named 'X' already exists`), **DO NOT** silently switch to a different branch. STOP and ask the user.
+- If `git branch --show-current` shows a DIFFERENT branch than what you intended, **DO NOT** continue working. Switch to the correct branch first.
+- **NEVER** assume you're on the right branch — always verify after checkout.
+
+### Rule 14: CODE REVIEW PROTOCOL
 
 Before EVERY push:
 1. `npm run build` — must pass
