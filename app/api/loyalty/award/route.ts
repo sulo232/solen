@@ -109,12 +109,12 @@ async function sendAlmostThereEmail(
         subject: `⭐ Noch 1 Besuch bis zu deiner Belohnung bei ${salonName}!`,
         html: `
           <div style="font-family: 'DM Sans', sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
-            <h2 style="font-family: Syne, sans-serif; color: #1A1A2E;">Fast geschafft!</h2>
+            <h2 style="font-family: Syne, sans-serif; color: #1A1209;">Fast geschafft!</h2>
             <p style="color: #666;">Hallo ${displayName},</p>
             <p style="color: #666;">Du hast <strong>${card.stamps_needed - 1} von ${card.stamps_needed}</strong> Stempel bei <strong>${salonName}</strong> gesammelt.</p>
             <p style="color: #666;">Noch <strong>1 Besuch</strong> und du bekommst: <em>${card.reward_text}</em></p>
             <a href="https://www.solen.ch/de/coiffeur"
-              style="display: inline-block; background: #38B2AC; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
+              style="display: inline-block; background: #E8624A; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
             <p style="color: #999; font-size: 12px; margin-top: 24px;">— Dein Solen Team</p>

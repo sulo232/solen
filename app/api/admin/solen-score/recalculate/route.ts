@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         const activityScore = daysSinceLogin < 7 ? 10 : daysSinceLogin < 30 ? 5 : 0;
 
         const total = ratingScore + reviewScore + responseScore + profileScore + bookingScore + activityScore;
-        const tier = total >= 80 ? "gold" : total >= 60 ? "teal" : total >= 40 ? "grey" : "dark";
+        const tier = total >= 80 ? "gold" : total >= 60 ? "coral" : total >= 40 ? "grey" : "dark";
 
         const scoreDetails = {
           rating: ratingScore,
