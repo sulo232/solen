@@ -10,7 +10,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
-import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard } from "lucide-react";
+import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -113,6 +113,15 @@ export default function CheckoutPage() {
   const [confirmingAtSalon, setConfirmingAtSalon] = useState(false);
   const [atSalonConfirmed, setAtSalonConfirmed] = useState(false);
 
+  // Promo code state
+  const [promoCode, setPromoCode] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoResult, setPromoResult] = useState<{ valid: boolean; discount_amount: number; code: string } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+
+  // User credits
+  const [userCredits, setUserCredits] = useState(0);
+
   useEffect(() => {
     const raw = searchParams.get("booking_intent");
     if (!raw) { setError("Keine Buchungsdaten gefunden."); setLoading(false); return; }
@@ -154,6 +163,48 @@ export default function CheckoutPage() {
       .catch(() => setError("Fehler beim Laden der Zahlungsseite."))
       .finally(() => setLoading(false));
   }, [searchParams]);
+
+  // Fetch user credits
+  useEffect(() => {
+    fetch("/api/referral")
+      .then((r) => r.json())
+      .then((data) => {
+        // Sum available credits from user_credits endpoint would be better,
+        // but for now we can show earned amount as available
+        if (data.total_earned) setUserCredits(data.total_earned);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Validate promo code
+  const handlePromoValidate = async () => {
+    if (!promoCode.trim() || !intent) return;
+    setPromoLoading(true);
+    setPromoError(null);
+    setPromoResult(null);
+
+    try {
+      const res = await fetch("/api/promo/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: promoCode.trim(),
+          salon_id: intent.salon_id,
+          booking_amount: intent.estimated_price,
+        }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setPromoResult({ valid: true, discount_amount: data.discount_amount, code: data.code });
+      } else {
+        setPromoError(data.message ?? "Ungültiger Code");
+      }
+    } catch {
+      setPromoError("Fehler bei der Validierung");
+    } finally {
+      setPromoLoading(false);
+    }
+  };
 
   // Handle at_salon booking confirmation (no payment)
   const handleAtSalonConfirm = async () => {
@@ -293,6 +344,64 @@ export default function CheckoutPage() {
                 </p>
               </div>
               <span className="font-heading font-bold text-lg text-teal">CHF {chargeAmount.toFixed(2)}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Promo code + credits */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5 space-y-3">
+          <h2 className="font-heading font-semibold text-sm text-dark flex items-center gap-2">
+            <Tag className="w-4 h-4 text-teal" />
+            Promo-Code oder Guthaben
+          </h2>
+
+          {/* Promo code input */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              placeholder="Code eingeben"
+              disabled={!!promoResult}
+              className="flex-1 px-3 py-2 rounded-button border border-gray-200 bg-white text-sm text-dark placeholder:text-dark/30 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none disabled:opacity-50"
+            />
+            {promoResult ? (
+              <button
+                onClick={() => { setPromoResult(null); setPromoCode(""); }}
+                className="px-3 py-2 rounded-button bg-gray-100 text-dark/60 text-sm hover:bg-gray-200 transition-colors"
+              >
+                Entfernen
+              </button>
+            ) : (
+              <button
+                onClick={handlePromoValidate}
+                disabled={promoLoading || !promoCode.trim()}
+                className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+              >
+                {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Anwenden"}
+              </button>
+            )}
+          </div>
+
+          {promoError && (
+            <p className="text-xs text-coral">{promoError}</p>
+          )}
+
+          {promoResult && (
+            <div className="flex items-center justify-between bg-teal/5 border border-teal/15 rounded-button px-3 py-2">
+              <span className="text-sm text-teal font-medium">{promoResult.code} angewendet</span>
+              <span className="text-sm font-data font-bold text-teal">-CHF {promoResult.discount_amount.toFixed(2)}</span>
+            </div>
+          )}
+
+          {/* User credits */}
+          {userCredits > 0 && !promoResult && (
+            <div className="flex items-center justify-between bg-gray-50 rounded-button px-3 py-2">
+              <span className="text-sm text-dark/60 flex items-center gap-1.5">
+                <Wallet className="w-3.5 h-3.5 text-teal" />
+                Guthaben verfügbar
+              </span>
+              <span className="text-sm font-data font-semibold text-teal">CHF {userCredits.toFixed(2)}</span>
             </div>
           )}
         </div>

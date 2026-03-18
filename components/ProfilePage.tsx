@@ -8,6 +8,7 @@ import Link from "next/link";
 import {
   Calendar, Heart, User, Star, MapPin, X, RotateCcw,
   Bell, Settings, ChevronDown, ChevronUp, MessageCircle,
+  Gift, Wallet, ChevronRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
@@ -548,6 +549,33 @@ export default function ProfilePage() {
               ))}
             </div>
           )}
+        </motion.section>
+
+        {/* ── Section: Guthaben & Empfehlung ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <h2 className="font-heading font-bold text-base text-dark dark:text-white mb-3 flex items-center gap-2">
+            <Wallet size={16} className="text-teal" />
+            Guthaben & Empfehlung
+          </h2>
+          <div className="bg-white dark:bg-white/5 rounded-card border border-gray-100 dark:border-white/10 p-4 space-y-3">
+            <Link
+              href="/de/profile/referral"
+              className="flex items-center justify-between p-3 rounded-button bg-teal/5 border border-teal/15 hover:bg-teal/10 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <Gift className="w-5 h-5 text-teal" />
+                <div>
+                  <p className="text-sm font-medium text-dark dark:text-white">Freunde einladen</p>
+                  <p className="text-xs text-dark/50 dark:text-white/50">Beide erhalten CHF 10 Guthaben</p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-teal group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
         </motion.section>
 
         {/* ── Section 4: Einstellungen ── */}

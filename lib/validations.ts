@@ -69,3 +69,24 @@ export const directorySearchSchema = z.object({
   category: z.string().max(50).optional(),
   quartier: z.string().max(50).optional(),
 });
+
+export const validatePromoSchema = z.object({
+  code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()),
+  salon_id: uuid.optional(),
+  booking_amount: z.number().positive(),
+});
+
+export const createPromoSchema = z.object({
+  code: z.string().min(3).max(30).transform((v) => v.toUpperCase().trim()),
+  discount_type: z.enum(["percent", "fixed"]),
+  discount_value: z.number().positive(),
+  min_booking_amount: z.number().min(0).default(0),
+  max_uses: z.number().int().positive().optional().nullable(),
+  salon_id: uuid.optional().nullable(),
+  valid_from: z.string().datetime().optional(),
+  valid_until: z.string().datetime().optional().nullable(),
+});
+
+export const completeReferralSchema = z.object({
+  referral_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()),
+});

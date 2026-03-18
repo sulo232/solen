@@ -49,6 +49,13 @@ export const authLimiter = new Ratelimit({
   prefix: "rl:auth",
 });
 
+export const referralLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "30 d"),
+  analytics: true,
+  prefix: "rl:referral",
+});
+
 type RateLimitIdentifier = { ip: string } | { userId: string };
 
 export async function applyRateLimit(
