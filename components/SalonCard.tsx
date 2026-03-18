@@ -28,6 +28,9 @@ interface SalonCardProps {
   showDistance?: boolean;
   isFavorited?: boolean;
   onFavoriteToggle?: (salonId: string) => void;
+  stampProgress?: { current: number; total: number } | null;
+  solenTier?: "gold" | "teal" | "grey" | "dark" | null;
+  availableToday?: number | null;
 }
 
 const quartierLabels: Record<string, string> = {
@@ -40,7 +43,7 @@ const quartierLabels: Record<string, string> = {
   breite: "Breite",
 };
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday }: SalonCardProps) {
   const router = useRouter();
   const href = `/${locale}/salon/${salon.slug}`;
 
@@ -74,10 +77,10 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       animate="visible"
       whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.12)" }}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
-      className="will-change-transform"
+      className={`will-change-transform ${solenTier === "gold" ? "ring-2 ring-yellow-400/50 rounded-card" : ""}`}
       onMouseEnter={() => router.prefetch(href)}
     >
-      <Link href={href} className="block rounded-card bg-white dark:bg-dm-surface shadow-card overflow-hidden group">
+      <Link href={href} className="block rounded-card bg-white dark:bg-dm-surface shadow-card overflow-hidden group hover:shadow-lg transition-all duration-200">
         {/* Cover photo */}
         <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
           {salon.cover_photo_url ? (
@@ -91,6 +94,18 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-dark/20 text-4xl font-heading">
               {salon.name[0]}
+            </div>
+          )}
+          {/* Available today pill */}
+          {availableToday != null && availableToday > 0 && (
+            <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-sm z-[1]">
+              {availableToday} {availableToday === 1 ? "Termin" : "Termine"} heute frei
+            </div>
+          )}
+          {/* Solen tier badge */}
+          {solenTier === "gold" && (
+            <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs font-semibold px-2 py-0.5 rounded-full z-[1]">
+              Top Salon
             </div>
           )}
           {/* Glass category pills on photo */}
@@ -205,6 +220,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               </>
             )}
           </div>
+          {stampProgress && stampProgress.current > 0 && (
+            <span className="inline-flex items-center gap-1 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 px-2 py-0.5 rounded-full mt-1.5">
+              ⭐ {stampProgress.current}/{stampProgress.total}
+            </span>
+          )}
         </div>
       </Link>
     </motion.div>

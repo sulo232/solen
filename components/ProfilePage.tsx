@@ -8,13 +8,23 @@ import Link from "next/link";
 import {
   Calendar, Heart, User, Star, MapPin, X, RotateCcw,
   Bell, Settings, ChevronDown, ChevronUp, MessageCircle,
-  Gift, Wallet, ChevronRight,
+  Gift, Wallet, ChevronRight, Trophy,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
 import Spinner from "@/components/ui/Spinner";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import StampCard from "@/components/loyalty/StampCard";
 import type { Profile, Booking, SalonCard } from "@/lib/types";
+
+interface LoyaltyCard {
+  id: string;
+  salon_id: string;
+  stamps_needed: number;
+  reward_text: string;
+  stamps_collected: number;
+  salons: { name: string; slug: string; cover_photo_url: string | null };
+}
 
 // ─────────────────────────────────────────
 // Cancel modal (reused from account page)
@@ -345,6 +355,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [favorites, setFavorites] = useState<SalonCard[]>([]);
+  const [loyaltyCards, setLoyaltyCards] = useState<LoyaltyCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelTarget, setCancelTarget] = useState<BookingWithDetails | null>(null);
   const [pastOpen, setPastOpen] = useState(false);
@@ -354,8 +365,9 @@ export default function ProfilePage() {
       fetch("/api/profile").then((r) => r.json()),
       fetch("/api/bookings?limit=50").then((r) => r.json()).catch(() => ({ bookings: [] })),
       fetch("/api/profile/favorites").then((r) => r.ok ? r.json() : { salons: [] }).catch(() => ({ salons: [] })),
+      fetch("/api/loyalty").then((r) => r.ok ? r.json() : { cards: [] }).catch(() => ({ cards: [] })),
     ])
-      .then(([p, b, f]) => {
+      .then(([p, b, f, l]) => {
         if (!p?.id) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
           return;
@@ -363,6 +375,7 @@ export default function ProfilePage() {
         setProfile(p);
         setBookings(b.bookings ?? []);
         setFavorites(f.salons ?? []);
+        setLoyaltyCards(l.cards ?? []);
       })
       .catch(() => router.push(`/${locale}/auth/login`))
       .finally(() => setLoading(false));
@@ -556,6 +569,42 @@ export default function ProfilePage() {
                     <X size={12} />
                   </button>
                 </div>
+              ))}
+            </div>
+          )}
+        </motion.section>
+
+        {/* ── Section: Stempelkarten ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.17 }}
+          className="mb-6"
+        >
+          <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
+            <Trophy size={16} className="text-amber-500" />
+            Deine Stempelkarten
+          </h2>
+          {loyaltyCards.length === 0 ? (
+            <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
+              <Trophy className="w-8 h-8 mx-auto mb-2 opacity-30" />
+              <p className="text-sm font-medium">Du hast noch keine Stempel</p>
+              <Link href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+                Buche jetzt bei einem Salon!
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {loyaltyCards.map((card) => (
+                <StampCard
+                  key={card.id}
+                  salonName={card.salons.name}
+                  salonSlug={card.salons.slug}
+                  salonImageUrl={card.salons.cover_photo_url ?? undefined}
+                  stampsTotal={card.stamps_needed}
+                  stampsCollected={card.stamps_collected}
+                  rewardText={card.reward_text}
+                />
               ))}
             </div>
           )}

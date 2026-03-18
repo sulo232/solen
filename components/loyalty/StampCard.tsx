@@ -1,0 +1,124 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Check } from "lucide-react";
+
+interface StampCardProps {
+  salonName: string;
+  salonSlug: string;
+  salonImageUrl?: string;
+  stampsTotal: number;
+  stampsCollected: number;
+  rewardText: string;
+}
+
+const CONFETTI_COLORS = [
+  "#38B2AC", "#FF6B6B", "#F6E05E", "#68D391", "#63B3ED",
+  "#FC8181", "#B794F4", "#F687B3", "#4FD1C5", "#FBD38D",
+  "#9AE6B4", "#FEB2B2",
+];
+
+export default function StampCard({
+  salonName,
+  salonSlug,
+  salonImageUrl,
+  stampsTotal,
+  stampsCollected,
+  rewardText,
+}: StampCardProps) {
+  const isComplete = stampsCollected >= stampsTotal;
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    if (isComplete) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isComplete]);
+
+  return (
+    <div className="relative rounded-card border border-gray-100 dark:border-white/10 bg-white dark:bg-dm-surface shadow-card overflow-hidden">
+      {/* Confetti overlay */}
+      {showConfetti && (
+        <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+          {CONFETTI_COLORS.map((color, i) => (
+            <div
+              key={i}
+              className="confetti absolute w-2 h-2 rounded-full"
+              style={{
+                backgroundColor: color,
+                left: `${8 + (i * 7.5) % 84}%`,
+                animationDelay: `${i * 0.1}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Top: salon info */}
+      <Link
+        href={`/de/salon/${salonSlug}`}
+        className="flex items-center gap-3 p-4 pb-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+      >
+        <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-white/10 shrink-0">
+          {salonImageUrl ? (
+            <Image src={salonImageUrl} alt={salonName} fill className="object-cover" sizes="40px" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-sm font-heading text-dark/30 dark:text-dm-text/30">
+              {salonName[0]}
+            </div>
+          )}
+        </div>
+        <p className="font-heading font-semibold text-sm text-dark dark:text-dm-text truncate">
+          {salonName}
+        </p>
+      </Link>
+
+      {/* Middle: stamp circles */}
+      <div className="px-4 pb-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          {Array.from({ length: stampsTotal }).map((_, i) => {
+            const isFilled = i < stampsCollected;
+            const isNewest = i === stampsCollected - 1;
+            return (
+              <div
+                key={i}
+                className={[
+                  "w-9 h-9 rounded-full flex items-center justify-center transition-all",
+                  isFilled
+                    ? "bg-teal text-white"
+                    : "border-2 border-dashed border-gray-200 dark:border-white/20",
+                  isNewest ? "stamp-new" : "",
+                ].join(" ")}
+              >
+                {isFilled && <Check className="w-4 h-4" />}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Bottom: reward + progress */}
+      <div className="px-4 pb-4 flex items-center justify-between gap-2">
+        <p className="text-xs text-dark/60 dark:text-dm-text/60 font-body">
+          {rewardText}
+        </p>
+        <span className="text-xs font-data font-medium text-dark/50 dark:text-dm-text/50 whitespace-nowrap">
+          {stampsCollected} von {stampsTotal} Stempel
+        </span>
+      </div>
+
+      {/* Complete overlay */}
+      {isComplete && (
+        <div className="absolute bottom-0 left-0 right-0 bg-teal/10 dark:bg-teal/20 border-t border-teal/20 px-4 py-2 text-center">
+          <p className="text-xs font-medium text-teal">
+            Belohnung freigeschaltet!
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
