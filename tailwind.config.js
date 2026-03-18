@@ -27,23 +27,34 @@ module.exports = {
           dark: "#E85555",
         },
         dark: {
-          DEFAULT: "#1A1A2E",
-          50: "#f5f5f8",
-          100: "#e8e8f0",
-          200: "#c8c8d8",
-          300: "#9999b0",
-          400: "#666688",
-          500: "#1A1A2E",
+          DEFAULT: "#1A1209",
+          50: "#FAF6EF",
+          100: "#EDE5D8",
+          200: "#C8B8A6",
+          300: "#8A7A66",
+          400: "#4A3D2E",
+          500: "#1A1209",
         },
-        // Dark mode surfaces
+        // Dark mode surfaces (legacy)
         "dm-bg": "#0F0F1A",
         "dm-surface": "#1A1A2E",
         "dm-text": "#E2E8F0",
+        // ── Solen v2 Brand Tokens ──
+        "s-coral": { DEFAULT: "#E8624A", hover: "#CC4E35", subtle: "#FAECE7", text: "#7A2415" },
+        "s-amber": { DEFAULT: "#D4870A", hover: "#B3700A", subtle: "#FEF4E0", text: "#6B4005" },
+        "s-blue": { DEFAULT: "#6BA3C8", hover: "#4E8AB5", subtle: "#EAF3FB", text: "#1A4D72" },
+        "s-plum": { DEFAULT: "#4A1E3C", subtle: "#F0E8F0", text: "#4A1E3C" },
+        "s-sage": { DEFAULT: "#7BA688", subtle: "#EBF5EE", text: "#2E5E3A" },
+        "s-sand": { DEFAULT: "#C9A96E", subtle: "#F7F0E3", text: "#6B5430" },
+        "s-ink": { DEFAULT: "#1A1209", secondary: "#4A3D2E", tertiary: "#8A7A66", disabled: "#C4B8A6" },
+        "s-bg": { base: "#FAF6EF", surface: "#F3EDE2", raised: "#FFFFFF", sunken: "#EDE5D8" },
+        "s-dm": { bg: "#151009", surface: "#1E1710", raised: "#26201A", sunken: "#120D07", text: "#F5EEE4", "text-secondary": "#C8BAA8" },
       },
       fontFamily: {
         heading: ["Syne", "sans-serif"],
         body: ["DM Sans", "sans-serif"],
         data: ["Space Grotesk", "monospace"],
+        display: ["Bebas Neue", "sans-serif"],
       },
       borderRadius: {
         // Legacy
@@ -54,14 +65,18 @@ module.exports = {
         card: "12px",
         button: "8px",
         pill: "9999px",
+        blob: "30% 70% 70% 30% / 30% 30% 70% 70%",
       },
       boxShadow: {
         card: "0 4px 12px rgba(0,0,0,0.08)",
         "card-hover": "0 8px 24px rgba(0,0,0,0.12)",
-        "coral-glow": "0 2px 8px rgba(255,107,107,0.15)",
+        "coral-glow": "0 2px 8px rgba(232,98,74,0.15)",
         "teal-glow": "0 0 20px rgba(56, 178, 172, 0.3)",
         glass: "0 8px 32px rgba(0,0,0,0.06)",
         "glass-hover": "0 16px 48px rgba(0,0,0,0.10)",
+        "warm-sm": "0 2px 8px rgba(26,18,9,0.08)",
+        "warm-md": "0 4px 16px rgba(26,18,9,0.12)",
+        "warm-lg": "0 8px 32px rgba(26,18,9,0.16)",
       },
       backdropBlur: {
         xs: "4px",
@@ -80,8 +95,8 @@ module.exports = {
       },
       keyframes: {
         "pulse-coral": {
-          "0%, 100%": { boxShadow: "0 0 0 0 rgba(255,107,107,0.4)" },
-          "50%": { boxShadow: "0 0 0 8px rgba(255,107,107,0)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(232,98,74,0.4)" },
+          "50%": { boxShadow: "0 0 0 8px rgba(232,98,74,0)" },
         },
         "slide-in-up": {
           from: { transform: "translateY(12px)", opacity: "0" },
