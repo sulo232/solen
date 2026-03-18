@@ -85,6 +85,7 @@ export default function HomePage() {
   const [refreshing, setRefreshing] = useState(false);
   const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [newSalons, setNewSalons] = useState<SalonCardType[]>([]);
 
   const fetchData = useCallback(() => {
     fetch("/api/salons?limit=8&sort=rating")
@@ -117,6 +118,12 @@ export default function HomePage() {
         setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
       })
       .catch(() => {});
+
+    // Fetch newest salons
+    fetch("/api/salons?limit=6&sort=newest")
+      .then((r) => r.json())
+      .then((data) => setNewSalons(data.items ?? []))
+      .catch(() => setNewSalons([]));
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -333,14 +340,44 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
+      {newSalons.length > 0 && (
+        <section className="py-10">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles size={20} className="text-teal" />
+                <h2 className="font-heading font-bold text-2xl text-dark dark:text-dm-text" style={{ fontFamily: "Syne, sans-serif" }}>
+                  Neue Salons
+                </h2>
+              </div>
+              <p className="text-sm text-dark/50 dark:text-dm-text/50 font-body" style={{ fontFamily: "DM Sans, sans-serif" }}>
+                Frisch auf Solen — entdecke die neuesten Salons in Basel
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {newSalons.map((salon) => (
+                <SalonCard
+                  key={salon.id}
+                  salon={salon}
+                  locale={locale}
+                  isFavorited={favoriteIds.has(salon.id)}
+                  onFavoriteToggle={handleFavoriteToggle}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Last-Minute Section ────────────────────────────────────────────── */}
-      <section className="py-10">
+      <section className="py-10 bg-gray-50/50 dark:bg-dm-surface/50">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-1">
               <Clock size={20} className="text-coral" />
               <h2
-                className="font-heading font-bold text-2xl text-dark"
+                className="font-heading font-bold text-2xl text-dark dark:text-dm-text"
                 style={{ fontFamily: "Syne, sans-serif" }}
               >
                 Last-Minute Angebote

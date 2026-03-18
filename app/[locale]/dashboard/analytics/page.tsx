@@ -18,6 +18,7 @@ interface AnalyticsData {
   average_rating: number;
   rating_trend: "up" | "down" | "flat";
   last_minute_performance: { week: string; booked: number; expired: number }[];
+  percentile_rank?: number;
 }
 
 const TEAL = "#4ECDC4";
@@ -72,6 +73,23 @@ export default function AnalyticsPage() {
               <p className="font-data font-bold text-2xl text-teal">{data.customer_breakdown.new_customers}</p>
             </div>
           </div>
+
+          {/* Benchmark card */}
+          {data.percentile_rank != null && (
+            <div className="bg-gradient-to-r from-teal/10 to-teal/5 rounded-card border border-teal/20 p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-teal/20 flex items-center justify-center shrink-0">
+                <TrendingUp size={20} className="text-teal" />
+              </div>
+              <div>
+                <p className="font-heading font-semibold text-dark text-sm">
+                  Deine Bewertung: {data.average_rating.toFixed(1)} — Top {data.percentile_rank}% in Basel
+                </p>
+                <p className="text-xs text-dark/50 mt-0.5">
+                  Basierend auf allen aktiven Salons in deiner Stadt
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Bookings over time */}
           <div className="bg-white rounded-card border border-gray-100 p-5 shadow-card">

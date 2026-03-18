@@ -121,6 +121,40 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
         <label className="block text-xs font-medium text-dark/50 mb-2">Öffnungszeiten</label>
         <HoursEditor hours={form.opening_hours} onChange={(h) => setForm({ ...form, opening_hours: h })} />
       </div>
+      {/* Structured info fields */}
+      <div className="border-t border-gray-100 pt-4 mt-4">
+        <p className="text-xs font-medium text-dark/50 mb-3">Salondetails (für Kunden sichtbar)</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-[10px] text-dark/40 mb-1">Atmosphäre</label>
+            <input placeholder="z.B. Modern, Gemütlich"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+          </div>
+          <div>
+            <label className="block text-[10px] text-dark/40 mb-1">Expertise</label>
+            <input placeholder="z.B. Balayage, Locken"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+          </div>
+          <div>
+            <label className="block text-[10px] text-dark/40 mb-1">Produkte</label>
+            <input placeholder="z.B. Olaplex, Kérastase"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+          </div>
+          <div>
+            <label className="block text-[10px] text-dark/40 mb-1">Anfahrt</label>
+            <input placeholder="z.B. Tram 8, Parkplätze"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+          </div>
+        </div>
+        <div className="mt-3">
+          <button type="button" disabled
+            className="px-3 py-1.5 rounded-button border border-teal/30 text-teal text-xs font-medium opacity-60 cursor-not-allowed"
+            title="Kommt bald">
+            Vorschlag generieren (Kommt bald)
+          </button>
+        </div>
+      </div>
+
       <div>
         <p className="text-xs font-medium text-dark/50 mb-2">So sieht dein Salon für Kunden aus</p>
         <SalonCard salon={{ ...salon, ...form } as Salon} variant="compact" />
@@ -466,11 +500,17 @@ function VerificationTab({ salon }: { salon: Salon }) {
 // Payments Tab
 // ─────────────────────────────────────────
 
+type PaymentMode = "at_salon" | "deposit" | "prepay";
+
 function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { payment_mode?: PaymentMode; deposit_percent?: number; cancellation_hours?: number; late_cancel_fee_percent?: number };
   const [connectStatus, setConnectStatus] = useState<"loading" | "not_connected" | "pending" | "connected">("loading");
-  const [enabled, setEnabled] = useState((salon as Salon & { accepts_online_payment?: boolean }).accepts_online_payment ?? false);
-  const [deposit, setDeposit] = useState((salon as Salon & { no_show_deposit_amount?: number }).no_show_deposit_amount ?? 20);
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>(ext.payment_mode ?? "at_salon");
+  const [depositPercent, setDepositPercent] = useState(ext.deposit_percent ?? 20);
+  const [cancellationHours, setCancellationHours] = useState(ext.cancellation_hours ?? 24);
+  const [lateCancelFee, setLateCancelFee] = useState(ext.late_cancel_fee_percent ?? 50);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [connectLoading, setConnectLoading] = useState(false);
 
   useEffect(() => {
@@ -494,10 +534,14 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   const handleSave = async () => {
     setSaving(true);
     await onSave({
-      accepts_online_payment: enabled,
-      no_show_deposit_amount: deposit,
+      payment_mode: paymentMode,
+      deposit_percent: depositPercent,
+      cancellation_hours: cancellationHours,
+      late_cancel_fee_percent: lateCancelFee,
     } as Partial<Salon>);
     setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   const statusPill = {
@@ -507,85 +551,145 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
     connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-teal/10 text-teal font-medium">Verbunden ✓</span>,
   }[connectStatus];
 
+  const modeOptions: { id: PaymentMode; label: string; desc: string }[] = [
+    { id: "at_salon", label: "Zahlung im Salon", desc: "Keine Online-Zahlung, Kunden zahlen vor Ort" },
+    { id: "deposit", label: "Anzahlung", desc: "Kunden zahlen X% online, Rest im Salon" },
+    { id: "prepay", label: "Vorauszahlung", desc: "Kunden zahlen den vollen Betrag online" },
+  ];
+
   return (
     <div className="py-4 max-w-md space-y-6">
       {/* Marketing card */}
       <div className="rounded-card bg-teal/5 border border-teal/20 p-4">
-        <p className="text-sm font-semibold text-teal mb-1">🛡️ Schütze dich vor No-Shows</p>
+        <p className="text-sm font-semibold text-teal mb-1">Zahlungsmodus wählen</p>
         <p className="text-xs text-dark/60 leading-relaxed">
-          Kunden hinterlegen eine Kaution beim Buchen. Erscheinen sie nicht, behältst du die Kaution.
-          Du erhältst Buchungen von seriösen Kunden.
+          Wähle, wie deine Kunden bezahlen. Anzahlung oder Vorauszahlung schützt vor No-Shows.
         </p>
       </div>
 
-      {/* Toggle */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-dark">Online-Zahlung akzeptieren</p>
-          <p className="text-xs text-dark/40 mt-0.5">Kunden zahlen eine Kaution beim Buchen.</p>
+      {/* Payment mode radio cards */}
+      <div>
+        <label className="block text-xs font-medium text-dark/50 mb-2">Zahlungsmodus</label>
+        <div className="space-y-2">
+          {modeOptions.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => setPaymentMode(opt.id)}
+              className={[
+                "w-full rounded-card border p-3.5 text-left transition-colors flex items-center gap-3",
+                paymentMode === opt.id ? "border-teal bg-teal/5" : "border-gray-200 hover:border-gray-300",
+              ].join(" ")}
+            >
+              <div className={[
+                "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0",
+                paymentMode === opt.id ? "border-teal" : "border-gray-300"
+              ].join(" ")}>
+                {paymentMode === opt.id && <div className="w-2 h-2 rounded-full bg-teal" />}
+              </div>
+              <div>
+                <p className={["text-sm font-medium", paymentMode === opt.id ? "text-teal" : "text-dark"].join(" ")}>
+                  {opt.label}
+                </p>
+                <p className="text-[11px] text-dark/40 mt-0.5">{opt.desc}</p>
+              </div>
+            </button>
+          ))}
         </div>
-        <button
-          onClick={() => setEnabled(!enabled)}
-          className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-teal" : "bg-gray-200"].join(" ")}
-        >
-          <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
-            enabled ? "translate-x-5.5" : "translate-x-0.5"].join(" ")} />
-        </button>
       </div>
 
-      {enabled && (
+      {/* Deposit percent slider */}
+      {paymentMode === "deposit" && (
         <div>
           <div className="flex justify-between mb-2">
-            <label className="text-xs font-medium text-dark/50">Kaution bei No-Show</label>
-            <span className="text-sm font-bold text-teal font-data">CHF {deposit}</span>
+            <label className="text-xs font-medium text-dark/50">Anzahlung</label>
+            <span className="text-sm font-bold text-teal font-data">{depositPercent}%</span>
           </div>
           <input
-            type="range" min={5} max={100} step={5} value={deposit}
-            onChange={(e) => setDeposit(+e.target.value)}
+            type="range" min={5} max={50} step={5} value={depositPercent}
+            onChange={(e) => setDepositPercent(+e.target.value)}
             className="w-full accent-teal"
           />
           <div className="flex justify-between text-xs text-dark/30 mt-1">
-            <span>CHF 5</span><span>CHF 100</span>
+            <span>5%</span><span>50%</span>
+          </div>
+          <p className="text-xs text-dark/40 mt-2">
+            Bei einer Buchung von CHF 100 zahlt der Kunde CHF {depositPercent} online und CHF {100 - depositPercent} im Salon.
+          </p>
+        </div>
+      )}
+
+      {/* No-show protection settings */}
+      {paymentMode !== "at_salon" && (
+        <div className="border-t border-gray-100 pt-4 space-y-4">
+          <p className="text-xs font-medium text-dark/50">No-Show-Schutz</p>
+
+          <div>
+            <div className="flex justify-between mb-2">
+              <label className="text-xs text-dark/50">Kostenlose Stornierung bis</label>
+              <span className="text-sm font-bold text-dark font-data">{cancellationHours}h vorher</span>
+            </div>
+            <input
+              type="range" min={2} max={72} step={2} value={cancellationHours}
+              onChange={(e) => setCancellationHours(+e.target.value)}
+              className="w-full accent-teal"
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between mb-2">
+              <label className="text-xs text-dark/50">Gebühr bei verspäteter Stornierung</label>
+              <span className="text-sm font-bold text-coral font-data">{lateCancelFee}%</span>
+            </div>
+            <input
+              type="range" min={0} max={100} step={10} value={lateCancelFee}
+              onChange={(e) => setLateCancelFee(+e.target.value)}
+              className="w-full accent-coral"
+            />
+            <p className="text-xs text-dark/40 mt-1">
+              Wird automatisch bei Stornierung innerhalb der Frist belastet.
+            </p>
           </div>
         </div>
       )}
 
       {/* Stripe Connect */}
-      <div className="border border-gray-200 rounded-card p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-dark/40" />
-            <p className="text-sm font-medium text-dark">Bankkonto verknüpfen</p>
+      {paymentMode !== "at_salon" && (
+        <div className="border border-gray-200 rounded-card p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-dark/40" />
+              <p className="text-sm font-medium text-dark">Bankkonto verknüpfen</p>
+            </div>
+            {statusPill}
           </div>
-          {statusPill}
+          <p className="text-xs text-dark/50">
+            Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
+          </p>
+          {connectStatus !== "connected" && (
+            <button
+              onClick={handleConnect}
+              disabled={connectLoading || connectStatus === "loading"}
+              className="flex items-center gap-2 px-4 py-2 rounded-button border border-gray-200 text-sm text-dark hover:border-teal transition-colors disabled:opacity-50"
+            >
+              {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
+              Bankkonto verknüpfen
+            </button>
+          )}
         </div>
-        <p className="text-xs text-dark/50">
-          Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
-        </p>
-        {connectStatus !== "connected" && (
-          <button
-            onClick={handleConnect}
-            disabled={connectLoading || connectStatus === "loading"}
-            className="flex items-center gap-2 px-4 py-2 rounded-button border border-gray-200 text-sm text-dark hover:border-teal transition-colors disabled:opacity-50"
-          >
-            {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
-            Bankkonto verknüpfen
-          </button>
-        )}
+      )}
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2"
+        >
+          {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+          Speichern
+        </button>
+        {saved && <span className="text-sm text-teal">Gespeichert ✓</span>}
       </div>
-
-      <p className="text-xs text-dark/30">
-        Solen erhebt 1 % Servicegebühr auf Online-Zahlungen (gesetzlich vorgeschriebene Transparenz).
-      </p>
-
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2"
-      >
-        {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-        Speichern
-      </button>
     </div>
   );
 }
