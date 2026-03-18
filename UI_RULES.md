@@ -15,17 +15,21 @@
 - **Premium Feel:** The UI must feel like a luxury hotel booking site (Airbnb/Booking.com inspiration) but tailored for beauty services.
 
 ## 2. Colors & Branding
-- **Primary Colors:** 
-  - Teal: `#38B2AC`
-  - Coral: `#FF6B6B` (Use for urgency, e.g., Last-Minute countdowns)
-  - Dark: `#1A1A2E` (Use for primary text on light backgrounds)
+- **Primary Colors:**
+  - Terracotta Coral: `#E8624A` (class: `s-coral`) — primary brand color
+  - Amber: `#D4870A` (class: `s-amber`) — accent
+  - Basel Blue: `#6BA3C8` (class: `s-blue`) — accent
+  - Warm Ink: `#1A1209` (class: `s-ink`) — primary text on light backgrounds
+- **Backgrounds:** Cream `#FAF6EF` (base), White `#FFFFFF` (cards), `#EDE5D8` (sunken inputs)
+- **WCAG Rule:** `text-s-coral` (#E8624A) on cream FAILS AA for body text. Use `text-s-coral-text` (#7A2415) for small text (<18px). `text-s-coral` is OK for large headings, icons, badges, buttons.
 - **Google Auth:** The Google login button must use the **full-color** Google G logo, not a monochrome version.
 
 ## 3. Typography
+- **Display (≥40px):** `Bebas Neue` — hero headings, large impact text. Always uppercase.
 - **Headings:** `Syne`
 - **Body Text:** `DM Sans`
-- **Data/Numbers:** `Space Grotesk`
-- **Playful Accents:** Use an **Instagram-style squeeze/condensed font** for section labels, category names, or impact headers. Mix font weights to create a playful but premium hierarchy.
+- **Data/Numbers:** `DM Sans` with `tabular-nums` (class: `data-text`). Space Grotesk is retired.
+- **Playful Accents:** Use Bebas Neue for section labels, category names, or impact headers. Mix font weights to create a playful but premium hierarchy.
 
 ## 4. Animations & Interactions (`framer-motion`)
 - **Speed:** All transitions must be smooth and elegant (300-400ms duration).
@@ -49,8 +53,8 @@
 - **Last-Minute:** Must include an urgency timer counting down to when the appointment *starts*. 
 
 ## 7. 21st.dev Components
-- **InteractiveHoverButton:** Use for all primary CTAs. Customized with `bg-teal` and `text-white`.
-- **ExpandableNavTabs:** Used for mobile bottom nav. Spring animations, teal active color. Hidden on desktop.
+- **InteractiveHoverButton:** Use for all primary CTAs. Customized with `bg-s-coral` and `text-white`.
+- **ExpandableNavTabs:** Used for mobile bottom nav. Spring animations, `s-coral` active color. Hidden on desktop.
 - **Sidebar (dashboard):** Animated collapse/expand sidebar for dashboard layout.
 - All 21st.dev components require shadcn CSS variables defined in `globals.css` (`--primary`, `--muted`, `--accent`, etc.).
 
@@ -68,11 +72,11 @@
 ## 9. Dark Mode Tokens
 | Token | Light | Dark |
 |---|---|---|
-| Background | `bg-white` | `dark:bg-dm-bg` (#0F0F1A) |
-| Surface | `bg-white` | `dark:bg-dm-surface` (#1A1A2E) |
-| Text | `text-dark` | `dark:text-dm-text` (#E2E8F0) |
+| Background | `bg-s-bg-base` (#FAF6EF) | `dark:bg-s-dm-bg` (#151009) |
+| Surface | `bg-s-bg-raised` (#FFFFFF) | `dark:bg-s-dm-surface` (#1E1710) |
+| Text | `text-s-ink` (#1A1209) | `dark:text-s-dm-text` (#F5EEE4) |
 | Border | `border-gray-100` | `dark:border-white/5` |
-| Nav glass | `bg-white/80` | `dark:bg-dm-surface/80` |
+| Nav glass | `glass` (warm-tinted) | `dark:bg-s-dm-surface/80` |
 
 ---
 **Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules, you must **refuse the specific contradiction** and implement the component using these rules instead.

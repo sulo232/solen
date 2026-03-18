@@ -76,11 +76,18 @@ solen/
 
 ### 3.3 Design System (New — Next.js)
 
-- **Colors**: teal `#38B2AC` (primary), coral `#FF6B6B` (accent/urgency), dark `#1A1A2E`
-- **Fonts**: Syne (heading), DM Sans (body), Space Grotesk (data/numbers/prices)
+> ⚠️ DESIGN REBRAND IN PROGRESS — migrate all `teal` → `s-coral`, all `font-data` → `data-text`
+> Primary: Terracotta Coral #E8624A (class: s-coral)
+> Accents: Amber #D4870A (s-amber), Blue #6BA3C8 (s-blue)
+> Background: Cream #FAF6EF (s-bg-base)
+> Dark: #151009 (s-dm-bg)
+
+- **Colors**: Terracotta Coral `#E8624A` (primary, class: `s-coral`), Amber `#D4870A` (accent, class: `s-amber`), Basel Blue `#6BA3C8` (accent, class: `s-blue`), Warm Ink `#1A1209` (text, class: `s-ink`)
+- **Backgrounds**: Cream `#FAF6EF` (base), White `#FFFFFF` (cards/raised), `#EDE5D8` (sunken inputs), `#F3EDE2` (surface)
+- **Fonts**: Bebas Neue (display ≥40px), Syne (heading), DM Sans (body + data with `tabular-nums`)
 - **Radii**: card `12px`, pill `9999px`, button `8px`
-- **Shadows**: card `0 4px 12px rgba(0,0,0,0.08)`, coral-glow `0 2px 8px rgba(255,107,107,0.15)`
-- **Glass nav**: `bg-white/80 backdrop-blur-lg border-b border-gray-100`
+- **Shadows**: card `0 4px 12px rgba(0,0,0,0.08)`, warm-md `0 4px 16px rgba(26,18,9,0.12)`
+- **Glass nav**: `glass rounded-full shadow-warm-sm` (warm-tinted glassmorphism)
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
 - **Loading**: Use `<Skeleton variant="card" />` for full-page loading states. Use `<Spinner>` only for inline/button loading.
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
