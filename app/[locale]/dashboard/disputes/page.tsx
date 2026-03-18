@@ -41,6 +41,29 @@ const STATUS_COLORS: Record<string, string> = {
   auto_approved: "bg-gray-100 text-dark/50",
 };
 
+const UPCHARGE_REASONS: Record<string, string> = {
+  hair_length: "Haarlänge",
+  extra_treatment: "Zusätzliche Behandlung",
+  materials: "Material / Produkte",
+  overtime: "Zeitüberschreitung",
+  other: "Sonstiges",
+};
+
+function formatSalonReason(raw: string): { label: string; details?: string } {
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed.reason && typeof parsed.reason === "string") {
+      return {
+        label: UPCHARGE_REASONS[parsed.reason] ?? parsed.reason,
+        details: parsed.details || undefined,
+      };
+    }
+  } catch {
+    // Not JSON — legacy plain text reason
+  }
+  return { label: raw };
+}
+
 export default function DisputesPage() {
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +146,15 @@ export default function DisputesPage() {
 
                 <div className="mb-3">
                   <p className="text-xs text-dark/40 font-body mb-1">Begründung Salon</p>
-                  <p className="text-sm text-dark/70 font-body">{d.salon_reason}</p>
+                  {(() => {
+                    const { label, details } = formatSalonReason(d.salon_reason);
+                    return (
+                      <>
+                        <p className="text-sm text-dark/70 font-body font-medium">{label}</p>
+                        {details && <p className="text-xs text-dark/50 font-body mt-0.5">{details}</p>}
+                      </>
+                    );
+                  })()}
                 </div>
 
                 {d.customer_response && (
