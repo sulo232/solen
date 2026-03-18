@@ -39,7 +39,7 @@ export default function AGBPage() {
             <h2 className="font-heading font-semibold text-lg text-dark dark:text-dm-text">6. Datenschutz</h2>
             <p>
               Informationen zur Verarbeitung personenbezogener Daten finden Sie in unserer{" "}
-              <Link href="/de/datenschutz" className="text-teal hover:underline">
+              <Link href="/de/datenschutz" className="text-s-coral hover:underline">
                 Datenschutzerklärung
               </Link>.
             </p>
@@ -53,7 +53,7 @@ export default function AGBPage() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-gray-100">
-          <Link href="/de" className="text-sm text-teal hover:underline">
+          <Link href="/de" className="text-sm text-s-coral hover:underline">
             ← Zurück zur Startseite
           </Link>
         </div>

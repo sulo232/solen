@@ -61,7 +61,7 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-coral resize-none"
+          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
@@ -75,7 +75,7 @@ function CancelModal({
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium hover:bg-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
           Stornieren
@@ -109,7 +109,7 @@ function BookingsTab({ locale }: { locale: string }) {
       <div className="text-center py-12 text-dark/40">
         <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
         <p className="font-medium text-sm">Keine Termine</p>
-        <a href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+        <a href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
           Termin buchen →
         </a>
       </div>
@@ -123,8 +123,8 @@ function BookingsTab({ locale }: { locale: string }) {
     no_show: "Nicht erschienen",
   };
   const statusColor: Record<string, string> = {
-    confirmed: "text-teal",
-    cancelled: "text-coral",
+    confirmed: "text-s-coral",
+    cancelled: "text-s-coral",
     completed: "text-dark/50",
     no_show: "text-dark/30",
   };
@@ -178,7 +178,7 @@ function BookingsTab({ locale }: { locale: string }) {
                   {b.salon_slug && (
                     <a
                       href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-teal hover:border-teal transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
                     >
                       <RotateCcw size={12} />
                       Nochmal buchen
@@ -188,7 +188,7 @@ function BookingsTab({ locale }: { locale: string }) {
                   {canCancel && (
                     <button
                       onClick={() => setCancelTarget(b)}
-                      className="px-3 py-1.5 rounded-button border border-coral/30 text-xs text-coral hover:bg-coral/5 transition-colors"
+                      className="px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
                     >
                       Stornieren
                     </button>
@@ -249,7 +249,7 @@ function FavoritesTab({ locale }: { locale: string }) {
       <div className="text-center py-12 text-dark/40">
         <Heart className="w-10 h-10 mx-auto mb-3 opacity-30" />
         <p className="font-medium text-sm">Keine Favoriten</p>
-        <a href={`/${locale}/coiffeur`} className="text-teal text-xs mt-1 hover:underline inline-block">
+        <a href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
           Salons entdecken →
         </a>
       </div>
@@ -266,7 +266,7 @@ function FavoritesTab({ locale }: { locale: string }) {
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <a href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-dark hover:text-teal transition-colors truncate block">
+            <a href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-dark hover:text-s-coral transition-colors truncate block">
               {salon.name}
             </a>
             <p className="text-xs text-dark/40 flex items-center gap-1 mt-0.5">
@@ -279,7 +279,7 @@ function FavoritesTab({ locale }: { locale: string }) {
           </div>
           <button
             onClick={() => toggleFav(salon.id)}
-            className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-dark/20 hover:text-coral hover:bg-coral/10 transition-colors opacity-0 group-hover:opacity-100"
+            className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-dark/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100"
             title="Aus Favoriten entfernen"
           >
             <X size={12} />
@@ -313,7 +313,7 @@ function ProfileTab({ profile, onSave }: { profile: Profile; onSave: (p: Partial
   return (
     <form onSubmit={handleSubmit} className="max-w-md py-4 space-y-4">
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-teal/10 overflow-hidden shrink-0 flex items-center justify-center text-2xl font-heading text-teal">
+        <div className="w-16 h-16 rounded-full bg-s-coral/10 overflow-hidden shrink-0 flex items-center justify-center text-2xl font-heading text-s-coral">
           {avatar ? (
             <Image src={avatar} alt="" width={64} height={64} className="object-cover w-full h-full" />
           ) : (
@@ -325,7 +325,7 @@ function ProfileTab({ profile, onSave }: { profile: Profile; onSave: (p: Partial
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder="Avatar-URL (optional)"
-          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -335,7 +335,7 @@ function ProfileTab({ profile, onSave }: { profile: Profile; onSave: (p: Partial
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -345,7 +345,7 @@ function ProfileTab({ profile, onSave }: { profile: Profile; onSave: (p: Partial
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal resize-none"
+          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
@@ -353,12 +353,12 @@ function ProfileTab({ profile, onSave }: { profile: Profile; onSave: (p: Partial
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Spinner size="sm" invert />}
           Speichern
         </button>
-        {saved && <span className="text-sm text-teal font-medium">Gespeichert ✓</span>}
+        {saved && <span className="text-sm text-s-coral font-medium">Gespeichert ✓</span>}
       </div>
     </form>
   );
@@ -405,7 +405,7 @@ function NotificationsTab({ profile, onSave }: { profile: Profile; onSave: (p: P
           onClick={() => setEmailOn(!emailOn)}
           className={[
             "relative w-11 h-6 rounded-full transition-colors shrink-0",
-            emailOn ? "bg-teal" : "bg-gray-200",
+            emailOn ? "bg-s-coral" : "bg-gray-200",
           ].join(" ")}
           aria-pressed={emailOn}
         >
@@ -429,8 +429,8 @@ function NotificationsTab({ profile, onSave }: { profile: Profile; onSave: (p: P
               className={[
                 "px-4 py-2 rounded-button text-sm font-medium border transition-colors",
                 lang === l
-                  ? "bg-teal text-white border-teal"
-                  : "border-gray-200 text-dark/60 hover:border-teal hover:text-teal",
+                  ? "bg-s-coral text-white border-s-coral"
+                  : "border-gray-200 text-dark/60 hover:border-s-coral hover:text-s-coral",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : "Français"}
@@ -443,12 +443,12 @@ function NotificationsTab({ profile, onSave }: { profile: Profile; onSave: (p: P
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Spinner size="sm" invert />}
           Speichern
         </button>
-        {saved && <span className="text-sm text-teal font-medium">Gespeichert ✓</span>}
+        {saved && <span className="text-sm text-s-coral font-medium">Gespeichert ✓</span>}
       </div>
     </div>
   );
@@ -519,7 +519,7 @@ export default function AccountPage() {
         <div className="py-4">
           <a
             href={`/${locale}/account/messages`}
-            className="inline-flex items-center gap-2 text-sm text-teal hover:underline"
+            className="inline-flex items-center gap-2 text-sm text-s-coral hover:underline"
           >
             <MessageCircle size={14} />
             Zur Nachrichten-Übersicht →
@@ -550,7 +550,7 @@ export default function AccountPage() {
           transition={{ duration: 0.35 }}
           className="flex items-center gap-4 mb-8"
         >
-          <div className="w-14 h-14 rounded-full bg-teal/10 overflow-hidden flex items-center justify-center text-xl font-heading text-teal shrink-0">
+          <div className="w-14 h-14 rounded-full bg-s-coral/10 overflow-hidden flex items-center justify-center text-xl font-heading text-s-coral shrink-0">
             {profile.avatar_url ? (
               <Image src={profile.avatar_url} alt="" width={56} height={56} className="object-cover w-full h-full" />
             ) : (

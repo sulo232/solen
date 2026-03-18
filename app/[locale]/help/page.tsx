@@ -18,8 +18,8 @@ type HelpArticle = {
 };
 
 const CATEGORIES = [
-  { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-teal/10 text-teal" },
-  { key: "salons", label: "Für Salons", Icon: Store, color: "bg-coral/10 text-coral" },
+  { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-s-coral/10 text-s-coral" },
+  { key: "salons", label: "Für Salons", Icon: Store, color: "bg-s-coral/10 text-s-coral" },
   { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-dark/5 text-dark/70" },
 ];
 
@@ -53,10 +53,10 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-gradient-to-b from-teal/5 via-white to-transparent pt-24 pb-8">
+      <div className="bg-gradient-to-b from-s-coral/5 via-white to-transparent pt-24 pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-teal/10 flex items-center justify-center mx-auto mb-4">
-            <BookOpen size={28} className="text-teal" />
+          <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
+            <BookOpen size={28} className="text-s-coral" />
           </div>
           <h1 className="font-heading font-bold text-2xl sm:text-4xl text-dark">
             Hilfe & Support
@@ -73,7 +73,7 @@ export default function HelpPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suche nach Themen..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-gray-200 bg-white text-sm font-body focus:outline-none focus:ring-2 focus:ring-teal/30 focus:border-teal transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-gray-200 bg-white text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-colors"
             />
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function HelpPage() {
             className={[
               "px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
               activeCategory === null
-                ? "bg-teal text-white"
+                ? "bg-s-coral text-white"
                 : "bg-gray-100 text-dark/60 hover:bg-gray-200",
             ].join(" ")}
           >
@@ -100,7 +100,7 @@ export default function HelpPage() {
               className={[
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
                 activeCategory === key
-                  ? "bg-teal text-white"
+                  ? "bg-s-coral text-white"
                   : "bg-gray-100 text-dark/60 hover:bg-gray-200",
               ].join(" ")}
             >

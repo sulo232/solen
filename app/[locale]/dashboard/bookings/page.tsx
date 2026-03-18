@@ -23,8 +23,8 @@ const STATUS_LABELS: Record<BookingStatus, string> = {
   no_show: "Nicht erschienen",
 };
 const STATUS_COLORS: Record<BookingStatus, string> = {
-  confirmed: "bg-teal/10 text-teal",
-  cancelled: "bg-coral/10 text-coral",
+  confirmed: "bg-s-coral/10 text-s-coral",
+  cancelled: "bg-s-coral/10 text-s-coral",
   completed: "bg-gray-100 text-dark/50",
   no_show: "bg-gray-100 text-dark/30",
 };
@@ -74,7 +74,7 @@ function SalonCancelModal({
         <p className="text-sm text-dark/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
-            <label key={r.value} className="flex items-center gap-3 p-3 rounded-button border border-gray-200 cursor-pointer hover:border-teal transition-colors">
+            <label key={r.value} className="flex items-center gap-3 p-3 rounded-button border border-gray-200 cursor-pointer hover:border-s-coral transition-colors">
               <input type="radio" name="reason" value={r.value} checked={reason === r.value}
                 onChange={() => setReason(r.value)} className="accent-teal" />
               <span className="text-sm">{r.label}</span>
@@ -84,7 +84,7 @@ function SalonCancelModal({
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
-            className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Stornieren
           </button>
         </div>
@@ -173,7 +173,7 @@ export default function BookingsPage() {
             onClick={() => setStatusFilter(s)}
             className={[
               "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
-              statusFilter === s ? "bg-teal text-white" : "bg-white border border-gray-200 text-dark/60 hover:border-teal",
+              statusFilter === s ? "bg-s-coral text-white" : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral",
             ].join(" ")}
           >
             {s === "all" ? "Alle" : STATUS_LABELS[s]}
@@ -194,7 +194,7 @@ export default function BookingsPage() {
               <div className="flex items-start gap-4">
                 {/* Time */}
                 <div className="shrink-0 text-center w-14">
-                  <p className="font-data font-bold text-sm text-teal">
+                  <p className="data-text font-bold text-sm text-s-coral">
                     {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                   </p>
                   <p className="text-[10px] text-dark/30">
@@ -207,7 +207,7 @@ export default function BookingsPage() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-medium text-dark">{b.customer_name}</p>
                     {b.is_first_visit && (
-                      <span className="px-1.5 py-0.5 rounded-pill bg-coral/10 text-coral text-[10px] font-bold">NEUKUNDE</span>
+                      <span className="px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">NEUKUNDE</span>
                     )}
                     {b.is_recurring && (
                       <span className="flex items-center gap-0.5 text-[10px] text-dark/40">
@@ -222,7 +222,7 @@ export default function BookingsPage() {
                   )}
                   <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
                   {b.staff_name && <p className="text-xs text-dark/30">{b.staff_name}</p>}
-                  <p className="text-xs font-data text-dark/50 mt-1">CHF {b.price_paid}</p>
+                  <p className="text-xs data-text text-dark/50 mt-1">CHF {b.price_paid}</p>
                 </div>
 
                 {/* Status + actions */}
@@ -234,7 +234,7 @@ export default function BookingsPage() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => updateStatus(b.id, "completed")}
-                        className="p-1.5 rounded-button bg-teal/10 text-teal hover:bg-teal/20 transition-colors"
+                        className="p-1.5 rounded-button bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                         title="Abgeschlossen"
                       >
                         <Check size={13} />
@@ -248,7 +248,7 @@ export default function BookingsPage() {
                       </button>
                       <button
                         onClick={() => setCancelTarget(b.id)}
-                        className="p-1.5 rounded-button bg-coral/10 text-coral hover:bg-coral/20 transition-colors"
+                        className="p-1.5 rounded-button bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                         title="Stornieren"
                       >
                         <X size={13} />
@@ -259,7 +259,7 @@ export default function BookingsPage() {
                     <button
                       onClick={() => confirmPrice(b.id)}
                       disabled={confirmingPrice === b.id}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-button bg-teal/10 text-teal text-[11px] font-medium hover:bg-teal/20 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-button bg-s-coral/10 text-s-coral text-[11px] font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
                       title="Preis bestätigen"
                     >
                       <BadgeCheck size={12} />

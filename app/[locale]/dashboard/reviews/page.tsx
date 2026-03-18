@@ -22,7 +22,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} size={12} className={i <= rating ? "fill-coral text-coral" : "text-gray-200"} />
+        <Star key={i} size={12} className={i <= rating ? "fill-s-coral text-s-coral" : "text-gray-200"} />
       ))}
     </div>
   );
@@ -93,7 +93,7 @@ export default function SalonReviewsPage() {
             >
               {/* Review header */}
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center text-xs font-bold text-teal shrink-0">
+                <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center text-xs font-bold text-s-coral shrink-0">
                   {(r.profiles?.display_name ?? "?")[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -118,8 +118,8 @@ export default function SalonReviewsPage() {
 
               {/* Existing salon response */}
               {r.salon_response && (
-                <div className="bg-teal/5 rounded-lg p-3 mb-3">
-                  <p className="text-[10px] font-bold text-teal mb-1">Deine Antwort</p>
+                <div className="bg-s-coral/5 rounded-lg p-3 mb-3">
+                  <p className="text-[10px] font-bold text-s-coral mb-1">Deine Antwort</p>
                   <p className="text-xs text-dark/70">{r.salon_response}</p>
                 </div>
               )}
@@ -134,12 +134,12 @@ export default function SalonReviewsPage() {
                         placeholder="Antwort schreiben..."
                         value={responseText}
                         onChange={(e) => setResponseText(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal"
+                        className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
                       />
                       <button
                         onClick={() => handleRespond(r.id)}
                         disabled={saving || !responseText.trim()}
-                        className="px-3 py-2 rounded-button bg-teal text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1"
+                        className="px-3 py-2 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1"
                       >
                         {saving && <Spinner size="sm" invert />}
                         Senden
@@ -154,7 +154,7 @@ export default function SalonReviewsPage() {
                   ) : (
                     <button
                       onClick={() => setRespondingTo(r.id)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-teal/30 text-teal text-xs font-medium hover:bg-teal/5 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                     >
                       <MessageCircle size={12} />
                       Antwort schreiben

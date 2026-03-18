@@ -54,7 +54,7 @@ function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, spar
           <MiniSparkline data={sparklineData} color={sparklineColor} width={64} height={24} />
         )}
       </div>
-      <p className="font-data font-bold text-2xl text-dark">{display}</p>
+      <p className="data-text font-bold text-2xl text-dark">{display}</p>
       <p className="text-xs text-dark/40 mt-0.5 leading-tight">{label}</p>
     </motion.div>
   );
@@ -134,7 +134,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35 }}
-            className="mb-6 bg-teal text-white rounded-card px-5 py-4 flex items-center gap-3 shadow-teal-glow"
+            className="mb-6 bg-s-coral text-white rounded-card px-5 py-4 flex items-center gap-3 shadow-teal-glow"
           >
             <PartyPopper size={22} className="shrink-0" />
             <div>
@@ -163,9 +163,9 @@ export default function DashboardPage() {
               className="grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
               {[
-                { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-teal", bg: "bg-teal/5", sparklineData: stats.trends?.bookings, sparklineColor: "#38B2AC" },
-                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-dark", bg: "bg-dark/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1A2E" },
-                { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-coral", bg: "bg-coral/5", sparklineData: stats.trends?.new_customers, sparklineColor: "#FF6B6B" },
+                { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.bookings, sparklineColor: "#E8624A" },
+                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-dark", bg: "bg-dark/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1209" },
+                { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.new_customers, sparklineColor: "#D4870A" },
                 { label: "Bewertung", value: Math.round(stats.average_rating * 10), Icon: Star, color: "text-amber-400", bg: "bg-amber-50", isRating: true, sparklineData: stats.trends?.rating, sparklineColor: "#F59E0B" },
               ].map((s) => (
                 <StatCard key={s.label} {...s} />
@@ -178,23 +178,23 @@ export default function DashboardPage() {
             <div className="space-y-2">
               <h2 className="text-xs font-medium text-dark/40 uppercase tracking-wide">Handlungsbedarf</h2>
               {stats.verification_overdue && (
-                <div className="bg-coral/5 border border-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
-                  <ShieldAlert size={16} className="text-coral shrink-0" />
+                <div className="bg-s-coral/5 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
+                  <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-dark">Verifizierung überfällig</p>
                     <p className="text-xs text-dark/50">Dein Salon wurde seit über 90 Tagen nicht verifiziert.</p>
                   </div>
-                  <a href={`/${locale}/dashboard/settings?tab=verification`} className="text-xs text-teal font-medium">Verifizieren →</a>
+                  <a href={`/${locale}/dashboard/settings?tab=verification`} className="text-xs text-s-coral font-medium">Verifizieren →</a>
                 </div>
               )}
               {stats.low_slots_warning && (
-                <div className="bg-coral/5 border border-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
-                  <AlertTriangle size={16} className="text-coral shrink-0" />
+                <div className="bg-s-coral/5 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
+                  <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-dark">Wenig freie Slots</p>
                     <p className="text-xs text-dark/50">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
                   </div>
-                  <a href={`/${locale}/dashboard/calendar`} className="text-xs text-teal font-medium">Erstellen →</a>
+                  <a href={`/${locale}/dashboard/calendar`} className="text-xs text-s-coral font-medium">Erstellen →</a>
                 </div>
               )}
               {stats.pending_cancellations > 0 && (
@@ -203,7 +203,7 @@ export default function DashboardPage() {
                   <div className="flex-1">
                     <p className="text-sm font-medium text-dark">{stats.pending_cancellations} Stornierungsanfragen</p>
                   </div>
-                  <a href={`/${locale}/dashboard/bookings?status=cancelled`} className="text-xs text-teal font-medium">Anzeigen →</a>
+                  <a href={`/${locale}/dashboard/bookings?status=cancelled`} className="text-xs text-s-coral font-medium">Anzeigen →</a>
                 </div>
               )}
             </div>
@@ -212,10 +212,10 @@ export default function DashboardPage() {
           {/* Unread messages */}
           {unread > 0 && (
             <a href={`/${locale}/dashboard/messages`}
-              className="block bg-white rounded-card border border-gray-100 p-4 shadow-card hover:border-teal transition-colors">
+              className="block bg-white rounded-card border border-gray-100 p-4 shadow-card hover:border-s-coral transition-colors">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-coral/10 flex items-center justify-center">
-                  <MessageCircle size={18} className="text-coral" />
+                <div className="w-9 h-9 rounded-full bg-s-coral/10 flex items-center justify-center">
+                  <MessageCircle size={18} className="text-s-coral" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-dark">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-medium text-dark/40 uppercase tracking-wide">Heute</h2>
-              <a href={`/${locale}/dashboard/bookings`} className="text-xs text-teal hover:underline">Alle →</a>
+              <a href={`/${locale}/dashboard/bookings`} className="text-xs text-s-coral hover:underline">Alle →</a>
             </div>
             {bookings.length === 0 ? (
               <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/30">
@@ -240,7 +240,7 @@ export default function DashboardPage() {
               <div className="space-y-2">
                 {bookings.map((b) => (
                   <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4 flex items-center gap-4">
-                    <p className="font-data font-bold text-sm text-teal w-12 shrink-0 text-center">
+                    <p className="data-text font-bold text-sm text-s-coral w-12 shrink-0 text-center">
                       {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                     <div className="flex-1 min-w-0">
@@ -248,7 +248,7 @@ export default function DashboardPage() {
                       <p className="text-xs text-dark/40 truncate">{b.service_name}</p>
                     </div>
                     {b.is_first_visit && (
-                      <span className="px-2 py-0.5 rounded-pill bg-coral/10 text-coral text-[10px] font-bold shrink-0">
+                      <span className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold shrink-0">
                         NEUKUNDE
                       </span>
                     )}
@@ -268,8 +268,8 @@ export default function DashboardPage() {
                 { label: "Nachrichten", href: `/${locale}/dashboard/messages`, Icon: MessageCircle },
               ].map(({ label, href, Icon }) => (
                 <a key={href} href={href}
-                  className="bg-white rounded-card border border-gray-100 p-3 flex flex-col items-center gap-2 text-center hover:border-teal transition-colors">
-                  <Icon size={18} className="text-teal" />
+                  className="bg-white rounded-card border border-gray-100 p-3 flex flex-col items-center gap-2 text-center hover:border-s-coral transition-colors">
+                  <Icon size={18} className="text-s-coral" />
                   <p className="text-xs text-dark/60 leading-tight">{label}</p>
                 </a>
               ))}

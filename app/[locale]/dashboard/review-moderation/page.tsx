@@ -30,7 +30,7 @@ function Stars({ rating }: { rating: number }) {
         <Star
           key={i}
           size={12}
-          className={i <= rating ? "fill-coral text-coral" : "text-gray-200"}
+          className={i <= rating ? "fill-s-coral text-s-coral" : "text-gray-200"}
         />
       ))}
     </div>
@@ -57,7 +57,7 @@ function DeleteModal({
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
             Löschen
@@ -150,7 +150,7 @@ export default function ReviewModerationPage() {
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
-              tab === t.id ? "bg-teal text-white" : "bg-white border border-gray-200 text-dark/60 hover:border-teal"
+              tab === t.id ? "bg-s-coral text-white" : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral"
             }`}
           >
             {t.label}
@@ -170,7 +170,7 @@ export default function ReviewModerationPage() {
               key={r.id}
               variants={itemVariants}
               className={`bg-white rounded-card border shadow-card p-4 ${
-                r.is_hidden ? "border-coral/30 bg-coral/[0.02]" : r.is_flagged ? "border-amber-200" : "border-gray-100"
+                r.is_hidden ? "border-s-coral/30 bg-s-coral/[0.02]" : r.is_flagged ? "border-amber-200" : "border-gray-100"
               }`}
             >
               {/* Header */}
@@ -202,7 +202,7 @@ export default function ReviewModerationPage() {
                   </span>
                 )}
                 {r.is_hidden && (
-                  <span className="px-2 py-0.5 rounded-pill bg-coral/10 text-coral text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">
                     Versteckt
                   </span>
                 )}
@@ -210,8 +210,8 @@ export default function ReviewModerationPage() {
 
               {/* Existing admin response */}
               {r.admin_response && (
-                <div className="bg-teal/5 rounded-lg p-3 mb-3">
-                  <p className="text-[10px] font-bold text-teal mb-1">Admin-Antwort</p>
+                <div className="bg-s-coral/5 rounded-lg p-3 mb-3">
+                  <p className="text-[10px] font-bold text-s-coral mb-1">Admin-Antwort</p>
                   <p className="text-xs text-dark/70">{r.admin_response}</p>
                 </div>
               )}
@@ -224,12 +224,12 @@ export default function ReviewModerationPage() {
                     placeholder="Öffentliche Antwort schreiben..."
                     value={adminResponses[r.id] ?? ""}
                     onChange={(e) => setAdminResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
-                    className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal"
+                    className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
                   />
                   <button
                     onClick={() => handleAdminResponse(r.id)}
                     disabled={!adminResponses[r.id]?.trim()}
-                    className="px-3 py-2 rounded-button bg-teal text-white text-xs font-medium disabled:opacity-50"
+                    className="px-3 py-2 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50"
                   >
                     Senden
                   </button>
@@ -240,7 +240,7 @@ export default function ReviewModerationPage() {
               <div className="flex items-center gap-2 pt-2 border-t border-gray-50">
                 <button
                   onClick={() => handleAction(r.id, "approve")}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-teal/30 text-teal text-xs font-medium hover:bg-teal/5 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                 >
                   <Check size={12} />
                   Genehmigen
@@ -254,7 +254,7 @@ export default function ReviewModerationPage() {
                 </button>
                 <button
                   onClick={() => setDeleteTarget(r.id)}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-coral/30 text-coral text-xs font-medium hover:bg-coral/5 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                 >
                   <Trash2 size={12} />
                   Löschen

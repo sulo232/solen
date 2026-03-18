@@ -112,8 +112,8 @@ export default function HelpEditorPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal/10 flex items-center justify-center">
-              <BookOpen size={20} className="text-teal" />
+            <div className="w-10 h-10 rounded-xl bg-s-coral/10 flex items-center justify-center">
+              <BookOpen size={20} className="text-s-coral" />
             </div>
             <div>
               <h1 className="font-heading font-bold text-xl text-dark">Hilfe-Artikel</h1>
@@ -122,7 +122,7 @@ export default function HelpEditorPage() {
           </div>
           <button
             onClick={openNew}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors"
           >
             <Plus size={16} />
             Neuer Artikel
@@ -140,12 +140,12 @@ export default function HelpEditorPage() {
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
                 placeholder="slug (z.B. wie-buche-ich)"
-                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-teal/30"
+                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-teal/30"
+                className="px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               >
                 <option value="customers">Für Kunden</option>
                 <option value="salons">Für Salons</option>
@@ -156,14 +156,14 @@ export default function HelpEditorPage() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="Titel"
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-teal/30"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
             <textarea
               value={form.content}
               onChange={(e) => setForm({ ...form, content: e.target.value })}
               placeholder="Inhalt (Markdown unterstützt: ## Überschrift, - Liste)"
               rows={10}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-teal/30 resize-y"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
             />
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 text-sm font-body text-dark/60">
@@ -171,7 +171,7 @@ export default function HelpEditorPage() {
                   type="checkbox"
                   checked={form.published}
                   onChange={(e) => setForm({ ...form, published: e.target.checked })}
-                  className="rounded border-gray-300 text-teal focus:ring-teal"
+                  className="rounded border-gray-300 text-s-coral focus:ring-s-coral"
                 />
                 Veröffentlicht
               </label>
@@ -187,7 +187,7 @@ export default function HelpEditorPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !form.slug || !form.title || !form.content}
-                className="px-5 py-2 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50"
+                className="px-5 py-2 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors disabled:opacity-50"
               >
                 {saving ? "Speichern…" : editing ? "Aktualisieren" : "Erstellen"}
               </button>
@@ -222,7 +222,7 @@ export default function HelpEditorPage() {
                       {categoryLabel(article.category)}
                     </span>
                     {!article.published && (
-                      <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-coral/10 text-coral">
+                      <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-coral/10 text-s-coral">
                         Entwurf
                       </span>
                     )}
@@ -239,13 +239,13 @@ export default function HelpEditorPage() {
                   </button>
                   <button
                     onClick={() => openEdit(article)}
-                    className="p-1.5 rounded-button text-dark/30 hover:text-teal transition-colors"
+                    className="p-1.5 rounded-button text-dark/30 hover:text-s-coral transition-colors"
                   >
                     <Pencil size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(article.id)}
-                    className="p-1.5 rounded-button text-dark/30 hover:text-coral transition-colors"
+                    className="p-1.5 rounded-button text-dark/30 hover:text-s-coral transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>

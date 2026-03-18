@@ -89,7 +89,7 @@ export default function TreatmentResultsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}
         <nav className="text-xs text-dark/40 dark:text-dm-text/40 mb-4">
-          <a href={`/${locale}`} className="hover:text-teal">Home</a>
+          <a href={`/${locale}`} className="hover:text-s-coral">Home</a>
           <span className="mx-1">›</span>
           <span className="text-dark/70 dark:text-dm-text/70">Behandlungen</span>
           {slugParts.map((part, i) => (
@@ -97,7 +97,7 @@ export default function TreatmentResultsPage() {
               <span className="mx-1">›</span>
               <a
                 href={`/${locale}/behandlungen/${slugParts.slice(0, i + 1).join("/")}`}
-                className="capitalize hover:text-teal"
+                className="capitalize hover:text-s-coral"
               >
                 {part.replace(/-/g, " ")}
               </a>

@@ -48,7 +48,7 @@ export default function ImpressumPage() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-gray-100">
-          <Link href="/de" className="text-sm text-teal hover:underline">
+          <Link href="/de" className="text-sm text-s-coral hover:underline">
             ← Zurück zur Startseite
           </Link>
         </div>

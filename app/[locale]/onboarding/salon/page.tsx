@@ -88,10 +88,10 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal ${errors.name ? "border-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.name ? "border-s-coral" : "border-gray-200"}`}
             placeholder="z. B. Salon Lumière"
           />
-          {errors.name && <p className="text-xs text-coral mt-0.5">{errors.name}</p>}
+          {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
         </div>
 
         <div>
@@ -100,10 +100,10 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal ${errors.email ? "border-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.email ? "border-s-coral" : "border-gray-200"}`}
             placeholder="dein@salon.ch"
           />
-          {errors.email && <p className="text-xs text-coral mt-0.5">{errors.email}</p>}
+          {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
         </div>
 
         <div>
@@ -117,15 +117,15 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
                 className={[
                   "px-3 py-1.5 rounded-pill text-sm font-medium border transition-colors",
                   data.categories.includes(c.value)
-                    ? "bg-teal text-white border-teal"
-                    : "border-gray-200 text-dark/60 hover:border-teal",
+                    ? "bg-s-coral text-white border-s-coral"
+                    : "border-gray-200 text-dark/60 hover:border-s-coral",
                 ].join(" ")}
               >
                 {c.label}
               </button>
             ))}
           </div>
-          {errors.categories && <p className="text-xs text-coral mt-1">{errors.categories}</p>}
+          {errors.categories && <p className="text-xs text-s-coral mt-1">{errors.categories}</p>}
         </div>
 
         <div>
@@ -133,14 +133,14 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <select
             value={data.quartier}
             onChange={(e) => onChange({ ...data, quartier: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal bg-white ${errors.quartier ? "border-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral bg-white ${errors.quartier ? "border-s-coral" : "border-gray-200"}`}
           >
             <option value="">Bitte wählen…</option>
             {QUARTIERE.map((q) => (
               <option key={q.value} value={q.value}>{q.label}</option>
             ))}
           </select>
-          {errors.quartier && <p className="text-xs text-coral mt-0.5">{errors.quartier}</p>}
+          {errors.quartier && <p className="text-xs text-s-coral mt-0.5">{errors.quartier}</p>}
         </div>
 
         <div>
@@ -148,10 +148,10 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <input
             value={data.address}
             onChange={(e) => onChange({ ...data, address: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-teal ${errors.address ? "border-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.address ? "border-s-coral" : "border-gray-200"}`}
             placeholder="Musterstrasse 12, 4051 Basel"
           />
-          {errors.address && <p className="text-xs text-coral mt-0.5">{errors.address}</p>}
+          {errors.address && <p className="text-xs text-s-coral mt-0.5">{errors.address}</p>}
         </div>
 
         <div>
@@ -159,7 +159,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <input
             value={data.phone}
             onChange={(e) => onChange({ ...data, phone: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
             placeholder="+41 61 000 00 00"
           />
         </div>
@@ -231,7 +231,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                     <button
                       type="button"
                       onClick={() => onChange({ ...data, gallery_urls: data.gallery_urls.filter((_, j) => j !== i) })}
-                      className="absolute top-1 right-1 p-1 rounded-full bg-white/90 text-dark/60 hover:text-coral"
+                      className="absolute top-1 right-1 p-1 rounded-full bg-white/90 text-dark/60 hover:text-s-coral"
                       aria-label="Bild entfernen"
                     >
                       <Trash2 size={10} />
@@ -255,7 +255,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
               <button
                 type="button"
                 onClick={addGallery}
-                className="h-24 rounded-card border-2 border-dashed border-gray-200 hover:border-teal transition-colors flex items-center justify-center"
+                className="h-24 rounded-card border-2 border-dashed border-gray-200 hover:border-s-coral transition-colors flex items-center justify-center"
               >
                 <Plus size={16} className="text-dark/30" />
               </button>
@@ -270,7 +270,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
             onChange={(e) => onChange({ ...data, description_de: e.target.value })}
             maxLength={500}
             rows={3}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal resize-none"
+            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
           />
         </div>
 
@@ -281,7 +281,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
             onChange={(e) => onChange({ ...data, description_en: e.target.value })}
             maxLength={500}
             rows={2}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal resize-none"
+            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
           />
         </div>
 
@@ -290,7 +290,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
           <input
             value={data.instagram_url}
             onChange={(e) => onChange({ ...data, instagram_url: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
             placeholder="https://instagram.com/deinsalon"
           />
           <p className="text-xs text-dark/30 mt-1">Verlinke dein Instagram für dein Portfolio</p>
@@ -308,7 +308,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                     onClick={() => toggleDay(key)}
                     className={[
                       "w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                      hours ? "bg-teal text-white" : "bg-gray-100 text-dark/40",
+                      hours ? "bg-s-coral text-white" : "bg-gray-100 text-dark/40",
                     ].join(" ")}
                   >
                     {DAYS[i]}
@@ -319,14 +319,14 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                         type="time"
                         value={hours.open}
                         onChange={(e) => updateHours(key, "open", e.target.value)}
-                        className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal"
+                        className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
                       />
                       <span className="text-xs text-dark/30">–</span>
                       <input
                         type="time"
                         value={hours.close}
                         onChange={(e) => updateHours(key, "close", e.target.value)}
-                        className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal"
+                        className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
                       />
                     </>
                   ) : (
@@ -477,8 +477,8 @@ function Step3({ services, onChange, salonCategories }: {
                   className={[
                     "flex items-center justify-between px-3 py-2.5 rounded-card border text-left transition-all",
                     added
-                      ? "bg-teal/5 border-teal/20 opacity-60 cursor-default"
-                      : "border-gray-200 hover:border-teal hover:bg-teal/5 cursor-pointer",
+                      ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
+                      : "border-gray-200 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
                   ].join(" ")}
                 >
                   <div className="min-w-0 flex-1">
@@ -487,13 +487,13 @@ function Step3({ services, onChange, salonCategories }: {
                       <span className="inline-flex items-center gap-0.5 text-[10px] text-dark/40">
                         <Clock size={10} /> {t.duration} min
                       </span>
-                      <span className="text-xs font-data font-semibold text-dark/60">CHF {t.price}</span>
+                      <span className="text-xs data-text font-semibold text-dark/60">CHF {t.price}</span>
                     </div>
                   </div>
                   {added ? (
-                    <Check size={14} className="text-teal shrink-0 ml-2" />
+                    <Check size={14} className="text-s-coral shrink-0 ml-2" />
                   ) : (
-                    <Plus size={14} className="text-teal shrink-0 ml-2" />
+                    <Plus size={14} className="text-s-coral shrink-0 ml-2" />
                   )}
                 </button>
               );
@@ -517,7 +517,7 @@ function Step3({ services, onChange, salonCategories }: {
                   <button
                     type="button"
                     onClick={() => startEdit(i)}
-                    className="p-1.5 text-dark/30 hover:text-teal transition-colors"
+                    className="p-1.5 text-dark/30 hover:text-s-coral transition-colors"
                     aria-label="Service bearbeiten"
                   >
                     <Pencil size={13} />
@@ -525,7 +525,7 @@ function Step3({ services, onChange, salonCategories }: {
                   <button
                     type="button"
                     onClick={() => onChange(services.filter((_, j) => j !== i))}
-                    className="p-1.5 text-dark/30 hover:text-coral transition-colors"
+                    className="p-1.5 text-dark/30 hover:text-s-coral transition-colors"
                     aria-label="Service entfernen"
                   >
                     <Trash2 size={13} />
@@ -549,7 +549,7 @@ function Step3({ services, onChange, salonCategories }: {
               value={draft.name_de}
               onChange={(e) => setDraft({ ...draft, name_de: e.target.value, _autoTranslated: false })}
               onBlur={() => { if (draft.name_de && !draft._autoTranslated) autoTranslate(draft.name_de); }}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
               placeholder="z. B. Waschen + Schneiden"
             />
           </div>
@@ -559,7 +559,7 @@ function Step3({ services, onChange, salonCategories }: {
               <input
                 value={draft.name_en}
                 onChange={(e) => setDraft({ ...draft, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
             <div>
@@ -567,7 +567,7 @@ function Step3({ services, onChange, salonCategories }: {
               <input
                 value={draft.name_fr}
                 onChange={(e) => setDraft({ ...draft, name_fr: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
             <div>
@@ -575,7 +575,7 @@ function Step3({ services, onChange, salonCategories }: {
               <input
                 value={draft.name_it}
                 onChange={(e) => setDraft({ ...draft, name_it: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
           </div>
@@ -593,7 +593,7 @@ function Step3({ services, onChange, salonCategories }: {
               <select
                 value={draft.category}
                 onChange={(e) => setDraft({ ...draft, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal bg-white"
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral bg-white"
               >
                 <option value="">Wählen…</option>
                 {salonCategories.map((c) => (
@@ -606,7 +606,7 @@ function Step3({ services, onChange, salonCategories }: {
               <select
                 value={draft.duration_minutes}
                 onChange={(e) => setDraft({ ...draft, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal bg-white"
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral bg-white"
               >
                 {DURATION_OPTIONS.map((d) => (
                   <option key={d} value={d}>{d} min</option>
@@ -620,7 +620,7 @@ function Step3({ services, onChange, salonCategories }: {
                 min={0}
                 value={draft.price}
                 onChange={(e) => setDraft({ ...draft, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
           </div>
@@ -628,7 +628,7 @@ function Step3({ services, onChange, salonCategories }: {
             <button type="button" onClick={cancelEdit}
               className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
             <button type="button" onClick={saveCustom} disabled={!draft.name_de || !draft.category}
-              className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50">
+              className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">
               {editingIdx !== null ? "Speichern" : "Hinzufügen"}
             </button>
           </div>
@@ -637,7 +637,7 @@ function Step3({ services, onChange, salonCategories }: {
         <button
           type="button"
           onClick={() => { setEditingIdx(null); setDraft(EMPTY_SERVICE); setAdding(true); }}
-          className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-teal hover:text-teal transition-colors flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2"
         >
           <Plus size={16} /> Eigener Service erstellen
         </button>
@@ -716,7 +716,7 @@ function Step4({ staff, onChange, salonCategories }: {
             <button
               type="button"
               onClick={() => onChange(staff.filter((_, j) => j !== i))}
-              className="text-dark/30 hover:text-coral transition-colors"
+              className="text-dark/30 hover:text-s-coral transition-colors"
             >
               <Trash2 size={14} />
             </button>
@@ -731,7 +731,7 @@ function Step4({ staff, onChange, salonCategories }: {
             <input
               value={draft.name}
               onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal"
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
               placeholder="z. B. Maria"
             />
           </div>
@@ -743,7 +743,7 @@ function Step4({ staff, onChange, salonCategories }: {
                 {roles.map((r) => (
                   <button key={r} type="button" onClick={() => setDraft({ ...draft, role: draft.role === r ? "" : r })}
                     className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
-                      draft.role === r ? "bg-teal text-white border-teal" : "border-gray-200 text-dark/50 hover:border-teal",
+                      draft.role === r ? "bg-s-coral text-white border-s-coral" : "border-gray-200 text-dark/50 hover:border-s-coral",
                     ].join(" ")}
                   >{r}</button>
                 ))}
@@ -758,7 +758,7 @@ function Step4({ staff, onChange, salonCategories }: {
                 {specialties.map((s) => (
                   <button key={s} type="button" onClick={() => toggleSpecialty(s)}
                     className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
-                      draft.specialties.includes(s) ? "bg-teal/10 text-teal border-teal/30" : "border-gray-200 text-dark/40 hover:border-teal",
+                      draft.specialties.includes(s) ? "bg-s-coral/10 text-s-coral border-s-coral/30" : "border-gray-200 text-dark/40 hover:border-s-coral",
                     ].join(" ")}
                   >{s}</button>
                 ))}
@@ -770,18 +770,18 @@ function Step4({ staff, onChange, salonCategories }: {
             <button type="button" onClick={() => { setAdding(false); setDraft(EMPTY_STAFF); }}
               className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
             <button type="button" onClick={save} disabled={!draft.name}
-              className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50">Hinzufügen</button>
+              className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">Hinzufügen</button>
           </div>
         </div>
       ) : (
         <div className="space-y-2">
           <button type="button" onClick={() => setAdding(true)}
-            className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-teal hover:text-teal transition-colors flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2">
             <Plus size={16} /> Mitarbeiter hinzufügen
           </button>
           {staff.length === 0 && (
             <button type="button" onClick={() => onChange([{ name: "Nur ich", avatar_url: "", role: "Inhaber:in", specialties: [] }])}
-              className="w-full py-2 rounded-button text-sm text-dark/40 hover:text-teal transition-colors">
+              className="w-full py-2 rounded-button text-sm text-dark/40 hover:text-s-coral transition-colors">
               Nur ich (solo) →
             </button>
           )}
@@ -843,20 +843,20 @@ function Step5({ data, onChange, slotCount }: {
               <div className="flex items-center gap-3">
                 <button type="button" onClick={() => toggleDay(key)}
                   className={["w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                    slot ? "bg-teal text-white" : "bg-gray-100 text-dark/40"].join(" ")}>
+                    slot ? "bg-s-coral text-white" : "bg-gray-100 text-dark/40"].join(" ")}>
                   {DAYS[i]}
                 </button>
                 {slot ? (
                   <>
                     <input type="time" value={slot.start}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, start: e.target.value } } })}
-                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal" />
+                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral" />
                     <span className="text-xs text-dark/30">–</span>
                     <input type="time" value={slot.end}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, end: e.target.value } } })}
-                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-teal" />
+                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral" />
                     <button type="button" onClick={() => addBreak(key)}
-                      className="text-[10px] text-teal hover:underline shrink-0 ml-1">
+                      className="text-[10px] text-s-coral hover:underline shrink-0 ml-1">
                       + Pause
                     </button>
                   </>
@@ -870,13 +870,13 @@ function Step5({ data, onChange, slotCount }: {
                   <span className="text-[10px] text-dark/40 w-10 shrink-0">Pause</span>
                   <input type="time" value={brk.start}
                     onChange={(e) => updateBreak(key, bi, "start", e.target.value)}
-                    className="px-1.5 py-0.5 rounded-button border border-coral/30 text-xs focus:outline-none focus:border-coral" />
+                    className="px-1.5 py-0.5 rounded-button border border-s-coral/30 text-xs focus:outline-none focus:border-s-coral" />
                   <span className="text-xs text-dark/30">–</span>
                   <input type="time" value={brk.end}
                     onChange={(e) => updateBreak(key, bi, "end", e.target.value)}
-                    className="px-1.5 py-0.5 rounded-button border border-coral/30 text-xs focus:outline-none focus:border-coral" />
+                    className="px-1.5 py-0.5 rounded-button border border-s-coral/30 text-xs focus:outline-none focus:border-s-coral" />
                   <button type="button" onClick={() => removeBreak(key, bi)}
-                    className="text-dark/30 hover:text-coral transition-colors">
+                    className="text-dark/30 hover:text-s-coral transition-colors">
                     <Trash2 size={10} />
                   </button>
                 </div>
@@ -886,7 +886,7 @@ function Step5({ data, onChange, slotCount }: {
         })}
       </div>
       {slotCount > 0 && (
-        <div className="bg-teal/5 border border-teal/20 rounded-card px-4 py-3 text-sm text-teal font-medium">
+        <div className="bg-s-coral/5 border border-s-coral/20 rounded-card px-4 py-3 text-sm text-s-coral font-medium">
           {slotCount} Slots für die nächsten 2 Wochen erstellt.
         </div>
       )}
@@ -915,7 +915,7 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
             type="button"
             onClick={() => onChange({ ...data, enabled: !data.enabled })}
             className={["w-11 h-6 rounded-full transition-colors relative",
-              data.enabled ? "bg-teal" : "bg-gray-200"].join(" ")}
+              data.enabled ? "bg-s-coral" : "bg-gray-200"].join(" ")}
           >
             <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
               data.enabled ? "translate-x-5.5" : "translate-x-0.5"].join(" ")} />
@@ -927,7 +927,7 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
             <div>
               <div className="flex justify-between mb-2">
                 <label className="text-xs font-medium text-dark/50">Rabatt</label>
-                <span className="text-sm font-bold text-teal data-font">{data.discount_percent}%</span>
+                <span className="text-sm font-bold text-s-coral data-font">{data.discount_percent}%</span>
               </div>
               <input type="range" min={5} max={50} step={5} value={data.discount_percent}
                 onChange={(e) => onChange({ ...data, discount_percent: +e.target.value })}
@@ -939,7 +939,7 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
             <div>
               <div className="flex justify-between mb-2">
                 <label className="text-xs font-medium text-dark/50">Zeitfenster</label>
-                <span className="text-sm font-bold text-teal data-font">{data.window_hours}h</span>
+                <span className="text-sm font-bold text-s-coral data-font">{data.window_hours}h</span>
               </div>
               <input type="range" min={2} max={24} step={1} value={data.window_hours}
                 onChange={(e) => onChange({ ...data, window_hours: +e.target.value })}
@@ -1049,7 +1049,7 @@ export default function SalonOnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal/5 via-white to-coral/5 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-s-coral/5 via-white to-coral/5 pb-24">
       {/* Celebration overlay */}
       <AnimatePresence>
         {done && (
@@ -1064,8 +1064,8 @@ export default function SalonOnboardingPage() {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className="flex flex-col items-center gap-4 text-center px-6"
             >
-              <div className="w-20 h-20 rounded-full bg-teal/10 flex items-center justify-center">
-                <PartyPopper size={36} className="text-teal" />
+              <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center">
+                <PartyPopper size={36} className="text-s-coral" />
               </div>
               <h2 className="font-heading font-bold text-2xl text-dark">Salon erstellt!</h2>
               <p className="text-dark/50 text-sm max-w-xs">Dein Salon wird jetzt geprüft. Du wirst per E-Mail informiert.</p>
@@ -1075,7 +1075,7 @@ export default function SalonOnboardingPage() {
                     key={i}
                     animate={{ scale: [1, 1.4, 1] }}
                     transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
-                    className="w-2 h-2 rounded-full bg-teal"
+                    className="w-2 h-2 rounded-full bg-s-coral"
                   />
                 ))}
               </div>
@@ -1089,7 +1089,7 @@ export default function SalonOnboardingPage() {
         <div className="max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             <span className="font-heading font-bold text-base text-dark">
-              solen<span className="text-teal">.</span>ch
+              solen<span className="text-s-coral">.</span>ch
             </span>
             <span className="text-xs text-dark/40">Schritt {step} von {TOTAL_STEPS}</span>
           </div>
@@ -1100,7 +1100,7 @@ export default function SalonOnboardingPage() {
                 key={i}
                 className={[
                   "h-1.5 rounded-full transition-all duration-500",
-                  i < step ? "bg-teal" : "bg-gray-100",
+                  i < step ? "bg-s-coral" : "bg-gray-100",
                   i === step - 1 ? "w-6" : "w-3",
                 ].join(" ")}
               />
@@ -1146,7 +1146,7 @@ export default function SalonOnboardingPage() {
             type="button"
             disabled={submitting}
             onClick={step < TOTAL_STEPS ? goNext : handleSubmit}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
           >
             {submitting && <Spinner size="sm" invert />}
             {step < TOTAL_STEPS ? (

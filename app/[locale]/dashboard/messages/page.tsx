@@ -79,18 +79,18 @@ export default function MessagesPage() {
                   onClick={() => setActiveConvo(c)}
                   className={[
                     "w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors",
-                    activeConvo?.id === c.id ? "bg-teal/5 border-l-2 border-teal" : "",
+                    activeConvo?.id === c.id ? "bg-s-coral/5 border-l-2 border-s-coral" : "",
                   ].join(" ")}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-teal/10 flex items-center justify-center shrink-0 text-sm font-bold text-teal">
+                    <div className="w-9 h-9 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
                       {c.customer_name[0]}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <p className="text-sm font-medium text-dark truncate">{c.customer_name}</p>
                         {c.is_first_visit && (
-                          <span className="px-1 py-0.5 rounded-pill bg-coral/10 text-coral text-[9px] font-bold shrink-0">NEU</span>
+                          <span className="px-1 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[9px] font-bold shrink-0">NEU</span>
                         )}
                       </div>
                       {c.last_message_preview && (
@@ -104,7 +104,7 @@ export default function MessagesPage() {
                         </p>
                       )}
                       {c.unread_count_salon > 0 && (
-                        <span className="w-4 h-4 rounded-full bg-coral text-white text-[9px] flex items-center justify-center font-bold">
+                        <span className="w-4 h-4 rounded-full bg-s-coral text-white text-[9px] flex items-center justify-center font-bold">
                           {c.unread_count_salon}
                         </span>
                       )}
@@ -129,7 +129,7 @@ export default function MessagesPage() {
               <div className="relative">
                 <button
                   onClick={() => setShowQuickReplies((s) => !s)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:border-teal hover:text-teal transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors"
                 >
                   Schnellantwort <ChevronDown size={12} className={showQuickReplies ? "rotate-180" : ""} />
                 </button>

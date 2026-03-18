@@ -66,12 +66,12 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Name *</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Foto URL</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Spezialitäten</label>
@@ -79,12 +79,12 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
-                className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+                className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
               <button type="button" onClick={addSpec} className="px-2.5 rounded-button bg-gray-100 text-dark/60"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
-                <span key={i} className="flex items-center gap-1 px-2 py-0.5 bg-teal/10 text-teal text-xs rounded-pill">
+                <span key={i} className="flex items-center gap-1 px-2 py-0.5 bg-s-coral/10 text-s-coral text-xs rounded-pill">
                   {s}
                   <button type="button" onClick={() => setSpecialties((p) => p.filter((_, j) => j !== i))}>×</button>
                 </span>
@@ -92,7 +92,7 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
             </div>
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
-            <button type="button" onClick={() => setActive(!active)} className={active ? "text-teal" : "text-dark/30"}>
+            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-coral" : "text-dark/30"}>
               {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
             <span className="text-sm text-dark/60">Aktiv</span>
@@ -101,7 +101,7 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!name || loading}
-            className="flex-1 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
           </button>
         </div>
@@ -138,14 +138,14 @@ function DeleteModal({ member, onClose, onDeleted }: {
         <h3 className="font-heading font-bold text-base mb-3">Mitarbeiter löschen</h3>
         <p className="text-sm text-dark/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
         {member.future_bookings && member.future_bookings > 0 ? (
-          <p className="text-sm text-coral font-medium mb-4">
+          <p className="text-sm text-s-coral font-medium mb-4">
             Diese Person hat {member.future_bookings} Termine. Diese werden storniert.
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleDelete} disabled={loading}
-            className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Löschen
           </button>
         </div>
@@ -205,7 +205,7 @@ export default function StaffPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-heading font-bold text-2xl text-dark">Team</h1>
         <button onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-teal text-white text-sm font-medium">
+          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
           <Plus size={14} /> Hinzufügen
         </button>
       </div>
@@ -220,7 +220,7 @@ export default function StaffPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {staff.map((s) => (
             <div key={s.id} className="bg-white rounded-card border border-gray-100 p-4 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-teal/10 flex items-center justify-center shrink-0 text-sm font-bold text-teal">
+              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
                 {s.avatar_url ? (
                   <img src={s.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
                 ) : s.name[0]}
@@ -236,13 +236,13 @@ export default function StaffPage() {
                 )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-teal" : "text-dark/20"}>
+                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-dark/20"}>
                   {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 </button>
-                <button onClick={() => setEditTarget(s)} className="p-1.5 text-dark/30 hover:text-teal transition-colors">
+                <button onClick={() => setEditTarget(s)} className="p-1.5 text-dark/30 hover:text-s-coral transition-colors">
                   <Pencil size={14} />
                 </button>
-                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-dark/30 hover:text-coral transition-colors">
+                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-dark/30 hover:text-s-coral transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>

@@ -57,16 +57,16 @@ export default function ReferralPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-dark py-8 px-4">
       {/* Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 text-xs text-dark/40 dark:text-white/40 flex items-center gap-1">
-        <a href="/de/profile" className="hover:text-teal transition-colors">Profil</a>
+        <a href="/de/profile" className="hover:text-s-coral transition-colors">Profil</a>
         <ChevronRight className="w-3 h-3" />
         <span className="text-dark/60 dark:text-white/60">Freunde einladen</span>
       </div>
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* Hero card */}
-        <div className="bg-gradient-to-br from-teal/10 to-teal/5 dark:from-teal/20 dark:to-teal/5 rounded-card border border-teal/20 p-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-teal/15 flex items-center justify-center mx-auto mb-3">
-            <Gift className="w-7 h-7 text-teal" />
+        <div className="bg-gradient-to-br from-s-coral/10 to-s-coral/5 dark:from-s-coral/20 dark:to-s-coral/5 rounded-card border border-s-coral/20 p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-s-coral/15 flex items-center justify-center mx-auto mb-3">
+            <Gift className="w-7 h-7 text-s-coral" />
           </div>
           <h1 className="font-heading font-bold text-xl text-dark dark:text-white mb-1">Freunde einladen</h1>
           <p className="text-sm text-dark/60 dark:text-white/60 max-w-xs mx-auto">
@@ -78,12 +78,12 @@ export default function ReferralPage() {
         <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-gray-100 dark:border-white/10 shadow-card p-5">
           <p className="text-xs font-medium text-dark/50 dark:text-white/50 mb-2">Dein Empfehlungscode</p>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-button px-4 py-3 font-data font-bold text-lg text-dark dark:text-white tracking-wider text-center">
+            <div className="flex-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-button px-4 py-3 data-text font-bold text-lg text-dark dark:text-white tracking-wider text-center">
               {data.referral_code}
             </div>
             <button
               onClick={copyCode}
-              className="p-3 rounded-button bg-teal text-white hover:bg-teal/90 transition-colors"
+              className="p-3 rounded-button bg-s-coral text-white hover:bg-s-coral/90 transition-colors"
             >
               {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
             </button>
@@ -113,13 +113,13 @@ export default function ReferralPage() {
           <h2 className="font-heading font-semibold text-base text-dark dark:text-white mb-3">Deine Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-gray-50 dark:bg-white/5 rounded-button">
-              <Users className="w-5 h-5 text-teal mx-auto mb-1" />
-              <p className="font-data font-bold text-2xl text-dark dark:text-white">{data.friends_invited}</p>
+              <Users className="w-5 h-5 text-s-coral mx-auto mb-1" />
+              <p className="data-text font-bold text-2xl text-dark dark:text-white">{data.friends_invited}</p>
               <p className="text-xs text-dark/50 dark:text-white/50">Freunde eingeladen</p>
             </div>
             <div className="text-center p-3 bg-gray-50 dark:bg-white/5 rounded-button">
-              <Gift className="w-5 h-5 text-teal mx-auto mb-1" />
-              <p className="font-data font-bold text-2xl text-dark dark:text-white">CHF {data.total_earned.toFixed(0)}</p>
+              <Gift className="w-5 h-5 text-s-coral mx-auto mb-1" />
+              <p className="data-text font-bold text-2xl text-dark dark:text-white">CHF {data.total_earned.toFixed(0)}</p>
               <p className="text-xs text-dark/50 dark:text-white/50">Verdient</p>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default function ReferralPage() {
               { step: "3", text: "Ihr beide erhaltet CHF 10 Guthaben!" },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-full bg-teal/10 text-teal text-xs font-bold flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-s-coral/10 text-s-coral text-xs font-bold flex items-center justify-center shrink-0">
                   {item.step}
                 </span>
                 <p className="text-sm text-dark/70 dark:text-white/70">{item.text}</p>

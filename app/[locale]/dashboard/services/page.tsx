@@ -79,19 +79,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             <div>
               <label className="block text-xs font-medium text-dark/50 mb-1">Name DE *</label>
               <input value={form.name_de} onChange={(e) => setForm({ ...form, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="block text-xs font-medium text-dark/50 mb-1">Name EN</label>
               <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-dark/50 mb-1">Kategorie</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm bg-white focus:outline-none focus:border-teal">
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm bg-white focus:outline-none focus:border-s-coral">
                 {salonCategories.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
@@ -99,19 +99,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
               <label className="block text-xs font-medium text-dark/50 mb-1">Dauer (Min)</label>
               <input type="number" min={15} step={15} value={form.duration_minutes}
                 onChange={(e) => setForm({ ...form, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="block text-xs font-medium text-dark/50 mb-1">Preis CHF</label>
               <input type="number" min={0} value={form.price}
                 onChange={(e) => setForm({ ...form, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal" />
+                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Beschreibung</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
-              rows={2} className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-teal resize-none" />
+              rows={2} className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -120,7 +120,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
                 {AGE_OPTIONS.map((a) => (
                   <button key={a.value} type="button" onClick={() => toggle("suitable_for", a.value)}
                     className={["px-2 py-0.5 rounded-pill text-xs border transition-colors",
-                      form.suitable_for.includes(a.value) ? "bg-teal text-white border-teal" : "border-gray-200 text-dark/50"].join(" ")}>
+                      form.suitable_for.includes(a.value) ? "bg-s-coral text-white border-s-coral" : "border-gray-200 text-dark/50"].join(" ")}>
                     {a.label}
                   </button>
                 ))}
@@ -132,7 +132,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
                 {GENDER_OPTIONS.map((g) => (
                   <button key={g.value} type="button" onClick={() => toggle("suitable_gender", g.value)}
                     className={["px-2 py-0.5 rounded-pill text-xs border transition-colors",
-                      form.suitable_gender.includes(g.value) ? "bg-teal text-white border-teal" : "border-gray-200 text-dark/50"].join(" ")}>
+                      form.suitable_gender.includes(g.value) ? "bg-s-coral text-white border-s-coral" : "border-gray-200 text-dark/50"].join(" ")}>
                     {g.label}
                   </button>
                 ))}
@@ -140,7 +140,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             </div>
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
-            <button type="button" onClick={() => setForm({ ...form, is_active: !form.is_active })} className={form.is_active ? "text-teal" : "text-dark/30"}>
+            <button type="button" onClick={() => setForm({ ...form, is_active: !form.is_active })} className={form.is_active ? "text-s-coral" : "text-dark/30"}>
               {form.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
             <span className="text-sm text-dark/60">Aktiv</span>
@@ -149,7 +149,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!form.name_de || loading}
-            className="flex-1 py-2.5 rounded-button bg-teal text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
           </button>
         </div>
@@ -211,7 +211,7 @@ export default function ServicesPage() {
             <div className="flex gap-2">
               <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
               <button onClick={handleDelete} disabled={deleteLoading}
-                className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {deleteLoading && <Spinner size="sm" invert />}Löschen
               </button>
             </div>
@@ -222,7 +222,7 @@ export default function ServicesPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-heading font-bold text-2xl text-dark">Services</h1>
         <button onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-teal text-white text-sm font-medium">
+          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
           <Plus size={14} /> Hinzufügen
         </button>
       </div>
@@ -249,17 +249,17 @@ export default function ServicesPage() {
                     {s.name_en && <p className="text-xs text-dark/30">{s.name_en}</p>}
                   </td>
                   <td className="px-4 py-3 text-dark/60">{CATEGORY_LABELS[s.category]}</td>
-                  <td className="px-4 py-3 font-data text-dark/60">{s.duration_minutes} min</td>
-                  <td className="px-4 py-3 font-data text-dark">CHF {s.price}</td>
+                  <td className="px-4 py-3 data-text text-dark/60">{s.duration_minutes} min</td>
+                  <td className="px-4 py-3 data-text text-dark">CHF {s.price}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-teal" : "text-dark/20"}>
+                    <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-dark/20"}>
                       {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                     </button>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <button onClick={() => setEditTarget(s)} className="p-1.5 text-dark/30 hover:text-teal transition-colors"><Pencil size={14} /></button>
-                      <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-dark/30 hover:text-coral transition-colors"><Trash2 size={14} /></button>
+                      <button onClick={() => setEditTarget(s)} className="p-1.5 text-dark/30 hover:text-s-coral transition-colors"><Pencil size={14} /></button>
+                      <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-dark/30 hover:text-s-coral transition-colors"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>

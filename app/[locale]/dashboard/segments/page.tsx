@@ -106,7 +106,7 @@ export default function SegmentsPage() {
                   </div>
 
                   <div className="flex items-center justify-between mt-3">
-                    <span className="text-2xl font-heading font-bold font-data" style={{ color: seg.color }}>
+                    <span className="text-2xl font-heading font-bold data-text" style={{ color: seg.color }}>
                       {seg.member_count}
                     </span>
                     <span className="text-xs text-dark/30">Mitglieder</span>
@@ -117,12 +117,12 @@ export default function SegmentsPage() {
                 <div className="border-t border-gray-50 px-4 py-2.5 flex items-center gap-2">
                   <button
                     onClick={() => toggleExpand(seg.id)}
-                    className="inline-flex items-center gap-1 text-xs text-dark/50 hover:text-teal transition-colors"
+                    className="inline-flex items-center gap-1 text-xs text-dark/50 hover:text-s-coral transition-colors"
                   >
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     {isExpanded ? "Ausblenden" : "Mitglieder"}
                   </button>
-                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-gray-200 text-xs text-dark/50 hover:border-teal hover:text-teal transition-colors">
+                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-gray-200 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors">
                     <Mail size={11} />
                     E-Mail senden
                   </button>

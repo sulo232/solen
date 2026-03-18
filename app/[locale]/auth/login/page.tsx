@@ -5,8 +5,8 @@ export default function Page() {
     <div className="min-h-screen bg-mesh-teal flex flex-col items-center justify-center px-4 py-12">
       {/* Soft background blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-teal/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-coral/8 blur-[100px]" />
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-s-coral/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-s-coral/8 blur-[100px]" />
       </div>
 
       <div className="w-full max-w-sm">
@@ -16,7 +16,7 @@ export default function Page() {
             href="/"
             className="inline-block font-heading font-bold text-3xl text-dark tracking-tight hover:opacity-80 transition-opacity"
           >
-            solen<span className="text-teal">.</span>ch
+            solen<span className="text-s-coral">.</span>ch
           </a>
           <p className="text-dark/50 font-body text-sm mt-2">Willkommen zurück</p>
         </div>
@@ -28,7 +28,7 @@ export default function Page() {
 
         <p className="text-center text-xs text-dark/30 font-body mt-6">
           Noch kein Konto?{" "}
-          <a href="/de/auth/signup" className="text-teal hover:underline">
+          <a href="/de/auth/signup" className="text-s-coral hover:underline">
             Registrieren
           </a>
         </p>

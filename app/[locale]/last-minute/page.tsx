@@ -116,7 +116,7 @@ export default function LastMinutePage() {
             <h1 className="font-heading font-bold text-2xl sm:text-4xl text-dark">
               Last-Minute Angebote
             </h1>
-            <span className="w-2.5 h-2.5 rounded-full bg-coral animate-pulse shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-s-coral animate-pulse shrink-0" />
           </div>
           {total > 0 && (
             <p className="text-sm text-dark/50 mt-2 font-body">{total} verfügbare Termine heute</p>
@@ -136,7 +136,7 @@ export default function LastMinutePage() {
               className={[
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium transition-colors",
                 selectedCategories.includes(key)
-                  ? "bg-teal text-white"
+                  ? "bg-s-coral text-white"
                   : "bg-gray-100 text-dark/60 hover:bg-gray-200",
               ].join(" ")}
             >
@@ -150,9 +150,9 @@ export default function LastMinutePage() {
               key={price}
               onClick={() => setMaxPrice(maxPrice === price ? null : price)}
               className={[
-                "px-3 py-1.5 rounded-pill text-xs font-data font-medium transition-colors",
+                "px-3 py-1.5 rounded-pill text-xs data-text font-medium transition-colors",
                 maxPrice === price
-                  ? "bg-coral text-white"
+                  ? "bg-s-coral text-white"
                   : "bg-gray-100 text-dark/60 hover:bg-gray-200",
               ].join(" ")}
             >
@@ -184,7 +184,7 @@ export default function LastMinutePage() {
             action={
               <Link
                 href={`/${locale}/coiffeur`}
-                className="inline-flex items-center px-6 py-3 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors shadow-teal-glow"
+                className="inline-flex items-center px-6 py-3 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors shadow-teal-glow"
               >
                 Coiffeure entdecken
               </Link>
@@ -208,7 +208,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-teal transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-s-coral transition-colors disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

@@ -22,8 +22,8 @@ interface AdminUser {
 
 const ROLE_MAP: Record<UserRole, { label: string; icon: React.ElementType; cls: string }> = {
   customer:    { label: "Kunde",          icon: User,       cls: "bg-gray-100 text-dark/50" },
-  salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-teal/10 text-teal" },
-  admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-coral/10 text-coral" },
+  salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-s-coral/10 text-s-coral" },
+  admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-s-coral/10 text-s-coral" },
 };
 
 const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
@@ -145,7 +145,7 @@ export default function AllUsersPage() {
               : `Benutzer "${suspendTarget.display_name ?? suspendTarget.email}" sperren? Der Benutzer kann sich nicht mehr anmelden.`
           }
           confirmLabel={suspendTarget.is_suspended ? "Freigeben" : "Sperren"}
-          confirmCls={suspendTarget.is_suspended ? "bg-teal" : "bg-coral"}
+          confirmCls={suspendTarget.is_suspended ? "bg-s-coral" : "bg-s-coral"}
           onConfirm={handleSuspendToggle}
           onClose={() => setSuspendTarget(null)}
           loading={actionLoading}
@@ -166,7 +166,7 @@ export default function AllUsersPage() {
           placeholder="Name oder E-Mail suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-teal transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -189,12 +189,12 @@ export default function AllUsersPage() {
                 key={u.id}
                 variants={itemVariants}
                 className={`bg-white rounded-card border shadow-card p-4 ${
-                  u.is_suspended ? "border-coral/30 bg-coral/[0.02]" : "border-gray-100"
+                  u.is_suspended ? "border-s-coral/30 bg-s-coral/[0.02]" : "border-gray-100"
                 }`}
               >
                 <div className="flex gap-3 items-start">
                   {/* Avatar */}
-                  <div className="w-8 h-8 rounded-full bg-teal/10 flex items-center justify-center shrink-0 text-xs font-bold text-teal overflow-hidden">
+                  <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-xs font-bold text-s-coral overflow-hidden">
                     {u.avatar_url ? (
                       <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -209,7 +209,7 @@ export default function AllUsersPage() {
                         {u.display_name ?? "—"}
                       </p>
                       {u.is_suspended && (
-                        <span className="px-1.5 py-0.5 rounded-pill bg-coral/10 text-coral text-[10px] font-bold">
+                        <span className="px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">
                           GESPERRT
                         </span>
                       )}
@@ -240,7 +240,7 @@ export default function AllUsersPage() {
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                      className="px-2 py-1.5 rounded-button border border-gray-200 text-xs text-dark/60 bg-white focus:outline-none focus:border-teal cursor-pointer"
+                      className="px-2 py-1.5 rounded-button border border-gray-200 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
                     >
                       {ROLE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -251,7 +251,7 @@ export default function AllUsersPage() {
                     {u.is_suspended ? (
                       <button
                         onClick={() => setSuspendTarget(u)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-teal/30 text-teal text-xs font-medium hover:bg-teal/5 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         <CheckCircle size={12} />
                         Freigeben
@@ -259,7 +259,7 @@ export default function AllUsersPage() {
                     ) : (
                       <button
                         onClick={() => setSuspendTarget(u)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-coral/30 text-coral text-xs font-medium hover:bg-coral/5 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         <Ban size={12} />
                         Sperren

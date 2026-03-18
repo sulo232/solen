@@ -124,8 +124,8 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-mesh-teal flex flex-col items-center justify-center px-4 py-12">
       {/* Background blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-teal/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-coral/8 blur-[100px]" />
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-s-coral/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-s-coral/8 blur-[100px]" />
       </div>
 
       <div className="w-full max-w-sm">
@@ -135,7 +135,7 @@ export default function SignUpPage() {
             href="/"
             className="inline-block font-heading font-bold text-3xl text-dark tracking-tight hover:opacity-80 transition-opacity"
           >
-            solen<span className="text-teal">.</span>ch
+            solen<span className="text-s-coral">.</span>ch
           </a>
           <p className="text-dark/50 font-body text-sm mt-2">Konto erstellen</p>
         </div>
@@ -145,8 +145,8 @@ export default function SignUpPage() {
           {otpSent ? (
             /* OTP Verification */
             <div className="flex flex-col gap-5 items-center">
-              <div className="w-14 h-14 rounded-2xl bg-teal/10 flex items-center justify-center">
-                <Mail size={26} className="text-teal" strokeWidth={1.5} />
+              <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center">
+                <Mail size={26} className="text-s-coral" strokeWidth={1.5} />
               </div>
               <div className="text-center">
                 <p className="font-heading font-semibold text-dark text-lg">Bestätigungscode</p>
@@ -167,7 +167,7 @@ export default function SignUpPage() {
                     value={digit}
                     onChange={(e) => handleOtpChange(i, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    className="w-11 h-13 text-center text-lg font-data font-semibold text-dark rounded-button border border-gray-200 outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+                    className="w-11 h-13 text-center text-lg data-text font-semibold text-dark rounded-button border border-gray-200 outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
                     aria-label={`Ziffer ${i + 1}`}
                   />
                 ))}
@@ -176,7 +176,7 @@ export default function SignUpPage() {
               <button
                 onClick={handleVerifyOtp}
                 disabled={loading || otp.join("").length !== 6}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 shadow-teal-glow"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors disabled:opacity-50 shadow-teal-glow"
               >
                 {loading ? <Spinner size="sm" invert /> : <CheckCircle size={15} />}
                 Bestätigen
@@ -224,7 +224,7 @@ export default function SignUpPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="E-Mail"
                   required
-                  className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+                  className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
                 />
                 <div className="relative">
                   <input
@@ -233,7 +233,7 @@ export default function SignUpPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Passwort"
                     required
-                    className="w-full px-4 py-2.5 pr-10 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+                    className="w-full px-4 py-2.5 pr-10 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
                   />
                   <button
                     type="button"
@@ -250,7 +250,7 @@ export default function SignUpPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Passwort bestätigen"
                   required
-                  className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+                  className="w-full px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
                 />
 
                 {/* Password requirements */}
@@ -266,7 +266,7 @@ export default function SignUpPage() {
                       {pwNumber ? "✓" : "○"} Mindestens eine Zahl
                     </span>
                     {confirmPassword.length > 0 && (
-                      <span className={pwMatch ? "text-green-600" : "text-coral"}>
+                      <span className={pwMatch ? "text-green-600" : "text-s-coral"}>
                         {pwMatch ? "✓" : "✗"} Passwörter stimmen überein
                       </span>
                     )}
@@ -276,7 +276,7 @@ export default function SignUpPage() {
                 <button
                   type="submit"
                   disabled={loading || !pwValid || !email}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors disabled:opacity-50 shadow-teal-glow mt-1"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors disabled:opacity-50 shadow-teal-glow mt-1"
                 >
                   {loading && <Spinner size="sm" invert />}
                   Registrieren
@@ -292,7 +292,7 @@ export default function SignUpPage() {
 
         <p className="text-center text-xs text-dark/30 font-body mt-6">
           Bereits registriert?{" "}
-          <a href="/de/auth/login" className="text-teal hover:underline">
+          <a href="/de/auth/login" className="text-s-coral hover:underline">
             Anmelden
           </a>
         </p>

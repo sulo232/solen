@@ -78,7 +78,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
       <PaymentElement options={{ layout: "tabs" }} />
 
       {error && (
-        <div className="rounded-button bg-coral/10 border border-coral/20 px-3 py-2.5 text-sm text-coral">
+        <div className="rounded-button bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
           {error}
         </div>
       )}
@@ -86,7 +86,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full py-3.5 rounded-button bg-teal text-white font-semibold text-sm hover:bg-teal/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+        className="w-full py-3.5 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
       >
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
         {loading ? "Verarbeite..." : `Jetzt buchen · CHF ${intent.deposit_amount.toFixed(2)}`}
@@ -241,9 +241,9 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8">
-          <p className="text-coral font-medium mb-2">Fehler</p>
+          <p className="text-s-coral font-medium mb-2">Fehler</p>
           <p className="text-dark/60 text-sm">{error ?? "Etwas ist schiefgelaufen."}</p>
-          <a href="/de" className="mt-4 inline-block text-teal text-sm underline">Zurück zur Startseite</a>
+          <a href="/de" className="mt-4 inline-block text-s-coral text-sm underline">Zurück zur Startseite</a>
         </div>
       </div>
     );
@@ -257,11 +257,11 @@ export default function CheckoutPage() {
   if (atSalonConfirmed) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="rounded-card border border-teal/20 bg-teal/5 p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full">
+        <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full">
           <span className="text-5xl">🎉</span>
           <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
           <p className="text-sm text-dark/60">Du zahlst direkt im Salon. Bis bald!</p>
-          <a href="/de/profile" className="mt-2 px-6 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors">
+          <a href="/de/profile" className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
             Meine Buchungen
           </a>
         </div>
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
     >
       {/* Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 text-xs text-dark/40 flex items-center gap-1">
-        <a href="/de" className="hover:text-teal transition-colors">Startseite</a>
+        <a href="/de" className="hover:text-s-coral transition-colors">Startseite</a>
         <ChevronRight className="w-3 h-3" />
         <span className="text-dark/60">Buchung abschliessen</span>
       </div>
@@ -290,16 +290,16 @@ export default function CheckoutPage() {
 
           <div className="space-y-2.5 text-sm">
             <div className="flex items-start gap-2.5 text-dark/70">
-              <MapPin className="w-4 h-4 text-teal mt-0.5 shrink-0" />
+              <MapPin className="w-4 h-4 text-s-coral mt-0.5 shrink-0" />
               <span><strong className="text-dark">{intent.salon_name}</strong>{intent.salon_address ? ` · ${intent.salon_address}` : ""}</span>
             </div>
             <div className="flex items-center gap-2.5 text-dark/70">
-              <Calendar className="w-4 h-4 text-teal shrink-0" />
+              <Calendar className="w-4 h-4 text-s-coral shrink-0" />
               <span>{intent.date} · {intent.time} Uhr</span>
             </div>
             {intent.staff_name && (
               <div className="flex items-center gap-2.5 text-dark/70">
-                <User className="w-4 h-4 text-teal shrink-0" />
+                <User className="w-4 h-4 text-s-coral shrink-0" />
                 <span>{intent.staff_name}</span>
               </div>
             )}
@@ -323,7 +323,7 @@ export default function CheckoutPage() {
               </>
             )}
             {paymentMode === "at_salon" && (
-              <div className="flex justify-between text-teal">
+              <div className="flex justify-between text-s-coral">
                 <span>Zahlung vor Ort</span>
                 <span className="font-medium">CHF {intent.estimated_price.toFixed(2)}</span>
               </div>
@@ -332,9 +332,9 @@ export default function CheckoutPage() {
 
           {/* What you pay now */}
           {paymentMode !== "at_salon" && (
-            <div className="mt-3 bg-teal/5 border border-teal/15 rounded-button p-3 flex items-center justify-between">
+            <div className="mt-3 bg-s-coral/5 border border-s-coral/15 rounded-button p-3 flex items-center justify-between">
               <div>
-                <p className="text-xs text-teal font-semibold">
+                <p className="text-xs text-s-coral font-semibold">
                   {paymentMode === "prepay" ? "Jetzt zu zahlen" : "Anzahlung jetzt"}
                 </p>
                 <p className="text-xs text-dark/40 mt-0.5">
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
                     : "Wird bei Erscheinen auf den Gesamtpreis angerechnet"}
                 </p>
               </div>
-              <span className="font-heading font-bold text-lg text-teal">CHF {chargeAmount.toFixed(2)}</span>
+              <span className="font-heading font-bold text-lg text-s-coral">CHF {chargeAmount.toFixed(2)}</span>
             </div>
           )}
         </div>
@@ -351,7 +351,7 @@ export default function CheckoutPage() {
         {/* Promo code + credits */}
         <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5 space-y-3">
           <h2 className="font-heading font-semibold text-sm text-dark flex items-center gap-2">
-            <Tag className="w-4 h-4 text-teal" />
+            <Tag className="w-4 h-4 text-s-coral" />
             Promo-Code oder Guthaben
           </h2>
 
@@ -363,7 +363,7 @@ export default function CheckoutPage() {
               onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
               placeholder="Code eingeben"
               disabled={!!promoResult}
-              className="flex-1 px-3 py-2 rounded-button border border-gray-200 bg-white text-sm text-dark placeholder:text-dark/30 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none disabled:opacity-50"
+              className="flex-1 px-3 py-2 rounded-button border border-gray-200 bg-white text-sm text-dark placeholder:text-dark/30 focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none disabled:opacity-50"
             />
             {promoResult ? (
               <button
@@ -376,7 +376,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePromoValidate}
                 disabled={promoLoading || !promoCode.trim()}
-                className="px-4 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
               >
                 {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Anwenden"}
               </button>
@@ -384,13 +384,13 @@ export default function CheckoutPage() {
           </div>
 
           {promoError && (
-            <p className="text-xs text-coral">{promoError}</p>
+            <p className="text-xs text-s-coral">{promoError}</p>
           )}
 
           {promoResult && (
-            <div className="flex items-center justify-between bg-teal/5 border border-teal/15 rounded-button px-3 py-2">
-              <span className="text-sm text-teal font-medium">{promoResult.code} angewendet</span>
-              <span className="text-sm font-data font-bold text-teal">-CHF {promoResult.discount_amount.toFixed(2)}</span>
+            <div className="flex items-center justify-between bg-s-coral/5 border border-s-coral/15 rounded-button px-3 py-2">
+              <span className="text-sm text-s-coral font-medium">{promoResult.code} angewendet</span>
+              <span className="text-sm data-text font-bold text-s-coral">-CHF {promoResult.discount_amount.toFixed(2)}</span>
             </div>
           )}
 
@@ -398,10 +398,10 @@ export default function CheckoutPage() {
           {userCredits > 0 && !promoResult && (
             <div className="flex items-center justify-between bg-gray-50 rounded-button px-3 py-2">
               <span className="text-sm text-dark/60 flex items-center gap-1.5">
-                <Wallet className="w-3.5 h-3.5 text-teal" />
+                <Wallet className="w-3.5 h-3.5 text-s-coral" />
                 Guthaben verfügbar
               </span>
-              <span className="text-sm font-data font-semibold text-teal">CHF {userCredits.toFixed(2)}</span>
+              <span className="text-sm data-text font-semibold text-s-coral">CHF {userCredits.toFixed(2)}</span>
             </div>
           )}
         </div>
@@ -414,14 +414,14 @@ export default function CheckoutPage() {
               Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.
             </p>
             {error && (
-              <div className="rounded-button bg-coral/10 border border-coral/20 px-3 py-2.5 text-sm text-coral mb-3">
+              <div className="rounded-button bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral mb-3">
                 {error}
               </div>
             )}
             <button
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
-              className="w-full py-3.5 rounded-button bg-teal text-white font-semibold text-sm hover:bg-teal/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {confirmingAtSalon ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
               {confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
@@ -442,8 +442,8 @@ export default function CheckoutPage() {
                   appearance: {
                     theme: "stripe",
                     variables: {
-                      colorPrimary: "#4ECDC4",
-                      colorDanger: "#FF6B6B",
+                      colorPrimary: "#E8624A",
+                      colorDanger: "#E8624A",
                       borderRadius: "8px",
                       fontFamily: "DM Sans, sans-serif",
                     },

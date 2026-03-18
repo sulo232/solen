@@ -40,30 +40,30 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
 
       <button
         onClick={onCustomer}
-        className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-teal/40 hover:bg-teal/[0.03] transition-all text-left"
+        className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left"
       >
-        <div className="w-12 h-12 rounded-xl bg-teal/10 flex items-center justify-center flex-shrink-0">
-          <User size={22} className="text-teal" />
+        <div className="w-12 h-12 rounded-xl bg-s-coral/10 flex items-center justify-center flex-shrink-0">
+          <User size={22} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-heading font-semibold text-dark">Ich bin ein Kunde</p>
           <p className="text-xs text-dark/50 font-body mt-0.5">Salons entdecken und Termine buchen</p>
         </div>
-        <ChevronRight size={18} className="text-dark/20 group-hover:text-teal transition-colors" />
+        <ChevronRight size={18} className="text-dark/20 group-hover:text-s-coral transition-colors" />
       </button>
 
       <button
         onClick={onSalon}
-        className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-coral/40 hover:bg-coral/[0.03] transition-all text-left"
+        className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left"
       >
-        <div className="w-12 h-12 rounded-xl bg-coral/10 flex items-center justify-center flex-shrink-0">
-          <Building2 size={22} className="text-coral" />
+        <div className="w-12 h-12 rounded-xl bg-s-coral/10 flex items-center justify-center flex-shrink-0">
+          <Building2 size={22} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-heading font-semibold text-dark">Ich bin Salon-Inhaber</p>
           <p className="text-xs text-dark/50 font-body mt-0.5">Meinen Salon registrieren und verwalten</p>
         </div>
-        <ChevronRight size={18} className="text-dark/20 group-hover:text-coral transition-colors" />
+        <ChevronRight size={18} className="text-dark/20 group-hover:text-s-coral transition-colors" />
       </button>
     </div>
   );
@@ -107,7 +107,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
           placeholder="Avatar-URL (optional)"
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
       </div>
 
@@ -117,20 +117,20 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2.5 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all"
+        className="px-4 py-2.5 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
       />
       <textarea
         placeholder="Kurze Bio (optional)"
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         rows={3}
-        className="px-4 py-2.5 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-teal focus:ring-2 focus:ring-teal/10 transition-all resize-none"
+        className="px-4 py-2.5 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all resize-none"
       />
 
       <button
         type="submit"
         disabled={!name || saving}
-        className="w-full py-3 rounded-button bg-teal text-white font-body font-semibold text-sm hover:bg-teal-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-teal-glow"
+        className="w-full py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-teal-glow"
       >
         {saving && <Spinner size="sm" invert />}
         Weiter
@@ -184,8 +184,8 @@ function SelectPill<T extends string>({
           className={[
             "flex items-center gap-2 px-3 py-2 rounded-button border text-sm font-body transition-all",
             value === o.value
-              ? "border-teal bg-teal/5 text-teal font-medium"
-              : "border-gray-200 text-dark/70 hover:border-teal/30",
+              ? "border-s-coral bg-s-coral/5 text-s-coral font-medium"
+              : "border-gray-200 text-dark/70 hover:border-s-coral/30",
           ].join(" ")}
         >
           {o.icon}
@@ -235,14 +235,14 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 rounded-button border border-gray-200 text-sm font-body text-dark/60 hover:border-teal transition-colors"
+          className="flex-1 py-3 rounded-button border border-gray-200 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-button bg-teal text-white font-body font-semibold text-sm hover:bg-teal-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-teal-glow"
+          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-teal-glow"
         >
           {saving && <Spinner size="sm" invert />}
           Weiter
@@ -303,15 +303,15 @@ function Step3({ onComplete }: { onComplete: () => void }) {
               onClick={() => toggle(o.value)}
               className={[
                 "relative flex flex-col items-center gap-2 p-4 rounded-card border transition-all",
-                active ? "border-teal bg-teal/5" : "border-gray-100 hover:border-teal/30",
+                active ? "border-s-coral bg-s-coral/5" : "border-gray-100 hover:border-s-coral/30",
               ].join(" ")}
             >
               {active && (
-                <span className="absolute top-2 right-2 w-5 h-5 rounded-full bg-teal flex items-center justify-center">
+                <span className="absolute top-2 right-2 w-5 h-5 rounded-full bg-s-coral flex items-center justify-center">
                   <Check className="w-3 h-3 text-white" />
                 </span>
               )}
-              <span className="text-teal">{o.icon}</span>
+              <span className="text-s-coral">{o.icon}</span>
               <span className="text-sm font-body font-medium text-dark">{o.label}</span>
             </button>
           );
@@ -322,14 +322,14 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           onClick={onComplete}
-          className="flex-1 py-3 rounded-button border border-gray-200 text-sm font-body text-dark/60 hover:border-teal transition-colors"
+          className="flex-1 py-3 rounded-button border border-gray-200 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-button bg-coral text-white font-body font-semibold text-sm hover:bg-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow"
+          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
           Fertig
@@ -349,9 +349,9 @@ function DoneScreen() {
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 18 }}
-        className="w-20 h-20 rounded-3xl bg-teal/10 flex items-center justify-center"
+        className="w-20 h-20 rounded-3xl bg-s-coral/10 flex items-center justify-center"
       >
-        <PartyPopper size={36} className="text-teal" />
+        <PartyPopper size={36} className="text-s-coral" />
       </motion.div>
       <div>
         <p className="font-heading font-bold text-2xl text-dark">Willkommen bei solen.ch!</p>
@@ -361,7 +361,7 @@ function DoneScreen() {
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-teal"
+            className="w-2 h-2 rounded-full bg-s-coral"
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
           />
@@ -409,8 +409,8 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-mesh-teal flex flex-col items-center justify-center px-4 py-12">
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-teal/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-coral/[0.06] blur-[80px]" />
+        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-s-coral/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-s-coral/[0.06] blur-[80px]" />
       </div>
 
       <div className="w-full max-w-sm">
@@ -419,7 +419,7 @@ export default function RegisterPage() {
             href={`/${locale}`}
             className="inline-block font-heading font-bold text-3xl text-dark tracking-tight hover:opacity-80 transition-opacity"
           >
-            solen<span className="text-teal">.</span>ch
+            solen<span className="text-s-coral">.</span>ch
           </a>
         </div>
 
@@ -430,7 +430,7 @@ export default function RegisterPage() {
               <div
                 key={s}
                 className={`h-1.5 rounded-full transition-all duration-500 ${
-                  s === step ? "w-10 bg-teal" : s < step ? "w-4 bg-teal/40" : "w-4 bg-gray-200"
+                  s === step ? "w-10 bg-s-coral" : s < step ? "w-4 bg-s-coral/40" : "w-4 bg-gray-200"
                 }`}
               />
             ))}
@@ -472,7 +472,7 @@ export default function RegisterPage() {
             {step === -1 ? (
               <>
                 Bereits registriert?{" "}
-                <a href={`/${locale}/auth/login`} className="text-teal hover:underline">
+                <a href={`/${locale}/auth/login`} className="text-s-coral hover:underline">
                   Anmelden
                 </a>
               </>

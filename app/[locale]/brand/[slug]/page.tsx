@@ -69,7 +69,7 @@ export default function BrandPage() {
               <Image src={group.logo_url} alt={group.name} fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-xl bg-teal/10 flex items-center justify-center text-teal text-2xl font-heading font-bold shrink-0">
+            <div className="w-20 h-20 rounded-xl bg-s-coral/10 flex items-center justify-center text-s-coral text-2xl font-heading font-bold shrink-0">
               {group.name[0]}
             </div>
           )}
@@ -87,7 +87,7 @@ export default function BrandPage() {
                   href={group.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-teal hover:underline"
+                  className="inline-flex items-center gap-1 text-xs text-s-coral hover:underline"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Website

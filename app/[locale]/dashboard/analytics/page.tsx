@@ -21,9 +21,9 @@ interface AnalyticsData {
   percentile_rank?: number;
 }
 
-const TEAL = "#4ECDC4";
-const CORAL = "#FF6B6B";
-const DARK = "#1A1A2E";
+const CORAL = "#E8624A";
+const AMBER = "#D4870A";
+const DARK = "#1A1209";
 
 export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
@@ -58,27 +58,27 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
               <p className="text-xs text-dark/40 mb-1">Stornierungsrate</p>
-              <p className="font-data font-bold text-2xl text-dark">{data.cancellation_rate.toFixed(1)}%</p>
+              <p className="data-text font-bold text-2xl text-dark">{data.cancellation_rate.toFixed(1)}%</p>
             </div>
             <div className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
               <p className="text-xs text-dark/40 mb-1">Bewertung</p>
               <div className="flex items-center gap-2">
-                <p className="font-data font-bold text-2xl text-dark">{data.average_rating.toFixed(1)}</p>
-                {data.rating_trend === "up" && <TrendingUp size={16} className="text-teal" />}
-                {data.rating_trend === "down" && <TrendingDown size={16} className="text-coral" />}
+                <p className="data-text font-bold text-2xl text-dark">{data.average_rating.toFixed(1)}</p>
+                {data.rating_trend === "up" && <TrendingUp size={16} className="text-s-coral" />}
+                {data.rating_trend === "down" && <TrendingDown size={16} className="text-s-coral" />}
               </div>
             </div>
             <div className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
               <p className="text-xs text-dark/40 mb-1">Neue Kunden</p>
-              <p className="font-data font-bold text-2xl text-teal">{data.customer_breakdown.new_customers}</p>
+              <p className="data-text font-bold text-2xl text-s-coral">{data.customer_breakdown.new_customers}</p>
             </div>
           </div>
 
           {/* Benchmark card */}
           {data.percentile_rank != null && (
-            <div className="bg-gradient-to-r from-teal/10 to-teal/5 rounded-card border border-teal/20 p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-teal/20 flex items-center justify-center shrink-0">
-                <TrendingUp size={20} className="text-teal" />
+            <div className="bg-gradient-to-r from-s-coral/10 to-s-coral/5 rounded-card border border-s-coral/20 p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-s-coral/20 flex items-center justify-center shrink-0">
+                <TrendingUp size={20} className="text-s-coral" />
               </div>
               <div>
                 <p className="font-heading font-semibold text-dark text-sm">
@@ -97,10 +97,10 @@ export default function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={data.bookings_by_day}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
-                <Line type="monotone" dataKey="count" stroke={TEAL} strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="count" stroke={CORAL} strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -111,11 +111,11 @@ export default function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.revenue_by_week}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }}
                   formatter={(v: number) => [`CHF ${v}`, "Umsatz"]} />
-                <Bar dataKey="revenue" fill={TEAL} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" fill={CORAL} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -127,10 +127,10 @@ export default function AnalyticsPage() {
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={data.top_services} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} width={80} />
+                  <XAxis type="number" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} width={80} />
                   <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
-                  <Bar dataKey="bookings" fill={TEAL} radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="bookings" fill={CORAL} radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -149,7 +149,7 @@ export default function AnalyticsPage() {
                     labelLine={false}
                   >
                     <Cell fill={CORAL} />
-                    <Cell fill={TEAL} />
+                    <Cell fill={AMBER} />
                   </Pie>
                   <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
                 </PieChart>
@@ -163,11 +163,11 @@ export default function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.last_minute_performance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#1A1A2E66" }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
-                <Bar dataKey="booked" fill={TEAL} radius={[4, 4, 0, 0]} stackId="a" name="Gebucht" />
-                <Bar dataKey="expired" fill={CORAL} radius={[4, 4, 0, 0]} stackId="a" name="Abgelaufen" />
+                <Bar dataKey="booked" fill={CORAL} radius={[4, 4, 0, 0]} stackId="a" name="Gebucht" />
+                <Bar dataKey="expired" fill={AMBER} radius={[4, 4, 0, 0]} stackId="a" name="Abgelaufen" />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -61,7 +61,7 @@ export default function RevenuePage() {
               onClick={() => setPeriod(p)}
               className={[
                 "px-3 py-1.5 text-xs font-medium transition-colors",
-                period === p ? "bg-teal text-white" : "text-dark/50 hover:text-dark",
+                period === p ? "bg-s-coral text-white" : "text-dark/50 hover:text-dark",
               ].join(" ")}
             >
               {p === "week" ? "Woche" : p === "month" ? "Monat" : "Jahr"}
@@ -88,22 +88,22 @@ export default function RevenuePage() {
                 label: "GMV (Gesamtumsatz)",
                 value: `CHF ${fmt(data.total_revenue)}`,
                 icon: DollarSign,
-                color: "text-teal",
-                bg: "bg-teal/5",
+                color: "text-s-coral",
+                bg: "bg-s-coral/5",
               },
               {
                 label: `Kommission (${data.current_commission_rate > 0 ? `${data.current_commission_rate.toFixed(1)}%` : "—"})`,
                 value: `CHF ${fmt(data.total_commission)}`,
                 icon: Percent,
-                color: "text-coral",
-                bg: "bg-coral/5",
+                color: "text-s-coral",
+                bg: "bg-s-coral/5",
               },
               {
                 label: "Netto an Salons",
                 value: `CHF ${fmt(data.total_net_to_salons)}`,
                 icon: Banknote,
-                color: "text-teal",
-                bg: "bg-teal/5",
+                color: "text-s-coral",
+                bg: "bg-s-coral/5",
               },
               {
                 label: "Transaktionen",
@@ -123,8 +123,8 @@ export default function RevenuePage() {
                 label: "Wachstum",
                 value: `${data.growth_percent >= 0 ? "+" : ""}${data.growth_percent.toFixed(1)}%`,
                 icon: ArrowUpRight,
-                color: data.growth_percent >= 0 ? "text-teal" : "text-coral",
-                bg: data.growth_percent >= 0 ? "bg-teal/5" : "bg-coral/5",
+                color: data.growth_percent >= 0 ? "text-s-coral" : "text-s-coral",
+                bg: data.growth_percent >= 0 ? "bg-s-coral/5" : "bg-s-coral/5",
               },
             ].map((card) => (
               <motion.div
@@ -135,7 +135,7 @@ export default function RevenuePage() {
                 <div className={`w-8 h-8 rounded-lg ${card.bg} flex items-center justify-center mb-3`}>
                   <card.icon size={15} className={card.color} />
                 </div>
-                <p className="font-data font-bold text-xl text-dark leading-tight">{card.value}</p>
+                <p className="data-text font-bold text-xl text-dark leading-tight">{card.value}</p>
                 <p className="text-xs text-dark/40 mt-0.5">{card.label}</p>
               </motion.div>
             ))}
@@ -149,20 +149,20 @@ export default function RevenuePage() {
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
                     <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4ECDC4" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#4ECDC4" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#E8624A" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#E8624A" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis
                     dataKey="date"
-                    tick={{ fontSize: 10, fill: "#1A1A2E50" }}
+                    tick={{ fontSize: 10, fill: "#1A120950" }}
                     tickFormatter={(d) => new Date(d).toLocaleDateString("de-CH", { day: "numeric", month: "short" })}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 10, fill: "#1A1A2E50" }}
+                    tick={{ fontSize: 10, fill: "#1A120950" }}
                     tickFormatter={(v) => `${v}`}
                     axisLine={false}
                     tickLine={false}
@@ -176,11 +176,11 @@ export default function RevenuePage() {
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#4ECDC4"
+                    stroke="#E8624A"
                     strokeWidth={2}
                     fill="url(#revenueGradient)"
                     dot={false}
-                    activeDot={{ r: 4, fill: "#4ECDC4" }}
+                    activeDot={{ r: 4, fill: "#E8624A" }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -208,13 +208,13 @@ export default function RevenuePage() {
                       className="border-t border-gray-50 hover:bg-gray-50/60 transition-colors"
                     >
                       <td className="px-5 py-3 flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-teal/10 text-teal text-[10px] font-bold flex items-center justify-center shrink-0">
+                        <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">
                           {i + 1}
                         </span>
                         <span className="font-medium text-dark">{salon.name}</span>
                       </td>
-                      <td className="px-5 py-3 text-right font-data text-dark/60">{salon.bookings}</td>
-                      <td className="px-5 py-3 text-right font-data font-semibold text-dark">CHF {fmt(salon.revenue)}</td>
+                      <td className="px-5 py-3 text-right data-text text-dark/60">{salon.bookings}</td>
+                      <td className="px-5 py-3 text-right data-text font-semibold text-dark">CHF {fmt(salon.revenue)}</td>
                     </tr>
                   ))}
                 </tbody>

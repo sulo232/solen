@@ -57,7 +57,7 @@ export default function ApprovalsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6 flex items-center gap-3">
-        <ShieldCheck size={22} className="text-coral" />
+        <ShieldCheck size={22} className="text-s-coral" />
         <div>
           <h1 className="font-heading font-bold text-2xl text-dark">Genehmigungen</h1>
           <p className="text-sm text-dark/40 mt-0.5">Neue Salons warten auf Freischaltung</p>
@@ -68,7 +68,7 @@ export default function ApprovalsPage() {
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : salons.length === 0 ? (
         <div className="bg-white rounded-card border border-gray-100 p-12 text-center">
-          <ShieldCheck size={36} className="mx-auto mb-3 text-teal opacity-40" />
+          <ShieldCheck size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
           <p className="text-dark/40 text-sm">Keine ausstehenden Genehmigungen</p>
         </div>
       ) : (
@@ -99,7 +99,7 @@ export default function ApprovalsPage() {
                   {salon.categories.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {salon.categories.map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 rounded-pill bg-teal/10 text-teal text-xs font-medium">
+                        <span key={cat} className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-xs font-medium">
                           {cat}
                         </span>
                       ))}
@@ -111,7 +111,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => approve(salon.id)}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
                   >
                     <Check size={15} />
                     Genehmigen
@@ -119,7 +119,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => setRejectModal({ id: salon.id, name: salon.name })}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-button border border-coral/30 text-coral text-sm font-medium hover:bg-coral/5 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-button border border-s-coral/30 text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors disabled:opacity-50"
                   >
                     <X size={15} />
                     Ablehnen
@@ -140,7 +140,7 @@ export default function ApprovalsPage() {
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
             </p>
             <textarea
-              className="w-full border border-gray-200 rounded-button px-3 py-2 text-sm text-dark resize-none focus:outline-none focus:border-teal"
+              className="w-full border border-gray-200 rounded-button px-3 py-2 text-sm text-dark resize-none focus:outline-none focus:border-s-coral"
               rows={4}
               placeholder="z.B. Unvollständige Angaben, kein Basel-Bezug..."
               value={rejectReason}
@@ -157,7 +157,7 @@ export default function ApprovalsPage() {
               <button
                 onClick={reject}
                 disabled={!rejectReason.trim() || actionLoading === rejectModal.id}
-                className="px-4 py-2 rounded-button bg-coral text-white text-sm font-medium hover:bg-coral/90 transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
               >
                 Ablehnen & E-Mail senden
               </button>

@@ -60,7 +60,7 @@ export default function HelpArticlePage() {
             action={
               <Link
                 href={`/${locale}/help`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-button bg-teal text-white text-sm font-body font-medium hover:bg-teal-dark transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors"
               >
                 Zurück zur Hilfe
               </Link>

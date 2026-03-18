@@ -59,7 +59,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   return (
     <span className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className={[sz, i <= rounded ? "fill-coral text-coral" : "text-gray-200"].join(" ")} />
+        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-gray-200"].join(" ")} />
       ))}
     </span>
   );
@@ -132,9 +132,9 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
   if (!slot || !remaining) return null;
 
   return (
-    <div className="bg-coral/10 border border-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
-      <div className="w-9 h-9 rounded-full bg-coral/15 flex items-center justify-center shrink-0">
-        <Clock size={16} className="text-coral" />
+    <div className="bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
+      <div className="w-9 h-9 rounded-full bg-s-coral/15 flex items-center justify-center shrink-0">
+        <Clock size={16} className="text-s-coral" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-dark">
@@ -145,7 +145,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
         </p>
       </div>
       <div className="shrink-0">
-        <span className="font-data font-bold text-lg text-coral tabular-nums">{remaining}</span>
+        <span className="data-text font-bold text-lg text-s-coral tabular-nums">{remaining}</span>
       </div>
     </div>
   );
@@ -209,7 +209,7 @@ export default function SalonProfilePage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-dark/40">
         <p className="font-heading text-2xl font-semibold">Salon nicht gefunden</p>
-        <Link href={`/${locale}/coiffeur`} className="text-sm text-teal hover:underline">Alle Salons</Link>
+        <Link href={`/${locale}/coiffeur`} className="text-sm text-s-coral hover:underline">Alle Salons</Link>
       </div>
     );
   }
@@ -262,11 +262,11 @@ export default function SalonProfilePage() {
       <div className="min-h-screen bg-white">
         {/* Breadcrumb */}
         <nav className="max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-2 text-xs text-dark/40">
-          <Link href={`/${locale}`} className="hover:text-teal">Home</Link>
+          <Link href={`/${locale}`} className="hover:text-s-coral">Home</Link>
           <ChevronRight className="inline w-3 h-3 mx-1" />
           {salon.categories[0] && (
             <>
-              <Link href={`/${locale}/${salon.categories[0]}`} className="capitalize hover:text-teal">{salon.categories[0]}</Link>
+              <Link href={`/${locale}/${salon.categories[0]}`} className="capitalize hover:text-s-coral">{salon.categories[0]}</Link>
               <ChevronRight className="inline w-3 h-3 mx-1" />
             </>
           )}
@@ -335,7 +335,7 @@ export default function SalonProfilePage() {
                   {salon.categories.map((cat) => {
                     const Icon = CATEGORY_ICONS[cat];
                     return (
-                      <span key={cat} className="flex items-center gap-1 px-2.5 py-1 rounded-pill bg-teal/10 text-teal text-xs font-medium capitalize">
+                      <span key={cat} className="flex items-center gap-1 px-2.5 py-1 rounded-pill bg-s-coral/10 text-s-coral text-xs font-medium capitalize">
                         <Icon className="w-3 h-3" />{cat}
                       </span>
                     );
@@ -344,8 +344,8 @@ export default function SalonProfilePage() {
                 <div className="flex flex-wrap items-center gap-4 mt-3">
                   <div className="flex items-center gap-1.5">
                     <Stars rating={salon.average_rating} />
-                    <span className="font-data font-semibold text-dark text-sm">{salon.average_rating.toFixed(1)}</span>
-                    <button onClick={scrollToReviews} className="text-dark/40 text-xs hover:text-teal transition-colors">({salon.review_count})</button>
+                    <span className="data-text font-semibold text-dark text-sm">{salon.average_rating.toFixed(1)}</span>
+                    <button onClick={scrollToReviews} className="text-dark/40 text-xs hover:text-s-coral transition-colors">({salon.review_count})</button>
                   </div>
                   <span className="flex items-center gap-1 text-dark/50 text-sm">
                     <MapPin className="w-3.5 h-3.5" />
@@ -356,37 +356,37 @@ export default function SalonProfilePage() {
                   {salon.address && (
                     <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
                       <MapPin className="w-4 h-4" />{salon.address}
                     </a>
                   )}
                   {salon.phone && (
-                    <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                    <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
                       <Phone className="w-4 h-4" />{salon.phone}
                     </a>
                   )}
                   {salon.instagram_url && (
                     <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
                       <Instagram className="w-4 h-4" />Instagram
                     </a>
                   )}
                   {(salon as any).facebook_url && (
                     <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
                       <Facebook className="w-4 h-4" />Facebook
                     </a>
                   )}
                   {(salon as any).tiktok_url && (
                     <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
                       TikTok
                     </a>
                   )}
                   {(salon as any).website_url && (
                     <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-teal transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
                       <Globe className="w-4 h-4" />Website
                     </a>
                   )}
@@ -403,7 +403,7 @@ export default function SalonProfilePage() {
                     key={key}
                     onClick={() => { setActiveTab(key); document.getElementById(`section-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                     className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-                      activeTab === key ? "border-teal text-teal" : "border-transparent text-dark/50 hover:text-dark"
+                      activeTab === key ? "border-s-coral text-s-coral" : "border-transparent text-dark/50 hover:text-dark"
                     }`}
                   >
                     {label}
@@ -415,7 +415,7 @@ export default function SalonProfilePage() {
               {Object.keys(salon.opening_hours ?? {}).length > 0 && (
                 <div>
                   <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-teal" />Öffnungszeiten
+                    <Clock className="w-4 h-4 text-s-coral" />Öffnungszeiten
                   </h2>
                   {/* Mobile: today preview + expand */}
                   <div className="md:hidden">
@@ -436,7 +436,7 @@ export default function SalonProfilePage() {
                           return (
                             <div key={key} className="flex justify-between text-sm">
                               <span className="text-dark/50">{label}</span>
-                              <span className={h ? "font-data text-dark" : "text-dark/25"}>
+                              <span className={h ? "data-text text-dark" : "text-dark/25"}>
                                 {h ? `${h.open}–${h.close}` : "Zu"}
                               </span>
                             </div>
@@ -453,7 +453,7 @@ export default function SalonProfilePage() {
                       return (
                         <div key={key} className="flex justify-between text-sm">
                           <span className="text-dark/50">{label}</span>
-                          <span className={h ? "font-data text-dark" : "text-dark/25"}>
+                          <span className={h ? "data-text text-dark" : "text-dark/25"}>
                             {h ? `${h.open}–${h.close}` : "Zu"}
                           </span>
                         </div>
@@ -467,12 +467,12 @@ export default function SalonProfilePage() {
               {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                 <div>
                   <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
-                    <Info className="w-4 h-4 text-teal" />Saloninfo
+                    <Info className="w-4 h-4 text-s-coral" />Saloninfo
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {(salon as any).atmosphere && (
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
-                        <Sparkles className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <Sparkles className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Atmosphäre</p>
                           <p className="text-sm text-dark mt-0.5">{(salon as any).atmosphere}</p>
@@ -481,7 +481,7 @@ export default function SalonProfilePage() {
                     )}
                     {(salon as any).expertise && (
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
-                        <Award className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <Award className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Expertise</p>
                           <p className="text-sm text-dark mt-0.5">{(salon as any).expertise}</p>
@@ -490,7 +490,7 @@ export default function SalonProfilePage() {
                     )}
                     {(salon as any).products && (
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
-                        <Droplets className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <Droplets className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Produkte</p>
                           <p className="text-sm text-dark mt-0.5">{(salon as any).products}</p>
@@ -499,7 +499,7 @@ export default function SalonProfilePage() {
                     )}
                     {(salon as any).nearest_transport && (
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
-                        <Bus className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+                        <Bus className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">ÖV-Anbindung</p>
                           <p className="text-sm text-dark mt-0.5">{(salon as any).nearest_transport}</p>
@@ -559,7 +559,7 @@ export default function SalonProfilePage() {
                           {svcs.map((svc) => (
                             <button key={svc.id}
                               onClick={() => { setSelectedService(svc.id); setCalendarOpen(true); }}
-                              className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-gray-50 transition-colors ${selectedService === svc.id ? "bg-teal/5" : ""}`}
+                              className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-gray-50 transition-colors ${selectedService === svc.id ? "bg-s-coral/5" : ""}`}
                             >
                               <div className="flex items-center gap-2">
                                 <div>
@@ -574,8 +574,8 @@ export default function SalonProfilePage() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-3 shrink-0 ml-4">
-                                <span className="font-data font-semibold text-sm text-dark">CHF {svc.price}</span>
-                                <span className="text-xs text-teal font-medium hidden sm:inline">Buchen</span>
+                                <span className="data-text font-semibold text-sm text-dark">CHF {svc.price}</span>
+                                <span className="text-xs text-s-coral font-medium hidden sm:inline">Buchen</span>
                               </div>
                             </button>
                           ))}
@@ -618,7 +618,7 @@ export default function SalonProfilePage() {
                           onClick={() => { setReviewSort(s); setReviewPage(1); }}
                           className={`px-2.5 py-1 rounded-pill text-xs font-medium transition-colors ${
                             reviewSort === s
-                              ? "bg-teal/10 text-teal"
+                              ? "bg-s-coral/10 text-s-coral"
                               : "text-dark/50 hover:text-dark"
                           }`}
                         >
@@ -664,8 +664,8 @@ export default function SalonProfilePage() {
                           )}
                           {/* Review reply badge */}
                           {(rev as any).review_replies?.length > 0 && (rev as any).review_replies[0].is_public && (
-                            <div className="mt-3 pl-4 border-l-2 border-teal/30">
-                              <p className="text-xs text-teal font-medium flex items-center gap-1 mb-1">
+                            <div className="mt-3 pl-4 border-l-2 border-s-coral/30">
+                              <p className="text-xs text-s-coral font-medium flex items-center gap-1 mb-1">
                                 <ShieldCheck className="w-3 h-3" />Salon hat geantwortet
                               </p>
                               <p className="text-xs text-dark/60">{(rev as any).review_replies[0].reply_text}</p>
@@ -679,7 +679,7 @@ export default function SalonProfilePage() {
                     </div>
                     {salon.reviews.length > reviewsVisible.length && (
                       <button onClick={() => setReviewPage((p) => p + 1)}
-                        className="mt-4 w-full py-2.5 border border-gray-200 rounded-button text-sm text-dark/60 hover:border-teal transition-colors">
+                        className="mt-4 w-full py-2.5 border border-gray-200 rounded-button text-sm text-dark/60 hover:border-s-coral transition-colors">
                         Mehr Bewertungen
                       </button>
                     )}
@@ -692,14 +692,14 @@ export default function SalonProfilePage() {
               {salon.latitude && salon.longitude && (
                 <div id="section-standort">
                   <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-teal" />Standort
+                    <MapPin className="w-4 h-4 text-s-coral" />Standort
                   </h2>
                   <div className="h-48 rounded-card overflow-hidden">
                     <MapView salons={[mapSalon]} />
                   </div>
                   <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                     target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-2 text-sm text-teal hover:underline">
+                    className="inline-flex items-center gap-1 mt-2 text-sm text-s-coral hover:underline">
                     Route anzeigen <ChevronRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -725,7 +725,7 @@ export default function SalonProfilePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setCalendarOpen(true)}
-                        className="w-full py-4 rounded-card bg-coral text-white font-body font-semibold text-base hover:bg-coral-dark transition-colors shadow-coral-glow"
+                        className="w-full py-4 rounded-card bg-s-coral text-white font-body font-semibold text-base hover:bg-s-coral-dark transition-colors shadow-warm-md"
                       >
                         Jetzt buchen
                       </motion.button>
@@ -748,11 +748,11 @@ export default function SalonProfilePage() {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setMobileSheetOpen(true)}
-            className="w-full py-3.5 rounded-card bg-coral text-white font-body font-semibold text-base shadow-coral-glow flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-card bg-s-coral text-white font-body font-semibold text-base shadow-warm-md flex items-center justify-center gap-2"
           >
             <span>Termin buchen</span>
             {salon.services.length > 0 && (
-              <span className="text-white/80 font-data text-sm">
+              <span className="text-white/80 data-text text-sm">
                 — ab CHF {Math.min(...salon.services.map((s) => s.price))}
               </span>
             )}

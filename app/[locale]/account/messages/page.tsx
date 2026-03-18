@@ -60,7 +60,7 @@ export default function MessagesPage() {
         </p>
         <a
           href={`/${locale}/coiffeur`}
-          className="mt-2 px-5 py-2.5 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+          className="mt-2 px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
         >
           Salons entdecken
         </a>
@@ -85,19 +85,19 @@ export default function MessagesPage() {
                   className={[
                     "flex items-start gap-3 p-3 rounded-card text-left transition-colors w-full",
                     selected === conv.id
-                      ? "bg-teal/5 border border-teal/20"
-                      : "bg-white border border-gray-100 hover:border-teal/20",
+                      ? "bg-s-coral/5 border border-s-coral/20"
+                      : "bg-white border border-gray-100 hover:border-s-coral/20",
                   ].join(" ")}
                 >
                   {/* Avatar */}
-                  <div className="w-10 h-10 rounded-full bg-teal/20 flex items-center justify-center text-teal font-semibold text-sm shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-s-coral/20 flex items-center justify-center text-s-coral font-semibold text-sm shrink-0">
                     {conv.other_party_name?.[0] ?? "?"}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
                       <p className="text-sm font-medium text-dark truncate">{conv.other_party_name}</p>
                       {unread > 0 && (
-                        <span className="w-5 h-5 rounded-full bg-coral text-white text-[10px] flex items-center justify-center font-bold shrink-0">
+                        <span className="w-5 h-5 rounded-full bg-s-coral text-white text-[10px] flex items-center justify-center font-bold shrink-0">
                           {unread}
                         </span>
                       )}

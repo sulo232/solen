@@ -35,9 +35,9 @@ const TABS: { label: string; value: StatusFilter }[] = [
 ];
 
 function getStatusPill(salon: AdminSalon) {
-  if (salon.is_active) return { label: "Aktiv", cls: "bg-teal/10 text-teal" };
+  if (salon.is_active) return { label: "Aktiv", cls: "bg-s-coral/10 text-s-coral" };
   if (!salon.approved_at) return { label: "Ausstehend", cls: "bg-amber-100 text-amber-700" };
-  return { label: "Eingefroren", cls: "bg-coral/10 text-coral" };
+  return { label: "Eingefroren", cls: "bg-s-coral/10 text-s-coral" };
 }
 
 /* ─── Confirmation Modal ─── */
@@ -149,7 +149,7 @@ export default function AllSalonsPage() {
               : `Bist du sicher? Der Salon "${confirmTarget.salon.name}" wird für Kunden nicht mehr sichtbar.`
           }
           confirmLabel={confirmTarget.action === "activate" ? "Aktivieren" : "Einfrieren"}
-          confirmCls={confirmTarget.action === "activate" ? "bg-teal" : "bg-coral"}
+          confirmCls={confirmTarget.action === "activate" ? "bg-s-coral" : "bg-s-coral"}
           onConfirm={handleToggle}
           onClose={() => setConfirmTarget(null)}
           loading={actionLoading}
@@ -171,8 +171,8 @@ export default function AllSalonsPage() {
             className={[
               "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
               tab === t.value
-                ? "bg-teal text-white"
-                : "bg-white border border-gray-200 text-dark/60 hover:border-teal",
+                ? "bg-s-coral text-white"
+                : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral",
             ].join(" ")}
           >
             {t.label}
@@ -188,7 +188,7 @@ export default function AllSalonsPage() {
           placeholder="Salon suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-teal transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -239,7 +239,7 @@ export default function AllSalonsPage() {
                         {salon.categories.slice(0, 3).map((c) => (
                           <span
                             key={c}
-                            className="px-2 py-0.5 bg-teal/10 text-teal text-[10px] rounded-pill font-medium"
+                            className="px-2 py-0.5 bg-s-coral/10 text-s-coral text-[10px] rounded-pill font-medium"
                           >
                             {c}
                           </span>
@@ -271,14 +271,14 @@ export default function AllSalonsPage() {
                     {salon.is_active ? (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "deactivate" })}
-                        className="px-3 py-1.5 rounded-button border border-coral/30 text-coral text-xs font-medium hover:bg-coral/5 transition-colors"
+                        className="px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         Einfrieren
                       </button>
                     ) : (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "activate" })}
-                        className="px-3 py-1.5 rounded-button border border-teal/30 text-teal text-xs font-medium hover:bg-teal/5 transition-colors"
+                        className="px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         Aktivieren
                       </button>
