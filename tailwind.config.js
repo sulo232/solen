@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -34,6 +35,10 @@ module.exports = {
           400: "#666688",
           500: "#1A1A2E",
         },
+        // Dark mode surfaces
+        "dm-bg": "#0F0F1A",
+        "dm-surface": "#1A1A2E",
+        "dm-text": "#E2E8F0",
       },
       fontFamily: {
         heading: ["Syne", "sans-serif"],

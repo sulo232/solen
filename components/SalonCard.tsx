@@ -48,7 +48,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white shadow-card hover:shadow-card-hover transition-shadow"
+        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-dm-surface shadow-card hover:shadow-card-hover transition-shadow"
       >
         <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
           {salon.cover_photo_url && (
@@ -77,7 +77,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       className="will-change-transform"
       onMouseEnter={() => router.prefetch(href)}
     >
-      <Link href={href} className="block rounded-card bg-white shadow-card overflow-hidden group">
+      <Link href={href} className="block rounded-card bg-white dark:bg-dm-surface shadow-card overflow-hidden group">
         {/* Cover photo */}
         <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
           {salon.cover_photo_url ? (

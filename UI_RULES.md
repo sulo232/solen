@@ -5,7 +5,11 @@
 ---
 
 ## 1. Core Aesthetic
-- **Light Mode Only:** Do NOT implement dark mode. The platform is strictly light mode.
+- **Light + Dark Mode:** The platform supports both light and dark mode via `darkMode: 'class'` in Tailwind. Default is system preference.
+  - Dark background: `#0F0F1A` (`dm-bg`), Dark surface: `#1A1A2E` (`dm-surface`), Dark text: `#E2E8F0` (`dm-text`)
+  - Use `dark:` variants on all major surfaces (cards, nav, modals, backgrounds)
+  - ThemeToggle in Header cycles: light → dark → system
+  - `<ThemeScript>` in layout prevents flash of wrong theme
 - **Pure Glassmorphism:** All cards, modals, and overlays must use glassmorphism (`backdrop-blur-xl`, semi-transparent backgrounds with a subtle white tint).
 - **No Glowing Borders:** Do not use AI-style glowing borders or generic neon shadows. Stick to clean, iPhone-widget-style glassmorphism.
 - **Premium Feel:** The UI must feel like a luxury hotel booking site (Airbnb/Booking.com inspiration) but tailored for beauty services.

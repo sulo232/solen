@@ -8,6 +8,7 @@ import {
   Menu, X, MessageCircle, User,
   Scissors, Paintbrush, Droplets, Palette, Sparkles,
 } from "lucide-react";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 interface HeaderProps {
   locale: string;
@@ -77,7 +78,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const profileHref = isLoggedIn ? `/${locale}/profile` : `/${locale}/auth/login`;
 
   // Glass nav token from roadmap
-  const base = "bg-white/80 backdrop-blur-lg border-b border-gray-100";
+  const base = "bg-white/80 backdrop-blur-lg border-b border-gray-100 dark:bg-dm-surface/80 dark:border-white/5";
   const shrunk = scrolled ? "py-2" : "py-3";
 
   return (
@@ -86,7 +87,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         {/* Logo + Sub-site icon */}
         <div className="flex items-center gap-2 shrink-0">
           <Link href={`/${locale}`} className="flex items-center gap-2">
-            <span className="font-heading font-bold text-xl text-dark tracking-tight">
+            <span className="font-heading font-bold text-xl text-dark dark:text-dm-text tracking-tight">
               solen<span className="text-teal">.</span>ch
             </span>
           </Link>
@@ -108,7 +109,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 key={key}
                 href={`/${locale}${href}`}
                 className={`text-sm font-medium transition-colors duration-150 ${
-                  isActive ? "text-teal" : "text-dark/70 hover:text-dark"
+                  isActive ? "text-teal" : "text-dark/70 hover:text-dark dark:text-dm-text/70 dark:hover:text-dm-text"
                 }`}
               >
                 {t(key)}
@@ -119,9 +120,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
         {/* Right actions */}
         <div className="flex items-center gap-3">
+          <ThemeToggle />
+
           {/* Messages with unread dot */}
           <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center" id="tour-messages">
-            <MessageCircle className="w-5 h-5 text-dark/70" />
+            <MessageCircle className="w-5 h-5 text-dark/70 dark:text-dm-text/70" />
             {unreadCount > 0 && (
               <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-coral" />
             )}
@@ -139,7 +142,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-dark/70"
+            className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-dark/70 dark:text-dm-text/70"
             aria-label="Menu"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -149,7 +152,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-lg">
+        <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-lg dark:bg-dm-surface/95 dark:border-white/5">
           <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
             {NAV_LINKS.map(({ key, href }) => (
               <Link

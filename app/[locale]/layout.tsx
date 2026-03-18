@@ -6,6 +6,7 @@ import { PostHogProvider } from "@/components/PostHogProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
+import ThemeScript from "@/components/ui/ThemeScript";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
@@ -28,8 +29,11 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body style={{ margin: 0, padding: 0 }}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body style={{ margin: 0, padding: 0 }} className="bg-white dark:bg-dm-bg text-dark dark:text-dm-text">
         <NextIntlClientProvider messages={messages}>
           <PostHogProvider>
             <ToastProvider>
