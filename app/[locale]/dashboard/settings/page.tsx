@@ -247,6 +247,59 @@ function QuickRepliesTab() {
 }
 
 // ─────────────────────────────────────────
+// SMS Reminders Tab
+// ─────────────────────────────────────────
+
+function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { sms_reminder_24h?: boolean; sms_reminder_1h?: boolean };
+  const [reminder24h, setReminder24h] = useState(ext.sms_reminder_24h ?? true);
+  const [reminder1h, setReminder1h] = useState(ext.sms_reminder_1h ?? true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave({ sms_reminder_24h: reminder24h, sms_reminder_1h: reminder1h } as any);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="p-5 space-y-5">
+      <p className="text-xs text-dark/50 dark:text-white/50">
+        SMS-Erinnerungen werden automatisch an Kunden gesendet, um No-Shows zu reduzieren.
+      </p>
+
+      <label className="flex items-center gap-3 cursor-pointer">
+        <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
+          className="w-4 h-4 rounded border-gray-300 text-teal focus:ring-teal" />
+        <div>
+          <span className="text-sm font-medium text-dark dark:text-white">24 Stunden vorher</span>
+          <p className="text-xs text-dark/40 dark:text-white/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
+        </div>
+      </label>
+
+      <label className="flex items-center gap-3 cursor-pointer">
+        <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
+          className="w-4 h-4 rounded border-gray-300 text-teal focus:ring-teal" />
+        <div>
+          <span className="text-sm font-medium text-dark dark:text-white">1 Stunde vorher</span>
+          <p className="text-xs text-dark/40 dark:text-white/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
+        </div>
+      </label>
+
+      <div className="pt-2">
+        <button onClick={handleSave} disabled={saving}
+          className="px-4 py-2 bg-teal text-white text-sm font-medium rounded-button hover:bg-teal/90 transition-colors disabled:opacity-50">
+          {saving ? "Speichern…" : saved ? "Gespeichert ✓" : "Speichern"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
 // Cancellation Tab
 // ─────────────────────────────────────────
 
@@ -605,6 +658,7 @@ export default function SettingsPage() {
               { id: "payments", label: "Zahlungen", content: <PaymentsTab salon={salon} onSave={handleSave} /> },
               { id: "quickreplies", label: "Schnellantworten", content: <QuickRepliesTab /> },
               { id: "verification", label: "Verifizierung", content: <VerificationTab salon={salon} /> },
+              { id: "sms", label: "SMS-Erinnerungen", content: <SmsRemindersTab salon={salon} onSave={handleSave} /> },
               { id: "cancellation", label: "Stornierung", content: <CancellationTab salon={salon} onSave={handleSave} /> },
             ]}
           />
