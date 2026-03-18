@@ -78,6 +78,12 @@ self.addEventListener('fetch', (event) => {
     return; // fall through to browser default (network)
   }
 
+  // Salon API data → Cache-First with 5min TTL
+  if (isSameOrigin(url) && (url.pathname.startsWith('/api/salons') || url.pathname.startsWith('/api/search/suggest'))) {
+    event.respondWith(cacheFirstWithTTL(request, 'solen-api-v1', 5 * 60 * 1000));
+    return;
+  }
+
   // Images → Cache-First
   if (isImageRequest(request)) {
     event.respondWith(cacheFirstStrategy(request, IMAGE_CACHE));
@@ -103,6 +109,34 @@ self.addEventListener('fetch', (event) => {
 // ---------------------------------------------------------------------------
 // Strategy implementations
 // ---------------------------------------------------------------------------
+
+/** Cache-First with TTL: serve from cache if fresh; re-fetch if stale. */
+async function cacheFirstWithTTL(request, cacheName, ttlMs) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) {
+    const cachedAt = cached.headers.get('sw-cached-at');
+    if (cachedAt && Date.now() - Number(cachedAt) < ttlMs) {
+      return cached;
+    }
+  }
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const headers = new Headers(response.headers);
+      headers.set('sw-cached-at', String(Date.now()));
+      const cloned = new Response(await response.clone().blob(), {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+      cache.put(request, cloned);
+    }
+    return response;
+  } catch {
+    return cached || new Response('{}', { status: 503 });
+  }
+}
 
 /** Cache-First: serve from cache; fetch and cache on miss. */
 async function cacheFirstStrategy(request, cacheName) {

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Star, MapPin, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
@@ -40,6 +41,7 @@ const quartierLabels: Record<string, string> = {
 };
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle }: SalonCardProps) {
+  const router = useRouter();
   const href = `/${locale}/salon/${salon.slug}`;
 
   if (variant === "compact") {
@@ -50,7 +52,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       >
         <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
           {salon.cover_photo_url && (
-            <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" />
+            <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" loading="lazy" />
           )}
         </div>
         <div className="min-w-0">
@@ -73,6 +75,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.12)" }}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className="will-change-transform"
+      onMouseEnter={() => router.prefetch(href)}
     >
       <Link href={href} className="block rounded-card bg-white shadow-card overflow-hidden group">
         {/* Cover photo */}
@@ -82,6 +85,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               src={salon.cover_photo_url}
               alt={salon.name}
               fill
+              loading="lazy"
               className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
             />
           ) : (

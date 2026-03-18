@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useLocale } from "next-intl";
 import { MessageCircle, ChevronDown } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import ChatWindow from "@/components/ChatWindow";
 import Spinner from "@/components/ui/Spinner";
+
+const ChatWindow = dynamic(() => import("@/components/ChatWindow"), {
+  loading: () => <div className="flex justify-center py-12"><Spinner /></div>,
+});
 
 interface ConversationItem {
   id: string;
