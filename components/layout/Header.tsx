@@ -9,6 +9,7 @@ import {
   Scissors, Paintbrush, Droplets, Palette, Sparkles,
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 interface HeaderProps {
   locale: string;
@@ -120,6 +121,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
         {/* Right actions */}
         <div className="flex items-center gap-3">
+          <LanguageSwitcher locale={locale} />
           <ThemeToggle />
 
           {/* Messages with unread dot */}
