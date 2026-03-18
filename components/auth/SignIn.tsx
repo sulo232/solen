@@ -45,14 +45,15 @@ export default function SignIn() {
       });
       if (error) {
         toast(error.message || "Anmeldung fehlgeschlagen", "error");
+        setLoading(false);
       } else if (data.session) {
-        router.push(redirect);
-        router.refresh();
+        // Full page navigation to ensure middleware runs and session cookies propagate
+        window.location.href = redirect;
       }
     } catch {
       toast("Netzwerkfehler", "error");
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handlePasswordReset = async (e: React.FormEvent) => {
