@@ -137,6 +137,69 @@ function JsonLd({ salon }: { salon: SalonDetail }) {
 }
 
 // ─────────────────────────────────────────────────
+// Off-Peak Countdown
+// ─────────────────────────────────────────────────
+
+interface OffPeakSlot {
+  id: string;
+  start_time: string; // "14:00"
+  end_time: string;   // "17:00"
+  discount_percent: number;
+}
+
+function OffPeakCountdown({ salonId }: { salonId: string }) {
+  const [slot, setSlot] = useState<OffPeakSlot | null>(null);
+  const [remaining, setRemaining] = useState("");
+
+  useEffect(() => {
+    fetch(`/api/salons/${salonId}/off-peak-today`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.slot) setSlot(d.slot); })
+      .catch(() => {});
+  }, [salonId]);
+
+  useEffect(() => {
+    if (!slot) return;
+    const tick = () => {
+      const now = new Date();
+      const [eh, em] = slot.end_time.split(":").map(Number);
+      const end = new Date();
+      end.setHours(eh, em, 0, 0);
+      const diff = end.getTime() - now.getTime();
+      if (diff <= 0) { setRemaining(""); setSlot(null); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setRemaining(`${h > 0 ? `${h}h ` : ""}${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [slot]);
+
+  if (!slot || !remaining) return null;
+
+  return (
+    <div className="bg-coral/10 border border-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
+      <div className="w-9 h-9 rounded-full bg-coral/15 flex items-center justify-center shrink-0">
+        <Clock size={16} className="text-coral" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-dark">
+          Off-Peak: {slot.discount_percent}% Rabatt
+        </p>
+        <p className="text-xs text-dark/50">
+          Noch bis {slot.end_time} Uhr · {slot.start_time}–{slot.end_time}
+        </p>
+      </div>
+      <div className="shrink-0">
+        <span className="font-data font-bold text-lg text-coral tabular-nums">{remaining}</span>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────
 // Page
 // ─────────────────────────────────────────────────
 
@@ -358,6 +421,9 @@ export default function SalonProfilePage() {
                   )}
                 </div>
               </div>
+
+              {/* Off-peak countdown */}
+              <OffPeakCountdown salonId={salon.id} />
 
               {/* Desktop tab bar */}
               <div className="hidden md:flex items-center gap-1 border-b border-gray-100 sticky top-[57px] bg-white z-10">
