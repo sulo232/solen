@@ -82,81 +82,103 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full px-4">
-      <div className={cn(
-        "mx-auto flex items-center justify-between transition-all duration-500 ease-out",
-        scrolled
-          ? "mt-4 max-w-3xl glass rounded-full shadow-warm-sm py-2.5 px-5 sm:px-8 dark:bg-s-dm-surface/80 dark:border-white/5"
-          : "max-w-5xl bg-s-bg-base/80 backdrop-blur-lg rounded-none py-4 px-6 sm:px-8 dark:bg-s-dm-bg/80"
-      )}>
-        {/* Logo + Sub-site icon */}
-        <div className="flex items-center gap-2 shrink-0">
-          <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
-            <span className="font-display text-2xl tracking-[0.06em] uppercase text-s-ink dark:text-s-dm-text">
-              so<span className="text-s-coral">.</span>len
-            </span>
-          </Link>
-          {CategoryIcon && categoryInfo && (
-            <div className="flex items-center gap-1.5 text-s-coral ml-1">
-              <span className="text-s-ink/20 dark:text-s-dm-text/20">|</span>
-              <CategoryIcon size={18} />
-              <span className="text-sm font-medium hidden sm:inline">{categoryInfo.label}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6" aria-label="Hauptnavigation">
-          {NAV_LINKS.map(({ key, href }) => {
-            const isActive = pathname.includes(href);
-            return (
-              <Link
-                key={key}
-                href={`/${locale}${href}`}
-                className={cn(
-                  "text-sm font-medium transition-all duration-200 rounded-full px-3 py-1.5",
-                  isActive
-                    ? "text-s-coral bg-s-coral/8"
-                    : "text-s-ink/70 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/70 dark:hover:bg-white/5"
-                )}
-              >
-                {t(key)}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Right actions */}
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher locale={locale} />
-          <ThemeToggle />
-
-          {/* Messages with unread dot */}
-          <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label="Nachrichten">
-            <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
+      <div className="flex items-center justify-center gap-3">
+        {/* Main nav pill */}
+        <div className={cn(
+          "flex items-center justify-between transition-all duration-500 ease-out rounded-full",
+          scrolled
+            ? "mt-3 max-w-3xl glass shadow-warm-sm py-2 px-4 sm:px-6 dark:bg-s-dm-surface/80 dark:border-white/5"
+            : "mt-2 max-w-5xl bg-s-bg-base/60 backdrop-blur-lg py-3 px-5 sm:px-8 border border-transparent dark:bg-s-dm-bg/60"
+        )}>
+          {/* Logo + Sub-site icon */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
+              <span className="font-display text-2xl tracking-[0.06em] uppercase text-s-ink dark:text-s-dm-text">
+                so<span className="text-s-coral">.</span>len
+              </span>
+            </Link>
+            {CategoryIcon && categoryInfo && (
+              <div className="flex items-center gap-1.5 text-s-coral ml-1">
+                <span className="text-s-ink/20 dark:text-s-dm-text/20">|</span>
+                <CategoryIcon size={18} />
+                <AnimatePresence>
+                  {!scrolled && (
+                    <motion.span
+                      key="category-label"
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "auto" }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className="text-sm font-medium hidden sm:inline overflow-hidden whitespace-nowrap"
+                    >
+                      {categoryInfo.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </div>
             )}
-          </Link>
+          </div>
 
-          {/* Account */}
-          <Link
-            href={profileHref}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-full bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-            aria-label="Profil"
-          >
-            <User className="w-4 h-4" />
-            {t("account")}
-          </Link>
+          {/* Desktop nav */}
+          <nav className={cn(
+            "hidden md:flex items-center",
+            scrolled ? "gap-1" : "gap-4"
+          )} aria-label="Hauptnavigation">
+            {NAV_LINKS.map(({ key, href }) => {
+              const isActive = pathname.includes(href);
+              return (
+                <Link
+                  key={key}
+                  href={`/${locale}${href}`}
+                  className={cn(
+                    "text-sm font-medium transition-all duration-200 rounded-full",
+                    scrolled ? "px-2 py-1 text-xs" : "px-3 py-1.5",
+                    isActive
+                      ? "text-s-coral bg-s-coral/8"
+                      : "text-s-ink/70 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/70 dark:hover:bg-white/5"
+                  )}
+                >
+                  {t(key)}
+                </Link>
+              );
+            })}
+          </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
-            aria-label={mobileOpen ? "Menü schliessen" : "Menü öffnen"}
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* Right actions */}
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher locale={locale} />
+            <ThemeToggle />
+
+            {/* Messages with unread dot */}
+            <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label="Nachrichten">
+              <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
+              )}
+            </Link>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
+              aria-label={mobileOpen ? "Menü schliessen" : "Menü öffnen"}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Profile circle — outside nav pill */}
+        <Link
+          href={profileHref}
+          className={cn(
+            "hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-s-coral text-white hover:bg-s-coral-hover hover:scale-105 active:scale-95 transition-all duration-200 shadow-warm-sm shrink-0",
+            scrolled ? "mt-3" : "mt-2"
+          )}
+          aria-label="Profil"
+        >
+          <User className="w-5 h-5" />
+        </Link>
       </div>
 
       {/* Mobile menu */}
