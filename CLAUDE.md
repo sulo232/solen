@@ -59,6 +59,7 @@ solen/
 ├── components/         # Shared React components (Dev 2 owns, Dev 3 imports)
 │   ├── index.ts        # Barrel exports — Dev 3 depends on this
 │   ├── dashboard/      # Dev 3's dashboard-specific components
+│   ├── editor/         # Visual Editor (admin-only)
 │   ├── layout/         # Header, Footer, BottomNav
 │   └── ui/             # Shared UI primitives (Skeleton, SearchBar, ExpandableTabs, etc.)
 ├── lib/                # Utility libraries (Dev 1 owns)
@@ -122,6 +123,7 @@ solen/
 20. **Accessibility**: Global focus-visible rings, aria-labels on all interactive elements, semantic nav roles.
 21. **Chat Intelligence**: Quick-reply template chips (salon-side), AI reply suggestions via Gemini, photo-based price quoting, photo gallery tab in chat.
 22. **Client CRM Tags**: Color-coded tags (allergy, preference, note) on client profiles. Red allergy warnings on booking cards.
+23. **Visual Editor**: Admin-only element selector at `/dashboard/editor`. Click any element → describe change → Claude API generates roadmap in CLAUDE.md R1-R10 format. Supports device preview, request queue, and cost tracking.
 
 ### 3.6 Commands
 
@@ -251,6 +253,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `salon_groups` | `id`, `name`, `slug`, `logo_url`, `description`, `website` | Multi-location chains. RLS: public read, admin write. `salons.group_id` FK references this. |
 | `chat_templates` | `id`, `salon_id`, `text`, `sort_order`, `created_at` | Quick-reply templates for salon chat. RLS: salon owner only. Max 10 per salon. |
 | `client_tags` | `id`, `salon_id`, `customer_id`, `tag`, `color`, `created_at` | Color-coded client tags (allergy/preference). Colors: gray, red, orange, teal, blue, purple. UNIQUE(salon_id, customer_id, tag). RLS: salon owner only. |
+| `feature_requests` | `id`, `admin_id`, `element_selector`, `element_tag`, `element_text`, `component_hint`, `page_url`, `description`, `priority`, `status`, `generated_roadmap`, `roadmap_version`, `claude_prompt`, `token_usage` | Admin visual editor requests. RLS: admin-only all ops. |
 
 | View | Columns | Notes |
 |---|---|---|
@@ -479,7 +482,8 @@ export async function POST(req: NextRequest) {
 
   // 2. Auth check
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // 3. Ban check
