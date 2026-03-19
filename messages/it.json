@@ -21,7 +21,76 @@
     "services_heading": "Le nostre categorie",
     "last_minute_heading": "Offerte last minute",
     "last_minute_subtitle": "Appuntamenti scontati disponibili oggi",
-    "no_results": "Nessun salone trovato"
+    "no_results": "Nessun salone trovato",
+    "hero": {
+      "title": "Bellezza. Basilea.",
+      "welcome": "Benvenuto {name}",
+      "subtitle": "Parrucchiere, barbiere, unghie, spa e altro — prenota ora nel tuo quartiere."
+    },
+    "sections": {
+      "categories": "Esplora",
+      "featured": "Saloni popolari",
+      "featured_sub": "I saloni più votati a Basilea",
+      "empty": "Nessun salone ancora",
+      "empty_sub": "Presto disponibile — ricontrolla più tardi!",
+      "new": "Nuovi saloni",
+      "new_sub": "Nuovo su Solen — scopri i più nuovi saloni a Basilea",
+      "lastminute": "Offerte last minute",
+      "lastminute_sub": "Risparmia fino al 50% sulle prenotazioni dell'ultimo minuto",
+      "rebook": "Prenotare di nuovo?",
+      "rebook_last": "La tua ultima visita: {name}",
+      "rebook_cta": "Prenota di nuovo",
+      "quartiers": "Scopri il tuo quartiere",
+      "quartiers_label": "IL TUO QUARTIERE",
+      "quartiers_all": "Vedi tutto →"
+    },
+    "quartiers": {
+      "soon": "Presto qui"
+    },
+    "search": {
+      "placeholder": "Cerca un salone a Basilea..."
+    }
+  },
+  "common": {
+    "book_now": "Prenota ora",
+    "discover": "Scopri",
+    "back_home": "← Torna alla home",
+    "loading": "Caricamento…",
+    "close": "Chiudi",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "salon_singular": "Salone",
+    "salons_plural": "Saloni"
+  },
+  "weather": {
+    "rain": "Giornata di pioggia? Concediti qualcosa.",
+    "snow": "Tempo nevoso! Perfetto per il benessere.",
+    "cold": "Freddo fuori? Riscaldati con il benessere."
+  },
+  "footer": {
+    "categories": "Categorie",
+    "company": "Azienda",
+    "for_salons": "Per i saloni",
+    "social": "Social",
+    "become_partner": "Diventa partner",
+    "register_salon": "Registra salone",
+    "copyright": "© {year} solen.ch — Tutti i diritti riservati."
+  },
+  "cookie": {
+    "title": "Utilizziamo i cookie",
+    "description": "Utilizziamo i cookie per la funzionalità del sito e opzionalmente per l'analisi.",
+    "accept": "Accetta",
+    "reject": "Rifiuta",
+    "settings": "Impostazioni cookie",
+    "necessary": "Necessari",
+    "necessary_desc": "Necessario per le funzionalità di base",
+    "analytics_label": "Analitica",
+    "analytics_desc": "Ci aiuta a migliorare il sito",
+    "marketing_label": "Marketing",
+    "marketing_desc": "Raccomandazioni personalizzate",
+    "save_settings": "Salva impostazioni",
+    "accept_all": "Accetta tutto"
   },
   "salon": {
     "book_now": "Prenota ora",

@@ -21,7 +21,76 @@
     "services_heading": "Nos catégories",
     "last_minute_heading": "Offres de dernière minute",
     "last_minute_subtitle": "Rendez-vous à prix réduit disponibles aujourd'hui",
-    "no_results": "Aucun salon trouvé"
+    "no_results": "Aucun salon trouvé",
+    "hero": {
+      "title": "Beauté. Bâle.",
+      "welcome": "Bienvenue {name}",
+      "subtitle": "Coiffeur, barbier, ongles, spa & plus — réservez maintenant dans votre quartier."
+    },
+    "sections": {
+      "categories": "Explorer",
+      "featured": "Salons populaires",
+      "featured_sub": "Les salons les mieux notés à Bâle",
+      "empty": "Pas encore de salons",
+      "empty_sub": "Bientôt disponible — revenez plus tard!",
+      "new": "Nouveaux salons",
+      "new_sub": "Nouveau sur Solen — découvrez les derniers salons à Bâle",
+      "lastminute": "Offres de dernière minute",
+      "lastminute_sub": "Économisez jusqu'à 50% sur les réservations de dernière minute",
+      "rebook": "Réserver à nouveau?",
+      "rebook_last": "Votre dernière visite: {name}",
+      "rebook_cta": "Réserver à nouveau",
+      "quartiers": "Découvrez votre quartier",
+      "quartiers_label": "VOTRE QUARTIER",
+      "quartiers_all": "Voir tout →"
+    },
+    "quartiers": {
+      "soon": "Bientôt ici"
+    },
+    "search": {
+      "placeholder": "Rechercher un salon à Bâle..."
+    }
+  },
+  "common": {
+    "book_now": "Réserver maintenant",
+    "discover": "Découvrir",
+    "back_home": "← Retour à l'accueil",
+    "loading": "Chargement…",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "salon_singular": "Salon",
+    "salons_plural": "Salons"
+  },
+  "weather": {
+    "rain": "Jour de pluie? Offrez-vous quelque chose.",
+    "snow": "Temps neigeux! Parfait pour le bien-être.",
+    "cold": "Froid dehors? Réchauffez-vous avec du bien-être."
+  },
+  "footer": {
+    "categories": "Catégories",
+    "company": "Entreprise",
+    "for_salons": "Pour les salons",
+    "social": "Social",
+    "become_partner": "Devenir partenaire",
+    "register_salon": "Enregistrer un salon",
+    "copyright": "© {year} solen.ch — Tous droits réservés."
+  },
+  "cookie": {
+    "title": "Nous utilisons des cookies",
+    "description": "Nous utilisons des cookies pour le fonctionnement du site et optionnellement pour l'analyse.",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "settings": "Paramètres des cookies",
+    "necessary": "Nécessaire",
+    "necessary_desc": "Requis pour les fonctions de base",
+    "analytics_label": "Analytique",
+    "analytics_desc": "Nous aide à améliorer le site",
+    "marketing_label": "Marketing",
+    "marketing_desc": "Recommandations personnalisées",
+    "save_settings": "Enregistrer les paramètres",
+    "accept_all": "Tout accepter"
   },
   "salon": {
     "book_now": "Réserver maintenant",

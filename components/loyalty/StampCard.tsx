@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Check } from "lucide-react";
 
 interface StampCardProps {
@@ -28,6 +29,7 @@ export default function StampCard({
   stampsCollected,
   rewardText,
 }: StampCardProps) {
+  const locale = useLocale();
   const isComplete = stampsCollected >= stampsTotal;
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -60,7 +62,7 @@ export default function StampCard({
 
       {/* Top: salon info */}
       <Link
-        href={`/de/salon/${salonSlug}`}
+        href={`/${locale}/salon/${salonSlug}`}
         className="flex items-center gap-3 p-4 pb-3 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
       >
         <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-s-bg-sunken dark:bg-white/10 shrink-0">

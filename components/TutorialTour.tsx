@@ -55,7 +55,7 @@ export default function TutorialTour({ isLoggedIn }: { isLoggedIn: boolean }) {
             {
               element: "#tour-search",
               popover: {
-                title: "🔍 Suche",
+                title: "Suche",
                 description:
                   "Suche nach Salons, Services oder Quartieren — alles auf einen Blick.",
                 side: "bottom",
@@ -67,7 +67,7 @@ export default function TutorialTour({ isLoggedIn }: { isLoggedIn: boolean }) {
             {
               element: "#tour-services",
               popover: {
-                title: "✨ Solen Extras",
+                title: "Solen Extras",
                 description:
                   "Chat mit deinem Salon, Preise auf der Karte, Stempelkarten & Last-Minute Deals — nur bei Solen.",
                 side: "top",
@@ -79,7 +79,7 @@ export default function TutorialTour({ isLoggedIn }: { isLoggedIn: boolean }) {
             {
               element: "#tour-last-minute",
               popover: {
-                title: "📅 Buche",
+                title: "Buche",
                 description:
                   "Wähle deinen Wunschtermin und buche in wenigen Sekunden — auch Last-Minute mit Rabatt.",
                 side: "top",

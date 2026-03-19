@@ -21,7 +21,76 @@
     "services_heading": "Our categories",
     "last_minute_heading": "Last-minute deals",
     "last_minute_subtitle": "Discounted appointments available today",
-    "no_results": "No salons found"
+    "no_results": "No salons found",
+    "hero": {
+      "title": "Beauty. Basel.",
+      "welcome": "Welcome {name}",
+      "subtitle": "Coiffeur, barbershop, nails, spa & more — book now in your neighbourhood."
+    },
+    "sections": {
+      "categories": "Explore",
+      "featured": "Popular Salons",
+      "featured_sub": "Top-rated salons in Basel",
+      "empty": "No salons yet",
+      "empty_sub": "Coming soon — check back later!",
+      "new": "New Salons",
+      "new_sub": "Fresh on Solen — discover the newest salons in Basel",
+      "lastminute": "Last-Minute Deals",
+      "lastminute_sub": "Save up to 50% on short-notice bookings",
+      "rebook": "Book again?",
+      "rebook_last": "Your last visit: {name}",
+      "rebook_cta": "Book again",
+      "quartiers": "Discover your neighbourhood",
+      "quartiers_label": "YOUR NEIGHBOURHOOD",
+      "quartiers_all": "View all →"
+    },
+    "quartiers": {
+      "soon": "Coming soon"
+    },
+    "search": {
+      "placeholder": "Search salons in Basel..."
+    }
+  },
+  "common": {
+    "book_now": "Book now",
+    "discover": "Discover",
+    "back_home": "← Back to home",
+    "loading": "Loading…",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "salon_singular": "Salon",
+    "salons_plural": "Salons"
+  },
+  "weather": {
+    "rain": "Rainy day? Treat yourself.",
+    "snow": "Snowy weather! Perfect for wellness.",
+    "cold": "Cold outside? Warm up with wellness."
+  },
+  "footer": {
+    "categories": "Categories",
+    "company": "Company",
+    "for_salons": "For Salons",
+    "social": "Social",
+    "become_partner": "Become a partner",
+    "register_salon": "Register salon",
+    "copyright": "© {year} solen.ch — All rights reserved."
+  },
+  "cookie": {
+    "title": "We use cookies",
+    "description": "We use cookies for website functionality and optionally for analytics.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "settings": "Cookie Settings",
+    "necessary": "Necessary",
+    "necessary_desc": "Required for basic functionality",
+    "analytics_label": "Analytics",
+    "analytics_desc": "Helps us improve the website",
+    "marketing_label": "Marketing",
+    "marketing_desc": "Personalized recommendations",
+    "save_settings": "Save settings",
+    "accept_all": "Accept all"
   },
   "salon": {
     "book_now": "Book now",

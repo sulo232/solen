@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, MapPin, Clock, Trophy, MessageCircle } from "lucide-react";
 import type { Salon } from "@/lib/types";
@@ -39,6 +40,7 @@ function getTodayHours(salon: CompareSalon): string {
 }
 
 export default function CompareDrawer({ salons, open, onClose }: CompareDrawerProps) {
+  const locale = useLocale();
   const bestIdx = useMemo(() => getBestValueIndex(salons), [salons]);
 
   const rows: { label: string; Icon: React.ElementType; render: (s: CompareSalon, i: number) => React.ReactNode }[] = [
@@ -123,10 +125,10 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                       <th key={salon.id} className="p-3 text-center relative min-w-[140px]">
                         {i === bestIdx && salons.length > 1 && (
                           <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-b-lg bg-s-coral text-white text-[10px] font-bold whitespace-nowrap">
-                            🏆 Empfehlung
+                            Empfehlung
                           </div>
                         )}
-                        <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-coral/20 rounded-card p-2" : "p-2"}`}>
+                        <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-s-coral/20 rounded-card p-2" : "p-2"}`}>
                           <h3 className="font-heading font-bold text-sm text-dark dark:text-s-dm-text truncate">{salon.name}</h3>
                           <p className="text-[10px] text-dark/40 dark:text-s-dm-text/40 capitalize mt-0.5 truncate">{salon.quartier}</p>
                         </div>
@@ -136,7 +138,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.label} className="border-t border-gray-50 dark:border-white/5">
+                    <tr key={row.label} className="border-t border-s-ink/5 dark:border-white/5">
                       <td className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm px-4 py-3">
                         <div className="flex items-center gap-2">
                           <row.Icon size={13} className="text-s-coral shrink-0" />
@@ -156,7 +158,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     {salons.map((salon) => (
                       <td key={salon.id} className="px-4 py-4 text-center">
                         <a
-                          href={`/de/salon/${salon.slug}`}
+                          href={`/${locale}/salon/${salon.slug}`}
                           className="inline-block px-4 py-2 rounded-button bg-s-coral text-white text-xs font-semibold hover:bg-s-coral/90 transition-colors"
                         >
                           Jetzt buchen
