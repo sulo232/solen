@@ -116,8 +116,8 @@ export default function HelpEditorPage() {
               <BookOpen size={20} className="text-s-coral" />
             </div>
             <div>
-              <h1 className="font-heading font-bold text-xl text-dark">Hilfe-Artikel</h1>
-              <p className="text-xs text-dark/40 font-body">{articles.length} Artikel</p>
+              <h1 className="font-heading font-bold text-xl text-s-ink">Hilfe-Artikel</h1>
+              <p className="text-xs text-s-ink/40 font-body">{articles.length} Artikel</p>
             </div>
           </div>
           <button
@@ -132,7 +132,7 @@ export default function HelpEditorPage() {
         {/* Form modal */}
         {showForm && (
           <div className="bg-white border border-s-ink/10 rounded-card p-5 space-y-4 shadow-card">
-            <h2 className="font-heading font-semibold text-base text-dark">
+            <h2 className="font-heading font-semibold text-base text-s-ink">
               {editing ? "Artikel bearbeiten" : "Neuer Artikel"}
             </h2>
             <div className="grid grid-cols-2 gap-3">
@@ -166,7 +166,7 @@ export default function HelpEditorPage() {
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
             />
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm font-body text-dark/60">
+              <label className="flex items-center gap-2 text-sm font-body text-s-ink/60">
                 <input
                   type="checkbox"
                   checked={form.published}
@@ -193,7 +193,7 @@ export default function HelpEditorPage() {
               </button>
               <button
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-button text-sm font-body text-dark/50 hover:text-dark/70"
+                className="px-4 py-2 rounded-button text-sm font-body text-s-ink/50 hover:text-s-ink/70"
               >
                 Abbrechen
               </button>
@@ -205,7 +205,7 @@ export default function HelpEditorPage() {
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
         ) : articles.length === 0 ? (
-          <div className="text-center py-12 text-dark/40 font-body text-sm">
+          <div className="text-center py-12 text-s-ink/40 font-body text-sm">
             Noch keine Hilfe-Artikel. Erstelle den ersten!
           </div>
         ) : (
@@ -217,8 +217,8 @@ export default function HelpEditorPage() {
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-body text-sm font-medium text-dark truncate">{article.title}</span>
-                    <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-sand text-dark/50">
+                    <span className="font-body text-sm font-medium text-s-ink truncate">{article.title}</span>
+                    <span className="px-2 py-0.5 rounded-pill text-[10px] font-medium bg-s-sand text-s-ink/50">
                       {categoryLabel(article.category)}
                     </span>
                     {!article.published && (
@@ -227,25 +227,25 @@ export default function HelpEditorPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-dark/30 font-body mt-0.5">/{article.slug} · {article.locale}</p>
+                  <p className="text-xs text-s-ink/30 font-body mt-0.5">/{article.slug} · {article.locale}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 ml-3">
                   <button
                     onClick={() => togglePublish(article)}
-                    className="p-1.5 rounded-button text-dark/30 hover:text-dark/60 transition-colors"
+                    className="p-1.5 rounded-button text-s-ink/30 hover:text-s-ink/60 transition-colors"
                     title={article.published ? "Verbergen" : "Veröffentlichen"}
                   >
                     {article.published ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
                   <button
                     onClick={() => openEdit(article)}
-                    className="p-1.5 rounded-button text-dark/30 hover:text-s-coral transition-colors"
+                    className="p-1.5 rounded-button text-s-ink/30 hover:text-s-coral transition-colors"
                   >
                     <Pencil size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(article.id)}
-                    className="p-1.5 rounded-button text-dark/30 hover:text-s-coral transition-colors"
+                    className="p-1.5 rounded-button text-s-ink/30 hover:text-s-coral transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>

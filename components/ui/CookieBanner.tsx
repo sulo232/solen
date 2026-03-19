@@ -77,10 +77,10 @@ export default function CookieBanner() {
             <div className="flex items-start gap-3">
               <Cookie className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm text-dark dark:text-s-dm-text font-medium mb-1">
+                <p className="text-sm text-s-ink dark:text-s-dm-text font-medium mb-1">
                   Wir verwenden Cookies
                 </p>
-                <p className="text-xs text-dark/60 dark:text-s-dm-text/60 leading-relaxed">
+                <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
                   Wir nutzen Cookies für die Funktion der Website und optional für Analytics.
                   Mehr dazu in unserer{" "}
                   <a href={`/${locale}/datenschutz`} className="text-s-coral hover:underline">
@@ -99,14 +99,14 @@ export default function CookieBanner() {
               </button>
               <button
                 onClick={rejectAll}
-                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-dark/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
                 aria-label="Cookies ablehnen"
               >
                 Ablehnen
               </button>
               <button
                 onClick={() => setSettingsOpen(true)}
-                className="p-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-dark/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                className="p-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
                 aria-label="Cookie-Einstellungen"
               >
                 <Settings className="w-4 h-4" />
@@ -123,12 +123,12 @@ export default function CookieBanner() {
           <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-2xl shadow-2xl p-6">
             <button
               onClick={() => setSettingsOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-full text-dark/40 dark:text-s-dm-text/40 hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors"
+              className="absolute top-4 right-4 p-1.5 rounded-full text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <h3 className="font-heading font-semibold text-lg text-dark dark:text-s-dm-text mb-4">
+            <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-4">
               Cookie-Einstellungen
             </h3>
 
@@ -136,8 +136,8 @@ export default function CookieBanner() {
               {/* Necessary — always on */}
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">Notwendig</p>
-                  <p className="text-xs text-dark/40 dark:text-s-dm-text/40">Erforderlich für die Grundfunktion</p>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Notwendig</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Erforderlich für die Grundfunktion</p>
                 </div>
                 <div className="w-10 h-5 rounded-full bg-s-coral flex items-center justify-end px-0.5 opacity-60 cursor-not-allowed">
                   <div className="w-4 h-4 rounded-full bg-white" />
@@ -147,8 +147,8 @@ export default function CookieBanner() {
               {/* Analytics */}
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">Analytics</p>
-                  <p className="text-xs text-dark/40 dark:text-s-dm-text/40">Hilft uns, die Website zu verbessern</p>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Analytics</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Hilft uns, die Website zu verbessern</p>
                 </div>
                 <button
                   onClick={() => setAnalytics(!analytics)}
@@ -163,8 +163,8 @@ export default function CookieBanner() {
               {/* Marketing */}
               <div className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">Marketing</p>
-                  <p className="text-xs text-dark/40 dark:text-s-dm-text/40">Personalisierte Empfehlungen</p>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Marketing</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Personalisierte Empfehlungen</p>
                 </div>
                 <button
                   onClick={() => setMarketing(!marketing)}
@@ -186,7 +186,7 @@ export default function CookieBanner() {
               </button>
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-dark/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
               >
                 Alle akzeptieren
               </button>

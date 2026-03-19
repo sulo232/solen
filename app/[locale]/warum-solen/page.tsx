@@ -65,8 +65,8 @@ function MockChat() {
       <div className="flex items-center gap-3 px-4 py-3 border-b border-s-ink/5 dark:border-white/10">
         <div className="w-8 h-8 rounded-full bg-s-coral/20 flex items-center justify-center text-s-coral text-xs font-heading font-bold">S</div>
         <div>
-          <p className="text-sm font-heading font-semibold text-dark dark:text-s-dm-text">Studio Bella</p>
-          <p className="text-[10px] text-dark/40 dark:text-s-dm-text/40">Online</p>
+          <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">Studio Bella</p>
+          <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Online</p>
         </div>
       </div>
       {/* Messages */}
@@ -77,7 +77,7 @@ function MockChat() {
           </div>
         </div>
         <div className="flex">
-          <div className="bg-s-bg-sunken dark:bg-white/10 text-dark dark:text-s-dm-text text-xs px-3 py-2 rounded-2xl rounded-bl-md max-w-[75%]">
+          <div className="bg-s-bg-sunken dark:bg-white/10 text-s-ink dark:text-s-dm-text text-xs px-3 py-2 rounded-2xl rounded-bl-md max-w-[75%]">
             Hi! Ja, um 14:00 oder 16:30 — welche Zeit passt dir besser? 😊
           </div>
         </div>
@@ -89,7 +89,7 @@ function MockChat() {
       </div>
       {/* Input bar */}
       <div className="flex items-center gap-2 px-3 py-2.5 border-t border-s-ink/5 dark:border-white/10">
-        <div className="flex-1 bg-s-bg-surface dark:bg-white/5 rounded-full px-3 py-1.5 text-xs text-dark/30 dark:text-s-dm-text/30">Nachricht...</div>
+        <div className="flex-1 bg-s-bg-surface dark:bg-white/5 rounded-full px-3 py-1.5 text-xs text-s-ink/30 dark:text-s-dm-text/30">Nachricht...</div>
         <div className="w-7 h-7 rounded-full bg-s-coral flex items-center justify-center">
           <Send className="w-3.5 h-3.5 text-white" />
         </div>
@@ -120,13 +120,13 @@ function MockCompare() {
                 Empfehlung
               </span>
             )}
-            <p className="text-xs font-heading font-semibold text-dark dark:text-s-dm-text truncate">{s.name}</p>
+            <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{s.name}</p>
             <div className="flex items-center justify-center gap-0.5 mt-1.5">
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span className="text-xs data-text text-dark dark:text-s-dm-text">{s.rating}</span>
+              <span className="text-xs data-text text-s-ink dark:text-s-dm-text">{s.rating}</span>
             </div>
-            <p className="text-sm data-text font-semibold text-dark dark:text-s-dm-text mt-1">CHF {s.price}</p>
-            <p className="text-[10px] text-dark/40 dark:text-s-dm-text/40">Balayage</p>
+            <p className="text-sm data-text font-semibold text-s-ink dark:text-s-dm-text mt-1">CHF {s.price}</p>
+            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Balayage</p>
           </div>
         ))}
       </div>
@@ -182,10 +182,10 @@ export default function WarumSolenPage() {
         {/* Radial gradient background */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.12)_0%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.08)_0%,_transparent_70%)]" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-dark dark:text-s-dm-text leading-tight">
+          <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-s-ink dark:text-s-dm-text leading-tight">
             Was <span className="text-s-coral">Solen</span> anders macht
           </h1>
-          <p className="mt-4 text-lg sm:text-xl text-dark/60 dark:text-s-dm-text/60 font-body max-w-xl mx-auto">
+          <p className="mt-4 text-lg sm:text-xl text-s-ink/60 dark:text-s-dm-text/60 font-body max-w-xl mx-auto">
             Nicht nur buchen — sondern erleben.
           </p>
           <button
@@ -207,10 +207,10 @@ export default function WarumSolenPage() {
                 <MessageCircle className="w-6 h-6 text-s-coral" />
                 <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Salon — nur bei Solen!" />
               </div>
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-dark dark:text-s-dm-text mb-4">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-4">
                 Chatte direkt mit deinem Salon
               </h2>
-              <div className="space-y-3 text-dark/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   Frag nach Verfügbarkeit, Preisen oder besonderen Wünschen
@@ -244,8 +244,8 @@ export default function WarumSolenPage() {
                 </div>
                 {/* Price offer card */}
                 <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white dark:bg-s-dm-surface rounded-xl shadow-lg border border-s-ink/5 dark:border-white/10 px-4 py-3 w-44">
-                  <p className="text-[10px] text-dark/40 dark:text-s-dm-text/40">Preisangebot</p>
-                  <p className="data-text font-bold text-lg text-dark dark:text-s-dm-text">CHF 120</p>
+                  <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Preisangebot</p>
+                  <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">CHF 120</p>
                   <p className="text-xs text-s-coral font-medium">Balayage + Pflege</p>
                 </div>
               </div>
@@ -255,10 +255,10 @@ export default function WarumSolenPage() {
                 <Camera className="w-6 h-6 text-s-coral" />
                 <SolenExclusiveBadge featureDescription="Schick ein Foto und erhalte einen individuellen Preis!" />
               </div>
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-dark dark:text-s-dm-text mb-4">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-4">
                 Schick ein Foto, bekomm einen Preis
               </h2>
-              <div className="space-y-3 text-dark/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   Lade ein Foto deines Wunsch-Looks hoch
@@ -285,10 +285,10 @@ export default function WarumSolenPage() {
               <BarChart3 className="w-6 h-6 text-s-coral" />
               <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Salons — nur bei Solen!" />
             </div>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-dark dark:text-s-dm-text mb-3">
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               Vergleiche Salons nebeneinander
             </h2>
-            <p className="text-dark/60 dark:text-s-dm-text/60 font-body max-w-md mx-auto">
+            <p className="text-s-ink/60 dark:text-s-dm-text/60 font-body max-w-md mx-auto">
               Preise, Bewertungen und Verfügbarkeit auf einen Blick — so findest du den perfekten Salon.
             </p>
           </div>
@@ -305,10 +305,10 @@ export default function WarumSolenPage() {
                 <Star className="w-6 h-6 text-s-coral" />
                 <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch und erhalte Belohnungen!" />
               </div>
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-dark dark:text-s-dm-text mb-4">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-4">
                 Sammle Stempel, bekomm Belohnungen
               </h2>
-              <div className="space-y-3 text-dark/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   Bei jedem Besuch automatisch einen Stempel sammeln
@@ -346,10 +346,10 @@ export default function WarumSolenPage() {
                 <MapPin className="w-6 h-6 text-s-coral" />
                 <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
               </div>
-              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-dark dark:text-s-dm-text mb-4">
+              <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-4">
                 Preise direkt auf der Karte
               </h2>
-              <div className="space-y-3 text-dark/60 dark:text-s-dm-text/60 font-body">
+              <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                   Sieh sofort, was Salons in deiner Nähe kosten
@@ -373,10 +373,10 @@ export default function WarumSolenPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-dark" />
         <div className="relative max-w-xl mx-auto px-4 sm:px-6">
           <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 sm:p-10 text-center border border-white/20 dark:border-white/10">
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-dark dark:text-s-dm-text mb-3">
+            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               Bereit für bessere Beauty-Termine?
             </h2>
-            <p className="text-dark/60 dark:text-s-dm-text/60 font-body mb-8">
+            <p className="text-s-ink/60 dark:text-s-dm-text/60 font-body mb-8">
               Entdecke Basels beste Salons — mit Chat, Stempelkarten und mehr.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -389,7 +389,7 @@ export default function WarumSolenPage() {
               </Link>
               <Link
                 href={`/${locale}/partner`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-button border border-s-ink/10 dark:border-white/20 text-dark/70 dark:text-s-dm-text/70 font-body font-medium hover:border-s-coral hover:text-s-coral transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-button border border-s-ink/10 dark:border-white/20 text-s-ink/70 dark:text-s-dm-text/70 font-body font-medium hover:border-s-coral hover:text-s-coral transition-colors"
               >
                 Bist du ein Salon?
               </Link>

@@ -64,14 +64,14 @@ function CancelModal({
 
   return (
     <GlassModal open onClose={onClose} title="Termin stornieren">
-      <p className="text-sm text-dark/60 mb-1">
+      <p className="text-sm text-s-ink/60 mb-1">
         {salonName} — {new Date(startsAt).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" })}{" "}
         um {new Date(startsAt).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
       </p>
-      <p className="text-xs text-dark/40 mb-4">Kostenlose Stornierung bis 24h vor dem Termin.</p>
+      <p className="text-xs text-s-ink/40 mb-4">Kostenlose Stornierung bis 24h vor dem Termin.</p>
 
       <div className="mb-5">
-        <label className="block text-xs font-medium text-dark/50 mb-1">Grund (optional)</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">Grund (optional)</label>
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
@@ -84,7 +84,7 @@ function CancelModal({
       <div className="flex gap-2">
         <button
           onClick={onClose}
-          className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:bg-s-bg-surface transition-colors"
+          className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60 hover:bg-s-bg-surface transition-colors"
         >
           Abbrechen
         </button>
@@ -116,8 +116,8 @@ const STATUS_LABEL: Record<string, string> = {
 const STATUS_COLOR: Record<string, string> = {
   confirmed: "text-s-coral",
   cancelled: "text-s-coral",
-  completed: "text-dark/50",
-  no_show: "text-dark/30",
+  completed: "text-s-ink/50",
+  no_show: "text-s-ink/30",
 };
 
 function hoursUntil(startsAt: string) {
@@ -140,16 +140,16 @@ function BookingCard({
     <div className="bg-white rounded-card border border-s-ink/5 p-4">
       <div className="flex justify-between items-start gap-4">
         <div>
-          <p className="font-medium text-sm text-dark">{b.salon_name}</p>
-          <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
-          <p className="text-xs text-dark/40 mt-1">
+          <p className="font-medium text-sm text-s-ink">{b.salon_name}</p>
+          <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
+          <p className="text-xs text-s-ink/40 mt-1">
             {new Date(b.starts_at).toLocaleDateString("de-CH", {
               weekday: "short", day: "numeric", month: "short",
             })}{" "}
             um {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
           </p>
         </div>
-        <span className={["text-xs font-medium", STATUS_COLOR[b.status] ?? "text-dark/40"].join(" ")}>
+        <span className={["text-xs font-medium", STATUS_COLOR[b.status] ?? "text-s-ink/40"].join(" ")}>
           {STATUS_LABEL[b.status] ?? b.status}
         </span>
       </div>
@@ -159,7 +159,7 @@ function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors"
             >
               <RotateCcw size={12} />
               Nochmal buchen
@@ -179,7 +179,7 @@ function BookingCard({
             <div className="relative group">
               <button
                 disabled
-                className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/20 cursor-not-allowed"
+                className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/20 cursor-not-allowed"
               >
                 Stornieren
               </button>
@@ -255,7 +255,7 @@ function SettingsSection({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-dark/50 mb-1">Name *</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
         <input
           required
           value={name}
@@ -265,7 +265,7 @@ function SettingsSection({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-dark/50 mb-1">Bio</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">Bio</label>
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
@@ -276,11 +276,11 @@ function SettingsSection({
 
       {/* Notifications */}
       <div className="pt-2 border-t border-s-ink/5 space-y-3">
-        <p className="text-xs font-medium text-dark/50 dark:text-s-dm-text/50">E-Mail-Benachrichtigungen</p>
+        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">E-Mail-Benachrichtigungen</p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-dark dark:text-s-dm-text">Buchungen</p>
-            <p className="text-xs text-dark/40 dark:text-s-dm-text/40 mt-0.5">Bestätigungen, Erinnerungen, Stornierungen</p>
+            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Buchungen</p>
+            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Bestätigungen, Erinnerungen, Stornierungen</p>
           </div>
           <button type="button" onClick={() => setEmailOn(!emailOn)}
             className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand dark:bg-white/10"].join(" ")}
@@ -290,8 +290,8 @@ function SettingsSection({
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
-            <p className="text-sm font-medium text-dark dark:text-s-dm-text">Angebote & Deals</p>
-            <p className="text-xs text-dark/40 dark:text-s-dm-text/40 mt-0.5">Last-Minute und Sonderangebote</p>
+            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Angebote & Deals</p>
+            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Last-Minute und Sonderangebote</p>
           </div>
           <div className="relative w-11 h-6 rounded-full bg-s-sand dark:bg-white/10 shrink-0">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
@@ -299,8 +299,8 @@ function SettingsSection({
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
-            <p className="text-sm font-medium text-dark dark:text-s-dm-text">Neue Salons</p>
-            <p className="text-xs text-dark/40 dark:text-s-dm-text/40 mt-0.5">Wenn neue Salons in deiner Nähe öffnen</p>
+            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Neue Salons</p>
+            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Wenn neue Salons in deiner Nähe öffnen</p>
           </div>
           <div className="relative w-11 h-6 rounded-full bg-s-sand dark:bg-white/10 shrink-0">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
@@ -310,7 +310,7 @@ function SettingsSection({
 
       {/* Language */}
       <div>
-        <p className="text-sm font-medium text-dark dark:text-s-dm-text mb-2">Sprache</p>
+        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">Sprache</p>
         <div className="flex gap-2 flex-wrap">
           {(["de", "en", "fr", "it"] as const).map((l) => (
             <button
@@ -321,7 +321,7 @@ function SettingsSection({
                 "px-4 py-2 rounded-button text-sm font-medium border transition-colors",
                 lang === l
                   ? "bg-s-coral text-white border-s-coral"
-                  : "border-s-ink/10 text-dark/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",
+                  : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -453,14 +453,14 @@ export default function ProfilePage() {
             )}
           </div>
           <div>
-            <p className="font-heading font-bold text-xl text-dark">{profile.display_name}</p>
-            <p className="text-sm text-dark/40 mt-0.5">Mein Profil</p>
+            <p className="font-heading font-bold text-xl text-s-ink">{profile.display_name}</p>
+            <p className="text-sm text-s-ink/40 mt-0.5">Mein Profil</p>
           </div>
           <Link
             href={`/${locale}/account/messages`}
             className="ml-auto relative p-2 rounded-button border border-s-ink/10 hover:border-s-coral transition-colors"
           >
-            <MessageCircle size={18} className="text-dark/50" />
+            <MessageCircle size={18} className="text-s-ink/50" />
           </Link>
         </motion.div>
 
@@ -471,12 +471,12 @@ export default function ProfilePage() {
           transition={{ duration: 0.4, delay: 0.05 }}
           className="mb-6"
         >
-          <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
+          <h2 className="font-heading font-bold text-base text-s-ink mb-3 flex items-center gap-2">
             <Calendar size={16} className="text-s-coral" />
             Nächste Termine
           </h2>
           {upcoming.length === 0 ? (
-            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/40">
+            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-s-ink/40">
               <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Noch keine Buchungen</p>
               <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -501,10 +501,10 @@ export default function ProfilePage() {
         >
           <button
             onClick={() => setPastOpen(!pastOpen)}
-            className="w-full flex items-center justify-between font-heading font-bold text-base text-dark mb-3"
+            className="w-full flex items-center justify-between font-heading font-bold text-base text-s-ink mb-3"
           >
             <span className="flex items-center gap-2">
-              <Calendar size={16} className="text-dark/40" />
+              <Calendar size={16} className="text-s-ink/40" />
               Vergangene Termine ({past.length})
             </span>
             {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -512,7 +512,7 @@ export default function ProfilePage() {
           {pastOpen && (
             <div className="space-y-3">
               {past.length === 0 ? (
-                <p className="text-sm text-dark/40 py-4 text-center">Keine vergangenen Termine</p>
+                <p className="text-sm text-s-ink/40 py-4 text-center">Keine vergangenen Termine</p>
               ) : (
                 past.map((b) => (
                   <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
@@ -529,12 +529,12 @@ export default function ProfilePage() {
           transition={{ duration: 0.4, delay: 0.15 }}
           className="mb-6"
         >
-          <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
+          <h2 className="font-heading font-bold text-base text-s-ink mb-3 flex items-center gap-2">
             <Heart size={16} className="text-s-coral" />
             Favoriten
           </h2>
           {favorites.length === 0 ? (
-            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/40">
+            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-s-ink/40">
               <Heart className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Noch keine Favoriten</p>
               <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -551,20 +551,20 @@ export default function ProfilePage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-dark hover:text-s-coral transition-colors truncate block">
+                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-s-ink hover:text-s-coral transition-colors truncate block">
                       {salon.name}
                     </Link>
-                    <p className="text-xs text-dark/40 flex items-center gap-1 mt-0.5">
+                    <p className="text-xs text-s-ink/40 flex items-center gap-1 mt-0.5">
                       <MapPin size={10} />{salon.quartier}
                     </p>
-                    <p className="text-xs text-dark/50 flex items-center gap-1 mt-0.5">
+                    <p className="text-xs text-s-ink/50 flex items-center gap-1 mt-0.5">
                       <Star size={10} className="text-amber-400 fill-amber-400" />
                       {salon.average_rating?.toFixed(1) ?? "–"}
                     </p>
                   </div>
                   <button
                     onClick={() => removeFav(salon.id)}
-                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-dark/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100"
+                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-s-ink/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100"
                     title="Aus Favoriten entfernen"
                   >
                     <X size={12} />
@@ -582,13 +582,13 @@ export default function ProfilePage() {
           transition={{ duration: 0.4, delay: 0.17 }}
           className="mb-6"
         >
-          <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
+          <h2 className="font-heading font-bold text-base text-s-ink mb-3 flex items-center gap-2">
             <Trophy size={16} className="text-amber-500" />
             Deine Stempelkarten
             <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch!" />
           </h2>
           {loyaltyCards.length === 0 ? (
-            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/40">
+            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-s-ink/40">
               <Trophy className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Du hast noch keine Stempel</p>
               <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -618,7 +618,7 @@ export default function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          <h2 className="font-heading font-bold text-base text-dark dark:text-s-dm-text mb-3 flex items-center gap-2">
+          <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
             <Wallet size={16} className="text-s-coral" />
             Guthaben & Empfehlung
           </h2>
@@ -630,8 +630,8 @@ export default function ProfilePage() {
               <div className="flex items-center gap-3">
                 <Gift className="w-5 h-5 text-s-coral" />
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">Freunde einladen</p>
-                  <p className="text-xs text-dark/50 dark:text-s-dm-text/50">Beide erhalten CHF 10 Guthaben</p>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Freunde einladen</p>
+                  <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">Beide erhalten CHF 10 Guthaben</p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-s-coral group-hover:translate-x-0.5 transition-transform" />
@@ -645,8 +645,8 @@ export default function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <h2 className="font-heading font-bold text-base text-dark mb-3 flex items-center gap-2">
-            <Settings size={16} className="text-dark/60" />
+          <h2 className="font-heading font-bold text-base text-s-ink mb-3 flex items-center gap-2">
+            <Settings size={16} className="text-s-ink/60" />
             Einstellungen
           </h2>
           <div className="bg-white rounded-card border border-s-ink/5 p-5">

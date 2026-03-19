@@ -68,21 +68,21 @@ export default function PWAInstallPrompt() {
               <Download className="w-5 h-5 text-s-coral" />
             </div>
             <div>
-              <p className="font-heading font-semibold text-sm text-dark dark:text-s-dm-text">
+              <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
                 Installiere Solen
               </p>
-              <p className="text-xs text-dark/50 dark:text-s-dm-text/50 mt-0.5">
+              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
                 Für schnelle Buchungen und Erinnerungen
               </p>
             </div>
           </div>
-          <button onClick={dismiss} className="text-dark/30 hover:text-dark/60 p-1">
+          <button onClick={dismiss} className="text-s-ink/30 hover:text-s-ink/60 p-1">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {isIOS ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-dark/60 dark:text-s-dm-text/60 bg-s-bg-surface dark:bg-white/5 rounded-button p-2.5">
+          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 dark:text-s-dm-text/60 bg-s-bg-surface dark:bg-white/5 rounded-button p-2.5">
             <Share className="w-4 h-4 shrink-0 text-s-coral" />
             <span>Tippe auf <strong>Teilen</strong> → <strong>Zum Home-Bildschirm</strong></span>
           </div>

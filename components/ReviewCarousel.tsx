@@ -40,10 +40,10 @@ export default function ReviewCarousel() {
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-6">
-          <h2 className="font-heading font-bold text-2xl text-dark">
+          <h2 className="font-heading font-bold text-2xl text-s-ink">
             Was Basler:innen sagen
           </h2>
-          <p className="text-sm text-dark/50 mt-1 font-body">
+          <p className="text-sm text-s-ink/50 mt-1 font-body">
             Echte Bewertungen von echten Kund:innen
           </p>
         </div>
@@ -66,8 +66,8 @@ export default function ReviewCarousel() {
                   {getInitials(review.reviewer_name)}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-dark truncate">{review.reviewer_name}</p>
-                  <p className="text-xs text-dark/40 truncate">{review.salon_name}</p>
+                  <p className="text-sm font-medium text-s-ink truncate">{review.reviewer_name}</p>
+                  <p className="text-xs text-s-ink/40 truncate">{review.salon_name}</p>
                 </div>
               </div>
               <div className="flex items-center gap-0.5 mb-2">
@@ -75,7 +75,7 @@ export default function ReviewCarousel() {
                   <Star key={j} size={12} className="fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-sm text-dark/70 font-body leading-relaxed line-clamp-3">
+              <p className="text-sm text-s-ink/70 font-body leading-relaxed line-clamp-3">
                 &ldquo;{review.comment}&rdquo;
               </p>
             </motion.div>

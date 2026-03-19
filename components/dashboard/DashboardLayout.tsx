@@ -114,7 +114,7 @@ export default function DashboardLayout({
         <SidebarBody>
           {/* Logo */}
           <div className="px-4 py-5 border-b border-s-ink/5">
-            <Link href={`/${locale}`} className="font-heading font-bold text-xl text-dark whitespace-nowrap">
+            <Link href={`/${locale}`} className="font-heading font-bold text-xl text-s-ink whitespace-nowrap">
               solen<span className="text-s-coral">.</span>ch
             </Link>
           </div>
@@ -166,7 +166,7 @@ export default function DashboardLayout({
           <div className="px-3 py-3 border-t border-s-ink/5">
             <Link
               href={`/${locale}`}
-              className="text-xs text-dark/30 hover:text-s-coral transition-colors whitespace-nowrap"
+              className="text-xs text-s-ink/30 hover:text-s-coral transition-colors whitespace-nowrap"
             >
               ← Zur Website
             </Link>
@@ -196,7 +196,7 @@ export default function DashboardLayout({
             >
               <div className="px-5 py-4 border-b border-s-ink/5 flex items-center justify-between">
                 <span className="font-heading font-bold text-lg">solen<span className="text-s-coral">.</span>ch</span>
-                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-dark/40" /></button>
+                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
               </div>
               <nav className="py-3 px-2">
                 {NAV.map(({ label, href, icon: Icon }) => {
@@ -208,7 +208,7 @@ export default function DashboardLayout({
                       onClick={() => setMobileSidebarOpen(false)}
                       className={[
                         "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5",
-                        active ? "bg-s-coral/10 text-s-coral" : "text-dark/60",
+                        active ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
                       ].join(" ")}
                     >
                       <Icon size={16} />{label}
@@ -220,7 +220,7 @@ export default function DashboardLayout({
                 })}
                 {role === "admin" && (
                   <>
-                    <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest px-3 mt-3 mb-1">Admin</p>
+                    <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 mt-3 mb-1">Admin</p>
                     {ADMIN_NAV.map(({ label, href, icon: Icon }) => (
                       <Link
                         key={href}
@@ -228,7 +228,7 @@ export default function DashboardLayout({
                         onClick={() => setMobileSidebarOpen(false)}
                         className={[
                           "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5",
-                          isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-dark/60",
+                          isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
                         ].join(" ")}
                       >
                         <Icon size={16} />{label}
@@ -246,7 +246,7 @@ export default function DashboardLayout({
       <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-s-ink/5 px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-dark/60">
+          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60">
             <Menu size={20} />
           </button>
           <span className="font-heading font-bold text-base">solen<span className="text-s-coral">.</span>ch</span>
@@ -268,7 +268,7 @@ export default function DashboardLayout({
               href={`/${locale}${href}`}
               className={[
                 "flex-1 flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors relative",
-                active ? "text-s-coral" : "text-dark/40",
+                active ? "text-s-coral" : "text-s-ink/40",
               ].join(" ")}
             >
               <div className="relative">

@@ -69,12 +69,12 @@ export default function StampCard({
           {salonImageUrl ? (
             <Image src={salonImageUrl} alt={salonName} fill className="object-cover" sizes="40px" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-sm font-heading text-dark/30 dark:text-s-dm-text/30">
+            <div className="w-full h-full flex items-center justify-center text-sm font-heading text-s-ink/30 dark:text-s-dm-text/30">
               {salonName[0]}
             </div>
           )}
         </div>
-        <p className="font-heading font-semibold text-sm text-dark dark:text-s-dm-text truncate">
+        <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text truncate">
           {salonName}
         </p>
       </Link>
@@ -105,10 +105,10 @@ export default function StampCard({
 
       {/* Bottom: reward + progress */}
       <div className="px-4 pb-4 flex items-center justify-between gap-2">
-        <p className="text-xs text-dark/60 dark:text-s-dm-text/60 font-body">
+        <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-body">
           {rewardText}
         </p>
-        <span className="text-xs data-text font-medium text-dark/50 dark:text-s-dm-text/50 whitespace-nowrap">
+        <span className="text-xs data-text font-medium text-s-ink/50 dark:text-s-dm-text/50 whitespace-nowrap">
           {stampsCollected} von {stampsTotal} Stempel
         </span>
       </div>

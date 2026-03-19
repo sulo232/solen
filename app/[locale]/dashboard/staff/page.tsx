@@ -60,27 +60,27 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Name *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Foto URL</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Foto URL</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Spezialitäten</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Spezialitäten</label>
             <div className="flex gap-2 mb-2">
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
                 className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
-              <button type="button" onClick={addSpec} className="px-2.5 rounded-button bg-s-bg-sunken text-dark/60"><Plus size={14} /></button>
+              <button type="button" onClick={addSpec} className="px-2.5 rounded-button bg-s-bg-sunken text-s-ink/60"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -92,14 +92,14 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
             </div>
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
-            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-coral" : "text-dark/30"}>
+            <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-coral" : "text-s-ink/30"}>
               {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
             </button>
-            <span className="text-sm text-dark/60">Aktiv</span>
+            <span className="text-sm text-s-ink/60">Aktiv</span>
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!name || loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
@@ -136,14 +136,14 @@ function DeleteModal({ member, onClose, onDeleted }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base mb-3">Mitarbeiter löschen</h3>
-        <p className="text-sm text-dark/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
+        <p className="text-sm text-s-ink/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
         {member.future_bookings && member.future_bookings > 0 ? (
           <p className="text-sm text-s-coral font-medium mb-4">
             Diese Person hat {member.future_bookings} Termine. Diese werden storniert.
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleDelete} disabled={loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Löschen
@@ -203,7 +203,7 @@ export default function StaffPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading font-bold text-2xl text-dark">Team</h1>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Team</h1>
         <button onClick={() => setAddOpen(true)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
           <Plus size={14} /> Hinzufügen
@@ -213,7 +213,7 @@ export default function StaffPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : staff.length === 0 ? (
-        <div className="text-center py-12 text-dark/30">
+        <div className="text-center py-12 text-s-ink/30">
           <p className="text-sm">Noch keine Mitarbeiter</p>
         </div>
       ) : (
@@ -226,23 +226,23 @@ export default function StaffPage() {
                 ) : s.name[0]}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-dark">{s.name}</p>
+                <p className="font-medium text-sm text-s-ink">{s.name}</p>
                 {s.specialties.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {s.specialties.slice(0, 3).map((sp, i) => (
-                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-dark/50 rounded-pill">{sp}</span>
+                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-s-ink/50 rounded-pill">{sp}</span>
                     ))}
                   </div>
                 )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-dark/20"}>
+                <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
                   {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 </button>
-                <button onClick={() => setEditTarget(s)} className="p-1.5 text-dark/30 hover:text-s-coral transition-colors">
+                <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors">
                   <Pencil size={14} />
                 </button>
-                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-dark/30 hover:text-s-coral transition-colors">
+                <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors">
                   <Trash2 size={14} />
                 </button>
               </div>

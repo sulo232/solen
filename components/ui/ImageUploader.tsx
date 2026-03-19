@@ -126,7 +126,7 @@ export default function ImageUploader({
           <button
             type="button"
             onClick={clearImage}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-dark/60 hover:text-s-coral transition-colors shadow-sm"
+            className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink/60 hover:text-s-coral transition-colors shadow-sm"
             aria-label="Bild entfernen"
           >
             <X size={14} />
@@ -152,15 +152,15 @@ export default function ImageUploader({
           {uploading ? (
             <>
               <Loader2 size={24} className="text-s-coral animate-spin" />
-              <span className="text-xs text-dark/40">Wird hochgeladen…</span>
+              <span className="text-xs text-s-ink/40">Wird hochgeladen…</span>
             </>
           ) : (
             <>
               <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center">
                 <Camera size={20} className="text-s-coral" />
               </div>
-              <span className="text-sm font-medium text-dark/60">{label}</span>
-              <span className="text-xs text-dark/30">
+              <span className="text-sm font-medium text-s-ink/60">{label}</span>
+              <span className="text-xs text-s-ink/30">
                 <Upload size={10} className="inline mr-1" />
                 JPEG, PNG oder WebP (max. {maxSizeMB} MB)
               </span>

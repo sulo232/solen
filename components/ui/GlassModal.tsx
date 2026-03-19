@@ -80,10 +80,10 @@ export default function GlassModal({
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-s-ink/5">
-                <h2 className="font-heading font-semibold text-dark text-lg">{title}</h2>
+                <h2 className="font-heading font-semibold text-s-ink text-lg">{title}</h2>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-full text-dark/40 hover:text-dark hover:bg-dark/5 transition-colors"
+                  className="p-1.5 rounded-full text-s-ink/40 hover:text-s-ink hover:bg-dark/5 transition-colors"
                   aria-label="Schliessen"
                 >
                   <X size={18} />

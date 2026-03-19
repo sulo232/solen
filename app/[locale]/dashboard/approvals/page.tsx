@@ -59,8 +59,8 @@ export default function ApprovalsPage() {
       <div className="mb-6 flex items-center gap-3">
         <ShieldCheck size={22} className="text-s-coral" />
         <div>
-          <h1 className="font-heading font-bold text-2xl text-dark">Genehmigungen</h1>
-          <p className="text-sm text-dark/40 mt-0.5">Neue Salons warten auf Freischaltung</p>
+          <h1 className="font-heading font-bold text-2xl text-s-ink">Genehmigungen</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">Neue Salons warten auf Freischaltung</p>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ export default function ApprovalsPage() {
       ) : salons.length === 0 ? (
         <div className="bg-white rounded-card border border-s-ink/5 p-12 text-center">
           <ShieldCheck size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
-          <p className="text-dark/40 text-sm">Keine ausstehenden Genehmigungen</p>
+          <p className="text-s-ink/40 text-sm">Keine ausstehenden Genehmigungen</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -77,21 +77,21 @@ export default function ApprovalsPage() {
             <div key={salon.id} className="bg-white rounded-card border border-s-ink/5 shadow-card p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0 space-y-1.5">
-                  <h2 className="font-heading font-bold text-lg text-dark">{salon.name}</h2>
+                  <h2 className="font-heading font-bold text-lg text-s-ink">{salon.name}</h2>
 
                   {salon.owner_email && (
-                    <div className="flex items-center gap-1.5 text-sm text-dark/50">
+                    <div className="flex items-center gap-1.5 text-sm text-s-ink/50">
                       <Mail size={13} />
                       <span>{salon.owner_email}</span>
                     </div>
                   )}
                   {salon.address && (
-                    <div className="flex items-center gap-1.5 text-sm text-dark/50">
+                    <div className="flex items-center gap-1.5 text-sm text-s-ink/50">
                       <MapPin size={13} />
                       <span>{salon.address}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-1.5 text-sm text-dark/40">
+                  <div className="flex items-center gap-1.5 text-sm text-s-ink/40">
                     <Calendar size={13} />
                     <span>Registriert {new Date(salon.created_at).toLocaleDateString("de-CH")}</span>
                   </div>
@@ -135,12 +135,12 @@ export default function ApprovalsPage() {
       {rejectModal && (
         <div className="fixed inset-0 z-50 bg-dark/40 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6">
-            <h3 className="font-heading font-bold text-lg text-dark mb-1">Salon ablehnen</h3>
-            <p className="text-sm text-dark/50 mb-4">
+            <h3 className="font-heading font-bold text-lg text-s-ink mb-1">Salon ablehnen</h3>
+            <p className="text-sm text-s-ink/50 mb-4">
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
             </p>
             <textarea
-              className="w-full border border-s-ink/10 rounded-button px-3 py-2 text-sm text-dark resize-none focus:outline-none focus:border-s-coral"
+              className="w-full border border-s-ink/10 rounded-button px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-coral"
               rows={4}
               placeholder="z.B. Unvollständige Angaben, kein Basel-Bezug..."
               value={rejectReason}
@@ -150,7 +150,7 @@ export default function ApprovalsPage() {
             <div className="flex gap-2 mt-4 justify-end">
               <button
                 onClick={() => { setRejectModal(null); setRejectReason(""); }}
-                className="px-4 py-2 rounded-button text-sm text-dark/50 hover:text-dark transition-colors"
+                className="px-4 py-2 rounded-button text-sm text-s-ink/50 hover:text-s-ink transition-colors"
               >
                 Abbrechen
               </button>

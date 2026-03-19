@@ -55,7 +55,7 @@ export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
 
   return (
     <div>
-      <h2 className="font-heading font-semibold text-base text-dark dark:text-s-dm-text mb-4">
+      <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">
         Ähnliche Salons in der Nähe
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

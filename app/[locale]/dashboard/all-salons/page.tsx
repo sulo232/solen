@@ -62,12 +62,12 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="font-heading font-bold text-base text-dark">{title}</h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <h3 className="font-heading font-bold text-base text-s-ink">{title}</h3>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
-        <p className="text-sm text-dark/50 mb-5">{message}</p>
+        <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">
             Abbrechen
           </button>
           <button
@@ -158,8 +158,8 @@ export default function AllSalonsPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Alle Salons</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Alle registrierten Salons verwalten</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Alle Salons</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Alle registrierten Salons verwalten</p>
       </div>
 
       {/* Tab filters */}
@@ -172,7 +172,7 @@ export default function AllSalonsPage() {
               "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
               tab === t.value
                 ? "bg-s-coral text-white"
-                : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral",
+                : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral",
             ].join(" ")}
           >
             {t.label}
@@ -182,13 +182,13 @@ export default function AllSalonsPage() {
 
       {/* Search */}
       <div className="relative mb-5 max-w-sm">
-        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30" />
+        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
           placeholder="Salon suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -219,18 +219,18 @@ export default function AllSalonsPage() {
                     {salon.cover_photo_url ? (
                       <img src={salon.cover_photo_url} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <Store size={16} className="text-dark/20" />
+                      <Store size={16} className="text-s-ink/20" />
                     )}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-dark truncate">{salon.name}</p>
+                    <p className="font-medium text-sm text-s-ink truncate">{salon.name}</p>
                     {salon.owner_email && (
-                      <p className="text-xs text-dark/40 truncate">{salon.owner_email}</p>
+                      <p className="text-xs text-s-ink/40 truncate">{salon.owner_email}</p>
                     )}
                     {salon.address && (
-                      <p className="text-xs text-dark/30 truncate mt-0.5">{salon.address}</p>
+                      <p className="text-xs text-s-ink/30 truncate mt-0.5">{salon.address}</p>
                     )}
 
                     {/* Category pills */}
@@ -250,7 +250,7 @@ export default function AllSalonsPage() {
 
                   {/* Right: date */}
                   <div className="text-right shrink-0">
-                    <p className="text-[10px] text-dark/30">
+                    <p className="text-[10px] text-s-ink/30">
                       {new Date(salon.created_at).toLocaleDateString("de-CH", {
                         day: "2-digit",
                         month: "2-digit",
@@ -287,7 +287,7 @@ export default function AllSalonsPage() {
                     {/* Edit link */}
                     <a
                       href={`/${locale}/dashboard/settings`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-bg-surface text-dark/50 text-xs font-medium hover:bg-s-bg-sunken transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-bg-surface text-s-ink/50 text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                     >
                       Bearbeiten <ExternalLink size={10} />
                     </a>

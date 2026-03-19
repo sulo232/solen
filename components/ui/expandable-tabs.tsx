@@ -96,7 +96,7 @@ export default function ExpandableNavTabs({
             transition={transition}
             className={cn(
               "relative flex items-center rounded-xl py-2.5 text-sm font-medium font-body transition-colors",
-              isSelected ? `${activeColor} bg-s-coral/10` : "text-dark/40 hover:text-dark/60"
+              isSelected ? `${activeColor} bg-s-coral/10` : "text-s-ink/40 hover:text-s-ink/60"
             )}
           >
             <Icon size={18} />

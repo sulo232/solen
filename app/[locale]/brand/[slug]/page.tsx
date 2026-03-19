@@ -54,7 +54,7 @@ export default function BrandPage() {
   if (!group) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-dark/50 dark:text-s-dm-text/50">Marke nicht gefunden</p>
+        <p className="text-s-ink/50 dark:text-s-dm-text/50">Marke nicht gefunden</p>
       </div>
     );
   }
@@ -74,12 +74,12 @@ export default function BrandPage() {
             </div>
           )}
           <div>
-            <h1 className="font-heading font-bold text-2xl text-dark dark:text-s-dm-text">{group.name}</h1>
+            <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">{group.name}</h1>
             {group.description && (
-              <p className="text-sm text-dark/60 dark:text-s-dm-text/60 mt-1 max-w-lg">{group.description}</p>
+              <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1 max-w-lg">{group.description}</p>
             )}
             <div className="flex items-center gap-4 mt-2">
-              <span className="text-xs text-dark/40 dark:text-s-dm-text/40">
+              <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
                 {salons.length} {salons.length === 1 ? "Standort" : "Standorte"}
               </span>
               {group.website && (
@@ -100,11 +100,11 @@ export default function BrandPage() {
 
       {/* Locations grid */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <h2 className="font-heading font-semibold text-lg text-dark dark:text-s-dm-text mb-4">
+        <h2 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-4">
           Alle Standorte
         </h2>
         {salons.length === 0 ? (
-          <p className="text-sm text-dark/40 dark:text-s-dm-text/40">Noch keine Standorte verfügbar.</p>
+          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Noch keine Standorte verfügbar.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {salons.map((salon) => (

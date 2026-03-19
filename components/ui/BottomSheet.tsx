@@ -43,10 +43,10 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between px-6 pb-3">
-                <h3 className="font-heading font-semibold text-dark dark:text-s-dm-text">{title}</h3>
+                <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text">{title}</h3>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-full text-dark/40 hover:text-dark hover:bg-s-bg-sunken dark:text-s-dm-text/40 dark:hover:text-s-dm-text dark:hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-full text-s-ink/40 hover:text-s-ink hover:bg-s-bg-sunken dark:text-s-dm-text/40 dark:hover:text-s-dm-text dark:hover:bg-white/10 transition-colors"
                   aria-label="Schliessen"
                 >
                   <X size={16} />

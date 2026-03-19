@@ -62,12 +62,12 @@ export default function MessagesPage() {
         {/* Conversation list */}
         <div className="w-72 shrink-0 flex flex-col bg-white rounded-card border border-s-ink/5 overflow-hidden">
           <div className="px-4 py-3 border-b border-s-ink/5">
-            <h2 className="font-heading font-bold text-base text-dark">Nachrichten</h2>
+            <h2 className="font-heading font-bold text-base text-s-ink">Nachrichten</h2>
           </div>
           {loading ? (
             <div className="flex justify-center py-10"><Spinner size="sm" /></div>
           ) : convos.length === 0 ? (
-            <div className="flex flex-col items-center justify-center flex-1 text-dark/30 p-6 text-center">
+            <div className="flex flex-col items-center justify-center flex-1 text-s-ink/30 p-6 text-center">
               <MessageCircle size={28} className="mb-2 opacity-30" />
               <p className="text-sm">Keine Nachrichten</p>
             </div>
@@ -88,18 +88,18 @@ export default function MessagesPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <p className="text-sm font-medium text-dark truncate">{c.customer_name}</p>
+                        <p className="text-sm font-medium text-s-ink truncate">{c.customer_name}</p>
                         {c.is_first_visit && (
                           <span className="px-1 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[9px] font-bold shrink-0">NEU</span>
                         )}
                       </div>
                       {c.last_message_preview && (
-                        <p className="text-xs text-dark/40 truncate mt-0.5">{c.last_message_preview}</p>
+                        <p className="text-xs text-s-ink/40 truncate mt-0.5">{c.last_message_preview}</p>
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-1 shrink-0">
                       {c.last_message_at && (
-                        <p className="text-[10px] text-dark/30">
+                        <p className="text-[10px] text-s-ink/30">
                           {new Date(c.last_message_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                         </p>
                       )}
@@ -129,7 +129,7 @@ export default function MessagesPage() {
               <div className="relative">
                 <button
                   onClick={() => setShowQuickReplies((s) => !s)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors"
                 >
                   Schnellantwort <ChevronDown size={12} className={showQuickReplies ? "rotate-180" : ""} />
                 </button>
@@ -147,7 +147,7 @@ export default function MessagesPage() {
                             body: JSON.stringify({ content: r, message_type: "text" }),
                           }).finally(() => setShowQuickReplies(false));
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-dark/70 hover:bg-s-bg-surface transition-colors"
+                        className="w-full text-left px-4 py-2 text-sm text-s-ink/70 hover:bg-s-bg-surface transition-colors"
                       >
                         {r}
                       </button>
@@ -157,7 +157,7 @@ export default function MessagesPage() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-card border border-s-ink/5 text-dark/30">
+            <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-card border border-s-ink/5 text-s-ink/30">
               <MessageCircle size={32} className="mb-3 opacity-30" />
               <p className="text-sm">Gespräch auswählen</p>
             </div>

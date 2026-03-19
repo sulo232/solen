@@ -64,8 +64,8 @@ function StatCard({
         <Icon size={20} className={color} />
       </div>
       <div>
-        <p className="text-xs text-dark/50 font-body mb-1">{label}</p>
-        <p className="text-2xl font-data font-bold text-dark">
+        <p className="text-xs text-s-ink/50 font-body mb-1">{label}</p>
+        <p className="text-2xl font-data font-bold text-s-ink">
           {prefix}
           {decimals > 0 ? animated.toFixed(decimals) : Math.round(animated)}
           {suffix}
@@ -92,8 +92,8 @@ export default function PlatformAnalyticsPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Plattform Statistiken</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Gesamtübersicht der Plattform</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Plattform Statistiken</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Gesamtübersicht der Plattform</p>
       </div>
 
       {/* Content */}
@@ -104,7 +104,7 @@ export default function PlatformAnalyticsPage() {
           {/* Stat cards */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             <StatCard label="Salons" value={stats?.total_salons ?? 0} icon={Store} bg="bg-s-coral/5" color="text-s-coral" />
-            <StatCard label="Nutzer" value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-dark/5" color="text-dark" />
+            <StatCard label="Nutzer" value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-dark/5" color="text-s-ink" />
             <StatCard label="Buchungen (30T)" value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Umsatz (30T)" value={stats?.total_revenue_30d ?? 0} prefix="CHF " icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Ø Bewertung" value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-amber-50" color="text-amber-400" decimals={1} />
@@ -116,7 +116,7 @@ export default function PlatformAnalyticsPage() {
             className="bg-white rounded-card border border-s-ink/5 shadow-card p-10 text-center"
           >
             <BarChart3 size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
-            <p className="text-sm text-dark/40 font-body">
+            <p className="text-sm text-s-ink/40 font-body">
               Detaillierte Charts werden bald verfügbar.
             </p>
           </motion.div>

@@ -38,7 +38,7 @@ const STATUS_COLORS: Record<string, string> = {
   disputed: "bg-s-coral/10 text-s-coral",
   resolved: "bg-s-coral/10 text-s-coral",
   customer_approved: "bg-s-coral/10 text-s-coral",
-  auto_approved: "bg-s-bg-sunken text-dark/50",
+  auto_approved: "bg-s-bg-sunken text-s-ink/50",
 };
 
 const UPCHARGE_REASONS: Record<string, string> = {
@@ -106,13 +106,13 @@ export default function DisputesPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Scale className="w-6 h-6 text-s-coral" />
-          <h1 className="font-heading font-bold text-2xl text-dark">Preisstreitigkeiten</h1>
+          <h1 className="font-heading font-bold text-2xl text-s-ink">Preisstreitigkeiten</h1>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-12"><Spinner /></div>
         ) : disputes.length === 0 ? (
-          <div className="text-center py-12 text-dark/40 font-body">
+          <div className="text-center py-12 text-s-ink/40 font-body">
             Keine Streitigkeiten vorhanden
           </div>
         ) : (
@@ -121,37 +121,37 @@ export default function DisputesPage() {
               <div key={d.id} className="rounded-card border border-s-ink/5 bg-white p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <p className="font-heading font-semibold text-dark">
+                    <p className="font-heading font-semibold text-s-ink">
                       {d.bookings?.salons?.name ?? "Salon"}
                     </p>
-                    <p className="text-xs text-dark/50 font-body mt-0.5">
+                    <p className="text-xs text-s-ink/50 font-body mt-0.5">
                       Buchung: {d.bookings?.starts_at ? new Date(d.bookings.starts_at).toLocaleDateString("de-CH") : d.booking_id.slice(0, 8)}
                     </p>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-pill text-xs font-medium ${STATUS_COLORS[d.status] ?? "bg-s-bg-sunken text-dark/50"}`}>
+                  <span className={`px-2.5 py-1 rounded-pill text-xs font-medium ${STATUS_COLORS[d.status] ?? "bg-s-bg-sunken text-s-ink/50"}`}>
                     {STATUS_LABELS[d.status] ?? d.status}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <div>
-                    <p className="text-xs text-dark/40 font-body">Originalbetrag</p>
-                    <p className="data-text font-semibold text-dark">CHF {Number(d.original_amount).toFixed(2)}</p>
+                    <p className="text-xs text-s-ink/40 font-body">Originalbetrag</p>
+                    <p className="data-text font-semibold text-s-ink">CHF {Number(d.original_amount).toFixed(2)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-dark/40 font-body">Angeforderter Betrag</p>
+                    <p className="text-xs text-s-ink/40 font-body">Angeforderter Betrag</p>
                     <p className="data-text font-semibold text-s-coral">CHF {Number(d.requested_amount).toFixed(2)}</p>
                   </div>
                 </div>
 
                 <div className="mb-3">
-                  <p className="text-xs text-dark/40 font-body mb-1">Begründung Salon</p>
+                  <p className="text-xs text-s-ink/40 font-body mb-1">Begründung Salon</p>
                   {(() => {
                     const { label, details } = formatSalonReason(d.salon_reason);
                     return (
                       <>
-                        <p className="text-sm text-dark/70 font-body font-medium">{label}</p>
-                        {details && <p className="text-xs text-dark/50 font-body mt-0.5">{details}</p>}
+                        <p className="text-sm text-s-ink/70 font-body font-medium">{label}</p>
+                        {details && <p className="text-xs text-s-ink/50 font-body mt-0.5">{details}</p>}
                       </>
                     );
                   })()}
@@ -159,8 +159,8 @@ export default function DisputesPage() {
 
                 {d.customer_response && (
                   <div className="mb-3">
-                    <p className="text-xs text-dark/40 font-body mb-1">Kundenantwort</p>
-                    <p className="text-sm text-dark/70 font-body">{d.customer_response}</p>
+                    <p className="text-xs text-s-ink/40 font-body mb-1">Kundenantwort</p>
+                    <p className="text-sm text-s-ink/70 font-body">{d.customer_response}</p>
                   </div>
                 )}
 
@@ -172,7 +172,7 @@ export default function DisputesPage() {
                 )}
 
                 {d.admin_decision && (
-                  <div className="mt-2 text-xs text-dark/50 font-body">
+                  <div className="mt-2 text-xs text-s-ink/50 font-body">
                     Admin-Entscheidung: <span className="font-medium">{d.admin_decision}</span>
                     {d.admin_amount != null && ` — CHF ${Number(d.admin_amount).toFixed(2)}`}
                   </div>

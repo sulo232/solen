@@ -31,20 +31,20 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
           {member.avatar_url ? (
             <Image src={member.avatar_url} alt={member.name} width={48} height={48} className="object-cover w-full h-full" />
           ) : (
-            <span className="text-lg font-bold text-dark/30">{member.name[0]}</span>
+            <span className="text-lg font-bold text-s-ink/30">{member.name[0]}</span>
           )}
         </div>
         <div>
-          <p className="font-heading font-semibold text-dark">{member.name}</p>
+          <p className="font-heading font-semibold text-s-ink">{member.name}</p>
           {member.specialties?.length > 0 && (
-            <p className="text-xs text-dark/50">{member.specialties.join(", ")}</p>
+            <p className="text-xs text-s-ink/50">{member.specialties.join(", ")}</p>
           )}
         </div>
       </div>
 
       {/* Bio */}
       {(member as StaffMember & { bio?: string }).bio && (
-        <p className="text-sm text-dark/60 mb-3 leading-relaxed">
+        <p className="text-sm text-s-ink/60 mb-3 leading-relaxed">
           {(member as StaffMember & { bio?: string }).bio}
         </p>
       )}

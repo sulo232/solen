@@ -70,8 +70,8 @@ export default function SegmentsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Kundensegmente</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Automatisch berechnete Kundengruppen</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Kundensegmente</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Automatisch berechnete Kundengruppen</p>
       </div>
 
       {loading ? (
@@ -100,8 +100,8 @@ export default function SegmentsPage() {
                       <Icon size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-heading font-bold text-sm text-dark truncate">{seg.name}</h3>
-                      <p className="text-xs text-dark/40">{seg.description}</p>
+                      <h3 className="font-heading font-bold text-sm text-s-ink truncate">{seg.name}</h3>
+                      <p className="text-xs text-s-ink/40">{seg.description}</p>
                     </div>
                   </div>
 
@@ -109,7 +109,7 @@ export default function SegmentsPage() {
                     <span className="text-2xl font-heading font-bold data-text" style={{ color: seg.color }}>
                       {seg.member_count}
                     </span>
-                    <span className="text-xs text-dark/30">Mitglieder</span>
+                    <span className="text-xs text-s-ink/30">Mitglieder</span>
                   </div>
                 </div>
 
@@ -117,12 +117,12 @@ export default function SegmentsPage() {
                 <div className="border-t border-gray-50 px-4 py-2.5 flex items-center gap-2">
                   <button
                     onClick={() => toggleExpand(seg.id)}
-                    className="inline-flex items-center gap-1 text-xs text-dark/50 hover:text-s-coral transition-colors"
+                    className="inline-flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-coral transition-colors"
                   >
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     {isExpanded ? "Ausblenden" : "Mitglieder"}
                   </button>
-                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors">
+                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
                     <Mail size={11} />
                     E-Mail senden
                   </button>
@@ -134,15 +134,15 @@ export default function SegmentsPage() {
                     {membersLoading === seg.id ? (
                       <div className="flex justify-center py-4"><Spinner size="sm" /></div>
                     ) : (members[seg.id] ?? []).length === 0 ? (
-                      <p className="text-xs text-dark/30 text-center py-2">Keine Mitglieder</p>
+                      <p className="text-xs text-s-ink/30 text-center py-2">Keine Mitglieder</p>
                     ) : (
                       <div className="space-y-1.5">
                         {(members[seg.id] ?? []).map((m) => (
                           <div key={m.user_id} className="flex items-center gap-2 text-xs">
-                            <div className="w-6 h-6 rounded-full bg-s-bg-sunken flex items-center justify-center text-[10px] font-bold text-dark/40">
+                            <div className="w-6 h-6 rounded-full bg-s-bg-sunken flex items-center justify-center text-[10px] font-bold text-s-ink/40">
                               {(m.display_name ?? "?")[0]}
                             </div>
-                            <span className="text-dark/70">{m.display_name ?? "Anonym"}</span>
+                            <span className="text-s-ink/70">{m.display_name ?? "Anonym"}</span>
                           </div>
                         ))}
                       </div>

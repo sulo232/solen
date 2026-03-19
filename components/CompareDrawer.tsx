@@ -50,20 +50,20 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
       render: (s) => (
         <div className="flex items-center gap-1">
           <Star size={12} className="fill-s-coral text-s-coral" />
-          <span className="data-text font-semibold text-dark">{s.average_rating?.toFixed(1) ?? "–"}</span>
+          <span className="data-text font-semibold text-s-ink">{s.average_rating?.toFixed(1) ?? "–"}</span>
         </div>
       ),
     },
     {
       label: "Anzahl Bewertungen",
       Icon: MessageCircle,
-      render: (s) => <span className="data-text text-dark">{s.review_count ?? 0}</span>,
+      render: (s) => <span className="data-text text-s-ink">{s.review_count ?? 0}</span>,
     },
     {
       label: "Günstigster Service",
       Icon: Trophy,
       render: (s) => (
-        <span className="data-text font-semibold text-dark">
+        <span className="data-text font-semibold text-s-ink">
           {s.min_price ? `CHF ${s.min_price}` : "–"}
         </span>
       ),
@@ -71,13 +71,13 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
     {
       label: "Öffnungszeiten",
       Icon: Clock,
-      render: (s) => <span className="text-dark/70 text-xs">{getTodayHours(s)}</span>,
+      render: (s) => <span className="text-s-ink/70 text-xs">{getTodayHours(s)}</span>,
     },
     {
       label: "Entfernung",
       Icon: MapPin,
       render: (s) => (
-        <span className="data-text text-dark">
+        <span className="data-text text-s-ink">
           {s.distance_km ? `${s.distance_km.toFixed(1)} km` : "–"}
         </span>
       ),
@@ -108,8 +108,8 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
-              <h2 className="font-heading font-bold text-lg text-dark dark:text-s-dm-text">Salons vergleichen</h2>
-              <button onClick={onClose} className="p-1.5 text-dark/40 hover:text-dark dark:text-s-dm-text/40 dark:hover:text-s-dm-text">
+              <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Salons vergleichen</h2>
+              <button onClick={onClose} className="p-1.5 text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 dark:hover:text-s-dm-text">
                 <X size={20} />
               </button>
             </div>
@@ -129,8 +129,8 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                           </div>
                         )}
                         <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-s-coral/20 rounded-card p-2" : "p-2"}`}>
-                          <h3 className="font-heading font-bold text-sm text-dark dark:text-s-dm-text truncate">{salon.name}</h3>
-                          <p className="text-[10px] text-dark/40 dark:text-s-dm-text/40 capitalize mt-0.5 truncate">{salon.quartier}</p>
+                          <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text truncate">{salon.name}</h3>
+                          <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 capitalize mt-0.5 truncate">{salon.quartier}</p>
                         </div>
                       </th>
                     ))}
@@ -142,7 +142,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                       <td className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm px-4 py-3">
                         <div className="flex items-center gap-2">
                           <row.Icon size={13} className="text-s-coral shrink-0" />
-                          <span className="text-xs text-dark/50 dark:text-s-dm-text/50 whitespace-nowrap">{row.label}</span>
+                          <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50 whitespace-nowrap">{row.label}</span>
                         </div>
                       </td>
                       {salons.map((salon, i) => (

@@ -36,13 +36,13 @@ export default function PhotoGallery({ conversationId, isSalonOwner, onCreateOff
 
   if (loading) {
     return (
-      <div className="flex justify-center py-8 text-dark/30 text-sm">Lade Fotos…</div>
+      <div className="flex justify-center py-8 text-s-ink/30 text-sm">Lade Fotos…</div>
     );
   }
 
   if (photos.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-dark/30">
+      <div className="flex flex-col items-center justify-center py-12 text-s-ink/30">
         <p className="text-sm">Noch keine Fotos geteilt</p>
       </div>
     );

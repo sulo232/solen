@@ -234,7 +234,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
               className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium shadow-sm transition-colors ${
                 activeCategory === chip.key
                   ? "bg-s-coral text-white shadow-md"
-                  : "bg-white/95 text-dark/70 hover:bg-white border border-s-ink/10"
+                  : "bg-white/95 text-s-ink/70 hover:bg-white border border-s-ink/10"
               }`}
             >
               {chip.label}
@@ -250,7 +250,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       {enhanced && showAreaSearch && onAreaSearch && (
         <button
           onClick={handleAreaSearch}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-dark text-sm font-medium shadow-lg border border-s-ink/10 hover:bg-s-bg-surface transition-colors"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-s-ink text-sm font-medium shadow-lg border border-s-ink/10 hover:bg-s-bg-surface transition-colors"
         >
           <MapPin size={14} className="text-s-coral" />
           In diesem Bereich suchen

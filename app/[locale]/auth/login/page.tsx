@@ -15,11 +15,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <div className="text-center mb-8">
           <a
             href="/"
-            className="inline-block font-heading font-bold text-3xl text-dark dark:text-s-dm-text tracking-tight hover:opacity-80 transition-opacity"
+            className="inline-block font-heading font-bold text-3xl text-s-ink dark:text-s-dm-text tracking-tight hover:opacity-80 transition-opacity"
           >
             solen<span className="text-s-coral">.</span>ch
           </a>
-          <p className="text-dark/50 dark:text-s-dm-text/50 font-body text-sm mt-2">Willkommen zurück</p>
+          <p className="text-s-ink/50 dark:text-s-dm-text/50 font-body text-sm mt-2">Willkommen zurück</p>
         </div>
 
         {/* GlassCard wrapping SignIn */}
@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <SignIn />
         </div>
 
-        <p className="text-center text-xs text-dark/30 dark:text-s-dm-text/30 font-body mt-6">
+        <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 font-body mt-6">
           Noch kein Konto?{" "}
           <a href={`/${locale}/auth/register`} className="text-s-coral hover:underline">
             Registrieren

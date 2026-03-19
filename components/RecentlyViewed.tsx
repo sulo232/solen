@@ -69,7 +69,7 @@ export default function RecentlyViewed() {
     <section className="max-w-5xl mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-4">
         <Clock size={18} className="text-s-coral" />
-        <h2 className="font-heading font-semibold text-lg text-dark dark:text-s-dm-text">
+        <h2 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text">
           Zuletzt angesehen
         </h2>
       </div>
@@ -100,16 +100,16 @@ export default function RecentlyViewed() {
                     sizes="160px"
                   />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-dark/10 dark:text-s-dm-text/10 font-heading text-3xl">
+                  <div className="absolute inset-0 flex items-center justify-center text-s-ink/10 dark:text-s-dm-text/10 font-heading text-3xl">
                     {salon.name[0]}
                   </div>
                 )}
               </div>
-              <p className="text-sm font-medium text-dark dark:text-s-dm-text truncate group-hover:text-s-coral transition-colors">
+              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate group-hover:text-s-coral transition-colors">
                 {salon.name}
               </p>
               {salon.average_rating > 0 && (
-                <p className="text-xs text-dark/40 dark:text-s-dm-text/40 data-text">
+                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 data-text">
                   ★ {salon.average_rating.toFixed(1)}
                 </p>
               )}

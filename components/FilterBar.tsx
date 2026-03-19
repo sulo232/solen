@@ -36,7 +36,7 @@ const pillBase =
 const pillActive =
   "bg-s-coral text-white border-s-coral shadow-warm-sm";
 const pillInactive =
-  "bg-white/70 backdrop-blur-sm text-dark/70 border-white/60 hover:border-s-coral/50 hover:bg-white/90 shadow-sm";
+  "bg-white/70 backdrop-blur-sm text-s-ink/70 border-white/60 hover:border-s-coral/50 hover:bg-white/90 shadow-sm";
 
 export default function FilterBar() {
   const router = useRouter();
@@ -198,7 +198,7 @@ export default function FilterBar() {
                   <button
                     key={value}
                     onClick={() => { setParam("sort", value); setSortOpen(false); }}
-                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-dark/80 hover:bg-s-bg-surface transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-s-ink/80 hover:bg-s-bg-surface transition-colors"
                     aria-label={`Sortieren nach ${label}`}
                   >
                     {label}

@@ -137,10 +137,10 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
         <Clock size={16} className="text-s-coral" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-dark">
+        <p className="text-sm font-medium text-s-ink">
           Off-Peak: {slot.discount_percent}% Rabatt
         </p>
-        <p className="text-xs text-dark/50">
+        <p className="text-xs text-s-ink/50">
           Noch bis {slot.end_time} Uhr · {slot.start_time}–{slot.end_time}
         </p>
       </div>
@@ -207,7 +207,7 @@ export default function SalonProfilePage() {
 
   if (!salon) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-dark/40">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-s-ink/40">
         <p className="font-heading text-2xl font-semibold">Salon nicht gefunden</p>
         <Link href={`/${locale}/coiffeur`} className="text-sm text-s-coral hover:underline">Alle Salons</Link>
       </div>
@@ -261,7 +261,7 @@ export default function SalonProfilePage() {
       <JsonLd salon={salon} />
       <div className="min-h-screen bg-white">
         {/* Breadcrumb */}
-        <nav className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2 text-xs text-dark/40">
+        <nav className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2 text-xs text-s-ink/40">
           <Link href={`/${locale}`} className="hover:text-s-coral">Home</Link>
           <ChevronRight className="inline w-3 h-3 mx-1" />
           {salon.categories[0] && (
@@ -270,7 +270,7 @@ export default function SalonProfilePage() {
               <ChevronRight className="inline w-3 h-3 mx-1" />
             </>
           )}
-          <span className="text-dark/70">{salon.name}</span>
+          <span className="text-s-ink/70">{salon.name}</span>
         </nav>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 lg:pb-16">
@@ -292,13 +292,13 @@ export default function SalonProfilePage() {
                       onClick={() => setPhotoIndex((i) => (i - 1 + photos.length) % photos.length)}
                       className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow hover:bg-white transition-colors"
                     >
-                      <ChevronLeft className="w-5 h-5 text-dark" />
+                      <ChevronLeft className="w-5 h-5 text-s-ink" />
                     </button>
                     <button
                       onClick={() => setPhotoIndex((i) => (i + 1) % photos.length)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow hover:bg-white transition-colors"
                     >
-                      <ChevronRight className="w-5 h-5 text-dark" />
+                      <ChevronRight className="w-5 h-5 text-s-ink" />
                     </button>
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                       {photos.map((_, i) => (
@@ -311,7 +311,7 @@ export default function SalonProfilePage() {
                 )}
               </>
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-dark/10 font-heading text-7xl">
+              <div className="absolute inset-0 flex items-center justify-center text-s-ink/10 font-heading text-7xl">
                 {salon.name[0]}
               </div>
             )}
@@ -325,8 +325,8 @@ export default function SalonProfilePage() {
               {/* Name + meta */}
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="font-heading font-bold text-2xl sm:text-3xl text-dark">{salon.name}</h1>
-                  <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-emerald-600" : "text-dark/40"}`}>
+                  <h1 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink">{salon.name}</h1>
+                  <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-emerald-600" : "text-s-ink/40"}`}>
                     <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500 animate-pulse" : "bg-s-sand-dark"}`} />
                     {isOpen ? "Geöffnet" : "Geschlossen"}
                   </span>
@@ -344,10 +344,10 @@ export default function SalonProfilePage() {
                 <div className="flex flex-wrap items-center gap-4 mt-3">
                   <div className="flex items-center gap-1.5">
                     <Stars rating={salon.average_rating} />
-                    <span className="data-text font-semibold text-dark text-sm">{salon.average_rating.toFixed(1)}</span>
-                    <button onClick={scrollToReviews} className="text-dark/40 text-xs hover:text-s-coral transition-colors">({salon.review_count})</button>
+                    <span className="data-text font-semibold text-s-ink text-sm">{salon.average_rating.toFixed(1)}</span>
+                    <button onClick={scrollToReviews} className="text-s-ink/40 text-xs hover:text-s-coral transition-colors">({salon.review_count})</button>
                   </div>
-                  <span className="flex items-center gap-1 text-dark/50 text-sm">
+                  <span className="flex items-center gap-1 text-s-ink/50 text-sm">
                     <MapPin className="w-3.5 h-3.5" />
                     <span className="capitalize">{salon.quartier.replace("_", " ")}</span>
                   </span>
@@ -356,37 +356,37 @@ export default function SalonProfilePage() {
                   {salon.address && (
                     <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors">
                       <MapPin className="w-4 h-4" />{salon.address}
                     </a>
                   )}
                   {salon.phone && (
-                    <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
+                    <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors">
                       <Phone className="w-4 h-4" />{salon.phone}
                     </a>
                   )}
                   {salon.instagram_url && (
                     <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors">
                       <Instagram className="w-4 h-4" />Instagram
                     </a>
                   )}
                   {(salon as any).facebook_url && (
                     <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors">
                       <Facebook className="w-4 h-4" />Facebook
                     </a>
                   )}
                   {(salon as any).tiktok_url && (
                     <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors">
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
                       TikTok
                     </a>
                   )}
                   {(salon as any).website_url && (
                     <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-dark/60 hover:text-s-coral transition-colors">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/60 hover:text-s-coral transition-colors">
                       <Globe className="w-4 h-4" />Website
                     </a>
                   )}
@@ -403,7 +403,7 @@ export default function SalonProfilePage() {
                     key={key}
                     onClick={() => { setActiveTab(key); document.getElementById(`section-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                     className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-                      activeTab === key ? "border-s-coral text-s-coral" : "border-transparent text-dark/50 hover:text-dark"
+                      activeTab === key ? "border-s-coral text-s-coral" : "border-transparent text-s-ink/50 hover:text-s-ink"
                     }`}
                   >
                     {label}
@@ -414,7 +414,7 @@ export default function SalonProfilePage() {
               {/* Opening hours — mobile: collapsed with today preview */}
               {Object.keys(salon.opening_hours ?? {}).length > 0 && (
                 <div>
-                  <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
+                  <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
                     <Clock className="w-4 h-4 text-s-coral" />Öffnungszeiten
                   </h2>
                   {/* Mobile: today preview + expand */}
@@ -423,10 +423,10 @@ export default function SalonProfilePage() {
                       onClick={() => setHoursExpanded(!hoursExpanded)}
                       className="w-full flex items-center justify-between py-2 text-sm"
                     >
-                      <span className="text-dark/70">
+                      <span className="text-s-ink/70">
                         Heute: {todayHours ? `${todayHours.open}–${todayHours.close}` : "Geschlossen"}
                       </span>
-                      <ChevronDown className={`w-4 h-4 text-dark/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`w-4 h-4 text-s-ink/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`} />
                     </button>
                     {hoursExpanded && (
                       <div className="grid grid-cols-1 gap-y-1.5 mt-1">
@@ -435,8 +435,8 @@ export default function SalonProfilePage() {
                           const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
                           return (
                             <div key={key} className="flex justify-between text-sm">
-                              <span className="text-dark/50">{label}</span>
-                              <span className={h ? "data-text text-dark" : "text-dark/25"}>
+                              <span className="text-s-ink/50">{label}</span>
+                              <span className={h ? "data-text text-s-ink" : "text-s-ink/25"}>
                                 {h ? `${h.open}–${h.close}` : "Zu"}
                               </span>
                             </div>
@@ -452,8 +452,8 @@ export default function SalonProfilePage() {
                       const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
                       return (
                         <div key={key} className="flex justify-between text-sm">
-                          <span className="text-dark/50">{label}</span>
-                          <span className={h ? "data-text text-dark" : "text-dark/25"}>
+                          <span className="text-s-ink/50">{label}</span>
+                          <span className={h ? "data-text text-s-ink" : "text-s-ink/25"}>
                             {h ? `${h.open}–${h.close}` : "Zu"}
                           </span>
                         </div>
@@ -466,7 +466,7 @@ export default function SalonProfilePage() {
               {/* Saloninfo — atmosphere, expertise, products, transport */}
               {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                 <div>
-                  <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
+                  <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
                     <Info className="w-4 h-4 text-s-coral" />Saloninfo
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -474,8 +474,8 @@ export default function SalonProfilePage() {
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Sparkles className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Atmosphäre</p>
-                          <p className="text-sm text-dark mt-0.5">{(salon as any).atmosphere}</p>
+                          <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide">Atmosphäre</p>
+                          <p className="text-sm text-s-ink mt-0.5">{(salon as any).atmosphere}</p>
                         </div>
                       </div>
                     )}
@@ -483,8 +483,8 @@ export default function SalonProfilePage() {
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Award className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Expertise</p>
-                          <p className="text-sm text-dark mt-0.5">{(salon as any).expertise}</p>
+                          <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide">Expertise</p>
+                          <p className="text-sm text-s-ink mt-0.5">{(salon as any).expertise}</p>
                         </div>
                       </div>
                     )}
@@ -492,8 +492,8 @@ export default function SalonProfilePage() {
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Droplets className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Produkte</p>
-                          <p className="text-sm text-dark mt-0.5">{(salon as any).products}</p>
+                          <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide">Produkte</p>
+                          <p className="text-sm text-s-ink mt-0.5">{(salon as any).products}</p>
                         </div>
                       </div>
                     )}
@@ -501,8 +501,8 @@ export default function SalonProfilePage() {
                       <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Bus className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">ÖV-Anbindung</p>
-                          <p className="text-sm text-dark mt-0.5">{(salon as any).nearest_transport}</p>
+                          <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide">ÖV-Anbindung</p>
+                          <p className="text-sm text-s-ink mt-0.5">{(salon as any).nearest_transport}</p>
                         </div>
                       </div>
                     )}
@@ -518,10 +518,10 @@ export default function SalonProfilePage() {
                     className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
                     onClick={() => setOpenAccordion(openAccordion === "team" ? null : "team")}
                   >
-                    <h2 className="font-heading font-semibold text-base text-dark">Team</h2>
-                    <ChevronDown size={18} className={`text-dark/40 transition-transform ${openAccordion === "team" ? "rotate-180" : ""}`} />
+                    <h2 className="font-heading font-semibold text-base text-s-ink">Team</h2>
+                    <ChevronDown size={18} className={`text-s-ink/40 transition-transform ${openAccordion === "team" ? "rotate-180" : ""}`} />
                   </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-dark mb-3">Team</h2>
+                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink mb-3">Team</h2>
 
                   <div className={`${openAccordion === "team" || typeof window !== "undefined" && window.innerWidth >= 768 ? "" : "hidden md:block"}`}>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
@@ -546,15 +546,15 @@ export default function SalonProfilePage() {
                     className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
                     onClick={() => setOpenAccordion(openAccordion === "angebot" ? null : "angebot")}
                   >
-                    <h2 className="font-heading font-semibold text-base text-dark">Angebot</h2>
-                    <ChevronDown size={18} className={`text-dark/40 transition-transform ${openAccordion === "angebot" ? "rotate-180" : ""}`} />
+                    <h2 className="font-heading font-semibold text-base text-s-ink">Angebot</h2>
+                    <ChevronDown size={18} className={`text-s-ink/40 transition-transform ${openAccordion === "angebot" ? "rotate-180" : ""}`} />
                   </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-dark mb-3">Leistungen</h2>
+                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink mb-3">Leistungen</h2>
 
                   <div className={`${openAccordion === "angebot" ? "" : "hidden md:block"}`}>
                     {Object.entries(servicesByCategory).map(([cat, svcs]) => (
                       <div key={cat} className="mb-4 mt-3 md:mt-0">
-                        <p className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-2 capitalize">{cat}</p>
+                        <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-2 capitalize">{cat}</p>
                         <div className="divide-y divide-gray-50">
                           {svcs.map((svc) => (
                             <button key={svc.id}
@@ -563,18 +563,18 @@ export default function SalonProfilePage() {
                             >
                               <div className="flex items-center gap-2">
                                 <div>
-                                  <p className="text-sm font-medium text-dark">
+                                  <p className="text-sm font-medium text-s-ink">
                                     {locale === "de" ? svc.name_de : svc.name_en}
                                   </p>
                                   <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="flex items-center gap-1 text-xs text-dark/40">
+                                    <span className="flex items-center gap-1 text-xs text-s-ink/40">
                                       <Clock size={10} /> {svc.duration_minutes} Min.
                                     </span>
                                   </div>
                                 </div>
                               </div>
                               <div className="flex items-center gap-3 shrink-0 ml-4">
-                                <span className="data-text font-semibold text-sm text-dark">CHF {svc.price}</span>
+                                <span className="data-text font-semibold text-sm text-s-ink">CHF {svc.price}</span>
                                 <span className="text-xs text-s-coral font-medium hidden sm:inline">Buchen</span>
                               </div>
                             </button>
@@ -593,13 +593,13 @@ export default function SalonProfilePage() {
                   className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
                   onClick={() => setOpenAccordion(openAccordion === "bewertungen" ? null : "bewertungen")}
                 >
-                  <h2 className="font-heading font-semibold text-base text-dark">Bewertungen</h2>
-                  <ChevronDown size={18} className={`text-dark/40 transition-transform ${openAccordion === "bewertungen" ? "rotate-180" : ""}`} />
+                  <h2 className="font-heading font-semibold text-base text-s-ink">Bewertungen</h2>
+                  <ChevronDown size={18} className={`text-s-ink/40 transition-transform ${openAccordion === "bewertungen" ? "rotate-180" : ""}`} />
                 </button>
-                <h2 className="hidden md:block font-heading font-semibold text-base text-dark mb-4">Bewertungen</h2>
+                <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink mb-4">Bewertungen</h2>
                 <div className={`${openAccordion === "bewertungen" ? "" : "hidden md:block"} mt-3 md:mt-0`}>
                 {salon.reviews.length === 0 ? (
-                  <p className="text-sm text-dark/40">Noch keine Bewertungen.</p>
+                  <p className="text-sm text-s-ink/40">Noch keine Bewertungen.</p>
                 ) : (
                   <>
                     <ReviewBreakdown
@@ -611,7 +611,7 @@ export default function SalonProfilePage() {
 
                     {/* Review sort */}
                     <div className="flex items-center gap-2 mt-4 mb-4">
-                      <span className="text-xs text-dark/40">Sortieren:</span>
+                      <span className="text-xs text-s-ink/40">Sortieren:</span>
                       {(["newest", "highest", "lowest"] as const).map((s) => (
                         <button
                           key={s}
@@ -619,7 +619,7 @@ export default function SalonProfilePage() {
                           className={`px-2.5 py-1 rounded-pill text-xs font-medium transition-colors ${
                             reviewSort === s
                               ? "bg-s-coral/10 text-s-coral"
-                              : "text-dark/50 hover:text-dark"
+                              : "text-s-ink/50 hover:text-s-ink"
                           }`}
                         >
                           {s === "newest" ? "Neueste" : s === "highest" ? "Beste" : "Schlechteste"}
@@ -632,12 +632,12 @@ export default function SalonProfilePage() {
                         <div key={rev.id} className="border border-s-ink/5 rounded-card p-4">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-s-bg-sunken overflow-hidden flex items-center justify-center text-xs text-dark/40">
+                              <div className="w-7 h-7 rounded-full bg-s-bg-sunken overflow-hidden flex items-center justify-center text-xs text-s-ink/40">
                                 {rev.profiles?.avatar_url
                                   ? <Image src={rev.profiles.avatar_url} alt="" width={28} height={28} className="object-cover" />
                                   : (rev.profiles?.display_name?.[0] ?? "?")}
                               </div>
-                              <span className="text-sm font-medium text-dark">{rev.profiles?.display_name ?? "Anonym"}</span>
+                              <span className="text-sm font-medium text-s-ink">{rev.profiles?.display_name ?? "Anonym"}</span>
                               {(rev as any).booking_id && (
                                 <span className="flex items-center gap-0.5 text-xs text-emerald-600">
                                   <ShieldCheck className="w-3 h-3" />Verifiziert
@@ -646,7 +646,7 @@ export default function SalonProfilePage() {
                             </div>
                             <Stars rating={rev.rating} size="sm" />
                           </div>
-                          {rev.comment && <p className="text-sm text-dark/70 leading-relaxed">{rev.comment}</p>}
+                          {rev.comment && <p className="text-sm text-s-ink/70 leading-relaxed">{rev.comment}</p>}
                           {/* Review photos */}
                           {rev.review_photos && rev.review_photos.length > 0 && (
                             <div className="flex gap-2 mt-3">
@@ -668,10 +668,10 @@ export default function SalonProfilePage() {
                               <p className="text-xs text-s-coral font-medium flex items-center gap-1 mb-1">
                                 <ShieldCheck className="w-3 h-3" />Salon hat geantwortet
                               </p>
-                              <p className="text-xs text-dark/60">{(rev as any).review_replies[0].reply_text}</p>
+                              <p className="text-xs text-s-ink/60">{(rev as any).review_replies[0].reply_text}</p>
                             </div>
                           )}
-                          <p className="text-xs text-dark/30 mt-2">
+                          <p className="text-xs text-s-ink/30 mt-2">
                             {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB")}
                           </p>
                         </div>
@@ -679,7 +679,7 @@ export default function SalonProfilePage() {
                     </div>
                     {salon.reviews.length > reviewsVisible.length && (
                       <button onClick={() => setReviewPage((p) => p + 1)}
-                        className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-button text-sm text-dark/60 hover:border-s-coral transition-colors">
+                        className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-button text-sm text-s-ink/60 hover:border-s-coral transition-colors">
                         Mehr Bewertungen
                       </button>
                     )}
@@ -691,7 +691,7 @@ export default function SalonProfilePage() {
               {/* Standort / Mini Map */}
               {salon.latitude && salon.longitude && (
                 <div id="section-standort">
-                  <h2 className="font-heading font-semibold text-base text-dark mb-3 flex items-center gap-2">
+                  <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-s-coral" />Standort
                   </h2>
                   <div className="h-48 rounded-card overflow-hidden">
@@ -715,9 +715,9 @@ export default function SalonProfilePage() {
                 <div className="rounded-2xl border border-s-ink/5 bg-white p-5 shadow-card">
                   {!calendarOpen ? (
                     <div className="flex flex-col gap-3">
-                      <p className="font-heading font-semibold text-dark text-center">Termin buchen</p>
+                      <p className="font-heading font-semibold text-s-ink text-center">Termin buchen</p>
                       {salon.services.length > 0 && (
-                        <p className="text-xs text-dark/50 text-center font-body">
+                        <p className="text-xs text-s-ink/50 text-center font-body">
                           ab CHF {Math.min(...salon.services.map((s) => s.price))}
                         </p>
                       )}

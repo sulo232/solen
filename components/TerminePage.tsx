@@ -29,8 +29,8 @@ const STATUS_LABEL: Record<string, string> = {
 const STATUS_COLOR: Record<string, string> = {
   confirmed: "text-s-coral",
   cancelled: "text-s-coral",
-  completed: "text-dark/50",
-  no_show: "text-dark/30",
+  completed: "text-s-ink/50",
+  no_show: "text-s-ink/30",
 };
 
 function hoursUntil(startsAt: string) {
@@ -74,14 +74,14 @@ function CancelModal({
 
   return (
     <GlassModal open onClose={onClose} title="Termin stornieren">
-      <p className="text-sm text-dark/60 mb-1">
+      <p className="text-sm text-s-ink/60 mb-1">
         {salonName} — {new Date(startsAt).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" })}{" "}
         um {new Date(startsAt).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
       </p>
-      <p className="text-xs text-dark/40 mb-4">Kostenlose Stornierung bis 24h vor dem Termin.</p>
+      <p className="text-xs text-s-ink/40 mb-4">Kostenlose Stornierung bis 24h vor dem Termin.</p>
 
       <div className="mb-5">
-        <label className="block text-xs font-medium text-dark/50 mb-1">Grund (optional)</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">Grund (optional)</label>
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
@@ -92,7 +92,7 @@ function CancelModal({
       </div>
 
       <div className="flex gap-2">
-        <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:bg-s-bg-surface transition-colors">
+        <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60 hover:bg-s-bg-surface transition-colors">
           Abbrechen
         </button>
         <button
@@ -158,18 +158,18 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
   return (
     <div className="bg-white rounded-card border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-3">
-        <button onClick={prev} className="p-1 text-dark/40 hover:text-dark transition-colors">
+        <button onClick={prev} className="p-1 text-s-ink/40 hover:text-s-ink transition-colors">
           <ChevronLeft size={16} />
         </button>
-        <p className="text-sm font-medium text-dark capitalize">{monthName}</p>
-        <button onClick={next} className="p-1 text-dark/40 hover:text-dark transition-colors">
+        <p className="text-sm font-medium text-s-ink capitalize">{monthName}</p>
+        <button onClick={next} className="p-1 text-s-ink/40 hover:text-s-ink transition-colors">
           <ChevronRight size={16} />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-0.5 text-center">
         {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((d) => (
-          <span key={d} className="text-[10px] font-medium text-dark/30 py-1">{d}</span>
+          <span key={d} className="text-[10px] font-medium text-s-ink/30 py-1">{d}</span>
         ))}
         {days.map((d, i) => (
           <div key={i} className="relative flex items-center justify-center py-1">
@@ -178,7 +178,7 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
                 <span
                   className={[
                     "w-7 h-7 flex items-center justify-center rounded-full text-xs",
-                    isToday(d) ? "bg-s-coral text-white font-bold" : "text-dark/70",
+                    isToday(d) ? "bg-s-coral text-white font-bold" : "text-s-ink/70",
                   ].join(" ")}
                 >
                   {d}
@@ -280,7 +280,7 @@ export default function TerminePage() {
         <motion.h1
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-heading font-bold text-xl text-dark mb-6 flex items-center gap-2"
+          className="font-heading font-bold text-xl text-s-ink mb-6 flex items-center gap-2"
         >
           <Calendar size={20} className="text-s-coral" />
           Meine Termine
@@ -296,11 +296,11 @@ export default function TerminePage() {
               transition={{ duration: 0.35 }}
               className="mb-6"
             >
-              <h2 className="text-sm font-bold text-dark/60 uppercase tracking-wide mb-3">
+              <h2 className="text-sm font-bold text-s-ink/60 uppercase tracking-wide mb-3">
                 Nächste Termine ({upcoming.length})
               </h2>
               {upcoming.length === 0 ? (
-                <div className="bg-white rounded-card border border-s-ink/5 p-8 text-center text-dark/40">
+                <div className="bg-white rounded-card border border-s-ink/5 p-8 text-center text-s-ink/40">
                   <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
                   <p className="text-sm font-medium">Keine anstehenden Termine</p>
                   <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -317,12 +317,12 @@ export default function TerminePage() {
                       <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
-                            <p className="font-medium text-sm text-dark">{b.salon_name}</p>
-                            <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
+                            <p className="font-medium text-sm text-s-ink">{b.salon_name}</p>
+                            <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
                             {b.staff_name && (
-                              <p className="text-xs text-dark/40 mt-0.5">mit {b.staff_name}</p>
+                              <p className="text-xs text-s-ink/40 mt-0.5">mit {b.staff_name}</p>
                             )}
-                            <p className="text-xs text-dark/40 mt-1 flex items-center gap-1">
+                            <p className="text-xs text-s-ink/40 mt-1 flex items-center gap-1">
                               <Clock size={10} />
                               {new Date(b.starts_at).toLocaleDateString("de-CH", {
                                 weekday: "short", day: "numeric", month: "short",
@@ -346,7 +346,7 @@ export default function TerminePage() {
                           )}
                           {tooLate && (
                             <div className="relative group">
-                              <button disabled className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/20 cursor-not-allowed">
+                              <button disabled className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/20 cursor-not-allowed">
                                 Absagen
                               </button>
                               <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-dark text-white text-xs rounded-lg px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
@@ -357,7 +357,7 @@ export default function TerminePage() {
                           {b.salon_slug && (
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&reschedule=${b.id}`}
-                              className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
+                              className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors"
                             >
                               Verschieben
                             </Link>
@@ -378,7 +378,7 @@ export default function TerminePage() {
             >
               <button
                 onClick={() => setPastOpen(!pastOpen)}
-                className="w-full flex items-center justify-between text-sm font-bold text-dark/60 uppercase tracking-wide mb-3"
+                className="w-full flex items-center justify-between text-sm font-bold text-s-ink/60 uppercase tracking-wide mb-3"
               >
                 <span>Vergangene Termine ({past.length})</span>
                 {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -386,22 +386,22 @@ export default function TerminePage() {
               {pastOpen && (
                 <div className="space-y-3">
                   {past.length === 0 ? (
-                    <p className="text-sm text-dark/40 py-4 text-center">Keine vergangenen Termine</p>
+                    <p className="text-sm text-s-ink/40 py-4 text-center">Keine vergangenen Termine</p>
                   ) : (
                     past.map((b) => (
                       <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
-                            <p className="font-medium text-sm text-dark">{b.salon_name}</p>
-                            <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
-                            <p className="text-xs text-dark/40 mt-1">
+                            <p className="font-medium text-sm text-s-ink">{b.salon_name}</p>
+                            <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
+                            <p className="text-xs text-s-ink/40 mt-1">
                               {new Date(b.starts_at).toLocaleDateString("de-CH", {
                                 weekday: "short", day: "numeric", month: "short",
                               })}{" "}
                               um {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                             </p>
                           </div>
-                          <span className={["text-xs font-medium", STATUS_COLOR[b.status] ?? "text-dark/40"].join(" ")}>
+                          <span className={["text-xs font-medium", STATUS_COLOR[b.status] ?? "text-s-ink/40"].join(" ")}>
                             {STATUS_LABEL[b.status] ?? b.status}
                           </span>
                         </div>
@@ -409,7 +409,7 @@ export default function TerminePage() {
                           <div className="mt-3 pt-3 border-t border-gray-50">
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
                             >
                               <RotateCcw size={12} />
                               Nochmal buchen

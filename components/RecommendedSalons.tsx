@@ -39,7 +39,7 @@ export default function RecommendedSalons({ maxItems = 4 }: RecommendedSalonsPro
 
   return (
     <section>
-      <h2 className="font-heading font-bold text-xl text-dark mb-4">
+      <h2 className="font-heading font-bold text-xl text-s-ink mb-4">
         {source === "personalized" ? "Für dich empfohlen" : "Beliebt in Basel"}
       </h2>
       <motion.div

@@ -47,7 +47,7 @@ function StatCounter({ item, isVisible }: { item: StatItem; isVisible: boolean }
         {count.toLocaleString("de-CH")}+
       </span>
       <span
-        className="text-xs text-dark/60 font-body font-medium"
+        className="text-xs text-s-ink/60 font-body font-medium"
        
       >
         {item.label}

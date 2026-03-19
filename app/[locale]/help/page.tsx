@@ -20,7 +20,7 @@ type HelpArticle = {
 const CATEGORIES = [
   { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-s-coral/10 text-s-coral" },
   { key: "salons", label: "Für Salons", Icon: Store, color: "bg-s-coral/10 text-s-coral" },
-  { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-dark/5 text-dark/70" },
+  { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-dark/5 text-s-ink/70" },
 ];
 
 export default function HelpPage() {
@@ -58,16 +58,16 @@ export default function HelpPage() {
           <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
             <BookOpen size={28} className="text-s-coral" />
           </div>
-          <h1 className="font-heading font-bold text-2xl sm:text-4xl text-dark">
+          <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">
             Hilfe & Support
           </h1>
-          <p className="text-dark/50 font-body mt-2 text-sm sm:text-base">
+          <p className="text-s-ink/50 font-body mt-2 text-sm sm:text-base">
             Finde Antworten auf häufige Fragen oder kontaktiere uns direkt.
           </p>
 
           {/* Search */}
           <div className="relative max-w-md mx-auto mt-6">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-dark/30" />
+            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-s-ink/30" />
             <input
               type="text"
               value={search}
@@ -88,7 +88,7 @@ export default function HelpPage() {
               "px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
               activeCategory === null
                 ? "bg-s-coral text-white"
-                : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
+                : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand",
             ].join(" ")}
           >
             Alle
@@ -101,7 +101,7 @@ export default function HelpPage() {
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
                 activeCategory === key
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
+                  : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand",
               ].join(" ")}
             >
               <Icon size={12} />
@@ -137,7 +137,7 @@ export default function HelpPage() {
                     <div className={`w-8 h-8 rounded-lg ${group.color} flex items-center justify-center`}>
                       <group.Icon size={16} />
                     </div>
-                    <h2 className="font-heading font-semibold text-lg text-dark">{group.label}</h2>
+                    <h2 className="font-heading font-semibold text-lg text-s-ink">{group.label}</h2>
                   </div>
                   <div className="space-y-1">
                     {group.articles.map((article) => (
@@ -146,10 +146,10 @@ export default function HelpPage() {
                         href={`/${locale}/help/${article.slug}`}
                         className="flex items-center justify-between px-4 py-3 rounded-card bg-s-bg-surface hover:bg-s-bg-sunken transition-colors group"
                       >
-                        <span className="font-body text-sm text-dark/80 group-hover:text-dark transition-colors">
+                        <span className="font-body text-sm text-s-ink/80 group-hover:text-s-ink transition-colors">
                           {article.title}
                         </span>
-                        <ChevronRight size={16} className="text-dark/20 group-hover:text-dark/40 transition-colors shrink-0" />
+                        <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-ink/40 transition-colors shrink-0" />
                       </Link>
                     ))}
                   </div>

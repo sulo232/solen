@@ -45,9 +45,9 @@ export default function EmptyState({ icon: Icon, title, message, action, illustr
           <Icon size={28} className="text-s-coral" strokeWidth={1.5} />
         </div>
       </div>
-      <h3 className="font-heading font-semibold text-dark text-lg mb-1.5">{title}</h3>
+      <h3 className="font-heading font-semibold text-s-ink text-lg mb-1.5">{title}</h3>
       {message && (
-        <p className="text-dark/50 font-body text-sm max-w-xs leading-relaxed">{message}</p>
+        <p className="text-s-ink/50 font-body text-sm max-w-xs leading-relaxed">{message}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </div>

@@ -244,8 +244,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
     return (
       <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center">
         <PartyPopper size={48} className="text-s-coral" />
-        <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
-        <p className="text-sm text-dark/60">Du erhältst eine Bestätigungs-E-Mail.</p>
+        <p className="font-heading font-bold text-xl text-s-ink">Buchung bestätigt!</p>
+        <p className="text-sm text-s-ink/60">Du erhältst eine Bestätigungs-E-Mail.</p>
         <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
           Meine Buchungen
         </a>
@@ -261,7 +261,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <select
             value={selectedStaff}
             onChange={(e) => setSelectedStaff(e.target.value)}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm text-dark bg-white outline-none focus:border-s-coral transition-colors"
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink bg-white outline-none focus:border-s-coral transition-colors"
             aria-label="Mitarbeiter wählen"
           >
             <option value="any">Egal (wer verfügbar ist)</option>
@@ -290,7 +290,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <div className="flex justify-center py-10"><Spinner size="md" /></div>
         ) : availableSlots.length === 0 ? (
           <div className="text-center py-8 flex flex-col items-center gap-3">
-            <p className="text-sm text-dark/40">Keine freien Slots an diesem Tag.</p>
+            <p className="text-sm text-s-ink/40">Keine freien Slots an diesem Tag.</p>
             <button
               onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
               className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
@@ -306,7 +306,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               if (!groupSlots.length) return null;
               return (
                 <div key={group}>
-                  <p className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-2">{GROUP_LABELS[group]}</p>
+                  <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-2">{GROUP_LABELS[group]}</p>
                   <div className="flex flex-wrap gap-2">
                     {groupSlots.map((slot) => {
                       const timeStr = new Date(slot.starts_at).toLocaleTimeString(
@@ -325,7 +325,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                             "px-3 py-1.5 rounded-button text-sm data-text font-medium transition-all duration-150",
                             isSelected
                               ? "bg-s-coral text-white shadow-card"
-                              : "bg-s-bg-sunken text-dark hover:bg-s-coral/10 hover:text-s-coral",
+                              : "bg-s-bg-sunken text-s-ink hover:bg-s-coral/10 hover:text-s-coral",
                           ].join(" ")}
                           aria-label={`Termin um ${timeStr}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
@@ -356,7 +356,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               onChange={(e) => setIsFirstVisit(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-dark/70">Erster Besuch in diesem Salon</span>
+            <span className="text-sm text-s-ink/70">Erster Besuch in diesem Salon</span>
           </label>
 
           {/* Recurring */}
@@ -367,7 +367,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               onChange={(e) => setRecurring(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-dark/70">Serienbuchung</span>
+            <span className="text-sm text-s-ink/70">Serienbuchung</span>
             <RotateCcw className="w-3.5 h-3.5 text-s-coral" />
           </label>
           {recurring && (
@@ -385,10 +385,10 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           {/* Booking summary */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-sm text-dark">
+              <p className="font-medium text-sm text-s-ink">
                 {locale === "de" ? selectedSlot.services?.name_de : selectedSlot.services?.name_en}
               </p>
-              <p className="text-xs text-dark/50 mt-0.5">
+              <p className="text-xs text-s-ink/50 mt-0.5">
                 {new Date(selectedSlot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", {
                   weekday: "short", day: "numeric", month: "short",
                 })}{" · "}
@@ -397,7 +397,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 })}
               </p>
             </div>
-            <span className="data-text font-bold text-lg text-dark">
+            <span className="data-text font-bold text-lg text-s-ink">
               CHF {selectedSlot.price_override ?? selectedSlot.services?.price ?? "–"}
             </span>
           </div>
@@ -408,7 +408,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             Kostenlose Stornierung bis 24h vor dem Termin
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-dark/40">
+          <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
             <Info className="w-3.5 h-3.5 shrink-0" />
             Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
@@ -432,18 +432,18 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <div className="bg-white rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />
-              <h3 className="font-heading font-bold text-dark">Warteliste</h3>
+              <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
             </div>
             {waitlistDone ? (
               <div className="text-center py-4">
-                <p className="text-sm text-dark/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
+                <p className="text-sm text-s-ink/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
                 <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-button bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors">
                   Schliessen
                 </button>
               </div>
             ) : (
               <>
-                <p className="text-sm text-dark/60 mb-4">
+                <p className="text-sm text-s-ink/60 mb-4">
                   Am {waitlistDate} sind leider keine Termine frei. Möchtest du benachrichtigt werden, wenn ein Platz frei wird?
                 </p>
                 <button

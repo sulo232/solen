@@ -329,7 +329,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           {loading ? (
             <div className="flex justify-center py-8"><Spinner size="sm" /></div>
           ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-dark/30 dark:text-s-dm-text/30 text-sm">
+            <div className="flex flex-col items-center justify-center h-32 text-s-ink/30 dark:text-s-dm-text/30 text-sm">
               <p>Noch keine Nachrichten.</p>
               <p className="text-xs mt-1">Starte das Gespräch!</p>
             </div>
@@ -337,7 +337,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             <div key={msg.id} className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
               <div className={[
                 "max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-relaxed",
-                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-gray-800 text-dark dark:text-s-dm-text rounded-tl-sm",
+                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-gray-800 text-s-ink dark:text-s-dm-text rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
                   <div>
@@ -372,7 +372,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                   </div>
                 )}
                 <div className={["flex items-center gap-1 mt-0.5", isOwn(msg) ? "justify-end" : ""].join(" ")}>
-                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-dark/30 dark:text-s-dm-text/30"].join(" ")}>
+                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-s-ink/30 dark:text-s-dm-text/30"].join(" ")}>
                     {new Date(msg.created_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     {msg.id.startsWith("optimistic") && " · Senden..."}
                   </span>
@@ -390,7 +390,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                       onClick={() => handleTranslate(msg.id, msg.content)}
                       disabled={translating === msg.id}
                       className={["ml-1 opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
-                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-dark/20 dark:text-s-dm-text/20 hover:text-dark/50 dark:hover:text-s-dm-text/50"
+                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-ink/50 dark:hover:text-s-dm-text/50"
                       ].join(" ")}
                       title="Übersetzen"
                       style={{ opacity: translating === msg.id ? 1 : undefined }}
@@ -427,7 +427,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
               className="px-3 py-2 rounded-button bg-s-coral text-white text-sm disabled:opacity-50">Senden</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-              className="px-2 py-2 rounded-button border border-s-ink/10 dark:border-gray-700 text-dark/40 dark:text-s-dm-text/40 hover:text-dark dark:hover:text-s-dm-text">
+              className="px-2 py-2 rounded-button border border-s-ink/10 dark:border-gray-700 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text">
               <X size={14} />
             </button>
           </div>
@@ -467,13 +467,13 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="p-2 rounded-button text-dark/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
+            className="p-2 rounded-button text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
             title="Datei anhängen"
           >
             {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
           </button>
           <button onClick={() => setShowImageInput((s) => !s)}
-            className="p-2 rounded-button text-dark/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
+            className="p-2 rounded-button text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
             title="Bild-URL senden">
             <ImageIcon size={18} />
           </button>

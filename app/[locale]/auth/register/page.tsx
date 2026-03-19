@@ -34,8 +34,8 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
   return (
     <div className="flex flex-col gap-5">
       <div className="text-center">
-        <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Wie möchtest du starten?</h2>
-        <p className="text-sm text-dark/50 font-body mt-1">Wähle deinen Profil-Typ</p>
+        <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Wie möchtest du starten?</h2>
+        <p className="text-sm text-s-ink/50 font-body mt-1">Wähle deinen Profil-Typ</p>
       </div>
 
       <button
@@ -46,10 +46,10 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
           <User size={22} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-dark">Ich bin ein Kunde</p>
-          <p className="text-xs text-dark/50 font-body mt-0.5">Salons entdecken und Termine buchen</p>
+          <p className="font-heading font-semibold text-s-ink">Ich bin ein Kunde</p>
+          <p className="text-xs text-s-ink/50 font-body mt-0.5">Salons entdecken und Termine buchen</p>
         </div>
-        <ChevronRight size={18} className="text-dark/20 group-hover:text-s-coral transition-colors" />
+        <ChevronRight size={18} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
       </button>
 
       <button
@@ -60,10 +60,10 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
           <Building2 size={22} className="text-s-coral" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-dark">Ich bin Salon-Inhaber</p>
-          <p className="text-xs text-dark/50 font-body mt-0.5">Meinen Salon registrieren und verwalten</p>
+          <p className="font-heading font-semibold text-s-ink">Ich bin Salon-Inhaber</p>
+          <p className="text-xs text-s-ink/50 font-body mt-0.5">Meinen Salon registrieren und verwalten</p>
         </div>
-        <ChevronRight size={18} className="text-dark/20 group-hover:text-s-coral transition-colors" />
+        <ChevronRight size={18} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
       </button>
     </div>
   );
@@ -92,14 +92,14 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Wie heisst du?</h2>
+      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Wie heisst du?</h2>
 
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center text-dark/20">
+        <div className="w-16 h-16 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center text-s-ink/20">
           {avatarUrl ? (
             <Image src={avatarUrl} alt="" width={64} height={64} className="object-cover" />
           ) : (
-            <User size={24} className="text-dark/30" />
+            <User size={24} className="text-s-ink/30" />
           )}
         </div>
         <input
@@ -185,7 +185,7 @@ function SelectPill<T extends string>({
             "flex items-center gap-2 px-3 py-2 rounded-button border text-sm font-body transition-all",
             value === o.value
               ? "border-s-coral bg-s-coral/5 text-s-coral font-medium"
-              : "border-s-ink/10 text-dark/70 hover:border-s-coral/30",
+              : "border-s-ink/10 text-s-ink/70 hover:border-s-coral/30",
           ].join(" ")}
         >
           {o.icon}
@@ -216,18 +216,18 @@ function Step2({ onNext }: { onNext: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Erzähl uns mehr</h2>
+      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Erzähl uns mehr</h2>
 
       <div>
-        <p className="text-sm font-body font-medium text-dark/70 mb-2">Altersgruppe</p>
+        <p className="text-sm font-body font-medium text-s-ink/70 mb-2">Altersgruppe</p>
         <SelectPill options={AGE_OPTIONS} value={age} onChange={setAge} />
       </div>
       <div>
-        <p className="text-sm font-body font-medium text-dark/70 mb-2">Geschlecht</p>
+        <p className="text-sm font-body font-medium text-s-ink/70 mb-2">Geschlecht</p>
         <SelectPill options={GENDER_OPTIONS} value={gender} onChange={setGender} />
       </div>
       <div>
-        <p className="text-sm font-body font-medium text-dark/70 mb-2">Haartyp</p>
+        <p className="text-sm font-body font-medium text-s-ink/70 mb-2">Haartyp</p>
         <SelectPill options={HAIR_OPTIONS} value={hair} onChange={setHair} />
       </div>
 
@@ -235,7 +235,7 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 rounded-button border border-s-ink/10 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-button border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
@@ -289,8 +289,8 @@ function Step3({ onComplete }: { onComplete: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div>
-        <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Was interessiert dich?</h2>
-        <p className="text-sm font-body text-dark/50 mt-1">Wähle deine Lieblingskategorien</p>
+        <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Was interessiert dich?</h2>
+        <p className="text-sm font-body text-s-ink/50 mt-1">Wähle deine Lieblingskategorien</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -312,7 +312,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
                 </span>
               )}
               <span className="text-s-coral">{o.icon}</span>
-              <span className="text-sm font-body font-medium text-dark">{o.label}</span>
+              <span className="text-sm font-body font-medium text-s-ink">{o.label}</span>
             </button>
           );
         })}
@@ -322,7 +322,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           onClick={onComplete}
-          className="flex-1 py-3 rounded-button border border-s-ink/10 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-button border border-s-ink/10 text-sm font-body text-s-ink/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
@@ -354,8 +354,8 @@ function DoneScreen() {
         <PartyPopper size={36} className="text-s-coral" />
       </motion.div>
       <div>
-        <p className="font-heading font-bold text-2xl text-dark dark:text-s-dm-text">Willkommen bei solen.ch!</p>
-        <p className="text-dark/50 dark:text-s-dm-text/50 font-body text-sm mt-1">Du wirst weitergeleitet…</p>
+        <p className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Willkommen bei solen.ch!</p>
+        <p className="text-s-ink/50 dark:text-s-dm-text/50 font-body text-sm mt-1">Du wirst weitergeleitet…</p>
       </div>
       <div className="flex gap-1.5 mt-2">
         {[0, 1, 2].map((i) => (
@@ -417,7 +417,7 @@ export default function RegisterPage() {
         <div className="text-center mb-6">
           <a
             href={`/${locale}`}
-            className="inline-block font-heading font-bold text-3xl text-dark dark:text-s-dm-text tracking-tight hover:opacity-80 transition-opacity"
+            className="inline-block font-heading font-bold text-3xl text-s-ink dark:text-s-dm-text tracking-tight hover:opacity-80 transition-opacity"
           >
             solen<span className="text-s-coral">.</span>ch
           </a>
@@ -442,7 +442,7 @@ export default function RegisterPage() {
             {(step === 2 || step === 3) && (
               <button
                 onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-sm text-dark/40 dark:text-s-dm-text/40 hover:text-dark dark:hover:text-s-dm-text font-body mb-4 transition-colors"
+                className="flex items-center gap-1.5 text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text font-body mb-4 transition-colors"
               >
                 <ArrowLeft size={14} />
                 Zurück
@@ -468,7 +468,7 @@ export default function RegisterPage() {
         </div>
 
         {step !== "done" && (
-          <p className="text-center text-xs text-dark/30 dark:text-s-dm-text/30 font-body mt-4">
+          <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 font-body mt-4">
             {step === -1 ? (
               <>
                 Bereits registriert?{" "}

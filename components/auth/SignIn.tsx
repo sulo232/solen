@@ -84,8 +84,8 @@ export default function SignIn() {
         <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center">
           <Mail size={26} className="text-s-coral" strokeWidth={1.5} />
         </div>
-        <p className="font-heading font-semibold text-dark text-lg">Link gesendet</p>
-        <p className="text-sm text-dark/50 font-body">
+        <p className="font-heading font-semibold text-s-ink text-lg">Link gesendet</p>
+        <p className="text-sm text-s-ink/50 font-body">
           Schau in deinem Postfach nach einem Link zum Zurücksetzen.
         </p>
         <button
@@ -103,8 +103,8 @@ export default function SignIn() {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center mb-2">
-          <p className="font-heading font-semibold text-dark text-lg">Passwort vergessen?</p>
-          <p className="text-sm text-dark/50 font-body mt-1">
+          <p className="font-heading font-semibold text-s-ink text-lg">Passwort vergessen?</p>
+          <p className="text-sm text-s-ink/50 font-body mt-1">
             Gib deine E-Mail ein und wir senden dir einen Reset-Link.
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+            className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
           />
           <button
             type="submit"
@@ -128,7 +128,7 @@ export default function SignIn() {
         </form>
         <button
           onClick={() => setResetMode(false)}
-          className="text-sm text-dark/50 hover:text-dark font-body text-center"
+          className="text-sm text-s-ink/50 hover:text-s-ink font-body text-center"
         >
           Zurück zur Anmeldung
         </button>
@@ -142,7 +142,7 @@ export default function SignIn() {
       <button
         onClick={handleGoogle}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-3 py-3 rounded-button border border-s-ink/10 bg-white hover:bg-s-bg-surface transition-colors font-body font-medium text-dark shadow-card disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-3 py-3 rounded-button border border-s-ink/10 bg-white hover:bg-s-bg-surface transition-colors font-body font-medium text-s-ink shadow-card disabled:opacity-50"
       >
         {loading ? (
           <Spinner size="sm" />
@@ -157,7 +157,7 @@ export default function SignIn() {
         {t("google_login")}
       </button>
 
-      <div className="flex items-center gap-3 text-xs text-dark/30 font-body">
+      <div className="flex items-center gap-3 text-xs text-s-ink/30 font-body">
         <div className="flex-1 h-px bg-s-bg-sunken" />
         {t("or")}
         <div className="flex-1 h-px bg-s-bg-sunken" />
@@ -171,7 +171,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+          className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
         <div className="relative">
           <input
@@ -180,12 +180,12 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full px-4 py-2.5 pr-10 rounded-button border border-s-ink/10 text-sm text-dark font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+            className="w-full px-4 py-2.5 pr-10 rounded-button border border-s-ink/10 text-sm text-s-ink font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-dark/30 hover:text-dark/60 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink/60 transition-colors"
             aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
           >
             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -208,7 +208,7 @@ export default function SignIn() {
         Passwort vergessen?
       </button>
 
-      <p className="text-xs text-dark/30 text-center font-body">{t("terms")}</p>
+      <p className="text-xs text-s-ink/30 text-center font-body">{t("terms")}</p>
     </div>
   );
 }

@@ -61,11 +61,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-heading font-medium text-sm text-dark truncate">{salon.name}</p>
-          <p className="text-xs text-dark/50 font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</p>
+          <p className="font-heading font-medium text-sm text-s-ink truncate">{salon.name}</p>
+          <p className="text-xs text-s-ink/50 font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</p>
           <div className="flex items-center gap-1 mt-0.5">
             <Star className="w-3 h-3 fill-s-coral text-s-coral" />
-            <span className="text-xs data-text text-dark/70">{salon.average_rating.toFixed(1)}</span>
+            <span className="text-xs data-text text-s-ink/70">{salon.average_rating.toFixed(1)}</span>
           </div>
         </div>
       </Link>
@@ -98,7 +98,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-dark/20 text-4xl font-heading">
+            <div className="absolute inset-0 flex items-center justify-center text-s-ink/20 text-4xl font-heading">
               {salon.name[0]}
             </div>
           )}
@@ -151,7 +151,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               aria-label={isFavorited ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
             >
               <Heart
-                className={`w-4 h-4 transition-colors ${isFavorited ? "fill-s-coral text-s-coral" : "text-dark/50"}`}
+                className={`w-4 h-4 transition-colors ${isFavorited ? "fill-s-coral text-s-coral" : "text-s-ink/50"}`}
               />
             </button>
           )}
@@ -175,7 +175,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
         {/* Info row */}
         <div className="p-4">
-          <h3 className="font-heading font-semibold text-dark dark:text-s-dm-text text-base leading-tight">{salon.name}</h3>
+          <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-base leading-tight">{salon.name}</h3>
           {(salon as any).group_name && (
             <span className="inline-flex items-center gap-1 text-[10px] text-s-coral font-medium mt-0.5">
               Teil von {(salon as any).group_name}
@@ -197,17 +197,17 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 );
               })}
               {salon.badges.length > 3 && (
-                <span className="px-1.5 py-0.5 rounded-pill bg-s-bg-sunken text-dark/40 text-[10px] font-medium">
+                <span className="px-1.5 py-0.5 rounded-pill bg-s-bg-sunken text-s-ink/40 text-[10px] font-medium">
                   +{salon.badges.length - 3}
                 </span>
               )}
             </div>
           )}
-          <div className="flex items-center gap-1 mt-1 text-dark/50">
+          <div className="flex items-center gap-1 mt-1 text-s-ink/50">
             <MapPin className="w-3.5 h-3.5 shrink-0" />
             <span className="text-xs font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</span>
             {showDistance && salon.distance_km != null && (
-              <span className="text-xs text-dark/50 font-body">{salon.distance_km.toFixed(1)} km</span>
+              <span className="text-xs text-s-ink/50 font-body">{salon.distance_km.toFixed(1)} km</span>
             )}
           </div>
           {showAvailability && salon.next_available_slot && (
@@ -217,12 +217,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
           <div className="flex items-center gap-1 mt-2 flex-wrap">
             <Star className="w-4 h-4 fill-s-coral text-s-coral" />
-            <span className="text-sm data-text font-medium text-dark">{salon.average_rating.toFixed(1)}</span>
-            <span className="text-xs text-dark/40 font-body">({salon.review_count})</span>
+            <span className="text-sm data-text font-medium text-s-ink">{salon.average_rating.toFixed(1)}</span>
+            <span className="text-xs text-s-ink/40 font-body">({salon.review_count})</span>
             {salon.avg_price != null && salon.avg_price > 0 && (
               <>
-                <span className="text-xs text-dark/30 font-body">·</span>
-                <span className="text-xs data-text text-dark/60">Ø CHF {salon.avg_price}</span>
+                <span className="text-xs text-s-ink/30 font-body">·</span>
+                <span className="text-xs data-text text-s-ink/60">Ø CHF {salon.avg_price}</span>
               </>
             )}
           </div>

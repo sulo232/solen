@@ -113,13 +113,13 @@ export default function LastMinutePage() {
       <div className="bg-gradient-to-b from-s-coral/8 via-white to-transparent pt-8 pb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <h1 className="font-heading font-bold text-2xl sm:text-4xl text-dark">
+            <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">
               Last-Minute Angebote
             </h1>
             <span className="w-2.5 h-2.5 rounded-full bg-s-coral animate-pulse shrink-0" />
           </div>
           {total > 0 && (
-            <p className="text-sm text-dark/50 mt-2 font-body">{total} verfügbare Termine heute</p>
+            <p className="text-sm text-s-ink/50 mt-2 font-body">{total} verfügbare Termine heute</p>
           )}
         </div>
       </div>
@@ -137,7 +137,7 @@ export default function LastMinutePage() {
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium transition-colors",
                 selectedCategories.includes(key)
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
+                  : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand",
               ].join(" ")}
             >
               <Icon size={12} />
@@ -153,7 +153,7 @@ export default function LastMinutePage() {
                 "px-3 py-1.5 rounded-pill text-xs data-text font-medium transition-colors",
                 maxPrice === price
                   ? "bg-s-coral text-white"
-                  : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
+                  : "bg-s-bg-sunken text-s-ink/60 hover:bg-s-sand",
               ].join(" ")}
             >
               {"< CHF " + price}
@@ -162,7 +162,7 @@ export default function LastMinutePage() {
           {(selectedCategories.length > 0 || maxPrice !== null) && (
             <button
               onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
-              className="inline-flex items-center gap-1 px-2 py-1.5 rounded-pill text-xs text-dark/40 hover:text-dark/60"
+              className="inline-flex items-center gap-1 px-2 py-1.5 rounded-pill text-xs text-s-ink/40 hover:text-s-ink/60"
             >
               <X size={12} />
               Zurücksetzen
@@ -208,7 +208,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-dark hover:border-s-coral transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-s-ink hover:border-s-coral transition-colors disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

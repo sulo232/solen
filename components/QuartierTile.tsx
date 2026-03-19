@@ -42,13 +42,13 @@ export default function QuartierTile({
 
       {/* Top row */}
       <div className="flex items-start justify-between">
-        <p className="font-heading font-semibold text-dark text-sm leading-tight">{name}</p>
+        <p className="font-heading font-semibold text-s-ink text-sm leading-tight">{name}</p>
         {favorited && <Heart className="w-4 h-4 fill-s-coral text-s-coral shrink-0" />}
       </div>
 
       {/* Bottom row */}
       <div className="flex items-center gap-1.5">
-        <span className="text-xs data-text text-dark/50">{count} Salons</span>
+        <span className="text-xs data-text text-s-ink/50">{count} Salons</span>
         {visited && (
           <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-medium">
             <CheckCircle className="w-2.5 h-2.5" />

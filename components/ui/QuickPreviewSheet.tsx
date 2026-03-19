@@ -98,7 +98,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
             >
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken dark:bg-white/10 text-dark/60 dark:text-s-dm-text/60 hover:bg-s-sand transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-sand transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -134,15 +134,15 @@ function SheetContent({
       )}
 
       {/* Name + rating */}
-      <h3 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">{salon.name}</h3>
+      <h3 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{salon.name}</h3>
       <div className="flex items-center gap-2 mt-1.5">
         <div className="flex items-center gap-1">
           <Star className="w-4 h-4 fill-s-coral text-s-coral" />
-          <span className="data-text font-semibold text-sm text-dark dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
-          <span className="text-xs text-dark/40 dark:text-s-dm-text/40">({salon.review_count})</span>
+          <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
+          <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">({salon.review_count})</span>
         </div>
-        <span className="text-dark/20 dark:text-s-dm-text/20">·</span>
-        <span className="flex items-center gap-1 text-xs text-dark/50 dark:text-s-dm-text/50">
+        <span className="text-s-ink/20 dark:text-s-dm-text/20">·</span>
+        <span className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50">
           <MapPin className="w-3 h-3" />
           <span className="capitalize">{salon.quartier.replace("_", " ")}</span>
         </span>
@@ -150,7 +150,7 @@ function SheetContent({
 
       {/* Today's hours */}
       {todayHours && (
-        <div className="flex items-center gap-1.5 mt-2 text-xs text-dark/50 dark:text-s-dm-text/50">
+        <div className="flex items-center gap-1.5 mt-2 text-xs text-s-ink/50 dark:text-s-dm-text/50">
           <Clock className="w-3 h-3" />
           <span>Heute: {todayHours.open}–{todayHours.close}</span>
         </div>
@@ -159,17 +159,17 @@ function SheetContent({
       {/* Top services */}
       {topServices.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs font-medium text-dark/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">Top Leistungen</p>
+          <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">Top Leistungen</p>
           <div className="divide-y divide-gray-50 dark:divide-white/5">
             {topServices.map((svc, i) => (
               <div key={i} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
                     {locale === "de" ? svc.name_de : svc.name_en}
                   </p>
-                  <p className="text-xs text-dark/40 dark:text-s-dm-text/40">{svc.duration_minutes} Min.</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{svc.duration_minutes} Min.</p>
                 </div>
-                <span className="data-text font-semibold text-sm text-dark dark:text-s-dm-text">CHF {svc.price}</span>
+                <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">CHF {svc.price}</span>
               </div>
             ))}
           </div>
@@ -181,7 +181,7 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-dark dark:text-s-dm-text text-center hover:border-s-coral/50 transition-colors"
+          className="flex-1 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink dark:text-s-dm-text text-center hover:border-s-coral/50 transition-colors"
         >
           Mehr anzeigen
         </Link>

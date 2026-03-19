@@ -51,7 +51,7 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 px-2 py-1.5 min-h-12 min-w-12 justify-center rounded-button text-sm font-medium text-dark/70 hover:text-dark dark:text-s-dm-text/70 dark:hover:text-s-dm-text transition-colors"
+        className="flex items-center gap-1.5 px-2 py-1.5 min-h-12 min-w-12 justify-center rounded-button text-sm font-medium text-s-ink/70 hover:text-s-ink dark:text-s-dm-text/70 dark:hover:text-s-dm-text transition-colors"
         aria-label="Sprache wählen"
       >
         <Globe className="w-4 h-4" />
@@ -67,7 +67,7 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                 key === locale
                   ? "text-s-coral font-medium bg-s-coral/5"
-                  : "text-dark/70 hover:bg-s-bg-surface dark:text-s-dm-text/70 dark:hover:bg-white/5"
+                  : "text-s-ink/70 hover:bg-s-bg-surface dark:text-s-dm-text/70 dark:hover:bg-white/5"
               }`}
             >
               <span>{LOCALE_FLAGS[key]}</span>

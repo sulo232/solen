@@ -80,16 +80,16 @@ function BadgeModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="font-heading font-bold text-base text-dark">
+          <h3 className="font-heading font-bold text-base text-s-ink">
             {badge?.id ? "Badge bearbeiten" : "Neues Badge erstellen"}
           </h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
 
         <div className="space-y-4">
           {/* Name DE */}
           <div>
-            <label className="text-xs font-medium text-dark/60 mb-1 block">Name (DE)</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Name (DE)</label>
             <input
               value={nameDe}
               onChange={(e) => setNameDe(e.target.value)}
@@ -99,7 +99,7 @@ function BadgeModal({
           </div>
           {/* Name EN */}
           <div>
-            <label className="text-xs font-medium text-dark/60 mb-1 block">Name (EN)</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Name (EN)</label>
             <input
               value={nameEn}
               onChange={(e) => setNameEn(e.target.value)}
@@ -109,7 +109,7 @@ function BadgeModal({
           </div>
           {/* Icon picker */}
           <div>
-            <label className="text-xs font-medium text-dark/60 mb-1 block">Icon</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Icon</label>
             <div className="grid grid-cols-5 gap-1.5">
               {ICON_OPTIONS.map((name) => {
                 const Ic = ICON_MAP[name];
@@ -118,7 +118,7 @@ function BadgeModal({
                     key={name}
                     onClick={() => setIcon(name)}
                     className={`flex flex-col items-center gap-0.5 p-2 rounded-lg text-[9px] transition-colors ${
-                      icon === name ? "bg-s-coral/10 text-s-coral ring-1 ring-s-coral" : "bg-s-bg-surface text-dark/40 hover:bg-s-bg-sunken"
+                      icon === name ? "bg-s-coral/10 text-s-coral ring-1 ring-s-coral" : "bg-s-bg-surface text-s-ink/40 hover:bg-s-bg-sunken"
                     }`}
                   >
                     <Ic size={16} />
@@ -130,7 +130,7 @@ function BadgeModal({
           </div>
           {/* Color picker */}
           <div>
-            <label className="text-xs font-medium text-dark/60 mb-1 block">Farbe</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Farbe</label>
             <div className="flex gap-2">
               {COLOR_PRESETS.map((c) => (
                 <button
@@ -147,7 +147,7 @@ function BadgeModal({
           </div>
           {/* Preview */}
           <div>
-            <label className="text-xs font-medium text-dark/60 mb-1 block">Vorschau</label>
+            <label className="text-xs font-medium text-s-ink/60 mb-1 block">Vorschau</label>
             <span
               className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill text-xs font-bold"
               style={{ backgroundColor: hexToBgColor(color), color }}
@@ -159,7 +159,7 @@ function BadgeModal({
         </div>
 
         <div className="flex gap-2 mt-6">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">
             Abbrechen
           </button>
           <button
@@ -196,12 +196,12 @@ function DeleteModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
-        <h3 className="font-heading font-bold text-base text-dark mb-2">Badge löschen</h3>
-        <p className="text-sm text-dark/50 mb-5">
+        <h3 className="font-heading font-bold text-base text-s-ink mb-2">Badge löschen</h3>
+        <p className="text-sm text-s-ink/50 mb-5">
           Badge &quot;{name}&quot; löschen? Es wird von allen Salons entfernt.
         </p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">
             Abbrechen
           </button>
           <button
@@ -345,8 +345,8 @@ export default function BadgeManagerPage() {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-dark">Badge-Verwaltung</h1>
-          <p className="text-sm text-dark/40 mt-0.5">Salon-Badges erstellen, bearbeiten und zuweisen</p>
+          <h1 className="font-heading font-bold text-2xl text-s-ink">Badge-Verwaltung</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">Salon-Badges erstellen, bearbeiten und zuweisen</p>
         </div>
         <button
           onClick={() => setModalBadge("new")}
@@ -363,7 +363,7 @@ export default function BadgeManagerPage() {
         <div className="space-y-8">
           {/* Section 1: All Badges */}
           <div>
-            <h2 className="font-heading font-semibold text-dark text-sm mb-3">Alle Badges</h2>
+            <h2 className="font-heading font-semibold text-s-ink text-sm mb-3">Alle Badges</h2>
             {badges.length === 0 ? (
               <EmptyState icon={Award} title="Keine Badges" message="Erstelle dein erstes Badge." />
             ) : (
@@ -389,11 +389,11 @@ export default function BadgeManagerPage() {
                           <Ic size={18} style={{ color: b.color }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm text-dark truncate">{b.name_de}</p>
-                          <p className="text-xs text-dark/40 truncate">{b.name_en}</p>
+                          <p className="font-medium text-sm text-s-ink truncate">{b.name_de}</p>
+                          <p className="text-xs text-s-ink/40 truncate">{b.name_en}</p>
                           <span
                             className={`inline-block mt-1 px-1.5 py-0.5 rounded-pill text-[10px] font-bold ${
-                              b.is_system ? "bg-s-bg-sunken text-dark/40" : "bg-s-coral/10 text-s-coral"
+                              b.is_system ? "bg-s-bg-sunken text-s-ink/40" : "bg-s-coral/10 text-s-coral"
                             }`}
                           >
                             {b.is_system ? "System" : "Custom"}
@@ -403,7 +403,7 @@ export default function BadgeManagerPage() {
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-50">
                         <button
                           onClick={() => setModalBadge(b)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/60 hover:border-s-coral transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/60 hover:border-s-coral transition-colors"
                         >
                           <Edit2 size={11} />
                           Bearbeiten
@@ -427,17 +427,17 @@ export default function BadgeManagerPage() {
 
           {/* Section 2: Badge Assignments */}
           <div>
-            <h2 className="font-heading font-semibold text-dark text-sm mb-3">Badge-Zuweisungen</h2>
+            <h2 className="font-heading font-semibold text-s-ink text-sm mb-3">Badge-Zuweisungen</h2>
             <div className="bg-white rounded-card border border-s-ink/5 shadow-card p-5 space-y-4">
               {/* Salon search */}
               <div className="relative max-w-sm">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30" />
+                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
                 <input
                   type="text"
                   placeholder="Salon suchen..."
                   value={salonSearch}
                   onChange={(e) => { setSalonSearch(e.target.value); setSelectedSalon(null); }}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
                 />
                 {salonResults.length > 0 && !selectedSalon && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-card border border-s-ink/5 shadow-card z-10 overflow-hidden">
@@ -445,7 +445,7 @@ export default function BadgeManagerPage() {
                       <button
                         key={s.id}
                         onClick={() => { setSelectedSalon(s); setSalonSearch(s.name); setSalonResults([]); }}
-                        className="w-full text-left px-4 py-2.5 text-sm text-dark hover:bg-s-bg-surface transition-colors"
+                        className="w-full text-left px-4 py-2.5 text-sm text-s-ink hover:bg-s-bg-surface transition-colors"
                       >
                         {s.name}
                       </button>
@@ -458,9 +458,9 @@ export default function BadgeManagerPage() {
                 <>
                   {/* Current badges */}
                   <div>
-                    <p className="text-xs text-dark/50 mb-2">Aktuelle Badges für <strong>{selectedSalon.name}</strong>:</p>
+                    <p className="text-xs text-s-ink/50 mb-2">Aktuelle Badges für <strong>{selectedSalon.name}</strong>:</p>
                     {salonBadges.length === 0 ? (
-                      <p className="text-xs text-dark/30">Keine Badges zugewiesen.</p>
+                      <p className="text-xs text-s-ink/30">Keine Badges zugewiesen.</p>
                     ) : (
                       <div className="flex flex-wrap gap-2">
                         {salonBadges.map((b) => {
@@ -491,7 +491,7 @@ export default function BadgeManagerPage() {
                     <select
                       value={assignBadgeId}
                       onChange={(e) => setAssignBadgeId(e.target.value)}
-                      className="flex-1 max-w-xs px-3 py-2 rounded-button border border-s-ink/10 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral"
+                      className="flex-1 max-w-xs px-3 py-2 rounded-button border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral"
                     >
                       <option value="">Badge auswählen...</option>
                       {badges
@@ -510,7 +510,7 @@ export default function BadgeManagerPage() {
                   </div>
 
                   {/* Override removal checkbox */}
-                  <label className="flex items-center gap-2 text-xs text-dark/50">
+                  <label className="flex items-center gap-2 text-xs text-s-ink/50">
                     <input
                       type="checkbox"
                       checked={overrideRemoval}

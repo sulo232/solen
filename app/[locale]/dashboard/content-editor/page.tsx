@@ -63,7 +63,7 @@ function ContentField({
     <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
         <div>
-          <p className="text-[10px] font-bold text-dark/30 uppercase tracking-wide">{row.key}</p>
+          <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-wide">{row.key}</p>
           {row.is_auto && (
             <span className="inline-block px-1.5 py-0.5 rounded-pill bg-amber-50 text-amber-600 text-[10px] font-bold mt-0.5">
               Auto
@@ -76,7 +76,7 @@ function ContentField({
               key={l}
               onClick={() => setLocale(l)}
               className={`px-2.5 py-1 text-[10px] font-medium transition-colors ${
-                locale === l ? "bg-s-coral text-white" : "text-dark/40"
+                locale === l ? "bg-s-coral text-white" : "text-s-ink/40"
               }`}
             >
               {l.toUpperCase()}
@@ -90,19 +90,19 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-dark focus:outline-none focus:border-s-coral resize-y"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral resize-y"
         />
       ) : (
         <input
           type={row.content_type === "number" ? "number" : "text"}
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-dark focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral"
         />
       )}
 
       <div className="flex items-center justify-between mt-2">
-        <p className="text-[10px] text-dark/25">
+        <p className="text-[10px] text-s-ink/25">
           Zuletzt geändert: {new Date(row.updated_at).toLocaleDateString("de-CH", {
             day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
           })}
@@ -145,8 +145,8 @@ export default function ContentEditorPage() {
     <DashboardLayout>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Inhalte bearbeiten</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Website-Texte und Inhalte verwalten</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Inhalte bearbeiten</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Website-Texte und Inhalte verwalten</p>
       </div>
 
       {/* Tabs */}
@@ -158,7 +158,7 @@ export default function ContentEditorPage() {
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "bg-s-coral text-white"
-                : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral"
+                : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral"
             }`}
           >
             {tab.label}
@@ -171,8 +171,8 @@ export default function ContentEditorPage() {
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
-          <FileEdit size={32} className="mx-auto mb-3 text-dark/20" />
-          <p className="text-sm text-dark/40">Keine Inhalte in dieser Kategorie.</p>
+          <FileEdit size={32} className="mx-auto mb-3 text-s-ink/20" />
+          <p className="text-sm text-s-ink/40">Keine Inhalte in dieser Kategorie.</p>
         </div>
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-3">

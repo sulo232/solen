@@ -21,7 +21,7 @@ interface AdminUser {
 }
 
 const ROLE_MAP: Record<UserRole, { label: string; icon: React.ElementType; cls: string }> = {
-  customer:    { label: "Kunde",          icon: User,       cls: "bg-s-bg-sunken text-dark/50" },
+  customer:    { label: "Kunde",          icon: User,       cls: "bg-s-bg-sunken text-s-ink/50" },
   salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-s-coral/10 text-s-coral" },
   admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-s-coral/10 text-s-coral" },
 };
@@ -54,12 +54,12 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="font-heading font-bold text-base text-dark">{title}</h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <h3 className="font-heading font-bold text-base text-s-ink">{title}</h3>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
-        <p className="text-sm text-dark/50 mb-5">{message}</p>
+        <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">
             Abbrechen
           </button>
           <button
@@ -154,19 +154,19 @@ export default function AllUsersPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Alle Nutzer</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Registrierte Benutzer verwalten</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Alle Nutzer</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Registrierte Benutzer verwalten</p>
       </div>
 
       {/* Search */}
       <div className="relative mb-5 max-w-sm">
-        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30" />
+        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
           placeholder="Name oder E-Mail suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -205,7 +205,7 @@ export default function AllUsersPage() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-sm text-dark truncate">
+                      <p className="font-medium text-sm text-s-ink truncate">
                         {u.display_name ?? "—"}
                       </p>
                       {u.is_suspended && (
@@ -215,9 +215,9 @@ export default function AllUsersPage() {
                       )}
                     </div>
                     {u.email && (
-                      <p className="text-xs text-dark/40 truncate">{u.email}</p>
+                      <p className="text-xs text-s-ink/40 truncate">{u.email}</p>
                     )}
-                    <p className="text-[10px] text-dark/30 mt-0.5">
+                    <p className="text-[10px] text-s-ink/30 mt-0.5">
                       Registriert: {new Date(u.created_at).toLocaleDateString("de-CH", {
                         day: "2-digit",
                         month: "2-digit",
@@ -240,7 +240,7 @@ export default function AllUsersPage() {
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                      className="px-2 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
+                      className="px-2 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
                     >
                       {ROLE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>

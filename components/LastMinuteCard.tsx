@@ -62,14 +62,14 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       >
         <div className="p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className="font-heading font-semibold text-dark text-sm leading-tight line-clamp-2 flex-1">
+            <p className="font-heading font-semibold text-s-ink text-sm leading-tight line-clamp-2 flex-1">
               {slot.salon.name}
             </p>
             {isUrgent && (
               <Zap size={14} className="text-s-coral shrink-0 mt-0.5 fill-s-coral" />
             )}
           </div>
-          <p className="text-xs text-dark/50 mt-0.5 font-body">{serviceName}</p>
+          <p className="text-xs text-s-ink/50 mt-0.5 font-body">{serviceName}</p>
 
           {/* Time */}
           <div className="mt-3 flex items-center gap-1.5">
@@ -78,7 +78,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
           </div>
 
           {/* Countdown */}
-          <div className="flex items-center gap-1 mt-1 text-dark/40">
+          <div className="flex items-center gap-1 mt-1 text-s-ink/40">
             <Clock className="w-3 h-3" />
             <span className={cn("text-xs font-body", isUrgent && "text-s-coral font-semibold")}>
               in {timeLeft.label}
@@ -88,11 +88,11 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
 
         {/* Footer */}
         <div className="px-4 pb-4 flex items-center justify-between">
-          <span className="data-text font-bold text-dark text-sm">
+          <span className="data-text font-bold text-s-ink text-sm">
             CHF {slot.discounted_price}
           </span>
           {slot.price_override && slot.price_override > slot.discounted_price && (
-            <span className="text-xs text-dark/30 line-through data-text">
+            <span className="text-xs text-s-ink/30 line-through data-text">
               CHF {slot.price_override}
             </span>
           )}

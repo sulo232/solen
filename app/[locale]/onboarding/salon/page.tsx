@@ -50,8 +50,8 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
   return (
     <div className="max-w-xl mx-auto">
       <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-white/60 shadow-glass p-6 sm:p-8">
-        <h2 className="font-heading font-bold text-2xl text-dark mb-1">{title}</h2>
-        {subtitle && <p className="text-sm text-dark/50 mb-6">{subtitle}</p>}
+        <h2 className="font-heading font-bold text-2xl text-s-ink mb-1">{title}</h2>
+        {subtitle && <p className="text-sm text-s-ink/50 mb-6">{subtitle}</p>}
         {!subtitle && <div className="mb-6" />}
         {children}
       </div>
@@ -84,7 +84,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
     <StepContainer title="Dein Salon" subtitle="Erzähl uns das Wichtigste über deinen Salon.">
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Salon-Name *</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Salon-Name *</label>
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
@@ -95,7 +95,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">E-Mail *</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">E-Mail *</label>
           <input
             type="email"
             value={data.email}
@@ -107,7 +107,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-2">Kategorien *</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-2">Kategorien *</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => (
               <button
@@ -118,7 +118,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
                   "px-3 py-1.5 rounded-pill text-sm font-medium border transition-colors",
                   data.categories.includes(c.value)
                     ? "bg-s-coral text-white border-s-coral"
-                    : "border-s-ink/10 text-dark/60 hover:border-s-coral",
+                    : "border-s-ink/10 text-s-ink/60 hover:border-s-coral",
                 ].join(" ")}
               >
                 {c.label}
@@ -129,7 +129,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Quartier *</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Quartier *</label>
           <select
             value={data.quartier}
             onChange={(e) => onChange({ ...data, quartier: e.target.value })}
@@ -144,7 +144,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Adresse *</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Adresse *</label>
           <input
             value={data.address}
             onChange={(e) => onChange({ ...data, address: e.target.value })}
@@ -155,7 +155,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Telefon (optional)</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Telefon (optional)</label>
           <input
             value={data.phone}
             onChange={(e) => onChange({ ...data, phone: e.target.value })}
@@ -208,7 +208,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
     <StepContainer title="Salon-Profil" subtitle="Diese Infos sehen deine Kunden.">
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Cover-Foto *</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Cover-Foto *</label>
           <ImageUploader
             bucket="salon-photos"
             label="Titelbild hochladen"
@@ -219,7 +219,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="text-xs font-medium text-dark/50">Galerie (max. 5)</label>
+            <label className="text-xs font-medium text-s-ink/50">Galerie (max. 5)</label>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {data.gallery_urls.map((url, i) => (
@@ -231,7 +231,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                     <button
                       type="button"
                       onClick={() => onChange({ ...data, gallery_urls: data.gallery_urls.filter((_, j) => j !== i) })}
-                      className="absolute top-1 right-1 p-1 rounded-full bg-white/90 text-dark/60 hover:text-s-coral"
+                      className="absolute top-1 right-1 p-1 rounded-full bg-white/90 text-s-ink/60 hover:text-s-coral"
                       aria-label="Bild entfernen"
                     >
                       <Trash2 size={10} />
@@ -257,14 +257,14 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                 onClick={addGallery}
                 className="h-24 rounded-card border-2 border-dashed border-s-ink/10 hover:border-s-coral transition-colors flex items-center justify-center"
               >
-                <Plus size={16} className="text-dark/30" />
+                <Plus size={16} className="text-s-ink/30" />
               </button>
             )}
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Beschreibung DE (max. 500)</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung DE (max. 500)</label>
           <textarea
             value={data.description_de}
             onChange={(e) => onChange({ ...data, description_de: e.target.value })}
@@ -275,7 +275,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Beschreibung EN (optional)</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung EN (optional)</label>
           <textarea
             value={data.description_en}
             onChange={(e) => onChange({ ...data, description_en: e.target.value })}
@@ -286,18 +286,18 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-1">Instagram (optional)</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-1">Instagram (optional)</label>
           <input
             value={data.instagram_url}
             onChange={(e) => onChange({ ...data, instagram_url: e.target.value })}
             className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
             placeholder="https://instagram.com/deinsalon"
           />
-          <p className="text-xs text-dark/30 mt-1">Verlinke dein Instagram für dein Portfolio</p>
+          <p className="text-xs text-s-ink/30 mt-1">Verlinke dein Instagram für dein Portfolio</p>
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-dark/50 mb-2">Öffnungszeiten</label>
+          <label className="block text-xs font-medium text-s-ink/50 mb-2">Öffnungszeiten</label>
           <div className="space-y-2">
             {DAY_KEYS.map((key, i) => {
               const hours = data.opening_hours[key];
@@ -308,7 +308,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                     onClick={() => toggleDay(key)}
                     className={[
                       "w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                      hours ? "bg-s-coral text-white" : "bg-s-bg-sunken text-dark/40",
+                      hours ? "bg-s-coral text-white" : "bg-s-bg-sunken text-s-ink/40",
                     ].join(" ")}
                   >
                     {DAYS[i]}
@@ -321,7 +321,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                         onChange={(e) => updateHours(key, "open", e.target.value)}
                         className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral"
                       />
-                      <span className="text-xs text-dark/30">–</span>
+                      <span className="text-xs text-s-ink/30">–</span>
                       <input
                         type="time"
                         value={hours.close}
@@ -330,7 +330,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                       />
                     </>
                   ) : (
-                    <span className="text-xs text-dark/30">Geschlossen</span>
+                    <span className="text-xs text-s-ink/30">Geschlossen</span>
                   )}
                 </div>
               );
@@ -464,7 +464,7 @@ function Step3({ services, onChange, salonCategories }: {
       {/* Template grid */}
       {availableTemplates.length > 0 && (
         <div className="mb-5">
-          <p className="text-xs font-medium text-dark/50 mb-2">Vorlagen für deine Kategorien</p>
+          <p className="text-xs font-medium text-s-ink/50 mb-2">Vorlagen für deine Kategorien</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {availableTemplates.map((t) => {
               const added = isTemplateAdded(t);
@@ -482,12 +482,12 @@ function Step3({ services, onChange, salonCategories }: {
                   ].join(" ")}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-dark truncate">{t.name_de}</p>
+                    <p className="text-sm font-medium text-s-ink truncate">{t.name_de}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="inline-flex items-center gap-0.5 text-[10px] text-dark/40">
+                      <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40">
                         <Clock size={10} /> {t.duration} min
                       </span>
-                      <span className="text-xs data-text font-semibold text-dark/60">CHF {t.price}</span>
+                      <span className="text-xs data-text font-semibold text-s-ink/60">CHF {t.price}</span>
                     </div>
                   </div>
                   {added ? (
@@ -505,19 +505,19 @@ function Step3({ services, onChange, salonCategories }: {
       {/* Added services list */}
       {services.length > 0 && (
         <div className="mb-4">
-          <p className="text-xs font-medium text-dark/50 mb-2">Deine Services ({services.length})</p>
+          <p className="text-xs font-medium text-s-ink/50 mb-2">Deine Services ({services.length})</p>
           <div className="space-y-2">
             {services.map((s, i) => (
               <div key={i} className="flex items-center justify-between bg-s-bg-surface rounded-card px-4 py-3">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-dark truncate">{s.name_de}</p>
-                  <p className="text-xs text-dark/40">{s.duration_minutes} min · CHF {s.price}</p>
+                  <p className="text-sm font-medium text-s-ink truncate">{s.name_de}</p>
+                  <p className="text-xs text-s-ink/40">{s.duration_minutes} min · CHF {s.price}</p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                   <button
                     type="button"
                     onClick={() => startEdit(i)}
-                    className="p-1.5 text-dark/30 hover:text-s-coral transition-colors"
+                    className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"
                     aria-label="Service bearbeiten"
                   >
                     <Pencil size={13} />
@@ -525,7 +525,7 @@ function Step3({ services, onChange, salonCategories }: {
                   <button
                     type="button"
                     onClick={() => onChange(services.filter((_, j) => j !== i))}
-                    className="p-1.5 text-dark/30 hover:text-s-coral transition-colors"
+                    className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"
                     aria-label="Service entfernen"
                   >
                     <Trash2 size={13} />
@@ -540,11 +540,11 @@ function Step3({ services, onChange, salonCategories }: {
       {/* Custom add / edit form */}
       {adding ? (
         <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
-          <p className="text-xs font-medium text-dark/50">
+          <p className="text-xs font-medium text-s-ink/50">
             {editingIdx !== null ? "Service bearbeiten" : "Eigener Service"}
           </p>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Name DE *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name DE *</label>
             <input
               value={draft.name_de}
               onChange={(e) => setDraft({ ...draft, name_de: e.target.value, _autoTranslated: false })}
@@ -555,7 +555,7 @@ function Step3({ services, onChange, salonCategories }: {
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">EN</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">EN</label>
               <input
                 value={draft.name_en}
                 onChange={(e) => setDraft({ ...draft, name_en: e.target.value })}
@@ -563,7 +563,7 @@ function Step3({ services, onChange, salonCategories }: {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">FR</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">FR</label>
               <input
                 value={draft.name_fr}
                 onChange={(e) => setDraft({ ...draft, name_fr: e.target.value })}
@@ -571,7 +571,7 @@ function Step3({ services, onChange, salonCategories }: {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">IT</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">IT</label>
               <input
                 value={draft.name_it}
                 onChange={(e) => setDraft({ ...draft, name_it: e.target.value })}
@@ -580,16 +580,16 @@ function Step3({ services, onChange, salonCategories }: {
             </div>
           </div>
           {translating && (
-            <p className="text-[10px] text-dark/40 flex items-center gap-1">
+            <p className="text-[10px] text-s-ink/40 flex items-center gap-1">
               <Loader2 size={10} className="animate-spin" /> Automatisch übersetzen…
             </p>
           )}
           {draft._autoTranslated && !translating && (
-            <p className="text-[10px] text-dark/40">Automatisch übersetzt — du kannst die Übersetzungen anpassen.</p>
+            <p className="text-[10px] text-s-ink/40">Automatisch übersetzt — du kannst die Übersetzungen anpassen.</p>
           )}
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Kategorie *</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Kategorie *</label>
               <select
                 value={draft.category}
                 onChange={(e) => setDraft({ ...draft, category: e.target.value as SalonCategory })}
@@ -602,7 +602,7 @@ function Step3({ services, onChange, salonCategories }: {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Dauer</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Dauer</label>
               <select
                 value={draft.duration_minutes}
                 onChange={(e) => setDraft({ ...draft, duration_minutes: +e.target.value })}
@@ -614,7 +614,7 @@ function Step3({ services, onChange, salonCategories }: {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Preis CHF</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Preis CHF</label>
               <input
                 type="number"
                 min={0}
@@ -626,7 +626,7 @@ function Step3({ services, onChange, salonCategories }: {
           </div>
           <div className="flex gap-2">
             <button type="button" onClick={cancelEdit}
-              className="px-4 py-2 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+              className="px-4 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
             <button type="button" onClick={saveCustom} disabled={!draft.name_de || !draft.category}
               className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">
               {editingIdx !== null ? "Speichern" : "Hinzufügen"}
@@ -637,7 +637,7 @@ function Step3({ services, onChange, salonCategories }: {
         <button
           type="button"
           onClick={() => { setEditingIdx(null); setDraft(EMPTY_SERVICE); setAdding(true); }}
-          className="w-full py-3 rounded-card border-2 border-dashed border-s-ink/10 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-card border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2"
         >
           <Plus size={16} /> Eigener Service erstellen
         </button>
@@ -708,15 +708,15 @@ function Step4({ staff, onChange, salonCategories }: {
         {staff.map((s, i) => (
           <div key={i} className="flex items-center justify-between bg-s-bg-surface rounded-card px-4 py-3">
             <div>
-              <p className="text-sm font-medium text-dark">{s.name}</p>
-              <p className="text-xs text-dark/40 mt-0.5">
+              <p className="text-sm font-medium text-s-ink">{s.name}</p>
+              <p className="text-xs text-s-ink/40 mt-0.5">
                 {[s.role, ...s.specialties].filter(Boolean).join(" · ") || "Keine Rolle"}
               </p>
             </div>
             <button
               type="button"
               onClick={() => onChange(staff.filter((_, j) => j !== i))}
-              className="text-dark/30 hover:text-s-coral transition-colors"
+              className="text-s-ink/30 hover:text-s-coral transition-colors"
             >
               <Trash2 size={14} />
             </button>
@@ -727,7 +727,7 @@ function Step4({ staff, onChange, salonCategories }: {
       {adding ? (
         <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Name *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Name *</label>
             <input
               value={draft.name}
               onChange={(e) => setDraft({ ...draft, name: e.target.value })}
@@ -738,12 +738,12 @@ function Step4({ staff, onChange, salonCategories }: {
 
           {roles.length > 0 && (
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1.5">Rolle</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1.5">Rolle</label>
               <div className="flex flex-wrap gap-1.5">
                 {roles.map((r) => (
                   <button key={r} type="button" onClick={() => setDraft({ ...draft, role: draft.role === r ? "" : r })}
                     className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
-                      draft.role === r ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-dark/50 hover:border-s-coral",
+                      draft.role === r ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-s-ink/50 hover:border-s-coral",
                     ].join(" ")}
                   >{r}</button>
                 ))}
@@ -753,12 +753,12 @@ function Step4({ staff, onChange, salonCategories }: {
 
           {specialties.length > 0 && (
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1.5">Spezialitäten</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1.5">Spezialitäten</label>
               <div className="flex flex-wrap gap-1.5">
                 {specialties.map((s) => (
                   <button key={s} type="button" onClick={() => toggleSpecialty(s)}
                     className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
-                      draft.specialties.includes(s) ? "bg-s-coral/10 text-s-coral border-s-coral/30" : "border-s-ink/10 text-dark/40 hover:border-s-coral",
+                      draft.specialties.includes(s) ? "bg-s-coral/10 text-s-coral border-s-coral/30" : "border-s-ink/10 text-s-ink/40 hover:border-s-coral",
                     ].join(" ")}
                   >{s}</button>
                 ))}
@@ -768,7 +768,7 @@ function Step4({ staff, onChange, salonCategories }: {
 
           <div className="flex gap-2">
             <button type="button" onClick={() => { setAdding(false); setDraft(EMPTY_STAFF); }}
-              className="px-4 py-2 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+              className="px-4 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
             <button type="button" onClick={save} disabled={!draft.name}
               className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">Hinzufügen</button>
           </div>
@@ -776,12 +776,12 @@ function Step4({ staff, onChange, salonCategories }: {
       ) : (
         <div className="space-y-2">
           <button type="button" onClick={() => setAdding(true)}
-            className="w-full py-3 rounded-card border-2 border-dashed border-s-ink/10 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-card border-2 border-dashed border-s-ink/10 text-sm text-s-ink/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2">
             <Plus size={16} /> Mitarbeiter hinzufügen
           </button>
           {staff.length === 0 && (
             <button type="button" onClick={() => onChange([{ name: "Nur ich", avatar_url: "", role: "Inhaber:in", specialties: [] }])}
-              className="w-full py-2 rounded-button text-sm text-dark/40 hover:text-s-coral transition-colors">
+              className="w-full py-2 rounded-button text-sm text-s-ink/40 hover:text-s-coral transition-colors">
               Nur ich (solo) →
             </button>
           )}
@@ -843,7 +843,7 @@ function Step5({ data, onChange, slotCount }: {
               <div className="flex items-center gap-3">
                 <button type="button" onClick={() => toggleDay(key)}
                   className={["w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                    slot ? "bg-s-coral text-white" : "bg-s-bg-sunken text-dark/40"].join(" ")}>
+                    slot ? "bg-s-coral text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                   {DAYS[i]}
                 </button>
                 {slot ? (
@@ -851,7 +851,7 @@ function Step5({ data, onChange, slotCount }: {
                     <input type="time" value={slot.start}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, start: e.target.value } } })}
                       className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
-                    <span className="text-xs text-dark/30">–</span>
+                    <span className="text-xs text-s-ink/30">–</span>
                     <input type="time" value={slot.end}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, end: e.target.value } } })}
                       className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
@@ -861,22 +861,22 @@ function Step5({ data, onChange, slotCount }: {
                     </button>
                   </>
                 ) : (
-                  <span className="text-xs text-dark/30">Nicht verfügbar</span>
+                  <span className="text-xs text-s-ink/30">Nicht verfügbar</span>
                 )}
               </div>
               {/* Break rows */}
               {slot?.breaks?.map((brk, bi) => (
                 <div key={bi} className="flex items-center gap-2 ml-[52px] mt-1.5">
-                  <span className="text-[10px] text-dark/40 w-10 shrink-0">Pause</span>
+                  <span className="text-[10px] text-s-ink/40 w-10 shrink-0">Pause</span>
                   <input type="time" value={brk.start}
                     onChange={(e) => updateBreak(key, bi, "start", e.target.value)}
                     className="px-1.5 py-0.5 rounded-button border border-s-coral/30 text-xs focus:outline-none focus:border-s-coral" />
-                  <span className="text-xs text-dark/30">–</span>
+                  <span className="text-xs text-s-ink/30">–</span>
                   <input type="time" value={brk.end}
                     onChange={(e) => updateBreak(key, bi, "end", e.target.value)}
                     className="px-1.5 py-0.5 rounded-button border border-s-coral/30 text-xs focus:outline-none focus:border-s-coral" />
                   <button type="button" onClick={() => removeBreak(key, bi)}
-                    className="text-dark/30 hover:text-s-coral transition-colors">
+                    className="text-s-ink/30 hover:text-s-coral transition-colors">
                     <Trash2 size={10} />
                   </button>
                 </div>
@@ -906,8 +906,8 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-dark">Last-Minute aktivieren</p>
-            <p className="text-xs text-dark/40 mt-0.5">
+            <p className="text-sm font-medium text-s-ink">Last-Minute aktivieren</p>
+            <p className="text-xs text-s-ink/40 mt-0.5">
               Nicht gebuchte Termine werden automatisch als Last-Minute angezeigt.
             </p>
           </div>
@@ -926,25 +926,25 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
           <>
             <div>
               <div className="flex justify-between mb-2">
-                <label className="text-xs font-medium text-dark/50">Rabatt</label>
+                <label className="text-xs font-medium text-s-ink/50">Rabatt</label>
                 <span className="text-sm font-bold text-s-coral data-font">{data.discount_percent}%</span>
               </div>
               <input type="range" min={5} max={50} step={5} value={data.discount_percent}
                 onChange={(e) => onChange({ ...data, discount_percent: +e.target.value })}
                 className="w-full accent-s-coral" />
-              <div className="flex justify-between text-xs text-dark/30 mt-1">
+              <div className="flex justify-between text-xs text-s-ink/30 mt-1">
                 <span>5%</span><span>50%</span>
               </div>
             </div>
             <div>
               <div className="flex justify-between mb-2">
-                <label className="text-xs font-medium text-dark/50">Zeitfenster</label>
+                <label className="text-xs font-medium text-s-ink/50">Zeitfenster</label>
                 <span className="text-sm font-bold text-s-coral data-font">{data.window_hours}h</span>
               </div>
               <input type="range" min={2} max={24} step={1} value={data.window_hours}
                 onChange={(e) => onChange({ ...data, window_hours: +e.target.value })}
                 className="w-full accent-s-coral" />
-              <div className="flex justify-between text-xs text-dark/30 mt-1">
+              <div className="flex justify-between text-xs text-s-ink/30 mt-1">
                 <span>2h</span><span>24h</span>
               </div>
             </div>
@@ -1067,8 +1067,8 @@ export default function SalonOnboardingPage() {
               <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center">
                 <PartyPopper size={36} className="text-s-coral" />
               </div>
-              <h2 className="font-heading font-bold text-2xl text-dark">Salon erstellt!</h2>
-              <p className="text-dark/50 text-sm max-w-xs">Dein Salon wird jetzt geprüft. Du wirst per E-Mail informiert.</p>
+              <h2 className="font-heading font-bold text-2xl text-s-ink">Salon erstellt!</h2>
+              <p className="text-s-ink/50 text-sm max-w-xs">Dein Salon wird jetzt geprüft. Du wirst per E-Mail informiert.</p>
               <div className="flex gap-1.5 mt-2">
                 {[0, 1, 2].map((i) => (
                   <motion.div
@@ -1088,10 +1088,10 @@ export default function SalonOnboardingPage() {
       <div className="bg-white/80 backdrop-blur-lg border-b border-s-ink/5 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
-            <span className="font-heading font-bold text-base text-dark">
+            <span className="font-heading font-bold text-base text-s-ink">
               solen<span className="text-s-coral">.</span>ch
             </span>
-            <span className="text-xs text-dark/40">Schritt {step} von {TOTAL_STEPS}</span>
+            <span className="text-xs text-s-ink/40">Schritt {step} von {TOTAL_STEPS}</span>
           </div>
           {/* Progress dots */}
           <div className="flex items-center gap-1.5">
@@ -1137,7 +1137,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:text-dark transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60 hover:text-s-ink transition-colors"
             >
               <ChevronLeft size={16} /> Zurück
             </button>

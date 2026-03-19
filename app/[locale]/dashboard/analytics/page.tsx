@@ -44,32 +44,32 @@ export default function AnalyticsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Statistiken</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Letzte 30 Tage</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Statistiken</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Letzte 30 Tage</p>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : !data ? (
-        <div className="text-center py-12 text-dark/30 text-sm">Keine Daten verfügbar</div>
+        <div className="text-center py-12 text-s-ink/30 text-sm">Keine Daten verfügbar</div>
       ) : (
         <div className="space-y-6">
           {/* KPI cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
-              <p className="text-xs text-dark/40 mb-1">Stornierungsrate</p>
-              <p className="data-text font-bold text-2xl text-dark">{data.cancellation_rate.toFixed(1)}%</p>
+              <p className="text-xs text-s-ink/40 mb-1">Stornierungsrate</p>
+              <p className="data-text font-bold text-2xl text-s-ink">{data.cancellation_rate.toFixed(1)}%</p>
             </div>
             <div className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
-              <p className="text-xs text-dark/40 mb-1">Bewertung</p>
+              <p className="text-xs text-s-ink/40 mb-1">Bewertung</p>
               <div className="flex items-center gap-2">
-                <p className="data-text font-bold text-2xl text-dark">{data.average_rating.toFixed(1)}</p>
+                <p className="data-text font-bold text-2xl text-s-ink">{data.average_rating.toFixed(1)}</p>
                 {data.rating_trend === "up" && <TrendingUp size={16} className="text-s-coral" />}
                 {data.rating_trend === "down" && <TrendingDown size={16} className="text-s-coral" />}
               </div>
             </div>
             <div className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
-              <p className="text-xs text-dark/40 mb-1">Neue Kunden</p>
+              <p className="text-xs text-s-ink/40 mb-1">Neue Kunden</p>
               <p className="data-text font-bold text-2xl text-s-coral">{data.customer_breakdown.new_customers}</p>
             </div>
           </div>
@@ -81,10 +81,10 @@ export default function AnalyticsPage() {
                 <TrendingUp size={20} className="text-s-coral" />
               </div>
               <div>
-                <p className="font-heading font-semibold text-dark text-sm">
+                <p className="font-heading font-semibold text-s-ink text-sm">
                   Deine Bewertung: {data.average_rating.toFixed(1)} — Top {data.percentile_rank}% in Basel
                 </p>
-                <p className="text-xs text-dark/50 mt-0.5">
+                <p className="text-xs text-s-ink/50 mt-0.5">
                   Basierend auf allen aktiven Salons in deiner Stadt
                 </p>
               </div>
@@ -93,7 +93,7 @@ export default function AnalyticsPage() {
 
           {/* Bookings over time */}
           <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
-            <h2 className="font-heading font-semibold text-base text-dark mb-4">Termine (täglich)</h2>
+            <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Termine (täglich)</h2>
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={data.bookings_by_day}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -107,7 +107,7 @@ export default function AnalyticsPage() {
 
           {/* Revenue */}
           <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
-            <h2 className="font-heading font-semibold text-base text-dark mb-4">Umsatz CHF (wöchentlich)</h2>
+            <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Umsatz CHF (wöchentlich)</h2>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.revenue_by_week}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
@@ -123,7 +123,7 @@ export default function AnalyticsPage() {
           {/* Top services + Customer breakdown */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
-              <h2 className="font-heading font-semibold text-base text-dark mb-4">Top Services</h2>
+              <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Top Services</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={data.top_services} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
@@ -136,7 +136,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
-              <h2 className="font-heading font-semibold text-base text-dark mb-4">Kunden</h2>
+              <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Kunden</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <PieChart>
                   <Pie
@@ -159,7 +159,7 @@ export default function AnalyticsPage() {
 
           {/* Last-Minute performance */}
           <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
-            <h2 className="font-heading font-semibold text-base text-dark mb-4">Last-Minute Performance</h2>
+            <h2 className="font-heading font-semibold text-base text-s-ink mb-4">Last-Minute Performance</h2>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.last_minute_performance}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />

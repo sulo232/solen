@@ -53,9 +53,9 @@ export default function MessagesPage() {
   if (conversations.length === 0) {
     return (
       <div className="min-h-screen bg-s-bg-surface flex flex-col items-center justify-center gap-4 text-center px-4">
-        <MessageCircle className="w-12 h-12 text-dark/20" />
-        <p className="font-heading font-semibold text-dark text-lg">Keine Nachrichten</p>
-        <p className="text-sm text-dark/50">
+        <MessageCircle className="w-12 h-12 text-s-ink/20" />
+        <p className="font-heading font-semibold text-s-ink text-lg">Keine Nachrichten</p>
+        <p className="text-sm text-s-ink/50">
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
         <a
@@ -71,7 +71,7 @@ export default function MessagesPage() {
   return (
     <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
-        <h1 className="font-heading font-bold text-2xl text-dark mb-6">Nachrichten</h1>
+        <h1 className="font-heading font-bold text-2xl text-s-ink mb-6">Nachrichten</h1>
 
         <div className="flex gap-4 h-[calc(100vh-160px)]">
           {/* Conversation list */}
@@ -95,7 +95,7 @@ export default function MessagesPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
-                      <p className="text-sm font-medium text-dark truncate">{conv.other_party_name}</p>
+                      <p className="text-sm font-medium text-s-ink truncate">{conv.other_party_name}</p>
                       {unread > 0 && (
                         <span className="w-5 h-5 rounded-full bg-s-coral text-white text-[10px] flex items-center justify-center font-bold shrink-0">
                           {unread}
@@ -103,10 +103,10 @@ export default function MessagesPage() {
                       )}
                     </div>
                     {conv.last_message_preview && (
-                      <p className="text-xs text-dark/40 truncate mt-0.5">{conv.last_message_preview}</p>
+                      <p className="text-xs text-s-ink/40 truncate mt-0.5">{conv.last_message_preview}</p>
                     )}
                     {conv.last_message_at && (
-                      <p className="text-[10px] text-dark/25 mt-0.5">
+                      <p className="text-[10px] text-s-ink/25 mt-0.5">
                         {new Date(conv.last_message_at).toLocaleDateString("de-CH", {
                           day: "numeric",
                           month: "short",
@@ -124,7 +124,7 @@ export default function MessagesPage() {
             {selected && currentUserId ? (
               <div className="h-full">
                 <div className="mb-2 flex items-center gap-2">
-                  <p className="text-sm font-medium text-dark">
+                  <p className="text-sm font-medium text-s-ink">
                     {selectedConv?.other_party_name}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export default function MessagesPage() {
                 </div>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center text-dark/30 text-sm">
+              <div className="h-full flex items-center justify-center text-s-ink/30 text-sm">
                 Wähle eine Unterhaltung
               </div>
             )}

@@ -79,10 +79,10 @@ export default function ApproveIncreasePage() {
                 ? <Check size={24} className="text-s-coral" />
                 : <X size={24} className="text-s-coral" />}
             </div>
-            <h2 className="font-heading font-bold text-lg text-dark mb-2">
+            <h2 className="font-heading font-bold text-lg text-s-ink mb-2">
               {result === "approved" ? "Preisanpassung genehmigt" : "Einspruch eingereicht"}
             </h2>
-            <p className="text-sm text-dark/50 mb-6">
+            <p className="text-sm text-s-ink/50 mb-6">
               {result === "approved"
                 ? "Der Salon wird den Differenzbetrag in Rechnung stellen."
                 : "Dein Einspruch wird von unserem Support-Team geprüft."}
@@ -94,8 +94,8 @@ export default function ApproveIncreasePage() {
           </div>
         ) : !dispute || dispute.status !== "pending" ? (
           <div className="text-center py-8">
-            <Receipt size={28} className="mx-auto mb-3 text-dark/20" />
-            <p className="text-sm text-dark/50">Keine offene Preisanpassung gefunden.</p>
+            <Receipt size={28} className="mx-auto mb-3 text-s-ink/20" />
+            <p className="text-sm text-s-ink/50">Keine offene Preisanpassung gefunden.</p>
             <button onClick={() => router.back()}
               className="mt-4 text-sm text-s-coral flex items-center gap-1 mx-auto">
               <ArrowLeft size={14} /> Zurück
@@ -108,8 +108,8 @@ export default function ApproveIncreasePage() {
                 <AlertTriangle size={18} className="text-amber-500" />
               </div>
               <div>
-                <h1 className="font-heading font-bold text-lg text-dark">Preisanpassung</h1>
-                <p className="text-xs text-dark/40">
+                <h1 className="font-heading font-bold text-lg text-s-ink">Preisanpassung</h1>
+                <p className="text-xs text-s-ink/40">
                   {dispute.salon_name && `${dispute.salon_name} · `}
                   {dispute.service_name ?? "Service"}
                 </p>
@@ -118,22 +118,22 @@ export default function ApproveIncreasePage() {
 
             <div className="bg-s-bg-surface rounded-card p-4 mb-4 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-dark/50">Ursprünglicher Preis</span>
-                <span className="data-text font-bold text-dark">CHF {dispute.original_amount.toFixed(2)}</span>
+                <span className="text-s-ink/50">Ursprünglicher Preis</span>
+                <span className="data-text font-bold text-s-ink">CHF {dispute.original_amount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-dark/50">Neuer Preis</span>
+                <span className="text-s-ink/50">Neuer Preis</span>
                 <span className="data-text font-bold text-s-coral">CHF {dispute.requested_amount.toFixed(2)}</span>
               </div>
               <div className="border-t border-s-ink/10 pt-2 flex justify-between text-sm">
-                <span className="text-dark/50">Differenz</span>
+                <span className="text-s-ink/50">Differenz</span>
                 <span className="data-text font-bold text-s-coral">+CHF {diff.toFixed(2)} (+{diffPercent}%)</span>
               </div>
             </div>
 
             <div className="mb-5">
-              <p className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-1">Begründung des Salons</p>
-              <p className="text-sm text-dark/70 bg-s-bg-surface rounded-button px-3 py-2">{dispute.salon_reason}</p>
+              <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-1">Begründung des Salons</p>
+              <p className="text-sm text-s-ink/70 bg-s-bg-surface rounded-button px-3 py-2">{dispute.salon_reason}</p>
             </div>
 
             {hoursLeft !== null && hoursLeft > 0 && (

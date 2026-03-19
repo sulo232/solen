@@ -37,9 +37,9 @@ export default function ServiceTile({ category, minPrice, isFavorite = false, lo
         <Icon className="w-5 h-5 text-s-coral" />
       </div>
       <div className="text-center">
-        <p className="text-xs font-medium text-dark">{label}</p>
+        <p className="text-xs font-medium text-s-ink">{label}</p>
         {minPrice != null && (
-          <p className="text-[10px] data-text text-dark/50 mt-0.5">ab CHF {minPrice}</p>
+          <p className="text-[10px] data-text text-s-ink/50 mt-0.5">ab CHF {minPrice}</p>
         )}
       </div>
     </Link>

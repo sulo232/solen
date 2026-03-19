@@ -75,8 +75,8 @@ export default function SalonReviewsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Bewertungen</h1>
-        <p className="text-sm text-dark/40 mt-0.5">Kundenbewertungen lesen und antworten</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Bewertungen</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">Kundenbewertungen lesen und antworten</p>
       </div>
 
       {loading ? (
@@ -98,12 +98,12 @@ export default function SalonReviewsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-dark truncate">
+                    <p className="text-sm font-medium text-s-ink truncate">
                       {r.profiles?.display_name ?? "Anonym"}
                     </p>
                     <Stars rating={r.rating} />
                   </div>
-                  <p className="text-[10px] text-dark/30">
+                  <p className="text-[10px] text-s-ink/30">
                     {new Date(r.created_at).toLocaleDateString("de-CH", {
                       day: "2-digit", month: "2-digit", year: "numeric",
                     })}
@@ -113,14 +113,14 @@ export default function SalonReviewsPage() {
 
               {/* Comment */}
               {r.comment && (
-                <p className="text-sm text-dark/70 mb-3">&ldquo;{r.comment}&rdquo;</p>
+                <p className="text-sm text-s-ink/70 mb-3">&ldquo;{r.comment}&rdquo;</p>
               )}
 
               {/* Existing salon response */}
               {r.salon_response && (
                 <div className="bg-s-coral/5 rounded-lg p-3 mb-3">
                   <p className="text-[10px] font-bold text-s-coral mb-1">Deine Antwort</p>
-                  <p className="text-xs text-dark/70">{r.salon_response}</p>
+                  <p className="text-xs text-s-ink/70">{r.salon_response}</p>
                 </div>
               )}
 
@@ -146,7 +146,7 @@ export default function SalonReviewsPage() {
                       </button>
                       <button
                         onClick={() => { setRespondingTo(null); setResponseText(""); }}
-                        className="px-2 py-2 rounded-button border border-s-ink/10 text-dark/40 text-xs"
+                        className="px-2 py-2 rounded-button border border-s-ink/10 text-s-ink/40 text-xs"
                       >
                         Abbrechen
                       </button>

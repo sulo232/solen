@@ -33,7 +33,7 @@ export default function PriceSlider({ min = 0, max = 200, step = 5 }: PriceSlide
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <div className="flex justify-between text-xs data-text text-dark/60">
+      <div className="flex justify-between text-xs data-text text-s-ink/60">
         <span>CHF {values[0]}</span>
         <span>CHF {values[1]}</span>
       </div>

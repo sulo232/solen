@@ -50,8 +50,8 @@ export default function RevenuePage() {
     <DashboardLayout>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-heading font-bold text-2xl text-dark">Umsatz</h1>
-          <p className="text-sm text-dark/40 mt-0.5">Plattform-Einnahmen</p>
+          <h1 className="font-heading font-bold text-2xl text-s-ink">Umsatz</h1>
+          <p className="text-sm text-s-ink/40 mt-0.5">Plattform-Einnahmen</p>
         </div>
         {/* Period picker */}
         <div className="flex rounded-button overflow-hidden border border-s-ink/10 bg-white shadow-card shrink-0">
@@ -61,7 +61,7 @@ export default function RevenuePage() {
               onClick={() => setPeriod(p)}
               className={[
                 "px-3 py-1.5 text-xs font-medium transition-colors",
-                period === p ? "bg-s-coral text-white" : "text-dark/50 hover:text-dark",
+                period === p ? "bg-s-coral text-white" : "text-s-ink/50 hover:text-s-ink",
               ].join(" ")}
             >
               {p === "week" ? "Woche" : p === "month" ? "Monat" : "Jahr"}
@@ -73,7 +73,7 @@ export default function RevenuePage() {
       {loading ? (
         <div className="flex justify-center py-20"><Spinner size="lg" /></div>
       ) : !data ? (
-        <div className="text-center py-20 text-dark/30 text-sm">Keine Daten verfügbar.</div>
+        <div className="text-center py-20 text-s-ink/30 text-sm">Keine Daten verfügbar.</div>
       ) : (
         <motion.div
           variants={containerVariants}
@@ -109,14 +109,14 @@ export default function RevenuePage() {
                 label: "Transaktionen",
                 value: data.total_bookings.toString(),
                 icon: CreditCard,
-                color: "text-dark",
+                color: "text-s-ink",
                 bg: "bg-dark/5",
               },
               {
                 label: "Ø Buchungswert",
                 value: `CHF ${fmt(data.avg_booking_value)}`,
                 icon: Calendar,
-                color: "text-dark",
+                color: "text-s-ink",
                 bg: "bg-dark/5",
               },
               {
@@ -135,8 +135,8 @@ export default function RevenuePage() {
                 <div className={`w-8 h-8 rounded-lg ${card.bg} flex items-center justify-center mb-3`}>
                   <card.icon size={15} className={card.color} />
                 </div>
-                <p className="data-text font-bold text-xl text-dark leading-tight">{card.value}</p>
-                <p className="text-xs text-dark/40 mt-0.5">{card.label}</p>
+                <p className="data-text font-bold text-xl text-s-ink leading-tight">{card.value}</p>
+                <p className="text-xs text-s-ink/40 mt-0.5">{card.label}</p>
               </motion.div>
             ))}
           </div>
@@ -144,7 +144,7 @@ export default function RevenuePage() {
           {/* Revenue chart */}
           {data.daily.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
-              <h2 className="font-heading font-semibold text-dark text-sm mb-4">Tagesumsatz (CHF)</h2>
+              <h2 className="font-heading font-semibold text-s-ink text-sm mb-4">Tagesumsatz (CHF)</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
                   <defs>
@@ -191,14 +191,14 @@ export default function RevenuePage() {
           {data.top_salons.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-50">
-                <h2 className="font-heading font-semibold text-dark text-sm">Top Salons</h2>
+                <h2 className="font-heading font-semibold text-s-ink text-sm">Top Salons</h2>
               </div>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-s-bg-surface/80">
-                    <th className="text-left px-5 py-2.5 text-xs font-semibold text-dark/40 uppercase tracking-wide">Salon</th>
-                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-dark/40 uppercase tracking-wide">Buchungen</th>
-                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-dark/40 uppercase tracking-wide">Umsatz</th>
+                    <th className="text-left px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">Salon</th>
+                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">Buchungen</th>
+                    <th className="text-right px-5 py-2.5 text-xs font-semibold text-s-ink/40 uppercase tracking-wide">Umsatz</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -211,10 +211,10 @@ export default function RevenuePage() {
                         <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">
                           {i + 1}
                         </span>
-                        <span className="font-medium text-dark">{salon.name}</span>
+                        <span className="font-medium text-s-ink">{salon.name}</span>
                       </td>
-                      <td className="px-5 py-3 text-right data-text text-dark/60">{salon.bookings}</td>
-                      <td className="px-5 py-3 text-right data-text font-semibold text-dark">CHF {fmt(salon.revenue)}</td>
+                      <td className="px-5 py-3 text-right data-text text-s-ink/60">{salon.bookings}</td>
+                      <td className="px-5 py-3 text-right data-text font-semibold text-s-ink">CHF {fmt(salon.revenue)}</td>
                     </tr>
                   ))}
                 </tbody>

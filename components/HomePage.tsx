@@ -259,13 +259,13 @@ export default function HomePage() {
                   className="text-s-coral group-hover:scale-110 transition-transform duration-200"
                 />
                 <span
-                  className="font-heading font-medium text-dark text-sm text-center leading-tight"
+                  className="font-heading font-medium text-s-ink text-sm text-center leading-tight"
                  
                 >
                   {label}
                 </span>
                 <span
-                  className="text-xs text-dark/40 font-body"
+                  className="text-xs text-s-ink/40 font-body"
                  
                 >
                   Entdecken
@@ -292,8 +292,8 @@ export default function HomePage() {
               <RefreshCw size={18} className="text-s-coral" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-heading font-semibold text-dark text-sm">Wieder buchen?</p>
-              <p className="text-xs text-dark/50 font-body truncate">
+              <p className="font-heading font-semibold text-s-ink text-sm">Wieder buchen?</p>
+              <p className="text-xs text-s-ink/50 font-body truncate">
                 Dein letzter Besuch: {lastBookedSalon.name}
               </p>
             </div>
@@ -315,13 +315,13 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6">
             <h2
-              className="font-heading font-bold text-2xl text-dark"
+              className="font-heading font-bold text-2xl text-s-ink"
              
             >
               Beliebte Salons
             </h2>
             <p
-              className="text-sm text-dark/50 mt-1 font-body"
+              className="text-sm text-s-ink/50 mt-1 font-body"
              
             >
               Die bestbewerteten Salons in Basel
@@ -373,11 +373,11 @@ export default function HomePage() {
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={20} className="text-s-coral" />
-                <h2 className="font-heading font-bold text-2xl text-dark">
+                <h2 className="font-heading font-bold text-2xl text-s-ink">
                   Neue Salons
                 </h2>
               </div>
-              <p className="text-sm text-dark/50 font-body">
+              <p className="text-sm text-s-ink/50 font-body">
                 Frisch auf Solen — entdecke die neuesten Salons in Basel
               </p>
             </div>
@@ -403,14 +403,14 @@ export default function HomePage() {
             <div className="flex items-center gap-2 mb-1">
               <Clock size={20} className="text-s-coral" />
               <h2
-                className="font-heading font-bold text-2xl text-dark"
+                className="font-heading font-bold text-2xl text-s-ink"
                
               >
                 Last-Minute Angebote
               </h2>
             </div>
             <p
-              className="text-sm text-dark/60 font-body"
+              className="text-sm text-s-ink/60 font-body"
              
             >
               Spare bis zu 50% auf kurzfristige Termine
@@ -433,7 +433,7 @@ export default function HomePage() {
             >
               <div className="flex-1">
                 <p
-                  className="text-sm text-dark/60 font-body"
+                  className="text-sm text-s-ink/60 font-body"
                  
                 >
                   Aktuell keine Last-Minute Angebote — schau bald wieder vorbei!
@@ -461,7 +461,7 @@ export default function HomePage() {
                 DEIN QUARTIER
               </span>
               <h2
-                className="font-heading font-bold text-2xl text-dark"
+                className="font-heading font-bold text-2xl text-s-ink"
                
               >
                 Entdecke dein Quartier

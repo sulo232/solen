@@ -88,10 +88,10 @@ export default function TreatmentResultsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}
-        <nav className="text-xs text-dark/40 dark:text-s-dm-text/40 mb-4">
+        <nav className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">
           <a href={`/${locale}`} className="hover:text-s-coral">Home</a>
           <span className="mx-1">›</span>
-          <span className="text-dark/70 dark:text-s-dm-text/70">Behandlungen</span>
+          <span className="text-s-ink/70 dark:text-s-dm-text/70">Behandlungen</span>
           {slugParts.map((part, i) => (
             <span key={i}>
               <span className="mx-1">›</span>
@@ -113,11 +113,11 @@ export default function TreatmentResultsPage() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="font-heading font-bold text-2xl text-dark dark:text-s-dm-text capitalize">
+                <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text capitalize">
                   {pageTitle || "Behandlungen"}
                 </h1>
                 {!loading && (
-                  <p className="text-sm text-dark/50 dark:text-s-dm-text/50 mt-1">
+                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1">
                     {total} {total === 1 ? "Salon" : "Salons"} gefunden
                   </p>
                 )}

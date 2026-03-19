@@ -172,7 +172,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
           <button
             onClick={() => setShowAdd(false)}
-            className="text-[10px] text-dark/40 dark:text-s-dm-text/40 hover:text-dark dark:hover:text-s-dm-text"
+            className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
           >
             Abbrechen
           </button>

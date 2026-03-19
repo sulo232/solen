@@ -69,12 +69,12 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Slot erstellen</h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
-        <p className="text-sm text-dark/50 mb-4">{date} um {startTime}</p>
+        <p className="text-sm text-s-ink/50 mb-4">{date} um {startTime}</p>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Service *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Service *</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
               <option value="">Wählen…</option>
@@ -82,7 +82,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Mitarbeiter</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Mitarbeiter</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
               <option value="">Egal (wer verfügbar ist)</option>
@@ -91,7 +91,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Erstellen
@@ -149,11 +149,11 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
       <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Wochenplan erstellen</h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-4 mb-5">
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Service *</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Service *</label>
             <select value={serviceId} onChange={(e) => setServiceId(e.target.value)}
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
               <option value="">Wählen…</option>
@@ -161,7 +161,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-1">Mitarbeiter</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Mitarbeiter</label>
             <select value={staffId} onChange={(e) => setStaffId(e.target.value)}
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
               <option value="">Egal</option>
@@ -169,7 +169,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-2">Zeitplan</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">Zeitplan</label>
             <div className="space-y-2">
               {DAY_KEYS.map((key, i) => {
                 const slot = template[key];
@@ -177,30 +177,30 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                   <div key={key} className="flex items-center gap-3">
                     <button type="button" onClick={() => toggleDay(key)}
                       className={["w-9 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                        slot ? "bg-s-coral text-white" : "bg-s-bg-sunken text-dark/40"].join(" ")}>
+                        slot ? "bg-s-coral text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                       {DAY_LABELS[i]}
                     </button>
                     {slot ? (
                       <>
                         <input type="time" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
                           className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
-                        <span className="text-xs text-dark/30">–</span>
+                        <span className="text-xs text-s-ink/30">–</span>
                         <input type="time" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
                           className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
                       </>
-                    ) : <span className="text-xs text-dark/30">Nicht verfügbar</span>}
+                    ) : <span className="text-xs text-s-ink/30">Nicht verfügbar</span>}
                   </div>
                 );
               })}
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-dark/50 mb-2">Wochen</label>
+            <label className="block text-xs font-medium text-s-ink/50 mb-2">Wochen</label>
             <div className="flex gap-2">
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
                   className={["flex-1 py-2 rounded-button border text-sm font-medium transition-colors",
-                    weeks === w ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-dark/60"].join(" ")}>
+                    weeks === w ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-s-ink/60"].join(" ")}>
                   {w} {w === 1 ? "Woche" : "Wochen"}
                 </button>
               ))}
@@ -208,7 +208,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Erstellen
@@ -258,24 +258,24 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
           <h3 className="font-heading font-bold text-base">
             {rescheduleMode ? "Termin verschieben" : "Termin-Details"}
           </h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
 
         {rescheduleMode ? (
           <div className="space-y-3 mb-5">
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Neues Datum</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Neues Datum</label>
               <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-dark/50 mb-1">Neue Uhrzeit</label>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Neue Uhrzeit</label>
               <input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)}
                 className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div className="flex gap-2 mt-4">
               <button onClick={() => setRescheduleMode(false)}
-                className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Zurück</button>
+                className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Zurück</button>
               <button onClick={handleReschedule} disabled={loading}
                 className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
@@ -285,11 +285,11 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
           </div>
         ) : (
           <>
-            <div className="space-y-2 mb-5 text-sm text-dark/70">
-              <p><span className="text-dark/40">Status:</span> <span className="font-medium">{slot.status === "booked" ? "Gebucht" : slot.status === "blocked" ? "Blockiert" : "Frei"}</span></p>
-              <p><span className="text-dark/40">Zeit:</span> {startTime} – {endTime}</p>
-              <p><span className="text-dark/40">Datum:</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
-              <p><span className="text-dark/40">Mitarbeiter:</span> {staffName}</p>
+            <div className="space-y-2 mb-5 text-sm text-s-ink/70">
+              <p><span className="text-s-ink/40">Status:</span> <span className="font-medium">{slot.status === "booked" ? "Gebucht" : slot.status === "blocked" ? "Blockiert" : "Frei"}</span></p>
+              <p><span className="text-s-ink/40">Zeit:</span> {startTime} – {endTime}</p>
+              <p><span className="text-s-ink/40">Datum:</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
+              <p><span className="text-s-ink/40">Mitarbeiter:</span> {staffName}</p>
             </div>
             <div className="flex gap-2">
               {slot.status !== "blocked" && (
@@ -468,14 +468,14 @@ export default function CalendarPage() {
           <button onClick={nextWeek} className="p-2 rounded-button border border-s-ink/10 hover:border-s-coral transition-colors">
             <ChevronRight size={16} />
           </button>
-          <span className="text-sm font-medium text-dark ml-2">
+          <span className="text-sm font-medium text-s-ink ml-2">
             {weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} –{" "}
             {addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}
           </span>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setBulkModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink/60 hover:border-s-coral hover:text-s-coral transition-colors">
             Wochenplan
           </button>
           <button onClick={() => setCreateModal({ date: new Date().toISOString().split("T")[0], time: "09:00" })}
@@ -490,22 +490,22 @@ export default function CalendarPage() {
         <div className="min-w-[600px]">
           {/* Day headers */}
           <div className="grid grid-cols-8 border-b border-s-ink/5">
-            <div className="py-3 px-2 text-xs text-dark/30" />
+            <div className="py-3 px-2 text-xs text-s-ink/30" />
             {weekDays.map((d, i) => {
               const isToday = d.toDateString() === new Date().toDateString();
               const dateStr = d.toISOString().split("T")[0];
               return (
                 <div key={i} className="py-3 px-2 text-center border-l border-gray-50">
-                  <p className={["text-xs font-medium", isToday ? "text-s-coral" : "text-dark/50"].join(" ")}>
+                  <p className={["text-xs font-medium", isToday ? "text-s-coral" : "text-s-ink/50"].join(" ")}>
                     {DAYS_LABEL[i]}
                   </p>
-                  <p className={["text-sm font-bold mt-0.5", isToday ? "text-s-coral" : "text-dark"].join(" ")}>
+                  <p className={["text-sm font-bold mt-0.5", isToday ? "text-s-coral" : "text-s-ink"].join(" ")}>
                     {d.getDate()}
                   </p>
                   <button
                     onClick={() => blockDay(dateStr)}
                     title="Tag blockieren"
-                    className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-dark/20 hover:text-s-coral transition-colors"
+                    className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-coral transition-colors"
                   >
                     <Lock size={10} />
                   </button>
@@ -523,7 +523,7 @@ export default function CalendarPage() {
               if (hour > 20) return null;
               return (
                 <div key={hour} className="grid grid-cols-8 border-b border-gray-50 min-h-[40px]">
-                  <div className="py-1 px-2 text-[10px] text-dark/30 text-right pr-3 pt-2">
+                  <div className="py-1 px-2 text-[10px] text-s-ink/30 text-right pr-3 pt-2">
                     {`${String(hour).padStart(2, "0")}:00`}
                   </div>
                   {weekDays.map((d, dayIdx) => {
@@ -571,7 +571,7 @@ export default function CalendarPage() {
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-4 mt-3 text-xs text-dark/40">
+      <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-coral/30" />Frei</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-dark" />Gebucht</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-gray-300" />Blockiert</span>

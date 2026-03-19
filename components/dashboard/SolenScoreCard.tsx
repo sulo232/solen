@@ -62,8 +62,8 @@ function ScoreMeter({ score, tier }: { score: number; tier: SolenScoreData["sole
           className="transition-all duration-1000 ease-out" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="data-text font-bold text-3xl text-dark dark:text-s-dm-text">{score}</span>
-        <span className="text-[10px] text-dark/40 dark:text-s-dm-text/40 uppercase tracking-wide">Score</span>
+        <span className="data-text font-bold text-3xl text-s-ink dark:text-s-dm-text">{score}</span>
+        <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide">Score</span>
       </div>
     </div>
   );
@@ -111,7 +111,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <Trophy size={18} style={{ color: tier.color }} />
-        <h3 className="font-heading font-bold text-base text-dark dark:text-s-dm-text">Dein Solen Score</h3>
+        <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">Dein Solen Score</h3>
       </div>
 
       {/* Score meter */}
@@ -137,8 +137,8 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
               <f.Icon size={13} className={`${f.color} shrink-0`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-xs text-dark/60 dark:text-s-dm-text/60 truncate">{f.label}</span>
-                  <span className="text-xs data-text font-medium text-dark dark:text-s-dm-text">{value}/{f.max}</span>
+                  <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60 truncate">{f.label}</span>
+                  <span className="text-xs data-text font-medium text-s-ink dark:text-s-dm-text">{value}/{f.max}</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-s-sand dark:bg-gray-700 overflow-hidden">
                   <div
@@ -158,8 +158,8 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
           <div className="flex items-start gap-2">
             <TrendingUp size={14} className="text-s-coral shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-medium text-dark dark:text-s-dm-text">Tipp zur Verbesserung</p>
-              <p className="text-xs text-dark/50 dark:text-s-dm-text/50 mt-0.5">
+              <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">Tipp zur Verbesserung</p>
+              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
                 {TIPS[lowestFactor.key]}
               </p>
             </div>

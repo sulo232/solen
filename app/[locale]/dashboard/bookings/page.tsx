@@ -25,8 +25,8 @@ const STATUS_LABELS: Record<BookingStatus, string> = {
 const STATUS_COLORS: Record<BookingStatus, string> = {
   confirmed: "bg-s-coral/10 text-s-coral",
   cancelled: "bg-s-coral/10 text-s-coral",
-  completed: "bg-s-bg-sunken text-dark/50",
-  no_show: "bg-s-bg-sunken text-dark/30",
+  completed: "bg-s-bg-sunken text-s-ink/50",
+  no_show: "bg-s-bg-sunken text-s-ink/30",
 };
 
 const CANCEL_REASONS = [
@@ -69,9 +69,9 @@ function SalonCancelModal({
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Termin stornieren</h3>
-          <button onClick={onClose}><X size={18} className="text-dark/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
-        <p className="text-sm text-dark/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
+        <p className="text-sm text-s-ink/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
             <label key={r.value} className="flex items-center gap-3 p-3 rounded-button border border-s-ink/10 cursor-pointer hover:border-s-coral transition-colors">
@@ -82,7 +82,7 @@ function SalonCancelModal({
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Stornieren
@@ -162,7 +162,7 @@ export default function BookingsPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="font-heading font-bold text-2xl text-dark">Termine</h1>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Termine</h1>
       </div>
 
       {/* Filters */}
@@ -173,7 +173,7 @@ export default function BookingsPage() {
             onClick={() => setStatusFilter(s)}
             className={[
               "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
-              statusFilter === s ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral",
+              statusFilter === s ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-s-ink/60 hover:border-s-coral",
             ].join(" ")}
           >
             {s === "all" ? "Alle" : STATUS_LABELS[s]}
@@ -184,7 +184,7 @@ export default function BookingsPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : bookings.length === 0 ? (
-        <div className="text-center py-12 text-dark/30">
+        <div className="text-center py-12 text-s-ink/30">
           <p className="text-sm">Keine Termine gefunden</p>
         </div>
       ) : (
@@ -197,7 +197,7 @@ export default function BookingsPage() {
                   <p className="data-text font-bold text-sm text-s-coral">
                     {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                   </p>
-                  <p className="text-[10px] text-dark/30">
+                  <p className="text-[10px] text-s-ink/30">
                     {new Date(b.starts_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
                   </p>
                 </div>
@@ -205,12 +205,12 @@ export default function BookingsPage() {
                 {/* Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-sm font-medium text-dark">{b.customer_name}</p>
+                    <p className="text-sm font-medium text-s-ink">{b.customer_name}</p>
                     {b.is_first_visit && (
                       <span className="px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold">NEUKUNDE</span>
                     )}
                     {b.is_recurring && (
-                      <span className="flex items-center gap-0.5 text-[10px] text-dark/40">
+                      <span className="flex items-center gap-0.5 text-[10px] text-s-ink/40">
                         <RotateCcw size={10} /> Wiederkehrend
                       </span>
                     )}
@@ -220,9 +220,9 @@ export default function BookingsPage() {
                       <ClientTags salonId={salonId} customerId={b.user_id} compact />
                     </div>
                   )}
-                  <p className="text-xs text-dark/50 mt-0.5">{b.service_name}</p>
-                  {b.staff_name && <p className="text-xs text-dark/30">{b.staff_name}</p>}
-                  <p className="text-xs data-text text-dark/50 mt-1">CHF {b.price_paid}</p>
+                  <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
+                  {b.staff_name && <p className="text-xs text-s-ink/30">{b.staff_name}</p>}
+                  <p className="text-xs data-text text-s-ink/50 mt-1">CHF {b.price_paid}</p>
                 </div>
 
                 {/* Status + actions */}
@@ -241,7 +241,7 @@ export default function BookingsPage() {
                       </button>
                       <button
                         onClick={() => updateStatus(b.id, "no_show")}
-                        className="p-1.5 rounded-button bg-s-bg-sunken text-dark/40 hover:bg-s-sand transition-colors"
+                        className="p-1.5 rounded-button bg-s-bg-sunken text-s-ink/40 hover:bg-s-sand transition-colors"
                         title="Nicht erschienen"
                       >
                         <UserX size={13} />
@@ -267,7 +267,7 @@ export default function BookingsPage() {
                     </button>
                   )}
                   {b.status === "cancelled" && b.cancellation_reason && (
-                    <p className="text-[10px] text-dark/30 max-w-24 text-right">{b.cancellation_reason}</p>
+                    <p className="text-[10px] text-s-ink/30 max-w-24 text-right">{b.cancellation_reason}</p>
                   )}
                 </div>
               </div>

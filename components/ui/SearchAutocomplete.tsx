@@ -112,7 +112,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
   return (
     <div ref={containerRef} className="relative w-full max-w-md">
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
           value={query}
@@ -120,12 +120,12 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder="Service oder Salon suchen…"
-          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-s-ink/10 text-sm text-dark placeholder:text-dark/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
+          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
         />
         {query && (
           <button
             onClick={() => { setQuery(""); setOpen(false); setServices([]); setSalons([]); }}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-dark/30 hover:text-dark/60"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink/60"
           >
             <X size={14} />
           </button>
@@ -136,7 +136,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
         <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 backdrop-blur-lg rounded-card shadow-glass border border-s-ink/5 overflow-hidden z-50">
           {services.length > 0 && (
             <div>
-              <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
+              <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
                 Behandlungen
               </p>
               {services.map((service, i) => (
@@ -144,11 +144,11 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
-                    activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-s-bg-surface"
+                    activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                   }`}
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
-                  <span className="text-xs text-dark/40 data-text shrink-0 ml-2">
+                  <span className="text-xs text-s-ink/40 data-text shrink-0 ml-2">
                     CHF {service.price}
                   </span>
                 </button>
@@ -159,7 +159,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
           {salons.length > 0 && (
             <div>
               {services.length > 0 && <div className="border-t border-s-ink/5" />}
-              <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
+              <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
                 Salons
               </p>
               {salons.map((salon, i) => {
@@ -169,7 +169,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${
-                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0">
@@ -179,7 +179,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                     </div>
                     <div className="min-w-0">
                       <p className="font-medium truncate">{salon.name}</p>
-                      <div className="flex items-center gap-1.5 text-xs text-dark/40">
+                      <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
                         <span>{salon.quartier}</span>
                         {salon.average_rating > 0 && (
                           <>

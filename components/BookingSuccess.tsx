@@ -131,18 +131,18 @@ export default function BookingSuccess(props: BookingSuccessProps) {
         <CheckCircle size={32} className="text-s-coral" />
       </div>
 
-      <h2 className="font-heading font-bold text-2xl text-dark mb-2">Termin gebucht!</h2>
-      <p className="text-sm text-dark/50 mb-6">Dein Termin wurde erfolgreich bestätigt.</p>
+      <h2 className="font-heading font-bold text-2xl text-s-ink mb-2">Termin gebucht!</h2>
+      <p className="text-sm text-s-ink/50 mb-6">Dein Termin wurde erfolgreich bestätigt.</p>
 
       <div className="bg-s-bg-surface rounded-card p-4 mb-6 text-left">
-        <p className="font-medium text-dark">{props.serviceName}</p>
-        <p className="text-sm text-dark/60 mt-1">{props.salonName}</p>
-        <div className="flex items-center gap-4 mt-3 text-sm text-dark/50">
+        <p className="font-medium text-s-ink">{props.serviceName}</p>
+        <p className="text-sm text-s-ink/60 mt-1">{props.salonName}</p>
+        <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50">
           <span>{dateStr}</span>
           <span>{timeStr} Uhr</span>
           <span>{props.duration} Min.</span>
         </div>
-        <p className="data-text font-semibold text-dark mt-2">CHF {props.price.toFixed(2)}</p>
+        <p className="data-text font-semibold text-s-ink mt-2">CHF {props.price.toFixed(2)}</p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -156,7 +156,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-s-ink/10 text-sm font-medium text-dark/70 hover:border-s-coral transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:border-s-coral transition-colors"
         >
           <Share2 size={16} />
           Mit Freund:in teilen
@@ -164,7 +164,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={() => router.push(`/${locale}/salon/${props.salonSlug}`)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-s-ink/10 text-sm font-medium text-dark/70 hover:border-s-coral transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-s-ink/10 text-sm font-medium text-s-ink/70 hover:border-s-coral transition-colors"
         >
           <RotateCcw size={16} />
           Nochmal buchen

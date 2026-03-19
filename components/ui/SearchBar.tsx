@@ -23,7 +23,7 @@ export default function SearchBar() {
       <div className="relative">
         <Search
           size={20}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-dark/30"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-s-ink/30"
           aria-hidden="true"
         />
         <input
@@ -33,7 +33,7 @@ export default function SearchBar() {
           placeholder="Suche Salon in Basel..."
           aria-label="Salon, Service oder Quartier suchen"
           id="tour-search"
-          className="w-full rounded-2xl bg-white dark:bg-s-dm-surface shadow-card py-4 pl-12 pr-4 text-sm font-body text-dark dark:text-s-dm-text placeholder:text-dark/40 dark:placeholder:text-s-dm-text/40 border border-s-ink/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:shadow-warm-sm focus:border-s-coral/30 transition-shadow duration-200"
+          className="w-full rounded-2xl bg-white dark:bg-s-dm-surface shadow-card py-4 pl-12 pr-4 text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 border border-s-ink/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:shadow-warm-sm focus:border-s-coral/30 transition-shadow duration-200"
         />
       </div>
     </form>

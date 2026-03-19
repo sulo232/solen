@@ -54,8 +54,8 @@ function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, spar
           <MiniSparkline data={sparklineData} color={sparklineColor} width={64} height={24} />
         )}
       </div>
-      <p className="data-text font-bold text-2xl text-dark">{display}</p>
-      <p className="text-xs text-dark/40 mt-0.5 leading-tight">{label}</p>
+      <p className="data-text font-bold text-2xl text-s-ink">{display}</p>
+      <p className="text-xs text-s-ink/40 mt-0.5 leading-tight">{label}</p>
     </motion.div>
   );
 }
@@ -146,8 +146,8 @@ export default function DashboardPage() {
       </AnimatePresence>
 
       <div className="mb-6">
-        <h1 className="font-heading font-bold text-2xl text-dark">Übersicht</h1>
-        <p className="text-sm text-dark/40 mt-0.5">{today}</p>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Übersicht</h1>
+        <p className="text-sm text-s-ink/40 mt-0.5">{today}</p>
       </div>
 
       {loading ? (
@@ -164,7 +164,7 @@ export default function DashboardPage() {
             >
               {[
                 { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.bookings, sparklineColor: "#E8624A" },
-                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-dark", bg: "bg-dark/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1209" },
+                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-s-ink", bg: "bg-dark/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1209" },
                 { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.new_customers, sparklineColor: "#D4870A" },
                 { label: "Bewertung", value: Math.round(stats.average_rating * 10), Icon: Star, color: "text-amber-400", bg: "bg-amber-50", isRating: true, sparklineData: stats.trends?.rating, sparklineColor: "#F59E0B" },
               ].map((s) => (
@@ -176,13 +176,13 @@ export default function DashboardPage() {
           {/* Alerts */}
           {stats && (stats.low_slots_warning || stats.pending_cancellations > 0 || stats.verification_overdue) && (
             <div className="space-y-2">
-              <h2 className="text-xs font-medium text-dark/40 uppercase tracking-wide">Handlungsbedarf</h2>
+              <h2 className="text-xs font-medium text-s-ink/40 uppercase tracking-wide">Handlungsbedarf</h2>
               {stats.verification_overdue && (
                 <div className="bg-s-coral/5 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
                   <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-dark">Verifizierung überfällig</p>
-                    <p className="text-xs text-dark/50">Dein Salon wurde seit über 90 Tagen nicht verifiziert.</p>
+                    <p className="text-sm font-medium text-s-ink">Verifizierung überfällig</p>
+                    <p className="text-xs text-s-ink/50">Dein Salon wurde seit über 90 Tagen nicht verifiziert.</p>
                   </div>
                   <a href={`/${locale}/dashboard/settings?tab=verification`} className="text-xs text-s-coral font-medium">Verifizieren →</a>
                 </div>
@@ -191,8 +191,8 @@ export default function DashboardPage() {
                 <div className="bg-s-coral/5 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-3">
                   <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-dark">Wenig freie Slots</p>
-                    <p className="text-xs text-dark/50">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
+                    <p className="text-sm font-medium text-s-ink">Wenig freie Slots</p>
+                    <p className="text-xs text-s-ink/50">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
                   </div>
                   <a href={`/${locale}/dashboard/calendar`} className="text-xs text-s-coral font-medium">Erstellen →</a>
                 </div>
@@ -201,7 +201,7 @@ export default function DashboardPage() {
                 <div className="bg-amber-50 border border-amber-200 rounded-card px-4 py-3 flex items-center gap-3">
                   <AlertTriangle size={16} className="text-amber-500 shrink-0" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-dark">{stats.pending_cancellations} Stornierungsanfragen</p>
+                    <p className="text-sm font-medium text-s-ink">{stats.pending_cancellations} Stornierungsanfragen</p>
                   </div>
                   <a href={`/${locale}/dashboard/bookings?status=cancelled`} className="text-xs text-s-coral font-medium">Anzeigen →</a>
                 </div>
@@ -218,8 +218,8 @@ export default function DashboardPage() {
                   <MessageCircle size={18} className="text-s-coral" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-dark">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
-                  <p className="text-xs text-dark/40">Jetzt antworten →</p>
+                  <p className="text-sm font-medium text-s-ink">{unread} ungelesene Nachricht{unread > 1 ? "en" : ""}</p>
+                  <p className="text-xs text-s-ink/40">Jetzt antworten →</p>
                 </div>
               </div>
             </a>
@@ -228,11 +228,11 @@ export default function DashboardPage() {
           {/* Today's bookings */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xs font-medium text-dark/40 uppercase tracking-wide">Heute</h2>
+              <h2 className="text-xs font-medium text-s-ink/40 uppercase tracking-wide">Heute</h2>
               <a href={`/${locale}/dashboard/bookings`} className="text-xs text-s-coral hover:underline">Alle →</a>
             </div>
             {bookings.length === 0 ? (
-              <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/30">
+              <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-s-ink/30">
                 <Calendar size={28} className="mx-auto mb-2 opacity-30" />
                 <p className="text-sm">Keine Termine heute</p>
               </div>
@@ -244,8 +244,8 @@ export default function DashboardPage() {
                       {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-dark truncate">{b.customer_name}</p>
-                      <p className="text-xs text-dark/40 truncate">{b.service_name}</p>
+                      <p className="text-sm font-medium text-s-ink truncate">{b.customer_name}</p>
+                      <p className="text-xs text-s-ink/40 truncate">{b.service_name}</p>
                     </div>
                     {b.is_first_visit && (
                       <span className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-[10px] font-bold shrink-0">
@@ -260,7 +260,7 @@ export default function DashboardPage() {
 
           {/* Quick actions */}
           <div>
-            <h2 className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-3">Schnellaktionen</h2>
+            <h2 className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-3">Schnellaktionen</h2>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: "Termin erstellen", href: `/${locale}/dashboard/calendar`, Icon: Plus },
@@ -270,7 +270,7 @@ export default function DashboardPage() {
                 <a key={href} href={href}
                   className="bg-white rounded-card border border-s-ink/5 p-3 flex flex-col items-center gap-2 text-center hover:border-s-coral transition-colors">
                   <Icon size={18} className="text-s-coral" />
-                  <p className="text-xs text-dark/60 leading-tight">{label}</p>
+                  <p className="text-xs text-s-ink/60 leading-tight">{label}</p>
                 </a>
               ))}
             </div>

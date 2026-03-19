@@ -46,7 +46,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
       <div className="space-y-4">
         {/* Description */}
         <div>
-          <label htmlFor="offer-description" className="block text-sm font-medium text-dark dark:text-s-dm-text mb-1">
+          <label htmlFor="offer-description" className="block text-sm font-medium text-s-ink dark:text-s-dm-text mb-1">
             Beschreibung
           </label>
           <input
@@ -62,11 +62,11 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
 
         {/* Price */}
         <div>
-          <label htmlFor="offer-amount" className="block text-sm font-medium text-dark dark:text-s-dm-text mb-1">
+          <label htmlFor="offer-amount" className="block text-sm font-medium text-s-ink dark:text-s-dm-text mb-1">
             Preis (CHF)
           </label>
           <div className="relative">
-            <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30 dark:text-s-dm-text/30" />
+            <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
             <input
               id="offer-amount"
               type="number"
@@ -87,7 +87,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
         <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={handleClose}
-            className="px-4 py-2 text-sm rounded-button border border-s-ink/10 dark:border-gray-700 text-dark/60 dark:text-s-dm-text/60 hover:text-dark dark:hover:text-s-dm-text transition-colors"
+            className="px-4 py-2 text-sm rounded-button border border-s-ink/10 dark:border-gray-700 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
           >
             Abbrechen
           </button>

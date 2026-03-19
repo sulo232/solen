@@ -49,18 +49,18 @@ export default function SolenDatePicker({
       isDateUnavailable={isDateUnavailable}
       className={cn("flex flex-col gap-1", className)}
     >
-      <Label className="text-xs font-medium text-dark/60 font-body">{label}</Label>
+      <Label className="text-xs font-medium text-s-ink/60 font-body">{label}</Label>
       <Group className="flex items-center rounded-button border border-s-ink/10 bg-white px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-all">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
               segment={segment}
-              className="rounded px-0.5 tabular-nums data-text text-dark outline-none focus:bg-s-coral/10 focus:text-s-coral placeholder-shown:text-dark/40"
+              className="rounded px-0.5 tabular-nums data-text text-s-ink outline-none focus:bg-s-coral/10 focus:text-s-coral placeholder-shown:text-s-ink/40"
             />
           )}
         </DateInput>
         <Button className="ml-2 p-1 rounded hover:bg-s-bg-sunken transition-colors">
-          <CalendarIcon className="w-4 h-4 text-dark/40" />
+          <CalendarIcon className="w-4 h-4 text-s-ink/40" />
         </Button>
       </Group>
       <Popover
@@ -73,20 +73,20 @@ export default function SolenDatePicker({
                 slot="previous"
                 className="p-1.5 rounded-button hover:bg-s-bg-sunken transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-dark/60" />
+                <ChevronLeft className="w-4 h-4 text-s-ink/60" />
               </Button>
-              <Heading className="text-sm font-heading font-semibold text-dark" />
+              <Heading className="text-sm font-heading font-semibold text-s-ink" />
               <Button
                 slot="next"
                 className="p-1.5 rounded-button hover:bg-s-bg-sunken transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-dark/60" />
+                <ChevronRight className="w-4 h-4 text-s-ink/60" />
               </Button>
             </header>
             <CalendarGrid className="w-full">
               <CalendarGridHeader>
                 {(day) => (
-                  <CalendarHeaderCell className="text-[10px] font-medium text-dark/40 pb-2 w-9 text-center">
+                  <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-9 text-center">
                     {day}
                   </CalendarHeaderCell>
                 )}
@@ -99,9 +99,9 @@ export default function SolenDatePicker({
                       cn(
                         "w-9 h-9 flex items-center justify-center rounded-button text-sm data-text transition-colors cursor-pointer outline-none",
                         isSelected && "bg-s-coral text-white font-semibold",
-                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-dark",
-                        isUnavailable && "text-dark/20 bg-s-bg-sunken cursor-default line-through",
-                        isDisabled && !isUnavailable && "text-dark/20 cursor-default",
+                        !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
+                        isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
+                        isDisabled && !isUnavailable && "text-s-ink/20 cursor-default",
                         isFocusVisible && "ring-2 ring-s-coral ring-offset-1"
                       )
                     }
