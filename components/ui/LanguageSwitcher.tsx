@@ -11,13 +11,6 @@ const LOCALE_LABELS: Record<string, string> = {
   it: "IT",
 };
 
-const LOCALE_FLAGS: Record<string, string> = {
-  de: "DE",
-  en: "EN",
-  fr: "FR",
-  it: "IT",
-};
-
 export default function LanguageSwitcher({ locale }: { locale: string }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -70,7 +63,6 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
                   : "text-s-ink/70 hover:bg-s-bg-surface dark:text-s-dm-text/70 dark:hover:bg-white/5"
               }`}
             >
-              <span>{LOCALE_FLAGS[key]}</span>
               <span>{label}</span>
             </button>
           ))}
