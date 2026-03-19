@@ -86,87 +86,96 @@ export async function middleware(request: NextRequest) {
   // Step 2: Supabase session refresh on every request
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Safety check — if env vars are missing, skip auth but don't crash
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("[middleware] MISSING ENV VARS:", { supabaseUrl: !!supabaseUrl, supabaseKey: !!supabaseKey });
+    return response;
+  }
+
+  try {
+    const supabase = createServerClient(
+      supabaseUrl,
+      supabaseKey,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            );
+            response = NextResponse.next({ request });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
+      }
+    );
+
+    // Verify user JWT server-side
+    const { data } = await supabase.auth.getUser();
+    const user = data?.user ?? null;
+
+    // ── Auth guards for dashboard routes ──
+    const currentLocale = locales.find(
+      (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
+    );
+
+    if (currentLocale && pathname.startsWith(`/${currentLocale}/dashboard`)) {
+      if (!user) {
+        const url = request.nextUrl.clone();
+        url.pathname = `/${currentLocale}/auth/login`;
+        url.searchParams.set("redirect", pathname);
+        const redirect = NextResponse.redirect(url);
+        response.cookies.getAll().forEach((cookie) => {
+          redirect.cookies.set(cookie.name, cookie.value);
+        });
+        return redirect;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      const role = profile?.role;
+
+      if (role !== "salon_owner" && role !== "admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = `/${currentLocale}`;
+        const redirect = NextResponse.redirect(url);
+        response.cookies.getAll().forEach((cookie) => {
+          redirect.cookies.set(cookie.name, cookie.value);
+        });
+        return redirect;
+      }
+
+      const adminOnlyPaths = [
+        "/all-salons", "/all-users", "/platform-analytics",
+        "/badge-manager", "/content-editor", "/segments",
+        "/revenue", "/review-moderation", "/approvals",
+      ];
+      const dashboardSubpath = pathname.slice(`/${currentLocale}/dashboard`.length);
+      const isAdminRoute = adminOnlyPaths.some((p) => dashboardSubpath.startsWith(p));
+
+      if (isAdminRoute && role !== "admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = `/${currentLocale}`;
+        const redirect = NextResponse.redirect(url);
+        response.cookies.getAll().forEach((cookie) => {
+          redirect.cookies.set(cookie.name, cookie.value);
+        });
+        return redirect;
+      }
     }
-  );
-
-  // Verify user JWT server-side (secure — unlike getSession which only reads without verification)
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // ── Auth guards for dashboard routes ──
-  const currentLocale = locales.find(
-    (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
-  );
-
-  if (currentLocale && pathname.startsWith(`/${currentLocale}/dashboard`)) {
-    // No session → redirect to login
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = `/${currentLocale}/auth/login`;
-      url.searchParams.set("redirect", pathname);
-      const redirect = NextResponse.redirect(url);
-      // Carry over any auth cookies that were refreshed
-      response.cookies.getAll().forEach((cookie) => {
-        redirect.cookies.set(cookie.name, cookie.value);
-      });
-      return redirect;
-    }
-
-    // Fetch user role from profiles table
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    const role = profile?.role;
-
-    // Must be salon_owner or admin to access dashboard
-    if (role !== "salon_owner" && role !== "admin") {
-      const url = request.nextUrl.clone();
-      url.pathname = `/${currentLocale}`;
-      const redirect = NextResponse.redirect(url);
-      response.cookies.getAll().forEach((cookie) => {
-        redirect.cookies.set(cookie.name, cookie.value);
-      });
-      return redirect;
-    }
-
-    // Admin-only routes
-    const adminOnlyPaths = [
-      "/all-salons", "/all-users", "/platform-analytics",
-      "/badge-manager", "/content-editor", "/segments",
-      "/revenue", "/review-moderation", "/approvals",
-    ];
-    const dashboardSubpath = pathname.slice(`/${currentLocale}/dashboard`.length);
-    const isAdminRoute = adminOnlyPaths.some((p) => dashboardSubpath.startsWith(p));
-
-    if (isAdminRoute && role !== "admin") {
-      const url = request.nextUrl.clone();
-      url.pathname = `/${currentLocale}`;
-      const redirect = NextResponse.redirect(url);
-      response.cookies.getAll().forEach((cookie) => {
-        redirect.cookies.set(cookie.name, cookie.value);
-      });
-      return redirect;
-    }
+  } catch (err) {
+    console.error("[middleware] Auth error:", err);
   }
 
   return response;
