@@ -70,7 +70,7 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto pt-20 pb-8 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
         <h1 className="font-heading font-bold text-2xl text-dark mb-6">Nachrichten</h1>
 
         <div className="flex gap-4 h-[calc(100vh-160px)]">

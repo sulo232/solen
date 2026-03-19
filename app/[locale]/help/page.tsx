@@ -53,7 +53,7 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-gradient-to-b from-s-coral/5 via-white to-transparent pt-24 pb-8">
+      <div className="bg-gradient-to-b from-s-coral/5 via-white to-transparent pt-8 pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
             <BookOpen size={28} className="text-s-coral" />

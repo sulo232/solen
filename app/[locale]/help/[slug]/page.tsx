@@ -51,7 +51,7 @@ export default function HelpArticlePage() {
 
   if (notFound || !article) {
     return (
-      <div className="min-h-screen bg-white pt-24 px-4">
+      <div className="min-h-screen bg-white pt-8 px-4">
         <div className="max-w-3xl mx-auto">
           <EmptyState
             icon={BookOpen}
@@ -73,7 +73,7 @@ export default function HelpArticlePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-24 pb-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-12">
         {/* Back link */}
         <Link
           href={`/${locale}/help`}

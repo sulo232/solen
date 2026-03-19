@@ -176,11 +176,11 @@ export default function WarumSolenPage() {
   const locale = useLocale();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-dm-bg pt-16">
+    <div className="min-h-screen bg-white dark:bg-dm-bg">
       {/* ── Section 0: Hero ── */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         {/* Radial gradient background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(56,178,172,0.12)_0%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,_rgba(56,178,172,0.08)_0%,_transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.12)_0%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.08)_0%,_transparent_70%)]" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-dark dark:text-dm-text leading-tight">
             Was <span className="text-s-coral">Solen</span> anders macht

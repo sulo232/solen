@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function DatenschutzPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-dm-bg pt-24 pb-16">
+    <div className="min-h-screen bg-white dark:bg-dm-bg pt-8 pb-16">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <h1 className="font-heading font-bold text-3xl text-dark dark:text-dm-text mb-8">
           Datenschutzerklärung

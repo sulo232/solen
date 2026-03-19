@@ -261,7 +261,7 @@ export default function SalonProfilePage() {
       <JsonLd salon={salon} />
       <div className="min-h-screen bg-white">
         {/* Breadcrumb */}
-        <nav className="max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-2 text-xs text-dark/40">
+        <nav className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2 text-xs text-dark/40">
           <Link href={`/${locale}`} className="hover:text-s-coral">Home</Link>
           <ChevronRight className="inline w-3 h-3 mx-1" />
           {salon.categories[0] && (

@@ -110,7 +110,7 @@ export default function LastMinutePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-gradient-to-b from-coral/8 via-white to-transparent pt-24 pb-6">
+      <div className="bg-gradient-to-b from-s-coral/8 via-white to-transparent pt-8 pb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <h1 className="font-heading font-bold text-2xl sm:text-4xl text-dark">

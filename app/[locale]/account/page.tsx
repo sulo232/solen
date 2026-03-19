@@ -543,7 +543,7 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-20 pb-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-12">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
