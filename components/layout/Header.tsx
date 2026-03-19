@@ -39,7 +39,6 @@ const CATEGORY_ICONS: Record<string, { icon: typeof Scissors; label: string }> =
 export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const t = useTranslations("navigation");
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -59,13 +58,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (isHidden) return;
-    const handler = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, [isHidden]);
-
   if (isHidden) return null;
 
   // Detect current category for sub-site icon
@@ -78,23 +70,19 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   // Profile link: redirect to login if not logged in
   const profileHref = isLoggedIn ? `/${locale}/profile` : `/${locale}/auth/login`;
 
-  // Glass nav token from roadmap
-  const base = "bg-white/80 backdrop-blur-lg border-b border-gray-100 dark:bg-dm-surface/80 dark:border-white/5";
-  const shrunk = scrolled ? "py-2" : "py-3";
-
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${base} ${shrunk}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+    <header className="sticky top-4 z-50 mx-auto max-w-3xl px-4">
+      <div className="glass rounded-full shadow-warm-sm py-2.5 px-4 sm:px-6 flex items-center justify-between dark:bg-s-dm-surface/80 dark:border-white/5">
         {/* Logo + Sub-site icon */}
         <div className="flex items-center gap-2 shrink-0">
           <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
-            <span className="font-heading font-bold text-xl text-dark dark:text-dm-text tracking-tight">
-              solen<span className="text-teal">.</span>ch
+            <span className="font-display text-2xl tracking-[0.06em] uppercase text-s-ink dark:text-s-dm-text">
+              so<span className="text-s-coral">.</span>len
             </span>
           </Link>
           {CategoryIcon && categoryInfo && (
-            <div className="flex items-center gap-1.5 text-teal ml-1">
-              <span className="text-dark/20">|</span>
+            <div className="flex items-center gap-1.5 text-s-coral ml-1">
+              <span className="text-s-ink/20 dark:text-s-dm-text/20">|</span>
               <CategoryIcon size={18} />
               <span className="text-sm font-medium hidden sm:inline">{categoryInfo.label}</span>
             </div>
@@ -110,7 +98,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 key={key}
                 href={`/${locale}${href}`}
                 className={`text-sm font-medium transition-colors duration-150 ${
-                  isActive ? "text-teal" : "text-dark/70 hover:text-dark dark:text-dm-text/70 dark:hover:text-dm-text"
+                  isActive ? "text-s-coral" : "text-s-ink/70 hover:text-s-ink dark:text-s-dm-text/70 dark:hover:text-s-dm-text"
                 }`}
               >
                 {t(key)}
@@ -126,16 +114,16 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
           {/* Messages with unread dot */}
           <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center" id="tour-messages" aria-label="Nachrichten">
-            <MessageCircle className="w-5 h-5 text-dark/70 dark:text-dm-text/70" />
+            <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-coral" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
             )}
           </Link>
 
           {/* Account */}
           <Link
             href={profileHref}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-button bg-teal text-white text-sm font-medium hover:bg-teal/90 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-full bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors"
             aria-label="Konto"
           >
             <User className="w-4 h-4" />
@@ -145,7 +133,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-dark/70 dark:text-dm-text/70"
+            className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
             aria-label={mobileOpen ? "Menü schliessen" : "Menü öffnen"}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -155,22 +143,22 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-lg dark:bg-dm-surface/95 dark:border-white/5">
-          <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
+        <div className="md:hidden mt-2 rounded-2xl border border-s-ink/5 bg-s-bg-base/95 backdrop-blur-lg dark:bg-s-dm-surface/95 dark:border-white/5 shadow-warm-md overflow-hidden">
+          <nav className="px-4 py-4 flex flex-col gap-3">
             {NAV_LINKS.map(({ key, href }) => (
               <Link
                 key={key}
                 href={`/${locale}${href}`}
                 onClick={() => setMobileOpen(false)}
-                className="text-sm font-medium text-dark/70 hover:text-teal transition-colors py-1 min-h-12 flex items-center"
+                className="text-sm font-medium text-s-ink/70 hover:text-s-coral transition-colors py-1 min-h-12 flex items-center"
               >
                 {t(key)}
               </Link>
             ))}
-            <div className="pt-2 border-t border-gray-100">
+            <div className="pt-2 border-t border-s-ink/5 dark:border-white/5">
               <Link
                 href={profileHref}
-                className="text-sm font-medium text-dark/70 hover:text-teal transition-colors min-h-12 flex items-center"
+                className="text-sm font-medium text-s-ink/70 hover:text-s-coral transition-colors min-h-12 flex items-center"
                 onClick={() => setMobileOpen(false)}
               >
                 {isLoggedIn ? t("account") : t("login")}

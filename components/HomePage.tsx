@@ -68,7 +68,7 @@ const CATEGORIES = [
 
 const QUARTIERS = [
   { slug: "grossbasel",  name: "Grossbasel",  bg: "from-s-coral/40 to-s-coral/10"   },
-  { slug: "kleinbasel",  name: "Kleinbasel",  bg: "from-coral/40 to-coral/10" },
+  { slug: "kleinbasel",  name: "Kleinbasel",  bg: "from-s-coral/40 to-s-coral/10" },
   { slug: "gundeli",     name: "Gundeli",     bg: "from-s-coral/30 to-blue-200"  },
   { slug: "st_johann",   name: "St. Johann",  bg: "from-amber-300/40 to-amber-100/10" },
   { slug: "iselin",      name: "Iselin",      bg: "from-purple-300/40 to-purple-100/10" },
@@ -422,7 +422,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-2xl bg-gradient-to-r from-coral/5 to-coral/10 border border-s-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+              className="rounded-2xl bg-gradient-to-r from-s-coral/5 to-s-coral/10 border border-s-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
             >
               <div className="flex-1">
                 <p
@@ -450,9 +450,6 @@ export default function HomePage() {
             <div>
               <span
                 className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body bg-s-coral/[0.125] text-s-coral"
-                style={{
-                  fontFamily: "DM Sans, sans-serif",
-                }}
               >
                 DEIN QUARTIER
               </span>
