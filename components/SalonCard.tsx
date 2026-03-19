@@ -75,7 +75,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       variants={cardPopIn}
       initial="hidden"
       animate="visible"
-      whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(0,0,0,0.12)" }}
+      whileHover={
+        typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? {}
+          : { y: -4, borderRadius: "32% 68% 60% 40% / 50% 40% 60% 50%", boxShadow: "0 12px 32px rgba(26,18,9,0.10)" }
+      }
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={`will-change-transform ${solenTier === "gold" ? "ring-2 ring-yellow-400/50 rounded-card" : ""}`}
       onMouseEnter={() => router.prefetch(href)}
