@@ -71,7 +71,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, onCreateOff
       {/* Lightbox */}
       {lightboxUrl && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-s-ink/80 flex items-center justify-center p-4"
           onClick={() => setLightboxUrl(null)}
         >
           <button
