@@ -163,5 +163,82 @@ Body default = `font-body` (set on `<body>`). You don't need `font-body` class u
 ## 17. Currency Formatting
 Always use `formatCurrency(amount, locale)` from `@/lib/format-currency` instead of hardcoded `CHF {amount}`. Pass `locale` from `useLocale()` in client components or from `params` in server components.
 
+## 18. Typography & Color Usage Guide (Design System v1.0)
+
+### Font Hierarchy — Which Font Where
+
+| Context | Font | Class | Weight | Size | Extra Rules |
+|---|---|---|---|---|---|
+| Homepage hero heading | Bebas Neue | `font-display` | — | `clamp(64px, 9vw, 140px)` | Always uppercase. Line-height 0.88. Stack in 1-4 word lines. |
+| Section numbers (01, 02) | Bebas Neue | `font-display` | — | 64px (`--s-text-4xl`) | Always uppercase. Letter-spacing 0.04em. |
+| Category page hero | Bebas Neue | `font-display` | — | 96px (`--s-text-5xl`) | Only for hero text. Drop to Syne at ≤48px. |
+| Page-level headings | Syne | `font-heading` | 800 | 48px (`--s-text-3xl`) | Letter-spacing -0.02em. Never italic. |
+| Section titles | Syne | `font-heading` | 800 | 32px (`--s-text-2xl`) | |
+| Card headings, modal titles | Syne | `font-heading` | 700 | 24px (`--s-text-xl`) | |
+| Nav links | DM Sans | `font-body` | 400 | 13px (`--s-text-sm`) | |
+| Lead text, intro paragraphs | DM Sans | `font-body` | 500 | 18px (`--s-text-lg`) | |
+| All body text | DM Sans | `font-body` | 400 | 16px (`--s-text-base`) | Line-height 1.75-1.85. |
+| Hero descriptions, pull quotes | DM Sans | `font-body` | 300 italic | 16px | Use `italic` + weight 300 for contrast. |
+| Captions, metadata, tags | DM Sans | `font-body` | 400 | 13px (`--s-text-sm`) | |
+| Labels, eyebrows, badges | Syne or DM Sans | `font-heading` or `font-body` | 700 or 600 | 11px (`--s-text-xs`) | Uppercase. Letter-spacing 0.12em. |
+| Prices, ratings, counters | DM Sans | `data-text` | 500 | varies | Always `tabular-nums`. |
+| Dashboard headings | Syne | `font-heading` | 700 | varies | Never use Bebas Neue in dashboard. |
+
+**Rules:**
+- Bebas Neue NEVER appears below 40px
+- Bebas Neue is ALWAYS uppercase (add `uppercase` class)
+- Syne is NEVER italic
+- DM Sans italic is ONLY for hero descriptions and pull quotes
+- Dashboard/admin pages: only Syne 700 for headings, DM Sans for everything else. No Bebas Neue.
+
+### Color Usage — Which Color Where
+
+| UI Element | Light Mode | Dark Mode | Notes |
+|---|---|---|---|
+| Primary CTA buttons | `bg-s-coral` + `text-white` | Same | Hover: `bg-s-coral-hover` |
+| Secondary CTA buttons | `bg-s-amber` + `text-white` | Same | Hover: `bg-s-amber-hover` |
+| Accent elements, map pins | `text-s-blue` or `bg-s-blue` | Same | Hover: `bg-s-blue-hover` |
+| Spa/wellness category tags | `bg-s-sage-subtle` + `text-s-sage-text` | `bg-s-sage-subtle` + `text-s-sage-text` | |
+| "Top Rated" / "Neu" badges | `bg-s-yellow-subtle` + `text-s-yellow-text` | Same | |
+| Category tags (general) | `bg-s-coral-subtle` + `text-s-coral-text` | Same | Use `-text` variant for WCAG AA |
+| Dark depth blocks, dividers | `bg-s-plum` + `text-white` | `bg-s-plum-subtle` + `text-s-plum-text` | Plum inverts in dark mode |
+| Supporting warm surfaces | `bg-s-sand-subtle` | `bg-s-sand-subtle` | Warm fill for secondary cards |
+| Headings (large) | `text-s-ink` | `dark:text-s-dm-text` | |
+| Body text | `text-s-ink-secondary` or `text-s-ink` | `dark:text-s-dm-text` | |
+| Captions, metadata | `text-s-ink-tertiary` | `dark:text-s-dm-text/50` | |
+| Disabled states | `text-s-ink-disabled` | `dark:text-s-dm-text/30` | + `opacity-40` + `pointer-events-none` |
+| Success states | `bg-s-success-bg` + `text-s-success` | Same tokens auto-adjust | |
+| Error states | `bg-s-error-bg` + `text-s-error` | Same tokens auto-adjust | |
+| Warning states | `bg-s-warning-bg` + `text-s-warning` | Same tokens auto-adjust | |
+
+**WCAG Color Rules:**
+- `text-s-coral` (#E8624A) on cream FAILS AA for body text (<18px). Use `text-s-coral-text` (#7A2415) instead.
+- `text-s-coral` is OK for: icons, badges, headings ≥18px bold, buttons (white bg).
+- Every `*-subtle` background has a matching `*-text` color that passes AA. Always pair them.
+
+### Shadow Usage
+
+| Context | Token |
+|---|---|
+| Cards at rest | `shadow-card` |
+| Cards on hover | `shadow-card-hover` |
+| Buttons, small elevations | `shadow-warm-sm` |
+| Active dropdowns, popovers | `shadow-warm-md` |
+| Modals, sheets, floating panels | `shadow-warm-lg` |
+| Hero floating elements | `shadow-warm-float` |
+| Glassmorphism panels | `shadow-glass` |
+| CTA pulse effect | `shadow-coral-glow` |
+
+### Zone Guidelines (Design Thinking)
+
+These are NOT enforced in code but guide design decisions:
+
+| Zone | Pages | Typography | Colors | Animation | Shapes |
+|---|---|---|---|---|---|
+| 1 — Maximalist | Homepage, discovery, category pages | All three fonts | Full palette, full saturation | Hover effects active | `rounded-card`, `rounded-pill` |
+| 2 — Soft | Salon profiles, search results, reviews | Syne + DM Sans | Full palette | Hover effects only | `rounded-card` |
+| 3 — Functional | Booking, payment, auth, login | Syne + DM Sans | Coral CTA + cream base only | ZERO animation | `rounded-button`, `rounded-card` |
+| 4 — Structured | Dashboard, admin, calendar, settings | Syne 700 + DM Sans | Palette on borders/icons only | ZERO animation | `rounded-card` max |
+
 ---
 **Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules, you must **refuse the specific contradiction** and implement the component using these rules instead.
