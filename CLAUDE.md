@@ -719,4 +719,73 @@ Before writing ANY phase:
 4. **Read `_tasks/completed/`** for past decisions that affect the new feature
 5. **Verify all imports/components/APIs** referenced in the roadmap actually exist
 
+---
+
+## 13. 🎨 DESIGN TOKEN CONSISTENCY RULES (MANDATORY)
+
+> **CONTEXT**: A full codebase scan on 2026-03-19 revealed 1,008 refs of `text-dark` (legacy token) vs 9 refs of `text-s-ink` (design system token). Both resolved to the same hex, but the naming inconsistency made the codebase unmaintainable. These rules prevent this from happening again.
+
+### Rule 20: BANNED TOKEN LIST — NEVER USE THESE
+
+The following CSS classes are BANNED. If you write ANY of these, the code is wrong. No exceptions.
+
+| ❌ BANNED | ✅ USE INSTEAD | Why |
+|---|---|---|
+| `text-dark` (any opacity) | `text-s-ink` / `text-s-ink/50` etc. | Legacy token, use design system |
+| `bg-dark` (any opacity) | `bg-s-ink` / `bg-s-ink/40` etc. | Legacy token |
+| `border-dark` | `border-s-ink/10` | Legacy token |
+| `bg-black` | `bg-s-ink` | Violates warm palette rule |
+| `bg-gray-*` | `bg-s-bg-surface` / `bg-s-sand` | Cold gray, use warm |
+| `text-gray-*` | `text-s-ink/*` (opacity) | Cold gray, use warm |
+| `border-gray-*` | `border-s-ink/*` (opacity) | Cold gray, use warm |
+| `dark:bg-dm-*` | `dark:bg-s-dm-*` | Missing `s-` prefix |
+| `dark:text-dm-*` | `dark:text-s-dm-*` | Missing `s-` prefix |
+| `dark:border-dm-*` | `dark:border-s-dm-*` | Missing `s-` prefix |
+| `dark:text-white` (on non-buttons) | `dark:text-s-dm-text` | Use warm off-white |
+| `dark:bg-black` | `dark:bg-s-dm-bg` | Use warm dark |
+| `shadow-teal-glow` | `shadow-warm-sm` | Old branding |
+| `bg-mesh-teal` | `bg-s-bg-base` | Old branding |
+| `accent-teal` | `accent-s-coral` | Old branding |
+| Any emoji in JSX | Lucide React icon | UI_RULES: no emoji |
+
+**Enforcement**: After EVERY commit, run:
+```bash
+grep -Ern "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-gray-|dark:bg-dm-|dark:text-dm-|shadow-teal|accent-teal|bg-mesh-teal" components/ app/ --include="*.tsx" | grep -v "node_modules\|darkMode\|//\|s-dm\|s-ink" | head -5
+```
+If this returns ANY results, fix them before pushing.
+
+### Rule 21: DESIGN TOKEN VALIDATION — BEFORE EVERY COMMIT
+
+Before committing ANY `.tsx` file change, you MUST verify:
+
+1. **No banned tokens introduced** (Run the grep from Rule 20)
+2. **Every `bg-white` has a `dark:bg-s-dm-*` pair** (unless on a coral button)
+3. **Every `text-s-ink` has a `dark:text-s-dm-text` pair** (for primary text)
+4. **No hardcoded hex colors** — all colors must use tailwind.config tokens
+5. **No hardcoded `CHF`** — use `formatCurrency()` from `lib/format-currency.ts`
+6. **No new `style={{}}` for values achievable with Tailwind**
+
+```bash
+# Quick validation script — run after every commit:
+echo "=== Banned tokens ===" && \
+grep -Ercn "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-" components/ app/ --include="*.tsx" | grep -v "s-ink\|s-dm\|darkMode" | wc -l && \
+echo "=== Hardcoded hex ===" && \
+grep -Ern "#[0-9a-fA-F]{3,6}" components/ --include="*.tsx" | grep -v "//\|import\|svg" | wc -l && \
+echo "=== All should be 0 ==="
+```
+
+### Rule 22: NEW TOKENS REQUIRE UI_RULES.md DOCUMENTATION
+
+If you add ANY new:
+- Color token to `tailwind.config.js`
+- Custom utility class (like `rounded-card`, `shadow-glass`)
+- Font family or typography class
+- z-index value
+
+You MUST also update `UI_RULES.md` with:
+1. The token name, value, and purpose
+2. Which components should use it
+3. What it replaces (if deprecating an old token)
+
+**Never introduce a parallel naming system.** Before creating a new token, check if an existing one serves the same purpose. If `s-ink` already means `#1A1209`, don't create `dark` with the same value.
 
