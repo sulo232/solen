@@ -133,12 +133,10 @@ export default function Footer() {
         <TrustBadges />
 
         {/* Divider */}
-        <div className="border-t border-white/10 pt-6">
+        <div className="border-t border-s-dm-text/10 pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <span
-              className="font-heading font-bold text-xl text-white"
-            >
-              solen.ch
+            <span className="font-display text-3xl tracking-[0.06em] uppercase text-white">
+              so<span className="text-s-coral">.</span>len
             </span>
             <p
               className="text-xs text-white/40 text-center font-body"
