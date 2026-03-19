@@ -4,6 +4,7 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
 // Force dynamic — uses request.headers for rate limiting
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   try {
