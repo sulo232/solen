@@ -36,9 +36,9 @@ module.exports = {
           500: "#1A1209",
         },
         // Dark mode surfaces (legacy)
-        "dm-bg": "#0F0F1A",
-        "dm-surface": "#1A1A2E",
-        "dm-text": "#E2E8F0",
+        "dm-bg": "#151009",
+        "dm-surface": "#1E1710",
+        "dm-text": "#F5EEE4",
         // ── Solen v2 Brand Tokens ──
         "s-coral": { DEFAULT: "#E8624A", hover: "#CC4E35", subtle: "#FAECE7", text: "#7A2415" },
         "s-amber": { DEFAULT: "#D4870A", hover: "#B3700A", subtle: "#FEF4E0", text: "#6B4005" },
