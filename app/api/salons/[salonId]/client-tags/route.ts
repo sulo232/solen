@@ -18,22 +18,22 @@ const deleteTagSchema = z.object({
   tag_id: z.string().uuid(),
 });
 
-// GET /api/salons/[slug]/client-tags?customer_id=X — Get tags for a client
-export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+// GET /api/salons/[salonId]/client-tags?customer_id=X — Get tags for a client
+export async function GET(req: NextRequest, { params }: { params: Promise<{ salonId: string }> }) {
+  const { salonId } = await params;
 
   const disabled = await checkFeatureEnabled("bookings");
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Verify salon ownership
   const { data: salon } = await supabase
     .from("salons")
     .select("id")
-    .eq("id", slug)
+    .eq("id", salonId)
     .eq("owner_id", user.id)
     .single();
 
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   const query = supabase
     .from("client_tags")
     .select("*")
-    .eq("salon_id", slug)
+    .eq("salon_id", salonId)
     .order("created_at", { ascending: true });
 
   if (customerId) {
@@ -61,15 +61,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   });
 }
 
-// POST /api/salons/[slug]/client-tags — Add a tag
-export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+// POST /api/salons/[salonId]/client-tags — Add a tag
+export async function POST(req: NextRequest, { params }: { params: Promise<{ salonId: string }> }) {
+  const { salonId } = await params;
 
   const disabled = await checkFeatureEnabled("bookings");
   if (disabled) return disabled;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const { data: salon } = await supabase
     .from("salons")
     .select("id")
-    .eq("id", slug)
+    .eq("id", salonId)
     .eq("owner_id", user.id)
     .single();
 
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   const { data: tag, error } = await supabase
     .from("client_tags")
     .insert({
-      salon_id: slug,
+      salon_id: salonId,
       customer_id: data.customer_id,
       tag: data.tag,
       color,
@@ -118,12 +118,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ slu
   return NextResponse.json({ tag }, { status: 201 });
 }
 
-// DELETE /api/salons/[slug]/client-tags — Remove a tag
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+// DELETE /api/salons/[salonId]/client-tags — Remove a tag
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ salonId: string }> }) {
+  const { salonId } = await params;
 
   const supabase = await createServerSupabaseClient();
-  const { data: { session } } = await supabase.auth.getSession(); const user = session?.user ?? null;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const banned = await checkUserBanned(user.id);
@@ -137,7 +137,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
   const { data: salon } = await supabase
     .from("salons")
     .select("id")
-    .eq("id", slug)
+    .eq("id", salonId)
     .eq("owner_id", user.id)
     .single();
 
@@ -147,7 +147,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
     .from("client_tags")
     .delete()
     .eq("id", data.tag_id)
-    .eq("salon_id", slug);
+    .eq("salon_id", salonId);
 
   return NextResponse.json({ success: true });
 }

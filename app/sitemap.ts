@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase";
 
+// Force dynamic — uses cookies() via Supabase client
+export const dynamic = "force-dynamic";
+
 const APP_URL = "https://solen.ch";
 const LOCALES  = ["de", "en"] as const;
 

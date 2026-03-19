@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
-// Cache categories for 5 minutes (they rarely change)
-export const revalidate = 300;
+// Force dynamic — uses request.headers for rate limiting
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
