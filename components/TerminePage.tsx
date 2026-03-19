@@ -335,7 +335,7 @@ export default function TerminePage() {
                           </span>
                         </div>
 
-                        <div className="flex gap-2 mt-3 pt-3 border-t border-gray-50">
+                        <div className="flex gap-2 mt-3 pt-3 border-t border-s-ink/5">
                           {canCancel && (
                             <button
                               onClick={() => setCancelTarget(b)}
@@ -406,7 +406,7 @@ export default function TerminePage() {
                           </span>
                         </div>
                         {b.salon_slug && b.status !== "cancelled" && (
-                          <div className="mt-3 pt-3 border-t border-gray-50">
+                          <div className="mt-3 pt-3 border-t border-s-ink/5">
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
                               className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"

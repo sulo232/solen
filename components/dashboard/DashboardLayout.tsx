@@ -121,7 +121,7 @@ export default function DashboardLayout({
 
           {/* Salon identity */}
           {salonName && (
-            <div className="px-3 py-3 border-b border-gray-50 flex items-center gap-3">
+            <div className="px-3 py-3 border-b border-s-ink/5 flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center overflow-hidden shrink-0">
                 {salonAvatar ? (
                   <Image src={salonAvatar} alt="" width={32} height={32} className="object-cover w-full h-full" />

@@ -55,7 +55,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="z.B. Balayage mit Pflege"
-            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-button bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral"
             autoFocus
           />
         </div>
@@ -75,7 +75,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-button bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral"
             />
           </div>
         </div>
@@ -87,7 +87,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
         <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={handleClose}
-            className="px-4 py-2 text-sm rounded-button border border-s-ink/10 dark:border-gray-700 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+            className="px-4 py-2 text-sm rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
           >
             Abbrechen
           </button>

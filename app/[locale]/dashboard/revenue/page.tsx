@@ -193,7 +193,7 @@ export default function RevenuePage() {
           {/* Top salons table */}
           {data.top_salons.length > 0 && (
             <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-50">
+              <div className="px-5 py-4 border-b border-s-ink/5">
                 <h2 className="font-heading font-semibold text-s-ink text-sm">Top Salons</h2>
               </div>
               <table className="w-full text-sm">
@@ -208,7 +208,7 @@ export default function RevenuePage() {
                   {data.top_salons.map((salon, i) => (
                     <tr
                       key={salon.name}
-                      className="border-t border-gray-50 hover:bg-s-bg-surface/60 transition-colors"
+                      className="border-t border-s-ink/5 hover:bg-s-bg-surface/60 transition-colors"
                     >
                       <td className="px-5 py-3 flex items-center gap-2">
                         <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">

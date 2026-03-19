@@ -228,7 +228,7 @@ export default function AllUsersPage() {
                 </div>
 
                 {/* Bottom actions */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50 gap-2">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5 gap-2">
                   {/* Role pill */}
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-bold ${cls}`}>
                     <RoleIcon size={10} />

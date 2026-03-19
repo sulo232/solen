@@ -21,8 +21,8 @@ interface SolenScoreData {
 const TIER_CONFIG = {
   gold: { label: "Top Salon", color: "#D4AF37", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-700", Icon: Star },
   coral: { label: "Verifiziert", color: "#E8624A", bg: "bg-s-coral/5 dark:bg-s-coral/10", border: "border-s-coral/20 dark:border-s-coral/30", Icon: Shield },
-  grey: { label: "Aktiv", color: "#9CA3AF", bg: "bg-s-bg-surface dark:bg-gray-800", border: "border-s-ink/10 dark:border-gray-700", Icon: Circle },
-  dark: { label: "Starter", color: "#6B7280", bg: "bg-s-bg-surface dark:bg-gray-800", border: "border-s-ink/10 dark:border-gray-700", Icon: Circle },
+  grey: { label: "Aktiv", color: "#9CA3AF", bg: "bg-s-bg-surface dark:bg-s-dm-surface", border: "border-s-ink/10 dark:border-white/10", Icon: Circle },
+  dark: { label: "Starter", color: "#6B7280", bg: "bg-s-bg-surface dark:bg-s-dm-surface", border: "border-s-ink/10 dark:border-white/10", Icon: Circle },
 };
 
 const FACTOR_CONFIG = [
@@ -55,7 +55,7 @@ function ScoreMeter({ score, tier }: { score: number; tier: SolenScoreData["sole
       <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
         {/* Background circle */}
         <circle cx="60" cy="60" r={radius} fill="none" stroke="currentColor" strokeWidth="8"
-          className="text-gray-100 dark:text-s-ink/70" />
+          className="text-s-dm-text dark:text-s-ink/70" />
         {/* Progress arc */}
         <circle cx="60" cy="60" r={radius} fill="none" stroke={tierColor} strokeWidth="8"
           strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={circumference - progress}
@@ -85,10 +85,10 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
   if (loading) {
     return (
       <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 shadow-card animate-pulse">
-        <div className="h-32 w-32 mx-auto rounded-full bg-s-bg-sunken dark:bg-gray-800" />
+        <div className="h-32 w-32 mx-auto rounded-full bg-s-bg-sunken dark:bg-s-dm-surface" />
         <div className="mt-4 space-y-2">
-          <div className="h-4 bg-s-bg-sunken dark:bg-gray-800 rounded w-2/3 mx-auto" />
-          <div className="h-3 bg-s-bg-sunken dark:bg-gray-800 rounded w-1/2 mx-auto" />
+          <div className="h-4 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-2/3 mx-auto" />
+          <div className="h-3 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-1/2 mx-auto" />
         </div>
       </div>
     );
@@ -140,7 +140,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
                   <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60 truncate">{f.label}</span>
                   <span className="text-xs data-text font-medium text-s-ink dark:text-s-dm-text">{value}/{f.max}</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-s-sand dark:bg-gray-700 overflow-hidden">
+                <div className="h-1.5 rounded-full bg-s-sand dark:bg-s-dm-raised overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{ width: `${pct}%`, backgroundColor: tier.color }}

@@ -16,7 +16,7 @@ interface ClientTagsProps {
 }
 
 const COLOR_MAP: Record<string, string> = {
-  gray: "bg-s-bg-sunken text-s-ink/70 dark:bg-gray-700 dark:text-s-ink/30",
+  gray: "bg-s-bg-sunken text-s-ink/70 dark:bg-s-dm-raised dark:text-s-ink/30",
   red: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
   orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
   teal: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",
@@ -117,7 +117,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
         ))}
         <button
           onClick={() => setShowAdd(true)}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded-pill text-xs font-medium bg-s-bg-sunken dark:bg-gray-700 text-s-ink/50 dark:text-s-ink/40 hover:bg-s-sand dark:hover:bg-gray-600 transition-colors"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-pill text-xs font-medium bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/50 dark:text-s-ink/40 hover:bg-s-sand dark:hover:bg-s-ink/60 transition-colors"
         >
           <Plus size={10} /> Tag
         </button>

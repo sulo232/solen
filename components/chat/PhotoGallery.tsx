@@ -55,7 +55,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, onCreateOff
           <button
             key={photo.id}
             onClick={() => setLightboxUrl(photo.image_url)}
-            className="aspect-square rounded-lg overflow-hidden bg-s-bg-sunken dark:bg-gray-800 hover:opacity-90 transition-opacity"
+            className="aspect-square rounded-lg overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-90 transition-opacity"
           >
             <Image
               src={photo.image_url}

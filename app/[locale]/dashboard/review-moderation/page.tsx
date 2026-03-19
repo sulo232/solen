@@ -237,7 +237,7 @@ export default function ReviewModerationPage() {
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-2 pt-2 border-t border-gray-50">
+              <div className="flex items-center gap-2 pt-2 border-t border-s-ink/5">
                 <button
                   onClick={() => handleAction(r.id, "approve")}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"

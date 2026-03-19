@@ -261,7 +261,7 @@ export default function AllSalonsPage() {
                 </div>
 
                 {/* Bottom row: status + actions */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-pill text-[10px] font-bold ${status.cls}`}>
                     {status.label}
                   </span>

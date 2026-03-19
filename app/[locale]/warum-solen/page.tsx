@@ -373,7 +373,7 @@ export default function WarumSolenPage() {
       <section className="relative py-20 sm:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-dark" />
         <div className="relative max-w-xl mx-auto px-4 sm:px-6">
-          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 sm:p-10 text-center border border-white/20 dark:border-white/10">
+          <div className="bg-white/80 dark:bg-s-ink/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 sm:p-10 text-center border border-white/20 dark:border-white/10">
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               Bereit für bessere Beauty-Termine?
             </h2>

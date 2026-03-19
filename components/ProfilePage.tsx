@@ -155,7 +155,7 @@ function BookingCard({
       </div>
 
       {(b.status === "confirmed" || b.salon_slug) && (
-        <div className="flex gap-2 mt-3 pt-3 border-t border-gray-50">
+        <div className="flex gap-2 mt-3 pt-3 border-t border-s-ink/5">
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}

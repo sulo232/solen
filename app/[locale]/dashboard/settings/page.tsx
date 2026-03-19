@@ -332,7 +332,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <label className="flex items-center gap-3 cursor-pointer">
         <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
-          className="w-4 h-4 rounded border-gray-300 text-s-coral focus:ring-s-coral" />
+          className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
           <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">24 Stunden vorher</span>
           <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
@@ -341,7 +341,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <label className="flex items-center gap-3 cursor-pointer">
         <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
-          className="w-4 h-4 rounded border-gray-300 text-s-coral focus:ring-s-coral" />
+          className="w-4 h-4 rounded border-s-ink/20 text-s-coral focus:ring-s-coral" />
         <div>
           <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">1 Stunde vorher</span>
           <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
@@ -413,7 +413,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
                 "rounded-card border p-3 text-left transition-colors",
                 feeType === opt.id
                   ? "border-s-coral bg-s-coral/5"
-                  : "border-s-ink/10 hover:border-gray-300",
+                  : "border-s-ink/10 hover:border-s-ink/20",
               ].join(" ")}
             >
               <p className={["text-sm font-medium", feeType === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>
@@ -690,12 +690,12 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               onClick={() => setPaymentMode(opt.id)}
               className={[
                 "w-full rounded-card border p-3.5 text-left transition-colors flex items-center gap-3",
-                paymentMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-gray-300",
+                paymentMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20",
               ].join(" ")}
             >
               <div className={[
                 "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0",
-                paymentMode === opt.id ? "border-s-coral" : "border-gray-300"
+                paymentMode === opt.id ? "border-s-coral" : "border-s-ink/20"
               ].join(" ")}>
                 {paymentMode === opt.id && <div className="w-2 h-2 rounded-full bg-s-coral" />}
               </div>

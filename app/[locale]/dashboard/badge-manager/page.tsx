@@ -400,7 +400,7 @@ export default function BadgeManagerPage() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-50">
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-s-ink/5">
                         <button
                           onClick={() => setModalBadge(b)}
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/60 hover:border-s-coral transition-colors"
@@ -515,7 +515,7 @@ export default function BadgeManagerPage() {
                       type="checkbox"
                       checked={overrideRemoval}
                       onChange={(e) => setOverrideRemoval(e.target.checked)}
-                      className="rounded border-gray-300"
+                      className="rounded border-s-ink/20"
                     />
                     Auto-Badge blockieren (verhindert automatische Neuzuweisung)
                   </label>

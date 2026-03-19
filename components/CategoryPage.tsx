@@ -306,7 +306,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             <AnimatePresence>
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
-                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-s-ink hover:border-gray-300 transition-colors disabled:opacity-50">
+                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-s-ink hover:border-s-ink/20 transition-colors disabled:opacity-50">
                     {dirLoadingMore ? <Spinner size="sm" /> : null}
                     {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
                   </button>

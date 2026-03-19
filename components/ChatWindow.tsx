@@ -293,7 +293,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   return (
     <div className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5">
       {/* Tab header */}
-      <div className="flex border-b border-s-ink/10 dark:border-gray-700">
+      <div className="flex border-b border-s-ink/10 dark:border-white/10">
         <button
           onClick={() => setActiveTab("chat")}
           className={["flex-1 py-2 text-sm font-medium transition-colors",
@@ -337,7 +337,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             <div key={msg.id} className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
               <div className={[
                 "max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-relaxed",
-                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-gray-800 text-s-ink dark:text-s-dm-text rounded-tl-sm",
+                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
                   <div>
@@ -422,12 +422,12 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <div className="px-4 pb-2 flex gap-2">
             <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
               placeholder="Bild-URL eingeben..."
-              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-button focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
               className="px-3 py-2 rounded-button bg-s-coral text-white text-sm disabled:opacity-50">Senden</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-              className="px-2 py-2 rounded-button border border-s-ink/10 dark:border-gray-700 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text">
+              className="px-2 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text">
               <X size={14} />
             </button>
           </div>
@@ -463,7 +463,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         )}
 
         {/* Compose bar */}
-        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-gray-700 flex items-end gap-2">
+        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-white/10 flex items-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
@@ -479,7 +479,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-button focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
             className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:bg-s-coral/90 transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}

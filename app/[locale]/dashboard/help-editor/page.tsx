@@ -171,7 +171,7 @@ export default function HelpEditorPage() {
                   type="checkbox"
                   checked={form.published}
                   onChange={(e) => setForm({ ...form, published: e.target.checked })}
-                  className="rounded border-gray-300 text-s-coral focus:ring-s-coral"
+                  className="rounded border-s-ink/20 text-s-coral focus:ring-s-coral"
                 />
                 Veröffentlicht
               </label>

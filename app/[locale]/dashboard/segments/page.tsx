@@ -114,7 +114,7 @@ export default function SegmentsPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="border-t border-gray-50 px-4 py-2.5 flex items-center gap-2">
+                <div className="border-t border-s-ink/5 px-4 py-2.5 flex items-center gap-2">
                   <button
                     onClick={() => toggleExpand(seg.id)}
                     className="inline-flex items-center gap-1 text-xs text-s-ink/50 hover:text-s-coral transition-colors"
@@ -130,7 +130,7 @@ export default function SegmentsPage() {
 
                 {/* Expanded members */}
                 {isExpanded && (
-                  <div className="border-t border-gray-50 px-4 py-3 max-h-48 overflow-y-auto">
+                  <div className="border-t border-s-ink/5 px-4 py-3 max-h-48 overflow-y-auto">
                     {membersLoading === seg.id ? (
                       <div className="flex justify-center py-4"><Spinner size="sm" /></div>
                     ) : (members[seg.id] ?? []).length === 0 ? (

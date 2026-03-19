@@ -415,7 +415,7 @@ export default function CalendarPage() {
   const goToday = () => setWeekStart(startOfWeek(new Date()));
 
   const slotBg = (s: AvailabilitySlot) => {
-    if (s.status === "blocked") return "bg-s-bg-sunken border border-dashed border-gray-300";
+    if (s.status === "blocked") return "bg-s-bg-sunken border border-dashed border-s-ink/20";
     if (s.status === "booked") return "bg-s-ink text-white";
     if (s.price_override !== null) return "bg-s-coral border-2 border-s-coral"; // last-minute
     // Color by staff member
@@ -495,7 +495,7 @@ export default function CalendarPage() {
               const isToday = d.toDateString() === new Date().toDateString();
               const dateStr = d.toISOString().split("T")[0];
               return (
-                <div key={i} className="py-3 px-2 text-center border-l border-gray-50">
+                <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5">
                   <p className={["text-xs font-medium", isToday ? "text-s-coral" : "text-s-ink/50"].join(" ")}>
                     {DAYS_LABEL[i]}
                   </p>
@@ -522,7 +522,7 @@ export default function CalendarPage() {
               const hour = rowIdx + 8;
               if (hour > 20) return null;
               return (
-                <div key={hour} className="grid grid-cols-8 border-b border-gray-50 min-h-[40px]">
+                <div key={hour} className="grid grid-cols-8 border-b border-s-ink/5 min-h-[40px]">
                   <div className="py-1 px-2 text-[10px] text-s-ink/30 text-right pr-3 pt-2">
                     {`${String(hour).padStart(2, "0")}:00`}
                   </div>
@@ -532,7 +532,7 @@ export default function CalendarPage() {
                     return (
                       <div
                         key={dayIdx}
-                        className="border-l border-gray-50 p-0.5 cursor-pointer hover:bg-s-coral/5 transition-colors group"
+                        className="border-l border-s-ink/5 p-0.5 cursor-pointer hover:bg-s-coral/5 transition-colors group"
                         onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}
                         onContextMenu={(e) => { e.preventDefault(); setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` }); }}
                       >
@@ -574,7 +574,7 @@ export default function CalendarPage() {
       <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-coral/30" />Frei</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />Gebucht</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-gray-300" />Blockiert</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-ink/20" />Blockiert</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-coral" />Last-Minute</span>
         {staff.length > 0 && (
           <>
