@@ -479,8 +479,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
-            style={{ minHeight: "38px" }} />
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
             className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:bg-s-coral/90 transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}

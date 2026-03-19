@@ -103,8 +103,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
             animate={{ y: "15%" }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed inset-x-0 bottom-0 z-50 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-glass"
-            style={{ height: "85vh" }}
+            className="fixed inset-x-0 bottom-0 z-50 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-glass h-[85vh]"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
@@ -115,7 +114,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
             </div>
 
             {/* Table content */}
-            <div className="overflow-x-auto overflow-y-auto" style={{ maxHeight: "calc(85vh - 60px)" }}>
+            <div className="overflow-x-auto overflow-y-auto max-h-[calc(85vh-60px)]">
               <table className="w-full min-w-[500px]">
                 {/* Salon name header row */}
                 <thead>
