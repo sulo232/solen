@@ -362,32 +362,84 @@ export default function ProfilePage() {
   const [pastOpen, setPastOpen] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/profile").then((r) => r.json()),
-      fetch("/api/bookings?limit=50").then((r) => r.json()).catch(() => ({ bookings: [] })),
-      fetch("/api/profile/favorites").then((r) => r.ok ? r.json() : { salons: [] }).catch(() => ({ salons: [] })),
-      fetch("/api/loyalty").then((r) => r.ok ? r.json() : { cards: [] }).catch(() => ({ cards: [] })),
-    ])
-      .then(([p, b, f, l]) => {
-        if (!p?.id) {
+    const loadProfile = async () => {
+      try {
+        // Use browser Supabase client directly — bypasses API routes which may timeout
+        const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+        const supabase = createBrowserSupabaseClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session?.user) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
           return;
         }
-        setProfile(p);
-        setBookings(b.bookings ?? []);
-        setFavorites(f.salons ?? []);
-        setLoyaltyCards(l.cards ?? []);
-      })
-      .catch(() => router.push(`/${locale}/auth/login`))
-      .finally(() => setLoading(false));
+
+        const userId = session.user.id;
+
+        // Fetch profile directly from Supabase
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
+
+        if (!profileData?.id) {
+          router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
+          return;
+        }
+
+        // Fetch bookings, favorites, loyalty in parallel
+        const [bookingsRes, favoritesRes, loyaltyRes] = await Promise.all([
+          supabase
+            .from("bookings")
+            .select("*, salons!inner(name, slug), services!inner(name)")
+            .eq("user_id", userId)
+            .order("starts_at", { ascending: false })
+            .limit(50)
+            .then(({ data }) => (data ?? []).map((b: any) => ({
+              ...b,
+              salon_name: b.salons?.name ?? "",
+              service_name: b.services?.name ?? "",
+              salon_slug: b.salons?.slug,
+            }))),
+          supabase
+            .from("favorites")
+            .select("salon_id, salons!inner(id, name, slug, quartier, average_rating, cover_photo_url)")
+            .eq("user_id", userId)
+            .then(({ data }) => (data ?? []).map((f: any) => f.salons)),
+          supabase
+            .from("loyalty_stamps")
+            .select("id, salon_id, stamps_needed, reward_text, stamps_collected, salons!inner(name, slug, cover_photo_url)")
+            .eq("user_id", userId)
+            .then(({ data }) => data ?? []),
+        ]);
+
+        setProfile(profileData as Profile);
+        setBookings(bookingsRes);
+        setFavorites(favoritesRes);
+        setLoyaltyCards(loyaltyRes as any);
+      } catch (err) {
+        console.error("[ProfilePage] Error loading profile:", err);
+        router.push(`/${locale}/auth/login`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
   }, [locale, router, pathname]);
 
   const handleSaveProfile = async (updates: Partial<Profile>) => {
-    await fetch("/api/profile", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updates),
-    });
+    try {
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+      const supabase = createBrowserSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from("profiles").update(updates).eq("id", session.user.id);
+      }
+    } catch (err) {
+      console.error("[ProfilePage] Error saving profile:", err);
+    }
     if (profile) setProfile({ ...profile, ...updates });
   };
 
@@ -398,11 +450,16 @@ export default function ProfilePage() {
   };
 
   const removeFav = async (salonId: string) => {
-    await fetch("/api/profile/favorites", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ salon_id: salonId }),
-    });
+    try {
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+      const supabase = createBrowserSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from("favorites").delete().eq("user_id", session.user.id).eq("salon_id", salonId);
+      }
+    } catch (err) {
+      console.error("[ProfilePage] Error removing favorite:", err);
+    }
     setFavorites((prev) => prev.filter((s) => s.id !== salonId));
   };
 
