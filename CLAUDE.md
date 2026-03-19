@@ -832,3 +832,29 @@ Before committing, check for:
 grep -rn "Record<string, string>" components/ --include="*.tsx" | awk -F: '{print $1}' | sort | uniq -c | sort -rn | head -5
 # If any file appears 2+ times, inspect for duplicates
 ```
+
+### Rule 25: NEVER USE `getUser()` IN API ROUTES OR MIDDLEWARE
+
+> **CONTEXT**: This bug has been fixed TWICE (2026-03-18 and 2026-03-19). `supabase.auth.getUser()` makes a **network call** from Vercel Edge → Supabase to validate the JWT. This call **times out** on Vercel's edge network, returning `user: null` even when the session cookie is valid. This kills ALL session persistence — users log in successfully but get bounced to the login page on every subsequent navigation.
+
+**ALWAYS use `getSession()`** — it reads the JWT directly from cookies with **zero network calls**.
+
+```typescript
+// ✅ CORRECT — reads JWT from cookies, no network call:
+const { data: { session } } = await supabase.auth.getSession();
+const user = session?.user ?? null;
+
+// ❌ BANNED — makes network call that TIMES OUT on Vercel Edge:
+const { data: { user } } = await supabase.auth.getUser();
+```
+
+**This applies to:**
+- `middleware.ts` (runs on EVERY request)
+- ALL files in `app/api/` (route handlers)
+- `lib/supabase.ts` `getSessionUser()` helper
+
+**Enforcement:**
+```bash
+grep -rn "auth.getUser()" middleware.ts app/api/ lib/supabase.ts --include="*.ts"
+# Must return 0 results. If ANY results found, change to getSession().
+```
