@@ -105,7 +105,7 @@ export default function PlatformAnalyticsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             <StatCard label="Salons" value={stats?.total_salons ?? 0} icon={Store} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Nutzer" value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-dark/5" color="text-dark" />
-            <StatCard label="Buchungen (30T)" value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-coral/5" color="text-coral" />
+            <StatCard label="Buchungen (30T)" value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Umsatz (30T)" value={stats?.total_revenue_30d ?? 0} prefix="CHF " icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Ø Bewertung" value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-amber-50" color="text-amber-400" decimals={1} />
           </div>

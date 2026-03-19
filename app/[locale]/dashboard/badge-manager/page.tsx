@@ -207,7 +207,7 @@ function DeleteModal({
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
             Löschen
@@ -411,7 +411,7 @@ export default function BadgeManagerPage() {
                         {!b.is_system && (
                           <button
                             onClick={() => setDeleteTarget(b)}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-coral/30 text-xs text-coral hover:bg-coral/5 transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
                           >
                             <Trash2 size={11} />
                             Löschen
