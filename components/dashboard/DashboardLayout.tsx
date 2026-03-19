@@ -10,7 +10,7 @@ import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
   BarChart, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
-  MessageSquareWarning, Star, PieChart,
+  MessageSquareWarning, Star, PieChart, Paintbrush,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -30,6 +30,7 @@ const ADMIN_NAV = [
   { label: "Inhalte",             href: "/dashboard/content-editor",     icon: FileEdit },
   { label: "Bewertungen",         href: "/dashboard/review-moderation",  icon: MessageSquareWarning },
   { label: "Segmente",            href: "/dashboard/segments",           icon: PieChart },
+  { label: "Visual Editor",       href: "/dashboard/editor",             icon: Paintbrush },
 ] as const;
 
 const NAV = [
