@@ -75,8 +75,82 @@
 | Background | `bg-s-bg-base` (#FAF6EF) | `dark:bg-s-dm-bg` (#151009) |
 | Surface | `bg-s-bg-raised` (#FFFFFF) | `dark:bg-s-dm-surface` (#1E1710) |
 | Text | `text-s-ink` (#1A1209) | `dark:text-s-dm-text` (#F5EEE4) |
-| Border | `border-gray-100` | `dark:border-white/5` |
+| Border | `border-s-ink/5` | `dark:border-white/5` |
 | Nav glass | `glass` (warm-tinted) | `dark:bg-s-dm-surface/80` |
+
+## 10. Border Radius
+| Token | Value | Usage |
+|---|---|---|
+| `rounded-card` | 12px | Cards, modals, sheets |
+| `rounded-button` | 8px | Buttons, inputs, dropdowns |
+| `rounded-pill` | 9999px | Badges, pills, chips, toggle buttons |
+| `rounded-blob` | organic % | SalonCard hover effect |
+
+Standard Tailwind `rounded-*` should NOT be used for these — use the design tokens.
+
+## 11. Shadows
+| Token | Usage |
+|---|---|
+| `shadow-card` | Cards at rest |
+| `shadow-card-hover` | Cards on hover |
+| `shadow-glass` | Glassmorphism panels |
+| `shadow-glass-hover` | Glassmorphism hover |
+| `shadow-warm-sm` | Buttons, small elevations |
+| `shadow-warm-md` | Active cards, dropdowns |
+| `shadow-warm-lg` | Modals, sheets |
+| `shadow-coral-glow` | Coral CTA pulse |
+
+## 12. Typography
+| Token | Font | Usage |
+|---|---|---|
+| `font-display` | Bebas Neue | Hero titles, large splash text |
+| `font-heading` | Syne | Section headers, card titles, nav |
+| `font-body` | DM Sans | Body text, descriptions, UI text |
+| `data-text` | DM Sans / tabular nums | Prices, ratings, scores, counters |
+
+Body default = `font-body` (set on `<body>`). You don't need `font-body` class unless overriding.
+
+## 13. Glassmorphism
+| Token | Value | Usage |
+|---|---|---|
+| `backdrop-blur-glass` | 20px | Modals, sheets, navbar pill |
+| `backdrop-blur-xs` | 4px | Subtle overlays |
+| Standard `backdrop-blur-sm/md/lg` | — | General purpose |
+
+## 14. Z-Index Scale
+| Token | Value | Used For |
+|---|---|---|
+| z-base | 10 | Content above bg |
+| z-sticky | 20 | Sticky headers in dashboard |
+| z-nav | 30 | Dashboard side/bottom nav |
+| z-overlay | 40 | FilterBar sticky, CompareBar, StickyMobileCTA |
+| z-header | 50 | Main Header, BottomNav, dropdowns |
+| z-modal-backdrop | 55 | Modal/drawer backdrops |
+| z-modal | 60 | Modals, drawers, sheets |
+| z-toast | 70 | Toast notifications, CookieBanner |
+
+## 15. Text Colors (ONLY use these)
+| Light Mode | Dark Mode | Usage |
+|---|---|---|
+| `text-s-ink` | `dark:text-s-dm-text` | Primary text |
+| `text-s-ink/70` | `dark:text-s-dm-text/70` | Secondary text |
+| `text-s-ink/50` | `dark:text-s-dm-text/50` | Tertiary/muted |
+| `text-s-ink/40` | `dark:text-s-dm-text/40` | Disabled/hint |
+| `text-s-coral` | `dark:text-s-coral` | Accent (large text only!) |
+| `text-s-coral-text` | `dark:text-s-coral` | Accent (body text) |
+
+## 16. BANNED tokens (do not use)
+- ~~`text-dark`~~ use `text-s-ink`
+- ~~`bg-dark`~~ use `bg-s-ink`
+- ~~`bg-black`~~ use `bg-s-ink`
+- ~~`dark:text-dm-text`~~ use `dark:text-s-dm-text`
+- ~~`dark:bg-dm-surface`~~ use `dark:bg-s-dm-surface`
+- ~~`text-gray-*`~~ use `text-s-ink/*`
+- ~~`bg-gray-*`~~ use `bg-s-bg-*` or `bg-s-sand`
+- ~~`border-gray-*`~~ use `border-s-ink/*`
+
+## 17. Currency Formatting
+Always use `formatCurrency(amount, locale)` from `@/lib/format-currency` instead of hardcoded `CHF {amount}`. Pass `locale` from `useLocale()` in client components or from `params` in server components.
 
 ---
 **Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules, you must **refuse the specific contradiction** and implement the component using these rules instead.
