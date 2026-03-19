@@ -55,17 +55,14 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   // Hide global header on dashboard and auth pages (they have their own navigation)
   const isHidden = pathname.includes("/dashboard") || pathname.includes("/auth/");
 
-  // Check session for profile/login redirect
+  // Check session for profile/login redirect — uses browser client directly (API routes timeout on custom domain)
   useEffect(() => {
-    fetch("/api/profile")
-      .then((r) => {
-        if (!r.ok) return null;
-        return r.json();
-      })
-      .then((p) => {
-        if (p?.id) setIsLoggedIn(true);
-      })
-      .catch(() => {});
+    import("@/lib/supabase-browser").then(({ createBrowserSupabaseClient }) => {
+      const supabase = createBrowserSupabaseClient();
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) setIsLoggedIn(true);
+      });
+    }).catch(() => {});
   }, []);
 
   if (isHidden) return null;
