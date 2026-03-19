@@ -15,20 +15,6 @@ module.exports = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        // Solen Design System
-        dark: {
-          DEFAULT: "#1A1209",
-          50: "#FAF6EF",
-          100: "#EDE5D8",
-          200: "#C8B8A6",
-          300: "#8A7A66",
-          400: "#4A3D2E",
-          500: "#1A1209",
-        },
-        // Dark mode surfaces (legacy)
-        "dm-bg": "#151009",
-        "dm-surface": "#1E1710",
-        "dm-text": "#F5EEE4",
         // ── Solen v2 Brand Tokens ──
         "s-coral": { DEFAULT: "#E8624A", hover: "#CC4E35", subtle: "#FAECE7", text: "#7A2415" },
         "s-amber": { DEFAULT: "#D4870A", hover: "#B3700A", subtle: "#FEF4E0", text: "#6B4005" },
