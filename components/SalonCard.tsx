@@ -119,7 +119,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {salon.categories.slice(0, 2).map((cat) => (
               <span
                 key={cat}
-                className="px-2 py-0.5 rounded-pill bg-dark/50 backdrop-blur-sm text-white text-[10px] font-body font-medium capitalize border border-white/10"
+                className="px-2 py-0.5 rounded-pill bg-s-ink/50 backdrop-blur-sm text-white text-[10px] font-body font-medium capitalize border border-white/10"
               >
                 {cat}
               </span>

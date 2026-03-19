@@ -207,7 +207,7 @@ export default function DisputesPage() {
                       <button
                         onClick={() => resolve(d.id, "compromised")}
                         disabled={resolving === d.id || !compromiseAmount[d.id]}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-dark text-white text-xs font-medium hover:bg-dark/90 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-ink text-white text-xs font-medium hover:bg-s-ink/90 transition-colors disabled:opacity-50"
                       >
                         <Scale className="w-3.5 h-3.5" />
                         Kompromiss

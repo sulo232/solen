@@ -55,7 +55,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
           {/* ── Mobile: Bottom sheet ── */}
           <div className="fixed inset-0 z-50 md:hidden">
             <motion.div
-              className="absolute inset-0 bg-dark/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-s-ink/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -83,7 +83,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
           {/* ── Desktop: Side panel ── */}
           <div className="fixed inset-0 z-50 hidden md:flex justify-end">
             <motion.div
-              className="absolute inset-0 bg-dark/30 backdrop-blur-sm"
+              className="absolute inset-0 bg-s-ink/30 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

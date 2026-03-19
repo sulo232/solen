@@ -119,7 +119,7 @@ export default function CookieBanner() {
       {/* Settings modal */}
       {settingsOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-dark/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
+          <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
           <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-2xl shadow-2xl p-6">
             <button
               onClick={() => setSettingsOpen(false)}

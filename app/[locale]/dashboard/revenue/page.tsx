@@ -110,14 +110,14 @@ export default function RevenuePage() {
                 value: data.total_bookings.toString(),
                 icon: CreditCard,
                 color: "text-s-ink",
-                bg: "bg-dark/5",
+                bg: "bg-s-ink/5",
               },
               {
                 label: "Ø Buchungswert",
                 value: `CHF ${fmt(data.avg_booking_value)}`,
                 icon: Calendar,
                 color: "text-s-ink",
-                bg: "bg-dark/5",
+                bg: "bg-s-ink/5",
               },
               {
                 label: "Wachstum",

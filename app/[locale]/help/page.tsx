@@ -20,7 +20,7 @@ type HelpArticle = {
 const CATEGORIES = [
   { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-s-coral/10 text-s-coral" },
   { key: "salons", label: "Für Salons", Icon: Store, color: "bg-s-coral/10 text-s-coral" },
-  { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-dark/5 text-s-ink/70" },
+  { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-s-ink/5 text-s-ink/70" },
 ];
 
 export default function HelpPage() {

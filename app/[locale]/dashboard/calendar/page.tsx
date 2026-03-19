@@ -65,7 +65,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Slot erstellen</h3>
@@ -145,7 +145,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Wochenplan erstellen</h3>
@@ -252,7 +252,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">
@@ -416,7 +416,7 @@ export default function CalendarPage() {
 
   const slotBg = (s: AvailabilitySlot) => {
     if (s.status === "blocked") return "bg-s-bg-sunken border border-dashed border-gray-300";
-    if (s.status === "booked") return "bg-dark text-white";
+    if (s.status === "booked") return "bg-s-ink text-white";
     if (s.price_override !== null) return "bg-s-coral border-2 border-s-coral"; // last-minute
     // Color by staff member
     if (s.staff_member_id && staffColorMap.has(s.staff_member_id)) {
@@ -573,7 +573,7 @@ export default function CalendarPage() {
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-coral/30" />Frei</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-dark" />Gebucht</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />Gebucht</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-gray-300" />Blockiert</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral border-2 border-s-coral" />Last-Minute</span>
         {staff.length > 0 && (

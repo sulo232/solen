@@ -55,7 +55,7 @@ export default function GlassModal({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-dark/30 backdrop-blur-sm"
+            className="absolute inset-0 bg-s-ink/30 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -83,7 +83,7 @@ export default function GlassModal({
                 <h2 className="font-heading font-semibold text-s-ink text-lg">{title}</h2>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-full text-s-ink/40 hover:text-s-ink hover:bg-dark/5 transition-colors"
+                  className="p-1.5 rounded-full text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors"
                   aria-label="Schliessen"
                 >
                   <X size={18} />

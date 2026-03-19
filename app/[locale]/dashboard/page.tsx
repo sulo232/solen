@@ -164,7 +164,7 @@ export default function DashboardPage() {
             >
               {[
                 { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.bookings, sparklineColor: "#E8624A" },
-                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-s-ink", bg: "bg-dark/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1209" },
+                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-s-ink", bg: "bg-s-ink/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1209" },
                 { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.new_customers, sparklineColor: "#D4870A" },
                 { label: "Bewertung", value: Math.round(stats.average_rating * 10), Icon: Star, color: "text-amber-400", bg: "bg-amber-50", isRating: true, sparklineData: stats.trends?.rating, sparklineColor: "#F59E0B" },
               ].map((s) => (

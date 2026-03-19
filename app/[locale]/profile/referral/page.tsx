@@ -41,7 +41,7 @@ export default function ReferralPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-surface dark:bg-dark flex items-center justify-center">
+      <div className="min-h-screen bg-s-bg-surface dark:bg-s-ink flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
@@ -49,14 +49,14 @@ export default function ReferralPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-s-bg-surface dark:bg-dark flex items-center justify-center">
+      <div className="min-h-screen bg-s-bg-surface dark:bg-s-ink flex items-center justify-center">
         <p className="text-s-ink/60 dark:text-s-dm-text/60 text-sm">Bitte melde dich an, um deine Empfehlungen zu sehen.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-dark py-8 px-4">
+    <div className="min-h-screen bg-s-bg-surface dark:bg-s-ink py-8 px-4">
       {/* Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1">
         <a href={`/${locale}/profile`} className="hover:text-s-coral transition-colors">Profil</a>

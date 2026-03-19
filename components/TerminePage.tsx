@@ -349,7 +349,7 @@ export default function TerminePage() {
                               <button disabled className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/20 cursor-not-allowed">
                                 Absagen
                               </button>
-                              <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-dark text-white text-xs rounded-lg px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                              <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-s-ink text-white text-xs rounded-lg px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                 Stornierung nicht mehr möglich (weniger als 24h)
                               </div>
                             </div>

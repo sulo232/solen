@@ -93,7 +93,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-dark/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm"
             onClick={onClose}
           />
 

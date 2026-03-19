@@ -68,7 +68,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
@@ -204,7 +204,7 @@ export default function ServicesPage() {
           onClose={() => { setAddOpen(false); setEditTarget(null); }} onSaved={loadServices} />
       )}
       {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
           <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
             <h3 className="font-heading font-bold text-base mb-3">Service löschen</h3>
             <p className="text-sm text-s-ink/60 mb-4">Möchtest du <strong>{deleteTarget.name_de}</strong> löschen?</p>

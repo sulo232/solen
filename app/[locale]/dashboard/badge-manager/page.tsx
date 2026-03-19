@@ -77,7 +77,7 @@ function BadgeModal({
   const IconPreview = getIcon(icon);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base text-s-ink">
@@ -194,7 +194,7 @@ function DeleteModal({
   loading: boolean;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base text-s-ink mb-2">Badge löschen</h3>
         <p className="text-sm text-s-ink/50 mb-5">
@@ -475,7 +475,7 @@ export default function BadgeManagerPage() {
                               {b.name_de}
                               <button
                                 onClick={() => handleRemoveBadge(b.id)}
-                                className="ml-0.5 p-0.5 rounded-full hover:bg-dark/10 transition-colors"
+                                className="ml-0.5 p-0.5 rounded-full hover:bg-s-ink/10 transition-colors"
                               >
                                 <X size={10} />
                               </button>

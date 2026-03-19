@@ -56,7 +56,7 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
@@ -133,7 +133,7 @@ function DeleteModal({ member, onClose, onDeleted }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/40 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
       <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base mb-3">Mitarbeiter löschen</h3>
         <p className="text-sm text-s-ink/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
