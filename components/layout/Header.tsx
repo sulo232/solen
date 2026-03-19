@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu, X, MessageCircle, User,
   Scissors, Paintbrush, Droplets, Palette, Sparkles,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
@@ -41,6 +43,14 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Scroll morph — pill shrinks after scrolling
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   // Hide global header on dashboard and auth pages (they have their own navigation)
   const isHidden = pathname.includes("/dashboard") || pathname.includes("/auth/");
@@ -71,8 +81,13 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const profileHref = isLoggedIn ? `/${locale}/profile` : `/${locale}/auth/login`;
 
   return (
-    <header className="sticky top-4 z-50 mx-auto max-w-3xl px-4">
-      <div className="glass rounded-full shadow-warm-sm py-2.5 px-4 sm:px-6 flex items-center justify-between dark:bg-s-dm-surface/80 dark:border-white/5">
+    <header className="sticky top-0 z-50 w-full px-4">
+      <div className={cn(
+        "mx-auto flex items-center justify-between transition-all duration-500 ease-out",
+        scrolled
+          ? "mt-4 max-w-3xl glass rounded-full shadow-warm-sm py-2.5 px-5 sm:px-8 dark:bg-s-dm-surface/80 dark:border-white/5"
+          : "max-w-5xl bg-s-bg-base/80 backdrop-blur-lg rounded-none py-4 px-6 sm:px-8 dark:bg-s-dm-bg/80"
+      )}>
         {/* Logo + Sub-site icon */}
         <div className="flex items-center gap-2 shrink-0">
           <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
@@ -97,9 +112,12 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <Link
                 key={key}
                 href={`/${locale}${href}`}
-                className={`text-sm font-medium transition-colors duration-150 ${
-                  isActive ? "text-s-coral" : "text-s-ink/70 hover:text-s-ink dark:text-s-dm-text/70 dark:hover:text-s-dm-text"
-                }`}
+                className={cn(
+                  "text-sm font-medium transition-all duration-200 rounded-full px-3 py-1.5",
+                  isActive
+                    ? "text-s-coral bg-s-coral/8"
+                    : "text-s-ink/70 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/70 dark:hover:bg-white/5"
+                )}
               >
                 {t(key)}
               </Link>
@@ -113,7 +131,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           <ThemeToggle />
 
           {/* Messages with unread dot */}
-          <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center" id="tour-messages" aria-label="Nachrichten">
+          <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label="Nachrichten">
             <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
             {unreadCount > 0 && (
               <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
@@ -123,7 +141,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           {/* Account */}
           <Link
             href={profileHref}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-full bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-full bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
             aria-label="Profil"
           >
             <User className="w-4 h-4" />
@@ -142,31 +160,39 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="md:hidden mt-2 rounded-2xl border border-s-ink/5 bg-s-bg-base/95 backdrop-blur-lg dark:bg-s-dm-surface/95 dark:border-white/5 shadow-warm-md overflow-hidden">
-          <nav className="px-4 py-4 flex flex-col gap-3">
-            {NAV_LINKS.map(({ key, href }) => (
-              <Link
-                key={key}
-                href={`/${locale}${href}`}
-                onClick={() => setMobileOpen(false)}
-                className="text-sm font-medium text-s-ink/70 hover:text-s-coral transition-colors py-1 min-h-12 flex items-center"
-              >
-                {t(key)}
-              </Link>
-            ))}
-            <div className="pt-2 border-t border-s-ink/5 dark:border-white/5">
-              <Link
-                href={profileHref}
-                className="text-sm font-medium text-s-ink/70 hover:text-s-coral transition-colors min-h-12 flex items-center"
-                onClick={() => setMobileOpen(false)}
-              >
-                {isLoggedIn ? t("account") : t("login")}
-              </Link>
-            </div>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="md:hidden mt-2 rounded-2xl glass p-4 dark:bg-s-dm-surface/90 dark:border-white/5 shadow-warm-md overflow-hidden"
+          >
+            <nav className="flex flex-col gap-3">
+              {NAV_LINKS.map(({ key, href }) => (
+                <Link
+                  key={key}
+                  href={`/${locale}${href}`}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-sm font-medium text-s-ink/70 hover:text-s-coral hover:pl-2 hover:border-l-2 hover:border-s-coral transition-all py-1 min-h-12 flex items-center"
+                >
+                  {t(key)}
+                </Link>
+              ))}
+              <div className="pt-2 border-t border-s-ink/5 dark:border-white/5">
+                <Link
+                  href={profileHref}
+                  className="text-sm font-medium text-s-ink/70 hover:text-s-coral transition-colors min-h-12 flex items-center"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {isLoggedIn ? t("account") : t("login")}
+                </Link>
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
@@ -91,6 +92,7 @@ export default function HomePage() {
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
+  const [quartierImages, setQuartierImages] = useState<Record<string, string | null>>({});
 
   const fetchData = useCallback(() => {
     fetch("/api/salons?limit=8&sort=rating")
@@ -162,6 +164,14 @@ export default function HomePage() {
         if (data?.counts) setQuartierCounts(data.counts);
       })
       .catch(() => {});
+
+    // Fetch quartier featured images
+    fetch("/api/salons/quartier-featured")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.images) setQuartierImages(data.images);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -190,9 +200,9 @@ export default function HomePage() {
       {/* ── Hero with background blobs ─────────────────────────────────────── */}
       <section className="relative overflow-hidden py-20 sm:py-28">
         {/* Decorative blobs */}
-        <div className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full bg-s-coral/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-[300px] h-[300px] rounded-full bg-s-amber/10 blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-s-blue/5 blur-3xl pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full bg-s-coral/15 blur-3xl pointer-events-none animate-blob-float" />
+        <div className="absolute -bottom-24 -left-24 w-[300px] h-[300px] rounded-full bg-s-amber/10 blur-3xl pointer-events-none animate-blob-float-delayed" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-s-blue/5 blur-3xl pointer-events-none animate-blob-float" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <motion.div
@@ -230,6 +240,42 @@ export default function HomePage() {
       {/* ── Social Proof ─────────────────────────────────────────────────── */}
       <SocialProofStrip />
 
+      {/* ── Category Grid ──────────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 py-10">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal-stagger"
+        >
+          {CATEGORIES.map(({ key, label, Icon }) => (
+            <motion.div key={key} variants={itemVariants}>
+              <Link
+                href={`/${locale}/${key}`}
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
+              >
+                <Icon
+                  size={32}
+                  className="text-s-coral group-hover:scale-110 transition-transform duration-200"
+                />
+                <span
+                  className="font-heading font-medium text-dark text-sm text-center leading-tight"
+                 
+                >
+                  {label}
+                </span>
+                <span
+                  className="text-xs text-dark/40 font-body"
+                 
+                >
+                  Entdecken
+                </span>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
       {/* ── Weather Banner ─────────────────────────────────────────────── */}
       <WeatherBanner />
 
@@ -263,42 +309,6 @@ export default function HomePage() {
 
       {/* ── Recently Viewed (returning users) ────────────────────────────── */}
       <RecentlyViewed />
-
-      {/* ── Category Grid ──────────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 py-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4"
-        >
-          {CATEGORIES.map(({ key, label, Icon }) => (
-            <motion.div key={key} variants={itemVariants}>
-              <Link
-                href={`/${locale}/${key}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-s-ink/5 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
-              >
-                <Icon
-                  size={32}
-                  className="text-s-coral group-hover:scale-110 transition-transform duration-200"
-                />
-                <span
-                  className="font-heading font-medium text-dark text-sm text-center leading-tight"
-                 
-                >
-                  {label}
-                </span>
-                <span
-                  className="text-xs text-dark/40 font-body"
-                 
-                >
-                  Entdecken
-                </span>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
       <section className="py-10 bg-s-bg-surface/50">
@@ -476,6 +486,7 @@ export default function HomePage() {
           >
             {QUARTIERS.map(({ slug, name, bg }) => {
               const count = quartierCounts[slug] ?? 0;
+              const qImage = quartierImages[slug];
               return (
                 <motion.div
                   key={slug}
@@ -484,11 +495,13 @@ export default function HomePage() {
                 >
                   <Link
                     href={`/${locale}/coiffeur?quartier=${slug}`}
-                    className="block w-[200px] h-[250px] rounded-2xl overflow-hidden relative group"
+                    className="block w-[200px] h-[250px] rounded-2xl overflow-hidden relative group hover:shadow-warm-md hover:scale-[1.02] transition-all duration-300"
                   >
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${bg}`}
-                    />
+                    {qImage ? (
+                      <Image src={qImage} alt={name} fill className="object-cover" loading="lazy" />
+                    ) : (
+                      <div className={`absolute inset-0 bg-gradient-to-br ${bg}`} />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-transparent to-transparent" />
                     <div className="absolute bottom-4 left-4 right-4">
                       <p

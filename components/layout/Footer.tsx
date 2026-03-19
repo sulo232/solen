@@ -36,7 +36,7 @@ export default function Footer() {
                 <li key={key}>
                   <Link
                     href={`/${locale}/${key}`}
-                    className="text-sm text-white/70 hover:text-white transition-colors font-body"
+                    className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                   >
                     {label}
                   </Link>
@@ -62,7 +62,7 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    className="text-sm text-white/70 hover:text-white transition-colors font-body"
+                    className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                   >
                     {label}
                   </Link>
@@ -82,7 +82,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/partner`}
-                  className="text-sm text-white/70 hover:text-white transition-colors font-body"
+                  className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
                   Partner werden
                 </Link>
@@ -90,7 +90,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/onboarding/salon`}
-                  className="text-sm text-white/70 hover:text-white transition-colors font-body"
+                  className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
                   Salon registrieren
                 </Link>
@@ -98,7 +98,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/dashboard`}
-                  className="text-sm text-white/70 hover:text-white transition-colors font-body"
+                  className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
                   Dashboard
                 </Link>
@@ -119,7 +119,7 @@ export default function Footer() {
                   href="https://instagram.com/solen.ch"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors font-body"
+                  className="flex items-center gap-2 text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
                   <Instagram size={14} />
                   Instagram
@@ -135,7 +135,7 @@ export default function Footer() {
         {/* Divider */}
         <div className="border-t border-s-dm-text/10 pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <span className="font-display text-3xl tracking-[0.06em] uppercase text-white">
+            <span className="font-display text-4xl tracking-[0.06em] uppercase text-white/90">
               so<span className="text-s-coral">.</span>len
             </span>
             <p
