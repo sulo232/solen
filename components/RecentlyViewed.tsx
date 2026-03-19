@@ -69,7 +69,7 @@ export default function RecentlyViewed() {
     <section className="max-w-5xl mx-auto px-4 py-6">
       <div className="flex items-center gap-2 mb-4">
         <Clock size={18} className="text-s-coral" />
-        <h2 className="font-heading font-semibold text-lg text-dark dark:text-dm-text">
+        <h2 className="font-heading font-semibold text-lg text-dark dark:text-s-dm-text">
           Zuletzt angesehen
         </h2>
       </div>
@@ -90,7 +90,7 @@ export default function RecentlyViewed() {
               href={`/${locale}/salon/${salon.slug}`}
               className="block w-[160px] group"
             >
-              <div className="relative w-[160px] h-[100px] rounded-xl overflow-hidden bg-gray-100 dark:bg-dm-surface mb-2">
+              <div className="relative w-[160px] h-[100px] rounded-xl overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface mb-2">
                 {salon.cover_photo_url ? (
                   <Image
                     src={salon.cover_photo_url}
@@ -100,16 +100,16 @@ export default function RecentlyViewed() {
                     sizes="160px"
                   />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-dark/10 dark:text-white/10 font-heading text-3xl">
+                  <div className="absolute inset-0 flex items-center justify-center text-dark/10 dark:text-s-dm-text/10 font-heading text-3xl">
                     {salon.name[0]}
                   </div>
                 )}
               </div>
-              <p className="text-sm font-medium text-dark dark:text-dm-text truncate group-hover:text-s-coral transition-colors">
+              <p className="text-sm font-medium text-dark dark:text-s-dm-text truncate group-hover:text-s-coral transition-colors">
                 {salon.name}
               </p>
               {salon.average_rating > 0 && (
-                <p className="text-xs text-dark/40 dark:text-dm-text/40 data-text">
+                <p className="text-xs text-dark/40 dark:text-s-dm-text/40 data-text">
                   ★ {salon.average_rating.toFixed(1)}
                 </p>
               )}

@@ -3,7 +3,7 @@ import CategoryPage from "@/components/CategoryPage";
 
 export const metadata: Metadata = {
   title: "Waxing in Basel — solen.ch",
-  description: "Finde die besten Waxing-Studios in Basel. Jetzt Termin buchen.",
+  description: "Waxing Studios in Basel — Brazilian, Bein, Achsel. Termin online buchen.",
 };
 
 export default function Page() {

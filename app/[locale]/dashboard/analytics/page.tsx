@@ -56,11 +56,11 @@ export default function AnalyticsPage() {
         <div className="space-y-6">
           {/* KPI cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <div className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
+            <div className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
               <p className="text-xs text-dark/40 mb-1">Stornierungsrate</p>
               <p className="data-text font-bold text-2xl text-dark">{data.cancellation_rate.toFixed(1)}%</p>
             </div>
-            <div className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
+            <div className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
               <p className="text-xs text-dark/40 mb-1">Bewertung</p>
               <div className="flex items-center gap-2">
                 <p className="data-text font-bold text-2xl text-dark">{data.average_rating.toFixed(1)}</p>
@@ -68,7 +68,7 @@ export default function AnalyticsPage() {
                 {data.rating_trend === "down" && <TrendingDown size={16} className="text-s-coral" />}
               </div>
             </div>
-            <div className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
+            <div className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
               <p className="text-xs text-dark/40 mb-1">Neue Kunden</p>
               <p className="data-text font-bold text-2xl text-s-coral">{data.customer_breakdown.new_customers}</p>
             </div>
@@ -92,7 +92,7 @@ export default function AnalyticsPage() {
           )}
 
           {/* Bookings over time */}
-          <div className="bg-white rounded-card border border-gray-100 p-5 shadow-card">
+          <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
             <h2 className="font-heading font-semibold text-base text-dark mb-4">Termine (täglich)</h2>
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={data.bookings_by_day}>
@@ -106,7 +106,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Revenue */}
-          <div className="bg-white rounded-card border border-gray-100 p-5 shadow-card">
+          <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
             <h2 className="font-heading font-semibold text-base text-dark mb-4">Umsatz CHF (wöchentlich)</h2>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.revenue_by_week}>
@@ -122,7 +122,7 @@ export default function AnalyticsPage() {
 
           {/* Top services + Customer breakdown */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white rounded-card border border-gray-100 p-5 shadow-card">
+            <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
               <h2 className="font-heading font-semibold text-base text-dark mb-4">Top Services</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={data.top_services} layout="vertical">
@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
               </ResponsiveContainer>
             </div>
 
-            <div className="bg-white rounded-card border border-gray-100 p-5 shadow-card">
+            <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
               <h2 className="font-heading font-semibold text-base text-dark mb-4">Kunden</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <PieChart>
@@ -158,7 +158,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Last-Minute performance */}
-          <div className="bg-white rounded-card border border-gray-100 p-5 shadow-card">
+          <div className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
             <h2 className="font-heading font-semibold text-base text-dark mb-4">Last-Minute Performance</h2>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.last_minute_performance}>

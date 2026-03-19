@@ -22,7 +22,7 @@ export default function ExpandableTabs({ tabs, defaultTab }: ExpandableTabsProps
   return (
     <div className="w-full">
       {/* Tab bar */}
-      <div className="flex gap-1 border-b border-gray-100 overflow-x-auto no-scrollbar">
+      <div className="flex gap-1 border-b border-s-ink/5 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}

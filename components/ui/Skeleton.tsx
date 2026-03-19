@@ -10,7 +10,7 @@ interface SkeletonProps {
 }
 
 export default function Skeleton({ variant = "text", className }: SkeletonProps) {
-  const base = "animate-pulse bg-gray-200/70 rounded-xl";
+  const base = "animate-pulse bg-s-sand/70 rounded-xl";
 
   if (variant === "avatar") {
     return <div className={cn(base, "w-10 h-10 rounded-full", className)} />;
@@ -18,7 +18,7 @@ export default function Skeleton({ variant = "text", className }: SkeletonProps)
 
   if (variant === "card") {
     return (
-      <div className={cn("rounded-2xl overflow-hidden border border-gray-100", className)}>
+      <div className={cn("rounded-2xl overflow-hidden border border-s-ink/5", className)}>
         {/* Photo placeholder */}
         <div className={cn(base, "h-40 w-full rounded-none")} />
         {/* Text lines */}

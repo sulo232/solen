@@ -59,7 +59,7 @@ export default function ReviewCarousel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: i * 0.1 }}
-              className="snap-start shrink-0 w-[280px] md:w-auto bg-white/80 backdrop-blur-sm border border-gray-100 rounded-card p-5 hover:shadow-card transition-shadow"
+              className="snap-start shrink-0 w-[280px] md:w-auto bg-white/80 backdrop-blur-sm border border-s-ink/5 rounded-card p-5 hover:shadow-card transition-shadow"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`w-9 h-9 rounded-full ${COLORS[i % COLORS.length]} flex items-center justify-center text-white text-xs font-bold`}>

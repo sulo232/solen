@@ -38,7 +38,7 @@ const STATUS_COLORS: Record<string, string> = {
   disputed: "bg-s-coral/10 text-s-coral",
   resolved: "bg-s-coral/10 text-s-coral",
   customer_approved: "bg-s-coral/10 text-s-coral",
-  auto_approved: "bg-gray-100 text-dark/50",
+  auto_approved: "bg-s-bg-sunken text-dark/50",
 };
 
 const UPCHARGE_REASONS: Record<string, string> = {
@@ -118,7 +118,7 @@ export default function DisputesPage() {
         ) : (
           <div className="space-y-4">
             {disputes.map((d) => (
-              <div key={d.id} className="rounded-card border border-gray-100 bg-white p-5">
+              <div key={d.id} className="rounded-card border border-s-ink/5 bg-white p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
                     <p className="font-heading font-semibold text-dark">
@@ -128,7 +128,7 @@ export default function DisputesPage() {
                       Buchung: {d.bookings?.starts_at ? new Date(d.bookings.starts_at).toLocaleDateString("de-CH") : d.booking_id.slice(0, 8)}
                     </p>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-pill text-xs font-medium ${STATUS_COLORS[d.status] ?? "bg-gray-100 text-dark/50"}`}>
+                  <span className={`px-2.5 py-1 rounded-pill text-xs font-medium ${STATUS_COLORS[d.status] ?? "bg-s-bg-sunken text-dark/50"}`}>
                     {STATUS_LABELS[d.status] ?? d.status}
                   </span>
                 </div>
@@ -179,7 +179,7 @@ export default function DisputesPage() {
                 )}
 
                 {d.status === "disputed" && (
-                  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
+                  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-s-ink/5">
                     <button
                       onClick={() => resolve(d.id, "approved")}
                       disabled={resolving === d.id}
@@ -202,7 +202,7 @@ export default function DisputesPage() {
                         placeholder="CHF"
                         value={compromiseAmount[d.id] ?? ""}
                         onChange={(e) => setCompromiseAmount((p) => ({ ...p, [d.id]: e.target.value }))}
-                        className="w-24 px-2 py-1.5 rounded-button border border-gray-200 text-xs data-text"
+                        className="w-24 px-2 py-1.5 rounded-button border border-s-ink/10 text-xs data-text"
                       />
                       <button
                         onClick={() => resolve(d.id, "compromised")}

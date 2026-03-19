@@ -31,7 +31,7 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 const icons: Record<ToastType, React.ReactNode> = {
   success: <CheckCircle size={18} className="text-s-coral flex-shrink-0" />,
   error: <XCircle size={18} className="text-s-coral flex-shrink-0" />,
-  info: <Info size={18} className="text-dark/50 flex-shrink-0" />,
+  info: <Info size={18} className="text-dark/50 dark:text-s-dm-text/50 flex-shrink-0" />,
 };
 
 function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string) => void }) {
@@ -54,17 +54,17 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
       exit="exit"
       className={cn(
         "flex items-center gap-3 min-w-[260px] max-w-[360px]",
-        "bg-white/95 backdrop-blur-glass border border-white/80",
+        "bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-glass border border-white/80 dark:border-white/10",
         "rounded-2xl shadow-glass px-4 py-3",
         item.type === "error" && "border-s-coral/20",
         item.type === "success" && "border-s-coral/20"
       )}
     >
       {icons[item.type]}
-      <p className="flex-1 text-sm text-dark font-body leading-snug">{item.message}</p>
+      <p className="flex-1 text-sm text-dark dark:text-s-dm-text font-body leading-snug">{item.message}</p>
       <button
         onClick={() => onRemove(item.id)}
-        className="p-0.5 text-dark/30 hover:text-dark/60 transition-colors"
+        className="p-0.5 text-dark/30 dark:text-s-dm-text/30 hover:text-dark/60 dark:hover:text-s-dm-text/60 transition-colors"
         aria-label="Schliessen"
       >
         <X size={14} />

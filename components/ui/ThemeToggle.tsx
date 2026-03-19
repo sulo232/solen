@@ -49,7 +49,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-1.5 min-h-10 min-w-10 flex items-center justify-center rounded-button text-dark/50 hover:text-dark/80 dark:text-dm-text/50 dark:hover:text-dm-text/80 transition-colors"
+      className="p-1.5 min-h-10 min-w-10 flex items-center justify-center rounded-button text-dark/50 hover:text-dark/80 dark:text-s-dm-text/50 dark:hover:text-s-dm-text/80 transition-colors"
       aria-label={isDark ? "Helles Design aktivieren" : "Dunkles Design aktivieren"}
       title={theme === "system" ? "System" : theme === "dark" ? "Dunkel" : "Hell"}
     >

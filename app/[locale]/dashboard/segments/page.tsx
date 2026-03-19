@@ -88,7 +88,7 @@ export default function SegmentsPage() {
               <motion.div
                 key={seg.id}
                 variants={itemVariants}
-                className="bg-white rounded-card border border-gray-100 shadow-card overflow-hidden"
+                className="bg-white rounded-card border border-s-ink/5 shadow-card overflow-hidden"
               >
                 {/* Header */}
                 <div className="p-4">
@@ -122,7 +122,7 @@ export default function SegmentsPage() {
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     {isExpanded ? "Ausblenden" : "Mitglieder"}
                   </button>
-                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-gray-200 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors">
+                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors">
                     <Mail size={11} />
                     E-Mail senden
                   </button>
@@ -139,7 +139,7 @@ export default function SegmentsPage() {
                       <div className="space-y-1.5">
                         {(members[seg.id] ?? []).map((m) => (
                           <div key={m.user_id} className="flex items-center gap-2 text-xs">
-                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-dark/40">
+                            <div className="w-6 h-6 rounded-full bg-s-bg-sunken flex items-center justify-center text-[10px] font-bold text-dark/40">
                               {(m.display_name ?? "?")[0]}
                             </div>
                             <span className="text-dark/70">{m.display_name ?? "Anonym"}</span>

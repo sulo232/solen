@@ -34,13 +34,13 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
   return (
     <div className="flex flex-col gap-5">
       <div className="text-center">
-        <h2 className="font-heading font-bold text-xl text-dark">Wie möchtest du starten?</h2>
+        <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Wie möchtest du starten?</h2>
         <p className="text-sm text-dark/50 font-body mt-1">Wähle deinen Profil-Typ</p>
       </div>
 
       <button
         onClick={onCustomer}
-        className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left"
+        className="group flex items-center gap-4 p-4 rounded-2xl border border-s-ink/5 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left"
       >
         <div className="w-12 h-12 rounded-xl bg-s-coral/10 flex items-center justify-center flex-shrink-0">
           <User size={22} className="text-s-coral" />
@@ -54,7 +54,7 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
 
       <button
         onClick={onSalon}
-        className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left"
+        className="group flex items-center gap-4 p-4 rounded-2xl border border-s-ink/5 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left"
       >
         <div className="w-12 h-12 rounded-xl bg-s-coral/10 flex items-center justify-center flex-shrink-0">
           <Building2 size={22} className="text-s-coral" />
@@ -92,10 +92,10 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="font-heading font-bold text-xl text-dark">Wie heisst du?</h2>
+      <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Wie heisst du?</h2>
 
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center text-dark/20">
+        <div className="w-16 h-16 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center text-dark/20">
           {avatarUrl ? (
             <Image src={avatarUrl} alt="" width={64} height={64} className="object-cover" />
           ) : (
@@ -107,7 +107,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
           placeholder="Avatar-URL (optional)"
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
       </div>
 
@@ -117,20 +117,20 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2.5 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+        className="px-4 py-2.5 rounded-button border border-s-ink/10 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
       />
       <textarea
         placeholder="Kurze Bio (optional)"
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         rows={3}
-        className="px-4 py-2.5 rounded-button border border-gray-200 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all resize-none"
+        className="px-4 py-2.5 rounded-button border border-s-ink/10 text-sm font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all resize-none"
       />
 
       <button
         type="submit"
         disabled={!name || saving}
-        className="w-full py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-teal-glow"
+        className="w-full py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         Weiter
@@ -185,7 +185,7 @@ function SelectPill<T extends string>({
             "flex items-center gap-2 px-3 py-2 rounded-button border text-sm font-body transition-all",
             value === o.value
               ? "border-s-coral bg-s-coral/5 text-s-coral font-medium"
-              : "border-gray-200 text-dark/70 hover:border-s-coral/30",
+              : "border-s-ink/10 text-dark/70 hover:border-s-coral/30",
           ].join(" ")}
         >
           {o.icon}
@@ -216,7 +216,7 @@ function Step2({ onNext }: { onNext: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <h2 className="font-heading font-bold text-xl text-dark">Erzähl uns mehr</h2>
+      <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Erzähl uns mehr</h2>
 
       <div>
         <p className="text-sm font-body font-medium text-dark/70 mb-2">Altersgruppe</p>
@@ -235,14 +235,14 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 rounded-button border border-gray-200 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-button border border-s-ink/10 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-teal-glow"
+          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
         >
           {saving && <Spinner size="sm" invert />}
           Weiter
@@ -289,7 +289,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div>
-        <h2 className="font-heading font-bold text-xl text-dark">Was interessiert dich?</h2>
+        <h2 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">Was interessiert dich?</h2>
         <p className="text-sm font-body text-dark/50 mt-1">Wähle deine Lieblingskategorien</p>
       </div>
 
@@ -303,7 +303,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
               onClick={() => toggle(o.value)}
               className={[
                 "relative flex flex-col items-center gap-2 p-4 rounded-card border transition-all",
-                active ? "border-s-coral bg-s-coral/5" : "border-gray-100 hover:border-s-coral/30",
+                active ? "border-s-coral bg-s-coral/5" : "border-s-ink/5 hover:border-s-coral/30",
               ].join(" ")}
             >
               {active && (
@@ -322,14 +322,14 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           onClick={onComplete}
-          className="flex-1 py-3 rounded-button border border-gray-200 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-button border border-s-ink/10 text-sm font-body text-dark/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral-dark transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
+          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
           Fertig
@@ -354,8 +354,8 @@ function DoneScreen() {
         <PartyPopper size={36} className="text-s-coral" />
       </motion.div>
       <div>
-        <p className="font-heading font-bold text-2xl text-dark">Willkommen bei solen.ch!</p>
-        <p className="text-dark/50 font-body text-sm mt-1">Du wirst weitergeleitet…</p>
+        <p className="font-heading font-bold text-2xl text-dark dark:text-s-dm-text">Willkommen bei solen.ch!</p>
+        <p className="text-dark/50 dark:text-s-dm-text/50 font-body text-sm mt-1">Du wirst weitergeleitet…</p>
       </div>
       <div className="flex gap-1.5 mt-2">
         {[0, 1, 2].map((i) => (
@@ -407,7 +407,7 @@ export default function RegisterPage() {
   const currentStepNum = step === -1 ? 0 : step === "done" ? totalSteps : Number(step);
 
   return (
-    <div className="min-h-screen bg-mesh-teal flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex flex-col items-center justify-center px-4 py-12">
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden>
         <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-s-coral/10 blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-s-coral/[0.06] blur-[80px]" />
@@ -417,7 +417,7 @@ export default function RegisterPage() {
         <div className="text-center mb-6">
           <a
             href={`/${locale}`}
-            className="inline-block font-heading font-bold text-3xl text-dark tracking-tight hover:opacity-80 transition-opacity"
+            className="inline-block font-heading font-bold text-3xl text-dark dark:text-s-dm-text tracking-tight hover:opacity-80 transition-opacity"
           >
             solen<span className="text-s-coral">.</span>ch
           </a>
@@ -430,19 +430,19 @@ export default function RegisterPage() {
               <div
                 key={s}
                 className={`h-1.5 rounded-full transition-all duration-500 ${
-                  s === step ? "w-10 bg-s-coral" : s < step ? "w-4 bg-s-coral/40" : "w-4 bg-gray-200"
+                  s === step ? "w-10 bg-s-coral" : s < step ? "w-4 bg-s-coral/40" : "w-4 bg-s-sand"
                 }`}
               />
             ))}
           </div>
         )}
 
-        <div className="rounded-3xl border border-white/60 bg-white/80 backdrop-blur-glass shadow-glass overflow-hidden">
+        <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-glass shadow-glass overflow-hidden">
           <div className="p-7">
             {(step === 2 || step === 3) && (
               <button
                 onClick={() => goTo((step - 1) as WizardStep)}
-                className="flex items-center gap-1.5 text-sm text-dark/40 hover:text-dark font-body mb-4 transition-colors"
+                className="flex items-center gap-1.5 text-sm text-dark/40 dark:text-s-dm-text/40 hover:text-dark dark:hover:text-s-dm-text font-body mb-4 transition-colors"
               >
                 <ArrowLeft size={14} />
                 Zurück
@@ -468,7 +468,7 @@ export default function RegisterPage() {
         </div>
 
         {step !== "done" && (
-          <p className="text-center text-xs text-dark/30 font-body mt-4">
+          <p className="text-center text-xs text-dark/30 dark:text-s-dm-text/30 font-body mt-4">
             {step === -1 ? (
               <>
                 Bereits registriert?{" "}

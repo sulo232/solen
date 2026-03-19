@@ -93,7 +93,7 @@ function BadgeModal({
             <input
               value={nameDe}
               onChange={(e) => setNameDe(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               placeholder="z.B. Beliebter Salon"
             />
           </div>
@@ -103,7 +103,7 @@ function BadgeModal({
             <input
               value={nameEn}
               onChange={(e) => setNameEn(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               placeholder="e.g. Popular Salon"
             />
           </div>
@@ -118,7 +118,7 @@ function BadgeModal({
                     key={name}
                     onClick={() => setIcon(name)}
                     className={`flex flex-col items-center gap-0.5 p-2 rounded-lg text-[9px] transition-colors ${
-                      icon === name ? "bg-s-coral/10 text-s-coral ring-1 ring-s-coral" : "bg-gray-50 text-dark/40 hover:bg-gray-100"
+                      icon === name ? "bg-s-coral/10 text-s-coral ring-1 ring-s-coral" : "bg-s-bg-surface text-dark/40 hover:bg-s-bg-sunken"
                     }`}
                   >
                     <Ic size={16} />
@@ -159,7 +159,7 @@ function BadgeModal({
         </div>
 
         <div className="flex gap-2 mt-6">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
             Abbrechen
           </button>
           <button
@@ -201,7 +201,7 @@ function DeleteModal({
           Badge &quot;{name}&quot; löschen? Es wird von allen Salons entfernt.
         </p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
             Abbrechen
           </button>
           <button
@@ -379,7 +379,7 @@ export default function BadgeManagerPage() {
                     <motion.div
                       key={b.id}
                       variants={itemVariants}
-                      className="bg-white rounded-card border border-gray-100 shadow-card p-4"
+                      className="bg-white rounded-card border border-s-ink/5 shadow-card p-4"
                     >
                       <div className="flex items-start gap-3">
                         <div
@@ -393,7 +393,7 @@ export default function BadgeManagerPage() {
                           <p className="text-xs text-dark/40 truncate">{b.name_en}</p>
                           <span
                             className={`inline-block mt-1 px-1.5 py-0.5 rounded-pill text-[10px] font-bold ${
-                              b.is_system ? "bg-gray-100 text-dark/40" : "bg-s-coral/10 text-s-coral"
+                              b.is_system ? "bg-s-bg-sunken text-dark/40" : "bg-s-coral/10 text-s-coral"
                             }`}
                           >
                             {b.is_system ? "System" : "Custom"}
@@ -403,7 +403,7 @@ export default function BadgeManagerPage() {
                       <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-50">
                         <button
                           onClick={() => setModalBadge(b)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/60 hover:border-s-coral transition-colors"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/60 hover:border-s-coral transition-colors"
                         >
                           <Edit2 size={11} />
                           Bearbeiten
@@ -428,7 +428,7 @@ export default function BadgeManagerPage() {
           {/* Section 2: Badge Assignments */}
           <div>
             <h2 className="font-heading font-semibold text-dark text-sm mb-3">Badge-Zuweisungen</h2>
-            <div className="bg-white rounded-card border border-gray-100 shadow-card p-5 space-y-4">
+            <div className="bg-white rounded-card border border-s-ink/5 shadow-card p-5 space-y-4">
               {/* Salon search */}
               <div className="relative max-w-sm">
                 <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark/30" />
@@ -437,15 +437,15 @@ export default function BadgeManagerPage() {
                   placeholder="Salon suchen..."
                   value={salonSearch}
                   onChange={(e) => { setSalonSearch(e.target.value); setSelectedSalon(null); }}
-                  className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
                 />
                 {salonResults.length > 0 && !selectedSalon && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-card border border-gray-100 shadow-card z-10 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-card border border-s-ink/5 shadow-card z-10 overflow-hidden">
                     {salonResults.map((s) => (
                       <button
                         key={s.id}
                         onClick={() => { setSelectedSalon(s); setSalonSearch(s.name); setSalonResults([]); }}
-                        className="w-full text-left px-4 py-2.5 text-sm text-dark hover:bg-gray-50 transition-colors"
+                        className="w-full text-left px-4 py-2.5 text-sm text-dark hover:bg-s-bg-surface transition-colors"
                       >
                         {s.name}
                       </button>
@@ -491,7 +491,7 @@ export default function BadgeManagerPage() {
                     <select
                       value={assignBadgeId}
                       onChange={(e) => setAssignBadgeId(e.target.value)}
-                      className="flex-1 max-w-xs px-3 py-2 rounded-button border border-gray-200 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral"
+                      className="flex-1 max-w-xs px-3 py-2 rounded-button border border-s-ink/10 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral"
                     >
                       <option value="">Badge auswählen...</option>
                       {badges

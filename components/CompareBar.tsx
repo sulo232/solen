@@ -20,7 +20,7 @@ export default function CompareBar({ salons, onRemove, onCompare }: CompareBarPr
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 80, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed bottom-16 md:bottom-4 left-1/2 -translate-x-1/2 z-40 bg-white/90 backdrop-blur-xl border border-gray-200 rounded-pill shadow-lg px-4 py-2.5 flex items-center gap-3"
+        className="fixed bottom-16 md:bottom-4 left-1/2 -translate-x-1/2 z-40 bg-white/90 backdrop-blur-xl border border-s-ink/10 rounded-pill shadow-lg px-4 py-2.5 flex items-center gap-3"
       >
         <div className="flex items-center gap-2">
           {salons.map((s) => (

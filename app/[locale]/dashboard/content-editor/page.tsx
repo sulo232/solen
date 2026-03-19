@@ -60,7 +60,7 @@ function ContentField({
   };
 
   return (
-    <motion.div variants={itemVariants} className="bg-white rounded-card border border-gray-100 shadow-card p-4">
+    <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
         <div>
           <p className="text-[10px] font-bold text-dark/30 uppercase tracking-wide">{row.key}</p>
@@ -70,7 +70,7 @@ function ContentField({
             </span>
           )}
         </div>
-        <div className="flex rounded-button overflow-hidden border border-gray-200 shrink-0">
+        <div className="flex rounded-button overflow-hidden border border-s-ink/10 shrink-0">
           {(["de", "en"] as const).map((l) => (
             <button
               key={l}
@@ -90,14 +90,14 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm font-body text-dark focus:outline-none focus:border-s-coral resize-y"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-dark focus:outline-none focus:border-s-coral resize-y"
         />
       ) : (
         <input
           type={row.content_type === "number" ? "number" : "text"}
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm font-body text-dark focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-dark focus:outline-none focus:border-s-coral"
         />
       )}
 
@@ -158,7 +158,7 @@ export default function ContentEditorPage() {
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? "bg-s-coral text-white"
-                : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral"
+                : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral"
             }`}
           >
             {tab.label}

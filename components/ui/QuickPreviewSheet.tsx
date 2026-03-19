@@ -62,7 +62,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onClick={onClose}
             />
             <motion.div
-              className="absolute bottom-0 inset-x-0 bg-white dark:bg-dm-surface rounded-t-3xl shadow-glass-hover max-h-[80vh] overflow-y-auto"
+              className="absolute bottom-0 inset-x-0 bg-white dark:bg-s-dm-surface rounded-t-3xl shadow-glass-hover max-h-[80vh] overflow-y-auto"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -73,8 +73,8 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onDragEnd={(_, info) => { if (info.offset.y > 100) onClose(); }}
             >
               {/* Drag handle */}
-              <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 dark:bg-dm-surface/95 backdrop-blur-sm z-10">
-                <div className="w-10 h-1 rounded-full bg-gray-200 dark:bg-white/20" />
+              <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm z-10">
+                <div className="w-10 h-1 rounded-full bg-s-sand dark:bg-white/20" />
               </div>
               <SheetContent salon={salon} locale={locale} topServices={topServices} todayHours={todayHours} onClose={onClose} />
             </motion.div>
@@ -90,7 +90,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               onClick={onClose}
             />
             <motion.div
-              className="relative w-[420px] max-w-full h-full bg-white dark:bg-dm-surface shadow-2xl overflow-y-auto"
+              className="relative w-[420px] max-w-full h-full bg-white dark:bg-s-dm-surface shadow-2xl overflow-y-auto"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -98,7 +98,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
             >
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-gray-100 dark:bg-white/10 text-dark/60 dark:text-dm-text/60 hover:bg-gray-200 transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-s-bg-sunken dark:bg-white/10 text-dark/60 dark:text-s-dm-text/60 hover:bg-s-sand transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -128,21 +128,21 @@ function SheetContent({
     <div className="px-5 pb-8">
       {/* Cover photo */}
       {salon.cover_photo_url && (
-        <div className="relative w-full aspect-[16/9] rounded-card overflow-hidden bg-gray-100 mb-4">
+        <div className="relative w-full aspect-[16/9] rounded-card overflow-hidden bg-s-bg-sunken mb-4">
           <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" />
         </div>
       )}
 
       {/* Name + rating */}
-      <h3 className="font-heading font-bold text-xl text-dark dark:text-dm-text">{salon.name}</h3>
+      <h3 className="font-heading font-bold text-xl text-dark dark:text-s-dm-text">{salon.name}</h3>
       <div className="flex items-center gap-2 mt-1.5">
         <div className="flex items-center gap-1">
           <Star className="w-4 h-4 fill-s-coral text-s-coral" />
-          <span className="data-text font-semibold text-sm text-dark dark:text-dm-text">{salon.average_rating.toFixed(1)}</span>
-          <span className="text-xs text-dark/40 dark:text-dm-text/40">({salon.review_count})</span>
+          <span className="data-text font-semibold text-sm text-dark dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
+          <span className="text-xs text-dark/40 dark:text-s-dm-text/40">({salon.review_count})</span>
         </div>
-        <span className="text-dark/20 dark:text-dm-text/20">·</span>
-        <span className="flex items-center gap-1 text-xs text-dark/50 dark:text-dm-text/50">
+        <span className="text-dark/20 dark:text-s-dm-text/20">·</span>
+        <span className="flex items-center gap-1 text-xs text-dark/50 dark:text-s-dm-text/50">
           <MapPin className="w-3 h-3" />
           <span className="capitalize">{salon.quartier.replace("_", " ")}</span>
         </span>
@@ -150,7 +150,7 @@ function SheetContent({
 
       {/* Today's hours */}
       {todayHours && (
-        <div className="flex items-center gap-1.5 mt-2 text-xs text-dark/50 dark:text-dm-text/50">
+        <div className="flex items-center gap-1.5 mt-2 text-xs text-dark/50 dark:text-s-dm-text/50">
           <Clock className="w-3 h-3" />
           <span>Heute: {todayHours.open}–{todayHours.close}</span>
         </div>
@@ -159,17 +159,17 @@ function SheetContent({
       {/* Top services */}
       {topServices.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs font-medium text-dark/40 dark:text-dm-text/40 uppercase tracking-wide mb-2">Top Leistungen</p>
+          <p className="text-xs font-medium text-dark/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">Top Leistungen</p>
           <div className="divide-y divide-gray-50 dark:divide-white/5">
             {topServices.map((svc, i) => (
               <div key={i} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-dm-text">
+                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">
                     {locale === "de" ? svc.name_de : svc.name_en}
                   </p>
-                  <p className="text-xs text-dark/40 dark:text-dm-text/40">{svc.duration_minutes} Min.</p>
+                  <p className="text-xs text-dark/40 dark:text-s-dm-text/40">{svc.duration_minutes} Min.</p>
                 </div>
-                <span className="data-text font-semibold text-sm text-dark dark:text-dm-text">CHF {svc.price}</span>
+                <span className="data-text font-semibold text-sm text-dark dark:text-s-dm-text">CHF {svc.price}</span>
               </div>
             ))}
           </div>
@@ -181,7 +181,7 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-button border border-gray-200 dark:border-white/10 text-sm font-medium text-dark dark:text-dm-text text-center hover:border-s-coral/50 transition-colors"
+          className="flex-1 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-dark dark:text-s-dm-text text-center hover:border-s-coral/50 transition-colors"
         >
           Mehr anzeigen
         </Link>

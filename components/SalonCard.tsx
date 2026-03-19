@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -45,15 +46,16 @@ const quartierLabels: Record<string, string> = {
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday }: SalonCardProps) {
   const router = useRouter();
+  const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
 
   if (variant === "compact") {
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-dm-surface shadow-card hover:shadow-card-hover transition-shadow"
+        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-card hover:shadow-card-hover transition-shadow"
       >
-        <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-gray-100">
+        <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
             <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" loading="lazy" />
           )}
@@ -82,11 +84,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       }
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={`will-change-transform ${solenTier === "gold" ? "ring-2 ring-yellow-400/50 rounded-card" : ""}`}
-      onMouseEnter={() => router.prefetch(href)}
+      onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
-      <Link href={href} className="block rounded-card bg-white dark:bg-dm-surface shadow-card overflow-hidden group hover:shadow-lg transition-all duration-200">
+      <Link href={href} className="block rounded-card bg-white dark:bg-s-dm-surface shadow-card overflow-hidden group hover:shadow-lg transition-all duration-200">
         {/* Cover photo */}
-        <div className="relative w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+        <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden">
           {salon.cover_photo_url ? (
             <Image
               src={salon.cover_photo_url}
@@ -173,7 +175,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
         {/* Info row */}
         <div className="p-4">
-          <h3 className="font-heading font-semibold text-dark dark:text-dm-text text-base leading-tight">{salon.name}</h3>
+          <h3 className="font-heading font-semibold text-dark dark:text-s-dm-text text-base leading-tight">{salon.name}</h3>
           {(salon as any).group_name && (
             <span className="inline-flex items-center gap-1 text-[10px] text-s-coral font-medium mt-0.5">
               Teil von {(salon as any).group_name}
@@ -195,7 +197,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 );
               })}
               {salon.badges.length > 3 && (
-                <span className="px-1.5 py-0.5 rounded-pill bg-gray-100 text-dark/40 text-[10px] font-medium">
+                <span className="px-1.5 py-0.5 rounded-pill bg-s-bg-sunken text-dark/40 text-[10px] font-medium">
                   +{salon.badges.length - 3}
                 </span>
               )}
@@ -226,7 +228,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
           {stampProgress && stampProgress.current > 0 && (
             <span className="inline-flex items-center gap-1 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 px-2 py-0.5 rounded-full mt-1.5">
-              ⭐ {stampProgress.current}/{stampProgress.total}
+              <Star size={12} className="fill-s-amber text-s-amber" /> {stampProgress.current}/{stampProgress.total}
             </span>
           )}
         </div>

@@ -40,7 +40,7 @@ export default function StampCard({
   }, [isComplete]);
 
   return (
-    <div className="relative rounded-card border border-gray-100 dark:border-white/10 bg-white dark:bg-dm-surface shadow-card overflow-hidden">
+    <div className="relative rounded-card border border-s-ink/5 dark:border-white/10 bg-white dark:bg-s-dm-surface shadow-card overflow-hidden">
       {/* Confetti overlay */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
@@ -61,18 +61,18 @@ export default function StampCard({
       {/* Top: salon info */}
       <Link
         href={`/de/salon/${salonSlug}`}
-        className="flex items-center gap-3 p-4 pb-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+        className="flex items-center gap-3 p-4 pb-3 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
       >
-        <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-white/10 shrink-0">
+        <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-s-bg-sunken dark:bg-white/10 shrink-0">
           {salonImageUrl ? (
             <Image src={salonImageUrl} alt={salonName} fill className="object-cover" sizes="40px" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-sm font-heading text-dark/30 dark:text-dm-text/30">
+            <div className="w-full h-full flex items-center justify-center text-sm font-heading text-dark/30 dark:text-s-dm-text/30">
               {salonName[0]}
             </div>
           )}
         </div>
-        <p className="font-heading font-semibold text-sm text-dark dark:text-dm-text truncate">
+        <p className="font-heading font-semibold text-sm text-dark dark:text-s-dm-text truncate">
           {salonName}
         </p>
       </Link>
@@ -90,7 +90,7 @@ export default function StampCard({
                   "w-9 h-9 rounded-full flex items-center justify-center transition-all",
                   isFilled
                     ? "bg-s-coral text-white"
-                    : "border-2 border-dashed border-gray-200 dark:border-white/20",
+                    : "border-2 border-dashed border-s-ink/10 dark:border-white/20",
                   isNewest ? "stamp-new" : "",
                 ].join(" ")}
               >
@@ -103,10 +103,10 @@ export default function StampCard({
 
       {/* Bottom: reward + progress */}
       <div className="px-4 pb-4 flex items-center justify-between gap-2">
-        <p className="text-xs text-dark/60 dark:text-dm-text/60 font-body">
+        <p className="text-xs text-dark/60 dark:text-s-dm-text/60 font-body">
           {rewardText}
         </p>
-        <span className="text-xs data-text font-medium text-dark/50 dark:text-dm-text/50 whitespace-nowrap">
+        <span className="text-xs data-text font-medium text-dark/50 dark:text-s-dm-text/50 whitespace-nowrap">
           {stampsCollected} von {stampsTotal} Stempel
         </span>
       </div>

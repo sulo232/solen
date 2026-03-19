@@ -137,14 +137,14 @@ export default function LastMinutePage() {
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium transition-colors",
                 selectedCategories.includes(key)
                   ? "bg-s-coral text-white"
-                  : "bg-gray-100 text-dark/60 hover:bg-gray-200",
+                  : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
               ].join(" ")}
             >
               <Icon size={12} />
               {label}
             </button>
           ))}
-          <span className="w-px h-5 bg-gray-200 mx-1" />
+          <span className="w-px h-5 bg-s-sand mx-1" />
           {[30, 50, 80, 100].map((price) => (
             <button
               key={price}
@@ -153,7 +153,7 @@ export default function LastMinutePage() {
                 "px-3 py-1.5 rounded-pill text-xs data-text font-medium transition-colors",
                 maxPrice === price
                   ? "bg-s-coral text-white"
-                  : "bg-gray-100 text-dark/60 hover:bg-gray-200",
+                  : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
               ].join(" ")}
             >
               {"< CHF " + price}
@@ -184,7 +184,7 @@ export default function LastMinutePage() {
             action={
               <Link
                 href={`/${locale}/coiffeur`}
-                className="inline-flex items-center px-6 py-3 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-dark transition-colors shadow-teal-glow"
+                className="inline-flex items-center px-6 py-3 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors shadow-warm-sm"
               >
                 Coiffeure entdecken
               </Link>
@@ -208,7 +208,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-s-coral transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-dark hover:border-s-coral transition-colors disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

@@ -24,10 +24,10 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
   const sortedImages = [...images].sort((a, b) => a.sort_order - b.sort_order);
 
   return (
-    <div className="rounded-card border border-gray-100 p-4 bg-white">
+    <div className="rounded-card border border-s-ink/5 p-4 bg-white">
       {/* Header */}
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 rounded-full bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
           {member.avatar_url ? (
             <Image src={member.avatar_url} alt={member.name} width={48} height={48} className="object-cover w-full h-full" />
           ) : (
@@ -56,7 +56,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
             <button
               key={img.id}
               onClick={() => setLightboxIndex(i)}
-              className="aspect-square bg-gray-100 overflow-hidden hover:opacity-90 transition-opacity"
+              className="aspect-square bg-s-bg-sunken overflow-hidden hover:opacity-90 transition-opacity"
             >
               <Image
                 src={img.image_url}

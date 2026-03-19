@@ -21,7 +21,7 @@ interface AdminUser {
 }
 
 const ROLE_MAP: Record<UserRole, { label: string; icon: React.ElementType; cls: string }> = {
-  customer:    { label: "Kunde",          icon: User,       cls: "bg-gray-100 text-dark/50" },
+  customer:    { label: "Kunde",          icon: User,       cls: "bg-s-bg-sunken text-dark/50" },
   salon_owner: { label: "Salonbesitzer",  icon: Scissors,   cls: "bg-s-coral/10 text-s-coral" },
   admin:       { label: "Admin",          icon: ShieldCheck, cls: "bg-s-coral/10 text-s-coral" },
 };
@@ -59,7 +59,7 @@ function ConfirmModal({
         </div>
         <p className="text-sm text-dark/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
             Abbrechen
           </button>
           <button
@@ -166,7 +166,7 @@ export default function AllUsersPage() {
           placeholder="Name oder E-Mail suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -189,7 +189,7 @@ export default function AllUsersPage() {
                 key={u.id}
                 variants={itemVariants}
                 className={`bg-white rounded-card border shadow-card p-4 ${
-                  u.is_suspended ? "border-s-coral/30 bg-s-coral/[0.02]" : "border-gray-100"
+                  u.is_suspended ? "border-s-coral/30 bg-s-coral/[0.02]" : "border-s-ink/5"
                 }`}
               >
                 <div className="flex gap-3 items-start">
@@ -240,7 +240,7 @@ export default function AllUsersPage() {
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                      className="px-2 py-1.5 rounded-button border border-gray-200 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
+                      className="px-2 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
                     >
                       {ROLE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>

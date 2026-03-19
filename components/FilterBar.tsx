@@ -34,7 +34,7 @@ const RATING_OPTIONS = [
 const pillBase =
   "px-3 py-1.5 min-h-12 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border flex items-center";
 const pillActive =
-  "bg-s-coral text-white border-s-coral shadow-teal-glow";
+  "bg-s-coral text-white border-s-coral shadow-warm-sm";
 const pillInactive =
   "bg-white/70 backdrop-blur-sm text-dark/70 border-white/60 hover:border-s-coral/50 hover:bg-white/90 shadow-sm";
 
@@ -70,7 +70,7 @@ export default function FilterBar() {
     searchParams.get("min_price") || searchParams.get("max_price");
 
   return (
-    <div className="sticky top-[57px] z-40 bg-white/80 backdrop-blur-glass border-b border-gray-100/80">
+    <div className="sticky top-[57px] z-40 bg-white/80 backdrop-blur-glass border-b border-s-ink/5/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
           {/* Search autocomplete */}
@@ -82,7 +82,7 @@ export default function FilterBar() {
             />
           </div>
 
-          <div className="w-px h-5 bg-gray-200/80 shrink-0" />
+          <div className="w-px h-5 bg-s-sand/80 shrink-0" />
 
           {/* Quartier pills */}
           <div className="flex gap-2 shrink-0">
@@ -102,7 +102,7 @@ export default function FilterBar() {
             ))}
           </div>
 
-          <div className="w-px h-5 bg-gray-200/80 shrink-0" />
+          <div className="w-px h-5 bg-s-sand/80 shrink-0" />
 
           {/* Price */}
           <div className="relative shrink-0">
@@ -177,7 +177,7 @@ export default function FilterBar() {
             Nebenzeiten
           </button>
 
-          <div className="w-px h-5 bg-gray-200/80 shrink-0" />
+          <div className="w-px h-5 bg-s-sand/80 shrink-0" />
 
           {/* Sort dropdown */}
           <div className="relative shrink-0">
@@ -193,12 +193,12 @@ export default function FilterBar() {
               <ChevronDown className={`w-3 h-3 transition-transform duration-150 ${sortOpen ? "rotate-180" : ""}`} />
             </button>
             {sortOpen && (
-              <div className="absolute top-full right-0 mt-2 w-52 bg-white shadow-lg rounded-xl border border-gray-100 py-1 z-50">
+              <div className="absolute top-full right-0 mt-2 w-52 bg-white shadow-lg rounded-xl border border-s-ink/5 py-1 z-50">
                 {SORT_OPTIONS.map(({ value, label }) => (
                   <button
                     key={value}
                     onClick={() => { setParam("sort", value); setSortOpen(false); }}
-                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-dark/80 hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-dark/80 hover:bg-s-bg-surface transition-colors"
                     aria-label={`Sortieren nach ${label}`}
                   >
                     {label}

@@ -87,12 +87,12 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
+          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
       <div className="flex gap-2">
-        <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60 hover:bg-gray-50 transition-colors">
+        <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:bg-s-bg-surface transition-colors">
           Abbrechen
         </button>
         <button
@@ -156,7 +156,7 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
   };
 
   return (
-    <div className="bg-white rounded-card border border-gray-100 p-4">
+    <div className="bg-white rounded-card border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-3">
         <button onClick={prev} className="p-1 text-dark/40 hover:text-dark transition-colors">
           <ChevronLeft size={16} />
@@ -264,7 +264,7 @@ export default function TerminePage() {
   }, [bookings]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-24">
         {/* Cancel modal */}
         {cancelTarget && (
@@ -300,7 +300,7 @@ export default function TerminePage() {
                 Nächste Termine ({upcoming.length})
               </h2>
               {upcoming.length === 0 ? (
-                <div className="bg-white rounded-card border border-gray-100 p-8 text-center text-dark/40">
+                <div className="bg-white rounded-card border border-s-ink/5 p-8 text-center text-dark/40">
                   <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
                   <p className="text-sm font-medium">Keine anstehenden Termine</p>
                   <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -314,7 +314,7 @@ export default function TerminePage() {
                     const tooLate = hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
 
                     return (
-                      <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4">
+                      <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
                             <p className="font-medium text-sm text-dark">{b.salon_name}</p>
@@ -346,7 +346,7 @@ export default function TerminePage() {
                           )}
                           {tooLate && (
                             <div className="relative group">
-                              <button disabled className="px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/20 cursor-not-allowed">
+                              <button disabled className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/20 cursor-not-allowed">
                                 Absagen
                               </button>
                               <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-dark text-white text-xs rounded-lg px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
@@ -357,7 +357,7 @@ export default function TerminePage() {
                           {b.salon_slug && (
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&reschedule=${b.id}`}
-                              className="px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
+                              className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
                             >
                               Verschieben
                             </Link>
@@ -389,7 +389,7 @@ export default function TerminePage() {
                     <p className="text-sm text-dark/40 py-4 text-center">Keine vergangenen Termine</p>
                   ) : (
                     past.map((b) => (
-                      <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4">
+                      <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
                             <p className="font-medium text-sm text-dark">{b.salon_name}</p>
@@ -409,7 +409,7 @@ export default function TerminePage() {
                           <div className="mt-3 pt-3 border-t border-gray-50">
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
                             >
                               <RotateCcw size={12} />
                               Nochmal buchen

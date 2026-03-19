@@ -64,7 +64,7 @@ export default function ApproveIncreasePage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-s-bg-surface flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -116,7 +116,7 @@ export default function ApproveIncreasePage() {
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-card p-4 mb-4 space-y-3">
+            <div className="bg-s-bg-surface rounded-card p-4 mb-4 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-dark/50">Ursprünglicher Preis</span>
                 <span className="data-text font-bold text-dark">CHF {dispute.original_amount.toFixed(2)}</span>
@@ -125,7 +125,7 @@ export default function ApproveIncreasePage() {
                 <span className="text-dark/50">Neuer Preis</span>
                 <span className="data-text font-bold text-s-coral">CHF {dispute.requested_amount.toFixed(2)}</span>
               </div>
-              <div className="border-t border-gray-200 pt-2 flex justify-between text-sm">
+              <div className="border-t border-s-ink/10 pt-2 flex justify-between text-sm">
                 <span className="text-dark/50">Differenz</span>
                 <span className="data-text font-bold text-s-coral">+CHF {diff.toFixed(2)} (+{diffPercent}%)</span>
               </div>
@@ -133,7 +133,7 @@ export default function ApproveIncreasePage() {
 
             <div className="mb-5">
               <p className="text-xs font-medium text-dark/40 uppercase tracking-wide mb-1">Begründung des Salons</p>
-              <p className="text-sm text-dark/70 bg-gray-50 rounded-button px-3 py-2">{dispute.salon_reason}</p>
+              <p className="text-sm text-dark/70 bg-s-bg-surface rounded-button px-3 py-2">{dispute.salon_reason}</p>
             </div>
 
             {hoursLeft !== null && hoursLeft > 0 && (

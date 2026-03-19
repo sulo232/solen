@@ -107,9 +107,8 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session — reads JWT from cookies (no external network call)
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  // Verify user JWT server-side (secure — unlike getSession which only reads without verification)
+  const { data: { user } } = await supabase.auth.getUser();
 
   // ── Auth guards for dashboard routes ──
   const currentLocale = locales.find(

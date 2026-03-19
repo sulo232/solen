@@ -21,7 +21,7 @@ const CATEGORY_CONFIG: Record<SalonCategory, { label: string; subtitle: string; 
   nails: {
     label: "Nails",
     subtitle: "Nagelstudios und Maniküre in Basel",
-    gradient: "from-coral/12 via-coral/4 to-transparent",
+    gradient: "from-s-coral/12 via-s-coral/4 to-transparent",
   },
   spa: {
     label: "Spa & Massage",

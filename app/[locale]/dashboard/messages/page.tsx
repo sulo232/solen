@@ -60,8 +60,8 @@ export default function MessagesPage() {
     <DashboardLayout unreadCount={totalUnread}>
       <div className="flex h-[calc(100vh-120px)] gap-4">
         {/* Conversation list */}
-        <div className="w-72 shrink-0 flex flex-col bg-white rounded-card border border-gray-100 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100">
+        <div className="w-72 shrink-0 flex flex-col bg-white rounded-card border border-s-ink/5 overflow-hidden">
+          <div className="px-4 py-3 border-b border-s-ink/5">
             <h2 className="font-heading font-bold text-base text-dark">Nachrichten</h2>
           </div>
           {loading ? (
@@ -78,7 +78,7 @@ export default function MessagesPage() {
                   key={c.id}
                   onClick={() => setActiveConvo(c)}
                   className={[
-                    "w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors",
+                    "w-full text-left px-4 py-3 hover:bg-s-bg-surface transition-colors",
                     activeConvo?.id === c.id ? "bg-s-coral/5 border-l-2 border-s-coral" : "",
                   ].join(" ")}
                 >
@@ -129,12 +129,12 @@ export default function MessagesPage() {
               <div className="relative">
                 <button
                   onClick={() => setShowQuickReplies((s) => !s)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors"
                 >
                   Schnellantwort <ChevronDown size={12} className={showQuickReplies ? "rotate-180" : ""} />
                 </button>
                 {showQuickReplies && (
-                  <div className="absolute bottom-full mb-1 left-0 bg-white rounded-card shadow-xl border border-gray-100 py-1 min-w-[240px] z-10">
+                  <div className="absolute bottom-full mb-1 left-0 bg-white rounded-card shadow-xl border border-s-ink/5 py-1 min-w-[240px] z-10">
                     {QUICK_REPLIES.map((r, i) => (
                       <button
                         key={i}
@@ -147,7 +147,7 @@ export default function MessagesPage() {
                             body: JSON.stringify({ content: r, message_type: "text" }),
                           }).finally(() => setShowQuickReplies(false));
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-dark/70 hover:bg-gray-50 transition-colors"
+                        className="w-full text-left px-4 py-2 text-sm text-dark/70 hover:bg-s-bg-surface transition-colors"
                       >
                         {r}
                       </button>
@@ -157,7 +157,7 @@ export default function MessagesPage() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-card border border-gray-100 text-dark/30">
+            <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-card border border-s-ink/5 text-dark/30">
               <MessageCircle size={32} className="mb-3 opacity-30" />
               <p className="text-sm">Gespräch auswählen</p>
             </div>

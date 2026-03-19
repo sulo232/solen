@@ -26,18 +26,18 @@ export default function PartnerPage() {
   const locale = useLocale();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-dm-bg">
+    <div className="min-h-screen bg-white dark:bg-s-dm-bg">
       {/* Hero */}
       <div className="bg-gradient-to-b from-s-coral/5 to-white dark:from-s-coral/10 dark:to-dm-bg pt-28 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="font-heading font-bold text-3xl sm:text-4xl text-dark dark:text-dm-text mb-4">
+          <h1 className="font-heading font-bold text-3xl sm:text-4xl text-dark dark:text-s-dm-text mb-4">
             Werde Solen-Partner
           </h1>
-          <p className="text-lg text-dark/60 dark:text-dm-text/60 max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-dark/60 dark:text-s-dm-text/60 max-w-2xl mx-auto mb-8">
             Registriere deinen Salon kostenlos und erreiche tausende neue Kunden in Basel und Umgebung.
           </p>
           <Link
-            href={`/${locale}/onboarding`}
+            href={`/${locale}/onboarding/salon`}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-card bg-s-coral text-white font-body font-semibold text-base shadow-warm-md hover:bg-s-coral/90 transition-colors"
           >
             Kostenlos registrieren
@@ -54,24 +54,24 @@ export default function PartnerPage() {
               <div className="w-14 h-14 rounded-2xl bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
                 <b.icon className="w-7 h-7 text-s-coral" />
               </div>
-              <h3 className="font-heading font-semibold text-lg text-dark dark:text-dm-text mb-2">{b.title}</h3>
-              <p className="text-sm text-dark/60 dark:text-dm-text/60 leading-relaxed">{b.description}</p>
+              <h3 className="font-heading font-semibold text-lg text-dark dark:text-s-dm-text mb-2">{b.title}</h3>
+              <p className="text-sm text-dark/60 dark:text-s-dm-text/60 leading-relaxed">{b.description}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* CTA */}
-      <div className="bg-gray-50 dark:bg-dm-surface py-16">
+      <div className="bg-s-bg-surface dark:bg-s-dm-surface py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-heading font-bold text-2xl text-dark dark:text-dm-text mb-3">
+          <h2 className="font-heading font-bold text-2xl text-dark dark:text-s-dm-text mb-3">
             Bereit loszulegen?
           </h2>
-          <p className="text-dark/50 dark:text-dm-text/50 mb-6">
+          <p className="text-dark/50 dark:text-s-dm-text/50 mb-6">
             Die Registrierung ist kostenlos. Erstelle dein Profil in wenigen Minuten.
           </p>
           <Link
-            href={`/${locale}/onboarding`}
+            href={`/${locale}/onboarding/salon`}
             className="inline-flex items-center gap-2 px-8 py-4 rounded-card bg-s-coral text-white font-body font-semibold text-base shadow-warm-md hover:bg-s-coral/90 transition-colors"
           >
             Jetzt Salon registrieren

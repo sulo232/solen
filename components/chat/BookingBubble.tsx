@@ -31,7 +31,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
     <div className="mx-4 mb-2 p-3 rounded-card bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
       <Calendar size={18} className="text-s-coral shrink-0" />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-dark dark:text-white">Termin buchen bei {salonName}</p>
+        <p className="text-sm font-medium text-dark dark:text-s-dm-text">Termin buchen bei {salonName}</p>
       </div>
       <Link
         href={`/${locale}/salon/${salonSlug}`}
@@ -41,7 +41,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
       </Link>
       <button
         onClick={handleDismiss}
-        className="shrink-0 p-1 text-dark/30 dark:text-white/30 hover:text-dark/60 dark:hover:text-white/60"
+        className="shrink-0 p-1 text-dark/30 dark:text-s-dm-text/30 hover:text-dark/60 dark:hover:text-s-dm-text/60"
         aria-label="Schliessen"
       >
         <X size={14} />

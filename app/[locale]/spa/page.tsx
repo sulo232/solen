@@ -3,7 +3,7 @@ import CategoryPage from "@/components/CategoryPage";
 
 export const metadata: Metadata = {
   title: "Spa & Wellness in Basel — solen.ch",
-  description: "Finde die besten Spas und Wellness-Studios in Basel. Jetzt Termin buchen.",
+  description: "Spa & Wellness in Basel — Massagen, Gesichtsbehandlungen, Sauna. Jetzt buchen.",
 };
 
 export default function Page() {

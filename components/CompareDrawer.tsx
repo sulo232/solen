@@ -101,13 +101,13 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
             animate={{ y: "15%" }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed inset-x-0 bottom-0 z-50 bg-white/95 dark:bg-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-glass"
+            className="fixed inset-x-0 bottom-0 z-50 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-glass"
             style={{ height: "85vh" }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/5">
-              <h2 className="font-heading font-bold text-lg text-dark dark:text-dm-text">Salons vergleichen</h2>
-              <button onClick={onClose} className="p-1.5 text-dark/40 hover:text-dark dark:text-dm-text/40 dark:hover:text-dm-text">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
+              <h2 className="font-heading font-bold text-lg text-dark dark:text-s-dm-text">Salons vergleichen</h2>
+              <button onClick={onClose} className="p-1.5 text-dark/40 hover:text-dark dark:text-s-dm-text/40 dark:hover:text-s-dm-text">
                 <X size={20} />
               </button>
             </div>
@@ -118,7 +118,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                 {/* Salon name header row */}
                 <thead>
                   <tr>
-                    <th className="sticky left-0 bg-white/95 dark:bg-dm-surface/95 backdrop-blur-sm p-3 w-36" />
+                    <th className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm p-3 w-36" />
                     {salons.map((salon, i) => (
                       <th key={salon.id} className="p-3 text-center relative min-w-[140px]">
                         {i === bestIdx && salons.length > 1 && (
@@ -127,8 +127,8 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                           </div>
                         )}
                         <div className={`mt-3 ${i === bestIdx && salons.length > 1 ? "ring-2 ring-coral/20 rounded-card p-2" : "p-2"}`}>
-                          <h3 className="font-heading font-bold text-sm text-dark dark:text-dm-text truncate">{salon.name}</h3>
-                          <p className="text-[10px] text-dark/40 dark:text-dm-text/40 capitalize mt-0.5 truncate">{salon.quartier}</p>
+                          <h3 className="font-heading font-bold text-sm text-dark dark:text-s-dm-text truncate">{salon.name}</h3>
+                          <p className="text-[10px] text-dark/40 dark:text-s-dm-text/40 capitalize mt-0.5 truncate">{salon.quartier}</p>
                         </div>
                       </th>
                     ))}
@@ -137,10 +137,10 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                 <tbody>
                   {rows.map((row) => (
                     <tr key={row.label} className="border-t border-gray-50 dark:border-white/5">
-                      <td className="sticky left-0 bg-white/95 dark:bg-dm-surface/95 backdrop-blur-sm px-4 py-3">
+                      <td className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm px-4 py-3">
                         <div className="flex items-center gap-2">
                           <row.Icon size={13} className="text-s-coral shrink-0" />
-                          <span className="text-xs text-dark/50 dark:text-dm-text/50 whitespace-nowrap">{row.label}</span>
+                          <span className="text-xs text-dark/50 dark:text-s-dm-text/50 whitespace-nowrap">{row.label}</span>
                         </div>
                       </td>
                       {salons.map((salon, i) => (
@@ -151,8 +151,8 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                     </tr>
                   ))}
                   {/* CTA row */}
-                  <tr className="border-t border-gray-100 dark:border-white/5">
-                    <td className="sticky left-0 bg-white/95 dark:bg-dm-surface/95 backdrop-blur-sm px-4 py-4" />
+                  <tr className="border-t border-s-ink/5 dark:border-white/5">
+                    <td className="sticky left-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm px-4 py-4" />
                     {salons.map((salon) => (
                       <td key={salon.id} className="px-4 py-4 text-center">
                         <a

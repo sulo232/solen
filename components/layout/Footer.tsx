@@ -141,7 +141,7 @@ export default function Footer() {
             <p
               className="text-xs text-white/40 text-center font-body"
             >
-              © 2026 solen.ch — Alle Rechte vorbehalten.
+              © {new Date().getFullYear()} solen.ch — Alle Rechte vorbehalten.
             </p>
           </div>
         </div>

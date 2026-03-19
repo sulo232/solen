@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { RotateCcw, Info, ClipboardList } from "lucide-react";
+import { RotateCcw, Info, ClipboardList, PartyPopper } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 import SolenDatePicker from "@/components/ui/date-picker";
@@ -243,7 +243,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   if (confirmed) {
     return (
       <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center">
-        <span className="text-5xl">🎉</span>
+        <PartyPopper size={48} className="text-s-coral" />
         <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
         <p className="text-sm text-dark/60">Du erhältst eine Bestätigungs-E-Mail.</p>
         <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
@@ -254,14 +254,14 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   }
 
   return (
-    <div className="rounded-card border border-gray-100 bg-white overflow-hidden">
+    <div className="rounded-card border border-s-ink/5 bg-white overflow-hidden">
       {/* Staff picker */}
       {staffList.length > 0 && (
         <div className="px-4 pt-4">
           <select
             value={selectedStaff}
             onChange={(e) => setSelectedStaff(e.target.value)}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm text-dark bg-white outline-none focus:border-s-coral transition-colors"
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm text-dark bg-white outline-none focus:border-s-coral transition-colors"
             aria-label="Mitarbeiter wählen"
           >
             <option value="any">Egal (wer verfügbar ist)</option>
@@ -325,7 +325,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                             "px-3 py-1.5 rounded-button text-sm data-text font-medium transition-all duration-150",
                             isSelected
                               ? "bg-s-coral text-white shadow-card"
-                              : "bg-gray-100 text-dark hover:bg-s-coral/10 hover:text-s-coral",
+                              : "bg-s-bg-sunken text-dark hover:bg-s-coral/10 hover:text-s-coral",
                           ].join(" ")}
                           aria-label={`Termin um ${timeStr}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
@@ -347,14 +347,14 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
       {/* Summary strip — shown after slot selected */}
       {selectedSlot && (
-        <div className="border-t border-gray-100 bg-gray-50 px-4 py-4 flex flex-col gap-3">
+        <div className="border-t border-s-ink/5 bg-s-bg-surface px-4 py-4 flex flex-col gap-3">
           {/* First-visit */}
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={isFirstVisit}
               onChange={(e) => setIsFirstVisit(e.target.checked)}
-              className="w-4 h-4 rounded accent-teal"
+              className="w-4 h-4 rounded accent-s-coral"
             />
             <span className="text-sm text-dark/70">Erster Besuch in diesem Salon</span>
           </label>
@@ -365,7 +365,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               type="checkbox"
               checked={recurring}
               onChange={(e) => setRecurring(e.target.checked)}
-              className="w-4 h-4 rounded accent-teal"
+              className="w-4 h-4 rounded accent-s-coral"
             />
             <span className="text-sm text-dark/70">Serienbuchung</span>
             <RotateCcw className="w-3.5 h-3.5 text-s-coral" />
@@ -374,7 +374,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="text-sm px-3 py-1.5 rounded-button border border-gray-200 bg-white outline-none focus:border-s-coral"
+              className="text-sm px-3 py-1.5 rounded-button border border-s-ink/10 bg-white outline-none focus:border-s-coral"
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>

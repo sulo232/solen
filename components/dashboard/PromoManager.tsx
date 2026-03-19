@@ -103,7 +103,7 @@ export default function PromoManager() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-heading font-bold text-lg text-dark dark:text-white">Promo-Codes</h2>
+        <h2 className="font-heading font-bold text-lg text-dark dark:text-s-dm-text">Promo-Codes</h2>
         <button
           onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
@@ -121,32 +121,32 @@ export default function PromoManager() {
 
       {/* Create form */}
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-gray-100 dark:border-white/10 shadow-card p-5 space-y-4">
+        <form onSubmit={handleCreate} className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-dark/60 dark:text-white/60 mb-1 block">Code</label>
+              <label className="text-xs font-medium text-dark/60 dark:text-s-dm-text/60 mb-1 block">Code</label>
               <input
                 type="text"
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-dark/60 dark:text-white/60 mb-1 block">Rabatttyp</label>
+              <label className="text-xs font-medium text-dark/60 dark:text-s-dm-text/60 mb-1 block">Rabatttyp</label>
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percent" | "fixed" })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white outline-none"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-s-dm-text outline-none"
               >
                 <option value="percent">Prozent (%)</option>
                 <option value="fixed">Fixbetrag (CHF)</option>
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium text-dark/60 dark:text-white/60 mb-1 block">
+              <label className="text-xs font-medium text-dark/60 dark:text-s-dm-text/60 mb-1 block">
                 Rabattwert {form.discount_type === "percent" ? "(%)" : "(CHF)"}
               </label>
               <input
@@ -156,37 +156,37 @@ export default function PromoManager() {
                 min={1}
                 max={form.discount_type === "percent" ? 100 : 999}
                 required
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white outline-none"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-dark/60 dark:text-white/60 mb-1 block">Max. Nutzungen</label>
+              <label className="text-xs font-medium text-dark/60 dark:text-s-dm-text/60 mb-1 block">Max. Nutzungen</label>
               <input
                 type="number"
                 value={form.max_uses}
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder="Unbegrenzt"
                 min={1}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white outline-none"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-dark/60 dark:text-white/60 mb-1 block">Mindestbetrag (CHF)</label>
+              <label className="text-xs font-medium text-dark/60 dark:text-s-dm-text/60 mb-1 block">Mindestbetrag (CHF)</label>
               <input
                 type="number"
                 value={form.min_booking_amount}
                 onChange={(e) => setForm({ ...form, min_booking_amount: parseFloat(e.target.value) || 0 })}
                 min={0}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white outline-none"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-dark/60 dark:text-white/60 mb-1 block">Gültig bis</label>
+              <label className="text-xs font-medium text-dark/60 dark:text-s-dm-text/60 mb-1 block">Gültig bis</label>
               <input
                 type="date"
                 value={form.valid_until}
                 onChange={(e) => setForm({ ...form, valid_until: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-white outline-none"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-dark dark:text-s-dm-text outline-none"
               />
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function PromoManager() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-button bg-gray-100 dark:bg-white/10 text-dark/60 dark:text-white/60 text-sm hover:bg-gray-200 dark:hover:bg-white/15 transition-colors"
+              className="px-4 py-2 rounded-button bg-s-bg-sunken dark:bg-white/10 text-dark/60 dark:text-s-dm-text/60 text-sm hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
             >
               Abbrechen
             </button>
@@ -212,7 +212,7 @@ export default function PromoManager() {
 
       {/* Code list */}
       {codes.length === 0 ? (
-        <div className="text-center py-12 text-dark/40 dark:text-white/40 text-sm">
+        <div className="text-center py-12 text-dark/40 dark:text-s-dm-text/40 text-sm">
           <Tag className="w-8 h-8 mx-auto mb-2 opacity-40" />
           Noch keine Promo-Codes erstellt
         </div>
@@ -221,30 +221,30 @@ export default function PromoManager() {
           {codes.map((promo) => (
             <div
               key={promo.id}
-              className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-gray-100 dark:border-white/10 p-4 flex items-center justify-between"
+              className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-button flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-gray-100 text-dark/30"}`}>
+                <div className={`w-9 h-9 rounded-button flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-dark/30"}`}>
                   {promo.discount_type === "percent" ? <Percent className="w-4 h-4" /> : <Tag className="w-4 h-4" />}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="data-text font-semibold text-sm text-dark dark:text-white">{promo.code}</span>
+                    <span className="data-text font-semibold text-sm text-dark dark:text-s-dm-text">{promo.code}</span>
                     <button
                       onClick={() => copyCode(promo.code, promo.id)}
-                      className="p-0.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors"
+                      className="p-0.5 hover:bg-s-bg-sunken dark:hover:bg-white/10 rounded transition-colors"
                     >
                       {copiedId === promo.id ? <Check className="w-3 h-3 text-s-coral" /> : <Copy className="w-3 h-3 text-dark/30" />}
                     </button>
                   </div>
-                  <p className="text-xs text-dark/50 dark:text-white/50">
+                  <p className="text-xs text-dark/50 dark:text-s-dm-text/50">
                     {promo.discount_type === "percent" ? `${promo.discount_value}%` : `CHF ${promo.discount_value}`} Rabatt
                     {promo.max_uses ? ` · ${promo.current_uses}/${promo.max_uses} genutzt` : ` · ${promo.current_uses}x genutzt`}
                     {promo.valid_until && ` · bis ${new Date(promo.valid_until).toLocaleDateString("de-CH")}`}
                   </p>
                 </div>
               </div>
-              <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-gray-100 text-dark/40"}`}>
+              <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-dark/40"}`}>
                 {promo.is_active ? "Aktiv" : "Inaktiv"}
               </span>
             </div>

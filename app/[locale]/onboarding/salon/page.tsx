@@ -88,7 +88,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.name ? "border-s-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.name ? "border-s-coral" : "border-s-ink/10"}`}
             placeholder="z. B. Salon Lumière"
           />
           {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
@@ -100,7 +100,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.email ? "border-s-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.email ? "border-s-coral" : "border-s-ink/10"}`}
             placeholder="dein@salon.ch"
           />
           {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
@@ -118,7 +118,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
                   "px-3 py-1.5 rounded-pill text-sm font-medium border transition-colors",
                   data.categories.includes(c.value)
                     ? "bg-s-coral text-white border-s-coral"
-                    : "border-gray-200 text-dark/60 hover:border-s-coral",
+                    : "border-s-ink/10 text-dark/60 hover:border-s-coral",
                 ].join(" ")}
               >
                 {c.label}
@@ -133,7 +133,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <select
             value={data.quartier}
             onChange={(e) => onChange({ ...data, quartier: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral bg-white ${errors.quartier ? "border-s-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral bg-white ${errors.quartier ? "border-s-coral" : "border-s-ink/10"}`}
           >
             <option value="">Bitte wählen…</option>
             {QUARTIERE.map((q) => (
@@ -148,7 +148,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <input
             value={data.address}
             onChange={(e) => onChange({ ...data, address: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.address ? "border-s-coral" : "border-gray-200"}`}
+            className={`w-full px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral ${errors.address ? "border-s-coral" : "border-s-ink/10"}`}
             placeholder="Musterstrasse 12, 4051 Basel"
           />
           {errors.address && <p className="text-xs text-s-coral mt-0.5">{errors.address}</p>}
@@ -159,7 +159,7 @@ function Step1({ data, onChange, errors }: { data: BasicsData; onChange: (d: Bas
           <input
             value={data.phone}
             onChange={(e) => onChange({ ...data, phone: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
             placeholder="+41 61 000 00 00"
           />
         </div>
@@ -225,7 +225,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
             {data.gallery_urls.map((url, i) => (
               <div key={i} className="relative">
                 {url ? (
-                  <div className="relative rounded-card overflow-hidden border border-gray-200">
+                  <div className="relative rounded-card overflow-hidden border border-s-ink/10">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={url} alt={`Galerie ${i + 1}`} className="w-full h-24 object-cover" />
                     <button
@@ -255,7 +255,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
               <button
                 type="button"
                 onClick={addGallery}
-                className="h-24 rounded-card border-2 border-dashed border-gray-200 hover:border-s-coral transition-colors flex items-center justify-center"
+                className="h-24 rounded-card border-2 border-dashed border-s-ink/10 hover:border-s-coral transition-colors flex items-center justify-center"
               >
                 <Plus size={16} className="text-dark/30" />
               </button>
@@ -270,7 +270,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
             onChange={(e) => onChange({ ...data, description_de: e.target.value })}
             maxLength={500}
             rows={3}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
           />
         </div>
 
@@ -281,7 +281,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
             onChange={(e) => onChange({ ...data, description_en: e.target.value })}
             maxLength={500}
             rows={2}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
           />
         </div>
 
@@ -290,7 +290,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
           <input
             value={data.instagram_url}
             onChange={(e) => onChange({ ...data, instagram_url: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
             placeholder="https://instagram.com/deinsalon"
           />
           <p className="text-xs text-dark/30 mt-1">Verlinke dein Instagram für dein Portfolio</p>
@@ -308,7 +308,7 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                     onClick={() => toggleDay(key)}
                     className={[
                       "w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                      hours ? "bg-s-coral text-white" : "bg-gray-100 text-dark/40",
+                      hours ? "bg-s-coral text-white" : "bg-s-bg-sunken text-dark/40",
                     ].join(" ")}
                   >
                     {DAYS[i]}
@@ -319,14 +319,14 @@ function Step2({ data, onChange }: { data: ProfileData; onChange: (d: ProfileDat
                         type="time"
                         value={hours.open}
                         onChange={(e) => updateHours(key, "open", e.target.value)}
-                        className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
+                        className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral"
                       />
                       <span className="text-xs text-dark/30">–</span>
                       <input
                         type="time"
                         value={hours.close}
                         onChange={(e) => updateHours(key, "close", e.target.value)}
-                        className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
+                        className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral"
                       />
                     </>
                   ) : (
@@ -478,7 +478,7 @@ function Step3({ services, onChange, salonCategories }: {
                     "flex items-center justify-between px-3 py-2.5 rounded-card border text-left transition-all",
                     added
                       ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
-                      : "border-gray-200 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                      : "border-s-ink/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
                   ].join(" ")}
                 >
                   <div className="min-w-0 flex-1">
@@ -508,7 +508,7 @@ function Step3({ services, onChange, salonCategories }: {
           <p className="text-xs font-medium text-dark/50 mb-2">Deine Services ({services.length})</p>
           <div className="space-y-2">
             {services.map((s, i) => (
-              <div key={i} className="flex items-center justify-between bg-gray-50 rounded-card px-4 py-3">
+              <div key={i} className="flex items-center justify-between bg-s-bg-surface rounded-card px-4 py-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-dark truncate">{s.name_de}</p>
                   <p className="text-xs text-dark/40">{s.duration_minutes} min · CHF {s.price}</p>
@@ -539,7 +539,7 @@ function Step3({ services, onChange, salonCategories }: {
 
       {/* Custom add / edit form */}
       {adding ? (
-        <div className="border border-gray-200 rounded-card p-4 space-y-3">
+        <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
           <p className="text-xs font-medium text-dark/50">
             {editingIdx !== null ? "Service bearbeiten" : "Eigener Service"}
           </p>
@@ -549,7 +549,7 @@ function Step3({ services, onChange, salonCategories }: {
               value={draft.name_de}
               onChange={(e) => setDraft({ ...draft, name_de: e.target.value, _autoTranslated: false })}
               onBlur={() => { if (draft.name_de && !draft._autoTranslated) autoTranslate(draft.name_de); }}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               placeholder="z. B. Waschen + Schneiden"
             />
           </div>
@@ -559,7 +559,7 @@ function Step3({ services, onChange, salonCategories }: {
               <input
                 value={draft.name_en}
                 onChange={(e) => setDraft({ ...draft, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
             <div>
@@ -567,7 +567,7 @@ function Step3({ services, onChange, salonCategories }: {
               <input
                 value={draft.name_fr}
                 onChange={(e) => setDraft({ ...draft, name_fr: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
             <div>
@@ -575,7 +575,7 @@ function Step3({ services, onChange, salonCategories }: {
               <input
                 value={draft.name_it}
                 onChange={(e) => setDraft({ ...draft, name_it: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+                className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
           </div>
@@ -593,7 +593,7 @@ function Step3({ services, onChange, salonCategories }: {
               <select
                 value={draft.category}
                 onChange={(e) => setDraft({ ...draft, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral bg-white"
+                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral bg-white"
               >
                 <option value="">Wählen…</option>
                 {salonCategories.map((c) => (
@@ -606,7 +606,7 @@ function Step3({ services, onChange, salonCategories }: {
               <select
                 value={draft.duration_minutes}
                 onChange={(e) => setDraft({ ...draft, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral bg-white"
+                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral bg-white"
               >
                 {DURATION_OPTIONS.map((d) => (
                   <option key={d} value={d}>{d} min</option>
@@ -620,13 +620,13 @@ function Step3({ services, onChange, salonCategories }: {
                 min={0}
                 value={draft.price}
                 onChange={(e) => setDraft({ ...draft, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               />
             </div>
           </div>
           <div className="flex gap-2">
             <button type="button" onClick={cancelEdit}
-              className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+              className="px-4 py-2 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
             <button type="button" onClick={saveCustom} disabled={!draft.name_de || !draft.category}
               className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">
               {editingIdx !== null ? "Speichern" : "Hinzufügen"}
@@ -637,7 +637,7 @@ function Step3({ services, onChange, salonCategories }: {
         <button
           type="button"
           onClick={() => { setEditingIdx(null); setDraft(EMPTY_SERVICE); setAdding(true); }}
-          className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-card border-2 border-dashed border-s-ink/10 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2"
         >
           <Plus size={16} /> Eigener Service erstellen
         </button>
@@ -706,7 +706,7 @@ function Step4({ staff, onChange, salonCategories }: {
     <StepContainer title="Dein Team" subtitle="Wer arbeitet in deinem Salon?">
       <div className="space-y-2 mb-4">
         {staff.map((s, i) => (
-          <div key={i} className="flex items-center justify-between bg-gray-50 rounded-card px-4 py-3">
+          <div key={i} className="flex items-center justify-between bg-s-bg-surface rounded-card px-4 py-3">
             <div>
               <p className="text-sm font-medium text-dark">{s.name}</p>
               <p className="text-xs text-dark/40 mt-0.5">
@@ -725,13 +725,13 @@ function Step4({ staff, onChange, salonCategories }: {
       </div>
 
       {adding ? (
-        <div className="border border-gray-200 rounded-card p-4 space-y-3">
+        <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Name *</label>
             <input
               value={draft.name}
               onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
               placeholder="z. B. Maria"
             />
           </div>
@@ -743,7 +743,7 @@ function Step4({ staff, onChange, salonCategories }: {
                 {roles.map((r) => (
                   <button key={r} type="button" onClick={() => setDraft({ ...draft, role: draft.role === r ? "" : r })}
                     className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
-                      draft.role === r ? "bg-s-coral text-white border-s-coral" : "border-gray-200 text-dark/50 hover:border-s-coral",
+                      draft.role === r ? "bg-s-coral text-white border-s-coral" : "border-s-ink/10 text-dark/50 hover:border-s-coral",
                     ].join(" ")}
                   >{r}</button>
                 ))}
@@ -758,7 +758,7 @@ function Step4({ staff, onChange, salonCategories }: {
                 {specialties.map((s) => (
                   <button key={s} type="button" onClick={() => toggleSpecialty(s)}
                     className={["px-2.5 py-1 rounded-pill text-xs border transition-colors",
-                      draft.specialties.includes(s) ? "bg-s-coral/10 text-s-coral border-s-coral/30" : "border-gray-200 text-dark/40 hover:border-s-coral",
+                      draft.specialties.includes(s) ? "bg-s-coral/10 text-s-coral border-s-coral/30" : "border-s-ink/10 text-dark/40 hover:border-s-coral",
                     ].join(" ")}
                   >{s}</button>
                 ))}
@@ -768,7 +768,7 @@ function Step4({ staff, onChange, salonCategories }: {
 
           <div className="flex gap-2">
             <button type="button" onClick={() => { setAdding(false); setDraft(EMPTY_STAFF); }}
-              className="px-4 py-2 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+              className="px-4 py-2 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
             <button type="button" onClick={save} disabled={!draft.name}
               className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">Hinzufügen</button>
           </div>
@@ -776,7 +776,7 @@ function Step4({ staff, onChange, salonCategories }: {
       ) : (
         <div className="space-y-2">
           <button type="button" onClick={() => setAdding(true)}
-            className="w-full py-3 rounded-card border-2 border-dashed border-gray-200 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-card border-2 border-dashed border-s-ink/10 text-sm text-dark/40 hover:border-s-coral hover:text-s-coral transition-colors flex items-center justify-center gap-2">
             <Plus size={16} /> Mitarbeiter hinzufügen
           </button>
           {staff.length === 0 && (
@@ -843,18 +843,18 @@ function Step5({ data, onChange, slotCount }: {
               <div className="flex items-center gap-3">
                 <button type="button" onClick={() => toggleDay(key)}
                   className={["w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                    slot ? "bg-s-coral text-white" : "bg-gray-100 text-dark/40"].join(" ")}>
+                    slot ? "bg-s-coral text-white" : "bg-s-bg-sunken text-dark/40"].join(" ")}>
                   {DAYS[i]}
                 </button>
                 {slot ? (
                   <>
                     <input type="time" value={slot.start}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, start: e.target.value } } })}
-                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral" />
+                      className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
                     <span className="text-xs text-dark/30">–</span>
                     <input type="time" value={slot.end}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, end: e.target.value } } })}
-                      className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral" />
+                      className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
                     <button type="button" onClick={() => addBreak(key)}
                       className="text-[10px] text-s-coral hover:underline shrink-0 ml-1">
                       + Pause
@@ -915,7 +915,7 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
             type="button"
             onClick={() => onChange({ ...data, enabled: !data.enabled })}
             className={["w-11 h-6 rounded-full transition-colors relative",
-              data.enabled ? "bg-s-coral" : "bg-gray-200"].join(" ")}
+              data.enabled ? "bg-s-coral" : "bg-s-sand"].join(" ")}
           >
             <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
               data.enabled ? "translate-x-5.5" : "translate-x-0.5"].join(" ")} />
@@ -931,7 +931,7 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
               </div>
               <input type="range" min={5} max={50} step={5} value={data.discount_percent}
                 onChange={(e) => onChange({ ...data, discount_percent: +e.target.value })}
-                className="w-full accent-teal" />
+                className="w-full accent-s-coral" />
               <div className="flex justify-between text-xs text-dark/30 mt-1">
                 <span>5%</span><span>50%</span>
               </div>
@@ -943,7 +943,7 @@ function Step6({ data, onChange }: { data: LMData; onChange: (d: LMData) => void
               </div>
               <input type="range" min={2} max={24} step={1} value={data.window_hours}
                 onChange={(e) => onChange({ ...data, window_hours: +e.target.value })}
-                className="w-full accent-teal" />
+                className="w-full accent-s-coral" />
               <div className="flex justify-between text-xs text-dark/30 mt-1">
                 <span>2h</span><span>24h</span>
               </div>
@@ -1085,7 +1085,7 @@ export default function SalonOnboardingPage() {
       </AnimatePresence>
 
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-lg border-b border-gray-100 px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white/80 backdrop-blur-lg border-b border-s-ink/5 px-4 py-4 sticky top-0 z-10">
         <div className="max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             <span className="font-heading font-bold text-base text-dark">
@@ -1100,7 +1100,7 @@ export default function SalonOnboardingPage() {
                 key={i}
                 className={[
                   "h-1.5 rounded-full transition-all duration-500",
-                  i < step ? "bg-s-coral" : "bg-gray-100",
+                  i < step ? "bg-s-coral" : "bg-s-bg-sunken",
                   i === step - 1 ? "w-6" : "w-3",
                 ].join(" ")}
               />
@@ -1131,13 +1131,13 @@ export default function SalonOnboardingPage() {
       </div>
 
       {/* Nav buttons */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-100 px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-s-ink/5 px-4 py-4">
         <div className="max-w-xl mx-auto flex gap-3">
           {step > 1 && (
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60 hover:text-dark transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:text-dark transition-colors"
             >
               <ChevronLeft size={16} /> Zurück
             </button>

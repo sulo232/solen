@@ -3,7 +3,7 @@ import CategoryPage from "@/components/CategoryPage";
 
 export const metadata: Metadata = {
   title: "Barbershop in Basel — solen.ch",
-  description: "Finde die besten Barbershops in Basel. Jetzt Termin buchen.",
+  description: "Barbershops in Basel — Haarschnitt, Bart-Trimm und Grooming. Jetzt online buchen.",
 };
 
 export default function Page() {

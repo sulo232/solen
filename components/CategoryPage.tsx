@@ -31,9 +31,9 @@ const categoryLabels: Record<SalonCategory, string> = {
 const categoryGradients: Record<SalonCategory, string> = {
   coiffeur: "from-s-coral/10 via-white to-transparent",
   barbershop: "from-dark/5 via-white to-transparent",
-  nails: "from-coral/8 via-white to-transparent",
+  nails: "from-s-coral/8 via-white to-transparent",
   spa: "from-s-coral/8 via-white to-transparent",
-  makeup: "from-coral/10 via-white to-transparent",
+  makeup: "from-s-coral/10 via-white to-transparent",
   waxing: "from-s-coral/6 via-white to-transparent",
 };
 
@@ -57,13 +57,13 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-card bg-gray-50 border border-gray-100 overflow-hidden hover:border-s-coral/20 hover:shadow-card transition-all duration-200 opacity-80"
+      className="rounded-card bg-s-bg-surface border border-s-ink/5 overflow-hidden hover:border-s-coral/20 hover:shadow-card transition-all duration-200 opacity-80"
     >
-      <div className="h-36 bg-gray-100 relative overflow-hidden">
+      <div className="h-36 bg-s-bg-sunken relative overflow-hidden">
         {entry.photo_url ? (
           <img src={entry.photo_url} alt={entry.name} className="w-full h-full object-cover opacity-80" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-300">
+          <div className="w-full h-full flex items-center justify-center text-s-ink/30">
             <Building2 className="w-10 h-10" />
           </div>
         )}
@@ -85,12 +85,12 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
         )}
         <div className="flex items-center gap-1.5 mt-3 flex-wrap">
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-gray-100 text-xs text-dark/70 hover:bg-gray-100 font-body transition-colors">
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-s-ink/5 text-xs text-dark/70 hover:bg-s-bg-sunken font-body transition-colors">
               <Phone className="w-3 h-3" />Anrufen
             </a>
           )}
           {entry.website && (
-            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-gray-100 text-xs text-dark/70 hover:bg-gray-100 font-body transition-colors">
+            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-s-ink/5 text-xs text-dark/70 hover:bg-s-bg-sunken font-body transition-colors">
               <Globe className="w-3 h-3" />Website
             </a>
           )}
@@ -244,7 +244,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             }
             routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-sm font-body font-medium text-dark/70 hover:border-s-coral hover:text-s-coral transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-sm font-body font-medium text-dark/70 hover:border-s-coral hover:text-s-coral transition-colors"
         >
           {isMapView ? <List size={16} /> : <MapIcon size={16} />}
           {isMapView ? "Liste" : "Karte"}
@@ -294,7 +294,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             <AnimatePresence>
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
-                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-s-coral hover:shadow-teal-glow transition-all disabled:opacity-50">
+                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-dark hover:border-s-coral hover:shadow-warm-sm transition-all disabled:opacity-50">
                     {loadingMore ? <Spinner size="sm" /> : null}
                     {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
                   </button>
@@ -306,7 +306,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             <AnimatePresence>
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
-                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-gray-200 text-sm font-body font-medium text-dark hover:border-gray-300 transition-colors disabled:opacity-50">
+                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-dark hover:border-gray-300 transition-colors disabled:opacity-50">
                     {dirLoadingMore ? <Spinner size="sm" /> : null}
                     {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
                   </button>

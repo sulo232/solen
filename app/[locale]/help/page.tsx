@@ -73,7 +73,7 @@ export default function HelpPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Suche nach Themen..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-gray-200 bg-white text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 rounded-pill border border-s-ink/10 bg-white text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-colors"
             />
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function HelpPage() {
               "px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
               activeCategory === null
                 ? "bg-s-coral text-white"
-                : "bg-gray-100 text-dark/60 hover:bg-gray-200",
+                : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
             ].join(" ")}
           >
             Alle
@@ -101,7 +101,7 @@ export default function HelpPage() {
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium font-body transition-colors",
                 activeCategory === key
                   ? "bg-s-coral text-white"
-                  : "bg-gray-100 text-dark/60 hover:bg-gray-200",
+                  : "bg-s-bg-sunken text-dark/60 hover:bg-s-sand",
               ].join(" ")}
             >
               <Icon size={12} />
@@ -144,7 +144,7 @@ export default function HelpPage() {
                       <Link
                         key={article.id}
                         href={`/${locale}/help/${article.slug}`}
-                        className="flex items-center justify-between px-4 py-3 rounded-card bg-gray-50 hover:bg-gray-100 transition-colors group"
+                        className="flex items-center justify-between px-4 py-3 rounded-card bg-s-bg-surface hover:bg-s-bg-sunken transition-colors group"
                       >
                         <span className="font-body text-sm text-dark/80 group-hover:text-dark transition-colors">
                           {article.title}

@@ -51,7 +51,7 @@ export function SidebarBody({ children, className }: SidebarBodyProps) {
   return (
     <motion.aside
       className={cn(
-        "hidden md:flex flex-col fixed left-0 top-0 h-full bg-white/90 backdrop-blur-lg border-r border-gray-100 z-30 overflow-hidden",
+        "hidden md:flex flex-col fixed left-0 top-0 h-full bg-white/90 backdrop-blur-lg border-r border-s-ink/5 z-30 overflow-hidden",
         className
       )}
       animate={{ width: animate ? (open ? 240 : 60) : 240 }}
@@ -87,7 +87,7 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
       onClick={onClick}
       className={cn(
         "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5 relative group",
-        active ? "text-s-coral" : "text-dark/60 hover:bg-gray-50 hover:text-dark",
+        active ? "text-s-coral" : "text-dark/60 hover:bg-s-bg-surface hover:text-dark",
         className
       )}
     >

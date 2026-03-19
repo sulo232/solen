@@ -45,7 +45,7 @@ function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, spar
   const count = useCountUp(value);
   const display = isRating ? (count / 10).toFixed(1) : count;
   return (
-    <motion.div variants={itemVariants} className="bg-white rounded-card border border-gray-100 p-4 shadow-card">
+    <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card">
       <div className="flex items-start justify-between mb-3">
         <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center`}>
           <Icon size={15} className={color} />
@@ -134,7 +134,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35 }}
-            className="mb-6 bg-s-coral text-white rounded-card px-5 py-4 flex items-center gap-3 shadow-teal-glow"
+            className="mb-6 bg-s-coral text-white rounded-card px-5 py-4 flex items-center gap-3 shadow-warm-sm"
           >
             <PartyPopper size={22} className="shrink-0" />
             <div>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
           {/* Unread messages */}
           {unread > 0 && (
             <a href={`/${locale}/dashboard/messages`}
-              className="block bg-white rounded-card border border-gray-100 p-4 shadow-card hover:border-s-coral transition-colors">
+              className="block bg-white rounded-card border border-s-ink/5 p-4 shadow-card hover:border-s-coral transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-s-coral/10 flex items-center justify-center">
                   <MessageCircle size={18} className="text-s-coral" />
@@ -232,14 +232,14 @@ export default function DashboardPage() {
               <a href={`/${locale}/dashboard/bookings`} className="text-xs text-s-coral hover:underline">Alle →</a>
             </div>
             {bookings.length === 0 ? (
-              <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/30">
+              <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/30">
                 <Calendar size={28} className="mx-auto mb-2 opacity-30" />
                 <p className="text-sm">Keine Termine heute</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {bookings.map((b) => (
-                  <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4 flex items-center gap-4">
+                  <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4 flex items-center gap-4">
                     <p className="data-text font-bold text-sm text-s-coral w-12 shrink-0 text-center">
                       {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     </p>
@@ -268,7 +268,7 @@ export default function DashboardPage() {
                 { label: "Nachrichten", href: `/${locale}/dashboard/messages`, Icon: MessageCircle },
               ].map(({ label, href, Icon }) => (
                 <a key={href} href={href}
-                  className="bg-white rounded-card border border-gray-100 p-3 flex flex-col items-center gap-2 text-center hover:border-s-coral transition-colors">
+                  className="bg-white rounded-card border border-s-ink/5 p-3 flex flex-col items-center gap-2 text-center hover:border-s-coral transition-colors">
                   <Icon size={18} className="text-s-coral" />
                   <p className="text-xs text-dark/60 leading-tight">{label}</p>
                 </a>

@@ -54,7 +54,7 @@ export default function RevenuePage() {
           <p className="text-sm text-dark/40 mt-0.5">Plattform-Einnahmen</p>
         </div>
         {/* Period picker */}
-        <div className="flex rounded-button overflow-hidden border border-gray-200 bg-white shadow-card shrink-0">
+        <div className="flex rounded-button overflow-hidden border border-s-ink/10 bg-white shadow-card shrink-0">
           {(["week", "month", "year"] as const).map((p) => (
             <button
               key={p}
@@ -130,7 +130,7 @@ export default function RevenuePage() {
               <motion.div
                 key={card.label}
                 variants={itemVariants}
-                className="bg-white rounded-card border border-gray-100 p-4 shadow-card"
+                className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card"
               >
                 <div className={`w-8 h-8 rounded-lg ${card.bg} flex items-center justify-center mb-3`}>
                   <card.icon size={15} className={card.color} />
@@ -143,7 +143,7 @@ export default function RevenuePage() {
 
           {/* Revenue chart */}
           {data.daily.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-card border border-gray-100 p-5 shadow-card">
+            <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
               <h2 className="font-heading font-semibold text-dark text-sm mb-4">Tagesumsatz (CHF)</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -189,13 +189,13 @@ export default function RevenuePage() {
 
           {/* Top salons table */}
           {data.top_salons.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-card border border-gray-100 shadow-card overflow-hidden">
+            <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-50">
                 <h2 className="font-heading font-semibold text-dark text-sm">Top Salons</h2>
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50/80">
+                  <tr className="bg-s-bg-surface/80">
                     <th className="text-left px-5 py-2.5 text-xs font-semibold text-dark/40 uppercase tracking-wide">Salon</th>
                     <th className="text-right px-5 py-2.5 text-xs font-semibold text-dark/40 uppercase tracking-wide">Buchungen</th>
                     <th className="text-right px-5 py-2.5 text-xs font-semibold text-dark/40 uppercase tracking-wide">Umsatz</th>
@@ -205,7 +205,7 @@ export default function RevenuePage() {
                   {data.top_salons.map((salon, i) => (
                     <tr
                       key={salon.name}
-                      className="border-t border-gray-50 hover:bg-gray-50/60 transition-colors"
+                      className="border-t border-gray-50 hover:bg-s-bg-surface/60 transition-colors"
                     >
                       <td className="px-5 py-3 flex items-center gap-2">
                         <span className="w-5 h-5 rounded-full bg-s-coral/10 text-s-coral text-[10px] font-bold flex items-center justify-center shrink-0">

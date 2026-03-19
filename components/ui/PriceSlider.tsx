@@ -46,7 +46,7 @@ export default function PriceSlider({ min = 0, max = 200, step = 5 }: PriceSlide
         onValueChange={(v) => setValues([v[0], v[1]] as [number, number])}
         className="relative flex items-center w-full h-5"
       >
-        <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-pill bg-gray-200">
+        <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-pill bg-s-sand">
           <SliderPrimitive.Range className="absolute h-full bg-s-coral" />
         </SliderPrimitive.Track>
         <SliderPrimitive.Thumb

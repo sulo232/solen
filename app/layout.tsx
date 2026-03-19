@@ -11,9 +11,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <ThemeScript />
       </head>
-      <body style={{ margin: 0, padding: 0 }} className="bg-white dark:bg-dm-bg text-dark dark:text-dm-text">
+      <body style={{ margin: 0, padding: 0 }} className="bg-s-bg-base text-s-ink dark:bg-s-dm-bg dark:text-s-dm-text">
         {children}
       </body>
     </html>

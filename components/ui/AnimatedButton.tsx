@@ -16,13 +16,13 @@ interface AnimatedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-s-coral text-white shadow-teal-glow hover:bg-s-coral-dark active:bg-s-coral-dark",
+    "bg-s-coral text-white shadow-warm-sm hover:bg-s-coral/90 active:bg-s-coral/85",
   secondary:
-    "bg-white border border-gray-200 text-dark shadow-card hover:border-s-coral/40 hover:shadow-teal-glow",
+    "bg-white border border-s-ink/10 text-dark shadow-card hover:border-s-coral/40 hover:shadow-warm-sm",
   ghost:
     "bg-transparent text-dark/60 hover:bg-dark/5 hover:text-dark",
   danger:
-    "bg-s-coral text-white shadow-warm-md hover:bg-s-coral-dark active:bg-s-coral-dark",
+    "bg-s-coral text-white shadow-warm-md hover:bg-s-coral/90 active:bg-s-coral/85",
 };
 
 const sizeClasses: Record<Size, string> = {

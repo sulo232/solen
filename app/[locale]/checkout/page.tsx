@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -10,7 +11,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
-import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet } from "lucide-react";
+import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -104,6 +105,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CheckoutPage() {
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const [intent, setIntent] = useState<BookingIntent | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -231,7 +233,7 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
@@ -239,11 +241,11 @@ export default function CheckoutPage() {
 
   if (error || !intent) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
         <div className="text-center p-8">
           <p className="text-s-coral font-medium mb-2">Fehler</p>
           <p className="text-dark/60 text-sm">{error ?? "Etwas ist schiefgelaufen."}</p>
-          <a href="/de" className="mt-4 inline-block text-s-coral text-sm underline">Zurück zur Startseite</a>
+          <a href={`/${locale}`} className="mt-4 inline-block text-s-coral text-sm underline">Zurück zur Startseite</a>
         </div>
       </div>
     );
@@ -256,12 +258,12 @@ export default function CheckoutPage() {
   // At-salon confirmed success
   if (atSalonConfirmed) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center px-4">
         <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full">
-          <span className="text-5xl">🎉</span>
+          <PartyPopper size={48} className="text-s-coral" />
           <p className="font-heading font-bold text-xl text-dark">Buchung bestätigt!</p>
           <p className="text-sm text-dark/60">Du zahlst direkt im Salon. Bis bald!</p>
-          <a href="/de/profile" className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
+          <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
             Meine Buchungen
           </a>
         </div>
@@ -274,18 +276,18 @@ export default function CheckoutPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen bg-gray-50 py-12 px-4"
+      className="min-h-screen bg-s-bg-surface py-12 px-4"
     >
       {/* Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 text-xs text-dark/40 flex items-center gap-1">
-        <a href="/de" className="hover:text-s-coral transition-colors">Startseite</a>
+        <a href={`/${locale}`} className="hover:text-s-coral transition-colors">Startseite</a>
         <ChevronRight className="w-3 h-3" />
         <span className="text-dark/60">Buchung abschliessen</span>
       </div>
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* Booking summary card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
+        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5">
           <h1 className="font-heading font-bold text-lg text-dark mb-4">Buchungsübersicht</h1>
 
           <div className="space-y-2.5 text-sm">
@@ -305,7 +307,7 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          <div className="border-t border-gray-100 mt-4 pt-4 space-y-2 text-sm">
+          <div className="border-t border-s-ink/5 mt-4 pt-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-dark/60">{intent.service_name}</span>
               <span className="font-medium text-dark">CHF {intent.estimated_price.toFixed(2)}</span>
@@ -316,7 +318,7 @@ export default function CheckoutPage() {
                   <span>Anzahlung ({Math.round((chargeAmount / intent.estimated_price) * 100)}%)</span>
                   <span>CHF {chargeAmount.toFixed(2)}</span>
                 </div>
-                <div className="border-t border-gray-100 pt-2 flex justify-between">
+                <div className="border-t border-s-ink/5 pt-2 flex justify-between">
                   <span className="text-dark/50 text-xs">Restbetrag vor Ort</span>
                   <span className="text-dark/50 text-xs">CHF {remainder.toFixed(2)}</span>
                 </div>
@@ -349,7 +351,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Promo code + credits */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5 space-y-3">
+        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5 space-y-3">
           <h2 className="font-heading font-semibold text-sm text-dark flex items-center gap-2">
             <Tag className="w-4 h-4 text-s-coral" />
             Promo-Code oder Guthaben
@@ -363,12 +365,12 @@ export default function CheckoutPage() {
               onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
               placeholder="Code eingeben"
               disabled={!!promoResult}
-              className="flex-1 px-3 py-2 rounded-button border border-gray-200 bg-white text-sm text-dark placeholder:text-dark/30 focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none disabled:opacity-50"
+              className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 bg-white text-sm text-dark placeholder:text-dark/30 focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none disabled:opacity-50"
             />
             {promoResult ? (
               <button
                 onClick={() => { setPromoResult(null); setPromoCode(""); }}
-                className="px-3 py-2 rounded-button bg-gray-100 text-dark/60 text-sm hover:bg-gray-200 transition-colors"
+                className="px-3 py-2 rounded-button bg-s-bg-sunken text-dark/60 text-sm hover:bg-s-sand transition-colors"
               >
                 Entfernen
               </button>
@@ -396,7 +398,7 @@ export default function CheckoutPage() {
 
           {/* User credits */}
           {userCredits > 0 && !promoResult && (
-            <div className="flex items-center justify-between bg-gray-50 rounded-button px-3 py-2">
+            <div className="flex items-center justify-between bg-s-bg-surface rounded-button px-3 py-2">
               <span className="text-sm text-dark/60 flex items-center gap-1.5">
                 <Wallet className="w-3.5 h-3.5 text-s-coral" />
                 Guthaben verfügbar
@@ -408,7 +410,7 @@ export default function CheckoutPage() {
 
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
-          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
+          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5">
             <h2 className="font-heading font-bold text-base text-dark mb-3">Zahlung vor Ort</h2>
             <p className="text-sm text-dark/60 mb-4">
               Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.
@@ -431,7 +433,7 @@ export default function CheckoutPage() {
             </p>
           </div>
         ) : (
-          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-gray-100 shadow-card p-5">
+          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5">
             <h2 className="font-heading font-bold text-base text-dark mb-4">Zahlung</h2>
 
             {clientSecret ? (

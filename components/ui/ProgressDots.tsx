@@ -22,7 +22,7 @@ export default function ProgressDots({ total, current, onDotClick }: ProgressDot
                 ? "bg-s-coral scale-125"
                 : isCompleted
                 ? "bg-s-coral/50 cursor-pointer hover:bg-s-coral/70"
-                : "bg-gray-200"
+                : "bg-s-sand"
             }`}
             aria-label={`Step ${i + 1}`}
           />

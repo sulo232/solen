@@ -22,7 +22,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} size={12} className={i <= rating ? "fill-s-coral text-s-coral" : "text-gray-200"} />
+        <Star key={i} size={12} className={i <= rating ? "fill-s-coral text-s-coral" : "text-s-ink/20"} />
       ))}
     </div>
   );
@@ -89,7 +89,7 @@ export default function SalonReviewsPage() {
             <motion.div
               key={r.id}
               variants={itemVariants}
-              className="bg-white rounded-card border border-gray-100 shadow-card p-4"
+              className="bg-white rounded-card border border-s-ink/5 shadow-card p-4"
             >
               {/* Review header */}
               <div className="flex items-center gap-3 mb-2">
@@ -134,7 +134,7 @@ export default function SalonReviewsPage() {
                         placeholder="Antwort schreiben..."
                         value={responseText}
                         onChange={(e) => setResponseText(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
+                        className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral"
                       />
                       <button
                         onClick={() => handleRespond(r.id)}
@@ -146,7 +146,7 @@ export default function SalonReviewsPage() {
                       </button>
                       <button
                         onClick={() => { setRespondingTo(null); setResponseText(""); }}
-                        className="px-2 py-2 rounded-button border border-gray-200 text-dark/40 text-xs"
+                        className="px-2 py-2 rounded-button border border-s-ink/10 text-dark/40 text-xs"
                       >
                         Abbrechen
                       </button>

@@ -7,6 +7,8 @@ import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, Chec
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 import { TypingIndicator } from "@/components/ui/TypingIndicator";
+import { useToast } from "@/components/ui/Toast";
+import PriceOfferModal from "@/components/ui/PriceOfferModal";
 import QuickReplyChips from "@/components/chat/QuickReplyChips";
 import AISuggestion from "@/components/chat/AISuggestion";
 import PhotoGallery from "@/components/chat/PhotoGallery";
@@ -38,6 +40,8 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   const [remoteTyping, setRemoteTyping] = useState<string | null>(null);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translating, setTranslating] = useState<string | null>(null);
+  const [priceOfferModal, setPriceOfferModal] = useState<{ open: boolean; photoUrl: string }>({ open: false, photoUrl: "" });
+  const toast = useToast();
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -176,7 +180,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { alert("Datei zu gross (max 10MB)"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast("Datei zu gross (max 10MB)", "error"); return; }
 
     setUploading(true);
     try {
@@ -186,7 +190,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         method: "POST",
         body: formData,
       });
-      if (!res.ok) { const err = await res.json(); alert(err.error || "Upload fehlgeschlagen"); return; }
+      if (!res.ok) { const err = await res.json(); toast(err.error || "Upload fehlgeschlagen", "error"); return; }
       const { url } = await res.json();
 
       const optimistic: Message = {
@@ -207,7 +211,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         body: JSON.stringify({ content: url, message_type: "image", image_url: url }),
       });
     } catch {
-      alert("Upload fehlgeschlagen");
+      toast("Upload fehlgeschlagen", "error");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -259,32 +263,41 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
 
   // Photo-based quoting
   const handleCreatePhotoOffer = (photoUrl: string) => {
-    const offerDescription = window.prompt("Beschreibung für das Angebot:");
-    if (!offerDescription) return;
-    const offerAmount = window.prompt("Preis in CHF:");
-    if (!offerAmount || isNaN(Number(offerAmount))) return;
+    setPriceOfferModal({ open: true, photoUrl });
+  };
 
-    fetch(`/api/conversations/${conversationId}/price-offer`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        description: offerDescription,
-        amount_chf: Number(offerAmount),
-        photo_url: photoUrl,
-      }),
-    })
-      .then((r) => { if (r.ok) loadMessages(); })
-      .catch(() => {});
+  const handlePriceOfferSubmit = async ({ description, amount }: { description: string; amount: number }) => {
+    const photoUrl = priceOfferModal.photoUrl;
+    setPriceOfferModal({ open: false, photoUrl: "" });
+    try {
+      const res = await fetch(`/api/conversations/${conversationId}/price-offer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          description,
+          amount_chf: amount,
+          photo_url: photoUrl,
+        }),
+      });
+      if (res.ok) {
+        toast("Angebot gesendet", "success");
+        loadMessages();
+      } else {
+        toast("Angebot konnte nicht gesendet werden", "error");
+      }
+    } catch {
+      toast("Angebot konnte nicht gesendet werden", "error");
+    }
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[400px] bg-white dark:bg-dm-surface rounded-card border border-gray-100 dark:border-white/5">
+    <div className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5">
       {/* Tab header */}
-      <div className="flex border-b border-gray-200 dark:border-gray-700">
+      <div className="flex border-b border-s-ink/10 dark:border-gray-700">
         <button
           onClick={() => setActiveTab("chat")}
           className={["flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "chat" ? "text-s-coral border-b-2 border-s-coral" : "text-gray-500 dark:text-gray-400"
+            activeTab === "chat" ? "text-s-coral border-b-2 border-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
           ].join(" ")}
         >
           Chat
@@ -292,7 +305,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         <button
           onClick={() => setActiveTab("photos")}
           className={["flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "photos" ? "text-s-coral border-b-2 border-s-coral" : "text-gray-500 dark:text-gray-400"
+            activeTab === "photos" ? "text-s-coral border-b-2 border-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
           ].join(" ")}
         >
           <Camera size={14} className="inline mr-1 -mt-0.5" />
@@ -316,15 +329,15 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           {loading ? (
             <div className="flex justify-center py-8"><Spinner size="sm" /></div>
           ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-dark/30 dark:text-white/30 text-sm">
+            <div className="flex flex-col items-center justify-center h-32 text-dark/30 dark:text-s-dm-text/30 text-sm">
               <p>Noch keine Nachrichten.</p>
               <p className="text-xs mt-1">Starte das Gespräch!</p>
             </div>
           ) : messages.map((msg) => (
-            <div key={msg.id} className={["flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
+            <div key={msg.id} className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
               <div className={[
                 "max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-relaxed",
-                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-gray-100 dark:bg-gray-800 text-dark dark:text-white rounded-tl-sm",
+                isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-gray-800 text-dark dark:text-s-dm-text rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
                   <div>
@@ -359,7 +372,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                   </div>
                 )}
                 <div className={["flex items-center gap-1 mt-0.5", isOwn(msg) ? "justify-end" : ""].join(" ")}>
-                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-dark/30 dark:text-white/30"].join(" ")}>
+                  <span className={["text-[10px]", isOwn(msg) ? "text-white/60" : "text-dark/30 dark:text-s-dm-text/30"].join(" ")}>
                     {new Date(msg.created_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
                     {msg.id.startsWith("optimistic") && " · Senden..."}
                   </span>
@@ -377,7 +390,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                       onClick={() => handleTranslate(msg.id, msg.content)}
                       disabled={translating === msg.id}
                       className={["ml-1 opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 transition-opacity",
-                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-dark/20 dark:text-white/20 hover:text-dark/50 dark:hover:text-white/50"
+                        isOwn(msg) ? "text-white/40 hover:text-white/70" : "text-dark/20 dark:text-s-dm-text/20 hover:text-dark/50 dark:hover:text-s-dm-text/50"
                       ].join(" ")}
                       title="Übersetzen"
                       style={{ opacity: translating === msg.id ? 1 : undefined }}
@@ -409,12 +422,12 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <div className="px-4 pb-2 flex gap-2">
             <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
               placeholder="Bild-URL eingeben..."
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral bg-white dark:bg-dm-surface dark:text-white"
+              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
               className="px-3 py-2 rounded-button bg-s-coral text-white text-sm disabled:opacity-50">Senden</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
-              className="px-2 py-2 rounded-button border border-gray-200 dark:border-gray-700 text-dark/40 dark:text-white/40 hover:text-dark dark:hover:text-white">
+              className="px-2 py-2 rounded-button border border-s-ink/10 dark:border-gray-700 text-dark/40 dark:text-s-dm-text/40 hover:text-dark dark:hover:text-s-dm-text">
               <X size={14} />
             </button>
           </div>
@@ -450,23 +463,23 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         )}
 
         {/* Compose bar */}
-        <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700 flex items-end gap-2">
+        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-gray-700 flex items-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="p-2 rounded-button text-dark/30 dark:text-white/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
+            className="p-2 rounded-button text-dark/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0 disabled:opacity-40"
             title="Datei anhängen"
           >
             {uploading ? <Spinner size="sm" /> : <Paperclip size={18} />}
           </button>
           <button onClick={() => setShowImageInput((s) => !s)}
-            className="p-2 rounded-button text-dark/30 dark:text-white/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
+            className="p-2 rounded-button text-dark/30 dark:text-s-dm-text/30 hover:text-s-coral hover:bg-s-coral/5 transition-colors shrink-0"
             title="Bild-URL senden">
             <ImageIcon size={18} />
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-dm-surface dark:text-white"
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-gray-700 rounded-button focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
             style={{ minHeight: "38px" }} />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
             className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:bg-s-coral/90 transition-colors shrink-0">
@@ -474,6 +487,13 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           </button>
         </div>
       </div>
+
+      {/* Price Offer Modal */}
+      <PriceOfferModal
+        open={priceOfferModal.open}
+        onClose={() => setPriceOfferModal({ open: false, photoUrl: "" })}
+        onSubmit={handlePriceOfferSubmit}
+      />
     </div>
   );
 }

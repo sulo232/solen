@@ -30,7 +30,7 @@ function Stars({ rating }: { rating: number }) {
         <Star
           key={i}
           size={12}
-          className={i <= rating ? "fill-s-coral text-s-coral" : "text-gray-200"}
+          className={i <= rating ? "fill-s-coral text-s-coral" : "text-s-ink/20"}
         />
       ))}
     </div>
@@ -53,7 +53,7 @@ function DeleteModal({
         <h3 className="font-heading font-bold text-base text-dark mb-2">Bewertung löschen</h3>
         <p className="text-sm text-dark/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
           <button
             onClick={onConfirm}
             disabled={loading}
@@ -150,7 +150,7 @@ export default function ReviewModerationPage() {
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
-              tab === t.id ? "bg-s-coral text-white" : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral"
+              tab === t.id ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral"
             }`}
           >
             {t.label}
@@ -170,7 +170,7 @@ export default function ReviewModerationPage() {
               key={r.id}
               variants={itemVariants}
               className={`bg-white rounded-card border shadow-card p-4 ${
-                r.is_hidden ? "border-s-coral/30 bg-s-coral/[0.02]" : r.is_flagged ? "border-amber-200" : "border-gray-100"
+                r.is_hidden ? "border-s-coral/30 bg-s-coral/[0.02]" : r.is_flagged ? "border-amber-200" : "border-s-ink/5"
               }`}
             >
               {/* Header */}
@@ -224,7 +224,7 @@ export default function ReviewModerationPage() {
                     placeholder="Öffentliche Antwort schreiben..."
                     value={adminResponses[r.id] ?? ""}
                     onChange={(e) => setAdminResponses((prev) => ({ ...prev, [r.id]: e.target.value }))}
-                    className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral"
+                    className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral"
                   />
                   <button
                     onClick={() => handleAdminResponse(r.id)}
@@ -247,7 +247,7 @@ export default function ReviewModerationPage() {
                 </button>
                 <button
                   onClick={() => handleAction(r.id, "hide")}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-gray-200 text-dark/50 text-xs font-medium hover:bg-gray-50 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-ink/10 text-dark/50 text-xs font-medium hover:bg-s-bg-surface transition-colors"
                 >
                   <EyeOff size={12} />
                   Verstecken

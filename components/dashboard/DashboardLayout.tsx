@@ -108,12 +108,12 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-s-bg-surface flex">
       {/* ── Desktop Sidebar (animated) ── */}
       <Sidebar>
         <SidebarBody>
           {/* Logo */}
-          <div className="px-4 py-5 border-b border-gray-100">
+          <div className="px-4 py-5 border-b border-s-ink/5">
             <Link href={`/${locale}`} className="font-heading font-bold text-xl text-dark whitespace-nowrap">
               solen<span className="text-s-coral">.</span>ch
             </Link>
@@ -150,7 +150,7 @@ export default function DashboardLayout({
 
           {/* Admin nav */}
           {role === "admin" && (
-            <div className="px-2 pb-3 border-t border-gray-100 pt-3">
+            <div className="px-2 pb-3 border-t border-s-ink/5 pt-3">
               {ADMIN_NAV.map(({ label, href, icon: Icon }) => (
                 <SidebarLink
                   key={href}
@@ -163,7 +163,7 @@ export default function DashboardLayout({
           )}
 
           {/* Footer */}
-          <div className="px-3 py-3 border-t border-gray-100">
+          <div className="px-3 py-3 border-t border-s-ink/5">
             <Link
               href={`/${locale}`}
               className="text-xs text-dark/30 hover:text-s-coral transition-colors whitespace-nowrap"
@@ -194,7 +194,7 @@ export default function DashboardLayout({
               className="absolute left-0 top-0 h-full w-64 bg-white/95 backdrop-blur-xl shadow-glass"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-s-ink/5 flex items-center justify-between">
                 <span className="font-heading font-bold text-lg">solen<span className="text-s-coral">.</span>ch</span>
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-dark/40" /></button>
               </div>
@@ -245,7 +245,7 @@ export default function DashboardLayout({
       {/* ── Main content ── */}
       <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+        <div className="md:hidden sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-s-ink/5 px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-dark/60">
             <Menu size={20} />
           </button>
@@ -258,7 +258,7 @@ export default function DashboardLayout({
       </div>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-100 flex">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-s-ink/5 flex">
         {MOBILE_NAV.map(({ label, href, icon: Icon }) => {
           const active = isActive(href);
           const isMessages = href === "/dashboard/messages";

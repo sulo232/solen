@@ -50,7 +50,7 @@ export default function SolenDatePicker({
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-dark/60 font-body">{label}</Label>
-      <Group className="flex items-center rounded-button border border-gray-200 bg-white px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-all">
+      <Group className="flex items-center rounded-button border border-s-ink/10 bg-white px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-all">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
@@ -59,26 +59,26 @@ export default function SolenDatePicker({
             />
           )}
         </DateInput>
-        <Button className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors">
+        <Button className="ml-2 p-1 rounded hover:bg-s-bg-sunken transition-colors">
           <CalendarIcon className="w-4 h-4 text-dark/40" />
         </Button>
       </Group>
       <Popover
-        className="rounded-card border border-gray-100 bg-white shadow-glass p-3 z-50"
+        className="rounded-card border border-s-ink/5 bg-white shadow-glass p-3 z-50"
       >
         <Dialog className="outline-none">
           <Calendar>
             <header className="flex items-center justify-between mb-2">
               <Button
                 slot="previous"
-                className="p-1.5 rounded-button hover:bg-gray-100 transition-colors"
+                className="p-1.5 rounded-button hover:bg-s-bg-sunken transition-colors"
               >
                 <ChevronLeft className="w-4 h-4 text-dark/60" />
               </Button>
               <Heading className="text-sm font-heading font-semibold text-dark" />
               <Button
                 slot="next"
-                className="p-1.5 rounded-button hover:bg-gray-100 transition-colors"
+                className="p-1.5 rounded-button hover:bg-s-bg-sunken transition-colors"
               >
                 <ChevronRight className="w-4 h-4 text-dark/60" />
               </Button>
@@ -100,7 +100,7 @@ export default function SolenDatePicker({
                         "w-9 h-9 flex items-center justify-center rounded-button text-sm data-text transition-colors cursor-pointer outline-none",
                         isSelected && "bg-s-coral text-white font-semibold",
                         !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-dark",
-                        isUnavailable && "text-dark/20 bg-gray-100 cursor-default line-through",
+                        isUnavailable && "text-dark/20 bg-s-bg-sunken cursor-default line-through",
                         isDisabled && !isUnavailable && "text-dark/20 cursor-default",
                         isFocusVisible && "ring-2 ring-s-coral ring-offset-1"
                       )

@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Scissors,
+  ScissorsLineDashed,
   Sparkles,
   Droplets,
   Palette,
@@ -54,7 +55,7 @@ const fadeUp = {
 
 const CATEGORIES = [
   { key: "coiffeur",   label: "Coiffeur",    Icon: Scissors  },
-  { key: "barbershop", label: "Barbershop",  Icon: Scissors  },
+  { key: "barbershop", label: "Barbershop",  Icon: ScissorsLineDashed },
   { key: "nails",      label: "Nails",       Icon: Sparkles  },
   { key: "spa",        label: "Spa & Massage", Icon: Droplets },
   { key: "makeup",     label: "Makeup",      Icon: Palette   },
@@ -275,7 +276,7 @@ export default function HomePage() {
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-gray-100 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-s-ink/5 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
               >
                 <Icon
                   size={32}
@@ -300,7 +301,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
-      <section className="py-10 bg-gray-50/50">
+      <section className="py-10 bg-s-bg-surface/50">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6">
             <h2
@@ -357,7 +358,7 @@ export default function HomePage() {
 
       {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
       {newSalons.length > 0 && (
-        <section className="py-10 bg-gray-50/50">
+        <section className="py-10 bg-s-bg-surface/50">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-1">
@@ -440,7 +441,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Quartier Section ───────────────────────────────────────────────── */}
-      <section className="py-10 bg-gray-50/50">
+      <section className="py-10 bg-s-bg-surface/50">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
             <div>

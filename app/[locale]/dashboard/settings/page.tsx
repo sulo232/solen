@@ -37,16 +37,16 @@ function HoursEditor({ hours, onChange }: {
           <div key={key} className="flex items-center gap-3">
             <button type="button" onClick={() => toggle(key)}
               className={["w-9 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
-                h ? "bg-s-coral text-white" : "bg-gray-100 text-dark/40"].join(" ")}>
+                h ? "bg-s-coral text-white" : "bg-s-bg-sunken text-dark/40"].join(" ")}>
               {DAYS_LABEL[i]}
             </button>
             {h ? (
               <>
                 <input type="time" value={h.open} onChange={(e) => update(key, "open", e.target.value)}
-                  className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
                 <span className="text-xs text-dark/30">–</span>
                 <input type="time" value={h.close} onChange={(e) => update(key, "close", e.target.value)}
-                  className="px-2 py-1 rounded-button border border-gray-200 text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
               </>
             ) : <span className="text-xs text-dark/30">Geschlossen</span>}
           </div>
@@ -90,83 +90,83 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-1">Salon-Name *</label>
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-1">Cover-Foto URL</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-1">Beschreibung DE</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
       </div>
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-1">Beschreibung EN</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Telefon</label>
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Instagram</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
             placeholder="https://instagram.com/..."
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Facebook</label>
           <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
             placeholder="https://facebook.com/..."
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">TikTok</label>
           <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
             placeholder="https://tiktok.com/@..."
-            className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
       </div>
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-1">Website</label>
         <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
       <div>
         <label className="block text-xs font-medium text-dark/50 mb-2">Öffnungszeiten</label>
         <HoursEditor hours={form.opening_hours} onChange={(h) => setForm({ ...form, opening_hours: h })} />
       </div>
       {/* Structured info fields */}
-      <div className="border-t border-gray-100 pt-4 mt-4">
+      <div className="border-t border-s-ink/5 pt-4 mt-4">
         <p className="text-xs font-medium text-dark/50 mb-3">Salondetails (für Kunden sichtbar)</p>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-[10px] text-dark/40 mb-1">Atmosphäre</label>
             <input placeholder="z.B. Modern, Gemütlich"
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-[10px] text-dark/40 mb-1">Expertise</label>
             <input placeholder="z.B. Balayage, Locken"
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-[10px] text-dark/40 mb-1">Produkte</label>
             <input placeholder="z.B. Olaplex, Kérastase"
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-[10px] text-dark/40 mb-1">Anfahrt</label>
             <input placeholder="z.B. Tram 8, Parkplätze"
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
         </div>
         <div className="mt-3">
@@ -217,7 +217,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           <p className="text-xs text-dark/40 mt-0.5">Freie Slots werden automatisch mit Rabatt angezeigt.</p>
         </div>
         <button onClick={() => setEnabled(!enabled)}
-          className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-s-coral" : "bg-gray-200"].join(" ")}>
+          className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-s-coral" : "bg-s-sand"].join(" ")}>
           <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
             enabled ? "translate-x-5.5" : "translate-x-0.5"].join(" ")} />
         </button>
@@ -230,7 +230,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
               <span className="text-sm font-bold text-s-coral data-text">{discount}%</span>
             </div>
             <input type="range" min={5} max={50} step={5} value={discount}
-              onChange={(e) => setDiscount(+e.target.value)} className="w-full accent-teal" />
+              onChange={(e) => setDiscount(+e.target.value)} className="w-full accent-s-coral" />
           </div>
           <div>
             <div className="flex justify-between mb-2">
@@ -238,7 +238,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
               <span className="text-sm font-bold text-s-coral data-text">{windowH}h</span>
             </div>
             <input type="range" min={2} max={24} step={1} value={windowH}
-              onChange={(e) => setWindowH(+e.target.value)} className="w-full accent-teal" />
+              onChange={(e) => setWindowH(+e.target.value)} className="w-full accent-s-coral" />
           </div>
         </>
       )}
@@ -276,7 +276,7 @@ function QuickRepliesTab() {
   return (
     <div className="py-4 max-w-md space-y-2">
       {replies.map((r, i) => (
-        <div key={i} className="flex items-center gap-2 bg-white border border-gray-200 rounded-card px-3 py-2.5">
+        <div key={i} className="flex items-center gap-2 bg-white border border-s-ink/10 rounded-card px-3 py-2.5">
           {editing === i ? (
             <>
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
@@ -295,7 +295,7 @@ function QuickRepliesTab() {
       ))}
       <div className="flex gap-2">
         <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder="Neue Vorlage…"
-          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
           className="px-3 py-2 rounded-button bg-s-coral text-white text-sm"><Plus size={14} /></button>
       </div>
@@ -324,7 +324,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
   return (
     <div className="p-5 space-y-5">
-      <p className="text-xs text-dark/50 dark:text-white/50">
+      <p className="text-xs text-dark/50 dark:text-s-dm-text/50">
         SMS-Erinnerungen werden automatisch an Kunden gesendet, um No-Shows zu reduzieren.
       </p>
 
@@ -332,8 +332,8 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder24h} onChange={(e) => setReminder24h(e.target.checked)}
           className="w-4 h-4 rounded border-gray-300 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-dark dark:text-white">24 Stunden vorher</span>
-          <p className="text-xs text-dark/40 dark:text-white/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
+          <span className="text-sm font-medium text-dark dark:text-s-dm-text">24 Stunden vorher</span>
+          <p className="text-xs text-dark/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 24h vor dem Termin</p>
         </div>
       </label>
 
@@ -341,8 +341,8 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <input type="checkbox" checked={reminder1h} onChange={(e) => setReminder1h(e.target.checked)}
           className="w-4 h-4 rounded border-gray-300 text-s-coral focus:ring-s-coral" />
         <div>
-          <span className="text-sm font-medium text-dark dark:text-white">1 Stunde vorher</span>
-          <p className="text-xs text-dark/40 dark:text-white/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
+          <span className="text-sm font-medium text-dark dark:text-s-dm-text">1 Stunde vorher</span>
+          <p className="text-xs text-dark/40 dark:text-s-dm-text/40">Kunden erhalten eine SMS 1h vor dem Termin</p>
         </div>
       </label>
 
@@ -410,7 +410,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
                 "rounded-card border p-3 text-left transition-colors",
                 feeType === opt.id
                   ? "border-s-coral bg-s-coral/5"
-                  : "border-gray-200 hover:border-gray-300",
+                  : "border-s-ink/10 hover:border-gray-300",
               ].join(" ")}
             >
               <p className={["text-sm font-medium", feeType === opt.id ? "text-s-coral" : "text-dark"].join(" ")}>
@@ -435,7 +435,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
             step={feeType === "percentage" ? 5 : 1}
             value={feeValue}
             onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm data-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
           />
         </div>
       )}
@@ -446,7 +446,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <select
           value={freeHours}
           onChange={(e) => setFreeHours(Number(e.target.value))}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
         >
           {CANCEL_HOURS_OPTIONS.map((h) => (
             <option key={h} value={h}>{h} Stunden vor dem Termin</option>
@@ -455,7 +455,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
       </div>
 
       {/* Preview */}
-      <div className="bg-gray-50 rounded-card px-4 py-3">
+      <div className="bg-s-bg-surface rounded-card px-4 py-3">
         <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest mb-1">Vorschau für Kunden</p>
         <p className="text-sm text-dark/70">{previewText}</p>
       </div>
@@ -507,7 +507,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
           <p className="text-xs text-red-400 mt-1">Kontaktiere support@solen.ch.</p>
         </div>
       )}
-      <div className="bg-gray-50 rounded-card px-4 py-3 text-sm text-dark/60 space-y-1">
+      <div className="bg-s-bg-surface rounded-card px-4 py-3 text-sm text-dark/60 space-y-1">
         <p><span className="font-medium">Letzte Verifizierung:</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
         <p><span className="font-medium">Stornierungsrichtlinie:</span> Kunden können bis 24h vor dem Termin stornieren.</p>
       </div>
@@ -573,13 +573,13 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           <label className="block text-xs font-medium text-dark/50 mb-1">Von</label>
           <input type="date" value={start} min={todayStr}
             onChange={(e) => setStart(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-dark/50 mb-1">Bis</label>
           <input type="date" value={end} min={start || todayStr}
             onChange={(e) => setEnd(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
       </div>
 
@@ -590,7 +590,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         </button>
         {(start || end) && (
           <button onClick={handleClear} disabled={saving}
-            className="px-4 py-2.5 rounded-button border border-gray-200 text-sm text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/50 hover:border-s-coral hover:text-s-coral transition-colors">
             Deaktivieren
           </button>
         )}
@@ -653,8 +653,8 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   };
 
   const statusPill = {
-    loading: <span className="px-2 py-0.5 rounded-pill text-xs bg-gray-100 text-dark/40">Lädt...</span>,
-    not_connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-gray-100 text-dark/50">Nicht verbunden</span>,
+    loading: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-dark/40">Lädt...</span>,
+    not_connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-bg-sunken text-dark/50">Nicht verbunden</span>,
     pending: <span className="px-2 py-0.5 rounded-pill text-xs bg-amber-100 text-amber-700">Ausstehend</span>,
     connected: <span className="px-2 py-0.5 rounded-pill text-xs bg-s-coral/10 text-s-coral font-medium">Verbunden ✓</span>,
   }[connectStatus];
@@ -686,7 +686,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               onClick={() => setPaymentMode(opt.id)}
               className={[
                 "w-full rounded-card border p-3.5 text-left transition-colors flex items-center gap-3",
-                paymentMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-gray-200 hover:border-gray-300",
+                paymentMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-gray-300",
               ].join(" ")}
             >
               <div className={[
@@ -716,7 +716,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           <input
             type="range" min={5} max={50} step={5} value={depositPercent}
             onChange={(e) => setDepositPercent(+e.target.value)}
-            className="w-full accent-teal"
+            className="w-full accent-s-coral"
           />
           <div className="flex justify-between text-xs text-dark/30 mt-1">
             <span>5%</span><span>50%</span>
@@ -729,7 +729,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
       {/* No-show protection settings */}
       {paymentMode !== "at_salon" && (
-        <div className="border-t border-gray-100 pt-4 space-y-4">
+        <div className="border-t border-s-ink/5 pt-4 space-y-4">
           <p className="text-xs font-medium text-dark/50">No-Show-Schutz</p>
 
           <div>
@@ -740,7 +740,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
             <input
               type="range" min={2} max={72} step={2} value={cancellationHours}
               onChange={(e) => setCancellationHours(+e.target.value)}
-              className="w-full accent-teal"
+              className="w-full accent-s-coral"
             />
           </div>
 
@@ -763,7 +763,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
       {/* Stripe Connect */}
       {paymentMode !== "at_salon" && (
-        <div className="border border-gray-200 rounded-card p-4 space-y-3">
+        <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-dark/40" />
@@ -778,7 +778,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
             <button
               onClick={handleConnect}
               disabled={connectLoading || connectStatus === "loading"}
-              className="flex items-center gap-2 px-4 py-2 rounded-button border border-gray-200 text-sm text-dark hover:border-s-coral transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 rounded-button border border-s-ink/10 text-sm text-dark hover:border-s-coral transition-colors disabled:opacity-50"
             >
               {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
               Bankkonto verknüpfen

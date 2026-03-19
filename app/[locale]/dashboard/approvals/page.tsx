@@ -67,14 +67,14 @@ export default function ApprovalsPage() {
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : salons.length === 0 ? (
-        <div className="bg-white rounded-card border border-gray-100 p-12 text-center">
+        <div className="bg-white rounded-card border border-s-ink/5 p-12 text-center">
           <ShieldCheck size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
           <p className="text-dark/40 text-sm">Keine ausstehenden Genehmigungen</p>
         </div>
       ) : (
         <div className="space-y-4">
           {salons.map((salon) => (
-            <div key={salon.id} className="bg-white rounded-card border border-gray-100 shadow-card p-5">
+            <div key={salon.id} className="bg-white rounded-card border border-s-ink/5 shadow-card p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <h2 className="font-heading font-bold text-lg text-dark">{salon.name}</h2>
@@ -140,7 +140,7 @@ export default function ApprovalsPage() {
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
             </p>
             <textarea
-              className="w-full border border-gray-200 rounded-button px-3 py-2 text-sm text-dark resize-none focus:outline-none focus:border-s-coral"
+              className="w-full border border-s-ink/10 rounded-button px-3 py-2 text-sm text-dark resize-none focus:outline-none focus:border-s-coral"
               rows={4}
               placeholder="z.B. Unvollständige Angaben, kein Basel-Bezug..."
               value={rejectReason}

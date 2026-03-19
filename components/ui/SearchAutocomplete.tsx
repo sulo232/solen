@@ -120,7 +120,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder="Service oder Salon suchen…"
-          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-gray-200 text-sm text-dark placeholder:text-dark/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
+          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-s-ink/10 text-sm text-dark placeholder:text-dark/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
         />
         {query && (
           <button
@@ -133,7 +133,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
       </div>
 
       {open && totalItems > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 backdrop-blur-lg rounded-card shadow-glass border border-gray-100 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 backdrop-blur-lg rounded-card shadow-glass border border-s-ink/5 overflow-hidden z-50">
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
@@ -144,7 +144,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
-                    activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-gray-50"
+                    activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-s-bg-surface"
                   }`}
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
@@ -158,7 +158,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
 
           {salons.length > 0 && (
             <div>
-              {services.length > 0 && <div className="border-t border-gray-100" />}
+              {services.length > 0 && <div className="border-t border-s-ink/5" />}
               <p className="text-[10px] font-bold text-dark/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
                 Salons
               </p>
@@ -169,10 +169,10 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${
-                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-gray-50"
+                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-dark/80 hover:bg-s-bg-surface"
                     }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0">
                       {salon.cover_image && (
                         <img src={salon.cover_image} alt="" className="w-full h-full object-cover" />
                       )}

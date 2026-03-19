@@ -77,14 +77,14 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
+          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
       <div className="flex gap-2">
         <button
           onClick={onClose}
-          className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60 hover:bg-gray-50 transition-colors"
+          className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60 hover:bg-s-bg-surface transition-colors"
         >
           Abbrechen
         </button>
@@ -137,7 +137,7 @@ function BookingCard({
   const tooLate = b.status === "confirmed" && hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
 
   return (
-    <div className="bg-white rounded-card border border-gray-100 p-4">
+    <div className="bg-white rounded-card border border-s-ink/5 p-4">
       <div className="flex justify-between items-start gap-4">
         <div>
           <p className="font-medium text-sm text-dark">{b.salon_name}</p>
@@ -159,7 +159,7 @@ function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/50 hover:text-s-coral hover:border-s-coral transition-colors"
             >
               <RotateCcw size={12} />
               Nochmal buchen
@@ -179,7 +179,7 @@ function BookingCard({
             <div className="relative group">
               <button
                 disabled
-                className="px-3 py-1.5 rounded-button border border-gray-200 text-xs text-dark/20 cursor-not-allowed"
+                className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-dark/20 cursor-not-allowed"
               >
                 Stornieren
               </button>
@@ -240,7 +240,7 @@ function SettingsSection({
       <div className="flex items-center gap-4">
         <div className="w-14 h-14 rounded-full bg-s-coral/10 overflow-hidden shrink-0 flex items-center justify-center text-xl font-heading text-s-coral">
           {avatar ? (
-            <Image src={avatar} alt="" width={56} height={56} className="object-cover w-full h-full" />
+            <Image src={avatar} alt="" width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
           ) : (
             name[0] ?? "?"
           )}
@@ -250,7 +250,7 @@ function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder="Avatar-URL (optional)"
-          className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -260,7 +260,7 @@ function SettingsSection({
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -270,39 +270,39 @@ function SettingsSection({
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           rows={2}
-          className="w-full px-3 py-2.5 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral resize-none"
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
       {/* Notifications */}
-      <div className="pt-2 border-t border-gray-100 space-y-3">
-        <p className="text-xs font-medium text-dark/50 dark:text-dm-text/50">E-Mail-Benachrichtigungen</p>
+      <div className="pt-2 border-t border-s-ink/5 space-y-3">
+        <p className="text-xs font-medium text-dark/50 dark:text-s-dm-text/50">E-Mail-Benachrichtigungen</p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-dark dark:text-dm-text">Buchungen</p>
-            <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Bestätigungen, Erinnerungen, Stornierungen</p>
+            <p className="text-sm font-medium text-dark dark:text-s-dm-text">Buchungen</p>
+            <p className="text-xs text-dark/40 dark:text-s-dm-text/40 mt-0.5">Bestätigungen, Erinnerungen, Stornierungen</p>
           </div>
           <button type="button" onClick={() => setEmailOn(!emailOn)}
-            className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-gray-200 dark:bg-white/10"].join(" ")}
+            className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand dark:bg-white/10"].join(" ")}
             aria-pressed={emailOn}>
             <span className={["absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform", emailOn ? "translate-x-5" : "translate-x-0"].join(" ")} />
           </button>
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
-            <p className="text-sm font-medium text-dark dark:text-dm-text">Angebote & Deals</p>
-            <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Last-Minute und Sonderangebote</p>
+            <p className="text-sm font-medium text-dark dark:text-s-dm-text">Angebote & Deals</p>
+            <p className="text-xs text-dark/40 dark:text-s-dm-text/40 mt-0.5">Last-Minute und Sonderangebote</p>
           </div>
-          <div className="relative w-11 h-6 rounded-full bg-gray-200 dark:bg-white/10 shrink-0">
+          <div className="relative w-11 h-6 rounded-full bg-s-sand dark:bg-white/10 shrink-0">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
           </div>
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
-            <p className="text-sm font-medium text-dark dark:text-dm-text">Neue Salons</p>
-            <p className="text-xs text-dark/40 dark:text-dm-text/40 mt-0.5">Wenn neue Salons in deiner Nähe öffnen</p>
+            <p className="text-sm font-medium text-dark dark:text-s-dm-text">Neue Salons</p>
+            <p className="text-xs text-dark/40 dark:text-s-dm-text/40 mt-0.5">Wenn neue Salons in deiner Nähe öffnen</p>
           </div>
-          <div className="relative w-11 h-6 rounded-full bg-gray-200 dark:bg-white/10 shrink-0">
+          <div className="relative w-11 h-6 rounded-full bg-s-sand dark:bg-white/10 shrink-0">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
           </div>
         </div>
@@ -310,7 +310,7 @@ function SettingsSection({
 
       {/* Language */}
       <div>
-        <p className="text-sm font-medium text-dark dark:text-dm-text mb-2">Sprache</p>
+        <p className="text-sm font-medium text-dark dark:text-s-dm-text mb-2">Sprache</p>
         <div className="flex gap-2 flex-wrap">
           {(["de", "en", "fr", "it"] as const).map((l) => (
             <button
@@ -321,7 +321,7 @@ function SettingsSection({
                 "px-4 py-2 rounded-button text-sm font-medium border transition-colors",
                 lang === l
                   ? "bg-s-coral text-white border-s-coral"
-                  : "border-gray-200 text-dark/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-dm-text/60",
+                  : "border-s-ink/10 text-dark/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",
               ].join(" ")}
             >
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
@@ -425,7 +425,7 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
         {/* Cancel modal */}
         {cancelTarget && (
@@ -447,7 +447,7 @@ export default function ProfilePage() {
         >
           <div className="w-16 h-16 rounded-full bg-s-coral/10 overflow-hidden flex items-center justify-center text-2xl font-heading text-s-coral shrink-0">
             {profile.avatar_url ? (
-              <Image src={profile.avatar_url} alt="" width={64} height={64} className="object-cover w-full h-full" />
+              <Image src={profile.avatar_url} alt="" width={64} height={64} className="object-cover w-full h-full" loading="lazy" />
             ) : (
               profile.display_name[0] ?? "?"
             )}
@@ -458,7 +458,7 @@ export default function ProfilePage() {
           </div>
           <Link
             href={`/${locale}/account/messages`}
-            className="ml-auto relative p-2 rounded-button border border-gray-200 hover:border-s-coral transition-colors"
+            className="ml-auto relative p-2 rounded-button border border-s-ink/10 hover:border-s-coral transition-colors"
           >
             <MessageCircle size={18} className="text-dark/50" />
           </Link>
@@ -476,7 +476,7 @@ export default function ProfilePage() {
             Nächste Termine
           </h2>
           {upcoming.length === 0 ? (
-            <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
+            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/40">
               <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Noch keine Buchungen</p>
               <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -534,7 +534,7 @@ export default function ProfilePage() {
             Favoriten
           </h2>
           {favorites.length === 0 ? (
-            <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
+            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/40">
               <Heart className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Noch keine Favoriten</p>
               <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -544,10 +544,10 @@ export default function ProfilePage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {favorites.map((salon) => (
-                <div key={salon.id} className="bg-white rounded-card border border-gray-100 overflow-hidden flex gap-3 p-3 group relative">
+                <div key={salon.id} className="bg-white rounded-card border border-s-ink/5 overflow-hidden flex gap-3 p-3 group relative">
                   {salon.cover_photo_url && (
-                    <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-gray-100">
-                      <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" />
+                    <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-s-bg-sunken">
+                      <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
@@ -588,7 +588,7 @@ export default function ProfilePage() {
             <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch!" />
           </h2>
           {loyaltyCards.length === 0 ? (
-            <div className="bg-white rounded-card border border-gray-100 p-6 text-center text-dark/40">
+            <div className="bg-white rounded-card border border-s-ink/5 p-6 text-center text-dark/40">
               <Trophy className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-medium">Du hast noch keine Stempel</p>
               <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -618,20 +618,20 @@ export default function ProfilePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          <h2 className="font-heading font-bold text-base text-dark dark:text-white mb-3 flex items-center gap-2">
+          <h2 className="font-heading font-bold text-base text-dark dark:text-s-dm-text mb-3 flex items-center gap-2">
             <Wallet size={16} className="text-s-coral" />
             Guthaben & Empfehlung
           </h2>
-          <div className="bg-white dark:bg-white/5 rounded-card border border-gray-100 dark:border-white/10 p-4 space-y-3">
+          <div className="bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 p-4 space-y-3">
             <Link
-              href="/de/profile/referral"
+              href={`/${locale}/profile/referral`}
               className="flex items-center justify-between p-3 rounded-button bg-s-coral/5 border border-s-coral/15 hover:bg-s-coral/10 transition-colors group"
             >
               <div className="flex items-center gap-3">
                 <Gift className="w-5 h-5 text-s-coral" />
                 <div>
-                  <p className="text-sm font-medium text-dark dark:text-white">Freunde einladen</p>
-                  <p className="text-xs text-dark/50 dark:text-white/50">Beide erhalten CHF 10 Guthaben</p>
+                  <p className="text-sm font-medium text-dark dark:text-s-dm-text">Freunde einladen</p>
+                  <p className="text-xs text-dark/50 dark:text-s-dm-text/50">Beide erhalten CHF 10 Guthaben</p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-s-coral group-hover:translate-x-0.5 transition-transform" />
@@ -649,7 +649,7 @@ export default function ProfilePage() {
             <Settings size={16} className="text-dark/60" />
             Einstellungen
           </h2>
-          <div className="bg-white rounded-card border border-gray-100 p-5">
+          <div className="bg-white rounded-card border border-s-ink/5 p-5">
             <SettingsSection profile={profile} onSave={handleSaveProfile} />
           </div>
         </motion.section>

@@ -52,7 +52,7 @@ export default function MessagesPage() {
 
   if (conversations.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4 text-center px-4">
+      <div className="min-h-screen bg-s-bg-surface flex flex-col items-center justify-center gap-4 text-center px-4">
         <MessageCircle className="w-12 h-12 text-dark/20" />
         <p className="font-heading font-semibold text-dark text-lg">Keine Nachrichten</p>
         <p className="text-sm text-dark/50">
@@ -69,7 +69,7 @@ export default function MessagesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-s-bg-surface">
       <div className="max-w-5xl mx-auto pt-6 pb-8 px-4 sm:px-6">
         <h1 className="font-heading font-bold text-2xl text-dark mb-6">Nachrichten</h1>
 
@@ -86,7 +86,7 @@ export default function MessagesPage() {
                     "flex items-start gap-3 p-3 rounded-card text-left transition-colors w-full",
                     selected === conv.id
                       ? "bg-s-coral/5 border border-s-coral/20"
-                      : "bg-white border border-gray-100 hover:border-s-coral/20",
+                      : "bg-white border border-s-ink/5 hover:border-s-coral/20",
                   ].join(" ")}
                 >
                   {/* Avatar */}

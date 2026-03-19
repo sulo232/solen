@@ -61,17 +61,17 @@ export default function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-20 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-50 animate-in slide-in-from-bottom-4">
-      <div className="bg-white dark:bg-dm-surface rounded-card shadow-lg border border-gray-100 dark:border-white/10 p-4">
+      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-lg border border-s-ink/5 dark:border-white/10 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-s-coral/10 flex items-center justify-center shrink-0">
               <Download className="w-5 h-5 text-s-coral" />
             </div>
             <div>
-              <p className="font-heading font-semibold text-sm text-dark dark:text-dm-text">
+              <p className="font-heading font-semibold text-sm text-dark dark:text-s-dm-text">
                 Installiere Solen
               </p>
-              <p className="text-xs text-dark/50 dark:text-dm-text/50 mt-0.5">
+              <p className="text-xs text-dark/50 dark:text-s-dm-text/50 mt-0.5">
                 Für schnelle Buchungen und Erinnerungen
               </p>
             </div>
@@ -82,7 +82,7 @@ export default function PWAInstallPrompt() {
         </div>
 
         {isIOS ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-dark/60 dark:text-dm-text/60 bg-gray-50 dark:bg-white/5 rounded-button p-2.5">
+          <div className="mt-3 flex items-center gap-2 text-xs text-dark/60 dark:text-s-dm-text/60 bg-s-bg-surface dark:bg-white/5 rounded-button p-2.5">
             <Share className="w-4 h-4 shrink-0 text-s-coral" />
             <span>Tippe auf <strong>Teilen</strong> → <strong>Zum Home-Bildschirm</strong></span>
           </div>

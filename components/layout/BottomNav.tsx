@@ -84,6 +84,18 @@ export default function BottomNav() {
 
   const handleTabChange = (index: number | null) => {
     if (index === null) return;
+
+    // "Suche" tab (index 1): scroll to top + focus search on homepage, otherwise navigate to /coiffeur
+    if (index === 1) {
+      if (pathname === `/${locale}`) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => document.getElementById("tour-search")?.focus(), 400);
+      } else {
+        router.push(`/${locale}/coiffeur`);
+      }
+      return;
+    }
+
     const route = routes[index];
     if (route) router.push(route);
   };
@@ -97,7 +109,7 @@ export default function BottomNav() {
       <ExpandableNavTabs
         tabs={tabs}
         activeColor="text-s-coral"
-        className="w-full justify-center bg-white/90 dark:bg-dm-surface/90 backdrop-blur-lg shadow-glass border-gray-100 dark:border-white/5 min-h-12"
+        className="w-full justify-center bg-white/90 dark:bg-s-dm-surface/90 backdrop-blur-lg shadow-glass border-s-ink/5 dark:border-white/5 min-h-12"
         onTabChange={handleTabChange}
         aria-label="Hauptnavigation"
       />

@@ -124,7 +124,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           <Link
             href={profileHref}
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 min-h-12 rounded-full bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors"
-            aria-label="Konto"
+            aria-label="Profil"
           >
             <User className="w-4 h-4" />
             {t("account")}

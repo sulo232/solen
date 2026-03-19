@@ -89,7 +89,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
       // Sort salons so gold pins render last (on top)
       const sorted = [...filteredSalons].sort((a, b) => {
-        const tierOrder: Record<string, number> = { dark: 0, grey: 1, teal: 2, gold: 3 };
+        const tierOrder: Record<string, number> = { dark: 0, grey: 1, coral: 2, gold: 3 };
         const aT = (a as any).solen_tier ?? "grey";
         const bT = (b as any).solen_tier ?? "grey";
         return (tierOrder[aT] ?? 1) - (tierOrder[bT] ?? 1);
@@ -122,12 +122,12 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             background:${isSelected ? "#E8624A" : "#D4AF37"};
             color:white;border:2px solid white;
           `;
-          pin.textContent = minPrice && minPrice > 0 ? `ab ${minPrice}` : "⭐";
+          pin.textContent = minPrice && minPrice > 0 ? `ab ${minPrice}` : "★";
           wrapper.appendChild(pin);
 
           const label = document.createElement("span");
           label.style.cssText = "font-size:9px;font-weight:700;color:#D4AF37;white-space:nowrap;text-shadow:0 0 3px white,0 0 3px white;";
-          label.textContent = "⭐ Top Salon";
+          label.textContent = "★ Top Salon";
           wrapper.appendChild(label);
 
           el.appendChild(wrapper);
@@ -167,12 +167,12 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         el.addEventListener("mouseenter", () => { el.style.transform = "scale(1.15)"; });
         el.addEventListener("mouseleave", () => { el.style.transform = "scale(1)"; });
 
-        const tierLabel = isGold ? "⭐ Top Salon · " : "";
+        const tierLabel = isGold ? "★ Top Salon · " : "";
         const popup = new mapboxgl.Popup({ offset: isGold ? 18 : 10, closeButton: false, maxWidth: "220px" }).setHTML(
           `<div style="padding:8px">
              <p style="font-weight:600;font-size:13px;color:#1A1209;margin:0 0 2px">${salon.name}</p>
              <p style="font-size:11px;color:#888;margin:0 0 4px">${tierLabel}${salon.quartier}</p>
-             <p style="font-size:11px;color:#333;margin:0">⭐ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab CHF ${minPrice}` : ""}</p>
+             <p style="font-size:11px;color:#333;margin:0">★ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab CHF ${minPrice}` : ""}</p>
            </div>`
         );
 
@@ -234,7 +234,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
               className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-medium shadow-sm transition-colors ${
                 activeCategory === chip.key
                   ? "bg-s-coral text-white shadow-md"
-                  : "bg-white/95 text-dark/70 hover:bg-white border border-gray-200"
+                  : "bg-white/95 text-dark/70 hover:bg-white border border-s-ink/10"
               }`}
             >
               {chip.label}
@@ -250,7 +250,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       {enhanced && showAreaSearch && onAreaSearch && (
         <button
           onClick={handleAreaSearch}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-dark text-sm font-medium shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-dark text-sm font-medium shadow-lg border border-s-ink/10 hover:bg-s-bg-surface transition-colors"
         >
           <MapPin size={14} className="text-s-coral" />
           In diesem Bereich suchen

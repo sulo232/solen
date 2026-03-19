@@ -71,14 +71,14 @@ export default function ExpandableNavTabs({
     <div
       ref={outsideRef}
       className={cn(
-        "flex items-center gap-1 rounded-2xl border border-gray-200/60 bg-white/90 backdrop-blur-lg p-1.5 shadow-glass",
+        "flex items-center gap-1 rounded-2xl border border-s-ink/10/60 bg-white/90 backdrop-blur-lg p-1.5 shadow-glass",
         className
       )}
     >
       {tabs.map((tab, idx) => {
         if ("type" in tab && tab.type === "separator") {
           return (
-            <div key={`sep-${idx}`} className="h-5 w-px bg-gray-200/60 mx-0.5" />
+            <div key={`sep-${idx}`} className="h-5 w-px bg-s-sand/60 mx-0.5" />
           );
         }
 

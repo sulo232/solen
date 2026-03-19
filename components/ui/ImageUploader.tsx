@@ -116,7 +116,7 @@ export default function ImageUploader({
       />
 
       {preview ? (
-        <div className="relative rounded-card overflow-hidden border border-gray-200">
+        <div className="relative rounded-card overflow-hidden border border-s-ink/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
@@ -132,7 +132,7 @@ export default function ImageUploader({
             <X size={14} />
           </button>
           {uploading && (
-            <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gray-200">
+            <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-s-sand">
               <div
                 className="h-full bg-s-coral rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -147,7 +147,7 @@ export default function ImageUploader({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           disabled={uploading}
-          className="w-full h-48 rounded-card border-2 border-dashed border-gray-200 hover:border-s-coral transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full h-48 rounded-card border-2 border-dashed border-s-ink/10 hover:border-s-coral transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {uploading ? (
             <>

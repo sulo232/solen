@@ -79,7 +79,7 @@ export default function GlassModal({
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100">
+              <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-s-ink/5">
                 <h2 className="font-heading font-semibold text-dark text-lg">{title}</h2>
                 <button
                   onClick={onClose}

@@ -59,7 +59,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
   return (
     <span className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
-        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-gray-200"].join(" ")} />
+        <Star key={i} className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-s-ink/20"].join(" ")} />
       ))}
     </span>
   );
@@ -275,7 +275,7 @@ export default function SalonProfilePage() {
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 lg:pb-16">
           {/* Photo gallery — Framer Motion crossfade */}
-          <div className="relative w-full aspect-[16/7] rounded-card overflow-hidden bg-gray-100 mb-6 select-none">
+          <div className="relative w-full aspect-[16/7] rounded-card overflow-hidden bg-s-bg-sunken mb-6 select-none">
             <AnimatePresence mode="wait" initial={false}>
               {photos.length > 0 && (
                 <motion.div key={photoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} className="absolute inset-0">
@@ -327,7 +327,7 @@ export default function SalonProfilePage() {
                 <div className="flex items-center gap-3">
                   <h1 className="font-heading font-bold text-2xl sm:text-3xl text-dark">{salon.name}</h1>
                   <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-emerald-600" : "text-dark/40"}`}>
-                    <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500 animate-pulse" : "bg-gray-300"}`} />
+                    <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500 animate-pulse" : "bg-s-sand-dark"}`} />
                     {isOpen ? "Geöffnet" : "Geschlossen"}
                   </span>
                 </div>
@@ -397,7 +397,7 @@ export default function SalonProfilePage() {
               <OffPeakCountdown salonId={salon.id} />
 
               {/* Desktop tab bar */}
-              <div className="hidden md:flex items-center gap-1 border-b border-gray-100 sticky top-[57px] bg-white z-10">
+              <div className="hidden md:flex items-center gap-1 border-b border-s-ink/5 sticky top-[57px] bg-white z-10">
                 {TABS.map(({ key, label }) => (
                   <button
                     key={key}
@@ -471,7 +471,7 @@ export default function SalonProfilePage() {
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {(salon as any).atmosphere && (
-                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Sparkles className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Atmosphäre</p>
@@ -480,7 +480,7 @@ export default function SalonProfilePage() {
                       </div>
                     )}
                     {(salon as any).expertise && (
-                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Award className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Expertise</p>
@@ -489,7 +489,7 @@ export default function SalonProfilePage() {
                       </div>
                     )}
                     {(salon as any).products && (
-                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Droplets className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">Produkte</p>
@@ -498,7 +498,7 @@ export default function SalonProfilePage() {
                       </div>
                     )}
                     {(salon as any).nearest_transport && (
-                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-gray-50">
+                      <div className="flex items-start gap-2.5 p-3 rounded-card bg-s-bg-surface">
                         <Bus className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs font-medium text-dark/40 uppercase tracking-wide">ÖV-Anbindung</p>
@@ -515,7 +515,7 @@ export default function SalonProfilePage() {
                 <div id="section-team">
                   {/* Mobile accordion header */}
                   <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-gray-100"
+                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
                     onClick={() => setOpenAccordion(openAccordion === "team" ? null : "team")}
                   >
                     <h2 className="font-heading font-semibold text-base text-dark">Team</h2>
@@ -543,7 +543,7 @@ export default function SalonProfilePage() {
                 <div id="section-angebot">
                   {/* Mobile accordion header */}
                   <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-gray-100"
+                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
                     onClick={() => setOpenAccordion(openAccordion === "angebot" ? null : "angebot")}
                   >
                     <h2 className="font-heading font-semibold text-base text-dark">Angebot</h2>
@@ -559,7 +559,7 @@ export default function SalonProfilePage() {
                           {svcs.map((svc) => (
                             <button key={svc.id}
                               onClick={() => { setSelectedService(svc.id); setCalendarOpen(true); }}
-                              className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-gray-50 transition-colors ${selectedService === svc.id ? "bg-s-coral/5" : ""}`}
+                              className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-s-bg-surface transition-colors ${selectedService === svc.id ? "bg-s-coral/5" : ""}`}
                             >
                               <div className="flex items-center gap-2">
                                 <div>
@@ -590,7 +590,7 @@ export default function SalonProfilePage() {
               <div id="section-bewertungen">
                 {/* Mobile accordion header */}
                 <button
-                  className="md:hidden w-full flex items-center justify-between py-3 border-b border-gray-100"
+                  className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
                   onClick={() => setOpenAccordion(openAccordion === "bewertungen" ? null : "bewertungen")}
                 >
                   <h2 className="font-heading font-semibold text-base text-dark">Bewertungen</h2>
@@ -629,10 +629,10 @@ export default function SalonProfilePage() {
 
                     <div className="flex flex-col gap-4">
                       {reviewsVisible.map((rev) => (
-                        <div key={rev.id} className="border border-gray-100 rounded-card p-4">
+                        <div key={rev.id} className="border border-s-ink/5 rounded-card p-4">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center text-xs text-dark/40">
+                              <div className="w-7 h-7 rounded-full bg-s-bg-sunken overflow-hidden flex items-center justify-center text-xs text-dark/40">
                                 {rev.profiles?.avatar_url
                                   ? <Image src={rev.profiles.avatar_url} alt="" width={28} height={28} className="object-cover" />
                                   : (rev.profiles?.display_name?.[0] ?? "?")}
@@ -654,7 +654,7 @@ export default function SalonProfilePage() {
                                 <button
                                   key={photo.id}
                                   onClick={() => setLightboxPhoto(photo.photo_url)}
-                                  className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity"
+                                  className="relative w-16 h-16 rounded-lg overflow-hidden bg-s-bg-sunken hover:opacity-80 transition-opacity"
                                   aria-label="Foto vergrössern"
                                 >
                                   <Image src={photo.photo_url} alt="Review Foto" fill className="object-cover" sizes="64px" />
@@ -679,7 +679,7 @@ export default function SalonProfilePage() {
                     </div>
                     {salon.reviews.length > reviewsVisible.length && (
                       <button onClick={() => setReviewPage((p) => p + 1)}
-                        className="mt-4 w-full py-2.5 border border-gray-200 rounded-button text-sm text-dark/60 hover:border-s-coral transition-colors">
+                        className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-button text-sm text-dark/60 hover:border-s-coral transition-colors">
                         Mehr Bewertungen
                       </button>
                     )}
@@ -712,7 +712,7 @@ export default function SalonProfilePage() {
             {/* ── Right: sticky booking sidebar (desktop only) */}
             <div className="hidden lg:block lg:col-span-1">
               <div className="lg:sticky lg:top-24">
-                <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-card">
+                <div className="rounded-2xl border border-s-ink/5 bg-white p-5 shadow-card">
                   {!calendarOpen ? (
                     <div className="flex flex-col gap-3">
                       <p className="font-heading font-semibold text-dark text-center">Termin buchen</p>
@@ -725,7 +725,7 @@ export default function SalonProfilePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setCalendarOpen(true)}
-                        className="w-full py-4 rounded-card bg-s-coral text-white font-body font-semibold text-base hover:bg-s-coral-dark transition-colors shadow-warm-md"
+                        className="w-full py-4 rounded-card bg-s-coral text-white font-body font-semibold text-base hover:bg-s-coral/90 transition-colors shadow-warm-md"
                       >
                         Jetzt buchen
                       </motion.button>
@@ -744,7 +744,7 @@ export default function SalonProfilePage() {
         </div>
 
         {/* Mobile sticky CTA */}
-        <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-3">
+        <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-sm border-t border-s-ink/5 px-4 py-3">
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setMobileSheetOpen(true)}

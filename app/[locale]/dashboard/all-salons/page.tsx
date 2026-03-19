@@ -67,7 +67,7 @@ function ConfirmModal({
         </div>
         <p className="text-sm text-dark/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">
             Abbrechen
           </button>
           <button
@@ -172,7 +172,7 @@ export default function AllSalonsPage() {
               "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
               tab === t.value
                 ? "bg-s-coral text-white"
-                : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral",
+                : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral",
             ].join(" ")}
           >
             {t.label}
@@ -188,7 +188,7 @@ export default function AllSalonsPage() {
           placeholder="Salon suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-gray-200 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-dark placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -211,11 +211,11 @@ export default function AllSalonsPage() {
               <motion.div
                 key={salon.id}
                 variants={itemVariants}
-                className="bg-white rounded-card border border-gray-100 shadow-card p-4"
+                className="bg-white rounded-card border border-s-ink/5 shadow-card p-4"
               >
                 <div className="flex gap-3">
                   {/* Cover thumbnail */}
-                  <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
                     {salon.cover_photo_url ? (
                       <img src={salon.cover_photo_url} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -287,7 +287,7 @@ export default function AllSalonsPage() {
                     {/* Edit link */}
                     <a
                       href={`/${locale}/dashboard/settings`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button bg-gray-50 text-dark/50 text-xs font-medium hover:bg-gray-100 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-bg-surface text-dark/50 text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                     >
                       Bearbeiten <ExternalLink size={10} />
                     </a>

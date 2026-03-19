@@ -66,12 +66,12 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Name *</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Foto URL</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-dark/50 mb-1">Spezialitäten</label>
@@ -79,8 +79,8 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
-                className="flex-1 px-3 py-2 rounded-button border border-gray-200 text-sm focus:outline-none focus:border-s-coral" />
-              <button type="button" onClick={addSpec} className="px-2.5 rounded-button bg-gray-100 text-dark/60"><Plus size={14} /></button>
+                className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+              <button type="button" onClick={addSpec} className="px-2.5 rounded-button bg-s-bg-sunken text-dark/60"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -99,7 +99,7 @@ function StaffModal({ initial, salonId, onClose, onSaved }: StaffModalProps) {
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!name || loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
@@ -143,7 +143,7 @@ function DeleteModal({ member, onClose, onDeleted }: {
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleDelete} disabled={loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Löschen
@@ -219,7 +219,7 @@ export default function StaffPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {staff.map((s) => (
-            <div key={s.id} className="bg-white rounded-card border border-gray-100 p-4 flex items-start gap-3">
+            <div key={s.id} className="bg-white rounded-card border border-s-ink/5 p-4 flex items-start gap-3">
               <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
                 {s.avatar_url ? (
                   <img src={s.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
@@ -230,7 +230,7 @@ export default function StaffPage() {
                 {s.specialties.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1">
                     {s.specialties.slice(0, 3).map((sp, i) => (
-                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-dark/50 rounded-pill">{sp}</span>
+                      <span key={i} className="text-[10px] px-1.5 py-0.5 bg-s-bg-sunken text-dark/50 rounded-pill">{sp}</span>
                     ))}
                   </div>
                 )}

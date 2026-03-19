@@ -25,8 +25,8 @@ const STATUS_LABELS: Record<BookingStatus, string> = {
 const STATUS_COLORS: Record<BookingStatus, string> = {
   confirmed: "bg-s-coral/10 text-s-coral",
   cancelled: "bg-s-coral/10 text-s-coral",
-  completed: "bg-gray-100 text-dark/50",
-  no_show: "bg-gray-100 text-dark/30",
+  completed: "bg-s-bg-sunken text-dark/50",
+  no_show: "bg-s-bg-sunken text-dark/30",
 };
 
 const CANCEL_REASONS = [
@@ -74,15 +74,15 @@ function SalonCancelModal({
         <p className="text-sm text-dark/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
-            <label key={r.value} className="flex items-center gap-3 p-3 rounded-button border border-gray-200 cursor-pointer hover:border-s-coral transition-colors">
+            <label key={r.value} className="flex items-center gap-3 p-3 rounded-button border border-s-ink/10 cursor-pointer hover:border-s-coral transition-colors">
               <input type="radio" name="reason" value={r.value} checked={reason === r.value}
-                onChange={() => setReason(r.value)} className="accent-teal" />
+                onChange={() => setReason(r.value)} className="accent-s-coral" />
               <span className="text-sm">{r.label}</span>
             </label>
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-dark/60">Abbrechen</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
             className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Stornieren
@@ -173,7 +173,7 @@ export default function BookingsPage() {
             onClick={() => setStatusFilter(s)}
             className={[
               "px-3 py-1.5 rounded-pill text-sm font-medium whitespace-nowrap transition-colors",
-              statusFilter === s ? "bg-s-coral text-white" : "bg-white border border-gray-200 text-dark/60 hover:border-s-coral",
+              statusFilter === s ? "bg-s-coral text-white" : "bg-white border border-s-ink/10 text-dark/60 hover:border-s-coral",
             ].join(" ")}
           >
             {s === "all" ? "Alle" : STATUS_LABELS[s]}
@@ -190,7 +190,7 @@ export default function BookingsPage() {
       ) : (
         <div className="space-y-2">
           {bookings.map((b) => (
-            <div key={b.id} className="bg-white rounded-card border border-gray-100 p-4">
+            <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
               <div className="flex items-start gap-4">
                 {/* Time */}
                 <div className="shrink-0 text-center w-14">
@@ -241,7 +241,7 @@ export default function BookingsPage() {
                       </button>
                       <button
                         onClick={() => updateStatus(b.id, "no_show")}
-                        className="p-1.5 rounded-button bg-gray-100 text-dark/40 hover:bg-gray-200 transition-colors"
+                        className="p-1.5 rounded-button bg-s-bg-sunken text-dark/40 hover:bg-s-sand transition-colors"
                         title="Nicht erschienen"
                       >
                         <UserX size={13} />

@@ -3,7 +3,7 @@ import CategoryPage from "@/components/CategoryPage";
 
 export const metadata: Metadata = {
   title: "Nägel & Nailstudio in Basel — solen.ch",
-  description: "Finde die besten Nagelstudios in Basel. Jetzt Termin buchen.",
+  description: "Nagelstudios in Basel — Maniküre, Pediküre, Gel-Nägel. Online-Termine buchen.",
 };
 
 export default function Page() {
