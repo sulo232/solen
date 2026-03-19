@@ -3,6 +3,8 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface PriceSliderProps {
   min?: number;
@@ -11,6 +13,7 @@ interface PriceSliderProps {
 }
 
 export default function PriceSlider({ min = 0, max = 200, step = 5 }: PriceSliderProps) {
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -34,8 +37,8 @@ export default function PriceSlider({ min = 0, max = 200, step = 5 }: PriceSlide
   return (
     <div className="flex flex-col gap-3 w-full">
       <div className="flex justify-between text-xs data-text text-s-ink/60">
-        <span>CHF {values[0]}</span>
-        <span>CHF {values[1]}</span>
+        <span>{formatCurrency(values[0], locale)}</span>
+        <span>{formatCurrency(values[1], locale)}</span>
       </div>
 
       <SliderPrimitive.Root

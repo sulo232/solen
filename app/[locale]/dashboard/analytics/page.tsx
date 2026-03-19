@@ -5,9 +5,11 @@ import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { useLocale } from "next-intl";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface AnalyticsData {
   bookings_by_day: { date: string; count: number }[];
@@ -26,6 +28,7 @@ const AMBER = "#D4870A";
 const DARK = "#1A1209";
 
 export default function AnalyticsPage() {
+  const locale = useLocale();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -114,7 +117,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }}
-                  formatter={(v: number) => [`CHF ${v}`, "Umsatz"]} />
+                  formatter={(v: number) => [formatCurrency(Number(v), locale), "Umsatz"]} />
                 <Bar dataKey="revenue" fill={CORAL} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, MapPin, Clock } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface PreviewSalon {
   name: string;
@@ -169,7 +170,7 @@ function SheetContent({
                   </p>
                   <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{svc.duration_minutes} Min.</p>
                 </div>
-                <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">CHF {svc.price}</span>
+                <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{formatCurrency(svc.price, locale)}</span>
               </div>
             ))}
           </div>

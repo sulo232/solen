@@ -10,6 +10,7 @@ import { slideSwitch } from "@/lib/animations";
 import { serviceTemplates, DURATION_OPTIONS } from "@/lib/service-templates";
 import type { ServiceTemplate } from "@/lib/service-templates";
 import ImageUploader from "@/components/ui/ImageUploader";
+import { formatCurrency } from "@/lib/format-currency";
 import { validateStep, step1Schema, step2Schema, step3Schema, step4Schema } from "@/lib/registration-validation";
 import type { SalonCategory, AgeGroup, Gender } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -487,7 +488,7 @@ function Step3({ services, onChange, salonCategories }: {
                       <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40">
                         <Clock size={10} /> {t.duration} min
                       </span>
-                      <span className="text-xs data-text font-semibold text-s-ink/60">CHF {t.price}</span>
+                      <span className="text-xs data-text font-semibold text-s-ink/60">{formatCurrency(t.price, locale)}</span>
                     </div>
                   </div>
                   {added ? (
@@ -511,7 +512,7 @@ function Step3({ services, onChange, salonCategories }: {
               <div key={i} className="flex items-center justify-between bg-s-bg-surface rounded-card px-4 py-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-s-ink truncate">{s.name_de}</p>
-                  <p className="text-xs text-s-ink/40">{s.duration_minutes} min · CHF {s.price}</p>
+                  <p className="text-xs text-s-ink/40">{s.duration_minutes} min · {formatCurrency(s.price, locale)}</p>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                   <button

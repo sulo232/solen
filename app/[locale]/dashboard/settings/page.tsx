@@ -7,6 +7,8 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
+import { useLocale } from "next-intl";
+import { formatCurrency } from "@/lib/format-currency";
 import type { Salon } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -364,6 +366,7 @@ const CANCEL_HOURS_OPTIONS = [6, 12, 24, 48, 72] as const;
 type FeeType = "free" | "flat" | "percentage";
 
 function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const locale = useLocale();
   const ext = salon as Salon & { cancellation_fee_type?: FeeType; cancellation_fee_value?: number; free_cancel_hours?: number };
   const [feeType, setFeeType] = useState<FeeType>(ext.cancellation_fee_type ?? "free");
   const [feeValue, setFeeValue] = useState(ext.cancellation_fee_value ?? 0);
@@ -392,7 +395,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
   const previewText = feeType === "free"
     ? `Kunden können bis ${freeHours}h vor dem Termin kostenlos stornieren.`
     : feeType === "flat"
-      ? `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet CHF ${feeValue.toFixed(2)}.`
+      ? `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet ${formatCurrency(feeValue, locale)}.`
       : `Stornierung innerhalb von ${freeHours}h vor dem Termin kostet ${feeValue}% des Buchungspreises.`;
 
   return (
@@ -611,6 +614,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 type PaymentMode = "at_salon" | "deposit" | "prepay";
 
 function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const locale = useLocale();
   const ext = salon as Salon & { payment_mode?: PaymentMode; deposit_percent?: number; cancellation_hours?: number; late_cancel_fee_percent?: number };
   const [connectStatus, setConnectStatus] = useState<"loading" | "not_connected" | "pending" | "connected">("loading");
   const [paymentMode, setPaymentMode] = useState<PaymentMode>(ext.payment_mode ?? "at_salon");
@@ -722,7 +726,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
             <span>5%</span><span>50%</span>
           </div>
           <p className="text-xs text-s-ink/40 mt-2">
-            Bei einer Buchung von CHF 100 zahlt der Kunde CHF {depositPercent} online und CHF {100 - depositPercent} im Salon.
+            Bei einer Buchung von {formatCurrency(100, locale)} zahlt der Kunde {formatCurrency(depositPercent, locale)} online und {formatCurrency(100 - depositPercent, locale)} im Salon.
           </p>
         </div>
       )}

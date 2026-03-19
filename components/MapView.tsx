@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard } from "@/lib/types";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
@@ -122,7 +123,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             background:${isSelected ? "#E8624A" : "#D4AF37"};
             color:white;border:2px solid white;
           `;
-          pin.textContent = minPrice && minPrice > 0 ? `ab ${minPrice}` : "★";
+          pin.textContent = minPrice && minPrice > 0 ? `ab ${formatCurrency(minPrice)}` : "★";
           wrapper.appendChild(pin);
 
           const label = document.createElement("span");
@@ -151,7 +152,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             color:${isSelected ? "white" : priceColor};
             border:1.5px solid ${isSelected ? "#E8624A" : priceColor + "40"};
           `;
-          el.textContent = `ab CHF ${minPrice}`;
+          el.textContent = `ab ${formatCurrency(minPrice)}`;
         } else {
           // Dot pin (no price)
           const dotColor = isSelected ? "#E8624A" : "#E8624A";
@@ -172,7 +173,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           `<div style="padding:8px">
              <p style="font-weight:600;font-size:13px;color:#1A1209;margin:0 0 2px">${salon.name}</p>
              <p style="font-size:11px;color:#888;margin:0 0 4px">${tierLabel}${salon.quartier}</p>
-             <p style="font-size:11px;color:#333;margin:0">★ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab CHF ${minPrice}` : ""}</p>
+             <p style="font-size:11px;color:#333;margin:0">★ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab ${formatCurrency(minPrice)}` : ""}</p>
            </div>`
         );
 

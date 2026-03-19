@@ -10,6 +10,7 @@ import {
   Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
 const BADGE_ICONS: Record<string, LucideIcon> = {
@@ -222,7 +223,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {salon.avg_price != null && salon.avg_price > 0 && (
               <>
                 <span className="text-xs text-s-ink/30 font-body">·</span>
-                <span className="text-xs data-text text-s-ink/60">Ø CHF {salon.avg_price}</span>
+                <span className="text-xs data-text text-s-ink/60">Ø {formatCurrency(salon.avg_price, locale)}</span>
               </>
             )}
           </div>

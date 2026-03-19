@@ -3,8 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Store, UsersRound, Calendar, DollarSign, Star, BarChart3 } from "lucide-react";
+import { useLocale } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
+import { formatCurrency } from "@/lib/format-currency";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface PlatformStats {
@@ -44,6 +46,7 @@ function StatCard({
   bg,
   color,
   decimals = 0,
+  formatValue,
 }: {
   label: string;
   value: number;
@@ -53,6 +56,7 @@ function StatCard({
   bg: string;
   color: string;
   decimals?: number;
+  formatValue?: (v: number) => string;
 }) {
   const animated = useCountUp(value, 1200, decimals);
   return (
@@ -66,9 +70,9 @@ function StatCard({
       <div>
         <p className="text-xs text-s-ink/50 font-body mb-1">{label}</p>
         <p className="text-2xl font-data font-bold text-s-ink">
-          {prefix}
-          {decimals > 0 ? animated.toFixed(decimals) : Math.round(animated)}
-          {suffix}
+          {formatValue
+            ? formatValue(animated)
+            : `${prefix}${decimals > 0 ? animated.toFixed(decimals) : Math.round(animated)}${suffix}`}
         </p>
       </div>
     </motion.div>
@@ -77,6 +81,7 @@ function StatCard({
 
 /* ─── Main Page ─── */
 export default function PlatformAnalyticsPage() {
+  const locale = useLocale();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -106,7 +111,7 @@ export default function PlatformAnalyticsPage() {
             <StatCard label="Salons" value={stats?.total_salons ?? 0} icon={Store} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Nutzer" value={stats?.total_users ?? 0} icon={UsersRound} bg="bg-s-ink/5" color="text-s-ink" />
             <StatCard label="Buchungen (30T)" value={stats?.total_bookings_30d ?? 0} icon={Calendar} bg="bg-s-coral/5" color="text-s-coral" />
-            <StatCard label="Umsatz (30T)" value={stats?.total_revenue_30d ?? 0} prefix="CHF " icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
+            <StatCard label="Umsatz (30T)" value={stats?.total_revenue_30d ?? 0} formatValue={(v) => formatCurrency(Math.round(v), locale)} icon={DollarSign} bg="bg-s-coral/5" color="text-s-coral" />
             <StatCard label="Ø Bewertung" value={stats?.avg_platform_rating ?? 0} icon={Star} bg="bg-amber-50" color="text-amber-400" decimals={1} />
           </div>
 

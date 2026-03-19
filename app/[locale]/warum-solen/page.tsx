@@ -7,6 +7,7 @@ import {
   MessageCircle, Camera, BarChart3, Star, MapPin,
   ChevronDown, Send, Check, ArrowRight,
 } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import StampCard from "@/components/loyalty/StampCard";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 
@@ -125,7 +126,7 @@ function MockCompare() {
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span className="text-xs data-text text-s-ink dark:text-s-dm-text">{s.rating}</span>
             </div>
-            <p className="text-sm data-text font-semibold text-s-ink dark:text-s-dm-text mt-1">CHF {s.price}</p>
+            <p className="text-sm data-text font-semibold text-s-ink dark:text-s-dm-text mt-1">{formatCurrency(s.price)}</p>
             <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Balayage</p>
           </div>
         ))}

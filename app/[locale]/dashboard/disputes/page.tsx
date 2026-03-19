@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { AlertTriangle, CheckCircle, XCircle, Scale } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface Dispute {
   id: string;
@@ -65,6 +67,7 @@ function formatSalonReason(raw: string): { label: string; details?: string } {
 }
 
 export default function DisputesPage() {
+  const locale = useLocale();
   const [disputes, setDisputes] = useState<Dispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [resolving, setResolving] = useState<string | null>(null);
@@ -136,11 +139,11 @@ export default function DisputesPage() {
                 <div className="grid grid-cols-2 gap-4 mb-3">
                   <div>
                     <p className="text-xs text-s-ink/40 font-body">Originalbetrag</p>
-                    <p className="data-text font-semibold text-s-ink">CHF {Number(d.original_amount).toFixed(2)}</p>
+                    <p className="data-text font-semibold text-s-ink">{formatCurrency(Number(d.original_amount), locale)}</p>
                   </div>
                   <div>
                     <p className="text-xs text-s-ink/40 font-body">Angeforderter Betrag</p>
-                    <p className="data-text font-semibold text-s-coral">CHF {Number(d.requested_amount).toFixed(2)}</p>
+                    <p className="data-text font-semibold text-s-coral">{formatCurrency(Number(d.requested_amount), locale)}</p>
                   </div>
                 </div>
 
@@ -174,7 +177,7 @@ export default function DisputesPage() {
                 {d.admin_decision && (
                   <div className="mt-2 text-xs text-s-ink/50 font-body">
                     Admin-Entscheidung: <span className="font-medium">{d.admin_decision}</span>
-                    {d.admin_amount != null && ` — CHF ${Number(d.admin_amount).toFixed(2)}`}
+                    {d.admin_amount != null && ` — ${formatCurrency(Number(d.admin_amount), locale)}`}
                   </div>
                 )}
 

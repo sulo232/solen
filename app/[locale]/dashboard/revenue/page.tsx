@@ -6,8 +6,10 @@ import { TrendingUp, DollarSign, Calendar, ArrowUpRight, Percent, CreditCard, Ba
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
+import { useLocale } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
+import { formatCurrency } from "@/lib/format-currency";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface DailyRevenue {
@@ -33,6 +35,7 @@ function fmt(n: number) {
 }
 
 export default function RevenuePage() {
+  const locale = useLocale();
   const [data, setData] = useState<RevenueStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<"week" | "month" | "year">("month");
@@ -86,21 +89,21 @@ export default function RevenuePage() {
             {[
               {
                 label: "GMV (Gesamtumsatz)",
-                value: `CHF ${fmt(data.total_revenue)}`,
+                value: formatCurrency(data.total_revenue, locale),
                 icon: DollarSign,
                 color: "text-s-coral",
                 bg: "bg-s-coral/5",
               },
               {
                 label: `Kommission (${data.current_commission_rate > 0 ? `${data.current_commission_rate.toFixed(1)}%` : "—"})`,
-                value: `CHF ${fmt(data.total_commission)}`,
+                value: formatCurrency(data.total_commission, locale),
                 icon: Percent,
                 color: "text-s-coral",
                 bg: "bg-s-coral/5",
               },
               {
                 label: "Netto an Salons",
-                value: `CHF ${fmt(data.total_net_to_salons)}`,
+                value: formatCurrency(data.total_net_to_salons, locale),
                 icon: Banknote,
                 color: "text-s-coral",
                 bg: "bg-s-coral/5",
@@ -114,7 +117,7 @@ export default function RevenuePage() {
               },
               {
                 label: "Ø Buchungswert",
-                value: `CHF ${fmt(data.avg_booking_value)}`,
+                value: formatCurrency(data.avg_booking_value, locale),
                 icon: Calendar,
                 color: "text-s-ink",
                 bg: "bg-s-ink/5",
@@ -169,7 +172,7 @@ export default function RevenuePage() {
                     width={40}
                   />
                   <Tooltip
-                    formatter={(v: unknown) => [`CHF ${fmt(Number(v))}`, "Umsatz"]}
+                    formatter={(v: unknown) => [formatCurrency(Number(v), locale), "Umsatz"]}
                     labelFormatter={(d) => new Date(d).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" })}
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #f0f0f0" }}
                   />
@@ -214,7 +217,7 @@ export default function RevenuePage() {
                         <span className="font-medium text-s-ink">{salon.name}</span>
                       </td>
                       <td className="px-5 py-3 text-right data-text text-s-ink/60">{salon.bookings}</td>
-                      <td className="px-5 py-3 text-right data-text font-semibold text-s-ink">CHF {fmt(salon.revenue)}</td>
+                      <td className="px-5 py-3 text-right data-text font-semibold text-s-ink">{formatCurrency(salon.revenue, locale)}</td>
                     </tr>
                   ))}
                 </tbody>

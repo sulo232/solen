@@ -9,6 +9,7 @@ import Spinner from "@/components/ui/Spinner";
 import SolenDatePicker from "@/components/ui/date-picker";
 import { today as ariaToday, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import type { DateValue } from "react-aria-components";
+import { formatCurrency } from "@/lib/format-currency";
 import type { AvailabilitySlot, RecurringFrequency, StaffMember } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -398,7 +399,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               </p>
             </div>
             <span className="data-text font-bold text-lg text-s-ink">
-              CHF {selectedSlot.price_override ?? selectedSlot.services?.price ?? "–"}
+              {selectedSlot.price_override != null ? formatCurrency(selectedSlot.price_override, locale) : selectedSlot.services?.price != null ? formatCurrency(selectedSlot.services.price, locale) : "–"}
             </span>
           </div>
 

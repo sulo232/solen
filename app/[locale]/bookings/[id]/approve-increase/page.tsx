@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Check, X, AlertTriangle, ArrowLeft, Receipt } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
 
 interface DisputeData {
@@ -119,15 +120,15 @@ export default function ApproveIncreasePage() {
             <div className="bg-s-bg-surface rounded-card p-4 mb-4 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-s-ink/50">Ursprünglicher Preis</span>
-                <span className="data-text font-bold text-s-ink">CHF {dispute.original_amount.toFixed(2)}</span>
+                <span className="data-text font-bold text-s-ink">{formatCurrency(dispute.original_amount, locale)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-s-ink/50">Neuer Preis</span>
-                <span className="data-text font-bold text-s-coral">CHF {dispute.requested_amount.toFixed(2)}</span>
+                <span className="data-text font-bold text-s-coral">{formatCurrency(dispute.requested_amount, locale)}</span>
               </div>
               <div className="border-t border-s-ink/10 pt-2 flex justify-between text-sm">
                 <span className="text-s-ink/50">Differenz</span>
-                <span className="data-text font-bold text-s-coral">+CHF {diff.toFixed(2)} (+{diffPercent}%)</span>
+                <span className="data-text font-bold text-s-coral">+{formatCurrency(diff, locale)} (+{diffPercent}%)</span>
               </div>
             </div>
 

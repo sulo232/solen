@@ -12,6 +12,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
 import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -46,6 +47,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
   paymentIntentId: string;
   onSuccess: () => void;
 }) {
+  const locale = useLocale();
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -90,7 +92,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         className="w-full py-3.5 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
       >
         {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-        {loading ? "Verarbeite..." : `Jetzt buchen · CHF ${intent.deposit_amount.toFixed(2)}`}
+        {loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
       </button>
 
       <p className="text-xs text-center text-s-ink/40">
@@ -310,24 +312,24 @@ export default function CheckoutPage() {
           <div className="border-t border-s-ink/5 mt-4 pt-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-s-ink/60">{intent.service_name}</span>
-              <span className="font-medium text-s-ink">CHF {intent.estimated_price.toFixed(2)}</span>
+              <span className="font-medium text-s-ink">{formatCurrency(intent.estimated_price, locale)}</span>
             </div>
             {paymentMode === "deposit" && (
               <>
                 <div className="flex justify-between text-s-ink/60">
                   <span>Anzahlung ({Math.round((chargeAmount / intent.estimated_price) * 100)}%)</span>
-                  <span>CHF {chargeAmount.toFixed(2)}</span>
+                  <span>{formatCurrency(chargeAmount, locale)}</span>
                 </div>
                 <div className="border-t border-s-ink/5 pt-2 flex justify-between">
                   <span className="text-s-ink/50 text-xs">Restbetrag vor Ort</span>
-                  <span className="text-s-ink/50 text-xs">CHF {remainder.toFixed(2)}</span>
+                  <span className="text-s-ink/50 text-xs">{formatCurrency(remainder, locale)}</span>
                 </div>
               </>
             )}
             {paymentMode === "at_salon" && (
               <div className="flex justify-between text-s-coral">
                 <span>Zahlung vor Ort</span>
-                <span className="font-medium">CHF {intent.estimated_price.toFixed(2)}</span>
+                <span className="font-medium">{formatCurrency(intent.estimated_price, locale)}</span>
               </div>
             )}
           </div>
@@ -345,7 +347,7 @@ export default function CheckoutPage() {
                     : "Wird bei Erscheinen auf den Gesamtpreis angerechnet"}
                 </p>
               </div>
-              <span className="font-heading font-bold text-lg text-s-coral">CHF {chargeAmount.toFixed(2)}</span>
+              <span className="font-heading font-bold text-lg text-s-coral">{formatCurrency(chargeAmount, locale)}</span>
             </div>
           )}
         </div>
@@ -392,7 +394,7 @@ export default function CheckoutPage() {
           {promoResult && (
             <div className="flex items-center justify-between bg-s-coral/5 border border-s-coral/15 rounded-button px-3 py-2">
               <span className="text-sm text-s-coral font-medium">{promoResult.code} angewendet</span>
-              <span className="text-sm data-text font-bold text-s-coral">-CHF {promoResult.discount_amount.toFixed(2)}</span>
+              <span className="text-sm data-text font-bold text-s-coral">-{formatCurrency(promoResult.discount_amount, locale)}</span>
             </div>
           )}
 
@@ -403,7 +405,7 @@ export default function CheckoutPage() {
                 <Wallet className="w-3.5 h-3.5 text-s-coral" />
                 Guthaben verfügbar
               </span>
-              <span className="text-sm data-text font-semibold text-s-coral">CHF {userCredits.toFixed(2)}</span>
+              <span className="text-sm data-text font-semibold text-s-coral">{formatCurrency(userCredits, locale)}</span>
             </div>
           )}
         </div>

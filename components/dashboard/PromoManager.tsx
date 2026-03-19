@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { Plus, Trash2, Tag, Percent, Copy, Check } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
 
 interface PromoCode {
@@ -19,6 +21,7 @@ interface PromoCode {
 }
 
 export default function PromoManager() {
+  const locale = useLocale();
   const [codes, setCodes] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -238,7 +241,7 @@ export default function PromoManager() {
                     </button>
                   </div>
                   <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                    {promo.discount_type === "percent" ? `${promo.discount_value}%` : `CHF ${promo.discount_value}`} Rabatt
+                    {promo.discount_type === "percent" ? `${promo.discount_value}%` : `${formatCurrency(promo.discount_value, locale)}`} Rabatt
                     {promo.max_uses ? ` · ${promo.current_uses}/${promo.max_uses} genutzt` : ` · ${promo.current_uses}x genutzt`}
                     {promo.valid_until && ` · bis ${new Date(promo.valid_until).toLocaleDateString("de-CH")}`}
                   </p>

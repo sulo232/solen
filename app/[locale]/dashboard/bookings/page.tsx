@@ -7,6 +7,7 @@ import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } fr
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import ClientTags from "@/components/chat/ClientTags";
+import { formatCurrency } from "@/lib/format-currency";
 import type { Booking, BookingStatus } from "@/lib/types";
 
 interface EnrichedBooking extends Booking {
@@ -222,7 +223,7 @@ export default function BookingsPage() {
                   )}
                   <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
                   {b.staff_name && <p className="text-xs text-s-ink/30">{b.staff_name}</p>}
-                  <p className="text-xs data-text text-s-ink/50 mt-1">CHF {b.price_paid}</p>
+                  <p className="text-xs data-text text-s-ink/50 mt-1">{formatCurrency(Number(b.price_paid), locale)}</p>
                 </div>
 
                 {/* Status + actions */}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Clock, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/format-currency";
 import type { LastMinuteSlot } from "@/lib/types";
 
 interface LastMinuteCardProps {
@@ -89,11 +90,11 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
         {/* Footer */}
         <div className="px-4 pb-4 flex items-center justify-between">
           <span className="data-text font-bold text-s-ink text-sm">
-            CHF {slot.discounted_price}
+            {formatCurrency(slot.discounted_price, locale)}
           </span>
           {slot.price_override && slot.price_override > slot.discounted_price && (
             <span className="text-xs text-s-ink/30 line-through data-text">
-              CHF {slot.price_override}
+              {formatCurrency(slot.price_override, locale)}
             </span>
           )}
         </div>

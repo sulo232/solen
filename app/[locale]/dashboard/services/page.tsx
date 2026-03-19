@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
+import { formatCurrency } from "@/lib/format-currency";
 import type { Service, SalonCategory, AgeGroup, Gender } from "@/lib/types";
 
 const CATEGORY_LABELS: Record<SalonCategory, string> = {
@@ -163,6 +165,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
 // ─────────────────────────────────────────
 
 export default function ServicesPage() {
+  const locale = useLocale();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [salonId, setSalonId] = useState<string | null>(null);
@@ -250,7 +253,7 @@ export default function ServicesPage() {
                   </td>
                   <td className="px-4 py-3 text-s-ink/60">{CATEGORY_LABELS[s.category]}</td>
                   <td className="px-4 py-3 data-text text-s-ink/60">{s.duration_minutes} min</td>
-                  <td className="px-4 py-3 data-text text-s-ink">CHF {s.price}</td>
+                  <td className="px-4 py-3 data-text text-s-ink">{formatCurrency(Number(s.price), locale)}</td>
                   <td className="px-4 py-3">
                     <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
                       {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}

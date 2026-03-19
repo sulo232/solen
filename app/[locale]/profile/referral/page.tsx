@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { Copy, Check, Users, Gift, Share2, ChevronRight } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import { formatCurrency } from "@/lib/format-currency";
 
 export default function ReferralPage() {
   const locale = useLocale();
@@ -121,7 +122,7 @@ export default function ReferralPage() {
             </div>
             <div className="text-center p-3 bg-s-bg-surface dark:bg-white/5 rounded-button">
               <Gift className="w-5 h-5 text-s-coral mx-auto mb-1" />
-              <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">CHF {data.total_earned.toFixed(0)}</p>
+              <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.total_earned, locale)}</p>
               <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">Verdient</p>
             </div>
           </div>

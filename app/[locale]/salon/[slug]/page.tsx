@@ -11,6 +11,7 @@ import {
   Scissors, User, Sparkles, Waves, Palette, Zap, X, Info, ShieldCheck, Bus, Droplets, Award,
   Facebook, Globe
 } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import BookingCalendar from "@/components/BookingCalendar";
 import StaffPortfolio from "@/components/StaffPortfolio";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
@@ -574,7 +575,7 @@ export default function SalonProfilePage() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-3 shrink-0 ml-4">
-                                <span className="data-text font-semibold text-sm text-s-ink">CHF {svc.price}</span>
+                                <span className="data-text font-semibold text-sm text-s-ink">{formatCurrency(svc.price, locale)}</span>
                                 <span className="text-xs text-s-coral font-medium hidden sm:inline">Buchen</span>
                               </div>
                             </button>
@@ -718,7 +719,7 @@ export default function SalonProfilePage() {
                       <p className="font-heading font-semibold text-s-ink text-center">Termin buchen</p>
                       {salon.services.length > 0 && (
                         <p className="text-xs text-s-ink/50 text-center font-body">
-                          ab CHF {Math.min(...salon.services.map((s) => s.price))}
+                          ab {formatCurrency(Math.min(...salon.services.map((s) => s.price)), locale)}
                         </p>
                       )}
                       <motion.button
@@ -753,7 +754,7 @@ export default function SalonProfilePage() {
             <span>Termin buchen</span>
             {salon.services.length > 0 && (
               <span className="text-white/80 data-text text-sm">
-                — ab CHF {Math.min(...salon.services.map((s) => s.price))}
+                — ab {formatCurrency(Math.min(...salon.services.map((s) => s.price)), locale)}
               </span>
             )}
           </motion.button>

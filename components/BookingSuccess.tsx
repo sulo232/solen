@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Calendar, Share2, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface BookingSuccessProps {
   bookingId: string;
@@ -142,7 +143,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
           <span>{timeStr} Uhr</span>
           <span>{props.duration} Min.</span>
         </div>
-        <p className="data-text font-semibold text-s-ink mt-2">CHF {props.price.toFixed(2)}</p>
+        <p className="data-text font-semibold text-s-ink mt-2">{formatCurrency(props.price, locale)}</p>
       </div>
 
       <div className="flex flex-col gap-2">

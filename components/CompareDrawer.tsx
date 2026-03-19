@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, MapPin, Clock, Trophy, MessageCircle } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 import type { Salon } from "@/lib/types";
 
 interface CompareSalon extends Salon {
@@ -64,7 +65,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
       Icon: Trophy,
       render: (s) => (
         <span className="data-text font-semibold text-s-ink">
-          {s.min_price ? `CHF ${s.min_price}` : "–"}
+          {s.min_price ? formatCurrency(s.min_price, locale) : "–"}
         </span>
       ),
     },

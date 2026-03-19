@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Search, X, Star } from "lucide-react";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface SuggestService {
   id: string;
@@ -149,7 +150,7 @@ export default function SearchAutocomplete({ onServiceSelect }: SearchAutocomple
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
                   <span className="text-xs text-s-ink/40 data-text shrink-0 ml-2">
-                    CHF {service.price}
+                    {formatCurrency(service.price, locale)}
                   </span>
                 </button>
               ))}
