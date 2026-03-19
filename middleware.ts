@@ -117,9 +117,9 @@ export async function middleware(request: NextRequest) {
       }
     );
 
-    // Verify user JWT server-side
-    const { data } = await supabase.auth.getUser();
-    const user = data?.user ?? null;
+    // Refresh session from cookies (no network call — getUser() times out on Vercel Edge)
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
 
     // ── Auth guards for dashboard routes ──
     const currentLocale = locales.find(
