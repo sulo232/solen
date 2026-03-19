@@ -428,7 +428,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
       {/* Waitlist Modal */}
       {showWaitlist && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm" onClick={() => setShowWaitlist(false)}>
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm" onClick={() => setShowWaitlist(false)}>
           <div className="bg-white rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />

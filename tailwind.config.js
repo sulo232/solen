@@ -66,6 +66,11 @@ module.exports = {
         "warm-md": "0 4px 16px rgba(26,18,9,0.12)",
         "warm-lg": "0 8px 32px rgba(26,18,9,0.16)",
       },
+      zIndex: {
+        55: '55',
+        60: '60',
+        70: '70',
+      },
       backdropBlur: {
         xs: "4px",
         glass: "20px",

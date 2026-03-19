@@ -72,7 +72,7 @@ export default function CookieBanner() {
     <>
       {/* Banner */}
       {!settingsOpen && (
-        <div className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6">
+        <div className="fixed bottom-0 inset-x-0 z-70 p-4 sm:p-6">
           <div className="max-w-2xl mx-auto bg-white dark:bg-s-dm-surface rounded-2xl shadow-2xl border border-s-ink/5 dark:border-white/10 p-5">
             <div className="flex items-start gap-3">
               <Cookie className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
@@ -118,7 +118,7 @@ export default function CookieBanner() {
 
       {/* Settings modal */}
       {settingsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
           <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-2xl shadow-2xl p-6">
             <button

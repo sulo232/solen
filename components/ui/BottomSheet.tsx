@@ -21,7 +21,7 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-60 lg:hidden">
           <motion.div
             className="absolute inset-0 bg-s-ink/50 backdrop-blur-sm"
             initial={{ opacity: 0 }}

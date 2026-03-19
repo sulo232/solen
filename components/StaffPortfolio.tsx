@@ -81,7 +81,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
       {/* Simple lightbox */}
       {lightboxIndex !== null && (
         <div
-          className="fixed inset-0 z-50 bg-s-ink/80 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 z-60 bg-s-ink/80 backdrop-blur-sm flex items-center justify-center"
           onClick={() => setLightboxIndex(null)}
         >
           <Image
