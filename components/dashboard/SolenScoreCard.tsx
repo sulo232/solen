@@ -19,7 +19,7 @@ interface SolenScoreData {
 }
 
 const TIER_CONFIG = {
-  gold: { label: "Top Salon", color: "#D4AF37", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-700", Icon: Star },
+  gold: { label: "Top Salon", color: "#D4870A", bg: "bg-s-amber-subtle dark:bg-s-amber-subtle", border: "border-s-amber/20 dark:border-s-amber/30", Icon: Star },
   coral: { label: "Verifiziert", color: "#E8624A", bg: "bg-s-coral/5 dark:bg-s-coral/10", border: "border-s-coral/20 dark:border-s-coral/30", Icon: Shield },
   grey: { label: "Aktiv", color: "#9CA3AF", bg: "bg-s-bg-surface dark:bg-s-dm-surface", border: "border-s-ink/10 dark:border-white/10", Icon: Circle },
   dark: { label: "Starter", color: "#6B7280", bg: "bg-s-bg-surface dark:bg-s-dm-surface", border: "border-s-ink/10 dark:border-white/10", Icon: Circle },

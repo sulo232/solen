@@ -19,7 +19,8 @@ const COLOR_MAP: Record<string, string> = {
   gray: "bg-s-bg-sunken text-s-ink/70 dark:bg-s-dm-raised dark:text-s-ink/30",
   red: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
   orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
-  teal: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",
+  teal: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",  // legacy DB values
+  coral: "bg-s-coral/10 text-s-coral dark:bg-s-coral/20",
   blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
   purple: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
 };
@@ -157,7 +158,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               <option value="gray">Grau</option>
               <option value="red">Rot</option>
               <option value="orange">Orange</option>
-              <option value="teal">Coral</option>
+              <option value="coral">Coral</option>
               <option value="blue">Blau</option>
               <option value="purple">Lila</option>
             </select>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, CheckCircle } from "lucide-react";
+import { Heart, CheckCircle, Landmark, Drama, TreePine, Anchor, Trees, Home, Waves, MapPin } from "lucide-react";
 
 interface QuartierTileProps {
   name: string;
@@ -12,14 +12,14 @@ interface QuartierTileProps {
   locale?: string;
 }
 
-const quartierEmoji: Record<string, string> = {
-  grossbasel: "🏛️",
-  kleinbasel: "🌉",
-  gundeli: "🌿",
-  st_johann: "⚓",
-  iselin: "🌳",
-  bruderholz: "🏡",
-  breite: "🌊",
+const quartierIcon: Record<string, typeof Landmark> = {
+  grossbasel: Landmark,
+  kleinbasel: Drama,
+  gundeli: TreePine,
+  st_johann: Anchor,
+  iselin: Trees,
+  bruderholz: Home,
+  breite: Waves,
 };
 
 export default function QuartierTile({
@@ -33,12 +33,13 @@ export default function QuartierTile({
   return (
     <Link
       href={`/${locale}/coiffeur?quartier=${slug}`}
-      className="relative flex-shrink-0 w-40 h-24 rounded-card bg-white shadow-card hover:shadow-md transition-all duration-200 flex flex-col justify-between p-3 overflow-hidden group"
+      className="relative flex-shrink-0 w-40 h-24 rounded-card bg-white dark:bg-s-dm-raised shadow-card hover:shadow-md transition-all duration-200 flex flex-col justify-between p-3 overflow-hidden group"
     >
-      {/* Emoji background */}
-      <span className="absolute right-2 bottom-2 text-4xl opacity-10 group-hover:opacity-20 transition-opacity select-none">
-        {quartierEmoji[slug] ?? "📍"}
-      </span>
+      {/* Icon background */}
+      {(() => {
+        const Icon = quartierIcon[slug] ?? MapPin;
+        return <Icon className="absolute right-2 bottom-2 w-10 h-10 text-s-ink/5 group-hover:text-s-ink/10 transition-colors select-none" />;
+      })()}
 
       {/* Top row */}
       <div className="flex items-start justify-between">

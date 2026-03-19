@@ -255,14 +255,14 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   }
 
   return (
-    <div className="rounded-card border border-s-ink/5 bg-white overflow-hidden">
+    <div className="rounded-card border border-s-ink/5 bg-white dark:bg-s-dm-raised overflow-hidden">
       {/* Staff picker */}
       {staffList.length > 0 && (
         <div className="px-4 pt-4">
           <select
             value={selectedStaff}
             onChange={(e) => setSelectedStaff(e.target.value)}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink bg-white outline-none focus:border-s-coral transition-colors"
+            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral transition-colors"
             aria-label="Mitarbeiter wählen"
           >
             <option value="any">Egal (wer verfügbar ist)</option>
@@ -375,7 +375,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="text-sm px-3 py-1.5 rounded-button border border-s-ink/10 bg-white outline-none focus:border-s-coral"
+              className="text-sm px-3 py-1.5 rounded-button border border-s-ink/10 bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral"
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -430,7 +430,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       {/* Waitlist Modal */}
       {showWaitlist && (
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm" onClick={() => setShowWaitlist(false)}>
-          <div className="bg-white rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-s-dm-raised rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />
               <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
