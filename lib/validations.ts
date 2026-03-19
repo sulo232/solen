@@ -90,3 +90,24 @@ export const createPromoSchema = z.object({
 export const completeReferralSchema = z.object({
   referral_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()),
 });
+
+// ─── Visual Editor ───
+export const createFeatureRequestSchema = z.object({
+  element_selector: z.string().max(500).optional(),
+  element_tag: z.string().max(50).optional(),
+  element_text: z.string().max(500).optional(),
+  component_hint: z.string().max(100).optional(),
+  page_url: z.string().max(500).refine((v) => v.startsWith("/"), { message: "page_url must start with /" }),
+  description: z.string().min(5).max(2000),
+  priority: z.enum(["low", "medium", "high"]).default("medium"),
+});
+
+export const updateFeatureRequestSchema = z.object({
+  status: z.enum(["pending", "roadmap_generated", "in_progress", "done", "reverted"]).optional(),
+  description: z.string().min(5).max(2000).optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+});
+
+export const generateRoadmapSchema = z.object({
+  requestId: z.string().uuid(),
+});

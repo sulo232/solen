@@ -56,6 +56,13 @@ export const referralLimiter = new Ratelimit({
   prefix: "rl:referral",
 });
 
+export const roadmapLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, "1 m"),
+  analytics: true,
+  prefix: "rl:roadmap",
+});
+
 type RateLimitIdentifier = { ip: string } | { userId: string };
 
 export async function applyRateLimit(
