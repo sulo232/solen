@@ -73,6 +73,22 @@ export default function DeviceFrame({
     return () => window.removeEventListener("message", handleMessage);
   }, [handleMessage]);
 
+  // Inject bridge script when iframe loads
+  const handleIframeLoad = useCallback(() => {
+    try {
+      const doc = iframeRef.current?.contentDocument;
+      if (!doc) return;
+      // Only inject if not already present
+      if (doc.getElementById("__editor-bridge")) return;
+      const script = doc.createElement("script");
+      script.id = "__editor-bridge";
+      script.src = "/editor-bridge.js";
+      doc.body.appendChild(script);
+    } catch {
+      // Cross-origin iframe — bridge won't work, but that's expected for external pages
+    }
+  }, [iframeRef]);
+
   // Toggle edit mode in iframe
   useEffect(() => {
     if (!bridgeReady.current || !iframeRef.current?.contentWindow) return;
@@ -104,6 +120,7 @@ export default function DeviceFrame({
           className="w-full h-full border-0"
           style={device === "mobile" ? { borderRadius: "24px" } : {}}
           title="Site Preview"
+          onLoad={handleIframeLoad}
         />
       </div>
     </div>
