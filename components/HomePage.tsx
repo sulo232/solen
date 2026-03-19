@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
@@ -75,8 +74,6 @@ const QUARTIERS = [
   { slug: "bruderholz",  name: "Bruderholz",  bg: "from-green-300/40 to-green-100/10" },
   { slug: "breite",      name: "Breite",      bg: "from-rose-300/40 to-rose-100/10" },
 ] as const;
-
-const DEFAULT_HERO_IMAGE = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&q=80";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component
@@ -187,40 +184,39 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-s-bg-base overflow-x-hidden">
 
-      {/* ── Hero with background image ─────────────────────────────────────── */}
-      <section className="relative h-[500px] md:h-[600px]">
-        <Image
-          src={DEFAULT_HERO_IMAGE}
-          alt="Solen.ch — Beauty & Wellness in Basel"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60" />
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-white px-4">
+      {/* ── Hero with background blobs ─────────────────────────────────────── */}
+      <section className="relative overflow-hidden py-20 sm:py-28">
+        {/* Decorative blobs */}
+        <div className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full bg-s-coral/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-[300px] h-[300px] rounded-full bg-s-amber/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-s-blue/5 blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <motion.div
-            className="max-w-4xl mx-auto text-center"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             <motion.h1
               variants={fadeUp}
-              className="font-heading font-bold text-3xl sm:text-5xl leading-tight"
-             
+              className="font-display uppercase leading-none text-s-ink"
+              style={{ fontSize: "clamp(56px, 8vw, 110px)", letterSpacing: "0.04em" }}
             >
-              {userName ? `Willkommen zurück, ${userName}!` : "Dein Beauty-Termin in Basel"}
+              {userName ? (
+                <>Willkommen{" "}<span className="text-s-coral">{userName}</span></>
+              ) : (
+                <>Beauty<span className="text-s-coral">.</span> Basel<span className="text-s-coral">.</span></>
+              )}
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mt-4 text-base sm:text-lg text-white/80"
-             
+              className="mt-4 text-base sm:text-lg text-s-ink/60 font-body max-w-xl mx-auto"
             >
               {userName && nextBooking
                 ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
-                : "Coiffeur, Barbershop, Nails, Spa & mehr"
+                : "Coiffeur, Barbershop, Nails, Spa & mehr — buche jetzt in deinem Quartier."
               }
             </motion.p>
             <motion.div variants={fadeUp} className="mt-8">
