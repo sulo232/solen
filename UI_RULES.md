@@ -6,7 +6,7 @@
 
 ## 1. Core Aesthetic
 - **Light + Dark Mode:** The platform supports both light and dark mode via `darkMode: 'class'` in Tailwind. Default is system preference.
-  - Dark background: `#0F0F1A` (`dm-bg`), Dark surface: `#1A1A2E` (`dm-surface`), Dark text: `#E2E8F0` (`dm-text`)
+  - Dark background: `#151009` (`s-dm-bg`), Dark surface: `#1E1710` (`s-dm-surface`), Dark text: `#F5EEE4` (`s-dm-text`)
   - Use `dark:` variants on all major surfaces (cards, nav, modals, backgrounds)
   - ThemeToggle in Header cycles: light → dark → system
   - `<ThemeScript>` in layout prevents flash of wrong theme
@@ -21,6 +21,15 @@
   - Basel Blue: `#6BA3C8` (class: `s-blue`) — accent
   - Warm Ink: `#1A1209` (class: `s-ink`) — primary text on light backgrounds
 - **Backgrounds:** Cream `#FAF6EF` (base), White `#FFFFFF` (cards), `#EDE5D8` (sunken inputs)
+- **Extended Families (v1.0):**
+  - Yellow: `#F2C144` (class: `s-yellow`) — tags, badges, "Top Rated"
+    - Variants: `s-yellow-subtle` (#FEF8E0), `s-yellow-text` (#7A5C00)
+  - Sage: `#7BA688` (class: `s-sage`) — spa/wellness category
+    - Variants: `s-sage-subtle` (#EBF5EE), `s-sage-text` (#2E5E3A)
+  - Sand: `#C9A96E` (class: `s-sand`) — supporting warm surfaces
+    - Variants: `s-sand-subtle` (#F7F0E3), `s-sand-text` (#6B5430)
+  - Plum: `#4A1E3C` (class: `s-plum`) — depth, dark blocks
+    - Variants: `s-plum-hover` (#3A1630), `s-plum-subtle` (#F0E8F0), `s-plum-text` (#4A1E3C)
 - **WCAG Rule:** `text-s-coral` (#E8624A) on cream FAILS AA for body text. Use `text-s-coral-text` (#7A2415) for small text (<18px). `text-s-coral` is OK for large headings, icons, badges, buttons.
 - **Google Auth:** The Google login button must use the **full-color** Google G logo, not a monochrome version.
 
@@ -74,7 +83,9 @@
 |---|---|---|
 | Background | `bg-s-bg-base` (#FAF6EF) | `dark:bg-s-dm-bg` (#151009) |
 | Surface | `bg-s-bg-raised` (#FFFFFF) | `dark:bg-s-dm-surface` (#1E1710) |
+| Raised | — | `dark:bg-s-dm-raised` (#26201A) |
 | Text | `text-s-ink` (#1A1209) | `dark:text-s-dm-text` (#F5EEE4) |
+| Secondary text | `text-s-ink/70` | `dark:text-s-dm-text-secondary` (#C8BAA8) |
 | Border | `border-s-ink/5` | `dark:border-white/5` |
 | Nav glass | `glass` (warm-tinted) | `dark:bg-s-dm-surface/80` |
 

@@ -77,7 +77,9 @@ solen/
 ### 3.3 Design System (New — Next.js)
 
 - **Colors**: Terracotta Coral `#E8624A` (primary, class: `s-coral`), Amber `#D4870A` (accent, class: `s-amber`), Basel Blue `#6BA3C8` (accent, class: `s-blue`), Warm Ink `#1A1209` (text, class: `s-ink`)
+- **Extended Colors**: Yellow `#F2C144` (`s-yellow`), Plum `#4A1E3C` (`s-plum`), Sage `#7BA688` (`s-sage`), Sand `#C9A96E` (`s-sand`). Each has `DEFAULT`, `hover` (where applicable), `subtle`, `text` variants.
 - **Backgrounds**: Cream `#FAF6EF` (base), White `#FFFFFF` (cards/raised), `#EDE5D8` (sunken inputs), `#F3EDE2` (surface)
+- **Dark mode**: Warm dark base `#151009` (`s-dm-bg`), surface `#1E1710` (`s-dm-surface`), text `#F5EEE4` (`s-dm-text`). NEVER use cool grey or pure black.
 - **Fonts**: Bebas Neue (display ≥40px), Syne (heading), DM Sans (body + data with `tabular-nums`)
 - **Radii**: card `12px`, pill `9999px`, button `8px`
 - **Shadows**: card `0 4px 12px rgba(0,0,0,0.08)`, warm-md `0 4px 16px rgba(26,18,9,0.12)`
@@ -746,11 +748,14 @@ The following CSS classes are BANNED. If you write ANY of these, the code is wro
 | `shadow-teal-glow` | `shadow-warm-sm` | Old branding |
 | `bg-mesh-teal` | `bg-s-bg-base` | Old branding |
 | `accent-teal` | `accent-s-coral` | Old branding |
-| Any emoji in JSX | Lucide React icon | UI_RULES: no emoji |
+| `border-t-teal` | `border-t-s-coral` | Old branding (found in Spinner.tsx) |
+| `bg-amber-*` / `border-amber-*` | `bg-s-amber-subtle` / `border-s-amber/20` | Generic Tailwind, use design tokens |
+| `rounded-lg/md/xl/2xl/3xl` | `rounded-card` / `rounded-button` / `rounded-pill` | Use design token radii (see UI_RULES §10) |
+| Any emoji in JSX | Lucide React icon | UI_RULES §5: no emoji in UI |
 
 **Enforcement**: After EVERY commit, run:
 ```bash
-grep -Ern "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-gray-|dark:bg-dm-|dark:text-dm-|shadow-teal|accent-teal|bg-mesh-teal" components/ app/ --include="*.tsx" | grep -v "node_modules\|darkMode\|//\|s-dm\|s-ink" | head -5
+grep -Ern "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-gray-|dark:bg-dm-|dark:text-dm-|shadow-teal|accent-teal|bg-mesh-teal|border-t-teal|bg-amber-|border-amber-" components/ app/ --include="*.tsx" | grep -v "node_modules\|darkMode\|//\|s-dm\|s-ink\|s-amber" | head -5
 ```
 If this returns ANY results, fix them before pushing.
 
@@ -759,16 +764,18 @@ If this returns ANY results, fix them before pushing.
 Before committing ANY `.tsx` file change, you MUST verify:
 
 1. **No banned tokens introduced** (Run the grep from Rule 20)
-2. **Every `bg-white` has a `dark:bg-s-dm-*` pair** (unless on a coral button)
+2. **Every `bg-white` has a `dark:bg-s-dm-*` pair** (unless on a coral button or toggle knob)
 3. **Every `text-s-ink` has a `dark:text-s-dm-text` pair** (for primary text)
-4. **No hardcoded hex colors** — all colors must use tailwind.config tokens
+4. **No hardcoded hex colors** — all colors must use tailwind.config tokens (exception: SVG brand logos like Google)
 5. **No hardcoded `CHF`** — use `formatCurrency()` from `lib/format-currency.ts`
 6. **No new `style={{}}` for values achievable with Tailwind**
 
 ```bash
 # Quick validation script — run after every commit:
 echo "=== Banned tokens ===" && \
-grep -Ercn "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-" components/ app/ --include="*.tsx" | grep -v "s-ink\|s-dm\|darkMode" | wc -l && \
+grep -Ercn "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-t-teal|bg-amber-|border-amber-" components/ app/ --include="*.tsx" | grep -v "s-ink\|s-dm\|s-amber\|darkMode" | wc -l && \
+echo "=== Dark mode pairs ===" && \
+grep -rn "bg-white" components/ --include="*.tsx" | grep -v "dark:\\|toggle\\|CookieBanner\\|//\\|knob" | wc -l && \
 echo "=== Hardcoded hex ===" && \
 grep -Ern "#[0-9a-fA-F]{3,6}" components/ --include="*.tsx" | grep -v "//\|import\|svg" | wc -l && \
 echo "=== All should be 0 ==="
@@ -789,3 +796,39 @@ You MUST also update `UI_RULES.md` with:
 
 **Never introduce a parallel naming system.** Before creating a new token, check if an existing one serves the same purpose. If `s-ink` already means `#1A1209`, don't create `dark` with the same value.
 
+### Rule 23: DOCUMENTATION-CODE CONSISTENCY CHECK
+
+> **CONTEXT**: On 2026-03-19, `UI_RULES.md` documented dark mode colors (`#0F0F1A`) that didn't match `tailwind.config.js` (`#151009`). The docs and code were out of sync for months without anyone noticing.
+
+Whenever you modify ANY of these files, you MUST cross-check ALL FOUR for consistency:
+- `tailwind.config.js` (colors, shadows, radii)
+- `globals.css` (CSS variables)
+- `UI_RULES.md` (design tokens documentation)
+- `CLAUDE.md` Section 13 (design rules)
+
+Checks:
+1. Every color hex in `tailwind.config.js` must match its documentation in `UI_RULES.md`
+2. Every CSS variable in `globals.css` must correspond to a Tailwind token
+3. Every banned token in `CLAUDE.md` Rule 20 must also appear in `UI_RULES.md` Section 16
+4. The dark mode colors in all files must be identical
+
+```bash
+# Cross-check dark mode values:
+grep -n "151009\|1E1710\|F5EEE4" tailwind.config.js UI_RULES.md CLAUDE.md
+# All files should show the SAME hex values
+```
+
+### Rule 24: DUPLICATE CONSTANT DETECTION
+
+> **CONTEXT**: On 2026-03-19, `LanguageSwitcher.tsx` had `LOCALE_FLAGS` and `LOCALE_LABELS` with identical values, causing the `DE DE` duplication bug. `ClientTags.tsx` had a key named `teal` that actually mapped to coral styles.
+
+Before committing, check for:
+1. Two `Record<string, string>` constants in the SAME file with identical keys → delete one
+2. A constant key that doesn't match its actual meaning (e.g., `teal` mapping to coral) → rename it
+3. If renaming a key that may be stored in the database → add backward compatibility mapping
+
+```bash
+# Check for files with multiple Record<string, string> constants:
+grep -rn "Record<string, string>" components/ --include="*.tsx" | awk -F: '{print $1}' | sort | uniq -c | sort -rn | head -5
+# If any file appears 2+ times, inspect for duplicates
+```
