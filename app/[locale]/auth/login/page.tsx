@@ -1,4 +1,7 @@
+import { Suspense } from "react";
 import SignIn from "@/components/auth/SignIn";
+
+export const dynamic = "force-dynamic";
 
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -24,7 +27,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
 
         {/* GlassCard wrapping SignIn */}
         <div className="rounded-3xl border border-white/60 dark:border-white/10 bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-glass shadow-glass p-8">
-          <SignIn />
+          <Suspense>
+            <SignIn />
+          </Suspense>
         </div>
 
         <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 font-body mt-6">
