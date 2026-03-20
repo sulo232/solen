@@ -109,6 +109,9 @@ export default function EditorPage() {
     setShowPanel(false);
   };
 
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
       await fetch(`/api/admin/feature-requests/${id}`, {
@@ -119,6 +122,35 @@ export default function EditorPage() {
       fetchRequests();
     } catch {
       // Silent fail
+    }
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    if (!confirm("Delete this feature request?")) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/admin/feature-requests/${id}`, { method: "DELETE" });
+      if (res.ok) fetchRequests();
+    } catch {
+      // Silent fail
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleGenerateRoadmap = async (id: string) => {
+    setGeneratingId(id);
+    try {
+      const res = await fetch("/api/admin/generate-roadmap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId: id }),
+      });
+      if (res.ok) fetchRequests();
+    } catch {
+      // Silent fail
+    } finally {
+      setGeneratingId(null);
     }
   };
 
@@ -278,6 +310,10 @@ export default function EditorPage() {
               loading={loadingRequests}
               onLoadMore={() => nextCursor && fetchRequests(nextCursor)}
               onStatusUpdate={handleStatusUpdate}
+              onDelete={handleDeleteRequest}
+              onGenerateRoadmap={handleGenerateRoadmap}
+              generatingId={generatingId}
+              deletingId={deletingId}
             />
           </div>
         )}

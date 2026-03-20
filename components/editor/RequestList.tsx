@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Download, ChevronDown, ChevronUp } from "lucide-react";
+import { Copy, Download, ChevronDown, ChevronUp, Wand2, Trash2, Loader2, RotateCcw } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import type { FeatureRequest } from "./EditPanel";
 
@@ -11,6 +11,10 @@ interface RequestListProps {
   loading: boolean;
   onLoadMore: () => void;
   onStatusUpdate: (id: string, status: string) => void;
+  onDelete: (id: string) => void;
+  onGenerateRoadmap: (id: string) => void;
+  generatingId: string | null;
+  deletingId: string | null;
 }
 
 const STATUS_TABS = ["all", "pending", "roadmap_generated", "in_progress", "done"] as const;
@@ -29,6 +33,10 @@ export default function RequestList({
   loading,
   onLoadMore,
   onStatusUpdate,
+  onDelete,
+  onGenerateRoadmap,
+  generatingId,
+  deletingId,
 }: RequestListProps) {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -134,32 +142,54 @@ export default function RequestList({
                   )}
                 </div>
 
-                {/* Status update buttons */}
-                <div className="flex gap-1 flex-wrap">
+                {/* Action buttons */}
+                <div className="flex gap-1 flex-wrap items-center">
+                  {/* Status buttons */}
+                  {r.status !== "pending" && (
+                    <button
+                      onClick={() => onStatusUpdate(r.id, "pending")}
+                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center gap-1"
+                    >
+                      <RotateCcw size={9} />
+                      Reset to Pending
+                    </button>
+                  )}
                   {r.status !== "in_progress" && r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "in_progress")}
                       className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
                     >
-                      Mark In Progress
+                      In Progress
                     </button>
                   )}
                   {r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "done")}
-                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-button bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
                     >
-                      Mark Done
+                      Done
                     </button>
                   )}
-                  {r.status === "done" && (
-                    <button
-                      onClick={() => onStatusUpdate(r.id, "reverted")}
-                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
-                    >
-                      Revert
-                    </button>
-                  )}
+
+                  {/* Generate roadmap */}
+                  <button
+                    onClick={() => onGenerateRoadmap(r.id)}
+                    disabled={generatingId === r.id}
+                    className="text-[10px] px-2 py-0.5 rounded-button bg-s-blue/10 text-s-blue hover:bg-s-blue/20 transition-colors flex items-center gap-1 disabled:opacity-50"
+                  >
+                    {generatingId === r.id ? <Loader2 size={9} className="animate-spin" /> : <Wand2 size={9} />}
+                    {generatingId === r.id ? "Generating..." : r.generated_roadmap ? "Regenerate" : "Roadmap"}
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    onClick={() => onDelete(r.id)}
+                    disabled={deletingId === r.id}
+                    className="text-[10px] px-2 py-0.5 rounded-button bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
+                  >
+                    {deletingId === r.id ? <Loader2 size={9} className="animate-spin" /> : <Trash2 size={9} />}
+                    Delete
+                  </button>
                 </div>
 
                 {/* Expand roadmap */}
