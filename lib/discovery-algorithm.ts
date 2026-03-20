@@ -1,5 +1,6 @@
 // lib/discovery-algorithm.ts — Recommendation algorithm for Discovery feed
-// Profile match 50% + popularity 20% + collaborative 20% + implicit 10% + recency boost
+// Score = profileMatch * 0.5 + popularity * 0.2 + recency * 0.2 + diversity * 0.1
+// Cold start: popularity + recency only. NEVER crash if no profile — always fallback.
 
 interface UserProfile {
   disc_gender: string | null;
@@ -58,6 +59,11 @@ export function scoreItems(input: AlgorithmInput): ScoredItem[] {
     }
   }
 
+  // Track categories seen for diversity scoring
+  const categoryCounts = new Map<string, number>();
+  items.forEach((item) => categoryCounts.set(item.category, (categoryCounts.get(item.category) ?? 0) + 1));
+  const maxCatCount = Math.max(...categoryCounts.values(), 1);
+
   return items.map((item) => {
     let score = 0;
 
@@ -67,19 +73,17 @@ export function scoreItems(input: AlgorithmInput): ScoredItem[] {
     // 2. Popularity (20%)
     score += popularityScore(item) * 0.2;
 
-    // 3. Collaborative (20%) — boost categories user has liked
-    const catWeight = likedCategories.get(item.category) ?? 0;
-    score += Math.min(catWeight / 5, 1) * 0.2;
+    // 3. Recency (20%)
+    score += recencyBoost(item.created_at) * 0.2;
 
-    // 4. Implicit signals (10%) — penalize already-viewed, boost unseen
+    // 4. Diversity (10%) — boost underrepresented categories + penalize seen content
+    const catCount = categoryCounts.get(item.category) ?? 1;
+    const diversityScore = 1 - catCount / maxCatCount;
     if (viewedSet.has(item.id)) {
-      score -= 0.05; // Slight penalty for already seen
+      score += (diversityScore - 0.2) * 0.1; // Penalize already-seen
     } else {
-      score += 0.1; // Boost for fresh content
+      score += (diversityScore + 0.3) * 0.1; // Boost fresh + diverse
     }
-
-    // Recency boost
-    score += recencyBoost(item.created_at) * 0.1;
 
     return { id: item.id, score };
   }).sort((a, b) => b.score - a.score);
