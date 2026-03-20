@@ -874,3 +874,97 @@ const { data: { user } } = await supabase.auth.getUser();
 grep -rn "auth.getUser()" middleware.ts app/api/ lib/supabase.ts --include="*.ts"
 # Must return 0 results. If ANY results found, change to getSession().
 ```
+
+### Rule 26: NO DEAD CODE — EVERY COMPONENT MUST BE IMPORTED AND RENDERED
+
+> **CONTEXT**: On 2026-03-20, Claude Code executed the Discovery roadmap and created 15+ components (PostFromDiscover, FilterDrawer, FeaturedBoards, etc.) as standalone files but NEVER imported or rendered them on any page. The components were "built" but invisible to users — pure dead code.
+
+When creating a new component:
+1. **CREATING** the file is NOT enough. You MUST also import and render it on the target page.
+2. After building each component, immediately `grep -rn "ComponentName" app/ components/` to verify it's imported somewhere.
+3. If a component is conditionally rendered (e.g., floating button), it still MUST be imported and placed in the JSX tree with its condition.
+4. At the END of each phase, run: `grep -rn "from.*discovery" app/ components/ | grep -c import` and compare against the number of files in the feature directory. If there are more files than imports → you have dead code.
+
+```bash
+# Verify no orphan components:
+for f in components/discovery/*.tsx; do
+  name=$(basename "$f" .tsx)
+  count=$(grep -rn "$name" app/ components/ --include="*.tsx" | grep -v "^$f" | wc -l)
+  [ "$count" -eq 0 ] && echo "⚠️ DEAD CODE: $f is never imported"
+done
+```
+
+**This rule applies to ALL new features, not just Discovery.**
+
+### Rule 27: PAGES MUST NOT DUPLICATE ROOT LAYOUT ELEMENTS
+
+> **CONTEXT**: On 2026-03-20, the Discovery page rendered its own `<Header />` and `<BottomNav />` on top of the ones already rendered by `app/[locale]/layout.tsx`. This caused a duplicate navigation bar, and the page-level Header had no `locale` prop, producing `/undefined/coiffeur` links.
+
+**The root layout (`app/[locale]/layout.tsx`) already renders:**
+- `<Header locale={locale} />`
+- `<BottomNav />`
+- `<CookieBanner />`
+- `<PWAInstallPrompt />`
+
+**Rules:**
+1. **NEVER** import or render `Header`, `BottomNav`, `CookieBanner`, or `PWAInstallPrompt` inside any page component under `app/[locale]/`. They are already there.
+2. Page components should render ONLY their content (e.g., `<main>...</main>`), not layout wrappers.
+3. If a page needs to opt OUT of the header (like dashboard pages), use the existing `isHidden` check in `Header.tsx` — don't add/remove Header instances.
+
+```typescript
+// ❌ WRONG — page duplicates layout elements
+export default function SomePage() {
+  return (
+    <>
+      <Header />        {/* DUPLICATE — already in layout.tsx */}
+      <main>...</main>
+      <BottomNav />      {/* DUPLICATE — already in layout.tsx */}
+    </>
+  );
+}
+
+// ✅ CORRECT — page renders only its content
+export default function SomePage() {
+  return (
+    <main className="min-h-screen ...">
+      {/* page content only */}
+    </main>
+  );
+}
+```
+
+### Rule 28: EVERY TYPE REFERENCED MUST EXIST IN `lib/types.ts`
+
+> **CONTEXT**: On 2026-03-20, Claude Code created 15+ files referencing `DiscoveryItem`, `DiscoveryCategory`, `DiscoveryGender` from `@/lib/types`, but never added those types to the file. Every component had import errors. The types were silently missing across the entire feature.
+
+**Rules:**
+1. Before writing `import type { Foo } from "@/lib/types"` in ANY file, verify `Foo` is actually exported from `lib/types.ts`.
+2. If introducing a new type for a feature, define it in `lib/types.ts` FIRST (Phase 0 / infrastructure), then import it in later phases.
+3. After creating all files for a feature, verify: `npx tsc --noEmit 2>&1 | grep "has no exported member" | head -10` — must return 0 results.
+4. Type definitions should match the database schema exactly (column names, nullable fields, array types).
+
+```bash
+# Verify all type imports resolve:
+npx tsc --noEmit 2>&1 | grep "has no exported member"
+# Must return 0 results.
+```
+
+
+### Rule 29: POST-EXECUTION SMOKE TEST (MANDATORY)
+
+> **CONTEXT**: On 2026-03-20, a 10-phase feature was "completed" but: the feed API returned 500 (table didn't exist), the admin page 404'd (middleware blocked it), types were missing (never defined), navigation showed wrong language (locale not passed), and 4 components were never imported anywhere. None of this was caught because there was no smoke test phase.
+
+**After completing ALL phases of any feature roadmap, you MUST perform a smoke test:**
+
+1. **Build passes**: `npm run build` with 0 errors
+2. **Type check passes**: `npx tsc --noEmit` with 0 errors  
+3. **No dead components**: Every new `.tsx` file is imported at least once
+4. **No missing types**: No `has no exported member` errors
+5. **No duplicate layout elements**: New pages don't import Header/BottomNav
+6. **Feature flag exists**: If using `checkFeatureEnabled("x")`, verify `x` is in `feature_flags` table
+7. **Middleware updated**: If creating admin-only pages, verify path is in `adminOnlyPaths` in `middleware.ts`
+8. **Translations exist**: If using `t("key")`, verify key exists in ALL 4 locale files (de/en/fr/it)
+9. **Migrations noted**: If SQL migrations are required, add a prominent `⚠️ RUN MIGRATION FIRST` section at the top of the roadmap
+
+**A feature is NOT complete until all 9 checks pass.**
+
