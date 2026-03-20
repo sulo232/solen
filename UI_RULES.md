@@ -45,6 +45,9 @@
 - **Hover States:** Cards (`SalonCard`) should have a **lift-up effect** (subtle shadow increase + `translateY -4px`).
 - **Tab Switching:** Use a smooth **slide left/right** animation (like turning pages), not a simple fade.
 - **Lists/Grids:** Use `containerVariants` to stagger children elements (200ms stagger) when loading grids.
+- **Blob Interactive:** `.blob-interactive` class applies a 500ms spring bezier transition on `border-radius`, `transform`, `background`, and `box-shadow`. Used on CTA buttons and cards with organic morphing shapes.
+- **Float Animation:** `.hero-blob` applies `solen-float` keyframes (6s ease-in-out infinite, translateY + slight rotate) for Zone 1 hero background blobs.
+- **Reveal Stagger:** `.reveal-stagger` applies `solen-reveal` with 80ms delay between children for page-load entrance animations.
 
 ## 5. Structural Rules
 - **Category Pages:** Must use an Airbnb-style searchable and sortable grid. Map view available via toggle button (`?view=map`) using Mapbox integration (`components/MapView.tsx`). List is default; map is opt-in.
@@ -89,13 +92,18 @@
 | Border | `border-s-ink/5` | `dark:border-white/5` |
 | Nav glass | `glass` (warm-tinted) | `dark:bg-s-dm-surface/80` |
 
-## 10. Border Radius
+## 10. Border Radius & Blob Physics
 | Token | Value | Usage |
 |---|---|---|
 | `rounded-card` | 12px | Cards, modals, sheets |
 | `rounded-button` | 8px | Buttons, inputs, dropdowns |
 | `rounded-pill` | 9999px | Badges, pills, chips, toggle buttons |
-| `rounded-blob` | organic % | SalonCard hover effect |
+| `rounded-blob-a` | `40% 60% 70% 30% / 40% 50% 60% 50%` | Interactive CTA Buttons |
+| `rounded-blob-b` | `60% 40% 45% 55% / 50% 60% 40% 50%` | Active state morphs for cards/buttons |
+| `rounded-blob-c` | `50% 50% 40% 60% / 60% 40% 60% 40%` | Large Banner/container blocks |
+| `rounded-blob-d` | `40% 60% 55% 45% / 30% 30% 70% 70%` | SalonCard resting state |
+| `rounded-blob-e` | `70% 30% 50% 50% / 40% 60% 40% 60%` | Section backgrounds (e.g. Deals wrapper) |
+| `.blob-interactive` | CSS Transition | 500ms spring bezier curve applied to morphing elements |
 
 Standard Tailwind `rounded-*` should NOT be used for these — use the design tokens.
 
@@ -235,8 +243,8 @@ These are NOT enforced in code but guide design decisions:
 
 | Zone | Pages | Typography | Colors | Animation | Shapes |
 |---|---|---|---|---|---|
-| 1 — Maximalist | Homepage, discovery, category pages | All three fonts | Full palette, full saturation | Hover effects active | `rounded-card`, `rounded-pill` |
-| 2 — Soft | Salon profiles, search results, reviews | Syne + DM Sans | Full palette | Hover effects only | `rounded-card` |
+| 1 — Maximalist | Homepage, discovery | All three fonts | Full palette, full saturation | Hover effects + blob morphing + float | `rounded-blob-*`, `rounded-card`, `rounded-pill`, `.blob-interactive` |
+| 2 — Soft | Category pages, search results, reviews | Syne + DM Sans | Full palette | Hover effects, `rounded-blob-d` resting → `rounded-blob-b` hover | `rounded-blob-d`, `rounded-card` |
 | 3 — Functional | Booking, payment, auth, login | Syne + DM Sans | Coral CTA + cream base only | ZERO animation | `rounded-button`, `rounded-card` |
 | 4 — Structured | Dashboard, admin, calendar, settings | Syne 700 + DM Sans | Palette on borders/icons only | ZERO animation | `rounded-card` max |
 
