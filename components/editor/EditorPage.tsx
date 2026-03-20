@@ -211,6 +211,19 @@ export default function EditorPage() {
           {editMode ? "Edit ON" : "Edit OFF"}
         </button>
 
+        {/* Open panel (no selection) */}
+        <button
+          onClick={() => {
+            setSelectedElement(null);
+            setShowPanel(true);
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button text-xs font-medium bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+          title="Describe a change without selecting an element"
+        >
+          <Pencil size={12} />
+          Describe
+        </button>
+
         {/* View toggle */}
         <button
           onClick={() => setView(view === "preview" ? "requests" : "preview")}

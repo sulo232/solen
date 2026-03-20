@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, Copy, Download, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { X, Copy, Download, ChevronDown, ChevronUp, Loader2, Wand2, Trash2, FileText } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import type { ElementSelectedData } from "./DeviceFrame";
 
@@ -36,14 +36,15 @@ export default function EditPanel({
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [saving, setSaving] = useState(false);
-  const [generating, setGenerating] = useState(false);
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [roadmap, setRoadmap] = useState<string | null>(null);
   const [roadmapVersion, setRoadmapVersion] = useState<number>(0);
   const [tokenUsage, setTokenUsage] = useState<{ input_tokens: number; output_tokens: number } | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  const [lastRequestId, setLastRequestId] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(true);
+  const [expandedRoadmapId, setExpandedRoadmapId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   // Reset state when element changes
@@ -51,7 +52,6 @@ export default function EditPanel({
     setDescription("");
     setRoadmap(null);
     setError(null);
-    setLastRequestId(null);
   }, [selectedElement?.selector]);
 
   async function handleSaveRequest() {
@@ -63,10 +63,10 @@ export default function EditPanel({
     setSaving(true);
     try {
       const payload = {
-        element_selector: selectedElement?.selector,
-        element_tag: selectedElement?.tag,
-        element_text: selectedElement?.text,
-        component_hint: selectedElement?.componentHint,
+        element_selector: selectedElement?.selector ?? null,
+        element_tag: selectedElement?.tag ?? null,
+        element_text: selectedElement?.text ?? null,
+        component_hint: selectedElement?.componentHint ?? null,
         page_url: pageUrl,
         description,
         priority,
@@ -93,7 +93,7 @@ export default function EditPanel({
       }
 
       if (!res.ok) throw new Error(data.error || data.message || "Failed to save");
-      setLastRequestId(data.request.id);
+      setDescription("");
       onRequestsUpdate();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to save request. Try again.");
@@ -102,13 +102,9 @@ export default function EditPanel({
     }
   }
 
-  async function handleGenerateRoadmap() {
-    if (!lastRequestId) {
-      setError("Save the request first before generating a roadmap.");
-      return;
-    }
+  async function handleGenerateRoadmap(requestId: string) {
     setError(null);
-    setGenerating(true);
+    setGeneratingId(requestId);
 
     // Cancel previous generation
     if (abortRef.current) abortRef.current.abort();
@@ -118,7 +114,7 @@ export default function EditPanel({
       const res = await fetch("/api/admin/generate-roadmap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId: lastRequestId }),
+        body: JSON.stringify({ requestId }),
         signal: abortRef.current.signal,
       });
       const data = await res.json();
@@ -126,12 +122,30 @@ export default function EditPanel({
       setRoadmap(data.roadmap);
       setRoadmapVersion(data.version);
       setTokenUsage(data.tokenUsage);
+      setExpandedRoadmapId(requestId);
       onRequestsUpdate();
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "Roadmap generation failed.");
     } finally {
-      setGenerating(false);
+      setGeneratingId(null);
+    }
+  }
+
+  async function handleDeleteRequest(id: string) {
+    if (!confirm("Delete this feature request?")) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/admin/feature-requests/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete");
+      }
+      onRequestsUpdate();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to delete request.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -172,7 +186,7 @@ export default function EditPanel({
           </button>
         </div>
 
-        {/* Element Info */}
+        {/* Element Info or No Selection */}
         {selectedElement ? (
           <div className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-card p-3 space-y-1">
             <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-mono">
@@ -189,9 +203,17 @@ export default function EditPanel({
             </p>
           </div>
         ) : (
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 italic">
-            Click an element in the preview to select it
-          </p>
+          <div className="bg-s-blue/5 dark:bg-s-blue/10 rounded-card p-3 space-y-1">
+            <p className="text-xs font-medium text-s-blue">
+              General page feedback
+            </p>
+            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+              Page: <span className="font-mono">{pageUrl}</span>
+            </p>
+            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+              No element selected — describe the change for this page below.
+            </p>
+          </div>
         )}
 
         {/* Description */}
@@ -202,7 +224,7 @@ export default function EditPanel({
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe the change you want..."
+            placeholder={selectedElement ? "Describe the change you want..." : "Describe what you want changed on this page..."}
             rows={4}
             className="w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded-button border border-s-ink/10 dark:border-s-dm-text/10 p-3 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
           />
@@ -237,26 +259,15 @@ export default function EditPanel({
           </div>
         )}
 
-        {/* Action buttons */}
-        <div className="space-y-2">
-          <button
-            onClick={handleSaveRequest}
-            disabled={saving || !description.trim()}
-            className="w-full bg-s-coral text-white rounded-button px-4 py-2 text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {saving ? <Spinner size="sm" invert /> : null}
-            {saving ? "Saving..." : "Save Request"}
-          </button>
-
-          <button
-            onClick={handleGenerateRoadmap}
-            disabled={generating || !lastRequestId}
-            className="w-full bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg rounded-button px-4 py-2 text-sm font-medium hover:bg-s-ink/90 dark:hover:bg-s-dm-text/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {generating ? <Loader2 size={14} className="animate-spin" /> : null}
-            {generating ? "Generating roadmap… (10-30s)" : "Generate Roadmap"}
-          </button>
-        </div>
+        {/* Save button */}
+        <button
+          onClick={handleSaveRequest}
+          disabled={saving || !description.trim()}
+          className="w-full bg-s-coral text-white rounded-button px-4 py-2 text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {saving ? <Spinner size="sm" invert /> : null}
+          {saving ? "Saving..." : "Save Request"}
+        </button>
 
         {/* Preview Prompt (collapsible) */}
         {selectedElement && (
@@ -274,7 +285,7 @@ export default function EditPanel({
           </pre>
         )}
 
-        {/* Generated Roadmap */}
+        {/* Inline generated roadmap */}
         {roadmap && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -314,7 +325,7 @@ export default function EditPanel({
           {showHistory && pageRequests.length > 0 && (
             <div className="mt-2 space-y-2">
               {pageRequests.map((r) => (
-                <div key={r.id} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 space-y-1">
+                <div key={r.id} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
@@ -328,9 +339,65 @@ export default function EditPanel({
                     </span>
                   </div>
                   <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70 line-clamp-2">{r.description}</p>
+
+                  {/* Action buttons per request */}
+                  <div className="flex items-center gap-1 pt-0.5">
+                    {/* Generate Roadmap */}
+                    <button
+                      onClick={() => handleGenerateRoadmap(r.id)}
+                      disabled={generatingId === r.id}
+                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/10 dark:hover:bg-s-dm-text/10 transition-colors disabled:opacity-50"
+                      title={r.generated_roadmap ? "Regenerate roadmap" : "Generate roadmap"}
+                    >
+                      {generatingId === r.id ? (
+                        <Loader2 size={10} className="animate-spin" />
+                      ) : (
+                        <Wand2 size={10} />
+                      )}
+                      {generatingId === r.id ? "Generating..." : r.generated_roadmap ? "Regenerate" : "Roadmap"}
+                    </button>
+
+                    {/* View existing roadmap */}
+                    {r.generated_roadmap && (
+                      <button
+                        onClick={() => setExpandedRoadmapId(expandedRoadmapId === r.id ? null : r.id)}
+                        className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button bg-s-blue/10 text-s-blue hover:bg-s-blue/20 transition-colors"
+                        title="View roadmap"
+                      >
+                        <FileText size={10} />
+                        View
+                      </button>
+                    )}
+
+                    {/* Delete */}
+                    <button
+                      onClick={() => handleDeleteRequest(r.id)}
+                      disabled={deletingId === r.id}
+                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors disabled:opacity-50 ml-auto"
+                      title="Delete request"
+                    >
+                      {deletingId === r.id ? (
+                        <Loader2 size={10} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={10} />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Expanded roadmap view */}
+                  {expandedRoadmapId === r.id && r.generated_roadmap && (
+                    <pre className="text-[10px] leading-relaxed bg-white dark:bg-s-dm-surface rounded-button p-2 overflow-auto max-h-60 text-s-ink dark:text-s-dm-text whitespace-pre-wrap border border-s-ink/5 dark:border-s-dm-text/10 mt-1">
+                      {r.generated_roadmap}
+                    </pre>
+                  )}
                 </div>
               ))}
             </div>
+          )}
+          {showHistory && pageRequests.length === 0 && (
+            <p className="mt-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 italic">
+              No requests for this page yet.
+            </p>
           )}
         </div>
       </div>
