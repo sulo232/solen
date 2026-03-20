@@ -185,5 +185,28 @@
     "slot_taken": "Dieser Termin ist bereits vergeben",
     "review_exists": "Du hast diese Buchung bereits bewertet",
     "booking_not_completed": "Buchung ist noch nicht abgeschlossen"
+  },
+  "discovery": {
+    "meta": { "title": "Styles entdecken | solen.ch", "description": "Finde deine nächste Frisur, Nägel oder Make-up Inspiration" },
+    "title": "Entdecken",
+    "subtitle": "Finde deinen nächsten Look",
+    "search_placeholder": "Styles suchen...",
+    "categories": { "all": "Alle", "hair": "Haare", "beard": "Bart", "nails": "Nägel", "makeup": "Make-up", "waxing": "Waxing" },
+    "gender": { "all": "Alle", "female": "Frauen", "male": "Männer", "unisex": "Unisex" },
+    "empty": "Keine Styles gefunden. Probiere andere Filter.",
+    "loading": "Styles laden...",
+    "like": "Gefällt mir",
+    "save": "Speichern",
+    "share": "Teilen",
+    "book": "Jetzt buchen",
+    "comments": "Kommentare",
+    "add_comment": "Kommentar hinzufügen...",
+    "post": "Posten",
+    "upload": "Hochladen",
+    "terms_accept": "Ich akzeptiere die Nutzungsbedingungen",
+    "profile_setup": { "title": "Feed personalisieren", "subtitle": "Hilf uns, dir passende Styles zu zeigen", "skip": "Überspringen", "save": "Speichern", "gdpr": "Deine Daten werden nur zur Personalisierung deines Feeds verwendet und niemals geteilt." },
+    "detail": { "description": "Beschreibung", "salon_script": "Was dem Friseur sagen", "cut_guide": "Schnittanleitung", "tutorials": "So stylen", "products": "Empfohlene Produkte", "book_cta": "Diesen Style buchen", "price_range": "Preisrange" },
+    "admin": { "title": "Discovery Content Studio", "stock_import": "Stock Import", "tiktok_import": "TikTok Import", "manual_upload": "Manueller Upload", "staging": "Staging", "published": "Veröffentlicht", "flagged": "Gemeldet", "approve": "Genehmigen", "reject": "Ablehnen", "remove": "Entfernen", "auto_import": "Auto-Import" },
+    "moderation": { "flagged": "Gemeldet", "reason": "Grund", "approve": "Genehmigen", "remove": "Entfernen" }
   }
 }

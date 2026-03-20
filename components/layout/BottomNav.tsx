@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect, useState, useRef } from "react";
-import { House, Search, Calendar, User, LayoutDashboard } from "lucide-react";
+import { House, Search, Compass, Calendar, User, LayoutDashboard } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ExpandableNavTabs from "@/components/ui/expandable-tabs";
 import type { ExpandableTabsItem } from "@/components/ui/expandable-tabs";
@@ -63,6 +63,7 @@ export default function BottomNav() {
   const tabs: ExpandableTabsItem[] = [
     { title: "Home", icon: House },
     { title: "Suche", icon: Search },
+    { title: "Discover", icon: Compass },
     { type: "separator" as const },
     { title: "Termine", icon: Calendar },
     { title: "Profil", icon: User },
@@ -71,6 +72,7 @@ export default function BottomNav() {
   const routes: (string | null)[] = [
     `/${locale}`,
     `/${locale}/coiffeur`,
+    `/${locale}/discover`,
     null, // separator
     `/${locale}/termine`,
     profileRoute,

@@ -185,5 +185,28 @@
     "slot_taken": "Questo orario è già prenotato",
     "review_exists": "Hai già recensito questa prenotazione",
     "booking_not_completed": "La prenotazione non è ancora completata"
+  },
+  "discovery": {
+    "meta": { "title": "Scopri stili | solen.ch", "description": "Trova la tua prossima acconciatura, unghie o ispirazione trucco" },
+    "title": "Scopri",
+    "subtitle": "Trova il tuo prossimo look",
+    "search_placeholder": "Cerca stili...",
+    "categories": { "all": "Tutti", "hair": "Capelli", "beard": "Barba", "nails": "Unghie", "makeup": "Trucco", "waxing": "Ceretta" },
+    "gender": { "all": "Tutti", "female": "Donne", "male": "Uomini", "unisex": "Unisex" },
+    "empty": "Nessuno stile trovato. Prova a cambiare i filtri.",
+    "loading": "Caricamento stili...",
+    "like": "Mi piace",
+    "save": "Salva",
+    "share": "Condividi",
+    "book": "Prenota ora",
+    "comments": "Commenti",
+    "add_comment": "Aggiungi un commento...",
+    "post": "Pubblica",
+    "upload": "Carica",
+    "terms_accept": "Accetto i termini di servizio",
+    "profile_setup": { "title": "Personalizza il tuo feed", "subtitle": "Aiutaci a mostrarti stili che corrispondono ai tuoi gusti", "skip": "Salta", "save": "Salva preferenze", "gdpr": "I tuoi dati vengono utilizzati solo per personalizzare il tuo feed e non vengono mai condivisi." },
+    "detail": { "description": "Descrizione", "salon_script": "Cosa dire al parrucchiere", "cut_guide": "Guida al taglio", "tutorials": "Come acconciare", "products": "Prodotti consigliati", "book_cta": "Prenota questo stile", "price_range": "Fascia di prezzo" },
+    "admin": { "title": "Studio contenuti Discovery", "stock_import": "Import foto", "tiktok_import": "Import TikTok", "manual_upload": "Upload manuale", "staging": "In attesa", "published": "Pubblicato", "flagged": "Segnalato", "approve": "Approva", "reject": "Rifiuta", "remove": "Rimuovi", "auto_import": "Auto-Import" },
+    "moderation": { "flagged": "Segnalato", "reason": "Motivo", "approve": "Approva", "remove": "Rimuovi" }
   }
 }

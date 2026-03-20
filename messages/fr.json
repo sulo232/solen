@@ -185,5 +185,28 @@
     "slot_taken": "Ce créneau est déjà pris",
     "review_exists": "Vous avez déjà évalué cette réservation",
     "booking_not_completed": "La réservation n'est pas encore terminée"
+  },
+  "discovery": {
+    "meta": { "title": "Découvrir les styles | solen.ch", "description": "Trouvez votre prochaine coiffure, ongles ou maquillage" },
+    "title": "Découvrir",
+    "subtitle": "Trouvez votre prochain look",
+    "search_placeholder": "Rechercher des styles...",
+    "categories": { "all": "Tous", "hair": "Cheveux", "beard": "Barbe", "nails": "Ongles", "makeup": "Maquillage", "waxing": "Épilation" },
+    "gender": { "all": "Tous", "female": "Femmes", "male": "Hommes", "unisex": "Unisexe" },
+    "empty": "Aucun style trouvé. Essayez d'autres filtres.",
+    "loading": "Chargement des styles...",
+    "like": "J'aime",
+    "save": "Enregistrer",
+    "share": "Partager",
+    "book": "Réserver",
+    "comments": "Commentaires",
+    "add_comment": "Ajouter un commentaire...",
+    "post": "Publier",
+    "upload": "Télécharger",
+    "terms_accept": "J'accepte les conditions d'utilisation",
+    "profile_setup": { "title": "Personnalisez votre flux", "subtitle": "Aidez-nous à vous montrer des styles qui correspondent à vos goûts", "skip": "Passer", "save": "Enregistrer", "gdpr": "Vos données sont uniquement utilisées pour personnaliser votre flux et ne sont jamais partagées." },
+    "detail": { "description": "Description", "salon_script": "Quoi dire à votre coiffeur", "cut_guide": "Guide de coupe", "tutorials": "Comment coiffer", "products": "Produits recommandés", "book_cta": "Réserver ce style", "price_range": "Fourchette de prix" },
+    "admin": { "title": "Studio de contenu Discovery", "stock_import": "Import photos", "tiktok_import": "Import TikTok", "manual_upload": "Upload manuel", "staging": "En attente", "published": "Publié", "flagged": "Signalé", "approve": "Approuver", "reject": "Rejeter", "remove": "Supprimer", "auto_import": "Auto-Import" },
+    "moderation": { "flagged": "Signalé", "reason": "Raison", "approve": "Approuver", "remove": "Supprimer" }
   }
 }

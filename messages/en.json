@@ -185,5 +185,28 @@
     "slot_taken": "This slot is already booked",
     "review_exists": "You have already reviewed this booking",
     "booking_not_completed": "Booking is not yet completed"
+  },
+  "discovery": {
+    "meta": { "title": "Discover Styles | solen.ch", "description": "Find your next hairstyle, nails or makeup inspiration" },
+    "title": "Discover",
+    "subtitle": "Find your next look",
+    "search_placeholder": "Search styles...",
+    "categories": { "all": "All", "hair": "Hair", "beard": "Beard", "nails": "Nails", "makeup": "Makeup", "waxing": "Waxing" },
+    "gender": { "all": "All", "female": "Women", "male": "Men", "unisex": "Unisex" },
+    "empty": "No styles found. Try adjusting your filters.",
+    "loading": "Loading styles...",
+    "like": "Like",
+    "save": "Save",
+    "share": "Share",
+    "book": "Book Now",
+    "comments": "Comments",
+    "add_comment": "Add a comment...",
+    "post": "Post",
+    "upload": "Upload",
+    "terms_accept": "I accept the terms of service",
+    "profile_setup": { "title": "Personalize Your Feed", "subtitle": "Help us show you styles that match your taste", "skip": "Skip", "save": "Save preferences", "gdpr": "Your data is only used to personalize your feed and is never shared." },
+    "detail": { "description": "Description", "salon_script": "What to tell your stylist", "cut_guide": "Cut guide", "tutorials": "How to style", "products": "Recommended products", "book_cta": "Book this style", "price_range": "Price range" },
+    "admin": { "title": "Discovery Content Studio", "stock_import": "Stock Import", "tiktok_import": "TikTok Import", "manual_upload": "Manual Upload", "staging": "Staging", "published": "Published", "flagged": "Flagged", "approve": "Approve", "reject": "Reject", "remove": "Remove", "auto_import": "Auto-Import" },
+    "moderation": { "flagged": "Flagged", "reason": "Reason", "approve": "Approve", "remove": "Remove" }
   }
 }
