@@ -84,7 +84,15 @@ export async function POST(req: NextRequest) {
     if (!response.ok) {
       const errBody = await response.text();
       console.error("[generate-roadmap] Gemini API error:", response.status, errBody);
-      return NextResponse.json({ error: "Roadmap generation failed", details: response.status }, { status: 502 });
+      // Parse Gemini error for a user-friendly message
+      let detail = `Gemini ${response.status}`;
+      try {
+        const errJson = JSON.parse(errBody);
+        detail = errJson.error?.message || errBody.slice(0, 200);
+      } catch {
+        detail = errBody.slice(0, 200);
+      }
+      return NextResponse.json({ error: `Roadmap generation failed: ${detail}` }, { status: 502 });
     }
 
     const result = await response.json();
