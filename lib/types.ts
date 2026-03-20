@@ -270,3 +270,174 @@ export interface ApiError {
 export interface ApiSuccess<T = void> {
   data: T;
 }
+
+// ---------------------------------------------------------------------------
+// Discovery Types
+// ---------------------------------------------------------------------------
+
+export type DiscoveryCategory = "hair" | "beard" | "nails" | "makeup" | "waxing";
+export type DiscoveryContentType = "curated" | "tiktok" | "salon" | "user";
+export type DiscoveryMediaType = "photo" | "tiktok";
+export type DiscoveryStatus = "staging" | "published" | "flagged" | "archived";
+export type DiscoverySource = "unsplash" | "pexels" | "pixabay" | "admin" | "salon" | "user" | "tiktok";
+export type DiscoveryTexture = "straight" | "wavy" | "curly" | "coily" | "protective" | "bald";
+export type DiscoveryGender = "male" | "female" | "unisex";
+
+export interface DiscoveryItem {
+  id: string;
+  category: DiscoveryCategory;
+  content_type: DiscoveryContentType;
+  name: string | null;
+  name_de: string | null;
+  name_en: string | null;
+  name_fr: string | null;
+  name_it: string | null;
+  description: string | null;
+  description_de: string | null;
+  description_en: string | null;
+  description_fr: string | null;
+  description_it: string | null;
+  image_url: string | null;
+  tiktok_url: string | null;
+  tiktok_embed_html: string | null;
+  tiktok_thumbnail_url: string | null;
+  media_type: DiscoveryMediaType;
+  source: DiscoverySource;
+  source_id: string | null;
+  source_url: string | null;
+  author_name: string | null;
+  author_url: string | null;
+  alt_text: string | null;
+  gender: DiscoveryGender;
+  texture: DiscoveryTexture | null;
+  length_category: string | null;
+  style_name: string | null;
+  nail_shape: string | null;
+  nail_style: string | null;
+  makeup_style: string | null;
+  skin_tone: string | null;
+  wax_area: string | null;
+  tags: string[];
+  vibe: string | null;
+  occasion: string | null;
+  maintenance: string | null;
+  face_shapes: string[];
+  salon_script: string | null;
+  salon_script_de: string | null;
+  salon_script_fr: string | null;
+  salon_script_it: string | null;
+  cut_guide: string | null;
+  price_min: number | null;
+  price_max: number | null;
+  like_count: number;
+  save_count: number;
+  view_count: number;
+  status: DiscoveryStatus;
+  flag_reason: string | null;
+  is_active: boolean;
+  sort_order: number;
+  owner_user_id: string | null;
+  owner_salon_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DiscoveryBoard {
+  id: string;
+  name: string;
+  name_de: string | null;
+  name_en: string | null;
+  name_fr: string | null;
+  name_it: string | null;
+  slug: string;
+  description: string | null;
+  category: string | null;
+  texture: string | null;
+  style_name: string | null;
+  gender: string | null;
+  cover_images: string[];
+  pin_count: number;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface DiscoveryStagingItem {
+  id: string;
+  category: DiscoveryCategory | null;
+  image_url: string | null;
+  thumbnail_url: string | null;
+  tiktok_url: string | null;
+  tiktok_embed_html: string | null;
+  media_type: DiscoveryMediaType;
+  source: DiscoverySource;
+  source_id: string;
+  source_url: string | null;
+  author_name: string | null;
+  author_url: string | null;
+  alt_text: string | null;
+  auto_gender: string | null;
+  auto_texture: string | null;
+  auto_style: string | null;
+  auto_category: string | null;
+  auto_tags: string[];
+  api_tags: string[];
+  ai_description: string | null;
+  status: "pending" | "approved" | "rejected";
+  approved_by: string | null;
+  rejected_reason: string | null;
+  batch_id: string | null;
+  created_at: string;
+}
+
+export interface DiscoveryComment {
+  id: string;
+  user_id: string;
+  item_id: string;
+  text: string;
+  is_flagged: boolean;
+  flag_reason: string | null;
+  is_hidden: boolean;
+  created_at: string;
+}
+
+export interface DiscoveryCollection {
+  id: string;
+  user_id: string;
+  name: string;
+  is_public: boolean;
+  share_token: string | null;
+  created_at: string;
+}
+
+export interface DiscoveryFeedResponse {
+  items: DiscoveryItem[];
+  total: number;
+  page: number;
+  limit: number;
+  has_more: boolean;
+}
+
+export interface DiscoveryFilters {
+  category?: DiscoveryCategory;
+  gender?: DiscoveryGender;
+  texture?: DiscoveryTexture;
+  style?: string;
+  search?: string;
+  creator?: string;
+}
+
+export interface AIVisionResult {
+  category: DiscoveryCategory;
+  gender: DiscoveryGender;
+  texture: DiscoveryTexture | null;
+  style_name: string | null;
+  tags: string[];
+  description_de: string;
+  description_en: string;
+  description_fr: string;
+  description_it: string;
+  salon_script_de: string | null;
+  cut_guide: string | null;
+}
+

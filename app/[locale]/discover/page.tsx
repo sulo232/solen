@@ -3,8 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import Header from "@/components/layout/Header";
-import BottomNav from "@/components/layout/BottomNav";
 import DiscoveryGrid from "@/components/discovery/DiscoveryGrid";
 import CategoryPills from "@/components/discovery/CategoryPills";
 import GenderToggle from "@/components/discovery/GenderToggle";
@@ -125,48 +123,44 @@ export default function DiscoverPage() {
   };
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pt-4 pb-24">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
-            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Find your next look</p>
-          </div>
-
-          {/* Filters */}
-          <div className="space-y-3 mb-6">
-            <DiscoverySearchBar value={search} onChange={setSearch} />
-            <div className="flex items-center gap-3 flex-wrap">
-              <CategoryPills selected={category} onSelect={setCategory} />
-              <GenderToggle selected={gender} onSelect={setGender} />
-            </div>
-          </div>
-
-          {/* Grid */}
-          {loading && items.length === 0 ? (
-            <DiscoveryGridSkeleton />
-          ) : items.length === 0 ? (
-            <DiscoveryEmptyState />
-          ) : (
-            <DiscoveryGrid
-              items={items}
-              columns={columns}
-              onItemClick={handleItemClick}
-            />
-          )}
-
-          {/* Infinite scroll trigger */}
-          {hasMore && <div ref={observerRef} className="h-20" />}
-          {loading && items.length > 0 && (
-            <div className="flex justify-center py-8">
-              <div className="w-6 h-6 border-2 border-s-coral border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
+    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pt-4 pb-24">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
+          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Find your next look</p>
         </div>
-      </main>
-      <BottomNav />
+
+        {/* Filters */}
+        <div className="space-y-3 mb-6">
+          <DiscoverySearchBar value={search} onChange={setSearch} />
+          <div className="flex items-center gap-3 flex-wrap">
+            <CategoryPills selected={category} onSelect={setCategory} />
+            <GenderToggle selected={gender} onSelect={setGender} />
+          </div>
+        </div>
+
+        {/* Grid */}
+        {loading && items.length === 0 ? (
+          <DiscoveryGridSkeleton />
+        ) : items.length === 0 ? (
+          <DiscoveryEmptyState />
+        ) : (
+          <DiscoveryGrid
+            items={items}
+            columns={columns}
+            onItemClick={handleItemClick}
+          />
+        )}
+
+        {/* Infinite scroll trigger */}
+        {hasMore && <div ref={observerRef} className="h-20" />}
+        {loading && items.length > 0 && (
+          <div className="flex justify-center py-8">
+            <div className="w-6 h-6 border-2 border-s-coral border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+      </div>
 
       {/* Profile setup modal on first visit */}
       <ProfileSetupModal
@@ -174,6 +168,6 @@ export default function DiscoverPage() {
         onClose={() => setShowProfileSetup(false)}
         onSave={handleProfileSave}
       />
-    </>
+    </main>
   );
 }
