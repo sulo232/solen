@@ -5,7 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 const APP_URL = "https://solen.ch";
-const LOCALES  = ["de", "en"] as const;
+const LOCALES  = ["de", "en", "fr", "it"] as const;
 
 const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priority: number }[] = [
   { path: "",             freq: "daily",   priority: 1.0 },
@@ -20,6 +20,8 @@ const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priorit
   { path: "/impressum",   freq: "weekly",  priority: 0.3 },
   { path: "/agb",         freq: "weekly",  priority: 0.3 },
   { path: "/datenschutz", freq: "weekly",  priority: 0.3 },
+  { path: "/discover",    freq: "daily",   priority: 0.8 },
+  { path: "/terms/discovery", freq: "weekly", priority: 0.2 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -68,6 +70,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           lastModified:    new Date(),
           changeFrequency: "weekly",
           priority:        0.7,
+        });
+      }
+    }
+    // Discovery items
+    const { data: discoveryItems } = await supabase
+      .from("discovery_items")
+      .select("id, updated_at")
+      .eq("status", "published")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false })
+      .limit(500);
+
+    for (const item of discoveryItems ?? []) {
+      for (const locale of LOCALES) {
+        entries.push({
+          url:             `${APP_URL}/${locale}/discover/${item.id}`,
+          lastModified:    new Date(item.updated_at),
+          changeFrequency: "weekly",
+          priority:        0.6,
         });
       }
     }

@@ -93,10 +93,10 @@ export const completeReferralSchema = z.object({
 
 // ─── Visual Editor ───
 export const createFeatureRequestSchema = z.object({
-  element_selector: z.string().max(500).nullish(),
-  element_tag: z.string().max(50).nullish(),
-  element_text: z.string().max(500).nullish(),
-  component_hint: z.string().max(100).nullish(),
+  element_selector: z.string().max(500).optional(),
+  element_tag: z.string().max(50).optional(),
+  element_text: z.string().max(500).optional(),
+  component_hint: z.string().max(100).optional(),
   page_url: z.string().max(500).refine((v) => v.startsWith("/"), { message: "page_url must start with /" }),
   description: z.string().min(5).max(2000),
   priority: z.enum(["low", "medium", "high"]).default("medium"),

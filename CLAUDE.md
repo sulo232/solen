@@ -126,6 +126,7 @@ solen/
 21. **Chat Intelligence**: Quick-reply template chips (salon-side), AI reply suggestions via Gemini, photo-based price quoting, photo gallery tab in chat.
 22. **Client CRM Tags**: Color-coded tags (allergy, preference, note) on client profiles. Red allergy warnings on booking cards.
 23. **Visual Editor**: Admin-only element selector at `/dashboard/editor`. Click any element → describe change → Claude API generates roadmap in CLAUDE.md R1-R10 format. Supports device preview, request queue, and cost tracking.
+24. **Discovery Platform**: Pinterest-style content discovery at `/discover`. Masonry grid with photo/TikTok cards, category/gender/texture filters, infinite scroll, like/save/comment social features, AI-powered descriptions (Gemini), stock photo import (Unsplash/Pexels/Pixabay), TikTok oEmbed import, admin content studio, user/salon posting with auto-flagging, recommendation algorithm, staff portfolio browsing, and booking bridge.
 
 ### 3.6 Commands
 
@@ -256,6 +257,15 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `chat_templates` | `id`, `salon_id`, `text`, `sort_order`, `created_at` | Quick-reply templates for salon chat. RLS: salon owner only. Max 10 per salon. |
 | `client_tags` | `id`, `salon_id`, `customer_id`, `tag`, `color`, `created_at` | Color-coded client tags (allergy/preference). Colors: gray, red, orange, teal, blue, purple. UNIQUE(salon_id, customer_id, tag). RLS: salon owner only. |
 | `feature_requests` | `id`, `admin_id`, `element_selector`, `element_tag`, `element_text`, `component_hint`, `page_url`, `description`, `priority`, `status`, `generated_roadmap`, `roadmap_version`, `claude_prompt`, `token_usage` | Admin visual editor requests. RLS: admin-only all ops. |
+| `discovery_items` | `id`, `category`, `content_type`, `name_*`, `description_*`, `image_url`, `tiktok_url`, `tiktok_embed_html`, `tiktok_thumbnail_url`, `media_type`, `source`, `gender`, `texture`, `tags[]`, `salon_script_*`, `cut_guide`, `price_min`, `price_max`, `like_count`, `save_count`, `view_count`, `status`, `owner_user_id`, `owner_salon_id` | Discovery content. RLS: public read (published+active), owner manage. |
+| `discovery_staging` | `id`, `source`, `source_id`, `source_url`, `image_url`, `title`, `author_name`, `category`, `gender`, `ai_result`, `status` | Import staging area. RLS: admin-only. |
+| `discovery_likes` | `id`, `user_id`, `item_id`, `created_at` | UNIQUE(user_id, item_id). Toggle via `toggle_discovery_like` RPC. |
+| `discovery_saves` | `id`, `user_id`, `item_id`, `collection_id`, `created_at` | UNIQUE(user_id, item_id). Toggle via `toggle_discovery_save` RPC. |
+| `discovery_comments` | `id`, `item_id`, `user_id`, `text`, `is_flagged`, `created_at` | Max 500 chars. Auto-flagged via content-flags. |
+| `discovery_interactions` | `id`, `item_id`, `user_id`, `interaction_type`, `duration_ms`, `created_at` | Fire-and-forget analytics logging. |
+| `discovery_boards` | `id`, `name`, `slug`, `category`, `gender`, `cover_images[]`, `pin_count` | Curated collections. |
+| `discovery_collections` | `id`, `user_id`, `name`, `is_public` | User save collections. |
+| `discovery_products` | `id`, `name`, `brand`, `price`, `affiliate_url`, `image_url` | Product recommendations. |
 
 | View | Columns | Notes |
 |---|---|---|
