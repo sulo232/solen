@@ -69,21 +69,30 @@ export async function applyRateLimit(
   limiter: Ratelimit,
   identifier: RateLimitIdentifier
 ): Promise<NextResponse | null> {
-  const key = "ip" in identifier ? identifier.ip : identifier.userId;
-  const { success, limit, reset, remaining } = await limiter.limit(key);
-  if (!success) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
-      {
-        status: 429,
-        headers: {
-          "X-RateLimit-Limit": String(limit),
-          "X-RateLimit-Remaining": String(remaining),
-          "X-RateLimit-Reset": String(reset),
-          "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
-        },
-      }
-    );
+  // Skip rate limiting if Upstash Redis is not configured
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return null;
+  }
+  try {
+    const key = "ip" in identifier ? identifier.ip : identifier.userId;
+    const { success, limit, reset, remaining } = await limiter.limit(key);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": String(limit),
+            "X-RateLimit-Remaining": String(remaining),
+            "X-RateLimit-Reset": String(reset),
+            "Retry-After": String(Math.ceil((reset - Date.now()) / 1000)),
+          },
+        }
+      );
+    }
+  } catch (err) {
+    // Redis connection failed — allow request through rather than blocking
+    console.error("[ratelimit] Redis error, skipping rate limit:", err);
   }
   return null;
 }

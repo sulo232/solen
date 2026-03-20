@@ -51,51 +51,41 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  let step = "init";
   try {
     // 1. Feature flag
-    step = "feature_flag";
     const disabled = await checkFeatureEnabled("visual_editor");
     if (disabled) return disabled;
 
     // 2. Auth
-    step = "auth_create_client";
     const supabase = await createServerSupabaseClient();
-    step = "auth_get_session";
     const { data: { session } } = await supabase.auth.getSession();
     const user = session?.user ?? null;
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // 3. Ban check
-    step = "ban_check";
     const banned = await checkUserBanned(user.id);
     if (banned) return banned;
 
     // 4. Admin role check
-    step = "admin_role_check";
     const { data: profile } = await supabase
       .from("profiles").select("role").eq("id", user.id).single();
     if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     // 5. Rate limit
-    step = "rate_limit";
     const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
     if (rateLimited) return rateLimited;
 
     // 6. Parse JSON body (with try-catch for malformed requests)
-    step = "parse_body";
     let body;
     try { body = await req.json(); } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
     // 7. Zod validation
-    step = "validation";
     const { data: validated, error: valError } = validateBody(createFeatureRequestSchema, body);
-    if (valError) return NextResponse.json({ error: `[validation] ${valError.message}`, message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
+    if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
     // 8. Insert
-    step = "db_insert";
     const admin = createAdminSupabaseClient();
     const { data: inserted, error } = await admin
       .from("feature_requests")
@@ -103,11 +93,11 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) return NextResponse.json({ error: `[db_insert] ${error.message} (code: ${error.code}, details: ${error.details}, hint: ${error.hint})` }, { status: 500 });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ request: inserted }, { status: 201 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Internal server error";
-    console.error(`[feature-requests POST] Error at step "${step}":`, err);
-    return NextResponse.json({ error: `[${step}] ${message}` }, { status: 500 });
+    console.error("[feature-requests POST] Error:", err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
