@@ -62,20 +62,36 @@ export default function EditPanel({
     setError(null);
     setSaving(true);
     try {
-      const res = await fetch("/api/admin/feature-requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          element_selector: selectedElement?.selector,
-          element_tag: selectedElement?.tag,
-          element_text: selectedElement?.text,
-          component_hint: selectedElement?.componentHint,
-          page_url: pageUrl,
-          description,
-          priority,
-        }),
-      });
-      const data = await res.json();
+      const payload = {
+        element_selector: selectedElement?.selector,
+        element_tag: selectedElement?.tag,
+        element_text: selectedElement?.text,
+        component_hint: selectedElement?.componentHint,
+        page_url: pageUrl,
+        description,
+        priority,
+      };
+
+      let res: Response;
+      try {
+        res = await fetch("/api/admin/feature-requests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch (fetchErr: unknown) {
+        const msg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
+        throw new Error(`[fetch] ${msg}`);
+      }
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr: unknown) {
+        const text = await res.clone().text().catch(() => "(unreadable)");
+        throw new Error(`[json parse] status=${res.status}, body=${text.slice(0, 200)}`);
+      }
+
       if (!res.ok) throw new Error(data.error || data.message || "Failed to save");
       setLastRequestId(data.request.id);
       onRequestsUpdate();

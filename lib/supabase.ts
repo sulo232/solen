@@ -7,19 +7,32 @@ import { createBrowserClient } from "@supabase/ssr";
  */
 export async function createServerSupabaseClient() {
   const { cookies } = await import("next/headers");
-  const cookieStore = await cookies();
+  // cookies() itself can throw "The string did not match the expected pattern"
+  // when the raw Cookie header contains characters the parser rejects (e.g. long JWTs).
+  let cookieStore: Awaited<ReturnType<typeof cookies>> | null = null;
+  try {
+    cookieStore = await cookies();
+  } catch {
+    // Fall through — cookieStore stays null, auth will be anonymous
+  }
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll();
+          if (!cookieStore) return [];
+          try {
+            return cookieStore.getAll();
+          } catch {
+            return [];
+          }
         },
         setAll(cookiesToSet) {
+          if (!cookieStore) return;
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore!.set(name, value, options)
             );
           } catch {
             // setAll called from a Server Component — safe to ignore
