@@ -111,3 +111,67 @@ export const updateFeatureRequestSchema = z.object({
 export const generateRoadmapSchema = z.object({
   requestId: z.string().uuid(),
 });
+
+// ─── Discovery ──────────────────────────────────────────────────────────────
+
+export const discoveryFeedSchema = z.object({
+  category: z.enum(["all", "hair", "beard", "nails", "makeup", "waxing"]).default("all"),
+  gender: z.enum(["all", "female", "male", "unisex"]).default("all"),
+  texture: z.string().optional(),
+  style: z.string().optional(),
+  search: z.string().max(100).optional(),
+  creator: z.string().uuid().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+});
+
+export const discoveryPostSchema = z.object({
+  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]),
+  gender: z.enum(["female", "male", "unisex"]),
+  media_type: z.enum(["photo", "video"]),
+  tiktok_url: z.string().url().optional(),
+  style_name: z.string().max(100).optional(),
+  tags: z.array(z.string().max(30)).max(10).default([]),
+  description: z.string().max(1000).optional(),
+  texture: z.string().optional(),
+  tos_accepted: z.literal(true, { errorMap: () => ({ message: "You must accept the Terms of Service" }) }),
+});
+
+export const discoveryCommentSchema = z.object({
+  item_id: z.string().uuid(),
+  text: z.string().min(1).max(500),
+});
+
+export const discoveryLikeSchema = z.object({
+  item_id: z.string().uuid(),
+});
+
+export const discoverySaveSchema = z.object({
+  item_id: z.string().uuid(),
+  collection_id: z.string().uuid().optional(),
+});
+
+export const discoverySearchStockSchema = z.object({
+  query: z.string().min(1).max(100),
+  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+});
+
+export const discoveryStagingSchema = z.object({
+  id: z.string().uuid(),
+  action: z.enum(["approve", "reject"]),
+  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  gender: z.enum(["female", "male", "unisex"]).optional(),
+  style_name: z.string().max(100).optional(),
+  tags: z.array(z.string().max(30)).max(10).optional(),
+});
+
+export const discoveryTikTokImportSchema = z.object({
+  urls: z.array(z.string().url()).min(1).max(20),
+});
+
+export function validateQuery<T>(schema: z.ZodSchema<T>, params: URLSearchParams): { data: T; error: null } | { data: null; error: { message: string } } {
+  const obj: Record<string, string> = {};
+  params.forEach((v, k) => { obj[k] = v; });
+  return validateBody(schema, obj);
+}
