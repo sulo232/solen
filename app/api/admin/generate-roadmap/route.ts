@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs"; // Required: 30s timeout exceeds Edge limits
+export const runtime = "nodejs"; // Required: 30s+ timeout exceeds Edge limits
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
@@ -45,47 +45,61 @@ export async function POST(req: NextRequest) {
     .from("feature_requests").select("*").eq("id", validated.requestId).single();
   if (!featureReq) return NextResponse.json({ error: "Request not found" }, { status: 404 });
 
-  // 8. Check API key
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  // 8. Check API key — Gemini
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "ANTHROPIC_API_KEY not configured. Set it in Vercel environment variables." },
+      { error: "GEMINI_API_KEY not configured. Set it in Vercel environment variables." },
       { status: 500 }
     );
   }
 
-  // 9. Call Claude API with 30s timeout
+  // 9. Call Gemini API with 60s timeout
+  const model = "gemini-2.0-flash";
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 8192,
-        system: buildRoadmapSystemPrompt(),
-        messages: [{ role: "user", content: buildRoadmapUserPrompt(featureReq) }],
-      }),
-      signal: AbortSignal.timeout(30000), // 30s timeout
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: buildRoadmapSystemPrompt() }],
+          },
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: buildRoadmapUserPrompt(featureReq) }],
+            },
+          ],
+          generationConfig: {
+            maxOutputTokens: 8192,
+            temperature: 0.7,
+          },
+        }),
+        signal: AbortSignal.timeout(60000), // 60s timeout (Gemini can be slower)
+      }
+    );
 
     if (!response.ok) {
       const errBody = await response.text();
-      console.error("[generate-roadmap] Claude API error:", response.status, errBody);
+      console.error("[generate-roadmap] Gemini API error:", response.status, errBody);
       return NextResponse.json({ error: "Roadmap generation failed", details: response.status }, { status: 502 });
     }
 
     const result = await response.json();
-    const roadmapMarkdown = result.content?.[0]?.text ?? "";
+    const roadmapMarkdown = result.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
+    if (!roadmapMarkdown) {
+      console.error("[generate-roadmap] Empty response from Gemini:", JSON.stringify(result).slice(0, 500));
+      return NextResponse.json({ error: "Gemini returned an empty response. Try again." }, { status: 502 });
+    }
 
     // Track token usage for cost monitoring
     const tokenUsage = {
-      input_tokens: result.usage?.input_tokens ?? 0,
-      output_tokens: result.usage?.output_tokens ?? 0,
-      model: "claude-sonnet-4-20250514",
+      input_tokens: result.usageMetadata?.promptTokenCount ?? 0,
+      output_tokens: result.usageMetadata?.candidatesTokenCount ?? 0,
+      model,
       generated_at: new Date().toISOString(),
     };
 
@@ -97,7 +111,7 @@ export async function POST(req: NextRequest) {
         status: "roadmap_generated",
         roadmap_version: newVersion,
         token_usage: tokenUsage,
-        claude_prompt: buildRoadmapUserPrompt(featureReq),
+        claude_prompt: buildRoadmapUserPrompt(featureReq), // keeping column name for compat
       })
       .eq("id", validated.requestId);
 
@@ -107,9 +121,8 @@ export async function POST(req: NextRequest) {
       tokenUsage,
     });
   } catch (err: unknown) {
-    // Note: In Node.js runtime, timeout errors are AbortError (not DOMException)
     if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
-      return NextResponse.json({ error: "Claude API timed out (30s). Try again." }, { status: 504 });
+      return NextResponse.json({ error: "Gemini API timed out (60s). Try again." }, { status: 504 });
     }
     console.error("[generate-roadmap] Unexpected error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
