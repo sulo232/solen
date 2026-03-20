@@ -93,7 +93,9 @@ solen/
 - **Social proof**: `<SocialProofStrip>` between hero and content. `<TrustBadges>` in footer.
 - **Dashboard sidebar**: Animated `<Sidebar>` from `sidebar.tsx` — collapses to 60px icons, expands on hover.
 - **Date picker**: `<SolenDatePicker>` from `date-picker.tsx` — react-aria-components calendar with coral theme.
-- **Background blobs**: `<BackgroundBlobs>` from `BackgroundBlobs.tsx` — decorative gradient blobs for hero/section backgrounds.
+- **Background blobs**: `<BlobBackground>` from `BlobBackground.tsx` — accepts `zone={1}` (maximalist) or `zone={2}` (soft/subtle). Decorative gradient blobs for hero/section backgrounds.
+- **Radii**: card 12px, pill 9999px, button 8px, blob-a/b/c/d/e organic % (see UI_RULES.md §10)
+- **Blob physics**: `.blob-interactive` for 500ms spring border-radius morphing on hover
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
