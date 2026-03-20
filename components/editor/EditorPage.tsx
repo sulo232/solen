@@ -111,6 +111,7 @@ export default function EditorPage() {
 
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
@@ -140,15 +141,21 @@ export default function EditorPage() {
 
   const handleGenerateRoadmap = async (id: string) => {
     setGeneratingId(id);
+    setApiError(null);
     try {
       const res = await fetch("/api/admin/generate-roadmap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requestId: id }),
       });
-      if (res.ok) fetchRequests();
-    } catch {
-      // Silent fail
+      const data = await res.json();
+      if (!res.ok) {
+        setApiError(data.error || `Roadmap generation failed (${res.status})`);
+        return;
+      }
+      fetchRequests();
+    } catch (err: unknown) {
+      setApiError(err instanceof Error ? err.message : "Network error generating roadmap");
     } finally {
       setGeneratingId(null);
     }
@@ -304,6 +311,11 @@ export default function EditorPage() {
             <h2 className="text-lg font-heading font-bold text-s-ink dark:text-s-dm-text mb-4">
               All Feature Requests
             </h2>
+            {apiError && (
+              <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-button p-3">
+                <p className="text-xs text-red-600 dark:text-red-400">{apiError}</p>
+              </div>
+            )}
             <RequestList
               requests={requests}
               nextCursor={nextCursor}
