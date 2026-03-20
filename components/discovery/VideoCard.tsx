@@ -8,6 +8,7 @@ import { Play, Heart } from "lucide-react";
 interface VideoCardProps {
   item: DiscoveryItem;
   onClick?: () => void;
+  isAuthenticated?: boolean;
 }
 
 export default function VideoCard({ item, onClick }: VideoCardProps) {

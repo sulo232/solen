@@ -9,6 +9,7 @@ interface DiscoveryGridProps {
   items: DiscoveryItem[];
   columns?: number;
   onItemClick?: (item: DiscoveryItem) => void;
+  isAuthenticated?: boolean;
 }
 
 function distributeItems(items: DiscoveryItem[], colCount: number) {
@@ -22,7 +23,7 @@ function distributeItems(items: DiscoveryItem[], colCount: number) {
   return columns;
 }
 
-export default function DiscoveryGrid({ items, columns = 3, onItemClick }: DiscoveryGridProps) {
+export default function DiscoveryGrid({ items, columns = 3, onItemClick, isAuthenticated = false }: DiscoveryGridProps) {
   const cols = useMemo(() => distributeItems(items, columns), [items, columns]);
 
   return (
@@ -36,9 +37,9 @@ export default function DiscoveryGrid({ items, columns = 3, onItemClick }: Disco
               style={{ animationDelay: `${idx * 50}ms`, animationFillMode: "both" }}
             >
               {item.media_type === "tiktok" ? (
-                <VideoCard item={item} onClick={() => onItemClick?.(item)} />
+                <VideoCard item={item} onClick={() => onItemClick?.(item)} isAuthenticated={isAuthenticated} />
               ) : (
-                <ItemCard item={item} onClick={() => onItemClick?.(item)} />
+                <ItemCard item={item} onClick={() => onItemClick?.(item)} isAuthenticated={isAuthenticated} />
               )}
             </div>
           ))}

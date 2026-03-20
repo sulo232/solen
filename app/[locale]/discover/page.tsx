@@ -10,7 +10,13 @@ import DiscoverySearchBar from "@/components/discovery/SearchBar";
 import DiscoveryGridSkeleton from "@/components/discovery/DiscoveryGridSkeleton";
 import DiscoveryEmptyState from "@/components/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components/discovery/ProfileSetupModal";
-import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender } from "@/lib/types";
+import PatternSelector from "@/components/discovery/PatternSelector";
+import StyleNamePills from "@/components/discovery/StyleNamePills";
+import FeaturedBoards from "@/components/discovery/FeaturedBoards";
+import FilterDrawer from "@/components/discovery/FilterDrawer";
+import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
+import PostFromDiscover from "@/components/discovery/PostFromDiscover";
+import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters } from "@/lib/types";
 
 export default function DiscoverPage() {
   const locale = useLocale();
@@ -20,11 +26,17 @@ export default function DiscoverPage() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [error, setError] = useState(false);
 
   // Filters
   const [category, setCategory] = useState<DiscoveryCategory | "all">("all");
   const [gender, setGender] = useState<DiscoveryGender | "all">("all");
   const [search, setSearch] = useState("");
+  const [texture, setTexture] = useState<string | null>(null);
+  const [style, setStyle] = useState<string | null>(null);
+
+  // Auth state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Profile setup
   const [showProfileSetup, setShowProfileSetup] = useState(false);
@@ -42,10 +54,16 @@ export default function DiscoverPage() {
     return () => window.removeEventListener("resize", updateCols);
   }, []);
 
-  // Check if profile setup needed
+  // Check if profile setup needed + auth state
   useEffect(() => {
     fetch("/api/profile")
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => {
+        if (r.ok) {
+          setIsAuthenticated(true);
+          return r.json();
+        }
+        return null;
+      })
       .then((p) => {
         if (p && p.disc_profile_set === false) {
           setShowProfileSetup(true);
@@ -58,13 +76,17 @@ export default function DiscoverPage() {
   // Fetch items
   const fetchItems = useCallback(async (pageNum: number, append = false) => {
     setLoading(true);
+    setError(false);
     try {
       const params = new URLSearchParams({ page: String(pageNum), limit: "20" });
       if (category !== "all") params.set("category", category);
       if (gender !== "all") params.set("gender", gender);
       if (search) params.set("search", search);
+      if (texture) params.set("texture", texture);
+      if (style) params.set("style", style);
 
       const res = await fetch(`/api/discovery/feed?${params}`);
+      if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
 
       if (append) {
@@ -73,10 +95,12 @@ export default function DiscoverPage() {
         setItems(data.items ?? []);
       }
       setHasMore(data.has_more ?? false);
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
-  }, [category, gender, search]);
+  }, [category, gender, search, texture, style]);
 
   // Reset and fetch on filter change
   useEffect(() => {
@@ -122,26 +146,74 @@ export default function DiscoverPage() {
     } catch { /* best effort */ }
   };
 
+  const handleBoardSelect = (filters: Partial<DiscoveryFilters>) => {
+    if (filters.category) setCategory(filters.category);
+    if (filters.gender) setGender(filters.gender);
+    if (filters.texture) setTexture(filters.texture);
+  };
+
+  const hasActiveFilters = category !== "all" || gender !== "all" || texture || style;
+
+  const resetFilters = () => {
+    setCategory("all");
+    setGender("all");
+    setTexture(null);
+    setStyle(null);
+    setSearch("");
+  };
+
   return (
     <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Find your next look</p>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
+            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Find your next look</p>
+          </div>
+          {/* Mobile filter drawer trigger */}
+          <FilterDrawer
+            category={category}
+            gender={gender}
+            texture={texture}
+            style={style}
+            onCategoryChange={setCategory}
+            onGenderChange={setGender}
+            onTextureChange={setTexture}
+            onStyleChange={setStyle}
+            onReset={resetFilters}
+          />
         </div>
 
-        {/* Filters */}
-        <div className="space-y-3 mb-6">
+        {/* Desktop filters */}
+        <div className="hidden md:block space-y-3 mb-6">
           <DiscoverySearchBar value={search} onChange={setSearch} />
           <div className="flex items-center gap-3 flex-wrap">
             <CategoryPills selected={category} onSelect={setCategory} />
             <GenderToggle selected={gender} onSelect={setGender} />
           </div>
+          <PatternSelector
+            category={category === "all" ? null : category}
+            selected={texture}
+            onSelect={setTexture}
+          />
+          <StyleNamePills selected={style} onSelect={setStyle} />
         </div>
 
+        {/* Mobile search (visible on mobile, above grid) */}
+        <div className="md:hidden mb-4">
+          <DiscoverySearchBar value={search} onChange={setSearch} />
+        </div>
+
+        {/* Featured boards (only when no filters active) */}
+        {!hasActiveFilters && !search && (
+          <FeaturedBoards onBoardSelect={handleBoardSelect} />
+        )}
+
         {/* Grid */}
-        {loading && items.length === 0 ? (
+        {error ? (
+          <DiscoveryErrorState onRetry={() => fetchItems(1)} />
+        ) : loading && items.length === 0 ? (
           <DiscoveryGridSkeleton />
         ) : items.length === 0 ? (
           <DiscoveryEmptyState />
@@ -150,6 +222,7 @@ export default function DiscoverPage() {
             items={items}
             columns={columns}
             onItemClick={handleItemClick}
+            isAuthenticated={isAuthenticated}
           />
         )}
 
@@ -161,6 +234,9 @@ export default function DiscoverPage() {
           </div>
         )}
       </div>
+
+      {/* Floating post button */}
+      <PostFromDiscover isAuthenticated={isAuthenticated} />
 
       {/* Profile setup modal on first visit */}
       <ProfileSetupModal
