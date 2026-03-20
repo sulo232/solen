@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs"; // Required: 30s timeout exceeds Edge limits
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
@@ -45,47 +45,46 @@ export async function POST(req: NextRequest) {
     .from("feature_requests").select("*").eq("id", validated.requestId).single();
   if (!featureReq) return NextResponse.json({ error: "Request not found" }, { status: 404 });
 
-  // 8. Check API key — scan all env vars for any key containing "ANTHROP" or "CLAUDE"
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_KEY;
+  // 8. Check API key — uses GEMINI_API_KEY from Vercel env
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    // Debug: find any env var that might be the API key
-    const allKeys = Object.keys(process.env);
-    const candidates = allKeys.filter(k =>
-      k.toUpperCase().includes("ANTHROP") ||
-      k.toUpperCase().includes("CLAUDE") ||
-      k.toUpperCase().includes("GEMINI")
-    );
     return NextResponse.json(
-      {
-        error: `No API key found. Checked: ANTHROPIC_API_KEY, CLAUDE_API_KEY, ANTHROPIC_KEY. Found these related env vars: [${candidates.join(", ") || "NONE"}]. Total env vars: ${allKeys.length}`,
-      },
+      { error: "GEMINI_API_KEY not configured in Vercel environment variables." },
       { status: 500 }
     );
   }
 
-  // 9. Call Claude API with 30s timeout
-  const model = "claude-sonnet-4-20250514";
+  // 9. Call Gemini API — try gemini-1.5-flash (widely available), fallback to gemini-pro
+  const model = "gemini-1.5-flash";
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 8192,
-        system: buildRoadmapSystemPrompt(),
-        messages: [{ role: "user", content: buildRoadmapUserPrompt(featureReq) }],
-      }),
-      signal: AbortSignal.timeout(30000),
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: buildRoadmapSystemPrompt() }],
+          },
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: buildRoadmapUserPrompt(featureReq) }],
+            },
+          ],
+          generationConfig: {
+            maxOutputTokens: 8192,
+            temperature: 0.7,
+          },
+        }),
+        signal: AbortSignal.timeout(60000),
+      }
+    );
 
     if (!response.ok) {
       const errBody = await response.text();
-      console.error("[generate-roadmap] Claude API error:", response.status, errBody);
-      let detail = `Claude ${response.status}`;
+      console.error("[generate-roadmap] Gemini API error:", response.status, errBody);
+      let detail = `Gemini ${response.status}`;
       try {
         const errJson = JSON.parse(errBody);
         detail = errJson.error?.message || errBody.slice(0, 300);
@@ -96,17 +95,17 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await response.json();
-    const roadmapMarkdown = result.content?.[0]?.text ?? "";
+    const roadmapMarkdown = result.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
     if (!roadmapMarkdown) {
-      console.error("[generate-roadmap] Empty response from Claude:", JSON.stringify(result).slice(0, 500));
-      return NextResponse.json({ error: "Claude returned an empty response. Try again." }, { status: 502 });
+      console.error("[generate-roadmap] Empty Gemini response:", JSON.stringify(result).slice(0, 500));
+      return NextResponse.json({ error: "Gemini returned an empty response. Try again." }, { status: 502 });
     }
 
-    // Track token usage for cost monitoring
+    // Track token usage
     const tokenUsage = {
-      input_tokens: result.usage?.input_tokens ?? 0,
-      output_tokens: result.usage?.output_tokens ?? 0,
+      input_tokens: result.usageMetadata?.promptTokenCount ?? 0,
+      output_tokens: result.usageMetadata?.candidatesTokenCount ?? 0,
       model,
       generated_at: new Date().toISOString(),
     };
@@ -130,7 +129,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: unknown) {
     if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
-      return NextResponse.json({ error: "Claude API timed out (30s). Try again." }, { status: 504 });
+      return NextResponse.json({ error: "Gemini API timed out (60s). Try again." }, { status: 504 });
     }
     console.error("[generate-roadmap] Unexpected error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
