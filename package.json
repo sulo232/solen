@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@internationalized/date": "^3.12.0",
     "@internationalized/number": "^3.6.5",
     "@internationalized/string": "^3.2.7",
@@ -31,6 +32,7 @@
     "motion": "^12.36.0",
     "motion-dom": "12.6.3",
     "motion-utils": "12.6.3",
+    "nanoid": "^5.1.7",
     "next": "^15.3.3",
     "next-intl": "^3.26.5",
     "posthog-js": "^1.360.2",
