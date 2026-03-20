@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, Copy, Download, ChevronDown, ChevronUp, Loader2, Wand2, Trash2, FileText } from "lucide-react";
+import { X, Copy, Check, ChevronDown, ChevronUp, Trash2, Loader2, ClipboardList } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import type { ElementSelectedData } from "./DeviceFrame";
 
@@ -18,6 +18,10 @@ interface EditPanelProps {
 export interface FeatureRequest {
   id: string;
   page_url: string;
+  element_selector: string | null;
+  element_tag: string | null;
+  element_text: string | null;
+  component_hint: string | null;
   description: string;
   priority: string;
   status: string;
@@ -25,6 +29,54 @@ export interface FeatureRequest {
   roadmap_version: number;
   token_usage: { input_tokens: number; output_tokens: number } | null;
   created_at: string;
+}
+
+// Format a single request into a Claude-ready prompt block
+function formatRequestForClaude(r: FeatureRequest): string {
+  const lines: string[] = [];
+  lines.push(`## Change Request: ${r.description.slice(0, 80)}`);
+  lines.push("");
+  lines.push(`**Page**: ${r.page_url}`);
+  if (r.element_tag) lines.push(`**Element(s)**: <${r.element_tag}>`);
+  if (r.element_selector) lines.push(`**Selector**: \`${r.element_selector}\``);
+  if (r.element_text) lines.push(`**Visible text**: "${r.element_text.slice(0, 120)}"`);
+  if (r.component_hint) lines.push(`**Component hint**: ${r.component_hint}`);
+  lines.push(`**Priority**: ${r.priority}`);
+  lines.push("");
+  lines.push(`**Description**: ${r.description}`);
+  return lines.join("\n");
+}
+
+// Format multiple requests into one combined prompt
+function formatMultipleForClaude(requests: FeatureRequest[]): string {
+  const header = `# Feature Requests for solen.ch
+
+Please read CLAUDE.md and _tasks/ folder first, then create a roadmap (following R1-R8 standards) to implement these ${requests.length} change request${requests.length > 1 ? "s" : ""}:
+
+---
+`;
+  const body = requests.map((r, i) => `### Request ${i + 1}\n${formatRequestForClaude(r)}`).join("\n\n---\n\n");
+  const footer = `\n\n---\n\nGenerate a complete roadmap in \`_tasks/roadmap-editor-requests.md\` following CLAUDE.md Section 12 (R1-R8). Include exact file paths, code diffs, risk assessment, and verification steps.`;
+  return header + body + footer;
+}
+
+// Guess which area of the page the element is from based on selector/tag/text
+function guessPageArea(el: ElementSelectedData): string {
+  const s = (el.selector + " " + el.tag + " " + (el.text || "")).toLowerCase();
+  if (s.includes("nav") || s.includes("header") || s.includes("logo")) return "Navigation / Header";
+  if (s.includes("footer")) return "Footer";
+  if (s.includes("hero") || s.includes("banner")) return "Hero Section";
+  if (s.includes("card") || s.includes("salon")) return "Salon Card / Listing";
+  if (s.includes("button") || s.includes("cta") || s.includes("btn")) return "Button / CTA";
+  if (s.includes("form") || s.includes("input") || s.includes("textarea")) return "Form / Input";
+  if (s.includes("sidebar") || s.includes("aside")) return "Sidebar";
+  if (s.includes("modal") || s.includes("dialog")) return "Modal / Dialog";
+  if (s.includes("tab") || s.includes("filter")) return "Tabs / Filters";
+  if (el.tag === "img" || el.tag === "svg") return "Image / Icon";
+  if (el.tag === "h1" || el.tag === "h2" || el.tag === "h3") return "Heading";
+  if (el.tag === "p" || el.tag === "span") return "Text Content";
+  if (el.tag === "a") return "Link";
+  return "Page Element";
 }
 
 export default function EditPanel({
@@ -38,22 +90,19 @@ export default function EditPanel({
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [saving, setSaving] = useState(false);
-  const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [roadmap, setRoadmap] = useState<string | null>(null);
-  const [roadmapVersion, setRoadmapVersion] = useState<number>(0);
-  const [tokenUsage, setTokenUsage] = useState<{ input_tokens: number; output_tokens: number } | null>(null);
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [showHistory, setShowHistory] = useState(true);
-  const [expandedRoadmapId, setExpandedRoadmapId] = useState<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedAll, setCopiedAll] = useState(false);
+  const [selectedRequestIds, setSelectedRequestIds] = useState<Set<string>>(new Set());
 
   // Reset state when elements change
   const selectionKey = selectedElements.map((e) => e.selector).join("|");
   useEffect(() => {
-    setRoadmap(null);
     setError(null);
+    setJustSaved(false);
   }, [selectionKey]);
 
   async function handleSaveRequest() {
@@ -64,7 +113,6 @@ export default function EditPanel({
     setError(null);
     setSaving(true);
     try {
-      // Combine all selected elements into the payload
       const selectors = selectedElements.map((e) => e.selector).join(" ; ");
       const tags = selectedElements.map((e) => e.tag).join(", ");
       const texts = selectedElements.map((e) => e.text).filter(Boolean).join(" | ");
@@ -80,63 +128,25 @@ export default function EditPanel({
         priority,
       };
 
-      let res: Response;
-      try {
-        res = await fetch("/api/admin/feature-requests", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } catch (fetchErr: unknown) {
-        const msg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
-        throw new Error(`[fetch] ${msg}`);
-      }
-
-      let data;
-      try {
-        data = await res.json();
-      } catch (jsonErr: unknown) {
-        const text = await res.clone().text().catch(() => "(unreadable)");
-        throw new Error(`[json parse] status=${res.status}, body=${text.slice(0, 200)}`);
-      }
-
-      if (!res.ok) throw new Error(data.error || data.message || "Failed to save");
-      setDescription("");
-      onRequestsUpdate();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to save request. Try again.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleGenerateRoadmap(requestId: string) {
-    setError(null);
-    setGeneratingId(requestId);
-
-    // Cancel previous generation
-    if (abortRef.current) abortRef.current.abort();
-    abortRef.current = new AbortController();
-
-    try {
-      const res = await fetch("/api/admin/generate-roadmap", {
+      const res = await fetch("/api/admin/feature-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId }),
-        signal: abortRef.current.signal,
+        body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Roadmap generation failed");
-      setRoadmap(data.roadmap);
-      setRoadmapVersion(data.version);
-      setTokenUsage(data.tokenUsage);
-      setExpandedRoadmapId(requestId);
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || data.message || "Failed to save");
+      }
+
+      setDescription("");
+      setJustSaved(true);
       onRequestsUpdate();
+      setTimeout(() => setJustSaved(false), 3000);
     } catch (err: unknown) {
-      if (err instanceof Error && err.name === "AbortError") return;
-      setError(err instanceof Error ? err.message : "Roadmap generation failed.");
+      setError(err instanceof Error ? err.message : "Failed to save request.");
     } finally {
-      setGeneratingId(null);
+      setSaving(false);
     }
   }
 
@@ -149,31 +159,55 @@ export default function EditPanel({
         const data = await res.json();
         throw new Error(data.error || "Failed to delete");
       }
+      setSelectedRequestIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
       onRequestsUpdate();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to delete request.");
+      setError(err instanceof Error ? err.message : "Failed to delete.");
     } finally {
       setDeletingId(null);
     }
   }
 
-  function handleCopyRoadmap() {
-    if (roadmap) navigator.clipboard.writeText(roadmap);
+  function handleCopySingle(r: FeatureRequest) {
+    const text = formatMultipleForClaude([r]);
+    navigator.clipboard.writeText(text);
+    setCopiedId(r.id);
+    setTimeout(() => setCopiedId(null), 2000);
   }
 
-  function handleDownloadRoadmap() {
-    if (!roadmap) return;
-    const slug = pageUrl.replace(/\//g, "-").replace(/^-/, "");
-    const blob = new Blob([roadmap], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `roadmap-editor${slug}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+  function handleCopySelected() {
+    const selected = requests.filter((r) => selectedRequestIds.has(r.id));
+    if (selected.length === 0) return;
+    const text = formatMultipleForClaude(selected);
+    navigator.clipboard.writeText(text);
+    setCopiedAll(true);
+    setTimeout(() => setCopiedAll(false), 2000);
+  }
+
+  function handleCopyAllPending() {
+    const pending = requests.filter((r) => r.status === "pending");
+    if (pending.length === 0) return;
+    const text = formatMultipleForClaude(pending);
+    navigator.clipboard.writeText(text);
+    setCopiedAll(true);
+    setTimeout(() => setCopiedAll(false), 2000);
+  }
+
+  function toggleRequestSelection(id: string) {
+    setSelectedRequestIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   }
 
   const pageRequests = requests.filter((r) => r.page_url === pageUrl);
+  const pendingCount = requests.filter((r) => r.status === "pending").length;
 
   return (
     <motion.aside
@@ -194,7 +228,7 @@ export default function EditPanel({
           </button>
         </div>
 
-        {/* Selected Elements or No Selection */}
+        {/* Selected Elements with area info */}
         {selectedElements.length > 0 ? (
           <div className="space-y-1.5">
             <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
@@ -203,11 +237,19 @@ export default function EditPanel({
             {selectedElements.map((el) => (
               <div key={el.selector} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-card p-2 flex items-start gap-2">
                 <div className="flex-1 min-w-0 space-y-0.5">
-                  <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-mono">
-                    &lt;{el.tag}&gt;
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">
+                      {guessPageArea(el)}
+                    </span>
+                    <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-mono">
+                      &lt;{el.tag}&gt;
+                    </span>
+                  </div>
                   <p className="text-[10px] text-s-ink/70 dark:text-s-dm-text/70 truncate">
-                    {el.text || "(no text)"}
+                    {el.text || "(no visible text)"}
+                  </p>
+                  <p className="text-[9px] text-s-ink/30 dark:text-s-dm-text/30 font-mono truncate">
+                    {el.selector.length > 60 ? "..." + el.selector.slice(-57) : el.selector}
                   </p>
                 </div>
                 <button
@@ -219,6 +261,10 @@ export default function EditPanel({
                 </button>
               </div>
             ))}
+            {/* Page context */}
+            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-mono">
+              Page: {pageUrl}
+            </p>
           </div>
         ) : (
           <div className="bg-s-blue/5 dark:bg-s-blue/10 rounded-card p-3 space-y-1">
@@ -281,53 +327,57 @@ export default function EditPanel({
         <button
           onClick={handleSaveRequest}
           disabled={saving || !description.trim()}
-          className="w-full bg-s-coral text-white rounded-button px-4 py-2 text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className={`w-full rounded-button px-4 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+            justSaved
+              ? "bg-green-500 text-white"
+              : "bg-s-coral text-white hover:bg-s-coral-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          }`}
         >
-          {saving ? <Spinner size="sm" invert /> : null}
-          {saving ? "Saving..." : "Save Request"}
+          {saving ? <Spinner size="sm" invert /> : justSaved ? <Check size={16} /> : null}
+          {saving ? "Saving..." : justSaved ? "Saved! Copy below to use with Claude" : "Save Request"}
         </button>
 
-        {/* Preview Prompt (collapsible) */}
-        {selectedElements.length > 0 && (
-          <button
-            onClick={() => setShowPrompt(!showPrompt)}
-            className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
-          >
-            {showPrompt ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-            Preview Prompt
-          </button>
-        )}
-        {showPrompt && selectedElements.length > 0 && (
-          <pre className="text-[10px] leading-tight bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 overflow-auto max-h-40 text-s-ink/60 dark:text-s-dm-text/60 whitespace-pre-wrap">
-            {`Page: ${pageUrl}\nElements (${selectedElements.length}):\n${selectedElements.map((el) => `  <${el.tag}> "${el.text?.slice(0, 60) || "(no text)"}"`).join("\n")}\n\nDescription: "${description}"\nPriority: ${priority}`}
-          </pre>
-        )}
-
-        {/* Inline generated roadmap */}
-        {roadmap && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <h4 className="text-xs font-medium text-s-ink dark:text-s-dm-text">
-                Generated Roadmap (v{roadmapVersion})
-              </h4>
-              <div className="flex gap-1">
-                <button onClick={handleCopyRoadmap} className="p-1 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg" title="Copy">
-                  <Copy size={12} className="text-s-ink/50 dark:text-s-dm-text/50" />
-                </button>
-                <button onClick={handleDownloadRoadmap} className="p-1 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg" title="Download">
-                  <Download size={12} className="text-s-ink/50 dark:text-s-dm-text/50" />
-                </button>
-              </div>
-            </div>
-            <pre className="text-xs leading-relaxed bg-s-bg-sunken dark:bg-s-dm-bg rounded-card p-3 overflow-auto max-h-[50vh] text-s-ink dark:text-s-dm-text whitespace-pre-wrap border border-s-ink/5 dark:border-s-dm-text/10">
-              {roadmap}
-            </pre>
-            {tokenUsage && (
-              <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
-                Tokens: {tokenUsage.input_tokens} in / {tokenUsage.output_tokens} out
-                {" "}≈ ${((tokenUsage.input_tokens * 0.003 + tokenUsage.output_tokens * 0.015) / 1000).toFixed(3)}
+        {/* Copy Actions for Claude */}
+        {requests.length > 0 && (
+          <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-card p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
+            <div className="flex items-center gap-1.5">
+              <ClipboardList size={14} className="text-s-coral" />
+              <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">
+                Copy for Claude Code
               </p>
-            )}
+            </div>
+            <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+              Copy requests and paste into Claude Code to generate a roadmap.
+            </p>
+
+            <div className="flex gap-1.5">
+              {pendingCount > 0 && (
+                <button
+                  onClick={handleCopyAllPending}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                    copiedAll
+                      ? "bg-green-500 text-white"
+                      : "bg-s-coral text-white hover:bg-s-coral-hover"
+                  }`}
+                >
+                  {copiedAll ? <Check size={12} /> : <Copy size={12} />}
+                  {copiedAll ? "Copied!" : `Copy All Pending (${pendingCount})`}
+                </button>
+              )}
+              {selectedRequestIds.size > 0 && (
+                <button
+                  onClick={handleCopySelected}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                    copiedAll
+                      ? "bg-green-500 text-white"
+                      : "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg hover:bg-s-ink/80 dark:hover:bg-s-dm-text/80"
+                  }`}
+                >
+                  {copiedAll ? <Check size={12} /> : <Copy size={12} />}
+                  {copiedAll ? "Copied!" : `Copy Selected (${selectedRequestIds.size})`}
+                </button>
+              )}
+            </div>
           </div>
         )}
 
@@ -344,48 +394,59 @@ export default function EditPanel({
             <div className="mt-2 space-y-2">
               {pageRequests.map((r) => (
                 <div key={r.id} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 space-y-1.5">
-                  <div className="flex items-center justify-between">
+                  {/* Checkbox + status + date row */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedRequestIds.has(r.id)}
+                      onChange={() => toggleRequestSelection(r.id)}
+                      className="rounded border-s-ink/20 dark:border-s-dm-text/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5"
+                    />
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
                       r.status === "roadmap_generated" ? "bg-s-blue/10 text-s-blue" :
-                      "bg-s-amber-subtle text-s-amber-text"
+                      r.status === "in_progress" ? "bg-s-amber-subtle text-s-amber-text" :
+                      "bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/50 dark:text-s-dm-text/50"
                     }`}>
                       {r.status.replace(/_/g, " ")}
                     </span>
-                    <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
+                      r.priority === "high" ? "bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400" :
+                      r.priority === "medium" ? "bg-s-amber-subtle text-s-amber-text" :
+                      "bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/40 dark:text-s-dm-text/40"
+                    }`}>
+                      {r.priority}
+                    </span>
+                    <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 ml-auto">
                       {new Date(r.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70 line-clamp-2">{r.description}</p>
 
-                  {/* Action buttons per request */}
-                  <div className="flex items-center gap-1 pt-0.5">
-                    {/* Generate Roadmap */}
+                  {/* Description */}
+                  <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70 line-clamp-2 pl-5.5">{r.description}</p>
+
+                  {/* Element info */}
+                  {r.element_tag && (
+                    <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 font-mono pl-5.5 truncate">
+                      &lt;{r.element_tag}&gt; {r.element_text ? `"${r.element_text.slice(0, 40)}"` : ""}
+                    </p>
+                  )}
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-1 pl-5.5">
+                    {/* Copy for Claude */}
                     <button
-                      onClick={() => handleGenerateRoadmap(r.id)}
-                      disabled={generatingId === r.id}
-                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/10 dark:hover:bg-s-dm-text/10 transition-colors disabled:opacity-50"
-                      title={r.generated_roadmap ? "Regenerate roadmap" : "Generate roadmap"}
+                      onClick={() => handleCopySingle(r)}
+                      className={`flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button transition-colors ${
+                        copiedId === r.id
+                          ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                          : "bg-s-coral/10 text-s-coral hover:bg-s-coral/20"
+                      }`}
+                      title="Copy this request formatted for Claude Code"
                     >
-                      {generatingId === r.id ? (
-                        <Loader2 size={10} className="animate-spin" />
-                      ) : (
-                        <Wand2 size={10} />
-                      )}
-                      {generatingId === r.id ? "Generating..." : r.generated_roadmap ? "Regenerate" : "Roadmap"}
+                      {copiedId === r.id ? <Check size={10} /> : <Copy size={10} />}
+                      {copiedId === r.id ? "Copied!" : "Copy for Claude"}
                     </button>
-
-                    {/* View existing roadmap */}
-                    {r.generated_roadmap && (
-                      <button
-                        onClick={() => setExpandedRoadmapId(expandedRoadmapId === r.id ? null : r.id)}
-                        className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button bg-s-blue/10 text-s-blue hover:bg-s-blue/20 transition-colors"
-                        title="View roadmap"
-                      >
-                        <FileText size={10} />
-                        View
-                      </button>
-                    )}
 
                     {/* Delete */}
                     <button
@@ -401,13 +462,6 @@ export default function EditPanel({
                       )}
                     </button>
                   </div>
-
-                  {/* Expanded roadmap view */}
-                  {expandedRoadmapId === r.id && r.generated_roadmap && (
-                    <pre className="text-[10px] leading-relaxed bg-white dark:bg-s-dm-surface rounded-button p-2 overflow-auto max-h-60 text-s-ink dark:text-s-dm-text whitespace-pre-wrap border border-s-ink/5 dark:border-s-dm-text/10 mt-1">
-                      {r.generated_roadmap}
-                    </pre>
-                  )}
                 </div>
               ))}
             </div>

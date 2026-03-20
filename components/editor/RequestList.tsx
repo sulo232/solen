@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Download, ChevronDown, ChevronUp, Wand2, Trash2, Loader2, RotateCcw } from "lucide-react";
+import { Copy, Check, ChevronDown, ChevronUp, Trash2, Loader2, ClipboardList } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import type { FeatureRequest } from "./EditPanel";
 
@@ -12,20 +12,46 @@ interface RequestListProps {
   onLoadMore: () => void;
   onStatusUpdate: (id: string, status: string) => void;
   onDelete: (id: string) => void;
-  onGenerateRoadmap: (id: string) => void;
-  generatingId: string | null;
   deletingId: string | null;
 }
 
-const STATUS_TABS = ["all", "pending", "roadmap_generated", "in_progress", "done"] as const;
+const STATUS_TABS = ["all", "pending", "in_progress", "done"] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   all: "All",
   pending: "Pending",
-  roadmap_generated: "Roadmap Generated",
   in_progress: "In Progress",
   done: "Done",
 };
+
+// Format a single request into a Claude-ready prompt block
+function formatRequestForClaude(r: FeatureRequest): string {
+  const lines: string[] = [];
+  lines.push(`## Change Request: ${r.description.slice(0, 80)}`);
+  lines.push("");
+  lines.push(`**Page**: ${r.page_url}`);
+  if (r.element_tag) lines.push(`**Element(s)**: <${r.element_tag}>`);
+  if (r.element_selector) lines.push(`**Selector**: \`${r.element_selector}\``);
+  if (r.element_text) lines.push(`**Visible text**: "${r.element_text.slice(0, 120)}"`);
+  if (r.component_hint) lines.push(`**Component hint**: ${r.component_hint}`);
+  lines.push(`**Priority**: ${r.priority}`);
+  lines.push("");
+  lines.push(`**Description**: ${r.description}`);
+  return lines.join("\n");
+}
+
+// Format multiple requests into one combined prompt
+function formatMultipleForClaude(requests: FeatureRequest[]): string {
+  const header = `# Feature Requests for solen.ch
+
+Please read CLAUDE.md and _tasks/ folder first, then create a roadmap (following R1-R8 standards) to implement these ${requests.length} change request${requests.length > 1 ? "s" : ""}:
+
+---
+`;
+  const body = requests.map((r, i) => `### Request ${i + 1}\n${formatRequestForClaude(r)}`).join("\n\n---\n\n");
+  const footer = `\n\n---\n\nGenerate a complete roadmap in \`_tasks/roadmap-editor-requests.md\` following CLAUDE.md Section 12 (R1-R8). Include exact file paths, code diffs, risk assessment, and verification steps.`;
+  return header + body + footer;
+}
 
 export default function RequestList({
   requests,
@@ -34,35 +60,48 @@ export default function RequestList({
   onLoadMore,
   onStatusUpdate,
   onDelete,
-  onGenerateRoadmap,
-  generatingId,
   deletingId,
 }: RequestListProps) {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedAll, setCopiedAll] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const filtered = activeTab === "all" ? requests : requests.filter((r) => r.status === activeTab);
 
-  // Cumulative cost
-  const totalCost = requests.reduce((acc, r) => {
-    if (!r.token_usage) return acc;
-    return acc + (r.token_usage.input_tokens * 0.003 + r.token_usage.output_tokens * 0.015) / 1000;
-  }, 0);
-
-  function handleCopy(text: string) {
-    navigator.clipboard.writeText(text);
+  function handleCopySingle(r: FeatureRequest) {
+    navigator.clipboard.writeText(formatMultipleForClaude([r]));
+    setCopiedId(r.id);
+    setTimeout(() => setCopiedId(null), 2000);
   }
 
-  function handleDownload(roadmap: string, pageUrl: string) {
-    const slug = pageUrl.replace(/\//g, "-").replace(/^-/, "");
-    const blob = new Blob([roadmap], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `roadmap-editor${slug}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+  function handleCopySelected() {
+    const selected = requests.filter((r) => selectedIds.has(r.id));
+    if (selected.length === 0) return;
+    navigator.clipboard.writeText(formatMultipleForClaude(selected));
+    setCopiedAll(true);
+    setTimeout(() => setCopiedAll(false), 2000);
   }
+
+  function handleCopyAllPending() {
+    const pending = requests.filter((r) => r.status === "pending");
+    if (pending.length === 0) return;
+    navigator.clipboard.writeText(formatMultipleForClaude(pending));
+    setCopiedAll(true);
+    setTimeout(() => setCopiedAll(false), 2000);
+  }
+
+  function toggleSelection(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  const pendingCount = requests.filter((r) => r.status === "pending").length;
 
   return (
     <div className="space-y-3">
@@ -83,11 +122,47 @@ export default function RequestList({
         ))}
       </div>
 
-      {/* Cumulative cost */}
-      {totalCost > 0 && (
-        <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
-          Total API cost: ${totalCost.toFixed(3)} ({requests.filter((r) => r.token_usage).length} generations)
-        </p>
+      {/* Copy for Claude section */}
+      {requests.length > 0 && (
+        <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-card p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
+          <div className="flex items-center gap-1.5">
+            <ClipboardList size={14} className="text-s-coral" />
+            <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">
+              Copy for Claude Code
+            </p>
+          </div>
+          <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+            Select requests with checkboxes, then copy and paste into Claude Code.
+          </p>
+          <div className="flex gap-1.5 flex-wrap">
+            {pendingCount > 0 && (
+              <button
+                onClick={handleCopyAllPending}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                  copiedAll
+                    ? "bg-green-500 text-white"
+                    : "bg-s-coral text-white hover:bg-s-coral-hover"
+                }`}
+              >
+                {copiedAll ? <Check size={12} /> : <Copy size={12} />}
+                {copiedAll ? "Copied!" : `Copy All Pending (${pendingCount})`}
+              </button>
+            )}
+            {selectedIds.size > 0 && (
+              <button
+                onClick={handleCopySelected}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                  copiedAll
+                    ? "bg-green-500 text-white"
+                    : "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg hover:bg-s-ink/80 dark:hover:bg-s-dm-text/80"
+                }`}
+              >
+                {copiedAll ? <Check size={12} /> : <Copy size={12} />}
+                {copiedAll ? "Copied!" : `Copy Selected (${selectedIds.size})`}
+              </button>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Request cards */}
@@ -103,7 +178,14 @@ export default function RequestList({
               className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-s-dm-text/10 shadow-card overflow-hidden"
             >
               <div className="p-3 space-y-2">
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2">
+                  {/* Checkbox */}
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(r.id)}
+                    onChange={() => toggleSelection(r.id)}
+                    className="mt-1 rounded border-s-ink/20 dark:border-s-dm-text/20 text-s-coral focus:ring-s-coral/30 w-3.5 h-3.5 flex-shrink-0"
+                  />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-mono text-s-ink/50 dark:text-s-dm-text/50 truncate">
                       {r.page_url}
@@ -111,11 +193,15 @@ export default function RequestList({
                     <p className="text-sm text-s-ink dark:text-s-dm-text mt-0.5 line-clamp-2">
                       {r.description}
                     </p>
+                    {r.element_tag && (
+                      <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 font-mono mt-0.5 truncate">
+                        &lt;{r.element_tag}&gt; {r.element_text ? `"${r.element_text.slice(0, 50)}"` : ""}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-pill font-medium ${
                       r.status === "done" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
-                      r.status === "roadmap_generated" ? "bg-s-blue/10 text-s-blue" :
                       r.status === "in_progress" ? "bg-s-amber-subtle text-s-amber-text" :
                       "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/50 dark:text-s-dm-text/50"
                     }`}>
@@ -131,27 +217,21 @@ export default function RequestList({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 pl-5.5">
                   <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
                     {new Date(r.created_at).toLocaleString()}
                   </span>
-                  {r.token_usage && (
-                    <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
-                      ≈ ${((r.token_usage.input_tokens * 0.003 + r.token_usage.output_tokens * 0.015) / 1000).toFixed(3)}
-                    </span>
-                  )}
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex gap-1 flex-wrap items-center">
+                <div className="flex gap-1 flex-wrap items-center pl-5.5">
                   {/* Status buttons */}
                   {r.status !== "pending" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "pending")}
-                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center gap-1"
+                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
                     >
-                      <RotateCcw size={9} />
-                      Reset to Pending
+                      Reset
                     </button>
                   )}
                   {r.status !== "in_progress" && r.status !== "done" && (
@@ -171,14 +251,26 @@ export default function RequestList({
                     </button>
                   )}
 
-                  {/* Generate roadmap */}
+                  {/* Copy for Claude */}
                   <button
-                    onClick={() => onGenerateRoadmap(r.id)}
-                    disabled={generatingId === r.id}
-                    className="text-[10px] px-2 py-0.5 rounded-button bg-s-blue/10 text-s-blue hover:bg-s-blue/20 transition-colors flex items-center gap-1 disabled:opacity-50"
+                    onClick={() => handleCopySingle(r)}
+                    className={`text-[10px] px-2 py-0.5 rounded-button flex items-center gap-1 transition-colors ${
+                      copiedId === r.id
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                        : "bg-s-coral/10 text-s-coral hover:bg-s-coral/20"
+                    }`}
                   >
-                    {generatingId === r.id ? <Loader2 size={9} className="animate-spin" /> : <Wand2 size={9} />}
-                    {generatingId === r.id ? "Generating..." : r.generated_roadmap ? "Regenerate" : "Roadmap"}
+                    {copiedId === r.id ? <Check size={9} /> : <Copy size={9} />}
+                    {copiedId === r.id ? "Copied!" : "Copy for Claude"}
+                  </button>
+
+                  {/* Expand details */}
+                  <button
+                    onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
+                    className="text-[10px] px-2 py-0.5 rounded-button bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center gap-1"
+                  >
+                    {expandedId === r.id ? <ChevronUp size={9} /> : <ChevronDown size={9} />}
+                    Details
                   </button>
 
                   {/* Delete */}
@@ -192,32 +284,28 @@ export default function RequestList({
                   </button>
                 </div>
 
-                {/* Expand roadmap */}
-                {r.generated_roadmap && (
-                  <>
-                    <button
-                      onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                      className="flex items-center gap-1 text-xs text-s-blue hover:text-s-blue/80 transition-colors"
-                    >
-                      {expandedId === r.id ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                      Roadmap v{r.roadmap_version}
-                    </button>
-                    {expandedId === r.id && (
-                      <div className="space-y-1">
-                        <div className="flex gap-1">
-                          <button onClick={() => handleCopy(r.generated_roadmap!)} className="p-1 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg" title="Copy">
-                            <Copy size={12} className="text-s-ink/40 dark:text-s-dm-text/40" />
-                          </button>
-                          <button onClick={() => handleDownload(r.generated_roadmap!, r.page_url)} className="p-1 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg" title="Download">
-                            <Download size={12} className="text-s-ink/40 dark:text-s-dm-text/40" />
-                          </button>
-                        </div>
-                        <pre className="text-xs bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 overflow-auto max-h-60 text-s-ink dark:text-s-dm-text whitespace-pre-wrap">
-                          {r.generated_roadmap}
-                        </pre>
+                {/* Expanded details - shows selector, element info, and Claude prompt preview */}
+                {expandedId === r.id && (
+                  <div className="space-y-2 pl-5.5 pt-1 border-t border-s-ink/5 dark:border-s-dm-text/5 mt-1">
+                    {r.element_selector && (
+                      <div>
+                        <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50">Selector</p>
+                        <p className="text-[10px] font-mono text-s-ink/40 dark:text-s-dm-text/40 break-all">{r.element_selector}</p>
                       </div>
                     )}
-                  </>
+                    {r.component_hint && (
+                      <div>
+                        <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50">Component</p>
+                        <p className="text-[10px] font-mono text-s-ink/40 dark:text-s-dm-text/40">{r.component_hint}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Claude Prompt Preview</p>
+                      <pre className="text-[10px] bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 overflow-auto max-h-40 text-s-ink/60 dark:text-s-dm-text/60 whitespace-pre-wrap">
+                        {formatRequestForClaude(r)}
+                      </pre>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
