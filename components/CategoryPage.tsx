@@ -12,6 +12,7 @@ import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
+import BlobBackground from "@/components/ui/BlobBackground";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
 
@@ -30,7 +31,7 @@ const categoryLabels: Record<SalonCategory, string> = {
 
 const categoryGradients: Record<SalonCategory, string> = {
   coiffeur: "from-s-coral/10 via-white to-transparent",
-  barbershop: "from-dark/5 via-white to-transparent",
+  barbershop: "from-s-ink/5 via-white to-transparent",
   nails: "from-s-coral/8 via-white to-transparent",
   spa: "from-s-coral/8 via-white to-transparent",
   makeup: "from-s-coral/10 via-white to-transparent",
@@ -57,7 +58,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-card bg-s-bg-surface border border-s-ink/5 overflow-hidden hover:border-s-coral/20 hover:shadow-card transition-all duration-200 opacity-80"
+      className="rounded-blob-d hover:rounded-blob-b blob-interactive bg-white dark:bg-s-dm-surface border border-s-ink/5 overflow-hidden hover:border-s-coral/20 hover:shadow-card transition-all opacity-80"
     >
       <div className="h-36 bg-s-bg-sunken relative overflow-hidden">
         {entry.photo_url ? (
@@ -85,12 +86,12 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
         )}
         <div className="flex items-center gap-1.5 mt-3 flex-wrap">
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-s-ink/5 text-xs text-s-ink/70 hover:bg-s-bg-sunken font-body transition-colors">
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
               <Phone className="w-3 h-3" />Anrufen
             </a>
           )}
           {entry.website && (
-            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white border border-s-ink/5 text-xs text-s-ink/70 hover:bg-s-bg-sunken font-body transition-colors">
+            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
               <Globe className="w-3 h-3" />Website
             </a>
           )}
@@ -196,10 +197,12 @@ export default function CategoryPage({ category }: CategoryPageProps) {
   const gradient = categoryGradients[category];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-s-bg-base relative overflow-x-hidden">
+      <BlobBackground zone={2} />
       {/* Mesh gradient hero */}
-      <div className={`bg-gradient-to-b ${gradient} pt-24 pb-6`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className={`pt-28 pb-10 relative z-10`}>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <nav className="text-xs text-s-ink/40 mb-2 font-body flex items-center gap-1">
             <span>{locale === "de" ? "Startseite" : "Home"}</span>
             <ChevronRight className="w-3 h-3" />
@@ -294,7 +297,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             <AnimatePresence>
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
-                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-s-ink hover:border-s-coral hover:shadow-warm-sm transition-all disabled:opacity-50">
+                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral hover:shadow-warm-sm transition-all disabled:opacity-50">
                     {loadingMore ? <Spinner size="sm" /> : null}
                     {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
                   </button>
@@ -306,7 +309,7 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             <AnimatePresence>
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
-                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white border border-s-ink/10 text-sm font-body font-medium text-s-ink hover:border-s-ink/20 transition-colors disabled:opacity-50">
+                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-ink/20 transition-colors disabled:opacity-50">
                     {dirLoadingMore ? <Spinner size="sm" /> : null}
                     {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
                   </button>

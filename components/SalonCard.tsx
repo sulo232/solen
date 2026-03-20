@@ -56,7 +56,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         href={href}
         className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-card hover:shadow-card-hover transition-shadow"
       >
-        <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-s-bg-sunken">
+        <div className="relative w-16 h-16 rounded-button overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
             <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" loading="lazy" />
           )}
@@ -81,13 +81,14 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       whileHover={
         typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
           ? {}
-          : { y: -4, borderRadius: "32% 68% 60% 40% / 50% 40% 60% 50%", boxShadow: "0 12px 32px rgba(26,18,9,0.10)" }
+          : { y: -4, borderRadius: "60% 40% 45% 55% / 50% 60% 40% 50%", boxShadow: "0 12px 32px rgba(26,18,9,0.10)" }
       }
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
-      className={`will-change-transform ${solenTier === "gold" ? "ring-2 ring-yellow-400/50 rounded-card" : ""}`}
+      style={{ borderRadius: "40% 60% 55% 45% / 30% 30% 70% 70%" }}
+      className={`will-change-transform ${solenTier === "gold" ? "ring-2 ring-yellow-400/50" : ""}`}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
-      <Link href={href} className="block rounded-card bg-white dark:bg-s-dm-surface shadow-card overflow-hidden group hover:shadow-lg transition-all duration-200">
+      <Link href={href} className="block w-full h-full rounded-[inherit] bg-white dark:bg-s-dm-surface shadow-card overflow-hidden group hover:shadow-lg transition-all duration-200">
         {/* Cover photo */}
         <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden">
           {salon.cover_photo_url ? (
