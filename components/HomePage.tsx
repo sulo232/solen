@@ -24,6 +24,7 @@ import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
 import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
+import BlobBackground from "@/components/ui/BlobBackground";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import WeatherBanner from "@/components/WeatherBanner";
 import ReviewCarousel from "@/components/ReviewCarousel";
@@ -195,14 +196,11 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-s-bg-base overflow-x-hidden">
+    <div className="min-h-screen bg-transparent relative overflow-x-hidden">
+      <BlobBackground zone={1} />
 
-      {/* ── Hero with background blobs ─────────────────────────────────────── */}
+      {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden py-20 sm:py-28">
-        {/* Decorative blobs */}
-        <div className="absolute -top-32 -right-32 w-[400px] h-[400px] rounded-full bg-s-coral/15 blur-3xl pointer-events-none animate-blob-float" />
-        <div className="absolute -bottom-24 -left-24 w-[300px] h-[300px] rounded-full bg-s-amber/10 blur-3xl pointer-events-none animate-blob-float-delayed" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-s-blue/5 blur-3xl pointer-events-none animate-blob-float" />
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <motion.div
@@ -252,7 +250,7 @@ export default function HomePage() {
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
+                className="flex flex-col items-center gap-2 p-4 rounded-card bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 hover:border-s-coral/40 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 active:scale-95 group"
               >
                 <Icon
                   size={32}
@@ -397,8 +395,8 @@ export default function HomePage() {
       )}
 
       {/* ── Last-Minute Section ────────────────────────────────────────────── */}
-      <section className="py-10">
-        <div className="max-w-5xl mx-auto px-4">
+      <section className="py-12 my-10 bg-s-coral-subtle/40 dark:bg-s-coral-subtle/5 border-y border-s-coral/10 rounded-blob-e mx-2 sm:mx-6 overflow-hidden relative">
+        <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-1">
               <Clock size={20} className="text-s-coral" />
@@ -429,7 +427,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-2xl bg-gradient-to-r from-s-coral/5 to-s-coral/10 border border-s-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
+              className="rounded-card bg-gradient-to-r from-s-coral/5 to-s-coral/10 border border-s-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-5"
             >
               <div className="flex-1">
                 <p
@@ -495,14 +493,14 @@ export default function HomePage() {
                 >
                   <Link
                     href={`/${locale}/coiffeur?quartier=${slug}`}
-                    className="block w-[200px] h-[250px] rounded-2xl overflow-hidden relative group hover:shadow-warm-md hover:scale-[1.02] transition-all duration-300"
+                    className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-warm-md hover:scale-[1.02] transition-all duration-300"
                   >
                     {qImage ? (
                       <Image src={qImage} alt={name} fill className="object-cover" loading="lazy" />
                     ) : (
                       <div className={`absolute inset-0 bg-gradient-to-br ${bg}`} />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-s-ink/70 via-transparent to-transparent" />
                     <div className="absolute bottom-4 left-4 right-4">
                       <p
                         className="font-heading font-bold text-white text-base leading-tight"
@@ -524,6 +522,42 @@ export default function HomePage() {
                 </motion.div>
               );
             })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Partner Banner ─────────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="rounded-blob-c bg-s-ink text-s-bg-base overflow-hidden relative shadow-warm-float"
+          >
+            {/* Inner background blobs for the banner */}
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-s-blue/20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-s-coral/20 rounded-[70%_30%_50%_50%/40%_60%_40%_60%] blur-3xl transform -translate-x-1/3 translate-y-1/3" />
+            
+            <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+              <div className="max-w-xl">
+                <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl mb-4 leading-tight text-white">
+                  Sie haben einen Friseur- oder Schönheitssalon?
+                </h2>
+                <p className="font-body text-s-bg-base/80 text-lg sm:text-xl">
+                  Bringen Sie Ihr Geschäft auf das nächste Level. Schließen Sie sich Solen an und erreichen Sie Tausende von Kunden in ganz Basel.
+                </p>
+              </div>
+              <div className="shrink-0 pt-4 md:pt-0">
+                <Link
+                  href={`/${locale}/partner`}
+                  className="inline-flex items-center justify-center px-10 py-5 bg-s-coral text-white font-heading font-bold tracking-wide rounded-blob-a blob-interactive hover:bg-s-coral-hover text-lg shadow-coral-glow transition-all"
+                >
+                  Partner werden
+                </Link>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
