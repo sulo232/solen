@@ -7,7 +7,8 @@ import Spinner from "@/components/ui/Spinner";
 import type { ElementSelectedData } from "./DeviceFrame";
 
 interface EditPanelProps {
-  selectedElement: ElementSelectedData | null;
+  selectedElements: ElementSelectedData[];
+  onRemoveElement: (selector: string) => void;
   pageUrl: string;
   onClose: () => void;
   requests: FeatureRequest[];
@@ -27,7 +28,8 @@ export interface FeatureRequest {
 }
 
 export default function EditPanel({
-  selectedElement,
+  selectedElements,
+  onRemoveElement,
   pageUrl,
   onClose,
   requests,
@@ -47,12 +49,12 @@ export default function EditPanel({
   const [expandedRoadmapId, setExpandedRoadmapId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Reset state when element changes
+  // Reset state when elements change
+  const selectionKey = selectedElements.map((e) => e.selector).join("|");
   useEffect(() => {
-    setDescription("");
     setRoadmap(null);
     setError(null);
-  }, [selectedElement?.selector]);
+  }, [selectionKey]);
 
   async function handleSaveRequest() {
     if (!description.trim() || description.length < 5) {
@@ -62,11 +64,17 @@ export default function EditPanel({
     setError(null);
     setSaving(true);
     try {
+      // Combine all selected elements into the payload
+      const selectors = selectedElements.map((e) => e.selector).join(" ; ");
+      const tags = selectedElements.map((e) => e.tag).join(", ");
+      const texts = selectedElements.map((e) => e.text).filter(Boolean).join(" | ");
+      const hint = selectedElements.find((e) => e.componentHint)?.componentHint ?? null;
+
       const payload = {
-        element_selector: selectedElement?.selector ?? null,
-        element_tag: selectedElement?.tag ?? null,
-        element_text: selectedElement?.text ?? null,
-        component_hint: selectedElement?.componentHint ?? null,
+        element_selector: selectors || null,
+        element_tag: tags || null,
+        element_text: texts || null,
+        component_hint: hint,
         page_url: pageUrl,
         description,
         priority,
@@ -186,21 +194,31 @@ export default function EditPanel({
           </button>
         </div>
 
-        {/* Element Info or No Selection */}
-        {selectedElement ? (
-          <div className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-card p-3 space-y-1">
-            <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-mono">
-              &lt;{selectedElement.tag}&gt;
+        {/* Selected Elements or No Selection */}
+        {selectedElements.length > 0 ? (
+          <div className="space-y-1.5">
+            <p className="text-[10px] text-s-ink/50 dark:text-s-dm-text/50">
+              {selectedElements.length} element{selectedElements.length > 1 ? "s" : ""} selected — click more in preview to add
             </p>
-            <p className="text-xs text-s-ink/80 dark:text-s-dm-text/80 truncate">
-              {selectedElement.text || "(no text)"}
-            </p>
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 font-mono truncate">
-              {selectedElement.selector}
-            </p>
-            <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
-              Component: {selectedElement.componentHint || "Unknown — type manually below"}
-            </p>
+            {selectedElements.map((el) => (
+              <div key={el.selector} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-card p-2 flex items-start gap-2">
+                <div className="flex-1 min-w-0 space-y-0.5">
+                  <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-mono">
+                    &lt;{el.tag}&gt;
+                  </p>
+                  <p className="text-[10px] text-s-ink/70 dark:text-s-dm-text/70 truncate">
+                    {el.text || "(no text)"}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onRemoveElement(el.selector)}
+                  className="p-0.5 rounded hover:bg-s-ink/10 dark:hover:bg-s-dm-text/10 transition-colors flex-shrink-0"
+                  title="Remove selection"
+                >
+                  <X size={12} className="text-s-ink/40 dark:text-s-dm-text/40" />
+                </button>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="bg-s-blue/5 dark:bg-s-blue/10 rounded-card p-3 space-y-1">
@@ -224,7 +242,7 @@ export default function EditPanel({
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder={selectedElement ? "Describe the change you want..." : "Describe what you want changed on this page..."}
+            placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
             className="w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded-button border border-s-ink/10 dark:border-s-dm-text/10 p-3 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
           />
@@ -270,7 +288,7 @@ export default function EditPanel({
         </button>
 
         {/* Preview Prompt (collapsible) */}
-        {selectedElement && (
+        {selectedElements.length > 0 && (
           <button
             onClick={() => setShowPrompt(!showPrompt)}
             className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
@@ -279,9 +297,9 @@ export default function EditPanel({
             Preview Prompt
           </button>
         )}
-        {showPrompt && selectedElement && (
+        {showPrompt && selectedElements.length > 0 && (
           <pre className="text-[10px] leading-tight bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 overflow-auto max-h-40 text-s-ink/60 dark:text-s-dm-text/60 whitespace-pre-wrap">
-            {`Page: ${pageUrl}\nElement: <${selectedElement.tag}> at "${selectedElement.selector}"\nComponent: ${selectedElement.componentHint || "Unknown"}\nText: "${selectedElement.text}"\n\nDescription: "${description}"\nPriority: ${priority}`}
+            {`Page: ${pageUrl}\nElements (${selectedElements.length}):\n${selectedElements.map((el) => `  <${el.tag}> "${el.text?.slice(0, 60) || "(no text)"}"`).join("\n")}\n\nDescription: "${description}"\nPriority: ${priority}`}
           </pre>
         )}
 

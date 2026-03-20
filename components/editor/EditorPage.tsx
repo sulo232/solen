@@ -21,7 +21,7 @@ export default function EditorPage() {
   const [urlPath, setUrlPath] = useState(`/${locale}/`);
   const [device, setDevice] = useState<DevicePreset>("desktop");
   const [editMode, setEditMode] = useState(true);
-  const [selectedElement, setSelectedElement] = useState<ElementSelectedData | null>(null);
+  const [selectedElements, setSelectedElements] = useState<ElementSelectedData[]>([]);
   const [hoveredElement, setHoveredElement] = useState<ElementHoveredData | null>(null);
   const [showPanel, setShowPanel] = useState(false);
   const [view, setView] = useState<EditorView>("preview");
@@ -40,7 +40,7 @@ export default function EditorPage() {
     function onKeyDown(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === "Escape") {
-        setSelectedElement(null);
+        setSelectedElements([]);
         setShowPanel(false);
       }
       if (e.key === "e" || e.key === "E") {
@@ -84,7 +84,11 @@ export default function EditorPage() {
   const handleBridgeReady = useCallback(() => setBridgeReady(true), []);
 
   const handleElementSelected = useCallback((data: ElementSelectedData) => {
-    setSelectedElement(data);
+    setSelectedElements((prev) => {
+      // Don't add duplicates (same selector)
+      if (prev.some((el) => el.selector === data.selector)) return prev;
+      return [...prev, data];
+    });
     setShowPanel(true);
   }, []);
 
@@ -105,7 +109,7 @@ export default function EditorPage() {
     if (!iframeRef.current) return;
     iframeRef.current.src = window.location.origin + urlPath;
     setBridgeReady(false);
-    setSelectedElement(null);
+    setSelectedElements([]);
     setShowPanel(false);
   };
 
@@ -253,7 +257,7 @@ export default function EditorPage() {
         {/* Open panel (no selection) */}
         <button
           onClick={() => {
-            setSelectedElement(null);
+            setSelectedElements([]);
             setShowPanel(true);
           }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-button text-xs font-medium bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
@@ -294,11 +298,14 @@ export default function EditorPage() {
             <AnimatePresence>
               {showPanel && (
                 <EditPanel
-                  selectedElement={selectedElement}
+                  selectedElements={selectedElements}
+                  onRemoveElement={(selector) => {
+                    setSelectedElements((prev) => prev.filter((el) => el.selector !== selector));
+                  }}
                   pageUrl={urlPath}
                   onClose={() => {
                     setShowPanel(false);
-                    setSelectedElement(null);
+                    setSelectedElements([]);
                   }}
                   requests={requests}
                   onRequestsUpdate={() => fetchRequests()}
@@ -336,13 +343,13 @@ export default function EditorPage() {
         <span>{bridgeReady ? "Bridge connected" : "Waiting for bridge…"}</span>
         <span>•</span>
         <span>{editMode ? "Edit mode ON" : "Edit mode OFF"}</span>
-        {selectedElement && (
+        {selectedElements.length > 0 && (
           <>
             <span>•</span>
-            <span>Selected: &lt;{selectedElement.tag}&gt; on {selectedElement.pageUrl}</span>
+            <span>Selected: {selectedElements.length} element{selectedElements.length > 1 ? "s" : ""}</span>
           </>
         )}
-        {hoveredElement && !selectedElement && (
+        {hoveredElement && selectedElements.length === 0 && (
           <>
             <span>•</span>
             <span>Hovering: &lt;{hoveredElement.tag}&gt;</span>
