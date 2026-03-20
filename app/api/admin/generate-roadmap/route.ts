@@ -45,12 +45,20 @@ export async function POST(req: NextRequest) {
     .from("feature_requests").select("*").eq("id", validated.requestId).single();
   if (!featureReq) return NextResponse.json({ error: "Request not found" }, { status: 404 });
 
-  // 8. Check API key — try multiple common env var names
+  // 8. Check API key — scan all env vars for any key containing "ANTHROP" or "CLAUDE"
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_KEY;
   if (!apiKey) {
-    // List which env vars we checked so the user knows exactly what to set
+    // Debug: find any env var that might be the API key
+    const allKeys = Object.keys(process.env);
+    const candidates = allKeys.filter(k =>
+      k.toUpperCase().includes("ANTHROP") ||
+      k.toUpperCase().includes("CLAUDE") ||
+      k.toUpperCase().includes("GEMINI")
+    );
     return NextResponse.json(
-      { error: "No Anthropic API key found. Checked: ANTHROPIC_API_KEY, CLAUDE_API_KEY, ANTHROPIC_KEY. Set one in Vercel environment variables." },
+      {
+        error: `No API key found. Checked: ANTHROPIC_API_KEY, CLAUDE_API_KEY, ANTHROPIC_KEY. Found these related env vars: [${candidates.join(", ") || "NONE"}]. Total env vars: ${allKeys.length}`,
+      },
       { status: 500 }
     );
   }
