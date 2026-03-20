@@ -19,6 +19,7 @@ interface HeaderProps {
 }
 
 const NAV_LINKS = [
+  { key: "discover", href: "/discover" },
   { key: "coiffeur", href: "/coiffeur" },
   { key: "barbershop", href: "/barbershop" },
   { key: "nails", href: "/nails" },
