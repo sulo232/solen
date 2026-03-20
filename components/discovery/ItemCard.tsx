@@ -2,14 +2,17 @@
 
 import Image from "next/image";
 import type { DiscoveryItem } from "@/lib/types";
-import { Heart, Bookmark } from "lucide-react";
+import LikeButton from "./LikeButton";
+import SaveButton from "./SaveButton";
 
 interface ItemCardProps {
   item: DiscoveryItem;
   onClick?: () => void;
+  isAuthenticated?: boolean;
+  onAuthRequired?: () => void;
 }
 
-export default function ItemCard({ item, onClick }: ItemCardProps) {
+export default function ItemCard({ item, onClick, isAuthenticated = false, onAuthRequired }: ItemCardProps) {
   const priceLabel = item.price_min && item.price_max
     ? `CHF ${item.price_min}–${item.price_max}`
     : item.price_min ? `ab CHF ${item.price_min}` : null;
@@ -57,8 +60,9 @@ export default function ItemCard({ item, onClick }: ItemCardProps) {
           <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium capitalize">
             {item.category}
           </span>
-          <div className="flex items-center gap-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
-            <span className="flex items-center gap-0.5"><Heart size={10} /> {item.like_count}</span>
+          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <LikeButton itemId={item.id} initialLiked={false} initialCount={item.like_count} isAuthenticated={isAuthenticated} onAuthRequired={onAuthRequired} />
+            <SaveButton itemId={item.id} initialSaved={false} isAuthenticated={isAuthenticated} onAuthPrompt={onAuthRequired} />
           </div>
         </div>
       </div>
