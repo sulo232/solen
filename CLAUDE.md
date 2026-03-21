@@ -27,7 +27,7 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 | **Deployment** | Vercel (`vercel.json`) |
 | **PWA** | `manifest.json` + `sw.js` (Service Worker) |
 | **IDs** | `nanoid` — Unique code generation (gift cards, referral codes) |
-| **AI** | `@google/generative-ai` (Gemini 2.0 Flash) — Intake form recommendations, discovery AI descriptions |
+| **AI** | `@google/generative-ai` (Gemini 2.0 Flash) — Intake form recommendations, discovery AI descriptions; `@fal-ai/client` — AI nail art image generation |
 | **Charts** | `recharts` — Dashboard analytics visualizations |
 
 ---
@@ -62,6 +62,8 @@ solen/
 ├── components/         # Shared React components (Dev 2 owns, Dev 3 imports)
 │   ├── index.ts        # Barrel exports — Dev 3 depends on this
 │   ├── dashboard/      # Dev 3's dashboard-specific components
+│   │   └── nail/       # Nail CRM dashboard components (StationManager, RetailManager, etc.)
+│   ├── nail/           # Nail category UI components (booking flow, portfolio, discovery)
 │   ├── editor/         # Visual Editor (admin-only)
 │   ├── layout/         # Header, Footer, BottomNav
 │   └── ui/             # Shared UI primitives (Skeleton, SearchBar, ExpandableTabs, etc.)
@@ -70,7 +72,12 @@ solen/
 │   ├── ratelimit.ts    # Upstash rate limiters (from security roadmap Phase 4)
 │   ├── feature-flags.ts # Kill switch + ban check (from security roadmap Phase 5)
 │   ├── validations.ts  # Zod schemas for all API inputs (from security roadmap Phase 6)
-│   └── audit.ts        # Admin action audit logging (from security roadmap Phase 9)
+│   ├── audit.ts        # Admin action audit logging (from security roadmap Phase 9)
+│   └── nail/           # Nail category utilities
+│       ├── ai-prompts.ts       # AI nail art generation prompt templates
+│       ├── ai-budget.ts        # Redis monthly AI generation budget tracker
+│       ├── infill-calculator.ts # Infill scheduling calculator
+│       └── station-availability.ts # Nail station availability checker
 ├── public/             # Static assets
 ├── supabase/           # Migrations + Edge Functions (Dev 1 owns)
 ├── messages/           # i18n translation files
@@ -141,6 +148,18 @@ solen/
 33. **Client CRM**: Color formulas, intake forms (5 consultation types), before/after photos, AI-powered intake recommendations via Gemini.
 34. **Referral Program**: Auto-generated referral codes, WhatsApp/SMS/copy sharing, reward tracking (CHF 10 per referral), salon-side referral dashboard.
 35. **Advanced Analytics**: Booking heatmap (7x12 CSS grid), staff comparison (table/chart), acquisition source tracking, revenue commission breakdown, gift card + tip summaries.
+36. **Nail Tech Portfolio**: Staff portfolio pages with masonry grid, filterable by style/shape/material. Tier badges (junior/senior/master). Public profile at `/nail-tech/[id]`.
+37. **Nail Design History**: Per-client design timeline with photos, material/shape badges, color swatches, repeat-design action.
+38. **Nail Inspo System**: Client image upload (drag-drop + camera), curated inspo boards, multi-select from boards during booking.
+39. **Nail Material/Shape/Length Selector**: Visual shape picker (10 SVG icons), length bars, 7 material types with descriptions. Integrated in booking flow.
+40. **Nail Station Management**: Configurable station count, UV lamp tracking, sterilization buffer. Utilization bar in dashboard.
+41. **Nail Tier Pricing**: Staff-level pricing (junior/senior/master) displayed during booking. Dynamic pricing rules per day/time.
+42. **Nail Infill Reminders**: Per-service reminder cycle (days). Cron sends email/SMS reminders when infill is due.
+43. **Nail Discovery Feed**: Pinterest-style masonry grid at `/discover/nails`. Filter by style/shape/material. Infinite scroll.
+44. **Nail Dynamic Pricing**: Rule-based price modifiers (peak/off-peak/weekend/last-minute/loyalty). Weekly heatmap visualization.
+45. **Nail Retail POS**: In-salon product sales. RetailManager for inventory, RetailCheckout for POS cart + Stripe payment.
+46. **Nail AI Art Generator**: Admin-only fal.ai image generation. Style/shape/color/skin tone selectors. Monthly budget tracking via Redis.
+47. **Nail Allergy System**: Client allergy tracking with severity levels. Warning banners in booking flow. Alert emails to salon on booking.
 
 ### 3.6 Commands
 
@@ -235,6 +254,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
    - If fixing it requires a **major decision** (e.g. rolling back a whole feature, changing the deployment branch) → stop and ask the user
 7. **Homepage Protection**: The homepage (`components/HomePage.tsx`) is the live production page. If building a replacement, build it on a **new test route** (e.g., `app/[locale]/new-home/page.tsx`) so the user can test it without causing a production crash. Also note any incomplete features in `_tasks/INCOMPLETE_FEATURES.md` so they are not forgotten.
 8. **Knowledge Sync (MANDATORY)**: Before asking the user clarification questions or generating a new roadmap, **ALWAYS read the files in `_tasks/completed/`**. This prevents agents from repeatedly asking about configurations, integrations (e.g., Supabase Auth, Stripe), or UI decisions that have already been finalized in previous tasks.
+9. **Category System Map (MANDATORY)**: Before building ANY category-specific feature (nails, spa, makeup, waxing, barbershop), **ALWAYS read `_docs/category-system-map.md`**. This documents how all 6 verticals share base infrastructure and where they diverge. Follow the extension pattern — category features are ADDITIVE layers on the shared base, never replacements. Use the naming conventions: `lib/{category}/`, `components/{category}/`, `{category}_` table prefixes.
 
 ----
 
@@ -294,6 +314,13 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `client_photos` | `id`, `salon_id`, `customer_id`, `photo_url`, `photo_type`, `notes` | Before/after + progress photos. `photo_type`: before/after/progress. |
 | `intake_forms` | `id`, `salon_id`, `customer_id`, `template_type`, `responses`, `ai_recommendation` | Consultation intake forms. `template_type`: hair/nail/waxing/makeup/spa. |
 | `processed_webhook_events` | `event_id` (PK), `processed_at` | Stripe webhook idempotency. |
+| `nail_design_history` | `id`, `salon_id`, `customer_id`, `staff_member_id`, `shape`, `length`, `material`, `style_tags[]`, `color_codes[]`, `photos[]`, `notes`, `service_id`, `booking_id` | Per-client nail design records. |
+| `nail_preferences` | `id`, `customer_id`, `salon_id`, `preferred_shape`, `preferred_length`, `preferred_material`, `preferred_brand`, `skin_sensitivity` | Client nail preferences per salon. |
+| `nail_allergies` | `id`, `customer_id`, `allergen`, `severity`, `notes`, `reported_at` | Client nail product allergies. Severity: mild/moderate/severe. |
+| `nail_inspo_images` | `id`, `user_id`, `image_url`, `source`, `board_id`, `tags[]` | Client inspiration images. Source: upload/board/discovery. |
+| `nail_inspo_boards` | `id`, `user_id`, `name`, `cover_url`, `is_public` | User-created inspiration boards. |
+| `nail_dynamic_pricing_rules` | `id`, `salon_id`, `rule_type`, `day_of_week`, `start_time`, `end_time`, `modifier`, `is_active` | Dynamic price modifiers. Types: peak_hour/off_peak/weekend/last_minute/loyalty. |
+| `nail_retail_products` | `id`, `salon_id`, `name`, `price`, `category`, `image_url`, `stock_count`, `is_active` | In-salon retail products. Categories: nail_care/tools/polish/accessories. |
 
 | View | Columns | Notes |
 |---|---|---|
