@@ -11,7 +11,7 @@ import {
   BarChart, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
-  UserCheck, Megaphone, Image as ImageIcon,
+  UserCheck, Megaphone, Image as ImageIcon, Sparkles,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -47,6 +47,7 @@ const OWNER_NAV = [
   { label: "Statistiken",  href: "/dashboard/analytics",  icon: BarChart },
   { label: "Bewertungen",  href: "/dashboard/reviews",    icon: Star },
   { label: "Meine Posts",  href: "/dashboard/discovery-posts", icon: Camera },
+  { label: "Nail Kunden",  href: "/dashboard/nail-clients", icon: Sparkles },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
 ] as const;
 
