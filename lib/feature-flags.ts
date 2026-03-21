@@ -1,7 +1,7 @@
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
-type FeatureKey = "bookings" | "payments" | "messaging" | "reviews" | "registration" | "last_minute" | "maintenance_mode" | "visual_editor";
+type FeatureKey = "bookings" | "payments" | "messaging" | "reviews" | "registration" | "last_minute" | "maintenance_mode" | "visual_editor" | "nail_features";
 
 export async function checkFeatureEnabled(featureKey: FeatureKey): Promise<NextResponse | null> {
   const admin = createAdminSupabaseClient();

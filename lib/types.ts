@@ -663,3 +663,105 @@ export interface GiftCard {
   created_at: string;
 }
 
+// ---------------------------------------------------------------------------
+// Nail Types
+// ---------------------------------------------------------------------------
+
+export type NailShape = 'round' | 'square' | 'almond' | 'coffin' | 'stiletto' | 'oval' | 'squoval' | 'ballerina' | 'lipstick' | 'edge';
+export type NailLength = 'natural' | 'short' | 'medium' | 'long' | 'extra_long';
+export type NailMaterial = 'natural' | 'gel' | 'acrylic' | 'dip_powder' | 'biab' | 'shellac' | 'polygel' | 'press_on' | 'gel_x';
+export type NailStyleCategory = 'french' | 'ombre' | 'chrome' | '3d' | 'marble' | 'minimalist' | 'glitter' | 'abstract' | 'floral' | 'geometric' | 'solid' | 'negative_space' | 'encapsulated' | 'cat_eye' | 'aurora' | 'velvet' | 'glazed_donut';
+export type NailAllergySeverity = 'mild' | 'moderate' | 'severe';
+export type NailRetailCategory = 'cuticle_oil' | 'hand_cream' | 'press_on' | 'nail_kit' | 'polish' | 'other';
+export type DynamicPricingRuleType = 'peak' | 'off_peak' | 'day_special' | 'demand' | 'segment';
+export type StaffTier = 'junior' | 'standard' | 'senior' | 'master';
+
+export interface NailDesignHistory {
+  id: string;
+  salon_id: string;
+  customer_id: string;
+  booking_id: string | null;
+  staff_member_id: string | null;
+  shape: NailShape | null;
+  length: NailLength | null;
+  material: NailMaterial | null;
+  style_category: NailStyleCategory | null;
+  color_primary: string | null;
+  color_secondary: string | null;
+  color_brand: string | null;
+  photo_url: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface NailClientPreferences {
+  id: string;
+  salon_id: string;
+  customer_id: string;
+  preferred_shape: NailShape | null;
+  preferred_length: NailLength | null;
+  preferred_material: NailMaterial | null;
+  preferred_brand: string | null;
+  allergies: string[];
+  allergy_severity: NailAllergySeverity;
+  allergy_notes: string | null;
+  skin_sensitivity: 'normal' | 'sensitive' | 'very_sensitive' | null;
+  notes: string | null;
+  updated_at: string;
+}
+
+export interface NailInspoBoard {
+  id: string;
+  user_id: string;
+  name: string;
+  is_public: boolean;
+  created_at: string;
+}
+
+export interface NailInspoImage {
+  id: string;
+  user_id: string;
+  board_id: string | null;
+  booking_id: string | null;
+  image_url: string;
+  source_url: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface NailStation {
+  id: string;
+  salon_id: string;
+  station_count: number;
+  has_uv_lamps: boolean;
+  uv_lamp_count: number;
+  sterilization_buffer_minutes: number;
+  created_at: string;
+}
+
+export interface NailDynamicPricingRule {
+  id: string;
+  salon_id: string;
+  rule_type: DynamicPricingRuleType;
+  day_of_week: number | null;
+  start_time: string | null;
+  end_time: string | null;
+  price_modifier: number;
+  label_de: string | null;
+  label_en: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface NailRetailProduct {
+  id: string;
+  salon_id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  image_url: string | null;
+  category: NailRetailCategory;
+  is_active: boolean;
+  created_at: string;
+}
+

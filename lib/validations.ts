@@ -269,6 +269,71 @@ export const packageSchema = z.object({
   price: z.number().int().min(100),
 });
 
+// ---------------------------------------------------------------------------
+// Nail Schemas
+// ---------------------------------------------------------------------------
+
+export const nailDesignHistorySchema = z.object({
+  shape: z.enum(['round','square','almond','coffin','stiletto','oval','squoval','ballerina','lipstick','edge']).optional(),
+  length: z.enum(['natural','short','medium','long','extra_long']).optional(),
+  material: z.enum(['natural','gel','acrylic','dip_powder','biab','shellac','polygel','press_on','gel_x']).optional(),
+  style_category: z.enum(['french','ombre','chrome','3d','marble','minimalist','glitter','abstract','floral','geometric','solid','negative_space','encapsulated','cat_eye','aurora','velvet','glazed_donut']).optional(),
+  color_primary: z.string().max(50).optional(),
+  color_secondary: z.string().max(50).optional(),
+  color_brand: z.string().max(100).optional(),
+  notes: z.string().max(1000).optional(),
+  booking_id: z.string().uuid().optional(),
+});
+
+export const nailPreferencesSchema = z.object({
+  preferred_shape: z.enum(['round','square','almond','coffin','stiletto','oval','squoval','ballerina','lipstick','edge']).optional(),
+  preferred_length: z.enum(['natural','short','medium','long','extra_long']).optional(),
+  preferred_material: z.enum(['natural','gel','acrylic','dip_powder','biab','shellac','polygel','press_on','gel_x']).optional(),
+  preferred_brand: z.string().max(100).optional(),
+  allergies: z.array(z.string().max(100)).max(20).optional(),
+  allergy_severity: z.enum(['mild','moderate','severe']).optional(),
+  allergy_notes: z.string().max(500).optional(),
+  skin_sensitivity: z.enum(['normal','sensitive','very_sensitive']).optional(),
+});
+
+export const nailInspoSchema = z.object({
+  board_id: z.string().uuid().optional(),
+  booking_id: z.string().uuid().optional(),
+  source_url: z.string().url().max(500).optional(),
+  notes: z.string().max(500).optional(),
+});
+
+export const nailStationSchema = z.object({
+  station_count: z.number().int().min(1).max(50),
+  has_uv_lamps: z.boolean().optional(),
+  uv_lamp_count: z.number().int().min(0).max(50).optional(),
+  sterilization_buffer_minutes: z.number().int().min(0).max(60).optional(),
+});
+
+export const nailDynamicPricingSchema = z.object({
+  rule_type: z.enum(['peak','off_peak','day_special','demand','segment']),
+  day_of_week: z.number().int().min(0).max(6).optional(),
+  start_time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  end_time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  price_modifier: z.number().min(0.5).max(2.0),
+  label_de: z.string().max(100).optional(),
+  label_en: z.string().max(100).optional(),
+});
+
+export const nailRetailProductSchema = z.object({
+  name: z.string().min(2).max(200),
+  description: z.string().max(1000).optional(),
+  price: z.number().int().min(100).max(50000),
+  category: z.enum(['cuticle_oil','hand_cream','press_on','nail_kit','polish','other']),
+});
+
+export const nailPortfolioTagsSchema = z.object({
+  nail_style: z.string().max(50).optional(),
+  nail_shape: z.string().max(50).optional(),
+  nail_material: z.string().max(50).optional(),
+  tags: z.array(z.string().max(50)).max(10).optional(),
+});
+
 export function validateQuery<T>(schema: z.ZodSchema<T>, params: URLSearchParams): { data: T; error: null } | { data: null; error: { message: string } } {
   const obj: Record<string, string> = {};
   params.forEach((v, k) => { obj[k] = v; });
