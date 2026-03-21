@@ -16,6 +16,7 @@ import Spinner from "@/components/ui/Spinner";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import StampCard from "@/components/loyalty/StampCard";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
+import ProfileDiscoverySections from "@/components/discovery/ProfileDiscoverySections";
 import type { Profile, Booking, SalonCard } from "@/lib/types";
 
 interface LoyaltyCard {
@@ -786,6 +787,28 @@ export default function ProfilePage() {
               ))}
             </div>
           )}
+        </motion.section>
+
+        {/* ── Section: Discovery (My Looks & Preferences) ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.16 }}
+          className="mb-6"
+        >
+          <div className="bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 p-5">
+            <ProfileDiscoverySections
+              userId={profile.id}
+              profile={{
+                disc_gender: (profile as any).disc_gender ?? null,
+                disc_hair_texture: (profile as any).disc_hair_texture ?? null,
+                disc_hair_length: (profile as any).disc_hair_length ?? null,
+                disc_face_shape: (profile as any).disc_face_shape ?? null,
+                disc_skin_tone: (profile as any).disc_skin_tone ?? null,
+                disc_preferred_categories: null,
+              }}
+            />
+          </div>
         </motion.section>
 
         {/* ── Section: Guthaben & Empfehlung ── */}

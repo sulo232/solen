@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { DiscoveryItem } from "@/lib/types";
 import LikeButton from "./LikeButton";
 import SaveButton from "./SaveButton";
+import PriceRangeBadge from "./PriceRangeBadge";
 
 interface ItemCardProps {
   item: DiscoveryItem;
@@ -13,9 +14,6 @@ interface ItemCardProps {
 }
 
 export default function ItemCard({ item, onClick, isAuthenticated = false, onAuthRequired }: ItemCardProps) {
-  const priceLabel = item.price_min && item.price_max
-    ? `CHF ${item.price_min}–${item.price_max}`
-    : item.price_min ? `ab CHF ${item.price_min}` : null;
 
   return (
     <div
@@ -43,11 +41,9 @@ export default function ItemCard({ item, onClick, isAuthenticated = false, onAut
         </div>
 
         {/* Price badge */}
-        {priceLabel && (
+        {(item.price_min || item.price_max) && (
           <div className="absolute bottom-2 left-2">
-            <span className="text-[10px] px-2 py-1 rounded-pill bg-white/90 dark:bg-s-dm-surface/90 text-s-ink dark:text-s-dm-text font-medium backdrop-blur-sm">
-              {priceLabel}
-            </span>
+            <PriceRangeBadge priceMin={item.price_min} priceMax={item.price_max} />
           </div>
         )}
       </div>

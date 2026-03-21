@@ -11,6 +11,7 @@ import InfoTabs from "./InfoTabs";
 import BookCTA from "./BookCTA";
 import ShareButton from "./ShareButton";
 import CommentSection from "./CommentSection";
+import PickStylistFlow from "./PickStylistFlow";
 
 interface DetailPageProps {
   item: DiscoveryItem;
@@ -117,6 +118,21 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
 
       {/* Booking CTA */}
       <BookCTA item={item} locale={locale} />
+
+      {/* Pick a stylist (shows when salon is linked) */}
+      {item.owner_salon_id && (
+        <div className="mt-4 px-1">
+          <PickStylistFlow
+            salonId={item.owner_salon_id}
+            salonSlug={item.owner_salon_id}
+            locale={locale}
+            onSelect={(staffId) => {
+              const route = item.category === "beard" ? "barbershop" : item.category === "nails" ? "nails" : "coiffeur";
+              window.location.href = `/${locale}/${route}?staff=${staffId ?? ""}`;
+            }}
+          />
+        </div>
+      )}
 
       {/* Comments */}
       <div className="px-1">
