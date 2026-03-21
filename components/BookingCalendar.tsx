@@ -15,6 +15,7 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { loadStripe } from "@stripe/stripe-js";
 import GuestBookingForm, { type GuestInfo } from "@/components/booking/GuestBookingForm";
 import PackageRedeemBanner from "@/components/booking/PackageRedeemBanner";
+import NailBookingSteps, { type NailOptions } from "@/components/nail/NailBookingSteps";
 
 // ─────────────────────────────────────────
 // Stripe setup
@@ -157,6 +158,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const [fullyBookedDates, setFullyBookedDates] = useState<Set<string>>(new Set());
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [waitlistDate, setWaitlistDate] = useState<string | null>(null);
+  const [serviceCategory, setServiceCategory] = useState<string | null>(null);
+  const [nailOptions, setNailOptions] = useState<NailOptions | null>(null);
   const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
   const [waitlistDone, setWaitlistDone] = useState(false);
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
@@ -165,6 +168,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const [checkoutStep, setCheckoutStep] = useState<"select" | "payment" | "guest">("select");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
   const [acquisitionSource, setAcquisitionSource] = useState("");
 
@@ -179,6 +183,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   useEffect(() => {
     createBrowserSupabaseClient().auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session?.user);
+      setUserId(session?.user?.id ?? null);
     });
   }, []);
 
@@ -270,6 +275,18 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       .then((d) => { if (d?.is_first_visit_default != null) setIsFirstVisit(d.is_first_visit_default); })
       .catch(() => {});
   }, []);
+
+  // Fetch service category for nail detection
+  useEffect(() => {
+    if (!serviceId || !salonId) return;
+    fetch(`/api/services?salon_id=${salonId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        const svc = (d?.services ?? []).find((s: { id: string; category?: string }) => s.id === serviceId);
+        if (svc?.category) setServiceCategory(svc.category);
+      })
+      .catch(() => {});
+  }, [serviceId, salonId]);
 
   // Fetch slots
   const fetchSlots = useCallback(async (date: Date) => {
@@ -502,6 +519,19 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </select>
+        </div>
+      )}
+
+      {/* Nail booking steps — only for nail services */}
+      {serviceCategory === "nails" && (
+        <div className="px-4">
+          <NailBookingSteps
+            serviceCategory={serviceCategory}
+            customerId={userId}
+            staffId={selectedStaff !== "any" ? selectedStaff : null}
+            salonId={salonId}
+            onNailOptionsChange={setNailOptions}
+          />
         </div>
       )}
 
