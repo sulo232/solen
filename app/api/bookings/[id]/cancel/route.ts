@@ -1,8 +1,12 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
+import { calculateRefund } from "@/lib/cancellation-policy";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
 
 export async function POST(
   request: NextRequest,
@@ -19,7 +23,7 @@ export async function POST(
   // Fetch booking with relations (including salon owner_id for notification)
   const { data: booking, error } = await supabase
     .from("bookings")
-    .select("*, salons(*, owner_id), services(*)")
+    .select("*, salons(*, owner_id, cancellation_fee_percent, cancellation_window_hours), services(*)")
     .eq("id", id)
     .single();
 
@@ -35,6 +39,34 @@ export async function POST(
     return NextResponse.json({ message: "Booking cannot be cancelled", code: "INVALID_STATUS" }, { status: 400 });
   }
 
+  // Calculate refund if booking was paid via Stripe
+  let refundResult = { refundAmount: 0, feeAmount: 0, isWithinWindow: false };
+  const paidAmount = booking.paid_amount ?? booking.price_paid ?? 0;
+  const paymentIntentId = booking.payment_intent_id;
+
+  if (paidAmount > 0 && paymentIntentId) {
+    const salon = booking.salons as any;
+    refundResult = calculateRefund(
+      paidAmount,
+      salon?.cancellation_fee_percent ?? 30,
+      salon?.cancellation_window_hours ?? 24,
+      new Date(booking.starts_at)
+    );
+
+    // Process Stripe refund if there's an amount to refund
+    if (refundResult.refundAmount > 0) {
+      try {
+        await stripe.refunds.create({
+          payment_intent: paymentIntentId,
+          amount: refundResult.refundAmount,
+          reason: "requested_by_customer",
+        });
+      } catch (stripeErr: any) {
+        return NextResponse.json({ message: `Refund failed: ${stripeErr.message}`, code: "STRIPE_ERROR" }, { status: 500 });
+      }
+    }
+  }
+
   // Update booking status
   const { error: updateError } = await supabase
     .from("bookings")
@@ -42,6 +74,8 @@ export async function POST(
       status: "cancelled",
       cancellation_reason: reason ?? null,
       cancelled_at: new Date().toISOString(),
+      payment_status: refundResult.refundAmount > 0 ? "refunded" : (refundResult.feeAmount > 0 ? "partially_refunded" : undefined),
+      refunded_amount: refundResult.refundAmount > 0 ? refundResult.refundAmount : undefined,
     })
     .eq("id", id);
 
@@ -108,5 +142,13 @@ export async function POST(
     await Promise.allSettled(promises);
   } catch { /* non-fatal */ }
 
-  return NextResponse.json({ data: { id, status: "cancelled" } });
+  return NextResponse.json({
+    data: {
+      id,
+      status: "cancelled",
+      refund_amount: refundResult.refundAmount,
+      fee_amount: refundResult.feeAmount,
+      within_cancellation_window: refundResult.isWithinWindow,
+    },
+  });
 }

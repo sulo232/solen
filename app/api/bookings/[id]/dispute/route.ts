@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
@@ -84,6 +84,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Upcharge cannot exceed 50% of original price" }, { status: 400 });
   }
 
+  // Auto-approve after 48 hours if customer doesn't respond
+  const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+
   const { data: dispute, error } = await supabase
     .from("price_disputes")
     .insert({
@@ -91,6 +94,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       original_amount: originalAmount,
       requested_amount,
       salon_reason,
+      expires_at: expiresAt,
     })
     .select()
     .single();
@@ -141,6 +145,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     .update({
       status: newStatus,
       customer_response: customer_response || null,
+      customer_responded_at: new Date().toISOString(),
     })
     .eq("id", dispute.id);
 
