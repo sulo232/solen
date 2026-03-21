@@ -209,5 +209,20 @@
     "detail": { "description": "Beschreibung", "salon_script": "Was dem Friseur sagen", "cut_guide": "Schnittanleitung", "tutorials": "So stylen", "products": "Empfohlene Produkte", "book_cta": "Diesen Style buchen", "price_range": "Preisrange" },
     "admin": { "title": "Discovery Content Studio", "stock_import": "Stock Import", "tiktok_import": "TikTok Import", "manual_upload": "Manueller Upload", "staging": "Staging", "published": "Veröffentlicht", "flagged": "Gemeldet", "approve": "Genehmigen", "reject": "Ablehnen", "remove": "Entfernen", "auto_import": "Auto-Import" },
     "moderation": { "flagged": "Gemeldet", "reason": "Grund", "approve": "Genehmigen", "remove": "Entfernen" }
+  },
+  "discovery_tos": {
+    "title": "Nutzungsbedingungen — Discovery",
+    "copyright_heading": "1. Urheberrecht",
+    "copyright_text": "Sie müssen das Recht haben, die von Ihnen hochgeladenen Inhalte zu veröffentlichen. Das Hochladen urheberrechtlich geschützter Inhalte ohne Genehmigung ist verboten.",
+    "license_heading": "2. Lizenzgewährung",
+    "license_text": "Durch das Hochladen von Inhalten auf solen.ch gewähren Sie solen.ch eine nicht-exklusive, weltweite, gebührenfreie Lizenz zur Anzeige, Verbreitung und Bewerbung Ihrer Inhalte auf der Plattform.",
+    "content_rules_heading": "3. Inhaltsregeln",
+    "content_rules_text": "Verbotene Inhalte: Nacktheit, Hassrede, Gewalt, Spam, irreführende Informationen, Inhalte die Minderjährige darstellen. Verstösse führen zur sofortigen Entfernung und möglicherweise zur Sperrung des Kontos.",
+    "removal_heading": "4. Inhaltsentfernung",
+    "removal_text": "solen.ch behält sich das Recht vor, Inhalte ohne Vorankündigung zu entfernen, die gegen diese Bedingungen verstossen oder anderweitig unangemessen sind.",
+    "gdpr_heading": "5. DSGVO-Konformität",
+    "gdpr_text": "Hochgeladene Inhalte werden auf Servern in der EU/Schweiz gespeichert. Sie können die Löschung Ihrer Inhalte jederzeit über Ihre Profileinstellungen oder per E-Mail an privacy@solen.ch beantragen.",
+    "disclaimer_heading": "6. Haftungsausschluss",
+    "disclaimer_text": "solen.ch übernimmt keine Garantie für die Genauigkeit von KI-generierten Beschreibungen. Die angezeigten Preise sind Schätzungen und können je nach Salon variieren."
   }
 }

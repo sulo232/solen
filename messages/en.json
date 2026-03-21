@@ -209,5 +209,20 @@
     "detail": { "description": "Description", "salon_script": "What to tell your stylist", "cut_guide": "Cut guide", "tutorials": "How to style", "products": "Recommended products", "book_cta": "Book this style", "price_range": "Price range" },
     "admin": { "title": "Discovery Content Studio", "stock_import": "Stock Import", "tiktok_import": "TikTok Import", "manual_upload": "Manual Upload", "staging": "Staging", "published": "Published", "flagged": "Flagged", "approve": "Approve", "reject": "Reject", "remove": "Remove", "auto_import": "Auto-Import" },
     "moderation": { "flagged": "Flagged", "reason": "Reason", "approve": "Approve", "remove": "Remove" }
+  },
+  "discovery_tos": {
+    "title": "Terms of Service — Discovery",
+    "copyright_heading": "1. Copyright",
+    "copyright_text": "You must have the right to publish the content you upload. Uploading copyrighted content without permission is prohibited.",
+    "license_heading": "2. License Grant",
+    "license_text": "By uploading content to solen.ch, you grant solen.ch a non-exclusive, worldwide, royalty-free license to display, distribute, and promote your content on the platform.",
+    "content_rules_heading": "3. Content Rules",
+    "content_rules_text": "Prohibited content: nudity, hate speech, violence, spam, misleading information, content depicting minors. Violations result in immediate removal and possible account suspension.",
+    "removal_heading": "4. Content Removal",
+    "removal_text": "solen.ch reserves the right to remove content without notice that violates these terms or is otherwise inappropriate.",
+    "gdpr_heading": "5. GDPR Compliance",
+    "gdpr_text": "Uploaded content is stored on EU/Swiss servers. You may request deletion of your content at any time via your profile settings or by emailing privacy@solen.ch.",
+    "disclaimer_heading": "6. Disclaimer",
+    "disclaimer_text": "solen.ch makes no guarantees about the accuracy of AI-generated descriptions. Displayed prices are estimates and may vary by salon."
   }
 }

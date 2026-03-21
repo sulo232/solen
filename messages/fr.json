@@ -209,5 +209,20 @@
     "detail": { "description": "Description", "salon_script": "Quoi dire à votre coiffeur", "cut_guide": "Guide de coupe", "tutorials": "Comment coiffer", "products": "Produits recommandés", "book_cta": "Réserver ce style", "price_range": "Fourchette de prix" },
     "admin": { "title": "Studio de contenu Discovery", "stock_import": "Import photos", "tiktok_import": "Import TikTok", "manual_upload": "Upload manuel", "staging": "En attente", "published": "Publié", "flagged": "Signalé", "approve": "Approuver", "reject": "Rejeter", "remove": "Supprimer", "auto_import": "Auto-Import" },
     "moderation": { "flagged": "Signalé", "reason": "Raison", "approve": "Approuver", "remove": "Supprimer" }
+  },
+  "discovery_tos": {
+    "title": "Conditions d'utilisation — Discovery",
+    "copyright_heading": "1. Droit d'auteur",
+    "copyright_text": "Vous devez avoir le droit de publier le contenu que vous téléchargez. Le téléchargement de contenu protégé par le droit d'auteur sans autorisation est interdit.",
+    "license_heading": "2. Licence accordée",
+    "license_text": "En téléchargeant du contenu sur solen.ch, vous accordez à solen.ch une licence non exclusive, mondiale et gratuite pour afficher, distribuer et promouvoir votre contenu sur la plateforme.",
+    "content_rules_heading": "3. Règles de contenu",
+    "content_rules_text": "Contenu interdit: nudité, discours haineux, violence, spam, informations trompeuses, contenu représentant des mineurs. Les violations entraînent la suppression immédiate et la suspension éventuelle du compte.",
+    "removal_heading": "4. Suppression de contenu",
+    "removal_text": "solen.ch se réserve le droit de supprimer sans préavis tout contenu violant ces conditions ou jugé inapproprié.",
+    "gdpr_heading": "5. Conformité RGPD",
+    "gdpr_text": "Le contenu téléchargé est stocké sur des serveurs UE/Suisse. Vous pouvez demander la suppression de votre contenu à tout moment via vos paramètres de profil ou par e-mail à privacy@solen.ch.",
+    "disclaimer_heading": "6. Avertissement",
+    "disclaimer_text": "solen.ch ne garantit pas l'exactitude des descriptions générées par l'IA. Les prix affichés sont des estimations et peuvent varier selon le salon."
   }
 }
