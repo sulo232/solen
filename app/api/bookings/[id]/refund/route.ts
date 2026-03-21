@@ -6,7 +6,9 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+}
 
 // POST /api/bookings/[id]/refund — Salon-triggered manual refund
 export async function POST(
@@ -68,7 +70,7 @@ export async function POST(
 
   // Process Stripe refund
   try {
-    await stripe.refunds.create({
+    await getStripe().refunds.create({
       payment_intent: booking.payment_intent_id,
       amount,
       reason: "requested_by_customer",

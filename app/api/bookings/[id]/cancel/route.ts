@@ -6,7 +6,9 @@ import { sendEmail, bookingCancellation } from "@/lib/email";
 import { calculateRefund } from "@/lib/cancellation-policy";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+}
 
 export async function POST(
   request: NextRequest,
@@ -56,7 +58,7 @@ export async function POST(
     // Process Stripe refund if there's an amount to refund
     if (refundResult.refundAmount > 0) {
       try {
-        await stripe.refunds.create({
+        await getStripe().refunds.create({
           payment_intent: paymentIntentId,
           amount: refundResult.refundAmount,
           reason: "requested_by_customer",

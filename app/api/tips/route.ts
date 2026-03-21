@@ -7,7 +7,9 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, tipSchema } from "@/lib/validations";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+}
 
 // POST /api/tips — Create a tip payment for a booking
 export async function POST(req: NextRequest) {
@@ -50,7 +52,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const paymentIntent = await stripe.paymentIntents.create(piParams);
+    const paymentIntent = await getStripe().paymentIntents.create(piParams);
 
     // Record the tip
     await supabase.from("tips").insert({

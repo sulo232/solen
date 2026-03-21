@@ -9,7 +9,9 @@ import { sendEmail } from "@/lib/email";
 import { nanoid } from "nanoid";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+}
 
 // POST /api/gift-cards/purchase — Buy a gift card + email delivery
 export async function POST(req: NextRequest) {
@@ -52,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const paymentIntent = await stripe.paymentIntents.create(piParams);
+    const paymentIntent = await getStripe().paymentIntents.create(piParams);
 
     // Create gift card record (active after payment succeeds via webhook)
     const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(); // 1 year
