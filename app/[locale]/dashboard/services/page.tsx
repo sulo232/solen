@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
-import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight } from "lucide-react";
+import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
@@ -39,10 +39,15 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
     duration_minutes: initial?.duration_minutes ?? 60,
     price: initial?.price ?? 80,
     description_de: initial?.description_de ?? "",
+    buffer_minutes: (initial as Record<string, number>)?.buffer_minutes ?? 0,
+    processing_minutes: (initial as Record<string, number>)?.processing_minutes ?? 0,
+    finishing_minutes: (initial as Record<string, number>)?.finishing_minutes ?? 0,
     suitable_for: initial?.suitable_for ?? [] as AgeGroup[],
     suitable_gender: initial?.suitable_gender ?? [] as Gender[],
     is_active: initial?.is_active ?? true,
   });
+  const [photos, setPhotos] = useState<string[]>((initial as Record<string, string[]>)?.photos ?? []);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const toggle = <T,>(field: "suitable_for" | "suitable_gender", val: T) => {
@@ -114,6 +119,62 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
               rows={2} className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          </div>
+          {/* Time breakdown fields */}
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Aufbauzeit (Min)</label>
+              <input type="number" min={0} step={5} value={form.buffer_minutes}
+                onChange={(e) => setForm({ ...form, buffer_minutes: +e.target.value })}
+                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Einwirkzeit (Min)</label>
+              <input type="number" min={0} step={5} value={form.processing_minutes}
+                onChange={(e) => setForm({ ...form, processing_minutes: +e.target.value })}
+                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-s-ink/50 mb-1">Nachbereitung (Min)</label>
+              <input type="number" min={0} step={5} value={form.finishing_minutes}
+                onChange={(e) => setForm({ ...form, finishing_minutes: +e.target.value })}
+                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            </div>
+          </div>
+          {/* Service photos */}
+          <div>
+            <label className="block text-xs font-medium text-s-ink/50 mb-1">Fotos (max. 3)</label>
+            <div className="flex gap-2">
+              {photos.map((url, i) => (
+                <div key={i} className="relative w-16 h-16 rounded-button overflow-hidden border border-s-ink/10">
+                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
+                    className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center">
+                    <X size={8} />
+                  </button>
+                </div>
+              ))}
+              {photos.length < 3 && (
+                <label className="w-16 h-16 rounded-button border-2 border-dashed border-s-ink/10 flex items-center justify-center cursor-pointer hover:border-s-coral/40 transition-colors">
+                  {uploading ? <Spinner size="sm" /> : <Camera size={16} className="text-s-ink/30" />}
+                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file || !initial?.id) return;
+                    setUploading(true);
+                    try {
+                      const fd = new FormData();
+                      fd.append("file", file);
+                      fd.append("service_id", initial.id);
+                      const res = await fetch("/api/services/photos", { method: "POST", body: fd });
+                      if (res.ok) {
+                        const { url } = await res.json();
+                        setPhotos((prev) => [...prev, url]);
+                      }
+                    } catch {} finally { setUploading(false); }
+                  }} />
+                </label>
+              )}
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

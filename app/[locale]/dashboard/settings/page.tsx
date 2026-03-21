@@ -806,6 +806,212 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   );
 }
 
+// ─────────────────────────────────────────
+// Closures / Holidays Tab
+// ─────────────────────────────────────────
+
+function ClosuresTab({ salon }: { salon: Salon }) {
+  const [closures, setClosures] = useState<{ id: string; date: string; reason: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState("");
+  const [reason, setReason] = useState("");
+
+  useEffect(() => {
+    fetch(`/api/salon/closures?salon_id=${salon.id}`)
+      .then((r) => r.json())
+      .then((d) => setClosures(d.closures ?? d.items ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [salon.id]);
+
+  const addClosure = async () => {
+    if (!date) return;
+    const res = await fetch("/api/salon/closures", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ salon_id: salon.id, date, reason }),
+    });
+    if (res.ok) {
+      const c = await res.json();
+      setClosures((prev) => [...prev, c]);
+      setDate("");
+      setReason("");
+    }
+  };
+
+  const removeClosure = async (id: string) => {
+    await fetch(`/api/salon/closures/${id}`, { method: "DELETE" });
+    setClosures((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  if (loading) return <div className="py-6 flex justify-center"><Spinner size="md" /></div>;
+
+  return (
+    <div className="py-4 max-w-md space-y-4">
+      <p className="text-xs text-s-ink/50">Tage, an denen Ihr Salon geschlossen ist (Feiertage, Betriebsferien etc.)</p>
+      <div className="flex gap-2">
+        <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
+          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+        <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Grund (optional)"
+          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+        <button onClick={addClosure} disabled={!date}
+          className="px-3 py-2 rounded-button bg-s-coral text-white text-sm disabled:opacity-50">
+          <Plus size={14} />
+        </button>
+      </div>
+      {closures.length === 0 ? (
+        <p className="text-xs text-s-ink/30 text-center py-4">Keine Schließtage eingetragen</p>
+      ) : (
+        <div className="space-y-1">
+          {closures.map((c) => (
+            <div key={c.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-button border border-s-ink/5">
+              <div>
+                <span className="text-sm data-text text-s-ink">{new Date(c.date).toLocaleDateString("de-CH")}</span>
+                {c.reason && <span className="text-xs text-s-ink/40 ml-2">{c.reason}</span>}
+              </div>
+              <button onClick={() => removeClosure(c.id)} className="text-s-ink/30 hover:text-s-coral transition-colors">
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+// Scheduling / Terminvergabe Tab
+// ─────────────────────────────────────────
+
+function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
+  const ext = salon as Salon & { auto_assign_method?: string; daily_limit_enabled?: boolean; daily_limit?: number };
+  const [method, setMethod] = useState(ext.auto_assign_method ?? "manual");
+  const [limitEnabled, setLimitEnabled] = useState(ext.daily_limit_enabled ?? false);
+  const [limit, setLimit] = useState(ext.daily_limit ?? 20);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave({ auto_assign_method: method, daily_limit_enabled: limitEnabled, daily_limit: limit } as any);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  return (
+    <div className="py-4 max-w-md space-y-5">
+      <div>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">Termin-Zuweisung</label>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { id: "manual", label: "Manuell", desc: "Sie weisen selbst zu" },
+            { id: "round_robin", label: "Reihum", desc: "Gleichmäßig verteilt" },
+            { id: "least_busy", label: "Wenigster", desc: "Am wenigsten ausgelastet" },
+          ].map((opt) => (
+            <button key={opt.id} type="button" onClick={() => setMethod(opt.id)}
+              className={["rounded-card border p-3 text-left transition-colors",
+                method === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20"].join(" ")}>
+              <p className={["text-sm font-medium", method === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>{opt.label}</p>
+              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <button type="button" onClick={() => setLimitEnabled(!limitEnabled)}
+          className={limitEnabled ? "text-s-coral" : "text-s-ink/30"}>
+          {limitEnabled ? <Check size={18} /> : <X size={18} />}
+        </button>
+        <div className="flex-1">
+          <p className="text-sm text-s-ink">Tägliches Limit pro Stylist</p>
+          {limitEnabled && (
+            <input type="number" min={1} max={50} value={limit}
+              onChange={(e) => setLimit(+e.target.value)}
+              className="mt-1 w-24 px-2 py-1.5 rounded-button border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral" />
+          )}
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving}
+          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Speichern
+        </button>
+        {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
+// Team Commission Tab
+// ─────────────────────────────────────────
+
+function CommissionTab({ salon }: { salon: Salon }) {
+  const [staff, setStaff] = useState<{ id: string; name: string; commission_pct: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/staff?salon_id=${salon.id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        const members = d.staff ?? d.items ?? [];
+        setStaff(members.map((s: any) => ({ id: s.id, name: s.name, commission_pct: s.commission_pct ?? 0 })));
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [salon.id]);
+
+  const updateCommission = async (id: string, pct: number) => {
+    setSaving(id);
+    await fetch(`/api/staff/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ commission_pct: pct }),
+    });
+    setStaff((prev) => prev.map((s) => (s.id === id ? { ...s, commission_pct: pct } : s)));
+    setSaving(null);
+  };
+
+  if (loading) return <div className="py-6 flex justify-center"><Spinner size="md" /></div>;
+  if (staff.length === 0) return <p className="text-xs text-s-ink/30 text-center py-6">Kein Team eingerichtet</p>;
+
+  return (
+    <div className="py-4 max-w-md space-y-3">
+      <p className="text-xs text-s-ink/50">Legen Sie den Provisionssatz (%) für jeden Stylisten fest.</p>
+      {staff.map((s) => (
+        <div key={s.id} className="flex items-center gap-3 py-2 border-b border-s-ink/5 last:border-0">
+          <span className="text-sm font-medium text-s-ink flex-1">{s.name}</span>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={0}
+              max={100}
+              step={5}
+              value={s.commission_pct}
+              onChange={(e) => {
+                const v = Math.min(100, Math.max(0, +e.target.value));
+                setStaff((prev) => prev.map((st) => (st.id === s.id ? { ...st, commission_pct: v } : st)));
+              }}
+              className="w-16 px-2 py-1.5 rounded-button border border-s-ink/10 text-sm data-text text-right focus:outline-none focus:border-s-coral"
+            />
+            <span className="text-xs text-s-ink/40">%</span>
+            <button
+              onClick={() => updateCommission(s.id, s.commission_pct)}
+              disabled={saving === s.id}
+              className="px-2 py-1 rounded-button bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
+            >
+              {saving === s.id ? "..." : "OK"}
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const params = useSearchParams();
   const [salon, setSalon] = useState<Salon | null>(null);
@@ -883,6 +1089,9 @@ export default function SettingsPage() {
               { id: "vacation", label: "Ferien", content: <VacationTab salon={salon} onSave={handleSave} /> },
               { id: "sms", label: "SMS-Erinnerungen", content: <SmsRemindersTab salon={salon} onSave={handleSave} /> },
               { id: "cancellation", label: "Stornierung", content: <CancellationTab salon={salon} onSave={handleSave} /> },
+              { id: "closures", label: "Feiertage", content: <ClosuresTab salon={salon} /> },
+              { id: "scheduling", label: "Terminvergabe", content: <SchedulingTab salon={salon} onSave={handleSave} /> },
+              { id: "commission", label: "Provision", content: <CommissionTab salon={salon} /> },
             ]}
           />
         </div>
