@@ -10,7 +10,7 @@ import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
   BarChart, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
-  MessageSquareWarning, Star, PieChart, Paintbrush,
+  MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -31,6 +31,7 @@ const ADMIN_NAV = [
   { label: "Bewertungen",         href: "/dashboard/review-moderation",  icon: MessageSquareWarning },
   { label: "Segmente",            href: "/dashboard/segments",           icon: PieChart },
   { label: "Visual Editor",       href: "/dashboard/editor",             icon: Paintbrush },
+  { label: "Discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
 ] as const;
 
 const NAV = [
@@ -42,6 +43,7 @@ const NAV = [
   { label: "Services",     href: "/dashboard/services",   icon: Scissors },
   { label: "Statistiken",  href: "/dashboard/analytics",  icon: BarChart },
   { label: "Bewertungen", href: "/dashboard/reviews",    icon: Star },
+  { label: "Meine Posts",  href: "/dashboard/discovery-posts", icon: Camera },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
 ] as const;
 
