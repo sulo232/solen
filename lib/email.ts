@@ -479,3 +479,51 @@ export function giftCardDeliveryEmail(
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
+
+// ---------------------------------------------------------------------------
+// Nail infill reminder
+// ---------------------------------------------------------------------------
+
+export function nailInfillReminderEmail(
+  to: string,
+  vars: { customerName: string; salonName: string; serviceName: string; lastVisitDate: string; bookingUrl: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Zeit für deine Auffüllung bei ${vars.salonName}!`,
+    en: `Time for your nail infill at ${vars.salonName}!`,
+    fr: `C'est l'heure de votre remplissage chez ${vars.salonName} !`,
+    it: `È ora del ritocco presso ${vars.salonName}!`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Hallo ${vars.customerName},</p><p>Dein letzter <strong>${vars.serviceName}</strong>-Termin bei <strong>${vars.salonName}</strong> war am ${vars.lastVisitDate}. Es ist Zeit für eine Auffüllung!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt Termin buchen →</a></p><p>solen.ch</p>`,
+    en: `<p>Hello ${vars.customerName},</p><p>Your last <strong>${vars.serviceName}</strong> appointment at <strong>${vars.salonName}</strong> was on ${vars.lastVisitDate}. Time for an infill!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Book now →</a></p><p>solen.ch</p>`,
+    fr: `<p>Bonjour ${vars.customerName},</p><p>Votre dernier rendez-vous <strong>${vars.serviceName}</strong> chez <strong>${vars.salonName}</strong> était le ${vars.lastVisitDate}. C'est l'heure du remplissage !</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Réserver maintenant →</a></p><p>solen.ch</p>`,
+    it: `<p>Ciao ${vars.customerName},</p><p>Il tuo ultimo appuntamento <strong>${vars.serviceName}</strong> presso <strong>${vars.salonName}</strong> era il ${vars.lastVisitDate}. È ora del ritocco!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Prenota ora →</a></p><p>solen.ch</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+// ---------------------------------------------------------------------------
+// Nail allergy alert (sent to salon when allergic client books)
+// ---------------------------------------------------------------------------
+
+export function nailAllergyAlertEmail(
+  to: string,
+  vars: { salonName: string; customerName: string; allergies: string; bookingDate: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Allergie-Hinweis: ${vars.customerName} hat einen Termin gebucht`,
+    en: `Allergy alert: ${vars.customerName} booked an appointment`,
+    fr: `Alerte allergie : ${vars.customerName} a réservé un rendez-vous`,
+    it: `Avviso allergia: ${vars.customerName} ha prenotato un appuntamento`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Hallo <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> hat einen Termin am ${vars.bookingDate} gebucht und hat folgende Allergien vermerkt:</p><p style="background:#FEF3C7;padding:12px;border-radius:8px;border-left:4px solid #D4870A"><strong>${vars.allergies}</strong></p><p>Bitte stellen Sie sicher, dass die verwendeten Produkte kompatibel sind.</p><p>solen.ch</p>`,
+    en: `<p>Hello <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> has booked an appointment on ${vars.bookingDate} and has the following allergies on file:</p><p style="background:#FEF3C7;padding:12px;border-radius:8px;border-left:4px solid #D4870A"><strong>${vars.allergies}</strong></p><p>Please ensure compatible products are used.</p><p>solen.ch</p>`,
+    fr: `<p>Bonjour <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> a réservé un rendez-vous le ${vars.bookingDate} et a les allergies suivantes :</p><p style="background:#FEF3C7;padding:12px;border-radius:8px;border-left:4px solid #D4870A"><strong>${vars.allergies}</strong></p><p>Veuillez utiliser des produits compatibles.</p><p>solen.ch</p>`,
+    it: `<p>Ciao <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> ha prenotato un appuntamento il ${vars.bookingDate} e ha le seguenti allergie registrate:</p><p style="background:#FEF3C7;padding:12px;border-radius:8px;border-left:4px solid #D4870A"><strong>${vars.allergies}</strong></p><p>Si prega di utilizzare prodotti compatibili.</p><p>solen.ch</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
