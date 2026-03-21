@@ -11,6 +11,7 @@ import {
   BarChart, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
+  UserCheck, Megaphone, Image as ImageIcon,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -34,17 +35,26 @@ const ADMIN_NAV = [
   { label: "Discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
 ] as const;
 
-const NAV = [
+const OWNER_NAV = [
   { label: "Übersicht",    href: "/dashboard",            icon: Home },
   { label: "Termine",      href: "/dashboard/bookings",   icon: Calendar },
   { label: "Kalender",     href: "/dashboard/calendar",   icon: Clock },
   { label: "Nachrichten",  href: "/dashboard/messages",   icon: MessageCircle },
   { label: "Team",         href: "/dashboard/staff",      icon: Users },
+  { label: "Kunden",       href: "/dashboard/clients",    icon: UserCheck },
   { label: "Services",     href: "/dashboard/services",   icon: Scissors },
+  { label: "Marketing",    href: "/dashboard/marketing",  icon: Megaphone },
   { label: "Statistiken",  href: "/dashboard/analytics",  icon: BarChart },
-  { label: "Bewertungen", href: "/dashboard/reviews",    icon: Star },
+  { label: "Bewertungen",  href: "/dashboard/reviews",    icon: Star },
   { label: "Meine Posts",  href: "/dashboard/discovery-posts", icon: Camera },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
+] as const;
+
+const STAFF_NAV = [
+  { label: "Mein Kalender", href: "/dashboard/calendar",  icon: Clock },
+  { label: "Meine Pausen",  href: "/dashboard/my-breaks", icon: Calendar },
+  { label: "Mein Portfolio", href: "/dashboard/my-portfolio", icon: ImageIcon },
+  { label: "Mein Profil",   href: "/dashboard/settings",  icon: Settings },
 ] as const;
 
 // Mobile bottom nav shows 5 items: first 3 + Messages + "Mehr"
@@ -80,17 +90,20 @@ export default function DashboardLayout({
   const [role, setRole] = useState<UserRole | null>(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // Auth guard — role must be salon_owner or admin
+  const [isStaff, setIsStaff] = useState(false);
+
+  // Auth guard — role must be salon_owner, admin, or linked staff
   useEffect(() => {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((p: Profile) => {
         if (!p?.id) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
-        } else if (p.role === "customer") {
+        } else if (p.role === "customer" && !(p as any).staff_salon_id) {
           router.push(`/${locale}/profile`);
         } else {
           setRole(p.role);
+          setIsStaff(!!(p as any).staff_salon_id && p.role !== "salon_owner" && p.role !== "admin");
           setAuthChecked(true);
         }
       })
@@ -137,7 +150,7 @@ export default function DashboardLayout({
 
           {/* Nav */}
           <nav className="flex-1 overflow-y-auto py-3 px-2">
-            {NAV.map(({ label, href, icon: Icon }) => {
+            {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ label, href, icon: Icon }) => {
               const active = isActive(href);
               const isMessages = href === "/dashboard/messages";
               return (
@@ -202,7 +215,7 @@ export default function DashboardLayout({
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
               </div>
               <nav className="py-3 px-2">
-                {NAV.map(({ label, href, icon: Icon }) => {
+                {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ label, href, icon: Icon }) => {
                   const active = isActive(href);
                   return (
                     <Link
