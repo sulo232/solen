@@ -31,6 +31,12 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
 
+  // Webhook idempotency — prevent replay attacks
+  const existing = await admin.from("processed_webhook_events")
+    .select("event_id").eq("event_id", event.id).single();
+  if (existing.data) return NextResponse.json({ received: true });
+  await admin.from("processed_webhook_events").insert({ event_id: event.id });
+
   switch (event.type) {
     case "payment_intent.succeeded": {
       const pi = event.data.object;
@@ -141,6 +147,35 @@ export async function POST(req: NextRequest) {
         to: adminEmail,
         subject: `[solen.ch] Stripe Dispute: CHF ${(dispute.amount / 100).toFixed(2)}`,
         html: `<p>A new Stripe dispute has been opened.</p><ul><li><strong>Dispute ID:</strong> ${dispute.id}</li><li><strong>Amount:</strong> CHF ${(dispute.amount / 100).toFixed(2)}</li><li><strong>Reason:</strong> ${dispute.reason}</li><li><strong>Status:</strong> ${dispute.status}</li></ul><p><a href="https://dashboard.stripe.com/disputes/${dispute.id}">View in Stripe →</a></p>`,
+      }).catch(() => {});
+      break;
+    }
+
+    case "setup_intent.succeeded": {
+      const si = event.data.object as any;
+      const bookingId = si.metadata?.booking_id;
+      if (bookingId && si.payment_method) {
+        await admin.from("bookings").update({
+          payment_status: "card_saved",
+          stripe_setup_intent_id: si.id,
+          stripe_customer_id: si.customer,
+          stripe_payment_method_id: si.payment_method,
+        }).eq("id", bookingId);
+      }
+      break;
+    }
+
+    case "account.application.deauthorized": {
+      const account = event.data.object as any;
+      console.warn("[stripe/webhook] Account deauthorized:", account.id);
+      await admin.from("salons").update({
+        accepts_online_payment: false,
+      }).eq("stripe_account_id", account.id);
+      const adminEmail = process.env.ADMIN_EMAIL ?? "admin@solen.ch";
+      await sendEmail({
+        to: adminEmail,
+        subject: `[solen.ch] Stripe Connect: Account deauthorized`,
+        html: `<p>A salon has disconnected their Stripe account.</p><p><strong>Account ID:</strong> ${account.id}</p>`,
       }).catch(() => {});
       break;
     }
