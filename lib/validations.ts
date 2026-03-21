@@ -175,6 +175,100 @@ export const discoveryTikTokImportSchema = z.object({
   urls: z.array(z.string().url()).min(1).max(20),
 });
 
+// ─── Megabuild Schemas ──────────────────────────────────────────────────────
+
+export const createCheckoutSchema = z.object({
+  slot_id: z.string().uuid(),
+  service_id: z.string().uuid(),
+  staff_member_id: z.string().uuid().optional(),
+  addon_ids: z.array(z.string().uuid()).optional(),
+  is_first_visit: z.boolean().optional(),
+  gift_card_code: z.string().max(20).optional(),
+  referral_code: z.string().max(20).optional(),
+  acquisition_source: z.string().max(50).optional(),
+});
+
+export const guestBookingSchema = z.object({
+  guest_name: z.string().min(2).max(100),
+  guest_phone: z.string().regex(/^\+41[0-9]{9}$/, "Swiss phone number required"),
+  guest_email: z.string().email().optional(),
+});
+
+export const priceAdjustmentSchema = z.object({
+  requested_amount: z.number().int().min(0).max(100000),
+  reason: z.string().min(3).max(500),
+});
+
+export const staffInviteSchema = z.object({
+  email: z.string().email(),
+  staff_name: z.string().min(2).max(100).optional(),
+});
+
+export const walkInSchema = z.object({
+  customer_name: z.string().min(2).max(100),
+  customer_phone: z.string().regex(/^\+41[0-9]{9}$/),
+  service_id: z.string().uuid(),
+  staff_member_id: z.string().uuid().optional(),
+});
+
+export const groupBookingSchema = z.object({
+  organizer_name: z.string().min(2).max(100),
+  organizer_phone: z.string().optional(),
+  group_size: z.number().int().min(2).max(20),
+  event_type: z.enum(['bridal','birthday','corporate','other']),
+  members: z.array(z.object({
+    name: z.string().min(2),
+    service_id: z.string().uuid(),
+    staff_member_id: z.string().uuid().optional(),
+  })).min(2).max(20),
+});
+
+export const giftCardPurchaseSchema = z.object({
+  salon_id: z.string().uuid(),
+  amount: z.number().int().min(1000).max(50000),
+  recipient_email: z.string().email(),
+  recipient_name: z.string().min(2).max(100),
+  message: z.string().max(500).optional(),
+});
+
+export const tipSchema = z.object({
+  booking_id: z.string().uuid(),
+  amount: z.number().int().min(100).max(10000),
+});
+
+export const formulaSchema = z.object({
+  brand: z.string().max(100).optional(),
+  product_line: z.string().max(100).optional(),
+  mix_formula: z.string().min(1).max(500),
+  developer_volume: z.string().max(50).optional(),
+  processing_minutes: z.number().int().min(1).max(120).optional(),
+  notes: z.string().max(1000).optional(),
+  booking_id: z.string().uuid().optional(),
+});
+
+export const closureSchema = z.object({
+  start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  reason: z.string().max(200).optional(),
+});
+
+export const scheduleSchema = z.object({
+  staff_member_id: z.string().uuid(),
+  day_of_week: z.number().int().min(0).max(6),
+  start_time: z.string().regex(/^\d{2}:\d{2}$/),
+  end_time: z.string().regex(/^\d{2}:\d{2}$/),
+  is_alternate_week: z.boolean().optional(),
+  alternate_week_parity: z.number().int().min(0).max(1).optional(),
+});
+
+export const packageSchema = z.object({
+  service_id: z.string().uuid(),
+  name: z.string().min(2).max(100),
+  total_sessions: z.number().int().min(2).max(50),
+  bonus_sessions: z.number().int().min(0).max(10),
+  price: z.number().int().min(100),
+});
+
 export function validateQuery<T>(schema: z.ZodSchema<T>, params: URLSearchParams): { data: T; error: null } | { data: null; error: { message: string } } {
   const obj: Record<string, string> = {};
   params.forEach((v, k) => { obj[k] = v; });

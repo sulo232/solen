@@ -64,6 +64,9 @@ export interface Profile {
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
+  // Megabuild extensions
+  staff_salon_id?: string | null;
+  birthday?: string | null;
 }
 
 export interface OpeningHours {
@@ -97,6 +100,11 @@ export interface Salon {
   last_minute_window_hours: number;
   created_at: string;
   updated_at: string;
+  // Megabuild extensions
+  cancellation_fee_percent?: number;
+  cancellation_window_hours?: number;
+  auto_assign_method?: AutoAssignMethod;
+  auto_complete_enabled?: boolean;
 }
 
 export interface StaffMember {
@@ -107,6 +115,13 @@ export interface StaffMember {
   specialties: string[];
   is_active: boolean;
   created_at: string;
+  // Megabuild extensions
+  user_id?: string | null;
+  can_edit_schedule?: boolean;
+  can_view_own_bookings?: boolean;
+  can_manage_portfolio?: boolean;
+  average_rating?: number;
+  review_count?: number;
 }
 
 export interface Service {
@@ -123,6 +138,12 @@ export interface Service {
   suitable_gender: Gender[];
   is_active: boolean;
   created_at: string;
+  // Megabuild extensions
+  buffer_minutes?: number;
+  processing_minutes?: number;
+  finishing_minutes?: number;
+  photo_urls?: string[];
+  daily_limit_per_staff?: number | null;
 }
 
 export interface AvailabilitySlot {
@@ -158,6 +179,21 @@ export interface Booking {
   recurring_group_id: string | null;
   created_at: string;
   updated_at: string;
+  // Megabuild extensions
+  payment_status?: PaymentStatus;
+  paid_amount?: number | null;
+  platform_fee?: number | null;
+  refunded_amount?: number;
+  completed_at?: string | null;
+  group_booking_id?: string | null;
+  paid_via?: PaidVia;
+  acquisition_source?: string | null;
+  stripe_setup_intent_id?: string | null;
+  stripe_customer_id?: string | null;
+  stripe_payment_method_id?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
 }
 
 export interface RecurringBookingRule {
@@ -439,5 +475,191 @@ export interface AIVisionResult {
   description_it: string;
   salon_script_de: string | null;
   cut_guide: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Megabuild Types (Phase 5)
+// ---------------------------------------------------------------------------
+
+export type PaymentStatus = 'pending' | 'card_saved' | 'deposit_held' | 'paid' | 'none' | 'refunded' | 'partially_refunded' | 'disputed';
+export type AutoAssignMethod = 'least_booked_week' | 'least_booked_today' | 'round_robin' | 'manual_priority';
+export type AdjustmentStatus = 'pending' | 'accepted' | 'disputed' | 'expired';
+export type GroupEventType = 'bridal' | 'birthday' | 'corporate' | 'other';
+export type PhotoType = 'before' | 'after' | 'progress';
+export type IntakeTemplateKey = 'hair_consultation' | 'nail_consultation' | 'waxing_consultation' | 'makeup_consultation' | 'spa_consultation';
+export type PaidVia = 'stripe' | 'package' | 'gift_card' | 'walk_in';
+
+export interface StaffInvite {
+  id: string;
+  salon_id: string;
+  email: string;
+  staff_name: string | null;
+  invited_by: string;
+  token: string;
+  accepted_at: string | null;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface StaffSchedule {
+  id: string;
+  staff_member_id: string;
+  salon_id: string;
+  day_of_week: number;
+  start_time: string;
+  end_time: string;
+  is_alternate_week: boolean;
+  alternate_week_parity: number;
+  is_active: boolean;
+}
+
+export interface StaffBreak {
+  id: string;
+  staff_member_id: string;
+  salon_id: string;
+  day_of_week: number | null;
+  specific_date: string | null;
+  start_time: string;
+  end_time: string;
+  reason: string;
+  created_at: string;
+}
+
+export interface StaffTimeOff {
+  id: string;
+  staff_member_id: string;
+  salon_id: string;
+  start_date: string;
+  end_date: string;
+  reason: string | null;
+  approved_by: string | null;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+}
+
+export interface SalonClosure {
+  id: string;
+  salon_id: string;
+  start_date: string;
+  end_date: string;
+  reason: string | null;
+  created_at: string;
+}
+
+export interface StaffService {
+  staff_member_id: string;
+  service_id: string;
+}
+
+export interface GuestBooking {
+  id: string;
+  booking_id: string;
+  guest_name: string;
+  guest_phone: string;
+  guest_email: string | null;
+  account_created: boolean;
+  created_at: string;
+}
+
+export interface GroupBooking {
+  id: string;
+  organizer_user_id: string | null;
+  organizer_name: string;
+  organizer_phone: string | null;
+  salon_id: string;
+  group_size: number;
+  event_type: GroupEventType | null;
+  notes: string | null;
+  stripe_payment_intent_id: string | null;
+  total_amount: number | null;
+  created_at: string;
+}
+
+export interface ServicePackage {
+  id: string;
+  salon_id: string;
+  service_id: string;
+  name: string;
+  total_sessions: number;
+  bonus_sessions: number;
+  price: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface PackagePurchase {
+  id: string;
+  package_id: string;
+  user_id: string;
+  salon_id: string;
+  sessions_total: number;
+  sessions_used: number;
+  stripe_payment_intent_id: string | null;
+  purchased_at: string;
+  expires_at: string | null;
+}
+
+export interface ClientFormula {
+  id: string;
+  salon_id: string;
+  customer_id: string;
+  booking_id: string | null;
+  brand: string | null;
+  product_line: string | null;
+  mix_formula: string;
+  developer_volume: string | null;
+  processing_minutes: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IntakeFormResponse {
+  id: string;
+  salon_id: string;
+  customer_id: string;
+  template_key: IntakeTemplateKey;
+  responses: Record<string, unknown>;
+  ai_recommendation: string | null;
+  filled_at: string;
+}
+
+export interface ClientPhoto {
+  id: string;
+  salon_id: string;
+  customer_id: string;
+  booking_id: string | null;
+  photo_url: string;
+  photo_type: PhotoType;
+  published_to_discovery: boolean;
+  discovery_item_id: string | null;
+  created_at: string;
+}
+
+export interface Tip {
+  id: string;
+  booking_id: string;
+  staff_member_id: string | null;
+  salon_id: string;
+  amount: number;
+  stripe_payment_intent_id: string | null;
+  created_at: string;
+}
+
+export interface GiftCard {
+  id: string;
+  salon_id: string;
+  code: string;
+  original_amount: number;
+  remaining_amount: number;
+  purchaser_user_id: string | null;
+  purchaser_email: string | null;
+  recipient_email: string | null;
+  recipient_name: string | null;
+  message: string | null;
+  stripe_payment_intent_id: string | null;
+  expires_at: string | null;
+  is_active: boolean;
+  created_at: string;
 }
 
