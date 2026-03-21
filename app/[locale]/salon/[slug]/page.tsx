@@ -69,6 +69,67 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
 
 
 // ─────────────────────────────────────────────────
+// Nail Artist Preview Card (for salon page)
+// ─────────────────────────────────────────────────
+
+function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember; locale: string; onBook: (id: string) => void }) {
+  const [previewImages, setPreviewImages] = useState<{ id: string; image_url: string }[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/nail-tech/${member.id}/portfolio?limit=3`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.images) setPreviewImages(d.images.slice(0, 3)); })
+      .catch(() => {});
+  }, [member.id]);
+
+  return (
+    <div className="rounded-card border border-s-ink/5 dark:border-s-dm-text/10 p-4 bg-white dark:bg-s-dm-surface">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
+          {member.avatar_url ? (
+            <Image src={member.avatar_url} alt={member.name} width={40} height={40} className="object-cover w-full h-full" />
+          ) : (
+            <span className="text-sm font-bold text-s-ink/30 dark:text-s-dm-text/30">{member.name[0]}</span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text truncate">{member.name}</p>
+          {member.specialties?.length > 0 && (
+            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 truncate">{member.specialties.join(", ")}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Portfolio preview: 3 images */}
+      {previewImages.length > 0 && (
+        <div className="grid grid-cols-3 gap-1.5 mb-3">
+          {previewImages.map((img) => (
+            <div key={img.id} className="aspect-square rounded-button overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
+              <Image src={img.image_url} alt="" width={120} height={120} className="object-cover w-full h-full" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <Link
+          href={`/${locale}/nail-tech/${member.id}`}
+          className="flex-1 text-center text-xs py-1.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors"
+        >
+          Alle Designs ansehen
+        </Link>
+        <button
+          onClick={() => onBook(member.id)}
+          className="flex-1 text-center text-xs py-1.5 rounded-button bg-s-coral text-white hover:bg-s-coral-hover transition-colors"
+        >
+          Buchen
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────
 // JSON-LD
 // ─────────────────────────────────────────────────
 
@@ -532,6 +593,33 @@ export default function SalonProfilePage() {
                           key={m.id}
                           member={m}
                           salonSlug={slug}
+                          onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Nail Artists — only for nail salons */}
+              {salon.categories?.includes("nails") && salon.staff.length > 0 && (
+                <div id="section-nail-artists">
+                  <button
+                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
+                    onClick={() => setOpenAccordion(openAccordion === "nail-artists" ? null : "nail-artists")}
+                  >
+                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Unsere Nail Artists</h2>
+                    <ChevronDown size={18} className={`text-s-ink/40 transition-transform ${openAccordion === "nail-artists" ? "rotate-180" : ""}`} />
+                  </button>
+                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Unsere Nail Artists</h2>
+
+                  <div className={`${openAccordion === "nail-artists" ? "" : "hidden md:block"}`}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
+                      {salon.staff.map((m) => (
+                        <NailArtistPreviewCard
+                          key={m.id}
+                          member={m}
+                          locale={locale}
                           onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
                         />
                       ))}
