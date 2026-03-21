@@ -49,6 +49,11 @@ export const updateProfileSchema = z.object({
   notification_email: z.boolean().optional(),
   notification_sms: z.boolean().optional(),
   phone_number: z.string().max(20).optional().nullable(),
+  disc_gender: z.enum(["male", "female", "unisex"]).nullable().optional(),
+  disc_hair_texture: z.string().max(30).nullable().optional(),
+  disc_hair_length: z.string().max(30).nullable().optional(),
+  disc_face_shape: z.string().max(30).nullable().optional(),
+  disc_profile_set: z.boolean().optional(),
 }).strict();
 
 export const createConversationSchema = z.object({
