@@ -9,6 +9,7 @@ import {
   Plus, Scissors, Star, PartyPopper,
 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import SetupBanner from "@/components/dashboard/SetupBanner";
 import MiniSparkline from "@/components/dashboard/MiniSparkline";
 import Spinner from "@/components/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
@@ -144,6 +145,8 @@ export default function DashboardPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SetupBanner />
 
       <div className="mb-6">
         <h1 className="font-heading font-bold text-2xl text-s-ink">Übersicht</h1>
