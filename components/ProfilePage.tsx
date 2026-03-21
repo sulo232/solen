@@ -8,7 +8,7 @@ import Link from "next/link";
 import {
   Calendar, Heart, User, Star, MapPin, X, RotateCcw,
   Bell, Settings, ChevronDown, ChevronUp, MessageCircle,
-  Gift, Wallet, ChevronRight, Trophy, Share2, Copy, Check,
+  Gift, Wallet, ChevronRight, Trophy, Share2, Copy, Check, Package, ClipboardList,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
@@ -316,6 +316,7 @@ function SettingsSection({
   const [name, setName] = useState(profile.display_name);
   const [bio, setBio] = useState(profile.bio ?? "");
   const [avatar, setAvatar] = useState(profile.avatar_url ?? "");
+  const [birthday, setBirthday] = useState((profile as Profile & { birthday?: string }).birthday ?? "");
   const [emailOn, setEmailOn] = useState(profile.notification_email ?? true);
   const [lang, setLang] = useState<"de" | "en" | "fr">(profile.locale ?? "de");
   const [saving, setSaving] = useState(false);
@@ -328,9 +329,10 @@ function SettingsSection({
       display_name: name,
       bio: bio || null,
       avatar_url: avatar || null,
+      birthday: birthday || null,
       notification_email: emailOn,
       locale: lang,
-    });
+    } as Partial<Profile>);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -377,6 +379,17 @@ function SettingsSection({
           onChange={(e) => setBio(e.target.value)}
           rows={2}
           className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
+        />
+      </div>
+
+      {/* Birthday */}
+      <div>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">Geburtstag</label>
+        <input
+          type="date"
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -786,6 +799,55 @@ export default function ProfilePage() {
             Guthaben & Empfehlung
           </h2>
           <ReferralSection locale={locale} />
+        </motion.section>
+
+        {/* ── Section: Meine Pakete & Geschenkkarten & Fragebögen ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.18 }}
+        >
+          <div className="space-y-3">
+            <Link
+              href={`/${locale}/profile/packages`}
+              className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <Package size={18} className="text-s-blue" />
+                <div>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Meine Pakete</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Gekaufte Mehrfachkarten</p>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+            </Link>
+            <Link
+              href={`/${locale}/profile/gift-cards`}
+              className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <Gift size={18} className="text-s-coral" />
+                <div>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Meine Geschenkkarten</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Guthaben & eingelöste Karten</p>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+            </Link>
+            <Link
+              href={`/${locale}/profile/intake-forms`}
+              className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <ClipboardList size={18} className="text-s-amber" />
+                <div>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Meine Fragebögen</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Ausgefüllte Beratungsbögen</p>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+            </Link>
+          </div>
         </motion.section>
 
         {/* ── Section 4: Einstellungen ── */}

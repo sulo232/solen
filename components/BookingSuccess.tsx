@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Calendar, Share2, RotateCcw } from "lucide-react";
+import { CheckCircle, Calendar, Share2, RotateCcw, CreditCard, ShieldCheck, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -15,6 +15,8 @@ interface BookingSuccessProps {
   dateTime: string; // ISO string
   duration: number; // minutes
   price: number;
+  cardLast4?: string;
+  cancellationHours?: number;
 }
 
 function generateICS(props: BookingSuccessProps): string {
@@ -143,7 +145,32 @@ export default function BookingSuccess(props: BookingSuccessProps) {
           <span>{timeStr} Uhr</span>
           <span>{props.duration} Min.</span>
         </div>
-        <p className="data-text font-semibold text-s-ink mt-2">{formatCurrency(props.price, locale)}</p>
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-s-ink/5">
+          <div className="flex items-center gap-2">
+            <CreditCard size={14} className="text-s-ink/30" />
+            <span className="text-sm text-s-ink/50">
+              {props.cardLast4 ? `•••• ${props.cardLast4}` : "Zahlung"}
+            </span>
+          </div>
+          <p className="data-text font-semibold text-s-ink">{formatCurrency(props.price, locale)}</p>
+        </div>
+      </div>
+
+      {/* Cancellation policy */}
+      <div className="flex items-start gap-2 bg-s-amber-subtle/50 rounded-button p-3 mb-4 text-left">
+        <ShieldCheck size={16} className="text-s-amber shrink-0 mt-0.5" />
+        <p className="text-xs text-s-ink/60">
+          Kostenlose Stornierung bis {props.cancellationHours ?? 24}h vor dem Termin möglich.
+        </p>
+      </div>
+
+      {/* Referral CTA */}
+      <div className="bg-s-coral/5 rounded-card p-4 mb-4 text-left border border-s-coral/10">
+        <div className="flex items-center gap-2 mb-1">
+          <Gift size={14} className="text-s-coral" />
+          <p className="text-sm font-medium text-s-ink">Freunde einladen</p>
+        </div>
+        <p className="text-xs text-s-ink/50">Teile deinen Code und erhalte CHF 10 Guthaben pro Empfehlung.</p>
       </div>
 
       <div className="flex flex-col gap-2">
