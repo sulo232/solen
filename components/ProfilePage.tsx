@@ -8,7 +8,7 @@ import Link from "next/link";
 import {
   Calendar, Heart, User, Star, MapPin, X, RotateCcw,
   Bell, Settings, ChevronDown, ChevronUp, MessageCircle,
-  Gift, Wallet, ChevronRight, Trophy,
+  Gift, Wallet, ChevronRight, Trophy, Share2, Copy, Check,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
@@ -98,6 +98,112 @@ function CancelModal({
         </button>
       </div>
     </GlassModal>
+  );
+}
+
+// ─────────────────────────────────────────
+// Referral section (inline in profile)
+// ─────────────────────────────────────────
+
+function ReferralSection({ locale }: { locale: string }) {
+  const [code, setCode] = useState<string | null>(null);
+  const [stats, setStats] = useState({ friends_invited: 0, total_earned: 0 });
+  const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/referral")
+      .then((r) => r.json())
+      .then((d) => {
+        setCode(d.referral_code ?? null);
+        setStats({ friends_invited: d.friends_invited ?? 0, total_earned: d.total_earned ?? 0 });
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/${locale}?ref=${code}` : "";
+
+  const copyCode = () => {
+    if (!code) return;
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareWhatsApp = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Buche deinen nächsten Termin bei Solen und erhalte CHF 10 Guthaben mit meinem Code: ${code}\n${shareUrl}`)}`, "_blank");
+  };
+
+  const shareSMS = () => {
+    window.open(`sms:?body=${encodeURIComponent(`Teste Solen für Beauty-Termine! Code: ${code} → ${shareUrl}`)}`, "_blank");
+  };
+
+  if (loading) return <div className="bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 p-4"><Spinner size="sm" /></div>;
+
+  return (
+    <div className="bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 p-4 space-y-3">
+      {/* Referral code */}
+      <div className="flex items-center justify-between p-3 rounded-button bg-s-coral/5 border border-s-coral/15">
+        <div className="flex items-center gap-3">
+          <Gift className="w-5 h-5 text-s-coral shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Freunde einladen</p>
+            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">Beide erhalten CHF 10 Guthaben</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Code display */}
+      {code && (
+        <div className="flex items-center gap-2">
+          <div className="flex-1 px-3 py-2 rounded-button bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/10 font-mono text-sm text-s-ink dark:text-s-dm-text tracking-wide">
+            {code}
+          </div>
+          <button
+            onClick={copyCode}
+            className="px-3 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+          >
+            {copied ? <Check size={16} className="text-green-600" /> : <Copy size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />}
+          </button>
+        </div>
+      )}
+
+      {/* Share buttons */}
+      <div className="flex gap-2">
+        <button
+          onClick={shareWhatsApp}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-button bg-green-500 text-white text-xs font-medium hover:bg-green-600 transition-colors"
+        >
+          <Share2 size={12} /> WhatsApp
+        </button>
+        <button
+          onClick={shareSMS}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-button bg-s-blue text-white text-xs font-medium hover:bg-s-blue/80 transition-colors"
+        >
+          <MessageCircle size={12} /> SMS
+        </button>
+        <button
+          onClick={copyCode}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 text-s-ink dark:text-s-dm-text text-xs font-medium hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+        >
+          <Copy size={12} /> Kopieren
+        </button>
+      </div>
+
+      {/* Reward tracking */}
+      <div className="flex items-center justify-between pt-2 border-t border-s-ink/5 dark:border-white/5">
+        <div className="flex items-center gap-2">
+          <Trophy size={14} className="text-s-amber" />
+          <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+            {stats.friends_invited} Freunde eingeladen
+          </span>
+        </div>
+        <span className="data-text text-sm font-bold text-s-coral">
+          CHF {(stats.total_earned / 100).toFixed(0)} verdient
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -679,21 +785,7 @@ export default function ProfilePage() {
             <Wallet size={16} className="text-s-coral" />
             Guthaben & Empfehlung
           </h2>
-          <div className="bg-white dark:bg-white/5 rounded-card border border-s-ink/5 dark:border-white/10 p-4 space-y-3">
-            <Link
-              href={`/${locale}/profile/referral`}
-              className="flex items-center justify-between p-3 rounded-button bg-s-coral/5 border border-s-coral/15 hover:bg-s-coral/10 transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <Gift className="w-5 h-5 text-s-coral" />
-                <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Freunde einladen</p>
-                  <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">Beide erhalten CHF 10 Guthaben</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-s-coral group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </div>
+          <ReferralSection locale={locale} />
         </motion.section>
 
         {/* ── Section 4: Einstellungen ── */}
