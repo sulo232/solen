@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { stripe } from "@/lib/stripe";
@@ -8,7 +8,8 @@ import { stripe } from "@/lib/stripe";
 // Creates a Stripe Connect Express account for the salon and returns the onboarding URL.
 export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
