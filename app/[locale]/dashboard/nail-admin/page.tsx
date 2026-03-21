@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { Upload, FileText, Shield } from "lucide-react";
+import { Upload, FileText, Shield, Wand2 } from "lucide-react";
+import { STYLE_PRESETS, COLOR_PRESETS, SKIN_TONE_PRESETS } from "@/lib/nail/ai-prompts";
+import type { NailShape } from "@/lib/types";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 
-type Tab = "import" | "content" | "moderation";
+type Tab = "import" | "content" | "moderation" | "generate";
 
 export default function NailAdminPage() {
   const locale = useLocale();
@@ -43,6 +45,7 @@ export default function NailAdminPage() {
     { key: "import", label: "Import", icon: Upload },
     { key: "content", label: "Inhalte", icon: FileText },
     { key: "moderation", label: "Moderation", icon: Shield },
+    { key: "generate", label: "AI Generate", icon: Wand2 },
   ];
 
   return (
@@ -72,6 +75,7 @@ export default function NailAdminPage() {
         {activeTab === "import" && <ImportTab />}
         {activeTab === "content" && <ContentTab />}
         {activeTab === "moderation" && <ModerationTab />}
+        {activeTab === "generate" && <GenerateTab />}
       </div>
     </DashboardLayout>
   );
@@ -182,6 +186,154 @@ function ContentTab() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// ─── Generate Tab ────────────────────────────
+
+const SHAPE_OPTIONS: { value: NailShape; label: string }[] = [
+  { value: "round", label: "Rund" },
+  { value: "square", label: "Square" },
+  { value: "oval", label: "Oval" },
+  { value: "almond", label: "Mandel" },
+  { value: "coffin", label: "Coffin" },
+  { value: "stiletto", label: "Stiletto" },
+];
+
+function GenerateTab() {
+  const [shape, setShape] = useState("almond");
+  const [style, setStyle] = useState(STYLE_PRESETS[0].value);
+  const [colors, setColors] = useState(COLOR_PRESETS[0].value);
+  const [skinTone, setSkinTone] = useState(SKIN_TONE_PRESETS[2].value);
+  const [shotType, setShotType] = useState<"hero" | "detail" | "lifestyle">("hero");
+  const [generating, setGenerating] = useState(false);
+  const [result, setResult] = useState<{ image_url: string; staging_id: string | null; prompt: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [budget, setBudget] = useState<{ spent: number; budget: number; percentUsed: number } | null>(null);
+
+  // Load budget on mount
+  useEffect(() => {
+    fetch("/api/admin/nail/generate")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d) setBudget(d); })
+      .catch(() => {});
+  }, []);
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch("/api/admin/nail/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shape, style, colors, skinTone, shotType, material: "gel", length: "medium" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Generation failed");
+        return;
+      }
+      setResult({ image_url: data.image_url, staging_id: data.staging_id, prompt: data.prompt });
+      if (data.budget) setBudget(data.budget);
+    } catch {
+      setError("Netzwerkfehler");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Budget tracker */}
+      {budget && (
+        <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg">
+          <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60 mb-1">
+            <span>Diesen Monat</span>
+            <span>CHF {budget.spent.toFixed(2)} / CHF {budget.budget.toFixed(2)}</span>
+          </div>
+          <div className="h-2 rounded-full bg-s-ink/10 dark:bg-s-dm-text/10">
+            <div
+              className={`h-full rounded-full transition-all ${budget.percentUsed > 0.8 ? "bg-red-500" : "bg-s-sage"}`}
+              style={{ width: `${Math.min(100, budget.percentUsed * 100)}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Selectors */}
+      <div className="grid grid-cols-2 gap-3">
+        <label className="block">
+          <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Form</span>
+          <select value={shape} onChange={(e) => setShape(e.target.value)}
+            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            {SHAPE_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Stil</span>
+          <select value={style} onChange={(e) => setStyle(e.target.value)}
+            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            {STYLE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Farbe</span>
+          <select value={colors} onChange={(e) => setColors(e.target.value)}
+            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            {COLOR_PRESETS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Hautton</span>
+          <select value={skinTone} onChange={(e) => setSkinTone(e.target.value)}
+            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            {SKIN_TONE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </label>
+      </div>
+
+      {/* Shot type pills */}
+      <div>
+        <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1.5 block">Aufnahme</span>
+        <div className="flex gap-2">
+          {(["hero", "detail", "lifestyle"] as const).map((t) => (
+            <button key={t} onClick={() => setShotType(t)}
+              className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
+                shotType === t ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60"
+              }`}>
+              {t === "hero" ? "Volle Hand" : t === "detail" ? "Makro" : "Lifestyle"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Generate button */}
+      <button onClick={handleGenerate} disabled={generating}
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50">
+        <Wand2 size={16} />
+        {generating ? "Generiere..." : "Generieren"}
+      </button>
+
+      {/* Error */}
+      {error && <p className="text-sm text-red-500">{error}</p>}
+
+      {/* Result preview */}
+      {result && (
+        <div className="rounded-card border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden bg-white dark:bg-s-dm-surface">
+          <img src={result.image_url} alt="AI generated nail art" className="w-full aspect-square object-cover" />
+          <div className="p-3 space-y-2">
+            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 line-clamp-2">{result.prompt}</p>
+            {result.staging_id && (
+              <p className="text-xs text-s-sage">In Staging-Pipeline — zur Moderation bereit</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
