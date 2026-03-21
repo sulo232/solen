@@ -12,6 +12,7 @@ import {
   Facebook, Globe
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
+import { Gift, Package } from "lucide-react";
 import BookingCalendar from "@/components/BookingCalendar";
 import StaffPortfolio from "@/components/StaffPortfolio";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
@@ -586,6 +587,27 @@ export default function SalonProfilePage() {
                   </div>
                 </div>
               )}
+
+              {/* Packages & Gift Cards */}
+              <div className="flex gap-3 my-4">
+                <Link
+                  href={`/${locale}/salon/${slug}/gift-card`}
+                  className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors"
+                >
+                  <Gift size={18} className="text-s-coral shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-s-ink">Geschenkkarte</p>
+                    <p className="text-xs text-s-ink/40">Verschenke einen Termin</p>
+                  </div>
+                </Link>
+                <div className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-ink/5 bg-white">
+                  <Package size={18} className="text-s-blue shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-s-ink">Pakete</p>
+                    <p className="text-xs text-s-ink/40">Spare mit Mehrfachkarten</p>
+                  </div>
+                </div>
+              </div>
 
               {/* Reviews / Bewertungen */}
               <div id="section-bewertungen">

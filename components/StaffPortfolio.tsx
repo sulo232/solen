@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
+import { Star } from "lucide-react";
 import type { StaffMember } from "@/lib/types";
 
 interface PortfolioImage {
@@ -38,6 +39,15 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
           <p className="font-heading font-semibold text-s-ink">{member.name}</p>
           {member.specialties?.length > 0 && (
             <p className="text-xs text-s-ink/50">{member.specialties.join(", ")}</p>
+          )}
+          {(member as StaffMember & { avg_rating?: number; review_count?: number }).avg_rating != null && (
+            <p className="flex items-center gap-1 text-xs text-s-ink/50 mt-0.5">
+              <Star size={10} className="fill-s-coral text-s-coral" />
+              {(member as StaffMember & { avg_rating: number }).avg_rating.toFixed(1)}
+              {(member as StaffMember & { review_count?: number }).review_count != null && (
+                <span className="text-s-ink/30">({(member as StaffMember & { review_count: number }).review_count})</span>
+              )}
+            </p>
           )}
         </div>
       </div>
