@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { RotateCcw, Info, ClipboardList, PartyPopper } from "lucide-react";
+import { RotateCcw, Info, ClipboardList, PartyPopper, CreditCard, ChevronDown } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
 import SolenDatePicker from "@/components/ui/date-picker";
@@ -11,6 +11,16 @@ import { today as ariaToday, getLocalTimeZone, CalendarDate } from "@internation
 import type { DateValue } from "react-aria-components";
 import { formatCurrency } from "@/lib/format-currency";
 import type { AvailabilitySlot, RecurringFrequency, StaffMember } from "@/lib/types";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import GuestBookingForm, { type GuestInfo } from "@/components/booking/GuestBookingForm";
+import PackageRedeemBanner from "@/components/booking/PackageRedeemBanner";
+
+// ─────────────────────────────────────────
+// Stripe setup
+// ─────────────────────────────────────────
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "");
 
 // ─────────────────────────────────────────
 // Types
@@ -26,6 +36,14 @@ export interface BookingCalendarProps {
   serviceId?: string;
   staffMemberId?: string;
   slotId?: string;
+}
+
+interface ActivePackage {
+  id: string;
+  package_name: string;
+  sessions_used: number;
+  total_sessions: number;
+  service_id: string;
 }
 
 // ─────────────────────────────────────────
@@ -56,6 +74,56 @@ const FREQ_OPTIONS: { value: RecurringFrequency; label: string }[] = [
   { value: "biweekly", label: "Zweiwöchentlich" },
   { value: "monthly", label: "Monatlich" },
 ];
+
+const ACQUISITION_SOURCES = [
+  { value: "", label_de: "Wie hast du von uns erfahren?", label_en: "How did you find us?" },
+  { value: "google", label_de: "Google Suche", label_en: "Google Search" },
+  { value: "instagram", label_de: "Instagram", label_en: "Instagram" },
+  { value: "friend", label_de: "Empfehlung", label_en: "Friend/Referral" },
+  { value: "solen", label_de: "Solen.ch", label_en: "Solen.ch" },
+  { value: "walk_by", label_de: "Vorbeigelaufen", label_en: "Walked by" },
+  { value: "other", label_de: "Andere", label_en: "Other" },
+];
+
+// ─────────────────────────────────────────
+// Stripe Payment Form (inner component)
+// ─────────────────────────────────────────
+
+function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onError: (msg: string) => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!stripe || !elements) return;
+    setProcessing(true);
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: window.location.href },
+      redirect: "if_required",
+    });
+    if (error) {
+      onError(error.message ?? "Zahlung fehlgeschlagen");
+    } else {
+      onSuccess();
+    }
+    setProcessing(false);
+  };
+
+  return (
+    <div className="space-y-3">
+      <PaymentElement options={{ layout: "tabs" }} />
+      <button
+        onClick={handleSubmit}
+        disabled={processing || !stripe}
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+      >
+        {processing ? <Spinner size="sm" invert /> : <CreditCard size={16} />}
+        {processing ? "Wird verarbeitet…" : "Jetzt bezahlen"}
+      </button>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────
 // Component
@@ -93,6 +161,54 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const [waitlistDone, setWaitlistDone] = useState(false);
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
 
+  // Stripe checkout state
+  const [checkoutStep, setCheckoutStep] = useState<"select" | "payment" | "guest">("select");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
+  const [acquisitionSource, setAcquisitionSource] = useState("");
+
+  // Salon cancellation policy
+  const [cancelWindowHours, setCancelWindowHours] = useState(24);
+  const [cancelFeePercent, setCancelFeePercent] = useState(30);
+
+  // Active package
+  const [activePackage, setActivePackage] = useState<ActivePackage | null>(null);
+
+  // Check auth state
+  useEffect(() => {
+    createBrowserSupabaseClient().auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session?.user);
+    });
+  }, []);
+
+  // Fetch salon cancellation policy
+  useEffect(() => {
+    fetch(`/api/salons/${salonId}`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.cancellation_window_hours) setCancelWindowHours(d.cancellation_window_hours);
+        if (d.cancellation_fee_percent) setCancelFeePercent(d.cancellation_fee_percent);
+      })
+      .catch(() => {});
+  }, [salonId]);
+
+  // Fetch active packages for user
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetch(`/api/packages?salon_id=${salonId}&active=true`)
+      .then(r => r.json())
+      .then(d => {
+        const items = d.items ?? [];
+        // Find a package matching the current service
+        const matching = items.find((p: any) =>
+          p.service_id === serviceId && p.sessions_used < p.total_sessions
+        );
+        if (matching) setActivePackage(matching);
+      })
+      .catch(() => {});
+  }, [salonId, serviceId, isAuthenticated]);
+
   // Fetch fully booked dates for the 30-day window
   useEffect(() => {
     const from = isoDate(todayDate);
@@ -102,7 +218,6 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       .then((d) => {
         const booked = new Set<string>(d.fully_booked_dates ?? []);
         setFullyBookedDates(booked);
-        // Auto-select next available date
         if (booked.has(isoDate(todayDate))) {
           for (let i = 1; i <= 30; i++) {
             const candidate = addDays(todayDate, i);
@@ -117,13 +232,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salonId]);
 
-  // Check if a calendar date is fully booked
   const isDateFullyBooked = useCallback((date: DateValue) => {
     const iso = `${date.year}-${String(date.month).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
     return fullyBookedDates.has(iso);
   }, [fullyBookedDates]);
 
-  // Waitlist submit handler
+  // Waitlist submit
   const handleWaitlistSubmit = async () => {
     if (!waitlistDate) return;
     setWaitlistSubmitting(true);
@@ -135,7 +249,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       });
       if (res.ok) setWaitlistDone(true);
     } catch {
-      // silent fail
+      // silent
     } finally {
       setWaitlistSubmitting(false);
     }
@@ -145,9 +259,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   useEffect(() => {
     fetch(`/api/salons/${salonId}`)
       .then((r) => r.json())
-      .then((d) => {
-        setStaffList(d.staff ?? []);
-      })
+      .then((d) => { setStaffList(d.staff ?? []); })
       .catch(() => {});
   }, [salonId]);
 
@@ -163,6 +275,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const fetchSlots = useCallback(async (date: Date) => {
     setLoadingSlots(true);
     setSelectedSlot(null);
+    setCheckoutStep("select");
+    setClientSecret(null);
     try {
       const params = new URLSearchParams({ salon_id: salonId, date: isoDate(date) });
       if (serviceId) params.set("service_id", serviceId);
@@ -181,7 +295,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
   useEffect(() => { fetchSlots(selectedDate); }, [selectedDate, fetchSlots]);
 
-  // Realtime — update slot statuses live
+  // Realtime slot updates
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
     const channel = supabase
@@ -213,13 +327,130 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
     evening: availableSlots.filter((s) => getTimeGroup(s.starts_at) === "evening"),
   };
 
-  const handleConfirm = async () => {
+  // Determine if booking is >7 days away (use SetupIntent instead)
+  const isMoreThan7Days = selectedSlot
+    ? (new Date(selectedSlot.starts_at).getTime() - Date.now()) > 7 * 24 * 60 * 60 * 1000
+    : false;
+
+  // Create PaymentIntent or SetupIntent and proceed to payment
+  const handleProceedToPayment = async () => {
     if (!selectedSlot) return;
-    const { data: { user } } = await createBrowserSupabaseClient().auth.getUser();
-    if (!user) {
-      router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+
+    // Check if guest or authenticated
+    if (!isAuthenticated && !guestInfo) {
+      setCheckoutStep("guest");
       return;
     }
+
+    setConfirming(true);
+    setError(null);
+    try {
+      if (isMoreThan7Days) {
+        // Save card for later (SetupIntent)
+        const res = await fetch("/api/stripe/save-card", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ salon_id: salonId }),
+        });
+        if (!res.ok) throw new Error((await res.json()).error ?? "Fehler");
+        const data = await res.json();
+        setClientSecret(data.client_secret ?? data.clientSecret);
+      } else {
+        // Immediate payment (PaymentIntent)
+        const res = await fetch("/api/stripe/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            salon_id: salonId,
+            slot_id: selectedSlot.id,
+            service_id: serviceId ?? selectedSlot.service_id,
+            estimated_price: selectedSlot.price_override ?? selectedSlot.services?.price ?? 0,
+            deposit_amount: selectedSlot.price_override ?? selectedSlot.services?.price ?? 0,
+            service_name: locale === "en" ? selectedSlot.services?.name_en : selectedSlot.services?.name_de,
+            ...(guestInfo ? { guest_name: guestInfo.name, guest_phone: guestInfo.phone, guest_email: guestInfo.email } : {}),
+          }),
+        });
+        if (!res.ok) throw new Error((await res.json()).error ?? "Fehler");
+        const data = await res.json();
+        setClientSecret(data.client_secret ?? data.clientSecret);
+      }
+      setCheckoutStep("payment");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Zahlung konnte nicht initialisiert werden");
+    } finally {
+      setConfirming(false);
+    }
+  };
+
+  // After guest form → proceed to payment
+  const handleGuestSubmit = (info: GuestInfo) => {
+    setGuestInfo(info);
+    setCheckoutStep("select"); // Reset, then auto-proceed
+    // Proceed to payment with guest info
+    setTimeout(() => {
+      handleProceedToPaymentWithGuest(info);
+    }, 0);
+  };
+
+  const handleProceedToPaymentWithGuest = async (info: GuestInfo) => {
+    if (!selectedSlot) return;
+    setConfirming(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/stripe/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salon_id: salonId,
+          slot_id: selectedSlot.id,
+          service_id: serviceId ?? selectedSlot.service_id,
+          estimated_price: selectedSlot.price_override ?? selectedSlot.services?.price ?? 0,
+          deposit_amount: selectedSlot.price_override ?? selectedSlot.services?.price ?? 0,
+          service_name: locale === "en" ? selectedSlot.services?.name_en : selectedSlot.services?.name_de,
+          guest_name: info.name,
+          guest_phone: info.phone,
+          guest_email: info.email,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Fehler");
+      const data = await res.json();
+      setClientSecret(data.client_secret ?? data.clientSecret);
+      setCheckoutStep("payment");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Zahlung konnte nicht initialisiert werden");
+    } finally {
+      setConfirming(false);
+    }
+  };
+
+  // After successful payment → create booking
+  const handlePaymentSuccess = async () => {
+    if (!selectedSlot) return;
+    setConfirming(true);
+    try {
+      const endpoint = recurring ? "/api/bookings/recurring" : "/api/bookings";
+      const body: Record<string, unknown> = {
+        slot_id: selectedSlot.id,
+        service_id: serviceId ?? selectedSlot.service_id,
+        staff_member_id: selectedStaff !== "any" ? selectedStaff : selectedSlot.staff_member_id,
+        is_first_visit: isFirstVisit,
+        acquisition_source: acquisitionSource || undefined,
+        ...(guestInfo ? { guest_name: guestInfo.name, guest_phone: guestInfo.phone, guest_email: guestInfo.email } : {}),
+      };
+      if (recurring) body.frequency = recurringFreq;
+      const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      setConfirmed(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Buchung fehlgeschlagen");
+    } finally {
+      setConfirming(false);
+    }
+  };
+
+  // Legacy confirm (for package redeem — no payment needed)
+  const handleConfirmWithoutPayment = async () => {
+    if (!selectedSlot) return;
     setConfirming(true);
     setError(null);
     try {
@@ -229,6 +460,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         service_id: serviceId ?? selectedSlot.service_id,
         staff_member_id: selectedStaff !== "any" ? selectedStaff : selectedSlot.staff_member_id,
         is_first_visit: isFirstVisit,
+        acquisition_source: acquisitionSource || undefined,
       };
       if (recurring) body.frequency = recurringFreq;
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -245,8 +477,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
     return (
       <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center">
         <PartyPopper size={48} className="text-s-coral" />
-        <p className="font-heading font-bold text-xl text-s-ink">Buchung bestätigt!</p>
-        <p className="text-sm text-s-ink/60">Du erhältst eine Bestätigungs-E-Mail.</p>
+        <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Buchung bestätigt!</p>
+        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">Du erhältst eine Bestätigungs-E-Mail.</p>
         <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
           Meine Buchungen
         </a>
@@ -291,7 +523,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <div className="flex justify-center py-10"><Spinner size="md" /></div>
         ) : availableSlots.length === 0 ? (
           <div className="text-center py-8 flex flex-col items-center gap-3">
-            <p className="text-sm text-s-ink/40">Keine freien Slots an diesem Tag.</p>
+            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Keine freien Slots an diesem Tag.</p>
             <button
               onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
               className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
@@ -307,13 +539,14 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               if (!groupSlots.length) return null;
               return (
                 <div key={group}>
-                  <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-2">{GROUP_LABELS[group]}</p>
+                  <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">{GROUP_LABELS[group]}</p>
                   <div className="flex flex-wrap gap-2">
                     {groupSlots.map((slot) => {
                       const timeStr = new Date(slot.starts_at).toLocaleTimeString(
                         locale === "de" ? "de-CH" : "en-GB",
                         { hour: "2-digit", minute: "2-digit" }
                       );
+                      const duration = slot.services?.duration_minutes;
                       const isSelected = selectedSlot?.id === slot.id;
                       const discount = slot.price_override && slot.services?.price
                         ? Math.round((1 - slot.price_override / slot.services.price) * 100)
@@ -321,17 +554,18 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                       return (
                         <button
                           key={slot.id}
-                          onClick={() => setSelectedSlot(isSelected ? null : slot)}
+                          onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
                             "px-3 py-1.5 rounded-button text-sm data-text font-medium transition-all duration-150",
                             isSelected
                               ? "bg-s-coral text-white shadow-card"
-                              : "bg-s-bg-sunken text-s-ink hover:bg-s-coral/10 hover:text-s-coral",
+                              : "bg-s-bg-sunken text-s-ink hover:bg-s-coral/10 hover:text-s-coral dark:bg-s-dm-bg dark:text-s-dm-text dark:hover:bg-s-coral/10",
                           ].join(" ")}
-                          aria-label={`Termin um ${timeStr}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
+                          aria-label={`Termin um ${timeStr}${duration ? ` · ${duration} Min` : ""}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
                         >
                           {timeStr}
+                          {duration && <span className="ml-1 text-[10px] opacity-60">· {duration} Min</span>}
                           {discount > 0 && (
                             <span className="ml-1.5 text-[10px] text-s-coral">-{discount}%</span>
                           )}
@@ -348,7 +582,20 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
       {/* Summary strip — shown after slot selected */}
       {selectedSlot && (
-        <div className="border-t border-s-ink/5 bg-s-bg-surface px-4 py-4 flex flex-col gap-3">
+        <div className="border-t border-s-ink/5 bg-s-bg-surface dark:bg-s-dm-bg px-4 py-4 flex flex-col gap-3">
+          {/* Package redeem banner */}
+          {activePackage && checkoutStep === "select" && (
+            <PackageRedeemBanner
+              packageId={activePackage.id}
+              packageName={activePackage.package_name}
+              sessionsUsed={activePackage.sessions_used}
+              totalSessions={activePackage.total_sessions}
+              slotId={selectedSlot.id}
+              serviceId={serviceId ?? selectedSlot.service_id ?? ""}
+              onRedeemed={() => { setConfirmed(true); }}
+            />
+          )}
+
           {/* First-visit */}
           <label className="flex items-center gap-2 cursor-pointer select-none">
             <input
@@ -357,7 +604,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               onChange={(e) => setIsFirstVisit(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-s-ink/70">Erster Besuch in diesem Salon</span>
+            <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Erster Besuch in diesem Salon</span>
           </label>
 
           {/* Recurring */}
@@ -368,7 +615,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               onChange={(e) => setRecurring(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-s-ink/70">Serienbuchung</span>
+            <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Serienbuchung</span>
             <RotateCcw className="w-3.5 h-3.5 text-s-coral" />
           </label>
           {recurring && (
@@ -383,47 +630,84 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             </select>
           )}
 
+          {/* Acquisition source */}
+          <select
+            value={acquisitionSource}
+            onChange={e => setAcquisitionSource(e.target.value)}
+            className="text-sm px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-s-ink/70 dark:text-s-dm-text/70 outline-none focus:border-s-coral"
+          >
+            {ACQUISITION_SOURCES.map(src => (
+              <option key={src.value} value={src.value}>{locale === "en" ? src.label_en : src.label_de}</option>
+            ))}
+          </select>
+
           {/* Booking summary */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-sm text-s-ink">
+              <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">
                 {locale === "de" ? selectedSlot.services?.name_de : selectedSlot.services?.name_en}
               </p>
-              <p className="text-xs text-s-ink/50 mt-0.5">
+              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
                 {new Date(selectedSlot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB", {
                   weekday: "short", day: "numeric", month: "short",
                 })}{" · "}
                 {new Date(selectedSlot.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", {
                   hour: "2-digit", minute: "2-digit",
                 })}
+                {selectedSlot.services?.duration_minutes && ` · ${selectedSlot.services.duration_minutes} Min`}
               </p>
             </div>
-            <span className="data-text font-bold text-lg text-s-ink">
+            <span className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">
               {selectedSlot.price_override != null ? formatCurrency(selectedSlot.price_override, locale) : selectedSlot.services?.price != null ? formatCurrency(selectedSlot.services.price, locale) : "–"}
             </span>
           </div>
 
-          {/* Cancellation policy banner */}
+          {/* Cancellation policy */}
           <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/5 rounded-button px-3 py-2">
             <Info className="w-3.5 h-3.5 shrink-0" />
-            Kostenlose Stornierung bis 24h vor dem Termin
+            Kostenlose Stornierung bis {cancelWindowHours}h vor dem Termin. Danach werden {cancelFeePercent}% einbehalten.
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
+          {isMoreThan7Days && (
+            <div className="flex items-center gap-1.5 text-xs text-s-ink/40 dark:text-s-dm-text/40">
+              <CreditCard className="w-3.5 h-3.5 shrink-0" />
+              Termin &gt;7 Tage entfernt — deine Karte wird gespeichert und 5 Tage vorher belastet.
+            </div>
+          )}
+
+          <div className="flex items-center gap-1.5 text-xs text-s-ink/40 dark:text-s-dm-text/40">
             <Info className="w-3.5 h-3.5 shrink-0" />
             Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
 
           {error && <p className="text-xs text-s-coral">{error}</p>}
 
-          <button
-            onClick={handleConfirm}
-            disabled={confirming}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
-          >
-            {confirming && <Spinner size="sm" invert />}
-            {confirming ? "Buchen…" : "Termin bestätigen"}
-          </button>
+          {/* Guest form step */}
+          {checkoutStep === "guest" && (
+            <GuestBookingForm onSubmit={handleGuestSubmit} submitting={confirming} />
+          )}
+
+          {/* Stripe payment step */}
+          {checkoutStep === "payment" && clientSecret && (
+            <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
+              <StripePaymentForm
+                onSuccess={handlePaymentSuccess}
+                onError={(msg) => setError(msg)}
+              />
+            </Elements>
+          )}
+
+          {/* Main action button (shown when not in payment/guest step) */}
+          {checkoutStep === "select" && (
+            <button
+              onClick={handleProceedToPayment}
+              disabled={confirming}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+            >
+              {confirming && <Spinner size="sm" invert />}
+              {confirming ? "Wird vorbereitet…" : isMoreThan7Days ? "Karte speichern & Buchen" : "Zur Zahlung"}
+            </button>
+          )}
         </div>
       )}
 
@@ -433,18 +717,18 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <div className="bg-white dark:bg-s-dm-raised rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />
-              <h3 className="font-heading font-bold text-s-ink">Warteliste</h3>
+              <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">Warteliste</h3>
             </div>
             {waitlistDone ? (
               <div className="text-center py-4">
-                <p className="text-sm text-s-ink/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
+                <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
                 <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-button bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors">
                   Schliessen
                 </button>
               </div>
             ) : (
               <>
-                <p className="text-sm text-s-ink/60 mb-4">
+                <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-4">
                   Am {waitlistDate} sind leider keine Termine frei. Möchtest du benachrichtigt werden, wenn ein Platz frei wird?
                 </p>
                 <button
