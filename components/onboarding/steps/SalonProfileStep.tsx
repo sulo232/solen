@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Store, Camera, Phone } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
@@ -22,36 +22,30 @@ export default function SalonProfileStep({ salonId, locale, onSaved }: SalonProf
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  // Load existing data on mount
-  if (!loaded) {
-    fetch("/api/profile")
+  // Load existing salon data
+  useEffect(() => {
+    if (!salonId) return;
+    fetch(`/api/salons/${salonId}`)
       .then((r) => r.json())
-      .then((p) => {
-        if (p?.salon_id) {
-          fetch(`/api/salons?id=${p.salon_id}`)
-            .then((r) => r.json())
-            .then((d) => {
-              const s = d?.salon;
-              if (s) {
-                setForm({
-                  name: s.name || "",
-                  description_de: s.description_de || "",
-                  description_en: s.description_en || "",
-                  phone: s.phone || "",
-                  cover_photo_url: s.cover_photo_url || "",
-                });
-              }
-            });
+      .then((s) => {
+        if (s?.name) {
+          setForm({
+            name: s.name || "",
+            description_de: s.description_de || "",
+            description_en: s.description_en || "",
+            phone: s.phone || "",
+            cover_photo_url: s.cover_photo_url || "",
+          });
         }
       })
       .finally(() => setLoaded(true));
-  }
+  }, [salonId]);
 
   const handleSave = async () => {
     if (!form.name) return;
     setSaving(true);
     try {
-      await fetch("/api/salons", {
+      await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

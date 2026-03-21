@@ -77,6 +77,10 @@ export async function PATCH(
     "last_minute_discount_percent", "last_minute_window_hours",
     "accepts_online_payment", "no_show_deposit_amount",
     "cancellation_fee_type", "cancellation_fee_value", "free_cancel_hours",
+    "payment_mode", "deposit_percent", "cancellation_hours", "late_cancel_fee_percent",
+    "sms_reminder_24h", "sms_reminder_1h",
+    "vacation_start", "vacation_end",
+    "instagram_url", "facebook_url", "tiktok_url", "website_url",
   ];
 
   const updates: Record<string, unknown> = {};

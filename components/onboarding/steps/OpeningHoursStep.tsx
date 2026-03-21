@@ -10,11 +10,12 @@ const DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturd
 const DAYS_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
 interface OpeningHoursStepProps {
+  salonId: string;
   locale: string;
   onSaved: () => void;
 }
 
-export default function OpeningHoursStep({ locale, onSaved }: OpeningHoursStepProps) {
+export default function OpeningHoursStep({ salonId, locale, onSaved }: OpeningHoursStepProps) {
   const isDE = locale === "de" || locale === "fr";
   const dayLabels = isDE ? DAYS_DE : DAYS_EN;
   const [hours, setHours] = useState<Record<string, { open: string; close: string } | null>>(() => {
@@ -28,20 +29,16 @@ export default function OpeningHoursStep({ locale, onSaved }: OpeningHoursStepPr
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch("/api/profile")
+    if (!salonId) return;
+    fetch(`/api/salons/${salonId}`)
       .then((r) => r.json())
-      .then((p) => {
-        if (p?.salon_id) {
-          return fetch(`/api/salons?id=${p.salon_id}`).then((r) => r.json());
-        }
-      })
-      .then((d) => {
-        if (d?.salon?.opening_hours && Object.keys(d.salon.opening_hours).length > 0) {
-          setHours(d.salon.opening_hours);
+      .then((s) => {
+        if (s?.opening_hours && Object.keys(s.opening_hours).length > 0) {
+          setHours(s.opening_hours);
         }
       })
       .finally(() => setLoaded(true));
-  }, []);
+  }, [salonId]);
 
   const toggle = (key: string) => {
     setHours((h) => ({ ...h, [key]: h[key] ? null : { open: "09:00", close: "18:00" } }));
@@ -58,7 +55,7 @@ export default function OpeningHoursStep({ locale, onSaved }: OpeningHoursStepPr
   const handleSave = async () => {
     setSaving(true);
     try {
-      await fetch("/api/salons", {
+      await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ opening_hours: hours }),

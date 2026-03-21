@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { CreditCard, ExternalLink, Loader2, Check } from "lucide-react";
 
 interface PaymentsStepProps {
+  salonId: string;
   locale: string;
   onSaved: () => void;
 }
 
 type PaymentMode = "at_salon" | "deposit" | "prepay";
 
-export default function PaymentsStep({ locale, onSaved }: PaymentsStepProps) {
+export default function PaymentsStep({ salonId, locale, onSaved }: PaymentsStepProps) {
   const isDE = locale === "de" || locale === "fr";
   const [paymentMode, setPaymentMode] = useState<PaymentMode>("at_salon");
   const [connectStatus, setConnectStatus] = useState<"loading" | "not_connected" | "pending" | "connected">("loading");
@@ -38,7 +39,7 @@ export default function PaymentsStep({ locale, onSaved }: PaymentsStepProps) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await fetch("/api/salons", {
+      await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ payment_mode: paymentMode }),

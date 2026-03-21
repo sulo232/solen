@@ -90,7 +90,7 @@ export default function SetupPage() {
       {/* Step 1: Salon Profile */}
       <SalonProfileStep salonId={salonId} locale={locale} onSaved={refreshProgress} />
       {/* Step 2: Opening Hours */}
-      <OpeningHoursStep locale={locale} onSaved={refreshProgress} />
+      <OpeningHoursStep salonId={salonId} locale={locale} onSaved={refreshProgress} />
       {/* Step 3: Services */}
       <ServicesStep locale={locale} onSaved={refreshProgress} />
       {/* Step 4: Team */}
@@ -98,7 +98,7 @@ export default function SetupPage() {
       {/* Step 5: Schedule */}
       <ScheduleStep locale={locale} onSaved={refreshProgress} />
       {/* Step 6: Payments */}
-      <PaymentsStep locale={locale} onSaved={refreshProgress} />
+      <PaymentsStep salonId={salonId} locale={locale} onSaved={refreshProgress} />
       {/* Step 7: Go Live */}
       <GoLiveStep locale={locale} onGoLive={handleComplete} />
     </SetupWizard>
