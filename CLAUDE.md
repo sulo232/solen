@@ -19,13 +19,16 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 | **Styling** | Tailwind CSS (`tailwind.config.js`) + CSS Variables |
 | **Language** | TypeScript (`tsconfig.json`) and JavaScript |
 | **Backend/DB** | [Supabase](https://supabase.com/) — PostgreSQL, Auth (Google OAuth + Email), Storage |
-| **Payments** | [Stripe](https://stripe.com/) — Payment Intents, Connect, Webhooks |
+| **Payments** | [Stripe](https://stripe.com/) — Payment Intents, Connect, Webhooks, `@stripe/react-stripe-js`, `@stripe/stripe-js` |
 | **Rate Limiting** | [Upstash Redis](https://upstash.com/) via `@upstash/ratelimit` |
 | **Validation** | [Zod](https://zod.dev/) — API input validation schemas in `lib/validations.ts` |
 | **UI Components** | 21st.dev components (InteractiveHoverButton, ExpandableNavTabs, Sidebar, DatePicker) |
 | **Date Picker** | `react-aria-components` + `@internationalized/date` |
 | **Deployment** | Vercel (`vercel.json`) |
 | **PWA** | `manifest.json` + `sw.js` (Service Worker) |
+| **IDs** | `nanoid` — Unique code generation (gift cards, referral codes) |
+| **AI** | `@google/generative-ai` (Gemini 2.0 Flash) — Intake form recommendations, discovery AI descriptions |
+| **Charts** | `recharts` — Dashboard analytics visualizations |
 
 ---
 
@@ -127,6 +130,17 @@ solen/
 22. **Client CRM Tags**: Color-coded tags (allergy, preference, note) on client profiles. Red allergy warnings on booking cards.
 23. **Visual Editor**: Admin-only element selector at `/dashboard/editor`. Click any element → describe change → Claude API generates roadmap in CLAUDE.md R1-R10 format. Supports device preview, request queue, and cost tracking.
 24. **Discovery Platform**: Pinterest-style content discovery at `/discover`. Masonry grid with photo/TikTok cards, category/gender/texture filters, infinite scroll, like/save/comment social features, AI-powered descriptions (Gemini), stock photo import (Unsplash/Pexels/Pixabay), TikTok oEmbed import, admin content studio, user/salon posting with auto-flagging, recommendation algorithm, staff portfolio browsing, and booking bridge.
+25. **Prepaid Booking**: Stripe Connect with configurable platform fee, hold-and-release payment flow, card-on-file save via SetupIntents.
+26. **Staff Accounts**: Invite-based staff onboarding, role-limited dashboard (STAFF_NAV), per-staff service mapping, break/time-off management.
+27. **Guest Booking**: No account required for booking. Email-only checkout with automatic profile creation on confirmation.
+28. **Walk-in Mode**: SMS-based payment links for walk-in customers via seven.io. HMAC-signed tokenized payment pages.
+29. **Service Packages**: Multi-session punch cards with bonus sessions. PackageManager in marketing dashboard. Purchase tracking.
+30. **Digital Gift Cards**: Per-salon gift cards with custom amounts, recipient email delivery, code-based redemption, balance tracking.
+31. **Tip System**: Post-service tipping via tokenized tip pages. Preset + custom amounts. Stripe PaymentIntents for tip processing.
+32. **Group Bookings**: Multi-person bookings with shared `group_booking_id`. RPC function for atomic multi-slot booking.
+33. **Client CRM**: Color formulas, intake forms (5 consultation types), before/after photos, AI-powered intake recommendations via Gemini.
+34. **Referral Program**: Auto-generated referral codes, WhatsApp/SMS/copy sharing, reward tracking (CHF 10 per referral), salon-side referral dashboard.
+35. **Advanced Analytics**: Booking heatmap (7x12 CSS grid), staff comparison (table/chart), acquisition source tracking, revenue commission breakdown, gift card + tip summaries.
 
 ### 3.6 Commands
 
@@ -266,6 +280,20 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `discovery_boards` | `id`, `name`, `slug`, `category`, `gender`, `cover_images[]`, `pin_count` | Curated collections. |
 | `discovery_collections` | `id`, `user_id`, `name`, `is_public` | User save collections. |
 | `discovery_products` | `id`, `name`, `brand`, `price`, `affiliate_url`, `image_url` | Product recommendations. |
+| `staff_invites` | `id`, `salon_id`, `email`, `staff_name`, `invited_by`, `token`, `accepted_at` | Staff invite tokens. UNIQUE(salon_id, email). |
+| `staff_services` | `staff_member_id`, `service_id` | Many-to-many staff↔service mapping. PK(staff_member_id, service_id). |
+| `staff_breaks` | `id`, `staff_member_id`, `day_of_week`, `start_time`, `end_time`, `label` | Recurring break slots. |
+| `staff_time_off` | `id`, `staff_member_id`, `start_date`, `end_date`, `reason`, `approved` | Time-off requests. |
+| `salon_closures` | `id`, `salon_id`, `date`, `reason` | One-off closure days. UNIQUE(salon_id, date). |
+| `recurring_rules` | `id`, `salon_id`, `staff_member_id`, `day_of_week`, `start_time`, `end_time`, `recurrence_type` | Recurring availability rules. |
+| `tips` | `id`, `booking_id`, `tipper_id`, `staff_member_id`, `amount`, `payment_intent_id`, `paid_at` | Post-service tips. |
+| `gift_cards` | `id`, `salon_id`, `code`, `original_amount`, `remaining_amount`, `purchaser_id`, `recipient_name`, `recipient_email`, `message`, `is_active`, `expires_at` | Digital gift cards. UNIQUE(code). |
+| `service_packages` | `id`, `salon_id`, `name`, `service_id`, `sessions`, `bonus_sessions`, `price`, `is_active` | Multi-session punch cards. |
+| `package_purchases` | `id`, `package_id`, `customer_id`, `sessions_used`, `payment_intent_id`, `purchased_at` | Package purchase tracking. |
+| `client_formulas` | `id`, `salon_id`, `customer_id`, `brand`, `product_line`, `mix_formula`, `developer_volume`, `processing_minutes`, `notes` | Hair color formulas. |
+| `client_photos` | `id`, `salon_id`, `customer_id`, `photo_url`, `photo_type`, `notes` | Before/after + progress photos. `photo_type`: before/after/progress. |
+| `intake_forms` | `id`, `salon_id`, `customer_id`, `template_type`, `responses`, `ai_recommendation` | Consultation intake forms. `template_type`: hair/nail/waxing/makeup/spa. |
+| `processed_webhook_events` | `event_id` (PK), `processed_at` | Stripe webhook idempotency. |
 
 | View | Columns | Notes |
 |---|---|---|
