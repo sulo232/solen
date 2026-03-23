@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SetupBanner from "@/components/dashboard/SetupBanner";
+import GoLiveGate from "@/components/dashboard/GoLiveGate";
 import MiniSparkline from "@/components/dashboard/MiniSparkline";
 import Spinner from "@/components/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
@@ -146,6 +147,7 @@ export default function DashboardPage() {
         )}
       </AnimatePresence>
 
+      <GoLiveGate />
       <SetupBanner />
 
       <div className="mb-6">
