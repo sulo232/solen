@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { z } from "zod";
 import {
   Check,
   User,
@@ -31,7 +32,7 @@ import type { HairType, AgeGroup, Gender, SalonCategory } from "@/lib/types";
 // ─────────────────────────────────────────
 // Step 0 — Customer vs Salon choice (NEW)
 // ─────────────────────────────────────────
-function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () => void }) {
+function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () => void }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="text-center">
@@ -67,6 +68,126 @@ function Step0({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: () =>
         <ChevronRight size={18} className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors" />
       </button>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────
+// Step 0.5 — Register Email/Pass/DOB (NEW)
+// ─────────────────────────────────────────
+function StepRegister({ onNext }: { onNext: () => void }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const toast = useToast();
+
+  const calcAge = (dateStr: string) => {
+    if (!dateStr) return 0;
+    const b = new Date(dateStr);
+    const ageDifMs = Date.now() - b.getTime();
+    return Math.abs(new Date(ageDifMs).getUTCFullYear() - 1970);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    
+    if (calcAge(birthday) < 16) {
+      toast("Du musst mindestens 16 Jahre alt sein.", "error");
+      setSaving(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, birthday }),
+      });
+      const data = await res.json();
+
+      if (res.status === 409) {
+        toast("Du hast bereits ein Konto. Bitte logge dich ein.", "error");
+        setSaving(false);
+        return;
+      }
+      if (!res.ok) {
+        toast(data.message || "Registrierung fehlgeschlagen", "error");
+        setSaving(false);
+        return;
+      }
+      setSuccess(true);
+    } catch {
+      toast("Netzwerkfehler", "error");
+    }
+    setSaving(false);
+  };
+
+  if (success) {
+    return (
+      <div className="text-center py-6 flex flex-col items-center gap-3">
+        <div className="w-14 h-14 rounded-card bg-s-coral/10 flex items-center justify-center">
+          <Mail size={26} className="text-s-coral" strokeWidth={1.5} />
+        </div>
+        <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-lg">Fast fertig!</p>
+        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+          Bitte überprüfe deine E-Mails, um dein Konto zu bestätigen.
+        </p>
+        <button onClick={onNext} className="text-sm text-s-coral hover:underline font-body mt-4">
+          Weiter zum Onboarding (Test)
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Konto erstellen</h2>
+
+      <input
+        type="email"
+        placeholder="E-Mail"
+        required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+      />
+      <input
+        type="password"
+        placeholder="Passwort (min. 8 Zeichen, 1 Zahl, 1 Grossbuchstabe)"
+        required
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+      />
+      <div>
+        <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Geburtsdatum (mind. 16 Jahre)</label>
+        <input
+          type="date"
+          required
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+          className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={!email || !password || !birthday || saving}
+        className="w-full py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+      >
+        {saving && <Spinner size="sm" invert />}
+        Registrieren
+      </button>
+
+      <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 font-body mt-2">
+        Du hast bereits ein Konto?{" "}
+        <a href="/auth/login" className="text-s-coral hover:underline">
+          Anmelden
+        </a>
+      </p>
+    </form>
   );
 }
 
@@ -157,10 +278,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
 // ─────────────────────────────────────────
 
 const AGE_OPTIONS: { value: AgeGroup; label: string; icon: React.ReactNode }[] = [
-  { value: "child", label: "Kind", icon: <Baby size={16} /> },
-  { value: "teenager", label: "Teenager", icon: <Users size={16} /> },
-  { value: "adult", label: "Erwachsen", icon: <UserCircle size={16} /> },
-  { value: "senior", label: "Senior", icon: <User size={16} /> },
+  // Removed from step 2 since we collect exact DOB in signup step
 ];
 
 const GENDER_OPTIONS: { value: Gender; label: string; icon: React.ReactNode }[] = [
@@ -210,7 +328,6 @@ function SelectPill<T extends string>({
 }
 
 function Step2({ onNext }: { onNext: () => void }) {
-  const [age, setAge] = useState<AgeGroup | null>(null);
   const [gender, setGender] = useState<Gender | null>(null);
   const [hair, setHair] = useState<HairType | null>(null);
   const [saving, setSaving] = useState(false);
@@ -223,7 +340,7 @@ function Step2({ onNext }: { onNext: () => void }) {
       const res = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ age_group: age, gender, hair_type: hair }),
+        body: JSON.stringify({ gender, hair_type: hair }),
       });
       if (!res.ok) {
         toast("Profil konnte nicht gespeichert werden", "error");
@@ -243,10 +360,6 @@ function Step2({ onNext }: { onNext: () => void }) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Erzähl uns mehr</h2>
 
-      <div>
-        <p className="text-sm font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-2">Altersgruppe</p>
-        <SelectPill options={AGE_OPTIONS} value={age} onChange={setAge} />
-      </div>
       <div>
         <p className="text-sm font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-2">Geschlecht</p>
         <SelectPill options={GENDER_OPTIONS} value={gender} onChange={setGender} />
@@ -412,7 +525,7 @@ function DoneScreen() {
 // Main wizard
 // ─────────────────────────────────────────
 
-type WizardStep = -1 | 1 | 2 | 3 | "done";
+type WizardStep = -1 | 0 | 1 | 2 | 3 | "done";
 
 export default function RegisterPage() {
   const locale = useLocale();
@@ -494,7 +607,8 @@ export default function RegisterPage() {
                 animate="animate"
                 exit="exit"
               >
-                {step === -1 && <Step0 onCustomer={() => goTo(1)} onSalon={handleSalonChoice} />}
+                {step === -1 && <StepRole onCustomer={() => goTo(0)} onSalon={handleSalonChoice} />}
+                {step === 0 && <StepRegister onNext={() => goTo(1)} />}
                 {step === 1 && <Step1 onNext={() => goTo(2)} />}
                 {step === 2 && <Step2 onNext={() => goTo(3)} />}
                 {step === 3 && <Step3 onComplete={handleComplete} />}

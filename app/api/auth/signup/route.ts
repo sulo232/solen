@@ -5,6 +5,13 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 
+const calcAge = (dateStr: string) => {
+  const b = new Date(dateStr);
+  const ageDifMs = Date.now() - b.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 const signupSchema = z.object({
   email: z.string().email("Ungültige E-Mail-Adresse"),
   password: z
@@ -12,6 +19,9 @@ const signupSchema = z.object({
     .min(8, "Mindestens 8 Zeichen")
     .regex(/[A-Z]/, "Mindestens ein Grossbuchstabe")
     .regex(/[0-9]/, "Mindestens eine Zahl"),
+  birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD").refine((val) => calcAge(val) >= 16, {
+    message: "Du musst mindestens 16 Jahre alt sein.",
+  }),
 });
 
 export async function POST(request: NextRequest) {
@@ -25,7 +35,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: firstError }, { status: 400 });
   }
 
-  const { email, password } = parsed.data;
+  const { email, password, birthday } = parsed.data;
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;
 
@@ -33,6 +43,7 @@ export async function POST(request: NextRequest) {
     email,
     password,
     options: {
+      data: { birthday },
       emailRedirectTo: `${origin}/api/auth/callback`,
     },
   });
