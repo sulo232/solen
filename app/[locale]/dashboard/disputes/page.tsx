@@ -6,6 +6,7 @@ import { AlertTriangle, CheckCircle, XCircle, Scale } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
+import BookingDisputePanel from "@/components/admin/BookingDisputePanel";
 
 interface Dispute {
   id: string;
@@ -222,6 +223,8 @@ export default function DisputesPage() {
             ))}
           </div>
         )}
+        
+        <BookingDisputePanel />
       </div>
     </DashboardLayout>
   );

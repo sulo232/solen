@@ -14,17 +14,10 @@
 ---
 
 ## Profile Sub-Pages (2026-03-22)
-- **Feature/Page:** `app/[locale]/profile/packages/page.tsx` — My Packages (multi-session punch cards)
-- **Current State:** Link exists in ProfilePage.tsx but page does not exist. Users get 404.
-- **Blocker:** Page not built yet.
-- **Next Steps:** Create page that fetches `package_purchases` joined with `service_packages` for the logged-in user.
+- ALL profile sub-pages (packages, gift-cards, intake-forms) have been BUILT AND COMPLETED.
 
-- **Feature/Page:** `app/[locale]/profile/gift-cards/page.tsx` — My Gift Cards
-- **Current State:** Link exists in ProfilePage.tsx but page does not exist. Users get 404.
-- **Blocker:** Page not built yet.
-- **Next Steps:** Create page that fetches `gift_cards` where `purchaser_id = user.id` or `recipient_email = user.email`.
+- **Feature/Page:** `components/disputes/ReportProblemButton.tsx` — Customer Dispute Button
+- **Current State:** Fetches `/api/bookings/[id]/report` via useSWR for each completed booking independently.
+- **Blocker:** Causes N+1 queries on the frontend if a user has many completed bookings.
+- **Next Steps:** Create a batch endpoint `/api/bookings/disputes` or use Supabase directly to fetch all user disputes in one request, similar to the dashboard implementation.
 
-- **Feature/Page:** `app/[locale]/profile/intake-forms/page.tsx` — My Consultation Forms
-- **Current State:** Link exists in ProfilePage.tsx but page does not exist. Users get 404.
-- **Blocker:** Page not built yet.
-- **Next Steps:** Create page that fetches `intake_forms` for the logged-in user, grouped by `template_type`.
