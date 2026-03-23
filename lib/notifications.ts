@@ -21,9 +21,6 @@ import {
 } from './email-templates/audit-notifications';
 import { bookingConfirmation, bookingCancellation } from './email';
 
-// Supabase Admin client for backend operations
-const supabaseAdmin = createAdminSupabaseClient();
-
 export type NotificationType =
   | 'booking_confirmed'
   | 'booking_pending'
@@ -58,6 +55,9 @@ export async function sendNotification(params: {
     vars: any;
   };
 }) {
+  // Supabase Admin client for backend operations
+  const supabaseAdmin = createAdminSupabaseClient();
+
   // 1. Insert in-app notification
   try {
     const { error } = await supabaseAdmin
