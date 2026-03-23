@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
 
   const disputeBookingIds = (pendingDisputes ?? []).map((d) => d.booking_id);
 
+  const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+
   // Find bookings to auto-complete
   let query = admin
     .from("bookings")
@@ -28,7 +30,7 @@ export async function GET(req: NextRequest) {
     .eq("status", "confirmed")
     .neq("payment_status", "pending")
     .neq("paid_via", "walk_in")
-    .lt("ends_at", now);
+    .lt("ends_at", fortyEightHoursAgo);
 
   // Filter to salons with auto_complete_enabled
   // We need a subquery approach — fetch eligible salons first
