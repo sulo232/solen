@@ -103,7 +103,20 @@ export async function POST(req: NextRequest) {
             const timeStr = new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
             const serviceName = (booking.services as any)?.name_de ?? "Service";
             const salonName = (booking.salons as any)?.name ?? "Salon";
-            await sendEmail(bookingConfirmation(email, { service: serviceName, salon: salonName, date: dateStr, time: timeStr }, locale)).catch(() => {});
+            
+            const { sendNotification } = await import("@/lib/notifications");
+            await sendNotification({
+              userId: booking.user_id,
+              type: "booking_confirmed",
+              title: "Buchung bestätigt",
+              body: `Deine Buchung für ${serviceName} bei ${salonName} wurde bestätigt.`,
+              data: { bookingId },
+              emailParams: {
+                to: email,
+                locale,
+                vars: { service: serviceName, salon: salonName, date: dateStr, time: timeStr }
+              }
+            }).catch(() => {});
           }
         }
       }
@@ -229,11 +242,25 @@ export async function POST(req: NextRequest) {
 
     case "payout.paid": {
       const payout = event.data.object as any;
-      const accountId = event.account; // since it's a connect webhook possibly?
-      // Wait, Stripe connect webhooks for destination accounts are delivered to the platform but we must verify
-      // Payout paid event applies to salon connected account
+      const accountId = event.account; 
       if (accountId) {
-        // Log payout or update status
+        const { data: salon } = await admin.from("salons").select("name, owner_id").eq("stripe_account_id", accountId).single();
+        if (salon?.owner_id) {
+          const { data: profile } = await admin.from("profiles").select("email, locale").eq("id", salon.owner_id).single();
+          const { sendNotification } = await import("@/lib/notifications");
+          await sendNotification({
+            userId: salon.owner_id,
+            type: "payout_completed",
+            title: "Auszahlung erfolgreich",
+            body: `Eine Auszahlung von ${(payout.amount / 100).toFixed(2)} CHF ist auf dem Weg zu deinem Bankkonto.`,
+            data: { payoutId: payout.id },
+            emailParams: profile?.email ? {
+              to: profile.email,
+              locale: (profile.locale as EmailLocale) ?? "de",
+              vars: { salonName: salon.name, amount: (payout.amount / 100).toFixed(2) }
+            } : undefined
+          });
+        }
       }
       break;
     }
@@ -241,6 +268,26 @@ export async function POST(req: NextRequest) {
     case "payout.failed": {
       const payout = event.data.object as any;
       console.warn(`[stripe/webhook] Payout failed. Reason: ${payout.failure_reason}`);
+      const accountId = event.account;
+      if (accountId) {
+        const { data: salon } = await admin.from("salons").select("name, owner_id").eq("stripe_account_id", accountId).single();
+        if (salon?.owner_id) {
+          const { data: profile } = await admin.from("profiles").select("email, locale").eq("id", salon.owner_id).single();
+          const { sendNotification } = await import("@/lib/notifications");
+          await sendNotification({
+            userId: salon.owner_id,
+            type: "payout_failed",
+            title: "Auszahlung fehlgeschlagen",
+            body: `Deine Auszahlung von ${(payout.amount / 100).toFixed(2)} CHF ist fehlgeschlagen. Bitte prüfe dein Stripe-Konto.`,
+            data: { payoutId: payout.id, reason: payout.failure_reason },
+            emailParams: profile?.email ? {
+              to: profile.email,
+              locale: (profile.locale as EmailLocale) ?? "de",
+              vars: { salonName: salon.name, amount: (payout.amount / 100).toFixed(2) }
+            } : undefined
+          });
+        }
+      }
       break;
     }
   }
