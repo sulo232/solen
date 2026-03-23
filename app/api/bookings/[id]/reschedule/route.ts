@@ -30,7 +30,7 @@ export async function POST(
   // Verify booking belongs to user
   const { data: booking } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, status")
+    .select("id, user_id, salon_id, status, starts_at")
     .eq("id", id)
     .single();
 
@@ -38,6 +38,11 @@ export async function POST(
   if (booking.user_id !== user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (booking.status !== "confirmed") {
     return NextResponse.json({ error: "Only confirmed bookings can be rescheduled" }, { status: 400 });
+  }
+
+  const hoursUntil = (new Date(booking.starts_at).getTime() - new Date().getTime()) / (1000 * 60 * 60);
+  if (hoursUntil < 24) {
+    return NextResponse.json({ error: "Rescheduling is only allowed up to 24 hours before the appointment" }, { status: 400 });
   }
 
   // Fetch new slot

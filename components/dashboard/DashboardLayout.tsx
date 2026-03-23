@@ -52,6 +52,7 @@ const OWNER_NAV = [
   { label: "Barber Ops",   href: "/dashboard/barber-ops",     icon: BarChart3 },
   { label: "Treueprogramm",href: "/dashboard/loyalty",        icon: Award },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
+  { label: "Verifizierung",href: "/dashboard/verification", icon: ShieldCheck },
 ] as const;
 
 const STAFF_NAV = [

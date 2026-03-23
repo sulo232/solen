@@ -933,14 +933,20 @@ export default function SalonProfilePage() {
                             </div>
                           )}
                           {/* Review reply badge */}
-                          {rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public && (
-                            <div className="mt-3 pl-4 border-l-2 border-s-coral/30">
-                              <p className="text-xs text-s-coral font-medium flex items-center gap-1 mb-1">
-                                <ShieldCheck className="w-3 h-3" />Salon hat geantwortet
-                              </p>
-                              <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">{rev.review_replies[0].reply_text}</p>
-                            </div>
-                          )}
+                          {(() => {
+                            const reply = rev.review_replies && rev.review_replies.length > 0 && rev.review_replies[0].is_public
+                              ? rev.review_replies[0].reply_text
+                              : (rev as any).salon_response ?? null;
+                            if (!reply) return null;
+                            return (
+                              <div className="mt-3 pl-4 border-l-2 border-s-coral/30">
+                                <p className="text-xs text-s-coral font-medium flex items-center gap-1 mb-1">
+                                  <ShieldCheck className="w-3 h-3" />Salon hat geantwortet
+                                </p>
+                                <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">{reply}</p>
+                              </div>
+                            );
+                          })()}
                           <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 mt-2">
                             {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB")}
                           </p>

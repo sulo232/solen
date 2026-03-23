@@ -27,7 +27,7 @@ export async function POST(
   // Fetch booking with relations (including salon owner_id for notification)
   const { data: booking, error } = await supabase
     .from("bookings")
-    .select("*, salons(*, owner_id, cancellation_fee_percent, cancellation_window_hours), services(*)")
+    .select("*, salons(*, owner_id, cancellation_fee_percent, cancellation_window_hours, cancellation_count), services(*)")
     .eq("id", id)
     .single();
 
@@ -35,7 +35,10 @@ export async function POST(
     return NextResponse.json({ message: "Booking not found", code: "NOT_FOUND" }, { status: 404 });
   }
 
-  if (booking.user_id !== user.id) {
+  const isCustomer = booking.user_id === user.id;
+  const isSalonOwner = (booking.salons as any)?.owner_id === user.id;
+
+  if (!isCustomer && !isSalonOwner) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
@@ -50,12 +53,17 @@ export async function POST(
 
   if (paidAmount > 0 && paymentIntentId) {
     const salon = booking.salons as any;
-    refundResult = calculateRefund(
-      paidAmount,
-      salon?.cancellation_fee_percent ?? 30,
-      salon?.cancellation_window_hours ?? 24,
-      new Date(booking.starts_at)
-    );
+    
+    if (isSalonOwner) {
+      refundResult = { refundAmount: paidAmount, feeAmount: 0, isWithinWindow: true };
+    } else {
+      refundResult = calculateRefund(
+        paidAmount,
+        salon?.cancellation_fee_percent ?? 30,
+        salon?.cancellation_window_hours ?? 24,
+        new Date(booking.starts_at)
+      );
+    }
 
     // Process Stripe refund if there's an amount to refund
     if (refundResult.refundAmount > 0) {
@@ -68,6 +76,25 @@ export async function POST(
       } catch (stripeErr: any) {
         return NextResponse.json({ message: `Refund failed: ${stripeErr.message}`, code: "STRIPE_ERROR" }, { status: 500 });
       }
+    }
+  }
+
+  if (isSalonOwner) {
+    const adminClient = await import("@/lib/supabase").then((m) => m.createAdminSupabaseClient());
+    const currentCount = (booking.salons as any)?.cancellation_count ?? 0;
+    const newCount = currentCount + 1;
+    await adminClient.from("salons").update({ cancellation_count: newCount }).eq("id", booking.salon_id);
+    
+    if (newCount >= 3) {
+      const { logAuditEvent } = await import("@/lib/audit");
+      await logAuditEvent({
+        actor_id: user.id,
+        action: "salon_excessive_cancellations",
+        target_type: "salon",
+        target_id: booking.salon_id,
+        metadata: { count: newCount },
+        ip_address: request.headers.get("x-forwarded-for") ?? "unknown"
+      });
     }
   }
 

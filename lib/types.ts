@@ -257,6 +257,30 @@ export interface Review {
   created_at: string;
 }
 
+export interface ContentReport {
+  id: string;
+  reporter_id: string | null;
+  target_type: 'salon' | 'review' | 'user';
+  target_id: string;
+  reason: 'inappropriate' | 'spam' | 'fake' | 'ip_violation' | 'other';
+  details: string | null;
+  status: 'pending' | 'reviewed' | 'action_taken' | 'dismissed';
+  admin_notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SalonDocument {
+  id: string;
+  salon_id: string;
+  document_type: 'trade_license' | 'professional_cert' | 'hygiene_cert' | 'id_proof' | 'address_proof' | 'other';
+  file_url: string;
+  file_name: string;
+  status: 'pending' | 'approved' | 'rejected';
+  admin_note: string | null;
+  uploaded_at: string;
+}
+
 export interface AccountAction {
   id: string;
   salon_id: string;

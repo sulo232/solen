@@ -624,6 +624,10 @@ export const bookingCancelSchema = z.object({
   reason: z.string().max(500).optional(),
 });
 
+export const bookingPatchSchema = z.object({
+  status: z.enum(["completed", "no_show"]),
+});
+
 export const bookingInspoSchema = z.object({
   image_ids: z.array(z.string().uuid()).min(1).max(10),
 });
