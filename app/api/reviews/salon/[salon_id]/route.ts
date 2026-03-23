@@ -28,7 +28,7 @@ export async function GET(
 
   const { data, error, count } = await supabase
     .from("reviews")
-    .select("*, profiles!user_id(display_name, avatar_url), staff_members(name)", { count: "exact" })
+    .select("*, profiles!user_id(display_name, avatar_url), staff_members(name), review_replies(reply_text, is_public)", { count: "exact" })
     .eq("salon_id", salon_id)
     .eq("is_hidden", false)
     .order(orderCol, { ascending })

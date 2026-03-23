@@ -68,5 +68,13 @@ export async function POST(request: NextRequest) {
 
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
+  // Fire notification to salon (fire-and-forget)
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  fetch(`${baseUrl}/api/notify/review-posted`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ review_id: data.id })
+  }).catch(() => {});
+
   return NextResponse.json({ data }, { status: 201 });
 }

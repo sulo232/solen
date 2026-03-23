@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   // Fetch all active salons
   const { data: salons, error: salonsErr } = await admin
     .from("salons")
-    .select("id, average_rating, review_count, image_url:cover_photo_url, description:description_de, phone, opening_hours, categories, owner_id")
+    .select("id, average_rating, review_count, image_url:cover_photo_url, description:description_de, phone, opening_hours, categories, owner_id, warning_count, frozen_at")
     .eq("is_active", true);
 
   if (salonsErr || !salons) {
@@ -97,7 +97,18 @@ export async function POST(req: NextRequest) {
           : 999;
         const activityScore = daysSinceLogin < 7 ? 10 : daysSinceLogin < 30 ? 5 : 0;
 
-        const total = ratingScore + reviewScore + responseScore + profileScore + bookingScore + activityScore;
+        const rawScore = ratingScore + reviewScore + responseScore + profileScore + bookingScore + activityScore;
+        
+        let penaltyMultiplier = 1.0;
+        if (salon.frozen_at) {
+          penaltyMultiplier = 0;
+        } else if ((salon.warning_count ?? 0) >= 2) {
+          penaltyMultiplier = 0.65;
+        } else if ((salon.warning_count ?? 0) >= 1) {
+          penaltyMultiplier = 0.85;
+        }
+        
+        const total = Math.round(rawScore * penaltyMultiplier);
         const tier = total >= 80 ? "gold" : total >= 60 ? "coral" : total >= 40 ? "grey" : "dark";
 
         const scoreDetails = {

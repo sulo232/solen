@@ -25,7 +25,7 @@ export type Quartier =
   | "bruderholz"
   | "breite";
 
-export type BookingStatus = "confirmed" | "cancelled" | "completed" | "no_show";
+export type BookingStatus = "pending" | "pending_approval" | "confirmed" | "cancelled" | "completed" | "no_show";
 
 export type RecurringFrequency = "weekly" | "biweekly" | "monthly" | "custom";
 
@@ -107,6 +107,7 @@ export interface Salon {
   cancellation_window_hours?: number;
   auto_assign_method?: AutoAssignMethod;
   auto_complete_enabled?: boolean;
+  booking_confirmation_mode?: "instant" | "manual_approval";
 }
 
 export interface StaffMember {
@@ -247,6 +248,22 @@ export interface Review {
   staff_member_id: string | null;
   rating: number; // 1-5
   comment: string | null;
+  is_flagged?: boolean;
+  is_hidden?: boolean;
+  moderation_status?: "active" | "under_review" | "removed";
+  removal_reason?: string | null;
+  admin_response?: string | null;
+  admin_response_at?: string | null;
+  created_at: string;
+}
+
+export interface AccountAction {
+  id: string;
+  salon_id: string;
+  action_type: 'warning' | 'demotion' | 'suspension' | 'removal' | 'reinstatement';
+  reason: string;
+  admin_id: string;
+  resolved_at: string | null;
   created_at: string;
 }
 
@@ -602,6 +619,29 @@ export interface AIVisionResult {
 export type PaymentStatus = 'pending' | 'card_saved' | 'deposit_held' | 'paid' | 'none' | 'refunded' | 'partially_refunded' | 'disputed';
 export type AutoAssignMethod = 'least_booked_week' | 'least_booked_today' | 'round_robin' | 'manual_priority';
 export type AdjustmentStatus = 'pending' | 'accepted' | 'disputed' | 'expired';
+
+export type DisputeIssueType = 'quality' | 'no_show_by_salon' | 'wrong_service' | 'overcharge' | 'other';
+export type DisputeStatus = 'open' | 'in_review' | 'resolved' | 'escalated';
+
+export interface BookingDispute {
+  id: string;
+  booking_id: string;
+  reporter_id: string;
+  reported_id: string;
+  issue_type: DisputeIssueType;
+  description: string;
+  status: DisputeStatus;
+  salon_response?: string | null;
+  salon_responded_at?: string | null;
+  resolution?: string | null;
+  resolved_by?: string | null;
+  resolved_at?: string | null;
+  mediation_started_at?: string | null;
+  mediation_deadline_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type GroupEventType = 'bridal' | 'birthday' | 'corporate' | 'other';
 export type PhotoType = 'before' | 'after' | 'progress';
 export type IntakeTemplateKey = 'hair_consultation' | 'nail_consultation' | 'waxing_consultation' | 'makeup_consultation' | 'spa_consultation';

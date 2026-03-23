@@ -51,13 +51,23 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { salon_response } = validated;
 
   const { error } = await admin
-    .from("reviews")
-    .update({
-      salon_response: salon_response.trim(),
-      salon_response_at: new Date().toISOString(),
-    })
-    .eq("id", id);
+    .from("review_replies")
+    .upsert({
+      review_id: id,
+      salon_id: review.salon_id,
+      reply_text: salon_response.trim(),
+      is_public: true,
+    }, { onConflict: "review_id" });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Fire notification to customer (fire-and-forget)
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  fetch(`${baseUrl}/api/notify/review-replied`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ review_id: id, reply_text: salon_response.trim() })
+  }).catch(() => {});
+
   return NextResponse.json({ ok: true });
 }

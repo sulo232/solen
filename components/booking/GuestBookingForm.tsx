@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { User, Phone, Mail } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 
 export interface GuestInfo {
   name: string;
@@ -19,6 +20,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
   const [phone, setPhone] = useState("+41");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const posthog = usePostHog();
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -31,6 +33,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
 
   const handleSubmit = () => {
     if (!validate()) return;
+    posthog?.capture("booking_initiated", { type: "guest" });
     onSubmit({ name: name.trim(), phone: phone.replace(/\s/g, ""), email: email.trim() });
   };
 

@@ -29,8 +29,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
 
   const updates: Record<string, unknown> = {};
-  if (validated.is_flagged !== undefined) updates.is_flagged = Boolean(validated.is_flagged);
-  if (validated.is_hidden !== undefined) updates.is_hidden = Boolean(validated.is_hidden);
+  if (validated.moderation_status !== undefined) {
+    updates.moderation_status = validated.moderation_status;
+    updates.is_hidden = validated.moderation_status === "removed";
+    if (validated.moderation_status === "active") {
+      updates.is_flagged = false; // clear flag when approved
+    }
+  }
+  if (validated.removal_reason !== undefined) {
+    updates.removal_reason = validated.removal_reason;
+  }
   if (validated.admin_response !== undefined) {
     updates.admin_response = validated.admin_response;
     updates.admin_response_at = new Date().toISOString();

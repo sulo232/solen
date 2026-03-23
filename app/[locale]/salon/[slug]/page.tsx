@@ -16,6 +16,7 @@ import { Gift, Package } from "lucide-react";
 import BookingCalendar from "@/components/BookingCalendar";
 import StaffPortfolio from "@/components/StaffPortfolio";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
+import ReviewForm from "@/components/ReviewForm";
 import NearbySalons from "@/components/NearbySalons";
 import WaitTimeDisplay from "@/components/barber/WaitTimeDisplay";
 import RemoteQueueJoin from "@/components/barber/RemoteQueueJoin";
@@ -24,6 +25,7 @@ import BottomSheet from "@/components/ui/BottomSheet";
 import Spinner from "@/components/ui/Spinner";
 import { trackSalonView } from "@/components/RecentlyViewed";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePostHog } from "posthog-js/react";
 import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory, OpeningHours } from "@/lib/types";
 import { generateSalonSchema } from "@/lib/seo";
 
@@ -224,6 +226,7 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
 export default function SalonProfilePage() {
   const { slug } = useParams<{ slug: string }>();
   const locale = useLocale();
+  const posthog = usePostHog();
 
   const [salon, setSalon] = useState<SalonDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -238,6 +241,9 @@ export default function SalonProfilePage() {
   const [openAccordion, setOpenAccordion] = useState<string | null>("angebot");
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
   const [hoursExpanded, setHoursExpanded] = useState(false);
+  const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -246,6 +252,26 @@ export default function SalonProfilePage() {
       .then((d) => { setSalon(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, [slug]);
+
+  useEffect(() => {
+    if (!salon?.id) return;
+    fetch(`/api/reviews/my-booking?salon_id=${salon.id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.booking?.id) {
+          setUnreviewedBookingId(d.booking.id);
+        }
+      })
+      .catch(() => {});
+
+    // Check if the current user is the owner
+    fetch("/api/salons/mine")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.salon?.id === salon.id) setIsOwner(true);
+      })
+      .catch(() => {});
+  }, [salon?.id]);
 
   // Track salon page view (fire-and-forget, rate-limited by session cookie)
   useEffect(() => {
@@ -265,7 +291,13 @@ export default function SalonProfilePage() {
       average_rating: salon.average_rating,
       categories: salon.categories,
     });
-  }, [salon?.id, salon?.slug, salon?.name, salon?.cover_photo_url, salon?.average_rating, salon?.categories]);
+    
+    // PostHog event
+    posthog?.capture("salon_profile_viewed", {
+      salon_id: salon.id,
+      salon_name: salon.name,
+    });
+  }, [salon?.id, salon?.slug, salon?.name, salon?.cover_photo_url, salon?.average_rating, salon?.categories, posthog]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
@@ -288,6 +320,28 @@ export default function SalonProfilePage() {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
   const reviewsVisible = sortedReviews.slice(0, reviewPage * 5);
+
+  const handleFlagReview = async (reviewId: string) => {
+    const reason = window.prompt("Warum möchtest du diese Bewertung melden?");
+    if (!reason || reason.trim().length < 5) {
+      if (reason) alert("Bitte gib einen Grund an (mindestens 5 Zeichen).");
+      return;
+    }
+    
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}/flag`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: reason.trim() })
+      });
+      if (!res.ok) throw new Error("Fehler beim Melden der Bewertung");
+      alert("Bewertung wurde gemeldet und wird geprüft.");
+      // Optionally reload salon here
+      fetch(`/api/salons/${slug}`).then((r) => r.json()).then(setSalon).catch(() => {});
+    } catch (err) {
+      alert("Fehler beim Melden der Bewertung.");
+    }
+  };
 
   const scrollToReviews = () => {
     setActiveTab("bewertungen");
@@ -715,7 +769,15 @@ export default function SalonProfilePage() {
                         <div className="divide-y divide-s-ink/5 dark:divide-white/5">
                           {svcs.map((svc) => (
                             <button key={svc.id}
-                              onClick={() => { setSelectedService(svc.id); setCalendarOpen(true); }}
+                              onClick={() => { 
+                                posthog?.capture("service_selected", { 
+                                  salon_id: salon.id, 
+                                  service_id: svc.id,
+                                  service_name: svc.name_en || svc.name_de 
+                                });
+                                setSelectedService(svc.id); 
+                                setCalendarOpen(true); 
+                              }}
                               className={`w-full flex items-center justify-between py-3 px-2 rounded text-left hover:bg-s-bg-surface transition-colors ${selectedService === svc.id ? "bg-s-coral/5" : ""}`}
                             >
                               <div className="flex items-center gap-2">
@@ -790,6 +852,20 @@ export default function SalonProfilePage() {
                       onReviewCountClick={scrollToReviews}
                     />
 
+                    {/* Write Review Button */}
+                    {unreviewedBookingId && (
+                      <div className="mt-4">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => setShowReviewForm(true)}
+                          className="w-full sm:w-auto py-2.5 px-6 rounded-button bg-s-coral text-white font-medium text-sm transition-colors shadow-warm-sm"
+                        >
+                          Bewertung schreiben
+                        </motion.button>
+                      </div>
+                    )}
+
                     {/* Review sort */}
                     <div className="flex items-center gap-2 mt-4 mb-4">
                       <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Sortieren:</span>
@@ -826,8 +902,21 @@ export default function SalonProfilePage() {
                               )}
                             </div>
                             <Stars rating={rev.rating} size="sm" />
-                          </div>
+                           </div>
                           {rev.comment && <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed">{rev.comment}</p>}
+                          
+                          {/* Owner Actions */}
+                          {isOwner && (
+                            <div className="mt-2 flex justify-end">
+                              <button 
+                                onClick={() => handleFlagReview(rev.id)} 
+                                className="text-xs text-s-coral hover:underline"
+                              >
+                                Melden
+                              </button>
+                            </div>
+                          )}
+
                           {/* Review photos */}
                           {rev.review_photos && rev.review_photos.length > 0 && (
                             <div className="flex gap-2 mt-3">
@@ -984,6 +1073,23 @@ export default function SalonProfilePage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {showReviewForm && unreviewedBookingId && salon && (
+          <ReviewForm
+            salonId={salon.id}
+            bookingId={unreviewedBookingId}
+            onSuccess={() => {
+              setShowReviewForm(false);
+              setUnreviewedBookingId(null);
+              // Reload salon data to see the new review immediately
+              fetch(`/api/salons/${slug}`)
+                .then((r) => r.json())
+                .then(setSalon)
+                .catch(() => {});
+            }}
+            onClose={() => setShowReviewForm(false)}
+          />
+        )}
       </div>
     </>
   );

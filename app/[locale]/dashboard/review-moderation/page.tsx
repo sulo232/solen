@@ -91,8 +91,8 @@ export default function ReviewModerationPage() {
 
   const handleAction = async (id: string, action: "approve" | "hide") => {
     const body = action === "approve"
-      ? { is_flagged: false, is_hidden: false }
-      : { is_hidden: true };
+      ? { moderation_status: "active" }
+      : { moderation_status: "removed", removal_reason: "Versteckt durch Admin" };
     await fetch(`/api/admin/reviews/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

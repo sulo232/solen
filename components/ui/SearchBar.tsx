@@ -4,16 +4,19 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Search } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
   const router = useRouter();
   const locale = useLocale();
+  const posthog = usePostHog();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const trimmed = query.trim();
     if (trimmed) {
+      posthog?.capture("search_performed", { query: trimmed });
       router.push(`/${locale}/coiffeur?q=${encodeURIComponent(trimmed)}`);
     }
   };

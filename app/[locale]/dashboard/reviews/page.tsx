@@ -12,10 +12,9 @@ interface Review {
   id: string;
   rating: number;
   comment: string | null;
-  salon_response: string | null;
-  salon_response_at: string | null;
   created_at: string;
   profiles: { display_name: string | null; avatar_url: string | null } | null;
+  review_replies?: { reply_text: string; is_public: boolean }[];
 }
 
 function Stars({ rating }: { rating: number }) {
@@ -117,15 +116,15 @@ export default function SalonReviewsPage() {
               )}
 
               {/* Existing salon response */}
-              {r.salon_response && (
+              {r.review_replies && r.review_replies.length > 0 && (
                 <div className="bg-s-coral/5 rounded-button p-3 mb-3">
                   <p className="text-[10px] font-bold text-s-coral mb-1">Deine Antwort</p>
-                  <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70">{r.salon_response}</p>
+                  <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70">{r.review_replies[0].reply_text}</p>
                 </div>
               )}
 
               {/* Respond button / form */}
-              {!r.salon_response && (
+              {(!r.review_replies || r.review_replies.length === 0) && (
                 <>
                   {respondingTo === r.id ? (
                     <div className="space-y-2">

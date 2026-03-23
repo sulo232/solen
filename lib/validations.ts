@@ -505,6 +505,22 @@ export const adminFeatureFlagSchema = z.object({
   description: z.string().max(500).optional(),
 });
 
+export const reportDisputeSchema = z.object({
+  issue_type: z.enum(['quality', 'no_show_by_salon', 'wrong_service', 'overcharge', 'other']),
+  description: z.string().min(20, 'Description must be at least 20 characters').max(1000),
+});
+
+export const salonDisputeResponseSchema = z.object({
+  salon_response: z.string().min(10, 'Response must be at least 10 characters').max(1000),
+});
+
+export const adminDisputeBookingActionSchema = z.object({
+  dispute_id: z.string().uuid(),
+  action: z.enum(['dismiss', 'warn_customer', 'warn_salon', 'escalate', 'resolve_with_note', 'refund']),
+  resolution_note: z.string().max(500).optional(),
+  refund_amount: z.number().int().positive().optional(), // in cents (Stripe)
+});
+
 export const adminDisputeActionSchema = z.object({
   dispute_id: z.string().uuid(),
   action: z.enum(["resolve", "refund", "dismiss"]),
@@ -542,8 +558,13 @@ export const adminUserUpdateSchema = z.object({
 });
 
 export const adminReviewActionSchema = z.object({
-  status: z.enum(["approved", "flagged", "removed"]),
-  admin_reason: z.string().max(500).optional(),
+  moderation_status: z.enum(["active", "under_review", "removed"]).optional(),
+  removal_reason: z.string().max(500).optional(),
+  admin_response: z.string().max(500).optional(),
+});
+
+export const flagReviewSchema = z.object({
+  reason: z.string().min(5).max(500),
 });
 
 export const adminDiscoveryItemSchema = z.object({

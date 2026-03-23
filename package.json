@@ -43,6 +43,7 @@
     "next-intl": "^3.26.5",
     "picocolors": "^1.1.1",
     "posthog-js": "^1.360.2",
+    "posthog-node": "^5.28.5",
     "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-aria": "^3.47.0",

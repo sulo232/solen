@@ -885,16 +885,17 @@ function ClosuresTab({ salon }: { salon: Salon }) {
 // ─────────────────────────────────────────
 
 function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
-  const ext = salon as Salon & { auto_assign_method?: string; daily_limit_enabled?: boolean; daily_limit?: number };
+  const ext = salon as Salon & { auto_assign_method?: string; daily_limit_enabled?: boolean; daily_limit?: number; booking_confirmation_mode?: "instant" | "manual_approval" };
   const [method, setMethod] = useState(ext.auto_assign_method ?? "manual");
   const [limitEnabled, setLimitEnabled] = useState(ext.daily_limit_enabled ?? false);
   const [limit, setLimit] = useState(ext.daily_limit ?? 20);
+  const [confirmMode, setConfirmMode] = useState<"instant" | "manual_approval">(ext.booking_confirmation_mode ?? "instant");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
-    await onSave({ auto_assign_method: method, daily_limit_enabled: limitEnabled, daily_limit: limit } as any);
+    await onSave({ auto_assign_method: method, daily_limit_enabled: limitEnabled, daily_limit: limit, booking_confirmation_mode: confirmMode } as any);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -902,6 +903,22 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
 
   return (
     <div className="py-4 max-w-md space-y-5">
+      <div>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">Buchungsbestätigung</label>
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          {[
+            { id: "instant", label: "Sofortige Bestätigung", desc: "Autom. bestätigt" },
+            { id: "manual_approval", label: "Manuelle Freigabe", desc: "Sie bestätigen" },
+          ].map((opt) => (
+            <button key={opt.id} type="button" onClick={() => setConfirmMode(opt.id as any)}
+              className={["rounded-card border p-3 text-left transition-colors",
+                confirmMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20"].join(" ")}>
+              <p className={["text-sm font-medium", confirmMode === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>{opt.label}</p>
+              <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-2">Termin-Zuweisung</label>
         <div className="grid grid-cols-3 gap-2">

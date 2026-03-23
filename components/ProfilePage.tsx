@@ -19,6 +19,7 @@ import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import ProfileDiscoverySections from "@/components/discovery/ProfileDiscoverySections";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Profile, Booking, SalonCard } from "@/lib/types";
+import { ReportProblemButton } from "@/components/disputes/ReportProblemButton";
 
 interface LoyaltyCard {
   id: string;
@@ -294,6 +295,10 @@ const BookingCard = memo(function BookingCard({
             >
               {t("cancelAction")}
             </button>
+          )}
+
+          {b.status === "completed" && (
+            <ReportProblemButton bookingId={b.id} />
           )}
 
           {tooLate && (
