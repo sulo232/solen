@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
     const min_rating = searchParams.get("min_rating");
     const accepts_payment = searchParams.get("accepts_payment");
     const date = searchParams.get("date"); // YYYY-MM-DD for availability filtering
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
     const sort = searchParams.get("sort") ?? "rating";
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
     const limit = Math.min(50, parseInt(searchParams.get("limit") ?? "20"));
@@ -41,9 +43,36 @@ export async function GET(request: NextRequest) {
     // Price filtering requires joining services — use subquery via RPC or filter post-fetch
     // For V1, we skip price filter on the salons level (services are filtered client-side)
 
-    if (sort === "rating") query = query.order("average_rating", { ascending: false });
-    else if (sort === "price") query = query.order("created_at", { ascending: true });
-    else query = query.order("average_rating", { ascending: false });
+    let distanceMap: Record<string, number> | null = null;
+    let orderedIds: string[] | null = null;
+
+    if (lat && lng) {
+      const { data: nearbyData } = await supabase.rpc("get_nearby_salon_ids", {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+        max_dist_meters: 50000 // 50km
+      });
+      if (nearbyData) {
+        distanceMap = {};
+        orderedIds = [];
+        for (const row of nearbyData) {
+          distanceMap[row.salon_id] = row.distance_meters;
+          orderedIds.push(row.salon_id);
+        }
+        query = query.in("id", orderedIds);
+      }
+    }
+
+    if (sort === "rating") query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
+    else if (sort === "price") query = query.order("created_at", { ascending: true }); // V1: mocked by created_at since price is in services
+    else if (sort === "last_minute") query = query.order("last_minute_discount_percent", { ascending: false }).gt("last_minute_discount_percent", 0);
+    else if (sort === "newest") query = query.order("created_at", { ascending: false });
+    else if (sort === "distance") {
+      // Distance sorting is handled post-fetch if `lat` and `lng` are provided.
+      // We still fall back to solen_score to ensure deterministic fallback if distances are equal/unavailable.
+      query = query.order("solen_score", { ascending: false });
+    }
+    else query = query.order("solen_score", { ascending: false }).order("average_rating", { ascending: false });
 
     query = query.range(offset, offset + limit - 1);
 
@@ -103,6 +132,7 @@ export async function GET(request: NextRequest) {
       return {
         ...rest,
         avg_price,
+        distance_meters: distanceMap ? distanceMap[salonId] : undefined,
         ...(availableIds !== null
           ? {
               available_on_date: availableIds.has(salonId),
@@ -111,6 +141,10 @@ export async function GET(request: NextRequest) {
           : {}),
       };
     });
+
+    if (sort === "distance" && distanceMap) {
+      items.sort((a, b) => (a.distance_meters ?? Infinity) - (b.distance_meters ?? Infinity));
+    }
 
     return NextResponse.json({ items, total: count ?? 0, page, limit });
   } catch (err) {

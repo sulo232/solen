@@ -91,10 +91,33 @@ export default function HomePage() {
   const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [newSalons, setNewSalons] = useState<SalonCardType[]>([]);
+  const [trendingSalons, setTrendingSalons] = useState<SalonCardType[]>([]);
+  const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
+  const [locationError, setLocationError] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
   const [quartierImages, setQuartierImages] = useState<Record<string, string | null>>({});
+
+  const fetchNearby = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocationError(true);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        fetch(`/api/salons?limit=6&sort=distance&lat=${latitude}&lng=${longitude}`)
+          .then((r) => r.json())
+          .then((data) => {
+            setNearbySalons(data.items ?? []);
+            setLocationError(false);
+          })
+          .catch(() => setLocationError(true));
+      },
+      () => setLocationError(true)
+    );
+  }, []);
 
   const fetchData = useCallback(() => {
     fetch("/api/salons?limit=8&sort=rating")
@@ -159,6 +182,12 @@ export default function HomePage() {
       .then((data) => setNewSalons(data.items ?? []))
       .catch(() => setNewSalons([]));
 
+    // Fetch trending salons
+    fetch("/api/salons/trending")
+      .then((r) => r.json())
+      .then((data) => setTrendingSalons(data.items ?? []))
+      .catch(() => setTrendingSalons([]));
+
     // Fetch quartier counts
     fetch("/api/salons/quartier-counts")
       .then((r) => r.ok ? r.json() : null)
@@ -174,7 +203,16 @@ export default function HomePage() {
         if (data?.images) setQuartierImages(data.images);
       })
       .catch(() => {});
-  }, []);
+
+    // Try to passively fetch nearby if permission already granted
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          fetchNearby();
+        }
+      }).catch(() => {});
+    }
+  }, [fetchNearby]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -363,6 +401,83 @@ export default function HomePage() {
                   />
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Trending Section ────────────────────────────────────────────────── */}
+      {trendingSalons.length > 0 && (
+        <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                    Trending in Basel
+                  </h2>
+                </div>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+                  Die aktuell angesagtesten Salons
+                </p>
+              </div>
+            </div>
+
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
+              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            >
+              {trendingSalons.map((salon) => (
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]">
+                  <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Near You Section ────────────────────────────────────────────────── */}
+      <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                  In deiner Nähe
+                </h2>
+              </div>
+              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+                Salons ganz in deiner Nähe entdecken
+              </p>
+            </div>
+            {nearbySalons.length > 0 && (
+              <Link href={`/${locale}/coiffeur`} className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4">
+                Alle ansehen →
+              </Link>
+            )}
+          </div>
+
+          {nearbySalons.length > 0 ? (
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
+              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            >
+              {nearbySalons.map((salon) => (
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]">
+                  <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
+                </div>
+              ))}
+            </div>
+          ) : locationError ? (
+             <div className="bg-s-ink/5 dark:bg-white/5 rounded-card p-6 flex flex-col items-center justify-center text-center">
+               <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-3">Bitte erlaube den Standortzugriff, um Salons in der Nähe anzuzeigen.</p>
+               <button onClick={fetchNearby} className="px-4 py-2 bg-s-ink dark:bg-white text-s-bg-base dark:text-s-ink text-sm rounded-button font-medium">Standort freigeben</button>
+             </div>
+          ) : (
+            <div className="bg-s-ink/5 dark:bg-white/5 rounded-card p-6 flex flex-col items-center justify-center text-center">
+              <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-3">Entdecke Salons direkt in deiner Umgebung.</p>
+              <button onClick={fetchNearby} className="px-4 py-2 bg-s-coral text-white text-sm rounded-button font-medium">Standort verwenden</button>
             </div>
           )}
         </div>

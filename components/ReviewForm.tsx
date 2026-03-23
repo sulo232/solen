@@ -15,6 +15,8 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,9 +41,24 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
         }),
       });
 
+      let resData;
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.message || data.error || "Fehler beim Speichern");
+      } else {
+        resData = await res.json();
+      }
+
+      // Upload photos if any
+      if (photos.length > 0 && resData?.data?.id) {
+        setUploadProgress("Lade Fotos hoch...");
+        const formData = new FormData();
+        photos.forEach(p => formData.append("photos", p));
+        
+        await fetch(`/api/reviews/${resData.data.id}/photos`, {
+          method: "POST",
+          body: formData,
+        });
       }
 
       onSuccess();
@@ -49,6 +66,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
       setError(err.message);
     } finally {
       setLoading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -111,6 +129,33 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                 {comment.length} / 500
               </span>
             </div>
+          </div>
+
+          {/* Photos */}
+          <div>
+            <label className="block text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">
+              Fotos hinzufügen (Optional, max. 3)
+            </label>
+            <div className="flex gap-2 mb-2 flex-wrap">
+              {photos.map((p, i) => (
+                <div key={i} className="relative w-16 h-16 rounded-card overflow-hidden border border-s-ink/10 dark:border-white/10 shrink-0">
+                  <img src={URL.createObjectURL(p)} alt="Preview" className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-black/50 hover:bg-black/70 text-white rounded-full p-0.5 transition-colors" title="Entfernen">
+                    <X size={10} />
+                  </button>
+                </div>
+              ))}
+              {photos.length < 3 && (
+                <label className="w-16 h-16 flex items-center justify-center shrink-0 rounded-card border-2 border-dashed border-s-ink/20 dark:border-white/20 text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/5 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                  <span className="text-xl">+</span>
+                  <input type="file" accept="image/jpeg, image/png, image/webp" multiple className="hidden" onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    setPhotos(prev => [...prev, ...files].slice(0, 3));
+                  }} />
+                </label>
+              )}
+            </div>
+            {uploadProgress && <div className="text-xs font-medium text-s-coral">{uploadProgress}</div>}
           </div>
 
           {error && (

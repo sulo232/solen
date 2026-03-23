@@ -156,5 +156,16 @@ export async function PATCH(
   const { error: updateErr } = await supabase.from("bookings").update(updates).eq("id", id);
   if (updateErr) return NextResponse.json({ message: updateErr.message, code: "DB_ERROR" }, { status: 500 });
 
+  // Evaluate strikes and warnings
+  if (status === "cancelled" || status === "no_show") {
+    try {
+      const { evaluateBookingPenalties } = await import("@/lib/strikes");
+      const cancelledBy = isBookingOwner ? "customer" : "salon";
+      await evaluateBookingPenalties(id, status as "cancelled" | "no_show", cancelledBy);
+    } catch (err) {
+      console.error("Strike evaluation error:", err);
+    }
+  }
+
   return NextResponse.json({ data: { success: true } });
 }
