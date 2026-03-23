@@ -609,3 +609,27 @@ export function barberLoyaltyRewardEmail(
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
+
+// ---------------------------------------------------------------------------
+// TOS Update Notification
+// ---------------------------------------------------------------------------
+
+export function tosUpdateNotification(
+  to: string,
+  vars: { tosVersion: string; effectiveDate: string; termsUrl: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Wichtig: Aktualisierung unserer AGB und Datenschutzerklärung`,
+    en: `Important: Update to our Terms of Service and Privacy Policy`,
+    fr: `Important: Mise à jour de nos Conditions Générales et Politique de Confidentialité`,
+    it: `Importante: Aggiornamento dei nostri Termini di Servizio e Informativa sulla Privacy`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Guten Tag,</p><p>Wir haben unsere Nutzungsbedingungen und unsere Datenschutzerklärung aktualisiert. Die Änderungen treten am <strong>${vars.effectiveDate}</strong> in Kraft.</p><p><a href="${vars.termsUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Neue AGB lesen →</a></p><p>Bitte loggen Sie sich ein, um die neuen Bedingungen zu akzeptieren.</p><p>Mit freundlichen Grüssen,<br>Das solen.ch Team</p>`,
+    en: `<p>Hello,</p><p>We have updated our Terms of Service and Privacy Policy. The changes take effect on <strong>${vars.effectiveDate}</strong>.</p><p><a href="${vars.termsUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Read new Terms →</a></p><p>Please log in to accept the new terms.</p><p>Best regards,<br>The solen.ch Team</p>`,
+    fr: `<p>Bonjour,</p><p>Nous avons mis à jour nos Conditions Générales et notre Politique de Confidentialité. Les modifications entrent en vigueur le <strong>${vars.effectiveDate}</strong>.</p><p><a href="${vars.termsUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Lire les nouvelles conditions →</a></p><p>Veuillez vous connecter pour accepter les nouvelles conditions.</p><p>Cordialement,<br>L'équipe solen.ch</p>`,
+    it: `<p>Buongiorno,</p><p>Abbiamo aggiornato i nostri Termini di Servizio e l'Informativa sulla Privacy. Le modifiche entrano in vigore il <strong>${vars.effectiveDate}</strong>.</p><p><a href="${vars.termsUrl}" style="display:inline-block;padding:12px 24px;background:#E8624A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Leggi i nuovi Termini →</a></p><p>Accedi per accettare i nuovi termini.</p><p>Cordiali saluti,<br>Il team solen.ch</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
