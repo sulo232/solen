@@ -17,6 +17,10 @@ const uuid = z.string().uuid();
 
 // ─── Schemas ─────────────────────────────────────────────────────────────────
 
+export const tosAcceptSchema = z.object({
+  version: z.string().min(1).max(100),
+});
+
 export const createBookingSchema = z.object({
   slot_id: uuid,
   service_id: uuid,
