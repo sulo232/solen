@@ -482,6 +482,10 @@ export const verifyOtpSchema = z.object({
 // Admin Schemas
 // ---------------------------------------------------------------------------
 
+export const adminTosNotifySchema = z.object({
+  target: z.enum(["all", "salon_partners", "customers"]),
+});
+
 export const adminBadgeSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
