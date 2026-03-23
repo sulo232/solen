@@ -2,11 +2,12 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
-import { admin } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
+    const admin = createAdminSupabaseClient();
     const { review_id, reply_text } = await req.json();
     if (!review_id) return NextResponse.json({ error: "missing review_id" }, { status: 400 });
 
