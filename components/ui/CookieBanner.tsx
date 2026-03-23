@@ -1,0 +1,199 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useLocale } from "next-intl";
+import { X, Settings, Cookie } from "lucide-react";
+
+type ConsentState = {
+  necessary: true;
+  analytics: boolean;
+  marketing: boolean;
+};
+
+const CONSENT_KEY = "solen_cookie_consent";
+
+function getStoredConsent(): ConsentState | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CONSENT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function storeConsent(consent: ConsentState) {
+  localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
+}
+
+export default function CookieBanner() {
+  const locale = useLocale();
+  const [visible, setVisible] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [analytics, setAnalytics] = useState(false);
+  const [marketing, setMarketing] = useState(false);
+
+  useEffect(() => {
+    const stored = getStoredConsent();
+    if (!stored) {
+      setVisible(true);
+    }
+  }, []);
+
+  const accept = (consent: ConsentState) => {
+    storeConsent(consent);
+    setVisible(false);
+    setSettingsOpen(false);
+
+    // Send consent to PostHog if analytics accepted
+    if (consent.analytics && typeof window !== "undefined" && (window as any).posthog) {
+      (window as any).posthog.opt_in_capturing();
+    }
+  };
+
+  const acceptAll = () => {
+    accept({ necessary: true, analytics: true, marketing: true });
+  };
+
+  const rejectAll = () => {
+    accept({ necessary: true, analytics: false, marketing: false });
+    if (typeof window !== "undefined" && (window as any).posthog) {
+      (window as any).posthog.opt_out_capturing();
+    }
+  };
+
+  const saveSettings = () => {
+    accept({ necessary: true, analytics, marketing });
+  };
+
+  if (!visible) return null;
+
+  return (
+    <>
+      {/* Banner */}
+      {!settingsOpen && (
+        <div className="fixed bottom-0 inset-x-0 z-70 p-4 sm:p-6">
+          <div className="max-w-2xl mx-auto bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-5">
+            <div className="flex items-start gap-3">
+              <Cookie className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm text-s-ink dark:text-s-dm-text font-medium mb-1">
+                  Wir verwenden Cookies
+                </p>
+                <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
+                  Wir nutzen Cookies für die Funktion der Website und optional für Analytics.
+                  Mehr dazu in unserer{" "}
+                  <a href={`/${locale}/datenschutz`} className="text-s-coral hover:underline">
+                    Datenschutzerklärung
+                  </a>.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 mt-4">
+              <button
+                onClick={acceptAll}
+                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+                aria-label="Cookies akzeptieren"
+              >
+                Akzeptieren
+              </button>
+              <button
+                onClick={rejectAll}
+                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                aria-label="Cookies ablehnen"
+              >
+                Ablehnen
+              </button>
+              <button
+                onClick={() => setSettingsOpen(true)}
+                className="p-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                aria-label="Cookie-Einstellungen"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings modal */}
+      {settingsOpen && (
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
+          <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg p-6">
+            <button
+              onClick={() => setSettingsOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-full text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-4">
+              Cookie-Einstellungen
+            </h3>
+
+            <div className="space-y-4">
+              {/* Necessary — always on */}
+              <div className="flex items-center justify-between py-2">
+                <div>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Notwendig</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Erforderlich für die Grundfunktion</p>
+                </div>
+                <div className="w-10 h-5 rounded-full bg-s-coral flex items-center justify-end px-0.5 opacity-60 cursor-not-allowed">
+                  <div className="w-4 h-4 rounded-full bg-white" />
+                </div>
+              </div>
+
+              {/* Analytics */}
+              <div className="flex items-center justify-between py-2">
+                <div>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Analytics</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Hilft uns, die Website zu verbessern</p>
+                </div>
+                <button
+                  onClick={() => setAnalytics(!analytics)}
+                  className={`w-10 h-5 rounded-full flex items-center px-0.5 transition-colors ${
+                    analytics ? "bg-s-coral justify-end" : "bg-s-sand dark:bg-white/20 justify-start"
+                  }`}
+                >
+                  <div className="w-4 h-4 rounded-full bg-white shadow-warm-sm" />
+                </button>
+              </div>
+
+              {/* Marketing */}
+              <div className="flex items-center justify-between py-2">
+                <div>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Marketing</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Personalisierte Empfehlungen</p>
+                </div>
+                <button
+                  onClick={() => setMarketing(!marketing)}
+                  className={`w-10 h-5 rounded-full flex items-center px-0.5 transition-colors ${
+                    marketing ? "bg-s-coral justify-end" : "bg-s-sand dark:bg-white/20 justify-start"
+                  }`}
+                >
+                  <div className="w-4 h-4 rounded-full bg-white shadow-warm-sm" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mt-6">
+              <button
+                onClick={saveSettings}
+                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+              >
+                Einstellungen speichern
+              </button>
+              <button
+                onClick={acceptAll}
+                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+              >
+                Alle akzeptieren
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
