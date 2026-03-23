@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import FrozenSalonBanner from "@/components/dashboard/FrozenSalonBanner";
 import type { Profile, UserRole } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -95,8 +94,8 @@ export default function DashboardLayout({
   const [authChecked, setAuthChecked] = useState(false);
   const [role, setRole] = useState<UserRole | null>(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   const [isStaff, setIsStaff] = useState(false);
-  const [frozenSalon, setFrozenSalon] = useState<{ frozen_at: string | null; frozen_reason: string | null } | null>(null);
 
   // Auth guard — role must be salon_owner, admin, or linked staff
   useEffect(() => {
@@ -111,13 +110,6 @@ export default function DashboardLayout({
           setRole(p.role);
           setIsStaff(!!(p as any).staff_salon_id && p.role !== "salon_owner" && p.role !== "admin");
           setAuthChecked(true);
-          // T&S §6.6: check frozen status for salon owners
-          if (p.role === "salon_owner") {
-            fetch("/api/salon/setup-progress")
-              .then((r) => r.json())
-              .then((d) => { if (d.frozen_at) setFrozenSalon({ frozen_at: d.frozen_at, frozen_reason: d.frozen_reason ?? null }); })
-              .catch(() => {});
-          }
         }
       })
       .catch(() => router.push(`/${locale}/auth/login`));
@@ -282,9 +274,6 @@ export default function DashboardLayout({
         </div>
 
         <main className="flex-1 px-4 sm:px-6 py-6 md:py-8">
-          {frozenSalon?.frozen_at && (
-            <FrozenSalonBanner salon={{ frozen_at: frozenSalon.frozen_at, frozen_reason: frozenSalon.frozen_reason } as any} />
-          )}
           {children}
         </main>
       </div>

@@ -40,8 +40,6 @@ const categoryGradients: Record<SalonCategory, string> = {
 
 interface CategoryPageProps {
   category: SalonCategory;
-  aboveGrid?: React.ReactNode;
-  belowGrid?: React.ReactNode;
 }
 
 interface DirectoryEntry {
@@ -70,7 +68,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
             <Building2 className="w-10 h-10" />
           </div>
         )}
-        <div className="absolute top-2 right-2 text-xs text-white px-2.5 py-0.5 rounded-pill font-medium font-body bg-s-coral">
+        <div className="absolute top-2 right-2 text-xs text-white px-2.5 py-0.5 rounded-full font-medium font-body bg-s-coral">
           Nicht buchbar
         </div>
       </div>
@@ -103,7 +101,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   );
 }
 
-export default function CategoryPage({ category, aboveGrid, belowGrid }: CategoryPageProps) {
+export default function CategoryPage({ category }: CategoryPageProps) {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const routerNav = useRouter();
@@ -204,14 +202,14 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
       <BlobBackground zone={2} />
       {/* Mesh gradient hero */}
       <div className={`pt-28 pb-10 relative z-10`}>
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 dark:from-s-dm-bg/60 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <nav className="text-xs text-s-ink/40 mb-2 font-body flex items-center gap-1">
             <span>{locale === "de" ? "Startseite" : "Home"}</span>
             <ChevronRight className="w-3 h-3" />
             <span className="text-s-ink/70">{categoryLabel}</span>
           </nav>
-          <h1 className="font-display uppercase text-4xl sm:text-6xl text-s-ink dark:text-s-dm-text leading-none">{categoryLabel}<span className="text-s-coral">.</span> Basel</h1>
+          <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">{categoryLabel} in Basel</h1>
           {(total > 0 || dirTotal > 0) && (
             <p className="text-sm text-s-ink/50 mt-2 font-body">
               {total} {total === 1 ? "Salon" : "Salons"} auf Solen
@@ -236,13 +234,6 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
       )}
 
       <FilterBar category={category} />
-
-      {/* Category-specific content above grid */}
-      {aboveGrid && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
-          {aboveGrid}
-        </div>
-      )}
 
       {/* Map/List toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-end gap-2">
@@ -352,12 +343,6 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
           </div>
         )}
       </div>
-      {/* Category-specific content below grid */}
-      {belowGrid && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          {belowGrid}
-        </div>
-      )}
     </div>
   );
 }

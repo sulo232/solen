@@ -1,23 +1,11 @@
 import type { Metadata } from "next";
 import CategoryPage from "@/components/CategoryPage";
-import { WaxingAboveGrid, WaxingBelowGrid } from "@/components/waxing/WaxingSections";
 
 export const metadata: Metadata = {
   title: "Waxing in Basel — solen.ch",
-  description: "Waxing Studios in Basel — Brazilian, Bein, Achsel, Gesicht. Termin online buchen.",
-  openGraph: {
-    title: "Waxing in Basel — solen.ch",
-    description: "Professionelles Waxing in Basel — alle Körperzonen, faire Preise, Online-Buchung.",
-    type: "website",
-  },
+  description: "Waxing Studios in Basel — Brazilian, Bein, Achsel. Termin online buchen.",
 };
 
 export default function Page() {
-  return (
-    <CategoryPage
-      category="waxing"
-      aboveGrid={<WaxingAboveGrid />}
-      belowGrid={<WaxingBelowGrid />}
-    />
-  );
+  return <CategoryPage category="waxing" />;
 }

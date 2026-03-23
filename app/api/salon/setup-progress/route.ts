@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   // Get salon for this owner
   const { data: salon } = await supabase
     .from("salons")
-    .select("id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type, frozen_at, frozen_reason")
+    .select("id, name, description_de, phone, cover_photo_url, opening_hours, stripe_account_id, cancellation_fee_type")
     .eq("owner_id", user.id)
     .single();
 
@@ -99,7 +99,5 @@ export async function GET(req: NextRequest) {
     total,
     percentage,
     is_live: percentage === 100,
-    frozen_at: (salon as any).frozen_at ?? null,
-    frozen_reason: (salon as any).frozen_reason ?? null,
   });
 }

@@ -283,7 +283,7 @@ export default function HomePage() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 reveal-stagger"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal-stagger"
         >
           {CATEGORIES.map(({ key, label, Icon }) => (
             <motion.div key={key} variants={itemVariants}>
@@ -325,7 +325,7 @@ export default function HomePage() {
             transition={{ duration: 0.35 }}
             className="flex items-center gap-4 p-4 rounded-card bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/15 dark:border-s-coral/20"
           >
-            <div className="w-10 h-10 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0">
               <RefreshCw size={18} className="text-s-coral" />
             </div>
             <div className="flex-1 min-w-0">
@@ -576,7 +576,7 @@ export default function HomePage() {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <span
-                className="inline-block text-xs font-medium px-3 py-1 rounded-pill mb-2 font-body bg-s-coral/[0.125] text-s-coral"
+                className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body bg-s-coral/[0.125] text-s-coral"
               >
                 DEIN QUARTIER
               </span>
@@ -659,7 +659,7 @@ export default function HomePage() {
             className="rounded-blob-c bg-s-ink text-s-bg-base overflow-hidden relative shadow-warm-float"
           >
             {/* Inner background blobs for the banner */}
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-s-blue/20 rounded-blob-a blur-3xl transform translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-s-blue/20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-s-coral/20 rounded-[70%_30%_50%_50%/40%_60%_40%_60%] blur-3xl transform -translate-x-1/3 translate-y-1/3" />
             
             <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">

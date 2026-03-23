@@ -235,7 +235,6 @@ export default function ServicesPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Service | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [importModalOpen, setImportModalOpen] = useState(false);
 
   const loadServices = () => {
     fetch("/api/profile").then((r) => r.json()).then((p) => {
@@ -285,7 +284,7 @@ export default function ServicesPage() {
       )}
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Services</h1>
+        <h1 className="font-heading font-bold text-2xl text-s-ink">Services</h1>
         <button onClick={() => setAddOpen(true)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
           <Plus size={14} /> Hinzufügen
@@ -331,43 +330,6 @@ export default function ServicesPage() {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-      {/* Competitor import — subtle link */}
-      <div className="mt-6 text-center">
-        <button
-          type="button"
-          onClick={() => setImportModalOpen(true)}
-          className="text-xs text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral hover:underline transition-colors cursor-pointer"
-        >
-          Treatwell / Fresha CSV importieren?
-        </button>
-      </div>
-
-      {/* Import coming soon modal */}
-      {importModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-          <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-sm p-6">
-            <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-2">
-              Services importieren
-            </h3>
-            <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-4">
-              Der CSV-Import aus Treatwell, Fresha oder anderen Systemen ist in Kürze verfügbar.
-            </p>
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-5">
-              Schreibe uns an{" "}
-              <a href="mailto:hello@solen.ch" className="text-s-coral hover:underline">
-                hello@solen.ch
-              </a>{" "}
-              — wir übertragen deine Daten kostenlos für dich.
-            </p>
-            <button
-              onClick={() => setImportModalOpen(false)}
-              className="w-full py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
-            >
-              Schließen
-            </button>
-          </div>
         </div>
       )}
     </DashboardLayout>
