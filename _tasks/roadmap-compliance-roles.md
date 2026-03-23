@@ -16,13 +16,12 @@
 ## 🤖 CLAUDE CODE PHASES
 
 ### Phase 1: Database Migrations (Backend)
-
-1. Create a migration file ` supabase/migrations/075_compliance_roles_schema.sql `
+1. Create a new migration file `[NEW] supabase/migrations/075_compliance_roles_schema.sql`
 2. Update `profiles.role` check constraint to include `'staff'`.
 3. Add `account_status` column (text check: 'active', 'warned', 'suspended', 'banned') default 'active' to `profiles`.
 4. Add `deletion_requested_at` (TIMESTAMPTZ) to `profiles`.
 5. Add `tos_version` (TEXT) and `tos_accepted_at` (TIMESTAMPTZ) to `profiles`.
-6. Add `phone_verified` (BOOLEAN) default false to `salons` or `profiles`.
+6. Add `phone_verified` (BOOLEAN) default false to `salons`.
 
 ✅ **DO:**
 ```sql
@@ -37,7 +36,9 @@ ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('
 
 > ⚠️ **BE CAREFUL**: Altering `profiles` can break RLS or existing users. Do NOT use `DROP COLUMN`. `npm run build` locally after adding API types if any.
 
-### Phase 2: Age Gate & Email Enforcement (Frontend)
+**Verification (R7):**
+- Commit message: `phase 1: database migrations for compliance and roles`
+- Verify: `supabase db reset` locally if applicable, or check supabase dashboard after pushing to ensure schema was applied cleanly without breaking existing profiles.### Phase 2: Age Gate & Email Enforcement (Frontend)
 
 1. Update signup flows in `app/[locale]/auth/register/` to collect `birthday` (DOB).
 2. Validate `birthday` using Zod (`lib/validations.ts`) to ensure user is >= 16 years old.

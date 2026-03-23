@@ -43,7 +43,8 @@ export type NotificationType =
   | 'payout_completed'
   | 'payout_failed'
   | 'ts_changes'
-  | 'salon_strike';
+  | 'salon_strike'
+  | 'salon_rejected';
 
 export async function sendNotification(params: {
   userId: string;
@@ -136,6 +137,10 @@ export async function sendNotification(params: {
         break;
       case 'salon_strike':
         emailPayload = salonStrikeEmail(to, vars, locale);
+        break;
+      case 'salon_rejected':
+        const { salonRejected } = require('./email');
+        emailPayload = salonRejected(to, vars, locale);
         break;
       default:
         console.warn('[sendNotification] Unsupported email type:', params.type);

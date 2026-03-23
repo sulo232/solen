@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkReview } from "@/lib/automod";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
@@ -75,6 +75,30 @@ export async function POST(request: NextRequest) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ review_id: data.id })
   }).catch(() => {});
+
+  if (data) {
+    try {
+      const admin = createAdminSupabaseClient();
+      const { data: stats } = await admin
+        .from("reviews")
+        .select("rating")
+        .eq("salon_id", booking.salon_id)
+        .eq("is_hidden", false);
+
+      if (stats && stats.length > 0) {
+        const avg = stats.reduce((sum, r) => sum + r.rating, 0) / stats.length;
+        await admin
+          .from("salons")
+          .update({
+            average_rating: Math.round(avg * 10) / 10,
+            review_count: stats.length,
+          })
+          .eq("id", booking.salon_id);
+      }
+    } catch (err) {
+      console.error("Failed to recalculate average rating:", err);
+    }
+  }
 
   return NextResponse.json({ data }, { status: 201 });
 }

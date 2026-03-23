@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail, bookingConfirmation, type EmailLocale } from "@/lib/email";
+import { type EmailLocale } from "@/lib/email";
+import { sendNotification } from "@/lib/notifications";
 
 // POST /api/bookings/[id]/confirm
 // Called by salon owner to confirm a pending booking.
@@ -57,12 +58,25 @@ export async function POST(
     if (email) {
       const dateStr = new Date(fullBooking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
       const timeStr = new Date(fullBooking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-      await sendEmail(bookingConfirmation(email, {
-        service: (fullBooking.services as any)?.name_de ?? "Service",
-        salon: (fullBooking.salons as any)?.name ?? "Salon",
-        date: dateStr,
-        time: timeStr,
-      }, locale)).catch(() => {});
+      const serviceName = (fullBooking.services as any)?.name_de ?? "Service";
+      const salonName = (fullBooking.salons as any)?.name ?? "Salon";
+      await sendNotification({
+        userId: fullBooking.user_id,
+        type: "booking_confirmed",
+        title: `Buchung bestätigt: ${serviceName}`,
+        body: `Ihre Buchung bei ${salonName} am ${dateStr} um ${timeStr} wurde bestätigt.`,
+        data: { booking_id: id },
+        emailParams: {
+          to: email,
+          locale,
+          vars: {
+            service: serviceName,
+            salon: salonName,
+            date: dateStr,
+            time: timeStr,
+          }
+        }
+      });
     }
   }
 

@@ -153,19 +153,44 @@ export async function POST(
   const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH");
   const serviceName = booking.services?.name_de ?? "Service";
   const salonName = booking.salons?.name ?? "Salon";
-
+  const customerId = booking.user_id;
   const salonOwnerId = booking.salons?.owner_id;
+
   const promises: Promise<void>[] = [];
 
   if (user.email) {
-    promises.push(sendEmail(bookingCancellation(user.email, { service: serviceName, salon: salonName, date: dateStr }, locale)));
+    const { sendNotification } = await import("@/lib/notifications");
+    promises.push(sendNotification({
+      userId: customerId,
+      type: isCustomer ? "booking_cancelled_by_customer" : "booking_cancelled_by_salon",
+      title: `Buchung storniert: ${serviceName}`,
+      body: `Ihre Buchung bei ${salonName} am ${dateStr} wurde storniert.`,
+      data: { booking_id: id },
+      emailParams: {
+        to: user.email,
+        locale: locale,
+        vars: { service: serviceName, salon: salonName, date: dateStr }
+      }
+    }));
   }
 
-  if (salonOwnerId) {
+  if (salonOwnerId && salonOwnerId !== user.id) {
     const { data: ownerAuth } = await admin.auth.admin.getUserById(salonOwnerId);
     const ownerEmail = ownerAuth?.user?.email;
     if (ownerEmail) {
-      promises.push(sendEmail(bookingCancellation(ownerEmail, { service: serviceName, salon: salonName, date: dateStr }, "de")));
+      const { sendNotification } = await import("@/lib/notifications");
+      promises.push(sendNotification({
+        userId: salonOwnerId,
+        type: isCustomer ? "booking_cancelled_by_customer" : "booking_cancelled_by_salon",
+        title: `Kunde hat storniert: ${serviceName}`,
+        body: `Die Buchung für ${serviceName} am ${dateStr} wurde storniert.`,
+        data: { booking_id: id },
+        emailParams: {
+          to: ownerEmail,
+          locale: "de",
+          vars: { service: serviceName, salon: salonName, date: dateStr }
+        }
+      }));
     }
   }
 

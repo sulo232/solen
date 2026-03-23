@@ -347,6 +347,7 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 | `barber_loyalty_history` | `id`, `card_id`, `stamped_by`, `stamped_at`, `booking_id` | Stamp event log for audit trail. |
 | `barber_chairs` | `id`, `salon_id`, `chair_count`, `buffer_minutes` | Chair configuration per salon. UNIQUE(salon_id). Upsert pattern. |
 | `search_embeddings` | `id`, `entity_type`, `entity_id`, `category`, `text_content`, `embedding` (vector 768), `updated_at` | pgvector embeddings for AI-powered search. RLS: public read, admin write. |
+| `notifications` | `id`, `user_id`, `type`, `title`, `body`, `read`, `data`, `created_at` | In-app notification center. RLS: own only. |
 
 | View | Columns | Notes |
 |---|---|---|

@@ -23,6 +23,7 @@ import RemoteQueueJoin from "@/components/barber/RemoteQueueJoin";
 import ExpressRebook from "@/components/barber/ExpressRebook";
 import BottomSheet from "@/components/ui/BottomSheet";
 import Spinner from "@/components/ui/Spinner";
+import { ReportContentButton } from "@/components/ui/ReportContentButton";
 import { trackSalonView } from "@/components/RecentlyViewed";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
@@ -510,6 +511,9 @@ export default function SalonProfilePage() {
                       <Globe className="w-4 h-4" />Website
                     </a>
                   )}
+                  
+                  <div className="flex-1 min-w-4" />
+                  <ReportContentButton targetType="salon" targetId={salon.id} />
                 </div>
               </div>
 

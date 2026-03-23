@@ -43,10 +43,21 @@ export async function PATCH(
 
   await logAuditEvent(req, user.id, "salon.reject", "salon", id, { salon_name: salon.name, reason });
 
-  // Send rejection email to salon owner
+  // Send rejection notification to salon owner
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
   if (ownerAuth?.user?.email) {
-    await sendEmail(salonRejected(ownerAuth.user.email, { salon: salon.name, reason }));
+    const { sendNotification } = await import("@/lib/notifications");
+    await sendNotification({
+      userId: salon.owner_id,
+      type: "salon_rejected",
+      title: "Salon abgelehnt",
+      body: `Dein Salon ${salon.name} wurde leider nicht genehmigt. Grund: ${reason}`,
+      data: { salon_id: id },
+      emailParams: {
+        to: ownerAuth.user.email,
+        vars: { salon: salon.name, reason }
+      }
+    });
   }
 
   return NextResponse.json({ ok: true });

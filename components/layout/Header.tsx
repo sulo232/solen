@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 interface HeaderProps {
   locale: string;
@@ -44,6 +45,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>();
   const [scrolled, setScrolled] = useState(false);
 
   // Scroll morph — pill shrinks after scrolling
@@ -70,7 +72,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
     import("@/lib/supabase-browser").then(({ createBrowserSupabaseClient }) => {
       const supabase = createBrowserSupabaseClient();
       supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session?.user) setIsLoggedIn(true);
+        if (session?.user) {
+          setIsLoggedIn(true);
+          setUserId(session.user.id);
+        }
       });
     }).catch(() => {});
   }, []);
@@ -155,6 +160,9 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           <div className="flex items-center gap-3">
             <LanguageSwitcher locale={locale} />
             <ThemeToggle />
+
+            {/* Notifications Bell */}
+            <NotificationBell userId={userId} />
 
             {/* Messages with unread dot */}
             <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label="Nachrichten">
