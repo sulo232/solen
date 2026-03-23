@@ -54,6 +54,7 @@
     "resend": "^6.9.4",
     "stripe": "^20.4.1",
     "styled-jsx": "^5.1.7",
+    "swr": "^2.4.1",
     "usehooks-ts": "^3.1.1",
     "victory-vendor": "^37.3.6",
     "zod": "^4.3.6"
