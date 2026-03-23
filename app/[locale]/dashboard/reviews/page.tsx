@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Star, MessageCircle } from "lucide-react";
+import { Star, MessageCircle, Flag } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import EmptyState from "@/components/ui/EmptyState";
@@ -33,6 +33,8 @@ export default function SalonReviewsPage() {
   const [salonId, setSalonId] = useState<string | null>(null);
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
   const [responseText, setResponseText] = useState("");
+  const [flagging, setFlagging] = useState<string | null>(null);
+  const [flagReason, setFlagReason] = useState("");
   const [saving, setSaving] = useState(false);
 
   // Get the salon owner's salon
@@ -71,6 +73,20 @@ export default function SalonReviewsPage() {
     fetchReviews();
   };
 
+  const handleFlag = async (reviewId: string) => {
+    if (!flagReason.trim()) return;
+    setSaving(true);
+    await fetch(`/api/reviews/${reviewId}/flag`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reason: flagReason }),
+    });
+    setSaving(false);
+    setFlagging(null);
+    setFlagReason("");
+    fetchReviews();
+  };
+
   return (
     <DashboardLayout>
       <div className="mb-6">
@@ -91,23 +107,33 @@ export default function SalonReviewsPage() {
               className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card p-4"
             >
               {/* Review header */}
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center text-xs font-bold text-s-coral shrink-0">
-                  {(r.profiles?.display_name ?? "?")[0].toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">
-                      {r.profiles?.display_name ?? "Anonym"}
-                    </p>
-                    <Stars rating={r.rating} />
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center text-xs font-bold text-s-coral shrink-0">
+                    {(r.profiles?.display_name ?? "?")[0].toUpperCase()}
                   </div>
-                  <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
-                    {new Date(r.created_at).toLocaleDateString("de-CH", {
-                      day: "2-digit", month: "2-digit", year: "numeric",
-                    })}
-                  </p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">
+                        {r.profiles?.display_name ?? "Anonym"}
+                      </p>
+                      <Stars rating={r.rating} />
+                    </div>
+                    <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">
+                      {new Date(r.created_at).toLocaleDateString("de-CH", {
+                        day: "2-digit", month: "2-digit", year: "numeric",
+                      })}
+                    </p>
+                  </div>
                 </div>
+                {/* Flag button */}
+                <button
+                  onClick={() => { setFlagging(r.id); setRespondingTo(null); }}
+                  className="text-s-ink/30 hover:text-s-coral dark:text-s-dm-text/30 dark:hover:text-s-coral p-1 transition-colors"
+                  title="Bewertung melden"
+                >
+                  <Flag size={14} />
+                </button>
               </div>
 
               {/* Comment */}
@@ -124,7 +150,7 @@ export default function SalonReviewsPage() {
               )}
 
               {/* Respond button / form */}
-              {(!r.review_replies || r.review_replies.length === 0) && (
+              {(!r.review_replies || r.review_replies.length === 0) && !flagging && (
                 <>
                   {respondingTo === r.id ? (
                     <div className="space-y-2">
@@ -157,7 +183,7 @@ export default function SalonReviewsPage() {
                     </div>
                   ) : (
                     <button
-                      onClick={() => setRespondingTo(r.id)}
+                      onClick={() => { setRespondingTo(r.id); setFlagging(null); }}
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                     >
                       <MessageCircle size={12} />
@@ -165,6 +191,37 @@ export default function SalonReviewsPage() {
                     </button>
                   )}
                 </>
+              )}
+
+              {/* Flagging form */}
+              {flagging === r.id && (
+                <div className="space-y-2 mt-3 p-3 bg-red-50 dark:bg-red-900/10 rounded-button border border-red-100 dark:border-red-900/30">
+                  <p className="text-xs font-medium text-red-800 dark:text-red-400">Warum meldest du diese Bewertung?</p>
+                  <textarea
+                    rows={2}
+                    maxLength={250}
+                    placeholder="Begründung (z.B. Fake-Bewertung, Beleidigung)..."
+                    value={flagReason}
+                    onChange={(e) => setFlagReason(e.target.value)}
+                    className="w-full px-3 py-2 rounded-button border border-red-200 dark:border-red-900/50 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-xs focus:outline-none focus:border-red-400 resize-none"
+                  />
+                  <div className="flex gap-2 items-center justify-end mt-2">
+                    <button
+                      onClick={() => { setFlagging(null); setFlagReason(""); }}
+                      className="px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-xs"
+                    >
+                      Abbrechen
+                    </button>
+                    <button
+                      onClick={() => handleFlag(r.id)}
+                      disabled={saving || !flagReason.trim()}
+                      className="px-3 py-1.5 rounded-button bg-red-500 hover:bg-red-600 text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-colors"
+                    >
+                      {saving && <Spinner size="sm" invert />}
+                      Melden
+                    </button>
+                  </div>
+                </div>
               )}
             </motion.div>
           ))}

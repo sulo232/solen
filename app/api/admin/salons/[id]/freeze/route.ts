@@ -42,6 +42,39 @@ export async function POST(
   const { error } = await admin.from("salons").update(updateData).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Batch cancel pending and confirmed bookings
+  const { data: activeBookings } = await admin
+    .from("bookings")
+    .select("id, slot_id, stripe_payment_intent_id")
+    .eq("salon_id", id)
+    .in("status", ["pending_approval", "confirmed"]);
+
+  for (const b of activeBookings ?? []) {
+    await admin.from("bookings").update({
+      status: "cancelled",
+      cancellation_reason: "admin_salon_suspension",
+      cancelled_at: new Date().toISOString()
+    }).eq("id", b.id);
+    
+    // Process refund if held/paid
+    if (b.stripe_payment_intent_id) {
+       try {
+         const Stripe = (await import("stripe")).default;
+         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+         await stripe.refunds.create({
+           payment_intent: b.stripe_payment_intent_id,
+           reason: "requested_by_customer"
+         });
+       } catch (e) {
+         console.error("Refund failed on freeze for booking", b.id, e);
+       }
+    }
+    
+    if (b.slot_id) {
+      await admin.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("id", b.slot_id);
+    }
+  }
+
   await admin.from("account_actions").insert({
     salon_id: id,
     action_type: 'suspension',

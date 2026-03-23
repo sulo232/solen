@@ -83,6 +83,10 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
         {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
       </div>
 
+      <p className="text-[10px] text-s-ink/60 dark:text-s-dm-text/60 text-center px-2 mt-4 mb-2">
+        * Die angezeigte Verfügbarkeit ist möglicherweise nicht in Echtzeit auf dem neuesten Stand. Der Salon bestätigt deinen Termin nach der Anfrage.
+      </p>
+
       <button
         onClick={handleSubmit}
         disabled={submitting}
