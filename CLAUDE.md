@@ -30,6 +30,7 @@ Users discover salons, browse services, and book appointments. Salon owners regi
 | **AI** | `@google/generative-ai` (Gemini 2.0 Flash) — Intake form recommendations, discovery AI descriptions; `@fal-ai/client` — AI nail art image generation |
 | **Search** | pgvector (Supabase extension) — vector similarity search for AI-powered service matching |
 | **Charts** | `recharts` — Dashboard analytics visualizations |
+| **Analytics**| [PostHog](https://posthog.com/) — `posthog-js` (client) + `posthog-node` (server) |
 
 ---
 
@@ -70,6 +71,8 @@ solen/
 │   └── ui/             # Shared UI primitives (Skeleton, SearchBar, ExpandableTabs, etc.)
 ├── lib/                # Utility libraries (Dev 1 owns)
 │   ├── supabase.ts     # Supabase client helpers (server + admin)
+│   ├── posthog-server.ts # Server-side event tracking utility
+│   ├── posthog-api.ts  # Fetch insights from PostHog REST API
 │   ├── ratelimit.ts    # Upstash rate limiters (from security roadmap Phase 4)
 │   ├── feature-flags.ts # Kill switch + ban check (from security roadmap Phase 5)
 │   ├── validations.ts  # Zod schemas for all API inputs (from security roadmap Phase 6)
