@@ -33,57 +33,24 @@ export async function DELETE(req: NextRequest) {
     }
   }
 
-  // Get email BEFORE deletion for the audit log
-  const userEmail = user.email ?? "unknown";
+  // 1. Set deletion_requested_at and suspend account so they are effectively deactivated
+  const { error: updateError } = await admin
+    .from("profiles")
+    .update({ 
+      deletion_requested_at: new Date().toISOString(),
+      account_status: "suspended"
+    })
+    .eq("id", user.id);
 
-  const tablesCleared: string[] = [];
-
-  // 1. Cancel active bookings as customer
-  const { count: cancelledCount } = await admin
-    .from("bookings")
-    .update({ status: "cancelled", cancel_reason: "Account deleted" })
-    .eq("user_id", user.id)
-    .in("status", ["confirmed", "pending"])
-    .select("id", { count: "exact", head: true });
-  if (cancelledCount) tablesCleared.push(`bookings (${cancelledCount} cancelled)`);
-
-  // 2. Delete conversations (cascade deletes messages)
-  const { count: convoCount } = await admin
-    .from("conversations")
-    .delete()
-    .eq("customer_id", user.id)
-    .select("id", { count: "exact", head: true });
-  if (convoCount) tablesCleared.push(`conversations (${convoCount} deleted)`);
-
-  // 3. Anonymize reviews (keep content, remove user link)
-  const { count: reviewCount } = await admin
-    .from("reviews")
-    .update({ user_id: null })
-    .eq("user_id", user.id)
-    .select("id", { count: "exact", head: true });
-  if (reviewCount) tablesCleared.push(`reviews (${reviewCount} anonymized)`);
-
-  // 4. Log deletion BEFORE deleting auth user (preserves email)
-  await admin.from("data_deletion_log").insert({
-    user_email: userEmail,
-    completed_at: new Date().toISOString(),
-    tables_cleared: tablesCleared,
-  });
-
-  // Audit log
-  await logAuditEvent(req, user.id, "account.delete", "user", user.id, { email: userEmail, tables_cleared: tablesCleared });
-
-  // 5. Delete profile (cascade handles related records)
-  await admin.from("profiles").delete().eq("id", user.id);
-
-  // 6. Delete auth user
-  const { error: authError } = await admin.auth.admin.deleteUser(user.id);
-  if (authError) {
+  if (updateError) {
     return NextResponse.json({
-      message: "Account data cleared but auth deletion failed. Contact support.",
-      code: "PARTIAL_DELETE",
+      message: "Failed to request account deletion. Please contact support.",
+      code: "UPDATE_FAILED",
     }, { status: 500 });
   }
 
-  return NextResponse.json({ message: "Account deleted successfully" });
+  // Generate an audit log entry for the request
+  await logAuditEvent(req, user.id, "account.delete_requested", "user", user.id, { email: user.email });
+
+  return NextResponse.json({ message: "Account deletion requested successfully. It will be permanently deleted in 30 days." });
 }
