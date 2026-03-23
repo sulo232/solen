@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
       services, staff, availability_template,
       last_minute_discount_percent, last_minute_window_hours,
       latitude, longitude, google_place_id,
-      website_url, tiktok_url, phone_verified,
+      website_url, tiktok_url, phone_verified, cancellation_policy,
     } = validated;
 
     const admin = createAdminSupabaseClient();
@@ -219,6 +219,7 @@ export async function POST(request: NextRequest) {
           latitude: latitude || null,
           longitude: longitude || null,
           google_place_id: google_place_id || null,
+          cancellation_policy: cancellation_policy || null,
         })
         .select("id")
         .single();
@@ -320,12 +321,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Upgrade user role to salon_owner if they're a customer
-    await admin
-      .from("profiles")
-      .update({ role: "salon_owner", onboarding_completed: true })
-      .eq("id", user.id)
-      .eq("role", "customer");
+    // Update user profile with onboarding status, TOS tracking, and role upgrade (if applicable)
+    const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).single();
+    
+    // Using any type to dynamically attach role if needed
+    const updateData: Record<string, any> = { 
+      onboarding_completed: true,
+      tos_version: "1.0",
+      tos_accepted_at: new Date().toISOString()
+    };
+    
+    if (profile?.role === "customer" || !profile?.role) {
+      updateData.role = "salon_owner";
+    }
+    
+    await admin.from("profiles").update(updateData).eq("id", user.id);
 
     // Send welcome email (fire-and-forget)
     const ownerEmail = email || user.email;

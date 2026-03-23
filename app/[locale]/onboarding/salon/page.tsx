@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Plus, Trash2, ChevronRight, ChevronLeft, PartyPopper, Clock, Pencil, Loader2, Eye } from "lucide-react";
+import { Check, Plus, Trash2, ChevronRight, ChevronLeft, PartyPopper, Clock, Pencil, Loader2, Eye, ExternalLink, Star, MapPin } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
 import { serviceTemplates, DURATION_OPTIONS } from "@/lib/service-templates";
 import type { ServiceTemplate } from "@/lib/service-templates";
@@ -51,7 +52,7 @@ const TOTAL_STEPS = 7;
 function StepContainer({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div className="max-w-xl mx-auto">
-      <div className="bg-white/80 dark:bg-s-dm-surface/90 backdrop-blur-sm rounded-card border border-s-ink/5 dark:border-white/5 shadow-warm-sm p-6 sm:p-8">
+      <div className="bg-white/70 dark:bg-s-dm-surface/80 backdrop-blur-glass rounded-card border border-s-ink/5 dark:border-white/5 shadow-warm-md p-6 sm:p-8">
         <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-1">{title}</h2>
         {subtitle && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{subtitle}</p>}
         {!subtitle && <div className="mb-6" />}
@@ -630,7 +631,7 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
                     "flex items-center justify-between px-3 py-2.5 rounded-card border text-left transition-all",
                     added
                       ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
-                      : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                      : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 hover:shadow-card-hover hover:-translate-y-1 cursor-pointer",
                   ].join(" ")}
                 >
                   <div className="min-w-0 flex-1">
@@ -802,8 +803,8 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
 // Step 4 — Team
 // ─────────────────────────────────────────
 
-interface StaffDraft { name: string; avatar_url: string; role: string; specialties: string[] }
-const EMPTY_STAFF: StaffDraft = { name: "", avatar_url: "", role: "", specialties: [] };
+interface StaffDraft { name: string; avatar_url: string; role: string; tier: string; specialties: string[] }
+const EMPTY_STAFF: StaffDraft = { name: "", avatar_url: "", role: "", tier: "Senior", specialties: [] };
 
 // Role suggestions based on salon categories
 const ROLE_SUGGESTIONS: Record<string, string[]> = {
@@ -863,7 +864,7 @@ function Step4({ staff, onChange, salonCategories, t }: {
             <div>
               <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{s.name}</p>
               <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
-                {[s.role, ...s.specialties].filter(Boolean).join(" · ") || t("step4.noRole")}
+                {[s.tier, s.role, ...s.specialties].filter(Boolean).join(" · ") || t("step4.noRole")}
               </p>
             </div>
             <button
@@ -887,6 +888,19 @@ function Step4({ staff, onChange, salonCategories, t }: {
               className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
               placeholder="z. B. Maria"
             />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1.5">Level / Tier</label>
+            <div className="flex flex-wrap gap-1.5">
+              {["Junior", "Senior", "Master"].map((t) => (
+                <button key={t} type="button" onClick={() => setDraft({ ...draft, tier: t })}
+                  className={["px-3 py-1.5 rounded-pill text-xs font-medium transition-colors",
+                    draft.tier === t ? "bg-s-ink text-white dark:bg-white dark:text-s-ink" : "bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/5",
+                  ].join(" ")}
+                >{t}</button>
+              ))}
+            </div>
           </div>
 
           {roles.length > 0 && (
@@ -1052,7 +1066,7 @@ function Step5({ data, onChange, slotCount, t }: {
 // Step 6 — Last-Minute Settings
 // ─────────────────────────────────────────
 
-interface LMData { enabled: boolean; discount_percent: number; window_hours: number }
+interface LMData { enabled: boolean; discount_percent: number; window_hours: number; cancellation_policy: string }
 
 function Step6({ data, onChange, t }: { data: LMData; onChange: (d: LMData) => void; t: TFunc }) {
   return (
@@ -1078,6 +1092,32 @@ function Step6({ data, onChange, t }: { data: LMData; onChange: (d: LMData) => v
 
         {data.enabled && (
           <>
+            <div>
+              <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Stornierungsrichtlinie</label>
+              <div className="space-y-2">
+                {[
+                  { id: "flexible", label: "Flexibel", desc: "Kostenfreie Stornierung bis 2h vor Termin." },
+                  { id: "moderate", label: "Moderat", desc: "Kostenfreie Stornierung bis 24h vor Termin." },
+                  { id: "strict", label: "Strikt", desc: "Kostenfreie Stornierung bis 48h vor Termin." }
+                ].map((pol) => (
+                  <label key={pol.id} className={[
+                    "flex items-start gap-3 p-3 rounded-card border cursor-pointer transition-colors",
+                    data.cancellation_policy === pol.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5"
+                  ].join(" ")}>
+                    <input type="radio" value={pol.id} checked={data.cancellation_policy === pol.id}
+                      onChange={(e) => onChange({ ...data, cancellation_policy: e.target.value })}
+                      className="mt-1 w-4 h-4 text-s-coral accent-s-coral" />
+                    <div>
+                      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{pol.label}</p>
+                      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{pol.desc}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            <div className="h-px w-full bg-s-ink/5 dark:bg-white/5 my-2"></div>
+
             <div>
               <div className="flex justify-between mb-2">
                 <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{t("step6.discount")}</label>
@@ -1113,20 +1153,6 @@ function Step6({ data, onChange, t }: { data: LMData; onChange: (d: LMData) => v
 // Step 7 — Review
 // ─────────────────────────────────────────
 
-function ReviewCard({ label, children, onEdit }: { label: string; children: React.ReactNode; onEdit: () => void }) {
-  return (
-    <div className="bg-s-bg-surface dark:bg-s-dm-raised rounded-card p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-wider">{label}</span>
-        <button type="button" onClick={onEdit} className="text-xs text-s-coral hover:underline flex items-center gap-1">
-          <Pencil size={10} /> <span>{/* edit label injected via t */}</span>
-        </button>
-      </div>
-      <div className="text-sm text-s-ink dark:text-s-dm-text">{children}</div>
-    </div>
-  );
-}
-
 function Step7({ basics, profile, services, staffList, avail, lm, onEdit, t }: {
   basics: BasicsData;
   profile: ProfileData;
@@ -1140,40 +1166,77 @@ function Step7({ basics, profile, services, staffList, avail, lm, onEdit, t }: {
   const activeDays = Object.values(avail.template).filter(Boolean).length;
   return (
     <StepContainer title={t("step7.title")} subtitle={t("step7.subtitle")}>
-      <div className="space-y-3">
-        <ReviewCard label={t("step7.basics")} onEdit={() => onEdit(1)}>
-          <p className="font-medium">{basics.name}</p>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{basics.email} · {basics.address}</p>
-          <div className="flex flex-wrap gap-1 mt-1">
-            {basics.categories.map(c => (
-              <span key={c} className="px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral text-xs">{c}</span>
-            ))}
-          </div>
-        </ReviewCard>
-
-        <ReviewCard label={t("step7.profile")} onEdit={() => onEdit(2)}>
-          {profile.cover_photo_url && (
+      <div className="bg-white dark:bg-s-dm-surface rounded-card overflow-hidden border border-s-ink/5 dark:border-white/5 shadow-card relative mb-6">
+        {/* Cover Photo Area */}
+        <div className="aspect-[4/3] w-full bg-s-bg-sunken dark:bg-s-dm-raised relative">
+          {profile.cover_photo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.cover_photo_url} alt="Cover" className="w-full h-20 object-cover rounded-button mb-2" />
+            <img src={profile.cover_photo_url} alt="Cover" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-s-ink/20 dark:text-s-dm-text/20">
+              <span className="text-sm font-medium">Kein Titelbild</span>
+            </div>
           )}
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 line-clamp-2">{profile.description_de || "—"}</p>
-        </ReviewCard>
+          
+          {/* Top Rated Badge Mock */}
+          <div className="absolute top-3 left-3 bg-s-yellow-subtle text-s-yellow-text px-2 py-1 rounded-pill text-[10px] font-bold uppercase tracking-wider backdrop-blur-glass flex items-center gap-1">
+            <Star size={10} className="fill-current" /> Neu
+          </div>
+        </div>
 
-        <ReviewCard label={t("step7.services")} onEdit={() => onEdit(3)}>
-          <p>{services.length} {services.length === 1 ? "Service" : "Services"}</p>
-        </ReviewCard>
+        {/* Card Content Area */}
+        <div className="p-4">
+          <div className="flex items-start justify-between mb-2">
+            <div>
+              <h3 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{basics.name || "Dein Salon"}</h3>
+              <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 flex items-center gap-1 mt-0.5">
+                <MapPin size={12} /> {basics.quartier ? basics.quartier.charAt(0).toUpperCase() + basics.quartier.slice(1) : "Standort"}
+              </p>
+            </div>
+            {/* Rating Mock */}
+            <div className="flex items-center gap-1 bg-s-ink/5 dark:bg-white/5 px-1.5 py-0.5 rounded text-xs font-semibold data-text">
+              <Star size={10} className="fill-s-ink dark:fill-s-dm-text opacity-40" /> —
+            </div>
+          </div>
 
-        <ReviewCard label={t("step7.team")} onEdit={() => onEdit(4)}>
-          <p>{staffList.map(s => s.name).join(", ")}</p>
-        </ReviewCard>
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {basics.categories.length > 0 ? basics.categories.map(c => (
+              <span key={c} className="px-2 py-0.5 border border-s-ink/5 dark:border-white/5 bg-s-bg-base dark:bg-s-dm-bg rounded-pill text-[10px] text-s-ink/70 dark:text-s-dm-text/70">{c}</span>
+            )) : <span className="px-2 py-0.5 border border-s-ink/5 dark:border-white/5 bg-s-bg-base dark:bg-s-dm-bg rounded-pill text-[10px] text-s-ink/40 dark:text-s-dm-text/40">Kategorie fehlt</span>}
+          </div>
+          
+          <div className="h-px w-full bg-s-ink/5 dark:bg-white/5 mb-3"></div>
+          
+          <div className="flex gap-4 text-xs text-s-ink/60 dark:text-s-dm-text/60">
+            <div><span className="font-semibold text-s-ink dark:text-s-dm-text data-text">{services.length}</span> Services</div>
+            <div><span className="font-semibold text-s-ink dark:text-s-dm-text data-text">{staffList.length}</span> Team</div>
+            <div><span className="font-semibold text-s-ink dark:text-s-dm-text data-text">{activeDays}</span> Tage offen</div>
+          </div>
+        </div>
+      </div>
 
-        <ReviewCard label={t("step7.availability")} onEdit={() => onEdit(5)}>
-          <p>{t("step7.daysPerWeek", { count: activeDays })}</p>
-        </ReviewCard>
-
-        <ReviewCard label={t("step7.lastMinute")} onEdit={() => onEdit(6)}>
-          <p>{lm.enabled ? `${lm.discount_percent}% / ${lm.window_hours}h` : t("step7.disabled")}</p>
-        </ReviewCard>
+      <div className="space-y-2">
+        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-wider mb-3">Abschnitte bearbeiten</p>
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => onEdit(1)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+            {t("step7.basics")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </button>
+          <button type="button" onClick={() => onEdit(2)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+            {t("step7.profile")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </button>
+          <button type="button" onClick={() => onEdit(3)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+            {t("step7.services")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </button>
+          <button type="button" onClick={() => onEdit(4)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+            {t("step7.team")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </button>
+          <button type="button" onClick={() => onEdit(5)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+            {t("step7.availability")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </button>
+          <button type="button" onClick={() => onEdit(6)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+            {t("step7.lastMinute")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </button>
+        </div>
       </div>
     </StepContainer>
   );
@@ -1242,7 +1305,7 @@ export default function SalonOnboardingPage() {
   const [avail, setAvail] = useState<AvailData>({
     template: Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00", breaks: [] } : null])),
   });
-  const [lm, setLm] = useState<LMData>({ enabled: true, discount_percent: 10, window_hours: 6 });
+  const [lm, setLm] = useState<LMData>({ enabled: true, discount_percent: 10, window_hours: 6, cancellation_policy: "flexible" });
 
   // Restore wizard state from sessionStorage on mount
   const [hydrated, setHydrated] = useState(false);
@@ -1309,6 +1372,7 @@ export default function SalonOnboardingPage() {
           availability_template: avail.template,
           last_minute_discount_percent: lm.enabled ? lm.discount_percent : 0,
           last_minute_window_hours: lm.enabled ? lm.window_hours : 0,
+          cancellation_policy: lm.cancellation_policy,
           tos_accepted: basics.tos_accepted,
         }),
       });
@@ -1351,6 +1415,14 @@ export default function SalonOnboardingPage() {
                   />
                 ))}
               </div>
+              <div className="mt-4 pt-4 border-t border-s-ink/5 dark:border-white/5 w-full">
+                <p className="text-xs font-medium text-s-ink dark:text-s-dm-text mb-2 text-left">Nächster Schritt:</p>
+                <a href={`/${locale}/dashboard/settings/payments`} className="flex items-center gap-2 p-3 rounded-card bg-[#635BFF] text-white text-sm font-medium hover:bg-[#524BFF] transition-colors shadow-warm-md w-full justify-between">
+                  <span>Stripe Connect einrichten (Auszahlungen)</span>
+                  <ExternalLink size={16} />
+                </a>
+                <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-2 text-left">Pflichtfeld, um Vorauszahlungen bei Buchungen empfangen zu können.</p>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -1365,15 +1437,14 @@ export default function SalonOnboardingPage() {
             </span>
             <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("header.stepOf", { step, total: TOTAL_STEPS })}</span>
           </div>
-          {/* Progress dots */}
-          <div className="flex items-center gap-1.5" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={t("header.stepOf", { step, total: TOTAL_STEPS })}>
+          {/* Progress Segment Line */}
+          <div className="flex items-center gap-1 mt-1 bg-s-bg-sunken dark:bg-s-dm-raised rounded-full p-1" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={t("header.stepOf", { step, total: TOTAL_STEPS })}>
             {Array.from({ length: TOTAL_STEPS }, (_, i) => (
               <div
                 key={i}
                 className={[
-                  "h-1.5 rounded-full transition-all duration-500",
-                  i < step ? "bg-s-coral" : "bg-s-bg-sunken dark:bg-s-dm-raised",
-                  i === step - 1 ? "w-6" : "w-3",
+                  "h-1.5 rounded-full transition-all duration-300 flex-1",
+                  i < step ? "bg-s-coral" : "bg-transparent",
                 ].join(" ")}
               />
             ))}
@@ -1415,19 +1486,25 @@ export default function SalonOnboardingPage() {
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>
           )}
-          <button
-            type="button"
-            disabled={submitting}
-            onClick={step < TOTAL_STEPS ? goNext : handleSubmit}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
-          >
-            {submitting && <Spinner size="sm" invert />}
-            {step < TOTAL_STEPS ? (
-              <><span>{t("nav.next")}</span><ChevronRight size={16} /></>
-            ) : (
-              <><Check size={16} /><span>{t("nav.create")}</span></>
-            )}
-          </button>
+          {step < TOTAL_STEPS ? (
+            <button
+              type="button"
+              disabled={submitting}
+              onClick={goNext}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors shadow-warm-sm disabled:opacity-50 group"
+            >
+              {submitting && <Spinner size="sm" invert />}
+              <span>{t("nav.next")}</span>
+              <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </button>
+          ) : (
+            <div className="flex-1" onClick={submitting ? undefined : handleSubmit}>
+              <InteractiveHoverButton
+                text={submitting ? "..." : t("nav.create")}
+                className="w-full bg-s-coral text-white shadow-coral-glow"
+              />
+            </div>
+          )}
         </div>
       </nav>
     </div>

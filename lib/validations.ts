@@ -192,6 +192,7 @@ export const createSalonSchema = z.object({
   latitude: z.number().optional().nullable(),
   longitude: z.number().optional().nullable(),
   google_place_id: z.string().optional().or(z.literal("")),
+  cancellation_policy: z.string().optional().or(z.literal("")),
   tos_accepted: z.literal(true).optional(),
 });
 
