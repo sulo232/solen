@@ -72,6 +72,7 @@ interface BasicsData {
   quartier: string;
   address: string;
   phone: string;
+  phone_verified: boolean;
   tos_accepted: boolean;
   latitude: number | null;
   longitude: number | null;
@@ -81,6 +82,59 @@ interface BasicsData {
 type TFunc = (key: string, params?: Record<string, unknown>) => string;
 
 function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChange: (d: BasicsData) => void; errors: Record<string, string>; t: TFunc; locale: string }) {
+  const [sending, setSending] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState("");
+
+  const sendOtp = async () => {
+    if (!data.phone || data.phone.length < 9) return;
+    setSending(true);
+    setVerifyError("");
+    try {
+      const res = await fetch("/api/auth/verify-phone/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: data.phone }),
+      });
+      if (res.ok) {
+        setShowOtp(true);
+      } else {
+        const d = await res.json();
+        setVerifyError(d.message || "Fehler beim Senden");
+      }
+    } catch {
+      setVerifyError("Netzwerkfehler");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const verifyOtp = async () => {
+    if (code.length < 4) return;
+    setVerifying(true);
+    setVerifyError("");
+    try {
+      const res = await fetch("/api/auth/verify-phone/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: data.phone, code }),
+      });
+      if (res.ok) {
+        onChange({ ...data, phone_verified: true });
+        setShowOtp(false);
+      } else {
+        const d = await res.json();
+        setVerifyError(d.message || "Falscher Code");
+      }
+    } catch {
+      setVerifyError("Netzwerkfehler");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const toggleCat = (c: SalonCategory) => {
     const next = data.categories.includes(c)
       ? data.categories.filter((x) => x !== c)
@@ -165,12 +219,58 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div>
           <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step1.phone")}</label>
-          <input
-            value={data.phone}
-            onChange={(e) => onChange({ ...data, phone: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
-            placeholder="+41 61 000 00 00"
-          />
+          <div className="flex gap-2">
+            <input
+              value={data.phone}
+              onChange={(e) => {
+                onChange({ ...data, phone: e.target.value, phone_verified: false }); // Reset verification on change
+                setShowOtp(false);
+              }}
+              disabled={data.phone_verified}
+              className={`flex-1 px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised ${data.phone_verified ? "border-green-500/50 text-green-700 dark:text-green-400" : errors.phone_verified || errors.phone ? "border-s-coral text-s-ink dark:text-s-dm-text" : "border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text"}`}
+              placeholder="+41 61 000 00 00"
+            />
+            {data.phone_verified ? (
+              <div className="flex items-center justify-center px-4 bg-green-500/10 text-green-600 dark:text-green-400 rounded-button text-sm font-medium">
+                <Check size={16} className="mr-1" /> Verifiziert
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={sendOtp}
+                disabled={sending || !data.phone || data.phone.length < 9}
+                className="px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 hover:bg-s-coral/90 transition-colors"
+              >
+                {sending ? <Spinner size="sm" invert /> : "Verifizieren"}
+              </button>
+            )}
+          </div>
+          {(errors.phone || errors.phone_verified) && <p className="text-xs text-s-coral mt-1">{errors.phone || errors.phone_verified}</p>}
+
+          {showOtp && !data.phone_verified && (
+            <div className="mt-2 p-3 bg-s-coral/5 rounded-card border border-s-coral/20">
+              <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 mb-2">Code per SMS erhalten?</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                  placeholder="123456"
+                  className="w-24 px-3 py-2 text-center tracking-widest rounded-button border border-s-coral/30 text-sm focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised"
+                />
+                <button
+                  type="button"
+                  onClick={verifyOtp}
+                  disabled={verifying || code.length < 4}
+                  className="px-4 py-2 rounded-button bg-s-coral/10 text-s-coral text-sm font-medium disabled:opacity-50 hover:bg-s-coral/20 transition-colors"
+                >
+                  {verifying ? <Spinner size="sm" /> : "Code prüfen"}
+                </button>
+              </div>
+              {verifyError && <p className="text-xs text-s-coral mt-1.5">{verifyError}</p>}
+            </div>
+          )}
         </div>
 
         {/* TOS checkbox */}
@@ -1129,7 +1229,7 @@ export default function SalonOnboardingPage() {
   };
 
   const [basics, setBasics] = useState<BasicsData>({
-    name: "", email: "", categories: [], quartier: "", address: "", phone: "",
+    name: "", email: "", categories: [], quartier: "", address: "", phone: "", phone_verified: false,
     tos_accepted: false, latitude: null, longitude: null, google_place_id: "",
   });
   const [profile, setProfile] = useState<ProfileData>({

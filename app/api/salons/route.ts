@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
       services, staff, availability_template,
       last_minute_discount_percent, last_minute_window_hours,
       latitude, longitude, google_place_id,
-      website_url, tiktok_url,
+      website_url, tiktok_url, phone_verified,
     } = validated;
 
     const admin = createAdminSupabaseClient();
@@ -169,6 +169,7 @@ export async function POST(request: NextRequest) {
           quartier,
           address,
           phone: phone || null,
+          phone_verified: phone_verified || false,
           email: email || user.email || null,
           cover_photo_url: cover_photo_url || null,
           gallery_urls: gallery_urls?.filter(Boolean) || [],

@@ -9,6 +9,7 @@ export const step1Schema = z.object({
   quartier: z.string().min(1, "Wähle ein Quartier"),
   address: z.string().min(5, "Adresse ist zu kurz"),
   phone: phoneSchema,
+  phone_verified: z.boolean().refine(val => val === true, "Bitte verifiziere deine Telefonnummer"),
   tos_accepted: z.literal(true, { errorMap: () => ({ message: "Bitte akzeptiere die AGB und Datenschutzerklärung" }) }),
 });
 
