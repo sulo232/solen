@@ -31,6 +31,8 @@ interface AnalyticsData {
   retention_rate?: number;
   new_vs_returning?: { new: number; returning: number };
   acquisition_sources?: { source: string; count: number }[];
+  posthog_profile_views?: number;
+  posthog_conversion_rate?: number;
 }
 
 const CORAL = "#E8624A";
@@ -114,6 +116,17 @@ export default function AnalyticsPage() {
                   <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{data.retention_rate.toFixed(0)}%</p>
                 </div>
               )}
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 mb-3">
+              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-s-dm-surface rounded-card border border-indigo-100 dark:border-indigo-900/30 p-4 shadow-card">
+                <p className="text-xs text-indigo-900/60 dark:text-indigo-200/60 mb-1">Profilaufrufe</p>
+                <p className="data-text font-bold text-2xl text-indigo-900 dark:text-indigo-100">{data.posthog_profile_views ?? 0}</p>
+              </div>
+              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-s-dm-surface rounded-card border border-indigo-100 dark:border-indigo-900/30 p-4 shadow-card">
+                <p className="text-xs text-indigo-900/60 dark:text-indigo-200/60 mb-1">Conversion Rate</p>
+                <p className="data-text font-bold text-2xl text-indigo-900 dark:text-indigo-100">{(data.posthog_conversion_rate ?? 0).toFixed(1)}%</p>
+              </div>
             </div>
 
             {data.percentile_rank != null && (

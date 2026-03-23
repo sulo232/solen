@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { fetchPostHogProfileViews } from "@/lib/posthog-api";
 
 // GET /api/analytics/salon/[id]?period=week|month|quarter|year
 export async function GET(
@@ -161,6 +162,13 @@ export async function GET(
     ? Math.round((reviews!.reduce((s, r) => s + r.rating, 0) / totalReviews) * 10) / 10
     : 0;
 
+  // PostHog Insights
+  let profileViews = 0;
+  if (isOwner || isAdmin) {
+    profileViews = await fetchPostHogProfileViews(id, days);
+  }
+  const conversionRate = profileViews > 0 ? (totalBookings / profileViews) * 100 : 0;
+
   return NextResponse.json({
     salon_id: id,
     period,
@@ -182,6 +190,8 @@ export async function GET(
     retention_rate: retentionRate,
     new_vs_returning: { new: firstVisits, returning: returningCount },
     acquisition_sources: acquisitionSources,
+    posthog_profile_views: profileViews,
+    posthog_conversion_rate: conversionRate,
     // Legacy fields for backwards compatibility
     most_popular_service: popularServices[0]?.name ?? null,
     most_popular_time: heatmap.sort((a, b) => b.count - a.count)[0] ?? null,

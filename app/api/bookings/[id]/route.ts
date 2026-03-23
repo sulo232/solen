@@ -63,20 +63,95 @@ export async function PATCH(
 
   const { data: booking, error: fetchErr } = await supabase
     .from("bookings")
-    .select("id, salon_id, user_id, status")
+    .select("*, salons(owner_id, stripe_account_id)")
     .eq("id", id)
     .single();
 
   if (fetchErr || !booking) return NextResponse.json({ message: "Not found", code: "NOT_FOUND" }, { status: 404 });
 
-  const { data: salon } = await supabase.from("salons").select("owner_id").eq("id", booking.salon_id).single();
+  const isSalonOwner = booking.salons?.owner_id === user.id;
+  const isBookingOwner = booking.user_id === user.id;
   
-  if (salon?.owner_id !== user.id) {
+  if (!isSalonOwner && !isBookingOwner) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
   const updates: any = { status };
   if (status === "completed") updates.completed_at = new Date().toISOString();
+
+  // Refund logic for cancellations
+  if (status === "cancelled") {
+    updates.cancelled_at = new Date().toISOString();
+    updates.cancellation_reason = isBookingOwner ? "customer_cancelled" : "salon_cancelled";
+
+    const pi_id = booking.payment_intent_id;
+    if (pi_id && (booking.payment_status === "paid" || booking.payment_status === "deposit_held")) {
+      try {
+        const Stripe = (await import("stripe")).default;
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+        const intent = await stripe.paymentIntents.retrieve(pi_id);
+        
+        const hoursUntilAppointment = (new Date(booking.starts_at).getTime() - Date.now()) / (1000 * 60 * 60);
+        // By ToS §4.2: <24h gives 50% refund, >24h gives 100% refund. 
+        // If salon cancels, always 100% refund.
+        const isLate = isBookingOwner && hoursUntilAppointment < 24;
+        
+        if (booking.payment_status === "deposit_held" && intent.status === "requires_capture") {
+          // It's just a hold
+          if (!isLate) {
+            // 100% refund -> cancel the hold
+            await stripe.paymentIntents.cancel(pi_id);
+            updates.payment_status = "refunded";
+          } else {
+            // 50% retained (50% fee). Capture 50%, release rest.
+            const captureAmount = Math.round(intent.amount * 0.5);
+            // Calculate new application fee proportionally
+            const originalFee = intent.application_fee_amount || 0;
+            const newFee = Math.round(originalFee * 0.5);
+            await stripe.paymentIntents.capture(pi_id, {
+              amount_to_capture: captureAmount,
+              application_fee_amount: newFee > 0 ? newFee : undefined
+            });
+            updates.payment_status = "partially_refunded";
+            updates.refunded_amount = intent.amount - captureAmount;
+          }
+        } else if (booking.payment_status === "paid" && intent.status === "succeeded") {
+          // It's already captured
+          if (!isLate) {
+            // 100% refund
+            await stripe.refunds.create({ 
+              payment_intent: pi_id, 
+              reverse_transfer: true, 
+              refund_application_fee: true 
+            });
+            updates.payment_status = "refunded";
+            updates.refunded_amount = intent.amount;
+          } else {
+            // 50% refund
+            const refundAmount = Math.round(intent.amount * 0.5);
+            await stripe.refunds.create({ 
+              payment_intent: pi_id, 
+              amount: refundAmount, 
+              reverse_transfer: true,
+              refund_application_fee: true
+            });
+            updates.payment_status = "partially_refunded";
+            updates.refunded_amount = refundAmount;
+          }
+        }
+      } catch (err: any) {
+        console.error(`[bookings/patch] Stripe refund error for booking ${id}:`, err.message);
+        // We log error but still let cancellation proceed
+      }
+    } else {
+      updates.payment_status = "none";
+    }
+
+    // Free the slot
+    if (booking.slot_id) {
+      await supabase.from("availability_slots").update({ status: "available", booked_by: null, booking_id: null }).eq("id", booking.slot_id);
+    }
+  }
 
   const { error: updateErr } = await supabase.from("bookings").update(updates).eq("id", id);
   if (updateErr) return NextResponse.json({ message: updateErr.message, code: "DB_ERROR" }, { status: 500 });

@@ -7,6 +7,7 @@ import { Check, UserX, RotateCcw, ChevronDown, X, BadgeCheck, AlertTriangle } fr
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import ClientTags from "@/components/chat/ClientTags";
+import DisputeNotification from "@/components/dashboard/DisputeNotification";
 import { formatCurrency } from "@/lib/format-currency";
 import type { Booking, BookingStatus } from "@/lib/types";
 
@@ -109,6 +110,7 @@ export default function BookingsPage() {
   );
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
   const [confirmingPrice, setConfirmingPrice] = useState<string | null>(null);
+  const [openDisputes, setOpenDisputes] = useState<Record<string, any>>({});
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -121,6 +123,24 @@ export default function BookingsPage() {
         const items = d.bookings ?? [];
         setBookings(items);
         if (items.length > 0 && !salonId) setSalonId(items[0].salon_id);
+        
+        // Fetch open disputes
+        if (items.length > 0) {
+          import("@/lib/supabase-browser").then(({ createBrowserSupabaseClient }) => {
+            const supabase = createBrowserSupabaseClient();
+            supabase.from("booking_disputes")
+              .select("*")
+              .in("booking_id", items.map((b: any) => b.id))
+              .eq("status", "open")
+              .then(({ data }) => {
+                if (data) {
+                  const map: Record<string, any> = {};
+                  data.forEach((d) => { map[d.booking_id] = d; });
+                  setOpenDisputes(map);
+                }
+              });
+          });
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -272,6 +292,18 @@ export default function BookingsPage() {
                   )}
                 </div>
               </div>
+              {openDisputes[b.id] && (
+                <DisputeNotification
+                  dispute={openDisputes[b.id]}
+                  onResponded={(bookingId) => {
+                    setOpenDisputes((prev) => {
+                      const copy = { ...prev };
+                      delete copy[bookingId];
+                      return copy;
+                    });
+                  }}
+                />
+              )}
             </div>
           ))}
         </div>

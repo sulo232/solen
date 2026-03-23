@@ -6,6 +6,7 @@ import { checkReview } from "@/lib/automod";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createReviewSchema } from "@/lib/validations";
+import { trackServerEvent } from "@/lib/posthog-server";
 
 export async function POST(request: NextRequest) {
   const disabled = await checkFeatureEnabled("reviews");
@@ -77,6 +78,12 @@ export async function POST(request: NextRequest) {
   }).catch(() => {});
 
   if (data) {
+    trackServerEvent(user.id, "review_submitted", {
+      salon_id: booking.salon_id,
+      rating: rating,
+      review_id: data.id,
+    });
+
     try {
       const admin = createAdminSupabaseClient();
       const { data: stats } = await admin

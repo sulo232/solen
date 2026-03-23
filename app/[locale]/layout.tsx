@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import BottomNav from "@/components/layout/BottomNav";
 import CookieBanner from "@/components/ui/CookieBanner";
 import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
+import TosPrompt from "@/components/auth/TosPrompt";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -33,6 +34,7 @@ export default async function LocaleLayout({
           <BottomNav />
           <CookieBanner />
           <PWAInstallPrompt />
+          <TosPrompt />
         </ToastProvider>
       </PostHogProvider>
     </NextIntlClientProvider>

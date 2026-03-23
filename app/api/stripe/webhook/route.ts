@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, type EmailLocale } from "@/lib/email";
 import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
+import { trackServerEvent } from "@/lib/posthog-server";
 
 export const runtime = "nodejs";
 
@@ -79,6 +80,16 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (booking) {
+          trackServerEvent(booking.user_id, "payment_succeeded", {
+            booking_id: bookingId,
+            salon_id: pi.metadata?.salon_id,
+            amount: (pi.amount ?? 0) / 100,
+          });
+          trackServerEvent(booking.user_id, "booking_completed", {
+            booking_id: bookingId,
+            salon_id: pi.metadata?.salon_id,
+          });
+
           const { data: profile } = await admin
             .from("profiles")
             .select("locale")
@@ -120,6 +131,12 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (booking) {
+          trackServerEvent(booking.user_id, "payment_failed", {
+            booking_id: bookingId,
+            salon_id: pi.metadata?.salon_id,
+            amount: (pi.amount ?? 0) / 100,
+          });
+
           const { data: profile } = await admin
             .from("profiles")
             .select("locale")
@@ -187,6 +204,43 @@ export async function POST(req: NextRequest) {
           accepts_online_payment: true,
         }).eq("stripe_account_id", account.id);
       }
+      break;
+    }
+
+    case "charge.refunded": {
+      const charge = event.data.object as any;
+      if (charge.payment_intent) {
+        const amountRefunded = charge.amount_refunded / 100;
+        // Find corresponding salon payout and adjust it
+        const { data: payout } = await admin.from("salon_payouts").select("*").eq("stripe_payment_intent_id", charge.payment_intent).single();
+        if (payout) {
+          const newGross = payout.gross_amount - amountRefunded;
+          const newComm = Math.round(newGross * (payout.commission_percent / 100) * 100) / 100;
+          const newNet = Math.round((newGross - newComm) * 100) / 100;
+          await admin.from("salon_payouts").update({
+            gross_amount: newGross,
+            commission_amount: newComm,
+            net_amount: newNet,
+          }).eq("id", payout.id);
+        }
+      }
+      break;
+    }
+
+    case "payout.paid": {
+      const payout = event.data.object as any;
+      const accountId = event.account; // since it's a connect webhook possibly?
+      // Wait, Stripe connect webhooks for destination accounts are delivered to the platform but we must verify
+      // Payout paid event applies to salon connected account
+      if (accountId) {
+        // Log payout or update status
+      }
+      break;
+    }
+
+    case "payout.failed": {
+      const payout = event.data.object as any;
+      console.warn(`[stripe/webhook] Payout failed. Reason: ${payout.failure_reason}`);
       break;
     }
   }

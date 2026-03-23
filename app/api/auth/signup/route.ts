@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
+import { trackServerEvent, identifyServerUser } from "@/lib/posthog-server";
 
 const calcAge = (dateStr: string) => {
   const b = new Date(dateStr);
@@ -50,6 +51,11 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
+  }
+
+  if (data.user && (!data.user.identities || data.user.identities.length > 0)) {
+    identifyServerUser(data.user.id, { email });
+    trackServerEvent(data.user.id, "customer_signup", { method: "email" });
   }
 
   // Supabase returns user with identities=[] if user already exists but is unconfirmed
