@@ -7,7 +7,6 @@ import { X, Settings, Cookie } from "lucide-react";
 type ConsentState = {
   necessary: true;
   analytics: boolean;
-  marketing: boolean;
 };
 
 const CONSENT_KEY = "solen_cookie_consent";
@@ -31,7 +30,6 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [analytics, setAnalytics] = useState(false);
-  const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -52,18 +50,18 @@ export default function CookieBanner() {
   };
 
   const acceptAll = () => {
-    accept({ necessary: true, analytics: true, marketing: true });
+    accept({ necessary: true, analytics: true });
   };
 
   const rejectAll = () => {
-    accept({ necessary: true, analytics: false, marketing: false });
+    accept({ necessary: true, analytics: false });
     if (typeof window !== "undefined" && (window as any).posthog) {
       (window as any).posthog.opt_out_capturing();
     }
   };
 
   const saveSettings = () => {
-    accept({ necessary: true, analytics, marketing });
+    accept({ necessary: true, analytics });
   };
 
   if (!visible) return null;
@@ -83,7 +81,7 @@ export default function CookieBanner() {
                 <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
                   Wir nutzen Cookies für die Funktion der Website und optional für Analytics.
                   Mehr dazu in unserer{" "}
-                  <a href={`/${locale}/datenschutz`} className="text-s-coral hover:underline">
+                  <a href={`/${locale}/privacy`} className="text-s-coral hover:underline">
                     Datenschutzerklärung
                   </a>.
                 </p>
@@ -160,21 +158,6 @@ export default function CookieBanner() {
                 </button>
               </div>
 
-              {/* Marketing */}
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Marketing</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Personalisierte Empfehlungen</p>
-                </div>
-                <button
-                  onClick={() => setMarketing(!marketing)}
-                  className={`w-10 h-5 rounded-full flex items-center px-0.5 transition-colors ${
-                    marketing ? "bg-s-coral justify-end" : "bg-s-sand dark:bg-white/20 justify-start"
-                  }`}
-                >
-                  <div className="w-4 h-4 rounded-full bg-white shadow-warm-sm" />
-                </button>
-              </div>
             </div>
 
             <div className="flex gap-2 mt-6">
