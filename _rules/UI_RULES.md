@@ -50,7 +50,7 @@
 - **Reveal Stagger:** `.reveal-stagger` applies `solen-reveal` with 80ms delay between children for page-load entrance animations.
 
 ## 5. Structural Rules
-- **Category Pages:** Must use an Airbnb-style searchable and sortable grid. Map view available via toggle button (`?view=map`) using Mapbox integration (`components/MapView.tsx`). List is default; map is opt-in.
+- **Category Pages:** The discovery experience (`app/[locale]/search`) MUST feature a Split View architecture on desktop (50% Map, 50% Grid). On mobile, it uses a searchable and sortable list view with a floating toggle button to swap to a Map view without a page reload.
 - **Mobile Booking Flow:** Must use a mobile **bottom sheet** for booking (like Airbnb "Check availability").
 - **Desktop Booking Flow:** Use a sticky sidebar calendar.
 - **Global Header:** Must be present and consistent across all Next.js (`app/`) pages. It should transition from transparent to solid (with blur) on scroll.
@@ -348,5 +348,271 @@ Use this checklist when building or reviewing ANY component:
 | Border radius | Mixed `rounded-lg`, `rounded-2xl`, `rounded-full` | Consistent `rounded-card`, `rounded-button`, `rounded-pill` |
 | Colors | Raw Tailwind colors (`yellow-400`, `emerald-500`) | Design tokens (`s-yellow`, `s-success`) |
 
+## 20. Next-Gen Fluidity & Urgency (Phase 2 Vision)
+- **Map vs Grid Equality:** The discovery experience (`app/[locale]/search`) MUST feature a Split View architecture on desktop (50% Map, 50% Grid) and a "Coin-Flip" floating action button on mobile that instantly swaps views without a page reload.
+- **Hyper-Fluid Booking Success:** Do not use full-page redirects for booking success. The `[Book Now]` button MUST use Framer Motion `layoutId` to compress, morph into a circle spinner, and then expand into a glassmorphic Receipt Card Modal containing a self-drawing premium SVG checkmark. **No Confetti.**
+- **Sneaker-Drop Urgency (Last-Minute):** The Last-Minute booking section MUST enforce high urgency. Disappearing slots require `shadow-coral-glow` pulsing. Slots expiring in <2 hours require a floating translucent countdown timer.
+- **Playful, Premium Micro-Delight:** Enforce `.blob-interactive` squish physics on major interactive cards. Favoriting a salon MUST trigger a haptic heart-pop animation (`scale: 1.2` bezier easing down to `scale: 1.0`).
+
 ---
 **Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules, you must **refuse the specific contradiction** and implement the component using these rules instead.
+
+
+## 13. 🎨 DESIGN TOKEN CONSISTENCY RULES (MANDATORY)
+
+> **CONTEXT**: A full codebase scan on 2026-03-19 revealed 1,008 refs of `text-dark` (legacy token) vs 9 refs of `text-s-ink` (design system token). Both resolved to the same hex, but the naming inconsistency made the codebase unmaintainable. These rules prevent this from happening again.
+
+### Rule 20: BANNED TOKEN LIST — NEVER USE THESE
+
+The following CSS classes are BANNED. If you write ANY of these, the code is wrong. No exceptions.
+
+| ❌ BANNED | ✅ USE INSTEAD | Why |
+|---|---|---|
+| `text-dark` (any opacity) | `text-s-ink` / `text-s-ink/50` etc. | Legacy token, use design system |
+| `bg-dark` (any opacity) | `bg-s-ink` / `bg-s-ink/40` etc. | Legacy token |
+| `border-dark` | `border-s-ink/10` | Legacy token |
+| `bg-black` | `bg-s-ink` | Violates warm palette rule |
+| `bg-gray-*` | `bg-s-bg-surface` / `bg-s-sand` | Cold gray, use warm |
+| `text-gray-*` | `text-s-ink/*` (opacity) | Cold gray, use warm |
+| `border-gray-*` | `border-s-ink/*` (opacity) | Cold gray, use warm |
+| `dark:bg-dm-*` | `dark:bg-s-dm-*` | Missing `s-` prefix |
+| `dark:text-dm-*` | `dark:text-s-dm-*` | Missing `s-` prefix |
+| `dark:border-dm-*` | `dark:border-s-dm-*` | Missing `s-` prefix |
+| `dark:text-white` (on non-buttons) | `dark:text-s-dm-text` | Use warm off-white |
+| `dark:bg-black` | `dark:bg-s-dm-bg` | Use warm dark |
+| `shadow-teal-glow` | `shadow-warm-sm` | Old branding |
+| `bg-mesh-teal` | `bg-s-bg-base` | Old branding |
+| `accent-teal` | `accent-s-coral` | Old branding |
+| `border-t-teal` | `border-t-s-coral` | Old branding (found in Spinner.tsx) |
+| `bg-amber-*` / `border-amber-*` / `fill-amber-*` | `bg-s-amber-subtle` / `border-s-amber/20` / `fill-s-amber` | Generic Tailwind, use design tokens |
+| `bg-yellow-*` / `text-yellow-*` / `ring-yellow-*` | `bg-s-yellow-subtle` / `text-s-yellow-text` | Generic Tailwind, use design tokens |
+| `bg-emerald-*` / `text-emerald-*` | `bg-s-success` / `text-s-success` | Generic Tailwind, use semantic token |
+| `bg-green-*` / `text-green-*` | `bg-s-sage` / `text-s-sage-text` | Generic Tailwind, use design tokens |
+| `bg-purple-*` / `text-purple-*` | `bg-s-plum-subtle` / `text-s-plum-text` | Generic Tailwind, use design tokens |
+| `bg-rose-*` / `text-rose-*` | `bg-s-coral-subtle` / `text-s-coral-text` | Generic Tailwind, use design tokens |
+| `bg-blue-100/200/300` / `text-blue-*` | `bg-s-blue-subtle` / `text-s-blue-text` | Generic Tailwind, use design tokens |
+| `bg-red-*` | `bg-s-error-bg` / `bg-s-error` | Generic Tailwind, use semantic token |
+| `shadow-sm` / `shadow-md` / `shadow-lg` | `shadow-warm-sm` / `shadow-warm-md` / `shadow-warm-lg` | Cold shadows → warm design tokens |
+| `shadow-xl` / `shadow-2xl` | `shadow-warm-lg` | Cold shadows → warm design tokens |
+| `rounded-lg/xl/2xl/3xl` | `rounded-card` / `rounded-button` / `rounded-pill` | Use design token radii (see UI_RULES §10) |
+| `rounded-full` | `rounded-pill` | Use design token (9999px) |
+| Any emoji in JSX | Lucide React icon | UI_RULES §5: no emoji in UI |
+
+**Enforcement**: After EVERY commit, run:
+```bash
+grep -Ern "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-gray-|dark:bg-dm-|dark:text-dm-|shadow-teal|accent-teal|bg-mesh-teal|border-t-teal|bg-amber-|border-amber-|fill-amber-|bg-yellow-|text-yellow-|ring-yellow-|bg-emerald-|text-emerald-|bg-green-|text-green-|bg-purple-|text-purple-|bg-rose-|text-rose-|shadow-sm[^a]|shadow-md|shadow-lg|shadow-xl|shadow-2xl|rounded-lg|rounded-xl|rounded-2xl|rounded-3xl|rounded-full" components/ app/ --include="*.tsx" | grep -v "node_modules\|darkMode\|//\|s-dm\|s-ink\|s-amber\|s-yellow\|s-success\|shadow-warm\|shadow-card\|shadow-glass\|shadow-coral\|rounded-card\|rounded-button\|rounded-pill\|rounded-blob" | head -10
+```
+If this returns ANY results, fix them before pushing.
+
+### Rule 21: DESIGN TOKEN VALIDATION — BEFORE EVERY COMMIT
+
+Before committing ANY `.tsx` file change, you MUST verify:
+
+1. **No banned tokens introduced** (Run the grep from Rule 20)
+2. **Every `bg-white` has a `dark:bg-s-dm-*` pair** (unless on a coral button or toggle knob)
+3. **Every `text-s-ink` has a `dark:text-s-dm-text` pair** (for primary text)
+4. **No hardcoded hex colors** — all colors must use tailwind.config tokens (exception: SVG brand logos like Google)
+5. **No hardcoded `CHF`** — use `formatCurrency()` from `lib/format-currency.ts`
+6. **No new `style={{}}` for values achievable with Tailwind**
+
+```bash
+# Quick validation script — run after every commit:
+echo "=== Banned tokens ===" && \
+grep -Ercn "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-t-teal|bg-amber-|border-amber-" components/ app/ --include="*.tsx" | grep -v "s-ink\|s-dm\|s-amber\|darkMode" | wc -l && \
+echo "=== Dark mode pairs ===" && \
+grep -rn "bg-white" components/ --include="*.tsx" | grep -v "dark:\\|toggle\\|CookieBanner\\|//\\|knob" | wc -l && \
+echo "=== Hardcoded hex ===" && \
+grep -Ern "#[0-9a-fA-F]{3,6}" components/ --include="*.tsx" | grep -v "//\|import\|svg" | wc -l && \
+echo "=== All should be 0 ==="
+```
+
+### Rule 22: NEW TOKENS REQUIRE UI_RULES.md DOCUMENTATION
+
+If you add ANY new:
+- Color token to `tailwind.config.js`
+- Custom utility class (like `rounded-card`, `shadow-glass`)
+- Font family or typography class
+- z-index value
+
+You MUST also update `UI_RULES.md` with:
+1. The token name, value, and purpose
+2. Which components should use it
+3. What it replaces (if deprecating an old token)
+
+**Never introduce a parallel naming system.** Before creating a new token, check if an existing one serves the same purpose. If `s-ink` already means `#1A1209`, don't create `dark` with the same value.
+
+### Rule 23: DOCUMENTATION-CODE CONSISTENCY CHECK
+
+> **CONTEXT**: On 2026-03-19, `UI_RULES.md` documented dark mode colors (`#0F0F1A`) that didn't match `tailwind.config.js` (`#151009`). The docs and code were out of sync for months without anyone noticing.
+
+Whenever you modify ANY of these files, you MUST cross-check ALL FOUR for consistency:
+- `tailwind.config.js` (colors, shadows, radii)
+- `globals.css` (CSS variables)
+- `UI_RULES.md` (design tokens documentation)
+- `CLAUDE.md` Section 13 (design rules)
+
+Checks:
+1. Every color hex in `tailwind.config.js` must match its documentation in `UI_RULES.md`
+2. Every CSS variable in `globals.css` must correspond to a Tailwind token
+3. Every banned token in `CLAUDE.md` Rule 20 must also appear in `UI_RULES.md` Section 16
+4. The dark mode colors in all files must be identical
+
+```bash
+# Cross-check dark mode values:
+grep -n "151009\|1E1710\|F5EEE4" tailwind.config.js UI_RULES.md CLAUDE.md
+# All files should show the SAME hex values
+```
+
+### Rule 24: DUPLICATE CONSTANT DETECTION
+
+> **CONTEXT**: On 2026-03-19, `LanguageSwitcher.tsx` had `LOCALE_FLAGS` and `LOCALE_LABELS` with identical values, causing the `DE DE` duplication bug. `ClientTags.tsx` had a key named `teal` that actually mapped to coral styles.
+
+Before committing, check for:
+1. Two `Record<string, string>` constants in the SAME file with identical keys → delete one
+2. A constant key that doesn't match its actual meaning (e.g., `teal` mapping to coral) → rename it
+3. If renaming a key that may be stored in the database → add backward compatibility mapping
+
+```bash
+# Check for files with multiple Record<string, string> constants:
+grep -rn "Record<string, string>" components/ --include="*.tsx" | awk -F: '{print $1}' | sort | uniq -c | sort -rn | head -5
+# If any file appears 2+ times, inspect for duplicates
+```
+
+### Rule 25: NEVER USE `getUser()` IN API ROUTES OR MIDDLEWARE
+
+> **CONTEXT**: This bug has been fixed TWICE (2026-03-18 and 2026-03-19). `supabase.auth.getUser()` makes a **network call** from Vercel Edge → Supabase to validate the JWT. This call **times out** on Vercel's edge network, returning `user: null` even when the session cookie is valid. This kills ALL session persistence — users log in successfully but get bounced to the login page on every subsequent navigation.
+
+**ALWAYS use `getSession()`** — it reads the JWT directly from cookies with **zero network calls**.
+
+```typescript
+// ✅ CORRECT — reads JWT from cookies, no network call:
+const { data: { session } } = await supabase.auth.getSession();
+const user = session?.user ?? null;
+
+// ❌ BANNED — makes network call that TIMES OUT on Vercel Edge:
+const { data: { user } } = await supabase.auth.getUser();
+```
+
+**This applies to:**
+- `middleware.ts` (runs on EVERY request)
+- ALL files in `app/api/` (route handlers)
+- `lib/supabase.ts` `getSessionUser()` helper
+
+**Enforcement:**
+```bash
+grep -rn "auth.getUser()" middleware.ts app/api/ lib/supabase.ts --include="*.ts"
+# Must return 0 results. If ANY results found, change to getSession().
+```
+
+### Rule 26: NO DEAD CODE — EVERY COMPONENT MUST BE IMPORTED AND RENDERED
+
+> **CONTEXT**: On 2026-03-20, Claude Code executed the Discovery roadmap and created 15+ components (PostFromDiscover, FilterDrawer, FeaturedBoards, etc.) as standalone files but NEVER imported or rendered them on any page. The components were "built" but invisible to users — pure dead code.
+
+When creating a new component:
+1. **CREATING** the file is NOT enough. You MUST also import and render it on the target page.
+2. After building each component, immediately `grep -rn "ComponentName" app/ components/` to verify it's imported somewhere.
+3. If a component is conditionally rendered (e.g., floating button), it still MUST be imported and placed in the JSX tree with its condition.
+4. At the END of each phase, run: `grep -rn "from.*discovery" app/ components/ | grep -c import` and compare against the number of files in the feature directory. If there are more files than imports → you have dead code.
+
+```bash
+# Verify no orphan components:
+for f in components/discovery/*.tsx; do
+  name=$(basename "$f" .tsx)
+  count=$(grep -rn "$name" app/ components/ --include="*.tsx" | grep -v "^$f" | wc -l)
+  [ "$count" -eq 0 ] && echo "⚠️ DEAD CODE: $f is never imported"
+done
+```
+
+**This rule applies to ALL new features, not just Discovery.**
+
+### Rule 27: PAGES MUST NOT DUPLICATE ROOT LAYOUT ELEMENTS
+
+> **CONTEXT**: On 2026-03-20, the Discovery page rendered its own `<Header />` and `<BottomNav />` on top of the ones already rendered by `app/[locale]/layout.tsx`. This caused a duplicate navigation bar, and the page-level Header had no `locale` prop, producing `/undefined/coiffeur` links.
+
+**The root layout (`app/[locale]/layout.tsx`) already renders:**
+- `<Header locale={locale} />`
+- `<BottomNav />`
+- `<CookieBanner />`
+- `<PWAInstallPrompt />`
+
+**Rules:**
+1. **NEVER** import or render `Header`, `BottomNav`, `CookieBanner`, or `PWAInstallPrompt` inside any page component under `app/[locale]/`. They are already there.
+2. Page components should render ONLY their content (e.g., `<main>...</main>`), not layout wrappers.
+3. If a page needs to opt OUT of the header (like dashboard pages), use the existing `isHidden` check in `Header.tsx` — don't add/remove Header instances.
+
+```typescript
+// ❌ WRONG — page duplicates layout elements
+export default function SomePage() {
+  return (
+    <>
+      <Header />        {/* DUPLICATE — already in layout.tsx */}
+      <main>...</main>
+      <BottomNav />      {/* DUPLICATE — already in layout.tsx */}
+    </>
+  );
+}
+
+// ✅ CORRECT — page renders only its content
+export default function SomePage() {
+  return (
+    <main className="min-h-screen ...">
+      {/* page content only */}
+    </main>
+  );
+}
+```
+
+### Rule 28: EVERY TYPE REFERENCED MUST EXIST IN `lib/types.ts`
+
+> **CONTEXT**: On 2026-03-20, Claude Code created 15+ files referencing `DiscoveryItem`, `DiscoveryCategory`, `DiscoveryGender` from `@/lib/types`, but never added those types to the file. Every component had import errors. The types were silently missing across the entire feature.
+
+**Rules:**
+1. Before writing `import type { Foo } from "@/lib/types"` in ANY file, verify `Foo` is actually exported from `lib/types.ts`.
+2. If introducing a new type for a feature, define it in `lib/types.ts` FIRST (Phase 0 / infrastructure), then import it in later phases.
+3. After creating all files for a feature, verify: `npx tsc --noEmit 2>&1 | grep "has no exported member" | head -10` — must return 0 results.
+4. Type definitions should match the database schema exactly (column names, nullable fields, array types).
+
+```bash
+# Verify all type imports resolve:
+npx tsc --noEmit 2>&1 | grep "has no exported member"
+# Must return 0 results.
+```
+
+
+### Rule 29: POST-EXECUTION SMOKE TEST (MANDATORY)
+
+> **CONTEXT**: On 2026-03-20, a 10-phase feature was "completed" but: the feed API returned 500 (table didn't exist), the admin page 404'd (middleware blocked it), types were missing (never defined), navigation showed wrong language (locale not passed), and 4 components were never imported anywhere. None of this was caught because there was no smoke test phase.
+
+**After completing ALL phases of any feature roadmap, you MUST perform a smoke test:**
+
+1. **Build passes**: `npm run build` with 0 errors
+2. **Type check passes**: `npx tsc --noEmit` with 0 errors  
+3. **No dead components**: Every new `.tsx` file is imported at least once
+4. **No missing types**: No `has no exported member` errors
+5. **No duplicate layout elements**: New pages don't import Header/BottomNav
+6. **Feature flag exists**: If using `checkFeatureEnabled("x")`, verify `x` is in `feature_flags` table
+7. **Middleware updated**: If creating admin-only pages, verify path is in `adminOnlyPaths` in `middleware.ts`
+8. **Translations exist**: If using `t("key")`, verify key exists in ALL 4 locale files (de/en/fr/it)
+9. **Migrations noted**: If SQL migrations are required, add a prominent `⚠️ RUN MIGRATION FIRST` section at the top of the roadmap
+
+**A feature is NOT complete until all 9 checks pass.**
+
+### Rule 30: PREMIUM DESIGN ENFORCEMENT (MANDATORY)
+
+> **CONTEXT**: A design audit on 2026-03-23 found ~125 violations of the premium design system. Generic Tailwind classes were used instead of design tokens, breaking Apple-level consistency.
+
+**Before writing ANY UI code, you MUST follow `UI_RULES.md` §19 (Premium Design Enforcement Rules):**
+
+1. **8-Point Grid**: ALL spacing must be 8px multiples. NEVER use `gap-5`, `p-5`, `gap-7`, `p-7`, `gap-9`
+2. **Design Token Shadows**: NEVER use `shadow-sm/md/lg/xl/2xl`. ALWAYS use `shadow-card`, `shadow-warm-sm/md/lg`, `shadow-warm-float`, `shadow-glass`
+3. **Design Token Radii**: NEVER use `rounded-lg/xl/2xl/3xl/full`. ALWAYS use `rounded-card`, `rounded-button`, `rounded-pill`, `rounded-blob-*`
+4. **Design Token Colors**: NEVER use raw Tailwind colors (`yellow-400`, `emerald-500`, `green-300`, `purple-300`, `rose-300`, `blue-200`). ALWAYS use `s-*` tokens.
+5. **60-30-10 Color Rule**: 60% neutral base, 30% card surfaces, 10% accent colors
+6. **Cheap vs Premium Matrix**: Check every new component against the audit matrix in `UI_RULES.md` §19e
+
+```bash
+# Quick premium audit — run before every push:
+grep -Ern "shadow-sm[^a]|shadow-md|shadow-lg[^a]|shadow-xl|shadow-2xl|rounded-lg[^a]|rounded-xl|rounded-2xl|rounded-3xl|rounded-full|bg-yellow-|bg-emerald-|bg-green-|bg-purple-|bg-rose-|bg-blue-[0-3]|gap-5|gap-7|gap-9" components/ app/ --include="*.tsx" | grep -v "shadow-warm\|shadow-card\|shadow-glass\|shadow-coral\|rounded-card\|rounded-button\|rounded-pill\|rounded-blob\|s-dm\|//\|node_modules" | head -10
+# Must return 0 results.
+```
+
