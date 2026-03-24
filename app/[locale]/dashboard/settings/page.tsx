@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2, Palmtree, Globe, Facebook } from "lucide-react";
+import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2, Palmtree, Globe, Facebook, Tag } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import OffPeakManager from "@/components/dashboard/OffPeakManager";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
@@ -1109,6 +1110,7 @@ export default function SettingsPage() {
               { id: "closures", label: "Feiertage", content: <ClosuresTab salon={salon} /> },
               { id: "scheduling", label: "Terminvergabe", content: <SchedulingTab salon={salon} onSave={handleSave} /> },
               { id: "commission", label: "Provision", content: <CommissionTab salon={salon} /> },
+              { id: "offpeak", label: "Nebenzeiten", content: <OffPeakManager salonId={salon.id} /> },
             ]}
           />
         </div>

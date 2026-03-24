@@ -635,6 +635,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                       const discount = slot.price_override && slot.services?.price
                         ? Math.round((1 - slot.price_override / slot.services.price) * 100)
                         : 0;
+                      const offPeakPct = (slot as any).off_peak_discount as number | undefined;
                       return (
                         <button
                           key={slot.id}
@@ -643,16 +644,20 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                             "px-3 py-1.5 rounded-button text-sm data-text font-medium transition-all duration-150",
                             isSelected
                               ? "bg-s-coral text-white shadow-card"
-                              : "bg-s-bg-sunken text-s-ink hover:bg-s-coral/10 hover:text-s-coral dark:bg-s-dm-bg dark:text-s-dm-text dark:hover:bg-s-coral/10",
+                              : offPeakPct
+                                ? "bg-s-sage-subtle text-s-ink hover:bg-s-sage/20 hover:text-s-sage-text dark:bg-s-sage/10 dark:text-s-dm-text dark:hover:bg-s-sage/20"
+                                : "bg-s-bg-sunken text-s-ink hover:bg-s-coral/10 hover:text-s-coral dark:bg-s-dm-bg dark:text-s-dm-text dark:hover:bg-s-coral/10",
                           ].join(" ")}
-                          aria-label={`Termin um ${timeStr}${duration ? ` · ${duration} Min` : ""}${discount > 0 ? `, ${discount}% Rabatt` : ""}`}
+                          aria-label={`Termin um ${timeStr}${duration ? ` · ${duration} Min` : ""}${offPeakPct ? `, ${offPeakPct}% Off-Peak Rabatt` : discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
                         >
                           {timeStr}
                           {duration && <span className="ml-1 text-[10px] opacity-60">· {duration} Min</span>}
-                          {discount > 0 && (
+                          {offPeakPct ? (
+                            <span className="ml-1.5 text-[10px] text-s-sage-text dark:text-s-sage">-{offPeakPct}%</span>
+                          ) : discount > 0 ? (
                             <span className="ml-1.5 text-[10px] text-s-coral">-{discount}%</span>
-                          )}
+                          ) : null}
                         </button>
                       );
                     })}
@@ -743,9 +748,23 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 {selectedSlot.services?.duration_minutes && ` · ${selectedSlot.services.duration_minutes} Min`}
               </p>
             </div>
-            <span className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">
-              {selectedSlot.price_override != null ? formatCurrency(selectedSlot.price_override, locale) : selectedSlot.services?.price != null ? formatCurrency(selectedSlot.services.price, locale) : "–"}
-            </span>
+            <div className="text-right">
+              {(selectedSlot as any).off_peak_discount && selectedSlot.services?.price != null ? (
+                <>
+                  <span className="data-text text-xs text-s-ink/40 dark:text-s-dm-text/40 line-through mr-1">
+                    {formatCurrency(selectedSlot.services.price, locale)}
+                  </span>
+                  <span className="data-text font-bold text-lg text-s-sage-text dark:text-s-sage">
+                    {formatCurrency((selectedSlot as any).discounted_price, locale)}
+                  </span>
+                  <span className="block text-[10px] text-s-sage-text dark:text-s-sage">Off-Peak -{(selectedSlot as any).off_peak_discount}%</span>
+                </>
+              ) : (
+                <span className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">
+                  {selectedSlot.price_override != null ? formatCurrency(selectedSlot.price_override, locale) : selectedSlot.services?.price != null ? formatCurrency(selectedSlot.services.price, locale) : "–"}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Cancellation policy */}

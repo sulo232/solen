@@ -38,5 +38,34 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
-  return NextResponse.json({ items: data ?? [], total: data?.length ?? 0 });
+  // Apply off-peak discounts to matching slots
+  const slots = data ?? [];
+  if (slots.length > 0) {
+    const slotDate = new Date(date + "T00:00:00");
+    const dayOfWeek = slotDate.getDay();
+
+    const { data: offPeakRules } = await supabase
+      .from("off_peak_slots")
+      .select("start_time, end_time, discount_percent")
+      .eq("salon_id", salon_id)
+      .eq("day_of_week", dayOfWeek)
+      .eq("is_active", true);
+
+    if (offPeakRules && offPeakRules.length > 0) {
+      for (const slot of slots) {
+        const slotTime = (slot.starts_at as string).slice(11, 16);
+        const match = offPeakRules.find(
+          (r) => slotTime >= r.start_time.slice(0, 5) && slotTime < r.end_time.slice(0, 5)
+        );
+        if (match && slot.services?.price) {
+          (slot as any).discounted_price = Math.round(
+            slot.services.price * (1 - match.discount_percent / 100)
+          );
+          (slot as any).off_peak_discount = match.discount_percent;
+        }
+      }
+    }
+  }
+
+  return NextResponse.json({ items: slots, total: slots.length });
 }

@@ -38,6 +38,7 @@ interface SalonCardProps {
     slotsToday?: number;
     nextDate?: string; // ISO date if unavailable
   };
+  offPeakToday?: { discount_percent: number } | null;
 }
 
 const quartierLabels: Record<string, string> = {
@@ -50,7 +51,7 @@ const quartierLabels: Record<string, string> = {
   breite: "Breite",
 };
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday }: SalonCardProps) {
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
@@ -249,11 +250,18 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               </>
             )}
           </div>
-          {stampProgress && stampProgress.current > 0 && (
-            <span className="inline-flex items-center gap-1 text-xs bg-s-amber-subtle dark:bg-s-amber/10 text-s-amber-text px-2 py-0.5 rounded-full mt-1.5">
-              <Star size={12} className="fill-s-amber text-s-amber" /> {stampProgress.current}/{stampProgress.total}
-            </span>
-          )}
+          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+            {stampProgress && stampProgress.current > 0 && (
+              <span className="inline-flex items-center gap-1 text-xs bg-s-amber-subtle dark:bg-s-amber/10 text-s-amber-text px-2 py-0.5 rounded-full">
+                <Star size={12} className="fill-s-amber text-s-amber" /> {stampProgress.current}/{stampProgress.total}
+              </span>
+            )}
+            {offPeakToday && (
+              <span className="inline-flex items-center gap-1 text-[11px] bg-s-sage-subtle dark:bg-s-sage/10 text-s-sage-text dark:text-s-sage px-2 py-0.5 rounded-full font-medium">
+                Off-Peak -{offPeakToday.discount_percent}%
+              </span>
+            )}
+          </div>
         </div>
       </Link>
     </motion.div>
