@@ -180,7 +180,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/5">
             {t.skip}
           </button>
-          <button onClick={handleSave} className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
+          <button onClick={handleSave} className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium transition-all">
             {t.save}
           </button>
         </div>

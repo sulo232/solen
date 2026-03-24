@@ -102,7 +102,7 @@ export default function WeatherBanner() {
         </p>
         <Link
           href={`/${locale}/${config.link}`}
-          className="shrink-0 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
+          className="shrink-0 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-all"
         >
           Entdecken
         </Link>

@@ -737,7 +737,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral"
+              className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -749,7 +749,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <select
             value={acquisitionSource}
             onChange={e => setAcquisitionSource(e.target.value)}
-            className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-s-ink/70 dark:text-s-dm-text/70 outline-none focus:border-s-coral"
+            className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-s-ink/70 dark:text-s-dm-text/70 outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           >
             {ACQUISITION_SOURCES.map(src => (
               <option key={src.value} value={src.value}>{locale === "en" ? src.label_en : src.label_de}</option>

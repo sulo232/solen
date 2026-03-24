@@ -179,7 +179,7 @@ export default function PriceAdjustmentModal({
                 min="0"
                 value={newPrice}
                 onChange={e => setNewPrice(e.target.value)}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
               <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-0.5">{l.max}</p>
             </div>
@@ -191,7 +191,7 @@ export default function PriceAdjustmentModal({
                 onChange={e => setReason(e.target.value)}
                 rows={3}
                 placeholder={l.reasonPlaceholder}
-                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral resize-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
               />
             </div>
 
@@ -200,7 +200,7 @@ export default function PriceAdjustmentModal({
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {submitting && <Spinner size="sm" invert />}
               {l.submit}

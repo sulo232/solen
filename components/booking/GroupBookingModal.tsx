@@ -122,7 +122,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
           <select
             value={eventType}
             onChange={e => setEventType(e.target.value)}
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           >
             {EVENT_TYPES.map(t => (
               <option key={t.value} value={t.value}>{locale === "en" ? t.label_en : t.label_de}</option>
@@ -140,12 +140,12 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
                 value={m.name}
                 onChange={e => updateMember(i, "name", e.target.value)}
                 placeholder="Name"
-                className="flex-1 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+                className="flex-1 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               />
               <select
                 value={m.service_id}
                 onChange={e => updateMember(i, "service_id", e.target.value)}
-                className="w-32 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+                className="w-32 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
               >
                 {services.map(s => (
                   <option key={s.id} value={s.id}>{locale === "en" ? s.name_en : s.name_de}</option>
@@ -175,7 +175,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {submitting && <Spinner size="sm" invert />}
           Gruppe buchen

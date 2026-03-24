@@ -65,7 +65,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={l.descPlaceholder}
-            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             autoFocus
           />
         </div>
@@ -85,7 +85,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             />
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 text-sm rounded-btn bg-s-coral text-white hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+            className="px-4 py-2 text-sm rounded-btn active:scale-[0.98] bg-s-coral text-white hover:bg-s-coral/90 transition-all shadow-warm-sm"
           >
             {l.send}
           </button>

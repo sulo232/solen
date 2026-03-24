@@ -73,7 +73,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium"
+                className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium transition-all"
               >
                 Apply
               </button>

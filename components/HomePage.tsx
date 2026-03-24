@@ -358,7 +358,7 @@ export default function HomePage() {
             </div>
             <Link
               href={`/${locale}/salon/${lastBookedSalon.slug}`}
-              className="shrink-0 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+              className="shrink-0 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all"
             >
               Nochmal buchen
             </Link>

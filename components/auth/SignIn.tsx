@@ -120,7 +120,7 @@ export default function SignIn() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 shadow-warm-sm"
           >
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
@@ -194,7 +194,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 shadow-warm-sm"
         >
           {loading ? <Spinner size="sm" invert /> : <Loader2 size={15} className="hidden" />}
           Anmelden

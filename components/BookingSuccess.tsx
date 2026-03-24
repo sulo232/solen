@@ -182,7 +182,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <div className="flex flex-col gap-2">
         <button
           onClick={handleCalendarDownload}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all"
         >
           <Calendar size={16} />
           Zum Kalender hinzufügen

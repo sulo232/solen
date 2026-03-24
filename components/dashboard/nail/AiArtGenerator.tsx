@@ -131,7 +131,7 @@ export default function AiArtGenerator() {
 
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-all disabled:opacity-50">
         <Wand2 size={16} />
         {generating ? "Generiere..." : "Generieren"}
       </button>

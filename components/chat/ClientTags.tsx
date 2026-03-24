@@ -148,7 +148,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder="Eigenes Tag…"
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
             />
             <select
               value={newColor}
@@ -165,7 +165,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
             <button
               onClick={() => handleAdd()}
               disabled={!newTag.trim() || adding}
-              className="px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50"
             >
               +
             </button>

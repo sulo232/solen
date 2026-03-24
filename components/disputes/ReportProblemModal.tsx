@@ -89,7 +89,7 @@ export default function ReportProblemModal({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Bitte beschreiben Sie detailliert, was vorgefallen ist..."
-          className="w-full min-h-[100px] bg-[#EDE5D8] dark:bg-s-dm-surface/50 rounded-btn p-4 text-sm text-s-ink dark:text-s-dm-text border border-s-ink/5 dark:border-white/5 focus:outline-none focus:border-s-coral resize-none"
+          className="w-full min-h-[100px] bg-[#EDE5D8] dark:bg-s-dm-surface/50 rounded-btn p-4 text-sm text-s-ink dark:text-s-dm-text border border-s-ink/5 dark:border-white/5 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
         />
         {error && <p className="text-s-coral text-xs mt-2">{error}</p>}
       </div>

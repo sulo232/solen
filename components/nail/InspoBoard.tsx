@@ -151,7 +151,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className="flex-1 text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-xs px-3 py-1.5 rounded-btn bg-s-coral text-white">
+            <button onClick={handleCreateBoard} className="text-xs px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white transition-all">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} className="text-xs text-s-ink/40">
@@ -196,7 +196,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5 dark:border-s-dm-text/10">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors"
+              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-all"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

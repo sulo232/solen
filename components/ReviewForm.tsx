@@ -187,7 +187,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
               placeholder="Wie war dein Besuch? (Optional)"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full px-4 py-3 rounded-card border border-s-ink/10 dark:border-white/10 bg-white dark:bg-black/20 text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral resize-none"
+              className="w-full px-4 py-3 rounded-card border border-s-ink/10 dark:border-white/10 bg-white dark:bg-black/20 text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
               rows={4}
               maxLength={500}
             />
@@ -243,7 +243,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <button
               type="submit"
               disabled={loading || rating === 0}
-              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-colors"
+              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-all"
             >
               {loading && <Spinner size="sm" invert />}
               Senden

@@ -11,6 +11,8 @@ import {
 import { motion } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
 import type { Booking } from "@/lib/types";
 
 type BookingWithDetails = Booking & {
@@ -87,7 +89,7 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
         />
       </div>
 
@@ -98,7 +100,7 @@ function CancelModal({
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
           Stornieren
@@ -235,8 +237,10 @@ export default function TerminePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg px-4 py-8 max-w-lg mx-auto space-y-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} variant="card" />
+        ))}
       </div>
     );
   }
@@ -300,13 +304,17 @@ export default function TerminePage() {
                 Nächste Termine ({upcoming.length})
               </h2>
               {upcoming.length === 0 ? (
-                <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
-                  <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                  <p className="text-sm font-medium">Keine anstehenden Termine</p>
-                  <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
-                    Termin buchen →
-                  </Link>
-                </div>
+                <EmptyState
+                  icon={Calendar}
+                  title="Keine anstehenden Termine"
+                  message="Buche deinen nächsten Termin!"
+                  illustration="no-results"
+                  action={
+                    <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                      Termin buchen →
+                    </Link>
+                  }
+                />
               ) : (
                 <div className="space-y-3">
                   {upcoming.map((b) => {
@@ -386,7 +394,11 @@ export default function TerminePage() {
               {pastOpen && (
                 <div className="space-y-3">
                   {past.length === 0 ? (
-                    <p className="text-sm text-s-ink/40 py-4 text-center">Keine vergangenen Termine</p>
+                    <EmptyState
+                      icon={Clock}
+                      title="Keine vergangenen Termine"
+                      className="py-6"
+                    />
                   ) : (
                     past.map((b) => (
                       <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">

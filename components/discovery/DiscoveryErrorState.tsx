@@ -13,7 +13,7 @@ export default function DiscoveryErrorState({ onRetry }: DiscoveryErrorStateProp
       <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 mb-4">Could not load discovery items</p>
       <button
         onClick={onRetry}
-        className="flex items-center gap-2 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium"
+        className="flex items-center gap-2 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium transition-all"
       >
         <RefreshCw size={14} /> Try Again
       </button>

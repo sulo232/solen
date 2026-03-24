@@ -189,7 +189,7 @@ function SheetContent({
         <Link
           href={`/${locale}/salon/${salon.slug}?book=true`}
           onClick={onClose}
-          className="flex-1 py-3 rounded-btn bg-s-coral text-white text-sm font-medium text-center shadow-warm-md hover:bg-s-coral/90 transition-colors"
+          className="flex-1 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium text-center shadow-warm-md hover:bg-s-coral/90 transition-all"
         >
           Buchen
         </Link>

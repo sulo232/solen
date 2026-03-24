@@ -101,7 +101,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
               value={entry.start_time}
               onChange={e => updateDay(day.value, "start_time", e.target.value)}
               disabled={!entry.active}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral disabled:opacity-40"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 disabled:opacity-40"
             />
             <span className="text-s-ink/30 dark:text-s-dm-text/30">—</span>
             <input
@@ -109,7 +109,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
               value={entry.end_time}
               onChange={e => updateDay(day.value, "end_time", e.target.value)}
               disabled={!entry.active}
-              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral disabled:opacity-40"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 disabled:opacity-40"
             />
             <label className="flex items-center gap-1 text-xs text-s-ink/40 dark:text-s-dm-text/40 ml-auto cursor-pointer">
               <input
@@ -129,7 +129,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={14} /> : <Save size={14} />}
           {saved ? "Gespeichert" : "Speichern"}

@@ -154,31 +154,31 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Tag</label>
             <select value={addDay} onChange={(e) => setAddDay(+e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
+              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
               {DAYS.map((d, i) => (<option key={i} value={i}>{d}</option>))}
             </select>
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Von</label>
             <input type="time" value={addStart} onChange={(e) => setAddStart(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Bis</label>
             <input type="time" value={addEnd} onChange={(e) => setAddEnd(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Rabatt</label>
             <div className="flex items-center gap-1">
               <input type="number" min={5} max={50} step={5} value={addDiscount}
                 onChange={(e) => setAddDiscount(Math.min(50, Math.max(5, +e.target.value)))}
-                className="w-16 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm data-text bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+                className="w-16 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm data-text bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
               <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">%</span>
             </div>
           </div>
           <button onClick={handleAdd} disabled={saving}
-            className="px-4 py-1.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-1.5">
+            className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-1.5 transition-all">
             {saving && <Spinner size="sm" invert />}
             Hinzufugen
           </button>

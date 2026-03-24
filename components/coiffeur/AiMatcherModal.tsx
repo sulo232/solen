@@ -167,7 +167,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <button
                 onClick={handleNext}
                 disabled={!selected}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white font-body font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-s-coral-hover transition-colors shadow-warm-sm"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-body font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-s-coral-hover transition-all shadow-warm-sm"
               >
                 {step < STEPS.length - 1 ? "Weiter" : "Empfehlung anzeigen"}
                 <ChevronRight size={16} />
@@ -191,7 +191,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <Link
                 href={`/${locale}/coiffeur?q=${encodeURIComponent(searchQuery.trim())}`}
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white font-body font-medium text-sm hover:bg-s-coral-hover transition-colors shadow-warm-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-body font-medium text-sm hover:bg-s-coral-hover transition-all shadow-warm-sm"
               >
                 Salons entdecken <ChevronRight size={16} />
               </Link>

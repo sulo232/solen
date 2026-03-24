@@ -119,7 +119,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   value={newService.name_de}
                   onChange={(e) => setNewService({ ...newService, name_de: e.target.value })}
                   placeholder={t("services.namePlaceholder")}
-                  className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                  className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -129,7 +129,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={15} step={15}
                     value={newService.duration_minutes}
                     onChange={(e) => setNewService({ ...newService, duration_minutes: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                    className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
                   />
                 </div>
                 <div>
@@ -138,14 +138,14 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={0}
                     value={newService.price}
                     onChange={(e) => setNewService({ ...newService, price: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                    className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
                   />
                 </div>
               </div>
               <button
                 onClick={addService}
                 disabled={!newService.name_de || saving}
-                className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+                className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm transition-all"
               >
                 {saving && <Spinner size="sm" invert />}
                 {t("services.add")}

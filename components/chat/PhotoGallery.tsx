@@ -94,7 +94,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
             {isSalonOwner && onCreateOffer && (
               <button
                 onClick={() => { onCreateOffer(lightboxUrl); setLightboxUrl(null); }}
-                className="mt-3 w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+                className="mt-3 w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all"
               >
                 Angebot erstellen
               </button>

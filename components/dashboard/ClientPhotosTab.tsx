@@ -66,7 +66,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
         </h3>
         <div className="flex items-center gap-2">
           <select value={photoType} onChange={(e) => setPhotoType(e.target.value as "before" | "after" | "progress")}
-            className="px-2 py-1 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
+            className="px-2 py-1 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
             <option value="before">Vorher</option>
             <option value="after">Nachher</option>
             <option value="progress">Verlauf</option>

@@ -168,7 +168,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-full flex items-center justify-center gap-2 rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+        className="mt-4 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-all"
       >
         <Save size={14} />
         {saving ? "Speichern..." : saved ? "Gespeichert!" : "Speichern"}

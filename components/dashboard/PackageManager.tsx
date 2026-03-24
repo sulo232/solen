@@ -105,7 +105,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
         </h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-all"
         >
           <Plus size={12} /> {pl.newPkg}
         </button>
@@ -168,7 +168,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name || !form.service_id}
-              className="px-4 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+              className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50 transition-all"
             >
               {saving ? pl.saving : pl.create}
             </button>

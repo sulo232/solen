@@ -45,7 +45,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
   };
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose}>
       <div className="bg-white dark:bg-s-dm-surface rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             </p>
             <button
               onClick={onClose}
-              className="mt-3 px-4 py-2 rounded-btn bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors"
+              className="mt-3 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-all"
             >
               Schliessen
             </button>
@@ -78,7 +78,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
             >
               {submitting && <Spinner size="sm" invert />}
               {submitting ? "Wird eingetragen…" : "Benachrichtige mich"}

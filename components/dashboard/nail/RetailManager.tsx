@@ -139,7 +139,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="px-4 py-2 min-h-12 rounded-btn bg-s-coral text-white text-xs font-medium"
+              className="px-4 py-2 min-h-12 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium transition-all"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}

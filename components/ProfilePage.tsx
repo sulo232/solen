@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
+import GlassModal from "@/components/ui/GlassModal";
 import EmptyState from "@/components/ui/EmptyState";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import StampCard from "@/components/loyalty/StampCard";
@@ -72,15 +74,7 @@ const CancelModal = memo(function CancelModal({
   const timeFmt = new Date(startsAt).toLocaleTimeString(locale === "de" ? "de-CH" : locale, { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <div className="fixed inset-0 bg-s-bg-surface/70 dark:bg-s-dm-bg/70 z-50 flex items-center justify-center">
-      <div className="bg-white dark:bg-s-dm-raised rounded-[20px] shadow-warm-xl p-6 w-full max-w-md mx-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">{t("cancelBooking")}</h2>
-          <button onClick={onClose} className="text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 transition-colors">
-            <X size={18} />
-          </button>
-        </div>
-
+    <GlassModal open title={t("cancelBooking")} onClose={onClose} maxWidth="max-w-md">
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-1">
           {salonName} — {dateFmt} {timeFmt}
         </p>
@@ -93,7 +87,7 @@ const CancelModal = memo(function CancelModal({
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral resize-none"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
           />
         </div>
 
@@ -107,14 +101,13 @@ const CancelModal = memo(function CancelModal({
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
           </button>
         </div>
-      </div>
-    </div>
+    </GlassModal>
   );
 });
 
@@ -333,7 +326,7 @@ const BookingCard = memo(function BookingCard({
 // Settings section
 // ─────────────────────────────────────────
 
-const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral";
+const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20";
 
 const SettingsSection = memo(function SettingsSection({
   profile,
@@ -390,7 +383,7 @@ const SettingsSection = memo(function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder={t("avatarUrl")}
-          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral`}
+          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20`}
         />
       </div>
 
@@ -474,7 +467,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}
@@ -603,8 +596,19 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg px-4 py-8 max-w-lg mx-auto space-y-6">
+        {/* Profile header skeleton */}
+        <div className="flex items-center gap-4">
+          <Skeleton variant="avatar" className="w-16 h-16" />
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-5 w-2/3" />
+            <Skeleton className="h-3 w-1/3" />
+          </div>
+        </div>
+        {/* Booking cards skeleton */}
+        {Array.from({ length: 2 }).map((_, i) => (
+          <Skeleton key={i} variant="card" />
+        ))}
       </div>
     );
   }

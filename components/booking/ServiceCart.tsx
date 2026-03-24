@@ -116,7 +116,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             value={giftCardCode}
             onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
             placeholder="Gutschein-Code"
-            className="flex-1 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+            className="flex-1 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -126,7 +126,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             value={referralCode}
             onChange={e => setReferralCode(e.target.value.toUpperCase())}
             placeholder="Empfehlungs-Code"
-            className="flex-1 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+            className="flex-1 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           />
         </div>
       </div>
@@ -144,7 +144,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {checking && <Spinner size="sm" invert />}
         Bezahlen & Buchen

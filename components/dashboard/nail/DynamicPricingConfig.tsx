@@ -192,7 +192,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           </p>
           <div className="flex gap-2">
             <button onClick={addRule} disabled={saving}
-              className="flex items-center gap-1 px-4 py-2 rounded-btn bg-s-coral text-white text-xs font-medium">
+              className="flex items-center gap-1 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium transition-all">
               <Save size={12} />
               {saving ? t("saving") : t("save")}
             </button>

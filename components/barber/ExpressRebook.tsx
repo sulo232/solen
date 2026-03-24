@@ -139,7 +139,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           {step === "idle" && (
             <button
               onClick={handleRebook}
-              className="mt-3 w-full flex items-center justify-center gap-2 rounded-btn bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover transition-colors"
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover transition-all"
             >
               <RefreshCw size={16} />
               Gleich nochmal buchen
@@ -165,7 +165,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
               </div>
               <button
                 onClick={handleConfirm}
-                className="w-full rounded-btn bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover transition-colors"
+                className="w-full rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover transition-all"
               >
                 Bestätigen
               </button>

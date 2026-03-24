@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
-import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, CheckCheck, Languages } from "lucide-react";
+import { motion } from "framer-motion";
+import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, CheckCheck, Languages, MessageCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
 import { TypingIndicator } from "@/components/ui/TypingIndicator";
 import { useToast } from "@/components/ui/Toast";
 import PriceOfferModal from "@/components/ui/PriceOfferModal";
@@ -47,6 +50,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialLoadDone = useRef(false);
 
   const isSalonOwner = perspective === "salon";
 
@@ -57,6 +61,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
       setMessages(data.messages ?? []);
     } catch { /* ignore */ } finally {
       setLoading(false);
+      requestAnimationFrame(() => { initialLoadDone.current = true; });
     }
   }, [conversationId]);
 
@@ -292,25 +297,36 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
   };
 
   return (
-    <div className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5"
+    >
       {/* Tab header */}
       <div className="flex border-b border-s-ink/10 dark:border-white/10">
         <button
           onClick={() => setActiveTab("chat")}
-          className={["flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "chat" ? "text-s-coral border-b-2 border-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
+          className={["relative flex-1 py-2 text-sm font-medium transition-colors",
+            activeTab === "chat" ? "text-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
           ].join(" ")}
         >
           Chat
+          {activeTab === "chat" && (
+            <motion.div layoutId="chat-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral" />
+          )}
         </button>
         <button
           onClick={() => setActiveTab("photos")}
-          className={["flex-1 py-2 text-sm font-medium transition-colors",
-            activeTab === "photos" ? "text-s-coral border-b-2 border-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
+          className={["relative flex-1 py-2 text-sm font-medium transition-colors",
+            activeTab === "photos" ? "text-s-coral" : "text-s-ink/50 dark:text-s-ink/40"
           ].join(" ")}
         >
           <Camera size={14} className="inline mr-1 -mt-0.5" />
           Fotos
+          {activeTab === "photos" && (
+            <motion.div layoutId="chat-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral" />
+          )}
         </button>
       </div>
 
@@ -329,14 +345,28 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
           {loading ? (
-            <div className="flex justify-center py-8"><Spinner size="sm" /></div>
-          ) : messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-s-ink/30 dark:text-s-dm-text/30 text-sm">
-              <p>Noch keine Nachrichten.</p>
-              <p className="text-xs mt-1">Starte das Gespräch!</p>
+            <div className="space-y-3 py-4">
+              {["w-3/4", "w-5/12", "w-3/5"].map((w, i) => (
+                <div key={i} className={i % 2 ? "flex justify-end" : "flex"}>
+                  <Skeleton className={`h-10 ${w} rounded-card`} />
+                </div>
+              ))}
             </div>
+          ) : messages.length === 0 ? (
+            <EmptyState
+              icon={MessageCircle}
+              title="Noch keine Nachrichten"
+              message="Starte das Gespräch!"
+              illustration="no-results"
+            />
           ) : messages.map((msg) => (
-            <div key={msg.id} className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}>
+            <motion.div
+              key={msg.id}
+              initial={initialLoadDone.current ? { opacity: 0, y: 8 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}
+            >
               <div className={[
                 "max-w-[75%] px-3 py-2 rounded-card text-sm leading-relaxed",
                 isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text rounded-tl-sm",
@@ -402,7 +432,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
           {/* Typing indicator */}
           {remoteTyping && <TypingIndicator name={remoteTyping} />}
@@ -424,10 +454,10 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           <div className="px-4 pb-2 flex gap-2">
             <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
               placeholder="Bild-URL eingeben..."
-              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="flex-1 px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
               autoFocus />
             <button onClick={() => sendMessage("image")} disabled={!imageUrl.trim() || sending}
-              className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm disabled:opacity-50">Senden</button>
+              className="px-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm disabled:opacity-50 transition-all">Senden</button>
             <button onClick={() => { setShowImageInput(false); setImageUrl(""); }}
               className="px-2 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text">
               <X size={14} />
@@ -465,7 +495,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         )}
 
         {/* Compose bar */}
-        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-white/10 flex items-end gap-2">
+        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-white/10 backdrop-blur-sm bg-white/90 dark:bg-s-dm-surface/90 flex items-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
@@ -481,7 +511,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           </button>
           <textarea ref={inputRef} value={text} onChange={handleTextChange}
             onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
-            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
+            className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
             className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:bg-s-coral/90 transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}
@@ -495,6 +525,6 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         onClose={() => setPriceOfferModal({ open: false, photoUrl: "" })}
         onSubmit={handlePriceOfferSubmit}
       />
-    </div>
+    </motion.div>
   );
 }

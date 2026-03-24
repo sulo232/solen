@@ -159,7 +159,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
                       <td key={salon.id} className="px-4 py-4 text-center">
                         <a
                           href={`/${locale}/salon/${salon.slug}`}
-                          className="inline-block px-4 py-2 rounded-btn bg-s-coral text-white text-xs font-semibold hover:bg-s-coral/90 transition-colors"
+                          className="inline-block px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-semibold hover:bg-s-coral/90 transition-all"
                         >
                           Jetzt buchen
                         </a>

@@ -126,7 +126,7 @@ export default function GoLiveStep({ onGoLive }: GoLiveStepProps) {
       <button
         onClick={handleGoLive}
         disabled={!isCoreReady || going}
-        className="w-full py-4 rounded-btn bg-s-coral text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+        className="w-full py-4 rounded-btn active:scale-[0.98] bg-s-coral text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-all shadow-warm-sm"
       >
         {going ? <Spinner size="sm" invert /> : <PartyPopper size={18} />}
         {t("goLive.activate")}
