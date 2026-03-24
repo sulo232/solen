@@ -11,8 +11,8 @@ import {
   Gift, Wallet, ChevronRight, Trophy, Share2, Copy, Check, Package, ClipboardList,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import GlassModal from "@/components/ui/GlassModal";
 import Spinner from "@/components/ui/Spinner";
+import EmptyState from "@/components/ui/EmptyState";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import StampCard from "@/components/loyalty/StampCard";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
@@ -72,40 +72,49 @@ const CancelModal = memo(function CancelModal({
   const timeFmt = new Date(startsAt).toLocaleTimeString(locale === "de" ? "de-CH" : locale, { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <GlassModal open onClose={onClose} title={t("cancelBooking")}>
-      <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-1">
-        {salonName} — {dateFmt} {timeFmt}
-      </p>
-      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">{t("cancelFreeHint")}</p>
+    <div className="fixed inset-0 bg-s-bg-surface/70 dark:bg-s-dm-bg/70 z-50 flex items-center justify-center">
+      <div className="bg-white dark:bg-s-dm-raised rounded-[20px] shadow-warm-xl p-6 w-full max-w-md mx-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">{t("cancelBooking")}</h2>
+          <button onClick={onClose} className="text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 transition-colors">
+            <X size={18} />
+          </button>
+        </div>
 
-      <div className="mb-5">
-        <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("reasonOptional")}</label>
-        <textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          rows={2}
-          placeholder={t("reasonPlaceholder")}
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral resize-none"
-        />
-      </div>
+        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-1">
+          {salonName} — {dateFmt} {timeFmt}
+        </p>
+        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">{t("cancelFreeHint")}</p>
 
-      <div className="flex gap-2">
-        <button
-          onClick={onClose}
-          className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
-        >
-          {t("cancel")}
-        </button>
-        <button
-          onClick={handleCancel}
-          disabled={loading}
-          className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {loading && <Spinner size="sm" invert />}
-          {t("confirmCancel")}
-        </button>
+        <div className="mb-5">
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("reasonOptional")}</label>
+          <textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            rows={2}
+            placeholder={t("reasonPlaceholder")}
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral resize-none"
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={onClose}
+            className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+          >
+            {t("cancel")}
+          </button>
+          <button
+            onClick={handleCancel}
+            disabled={loading}
+            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading && <Spinner size="sm" invert />}
+            {t("confirmCancel")}
+          </button>
+        </div>
       </div>
-    </GlassModal>
+    </div>
   );
 });
 
@@ -155,7 +164,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
   return (
     <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-4 space-y-3">
       {/* Referral code */}
-      <div className="flex items-center justify-between p-3 rounded-button bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/15">
+      <div className="flex items-center justify-between p-3 rounded-card bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/15">
         <div className="flex items-center gap-3">
           <Gift className="w-5 h-5 text-s-coral shrink-0" />
           <div>
@@ -168,12 +177,12 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       {/* Code display */}
       {code && (
         <div className="flex items-center gap-2">
-          <div className="flex-1 px-3 py-2 rounded-button bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/10 font-mono text-sm text-s-ink dark:text-s-dm-text tracking-wide">
+          <div className="flex-1 px-3 py-2 rounded-input bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/10 font-mono text-sm text-s-ink dark:text-s-dm-text tracking-wide">
             {code}
           </div>
           <button
             onClick={copyCode}
-            className="px-3 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+            className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
             aria-label={t("copyCode")}
           >
             {copied ? <Check size={16} className="text-s-sage" /> : <Copy size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />}
@@ -185,19 +194,19 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       <div className="flex gap-2">
         <button
           onClick={shareWhatsApp}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-button bg-[#25D366] text-white text-xs font-medium hover:bg-[#1DA851] transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-btn bg-[#25D366] text-white text-xs font-medium hover:bg-[#1DA851] transition-colors"
         >
           <Share2 size={12} /> WhatsApp
         </button>
         <button
           onClick={shareSMS}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-button bg-s-blue text-white text-xs font-medium hover:bg-s-blue/80 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-btn bg-s-blue text-white text-xs font-medium hover:bg-s-blue/80 transition-colors"
         >
           <MessageCircle size={12} /> SMS
         </button>
         <button
           onClick={copyCode}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 text-s-ink dark:text-s-dm-text text-xs font-medium hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-s-ink dark:text-s-dm-text text-xs font-medium hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
@@ -281,7 +290,7 @@ const BookingCard = memo(function BookingCard({
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:border-s-coral transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:border-s-coral transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -291,7 +300,7 @@ const BookingCard = memo(function BookingCard({
           {canCancel && (
             <button
               onClick={() => onCancel(b)}
-              className="px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
+              className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
             >
               {t("cancelAction")}
             </button>
@@ -305,7 +314,7 @@ const BookingCard = memo(function BookingCard({
             <div className="relative group">
               <button
                 disabled
-                className="px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed"
+                className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed"
               >
                 {t("cancelAction")}
               </button>
@@ -324,7 +333,7 @@ const BookingCard = memo(function BookingCard({
 // Settings section
 // ─────────────────────────────────────────
 
-const INPUT_CLS = "w-full px-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral";
+const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral";
 
 const SettingsSection = memo(function SettingsSection({
   profile,
@@ -381,7 +390,7 @@ const SettingsSection = memo(function SettingsSection({
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder={t("avatarUrl")}
-          className={`flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral`}
+          className={`flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral`}
         />
       </div>
 
@@ -413,7 +422,7 @@ const SettingsSection = memo(function SettingsSection({
             role="switch"
             aria-checked={emailOn}
             aria-label={t("notifBookings")}
-            className={["relative w-11 h-6 rounded-full transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand dark:bg-white/10"].join(" ")}>
+            className={["relative w-11 h-6 rounded-pill transition-colors shrink-0", emailOn ? "bg-s-coral" : "bg-s-sand dark:bg-white/10"].join(" ")}>
             <span className={["absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform", emailOn ? "translate-x-5" : "translate-x-0"].join(" ")} />
           </button>
         </div>
@@ -423,7 +432,7 @@ const SettingsSection = memo(function SettingsSection({
             <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifDealsDesc")}</p>
           </div>
           <button type="button" disabled role="switch" aria-checked={false} aria-label={t("notifDeals")}
-            className="relative w-11 h-6 rounded-full bg-s-sand dark:bg-white/10 shrink-0 cursor-not-allowed">
+            className="relative w-11 h-6 rounded-pill bg-s-sand dark:bg-white/10 shrink-0 cursor-not-allowed">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
           </button>
         </div>
@@ -433,7 +442,7 @@ const SettingsSection = memo(function SettingsSection({
             <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifNewSalonsDesc")}</p>
           </div>
           <button type="button" disabled role="switch" aria-checked={false} aria-label={t("notifNewSalons")}
-            className="relative w-11 h-6 rounded-full bg-s-sand dark:bg-white/10 shrink-0 cursor-not-allowed">
+            className="relative w-11 h-6 rounded-pill bg-s-sand dark:bg-white/10 shrink-0 cursor-not-allowed">
             <span className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow" />
           </button>
         </div>
@@ -449,7 +458,7 @@ const SettingsSection = memo(function SettingsSection({
               type="button"
               onClick={() => setLang(l)}
               className={[
-                "px-4 py-2 rounded-button text-sm font-medium border transition-colors",
+                "px-4 py-2 rounded-btn text-sm font-medium border transition-colors",
                 lang === l
                   ? "bg-s-coral text-white border-s-coral"
                   : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",
@@ -465,7 +474,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}
@@ -645,7 +654,7 @@ export default function ProfilePage() {
           </div>
           <Link
             href={`/${locale}/account/messages`}
-            className="ml-auto relative p-2 rounded-button border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors"
+            className="ml-auto relative p-2 rounded-btn border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors"
             aria-label={t("myProfile")}
           >
             <MessageCircle size={18} className="text-s-ink/50 dark:text-s-dm-text/50" />
@@ -664,13 +673,16 @@ export default function ProfilePage() {
             {t("upcomingBookings")}
           </h2>
           {upcoming.length === 0 ? (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-6 text-center text-s-ink/40 dark:text-s-dm-text/40">
-              <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
-              <p className="text-sm font-medium">{t("noBookingsYet")}</p>
-              <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
-                {t("bookNow")} →
-              </Link>
-            </div>
+            <EmptyState
+              icon={Calendar}
+              title={t("noBookingsYet")}
+              illustration="no-results"
+              action={
+                <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                  {t("bookNow")} →
+                </Link>
+              }
+            />
           ) : (
             <div className="space-y-3">
               {upcoming.map((b) => (
@@ -701,7 +713,7 @@ export default function ProfilePage() {
           {pastOpen && (
             <div className="space-y-3">
               {past.length === 0 ? (
-                <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4 text-center">{t("noPastBookings")}</p>
+                <EmptyState icon={Calendar} title={t("noPastBookings")} illustration="no-results" />
               ) : (
                 past.map((b) => (
                   <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
@@ -723,13 +735,16 @@ export default function ProfilePage() {
             {t("favorites")}
           </h2>
           {favorites.length === 0 ? (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-6 text-center text-s-ink/40 dark:text-s-dm-text/40">
-              <Heart className="w-8 h-8 mx-auto mb-2 opacity-30" />
-              <p className="text-sm font-medium">{t("noFavorites")}</p>
-              <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
-                {t("discoverSalons")} →
-              </Link>
-            </div>
+            <EmptyState
+              icon={Heart}
+              title={t("noFavorites")}
+              illustration="no-results"
+              action={
+                <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                  {t("discoverSalons")} →
+                </Link>
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {favorites.map((salon) => (
@@ -778,13 +793,16 @@ export default function ProfilePage() {
             <SolenExclusiveBadge featureDescription={t("stampCardsFeature")} />
           </h2>
           {loyaltyCards.length === 0 ? (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-6 text-center text-s-ink/40 dark:text-s-dm-text/40">
-              <Trophy className="w-8 h-8 mx-auto mb-2 opacity-30" />
-              <p className="text-sm font-medium">{t("noStamps")}</p>
-              <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
-                {t("bookAtSalon")}
-              </Link>
-            </div>
+            <EmptyState
+              icon={Trophy}
+              title={t("noStamps")}
+              illustration="no-results"
+              action={
+                <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                  {t("bookAtSalon")}
+                </Link>
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {loyaltyCards.map((card) => (
