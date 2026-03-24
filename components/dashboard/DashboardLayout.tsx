@@ -212,7 +212,7 @@ export default function DashboardLayout({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 35 }}
-              className="absolute left-0 top-0 h-full w-64 bg-white/95 backdrop-blur-xl shadow-glass"
+              className="absolute left-0 top-0 h-full w-64 bg-white shadow-warm-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="px-5 py-4 border-b border-s-ink/5 flex items-center justify-between">
@@ -266,7 +266,7 @@ export default function DashboardLayout({
       {/* ── Main content ── */}
       <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-20 bg-white/90 backdrop-blur-lg border-b border-s-ink/5 px-4 py-3 flex items-center gap-3">
+        <div className="md:hidden sticky top-0 z-20 bg-white shadow-warm-sm border-b border-s-ink/5 px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60">
             <Menu size={20} />
           </button>

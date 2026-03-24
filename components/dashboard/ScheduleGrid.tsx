@@ -101,7 +101,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
               value={entry.start_time}
               onChange={e => updateDay(day.value, "start_time", e.target.value)}
               disabled={!entry.active}
-              className="px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral disabled:opacity-40"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral disabled:opacity-40"
             />
             <span className="text-s-ink/30 dark:text-s-dm-text/30">—</span>
             <input
@@ -109,7 +109,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
               value={entry.end_time}
               onChange={e => updateDay(day.value, "end_time", e.target.value)}
               disabled={!entry.active}
-              className="px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral disabled:opacity-40"
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral disabled:opacity-40"
             />
             <label className="flex items-center gap-1 text-xs text-s-ink/40 dark:text-s-dm-text/40 ml-auto cursor-pointer">
               <input
@@ -125,14 +125,16 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
         );
       })}
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
-      >
-        {saving ? <Spinner size="sm" invert /> : saved ? <Check size={14} /> : <Save size={14} />}
-        {saved ? "Gespeichert" : "Speichern"}
-      </button>
+      <div className="sticky bottom-0 bg-white border-t border-s-ink/5 p-3 z-10 -mx-3">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+        >
+          {saving ? <Spinner size="sm" invert /> : saved ? <Check size={14} /> : <Save size={14} />}
+          {saved ? "Gespeichert" : "Speichern"}
+        </button>
+      </div>
     </div>
   );
 }
