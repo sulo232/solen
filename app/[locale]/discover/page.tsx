@@ -17,6 +17,7 @@ import StyleNamePills from "@/components/discovery/StyleNamePills";
 import FeaturedBoards from "@/components/discovery/FeaturedBoards";
 import FilterDrawer from "@/components/discovery/FilterDrawer";
 import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
+import Spinner from "@/components/ui/Spinner";
 import PostFromDiscover from "@/components/discovery/PostFromDiscover";
 import ForYouSection from "@/components/discovery/ForYouSection";
 import DiscoveryAdmin from "@/components/discovery/DiscoveryAdmin";
@@ -166,7 +167,7 @@ export default function DiscoverPage() {
         {/* Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-heading font-bold text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
+            <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
             <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Find your next look</p>
           </div>
           {/* Mobile filter drawer trigger */}
@@ -248,7 +249,7 @@ export default function DiscoverPage() {
         {hasMore && <div ref={observerRef} className="h-20" />}
         {loading && items.length > 0 && (
           <div className="flex justify-center py-8">
-            <div className="w-6 h-6 border-2 border-s-coral border-t-transparent rounded-full animate-spin" />
+            <Spinner size="md" />
           </div>
         )}
       </div>

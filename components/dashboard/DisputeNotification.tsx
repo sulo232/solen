@@ -66,7 +66,7 @@ export default function DisputeNotification({
                 value={response}
                 onChange={(e) => setResponse(e.target.value)}
                 placeholder="Ihre Stellungnahme zum Vorfall..."
-                className="w-full min-h-[80px] rounded-button p-3 text-xs border border-s-ink/10 focus:outline-none focus:border-s-coral resize-none"
+                className="w-full min-h-[80px] rounded-input p-3 text-xs border border-s-ink/10 focus:outline-none focus:border-s-coral resize-none"
               />
               {error && <p className="text-xs text-s-coral">{error}</p>}
               <div className="flex items-center justify-end gap-2">
@@ -79,7 +79,7 @@ export default function DisputeNotification({
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="px-4 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 disabled:opacity-50 flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {loading && <Spinner size="xs" invert />}
                   Senden <Send size={12} />

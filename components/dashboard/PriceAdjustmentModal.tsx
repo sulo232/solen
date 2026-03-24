@@ -139,8 +139,8 @@ export default function PriceAdjustmentModal({
   const l = labels[locale as keyof typeof labels] ?? labels.de;
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="price-modal-title">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="price-modal-title">
+      <div className="bg-white dark:bg-s-dm-surface rounded-card p-6 mx-4 max-w-sm w-full shadow-warm-lg" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <DollarSign size={18} className="text-s-coral" />
@@ -179,7 +179,7 @@ export default function PriceAdjustmentModal({
                 min="0"
                 value={newPrice}
                 onChange={e => setNewPrice(e.target.value)}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral"
               />
               <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-0.5">{l.max}</p>
             </div>
@@ -191,7 +191,7 @@ export default function PriceAdjustmentModal({
                 onChange={e => setReason(e.target.value)}
                 rows={3}
                 placeholder={l.reasonPlaceholder}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral resize-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral resize-none"
               />
             </div>
 
@@ -200,7 +200,7 @@ export default function PriceAdjustmentModal({
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {submitting && <Spinner size="sm" invert />}
               {l.submit}

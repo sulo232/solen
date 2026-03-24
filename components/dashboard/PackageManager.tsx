@@ -118,12 +118,12 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder={pl.namePlaceholder}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
           />
           <select
             value={form.service_id}
             onChange={(e) => setForm({ ...form, service_id: e.target.value })}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
           >
             <option value="">{pl.selectService}</option>
             {services.map((s) => (
@@ -138,7 +138,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 min={1}
                 value={form.sessions}
                 onChange={(e) => setForm({ ...form, sessions: Number(e.target.value) })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
               />
             </div>
             <div>
@@ -148,7 +148,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 min={0}
                 value={form.bonus_sessions}
                 onChange={(e) => setForm({ ...form, bonus_sessions: Number(e.target.value) })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
               />
             </div>
             <div>
@@ -159,7 +159,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
                 step={5}
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
               />
             </div>
           </div>
@@ -168,7 +168,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name || !form.service_id}
-              className="px-4 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+              className="px-4 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
             >
               {saving ? pl.saving : pl.create}
             </button>

@@ -118,7 +118,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
           <div>
             <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Vorlage</label>
             <select value={templateKey} onChange={(e) => setTemplateKey(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
+              className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
               {TEMPLATE_OPTIONS.map((t) => (
                 <option key={t.key} value={t.key}>{t.label}</option>
               ))}
@@ -144,14 +144,14 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
               ) : q.type === "select" ? (
                 <select value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
+                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
                   <option value="">Wählen…</option>
                   {q.options?.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               ) : (
                 <input value={(responses[q.question_key] as string) ?? ""}
                   onChange={(e) => setResponses((p) => ({ ...p, [q.question_key]: e.target.value }))}
-                  className="w-full px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+                  className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
               )}
             </div>
           ))}
@@ -171,7 +171,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
               className="px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
             <button onClick={handleSave} disabled={saving}
-              className="px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1">
+              className="px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>

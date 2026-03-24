@@ -85,7 +85,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
             value={program.name}
             onChange={(e) => setProgram({ ...program, name: e.target.value })}
             maxLength={100}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
 
@@ -99,7 +99,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
             onChange={(e) => setProgram({ ...program, stamps_required: Math.max(3, Math.min(20, parseInt(e.target.value) || 10)) })}
             min={3}
             max={20}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
 
@@ -108,7 +108,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
           <select
             value={program.reward_type}
             onChange={(e) => setProgram({ ...program, reward_type: e.target.value as LoyaltyProgram["reward_type"] })}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           >
             <option value="free_service">Gratis Service</option>
             <option value="chf_discount">CHF Rabatt</option>
@@ -126,7 +126,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
               value={program.reward_value}
               onChange={(e) => setProgram({ ...program, reward_value: parseInt(e.target.value) || 0 })}
               min={0}
-              className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
           </div>
         )}
@@ -168,7 +168,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-full flex items-center justify-center gap-2 rounded-button bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+        className="mt-4 w-full flex items-center justify-center gap-2 rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
       >
         <Save size={14} />
         {saving ? "Speichern..." : saved ? "Gespeichert!" : "Speichern"}

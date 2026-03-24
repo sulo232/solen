@@ -154,7 +154,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
       {/* Improvement tip */}
       {data.solen_score < 80 && (
-        <div className="mt-4 p-3 rounded-button bg-white/60 dark:bg-white/5 border border-s-ink/5 dark:border-white/5">
+        <div className="mt-4 p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
           <div className="flex items-start gap-2">
             <TrendingUp size={14} className="text-s-coral shrink-0 mt-0.5" />
             <div>

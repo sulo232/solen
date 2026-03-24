@@ -22,7 +22,7 @@ export default function FrozenSalonBanner({ salon }: { salon: Salon & { frozen_a
           </p>
           
           {salon.frozen_reason && (
-            <div className="bg-white/50 border border-s-error/10 rounded-button px-3 py-2 mb-3">
+            <div className="bg-white dark:bg-s-dm-surface border border-s-error/10 rounded-card px-3 py-2 mb-3">
               <p className="text-xs font-medium text-s-error/80 uppercase tracking-wider mb-1">Grund</p>
               <p className="text-sm text-s-ink/80">{salon.frozen_reason}</p>
             </div>

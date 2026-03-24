@@ -55,7 +55,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             max={20}
             value={config.total_stations}
             onChange={(e) => setConfig({ ...config, total_stations: parseInt(e.target.value) || 1 })}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
           />
         </label>
 
@@ -67,7 +67,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             max={20}
             value={config.uv_lamp_count}
             onChange={(e) => setConfig({ ...config, uv_lamp_count: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
           />
         </label>
 
@@ -79,7 +79,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             max={60}
             value={config.sterilization_buffer_minutes}
             onChange={(e) => setConfig({ ...config, sterilization_buffer_minutes: parseInt(e.target.value) || 0 })}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
           />
         </label>
       </div>
@@ -99,7 +99,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         onClick={handleSave}
         disabled={saving}
         aria-label={t("save")}
-        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50"
       >
         <Save size={14} />
         {saving ? t("saving") : t("save")}

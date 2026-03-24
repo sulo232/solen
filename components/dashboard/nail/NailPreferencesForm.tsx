@@ -79,7 +79,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
         <select
           value={shape}
           onChange={(e) => setShape(e.target.value as NailShape)}
-          className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
         >
           <option value="">{t("prefs_no_preference")}</option>
           <option value="round">{t("prefs_shape_round")}</option>
@@ -99,7 +99,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
         <select
           value={length}
           onChange={(e) => setLength(e.target.value as NailLength)}
-          className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
         >
           <option value="">{t("prefs_no_preference")}</option>
           <option value="natural">{t("prefs_length_natural")}</option>
@@ -116,7 +116,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
         <select
           value={material}
           onChange={(e) => setMaterial(e.target.value as NailMaterial)}
-          className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
         >
           <option value="">{t("prefs_no_preference")}</option>
           <option value="gel">{t("prefs_mat_gel")}</option>
@@ -134,7 +134,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
           value={preferredBrand}
           onChange={(e) => setPreferredBrand(e.target.value)}
           placeholder={t("prefs_brand_placeholder")}
-          className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
+          className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text"
         />
       </label>
 
@@ -157,7 +157,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
             value={newAllergy}
             onChange={(e) => setNewAllergy(e.target.value)}
             placeholder={t("prefs_allergy_placeholder")}
-            className="flex-1 px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+            className="flex-1 px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAllergy())}
           />
           <button onClick={addAllergy} className="text-xs px-3 py-1.5 rounded-button bg-s-error-bg dark:bg-s-error/10 text-s-error border border-s-error/20">
@@ -170,7 +170,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
             <select
               value={allergySeverity}
               onChange={(e) => setAllergySeverity(e.target.value as NailAllergySeverity)}
-              className="w-full px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+              className="w-full px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
             >
               <option value="mild">{t("prefs_severity_mild")}</option>
               <option value="moderate">{t("prefs_severity_moderate")}</option>
@@ -181,7 +181,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
               onChange={(e) => setAllergyNotes(e.target.value)}
               placeholder={t("prefs_allergy_notes_placeholder")}
               rows={2}
-              className="w-full px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm resize-none"
+              className="w-full px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm resize-none"
             />
           </div>
         )}
@@ -191,7 +191,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
       <button
         onClick={handleSave}
         disabled={saving}
-        className="flex items-center gap-2 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50"
       >
         <Save size={14} />
         {saving ? t("saving") : t("prefs_save")}

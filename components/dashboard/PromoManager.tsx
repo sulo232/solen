@@ -132,7 +132,7 @@ export default function PromoManager() {
 
       {/* Create form */}
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5 space-y-4">
+        <form onSubmit={handleCreate} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{pl.code}</label>
@@ -142,7 +142,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="SOMMER2026"
                 required
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none"
               />
             </div>
             <div>
@@ -150,7 +150,7 @@ export default function PromoManager() {
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percent" | "fixed" })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               >
                 <option value="percent">{pl.percent}</option>
                 <option value="fixed">{pl.fixed}</option>
@@ -167,7 +167,7 @@ export default function PromoManager() {
                 min={1}
                 max={form.discount_type === "percent" ? 100 : 999}
                 required
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
@@ -178,7 +178,7 @@ export default function PromoManager() {
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
                 placeholder={pl.unlimited}
                 min={1}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
@@ -188,7 +188,7 @@ export default function PromoManager() {
                 value={form.min_booking_amount}
                 onChange={(e) => setForm({ ...form, min_booking_amount: parseFloat(e.target.value) || 0 })}
                 min={0}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
@@ -197,7 +197,7 @@ export default function PromoManager() {
                 type="date"
                 value={form.valid_until}
                 onChange={(e) => setForm({ ...form, valid_until: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
+                className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               />
             </div>
           </div>
@@ -205,7 +205,7 @@ export default function PromoManager() {
             <button
               type="submit"
               disabled={creating}
-              className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center gap-1.5"
+              className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center gap-1.5"
             >
               {creating ? <Spinner size="sm" /> : <Plus className="w-3.5 h-3.5" />}
               {pl.create}
@@ -232,7 +232,7 @@ export default function PromoManager() {
           {codes.map((promo) => (
             <div
               key={promo.id}
-              className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 p-4 flex items-center justify-between"
+              className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
                 <div className={`w-9 h-9 rounded-button flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/30"}`}>

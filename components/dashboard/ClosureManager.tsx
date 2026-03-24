@@ -77,12 +77,12 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
             <div>
               <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Von</label>
               <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-                className="w-full px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Bis</label>
               <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
-                className="w-full px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
             </div>
           </div>
           <input
@@ -90,12 +90,12 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
             value={reason}
             onChange={e => setReason(e.target.value)}
             placeholder="Grund (z.B. Weihnachten)"
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
           />
           <div className="flex gap-2">
             <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
             <button onClick={handleAdd} disabled={!startDate || !endDate || saving}
-              className="px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1">
+              className="px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>

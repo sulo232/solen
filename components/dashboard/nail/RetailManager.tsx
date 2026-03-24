@@ -92,7 +92,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder={t("retail_name_placeholder")}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
           />
           <div className="flex gap-2">
             <input
@@ -101,12 +101,12 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               placeholder={t("retail_price_placeholder")}
-              className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
             />
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
               aria-label={t("retail_cat_nail_care")}
             >
               <option value="nail_care">{t("retail_cat_nail_care")}</option>
@@ -119,7 +119,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="px-4 py-2 min-h-12 rounded-button bg-s-coral text-white text-xs font-medium"
+              className="px-4 py-2 min-h-12 rounded-btn bg-s-coral text-white text-xs font-medium"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}

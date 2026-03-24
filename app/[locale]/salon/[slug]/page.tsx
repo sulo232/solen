@@ -117,7 +117,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       {previewImages.length > 0 && (
         <div className="grid grid-cols-3 gap-1.5 mb-3">
           {previewImages.map((img) => (
-            <div key={img.id} className="aspect-square rounded-button overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
+            <div key={img.id} className="aspect-square rounded-[12px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
               <Image src={img.image_url} alt="" width={120} height={120} className="object-cover w-full h-full" />
             </div>
           ))}
@@ -127,13 +127,13 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       <div className="flex gap-2">
         <Link
           href={`/${locale}/nail-tech/${member.id}`}
-          className="flex-1 text-center text-xs py-1.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors"
         >
           Alle Designs ansehen
         </Link>
         <button
           onClick={() => onBook(member.id)}
-          className="flex-1 text-center text-xs py-1.5 rounded-button bg-s-coral text-white hover:bg-s-coral-hover transition-colors"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:bg-s-coral-hover transition-colors"
         >
           Buchen
         </button>
@@ -446,7 +446,7 @@ export default function SalonProfilePage() {
               {/* Name + meta */}
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">{salon.name}</h1>
+                  <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">{salon.name}</h1>
                   <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-s-success" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
                     <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-s-success animate-pulse" : "bg-s-sand-dark"}`} />
                     {isOpen ? "Geöffnet" : "Geschlossen"}
@@ -707,7 +707,7 @@ export default function SalonProfilePage() {
                         <Link
                           key={m.id}
                           href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
-                          className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-3 text-center hover:shadow-card transition-shadow"
+                          className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-3 text-center hover:-translate-y-[5px] hover:shadow-warm-xl transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]"
                         >
                           <div className="w-14 h-14 rounded-full bg-s-bg-surface dark:bg-s-dm-bg mx-auto mb-2 overflow-hidden">
                             {m.avatar_url ? (
