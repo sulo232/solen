@@ -26,7 +26,7 @@ function PillGroup({
 }) {
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-xs font-body text-s-ink/40 dark:text-s-dm-text/40 shrink-0 w-16">{label}</span>
+      <span className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold shrink-0 w-16">{label}</span>
       {options.map((opt, i) => (
         <button
           key={opt}
@@ -50,7 +50,7 @@ export function NailsAboveGrid() {
   const [styleIdx, setStyleIdx] = useState<number | null>(null);
 
   return (
-    <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-card px-4 py-3 flex flex-col gap-3">
+    <div className="bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 rounded-card px-4 py-3 flex flex-col gap-3">
       <PillGroup label="Form" options={SHAPES} active={shapeIdx} onToggle={setShapeIdx} activeClass="bg-s-coral" />
       <PillGroup label="Material" options={MATERIALS} active={matIdx} onToggle={setMatIdx} activeClass="bg-s-coral" />
       <PillGroup label="Stil" options={STYLES} active={styleIdx} onToggle={setStyleIdx} activeClass="bg-s-coral" />
@@ -78,7 +78,7 @@ export function NailsBelowGrid() {
       <section>
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">
+            <h2 className="font-heading font-bold text-[clamp(26px,3.5vw,44px)] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
               Nail Inspo
             </h2>
             <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
@@ -97,7 +97,7 @@ export function NailsBelowGrid() {
             <Link
               key={item.label}
               href={`/${locale}/discover/nails`}
-              className={`rounded-card bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:shadow-warm-md hover:scale-[1.03] transition-all duration-200`}
+              className={`rounded-card bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-warm-xl transition-all duration-250`}
             >
               <span className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 leading-tight">
                 {item.label}
@@ -122,7 +122,7 @@ export function NailsBelowGrid() {
         </div>
         <Link
           href={`/${locale}/discover/nails`}
-          className="shrink-0 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-hover transition-colors shadow-warm-sm"
+          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-hover transition-colors shadow-warm-sm"
         >
           Inspo entdecken →
         </Link>

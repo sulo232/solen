@@ -46,6 +46,9 @@ module.exports = {
         button: "8px",
         pill: "9999px",
         blob: "30% 70% 70% 30% / 30% 30% 70% 70%",
+        // V3 tokens
+        btn: "99px",
+        input: "12px",
       },
       boxShadow: {
         card: "0 4px 12px rgba(0,0,0,0.08)",

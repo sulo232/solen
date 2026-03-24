@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import NailDiscoveryGrid from "@/components/nail/NailDiscoveryGrid";
+import Spinner from "@/components/ui/Spinner";
 
 export const metadata: Metadata = {
   title: "Nail Designs entdecken | solen.ch",
@@ -23,7 +25,9 @@ export default function NailDiscoveryPage() {
           </p>
         </div>
 
-        <NailDiscoveryGrid />
+        <Suspense fallback={<div className="flex justify-center py-12"><Spinner /></div>}>
+          <NailDiscoveryGrid />
+        </Suspense>
       </div>
     </main>
   );

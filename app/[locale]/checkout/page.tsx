@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
+import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -86,14 +87,12 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         </div>
       )}
 
-      <button
+      <InteractiveHoverButton
         type="submit"
         disabled={!stripe || loading}
-        className="w-full py-3.5 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-      >
-        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-        {loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
-      </button>
+        text={loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
+        className="w-full py-3.5 rounded-btn shadow-coral-glow disabled:opacity-60"
+      />
 
       <p className="text-xs text-center text-s-ink/40">
         Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24} Stunden vorher
@@ -289,7 +288,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* Booking summary card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5">
+        <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5">
           <h1 className="font-heading font-bold text-lg text-s-ink mb-4">Buchungsübersicht</h1>
 
           <div className="space-y-2.5 text-sm">
@@ -353,7 +352,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Promo code + credits */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5 space-y-3">
+        <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5 space-y-3">
           <h2 className="font-heading font-semibold text-sm text-s-ink flex items-center gap-2">
             <Tag className="w-4 h-4 text-s-coral" />
             Promo-Code oder Guthaben
@@ -367,23 +366,22 @@ export default function CheckoutPage() {
               onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
               placeholder="Code eingeben"
               disabled={!!promoResult}
-              className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none disabled:opacity-50"
+              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none disabled:opacity-50"
             />
             {promoResult ? (
               <button
                 onClick={() => { setPromoResult(null); setPromoCode(""); }}
-                className="px-3 py-2 rounded-button bg-s-bg-sunken text-s-ink/60 text-sm hover:bg-s-sand transition-colors"
+                className="px-3 py-2 rounded-btn bg-s-bg-sunken text-s-ink/60 text-sm hover:bg-s-sand transition-colors"
               >
                 Entfernen
               </button>
             ) : (
-              <button
+              <InteractiveHoverButton
                 onClick={handlePromoValidate}
                 disabled={promoLoading || !promoCode.trim()}
-                className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
-              >
-                {promoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Anwenden"}
-              </button>
+                text={promoLoading ? "..." : "Anwenden"}
+                className="px-4 py-2 rounded-btn shadow-coral-glow disabled:opacity-50"
+              />
             )}
           </div>
 
@@ -412,7 +410,7 @@ export default function CheckoutPage() {
 
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
-          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5">
+          <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5">
             <h2 className="font-heading font-bold text-base text-s-ink mb-3">Zahlung vor Ort</h2>
             <p className="text-sm text-s-ink/60 mb-4">
               Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.
@@ -422,20 +420,18 @@ export default function CheckoutPage() {
                 {error}
               </div>
             )}
-            <button
+            <InteractiveHoverButton
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
-              className="w-full py-3.5 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-            >
-              {confirmingAtSalon ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-              {confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
-            </button>
+              text={confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
+              className="w-full py-3.5 rounded-btn shadow-coral-glow disabled:opacity-60"
+            />
             <p className="text-xs text-center text-s-ink/40 mt-3">
               Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24} Stunden vorher
             </p>
           </div>
         ) : (
-          <div className="bg-white/80 backdrop-blur-xl rounded-card border border-s-ink/5 shadow-card p-5">
+          <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5">
             <h2 className="font-heading font-bold text-base text-s-ink mb-4">Zahlung</h2>
 
             {clientSecret ? (
@@ -447,8 +443,9 @@ export default function CheckoutPage() {
                     theme: "stripe",
                     variables: {
                       colorPrimary: "#E8624A",
-                      colorDanger: "#E8624A",
-                      borderRadius: "8px",
+                      colorDanger: "#A32D2D",
+                      borderRadius: "12px",
+                      colorBorder: "#EAE2D6",
                       fontFamily: "DM Sans, sans-serif",
                     },
                   },

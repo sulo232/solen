@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import NailDiscoveryFilters from "./NailDiscoveryFilters";
 import NailDesignCard from "./NailDesignCard";
@@ -10,13 +11,24 @@ import MasonryGrid from "@/components/discovery/MasonryGrid";
 import type { DiscoveryItem } from "@/lib/types";
 
 export default function NailDiscoveryGrid() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const style = searchParams.get("style");
+  const shape = searchParams.get("shape");
+  const material = searchParams.get("material");
+
+  const setFilter = useCallback((key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set(key, value);
+    else params.delete(key);
+    router.push(`?${params.toString()}`);
+  }, [router, searchParams]);
+
   const [items, setItems] = useState<DiscoveryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [style, setStyle] = useState<string | null>(null);
-  const [shape, setShape] = useState<string | null>(null);
-  const [material, setMaterial] = useState<string | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const fetchItems = useCallback(async (pageNum: number, append: boolean) => {
@@ -83,9 +95,9 @@ export default function NailDiscoveryGrid() {
           style={style}
           shape={shape}
           material={material}
-          onStyleChange={setStyle}
-          onShapeChange={setShape}
-          onMaterialChange={setMaterial}
+          onStyleChange={(v) => setFilter("style", v)}
+          onShapeChange={(v) => setFilter("shape", v)}
+          onMaterialChange={(v) => setFilter("material", v)}
         />
       </div>
 
