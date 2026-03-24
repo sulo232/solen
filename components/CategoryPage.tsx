@@ -40,6 +40,8 @@ const categoryGradients: Record<SalonCategory, string> = {
 
 interface CategoryPageProps {
   category: SalonCategory;
+  aboveGrid?: React.ReactNode;
+  belowGrid?: React.ReactNode;
 }
 
 interface DirectoryEntry {
@@ -101,7 +103,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   );
 }
 
-export default function CategoryPage({ category }: CategoryPageProps) {
+export default function CategoryPage({ category, aboveGrid, belowGrid }: CategoryPageProps) {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const routerNav = useRouter();
@@ -255,6 +257,11 @@ export default function CategoryPage({ category }: CategoryPageProps) {
         </button>
       </div>
 
+      {/* Above grid slot (e.g. barbershop filter pills) */}
+      {aboveGrid && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">{aboveGrid}</div>
+      )}
+
       {/* Grid / Map */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {isMapView && !loading && salons.length > 0 ? (
@@ -342,6 +349,9 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             </AnimatePresence>
           </div>
         )}
+
+        {/* Below grid slot (e.g. barbershop roster) */}
+        {belowGrid}
       </div>
     </div>
   );

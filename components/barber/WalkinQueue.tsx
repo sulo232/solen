@@ -91,7 +91,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
           {activeQueue.map((entry, i) => (
             <div
               key={entry.id}
-              className={`rounded-button p-3 border ${
+              className={`rounded-card p-3 border ${
                 entry.status === "in_chair"
                   ? "border-s-coral/30 bg-s-coral/5 dark:bg-s-coral/10"
                   : "border-s-ink/10 bg-white dark:bg-s-dm-surface dark:border-s-dm-text/10"
@@ -99,7 +99,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-s-ink/10 dark:bg-s-dm-text/10 flex items-center justify-center text-xs font-bold text-s-ink dark:text-s-dm-text">
+                  <span className="w-6 h-6 rounded-pill bg-s-ink/10 dark:bg-s-dm-text/10 flex items-center justify-center text-xs font-bold text-s-ink dark:text-s-dm-text">
                     {i + 1}
                   </span>
                   <div>
@@ -107,7 +107,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                       {entry.customer_name}
                     </p>
                     <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                      {entry.status === "in_chair" ? "Im Stuhl" : `~${entry.estimated_wait_minutes ?? "?"} Min.`}
+                      {entry.status === "in_chair" ? "Im Stuhl" : <span className="data-text">~{entry.estimated_wait_minutes ?? "?"} Min.</span>}
                       {entry.join_method === "remote" && " · Remote"}
                     </p>
                   </div>
@@ -117,7 +117,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   {entry.status === "waiting" && (
                     <button
                       onClick={() => updateStatus(entry.id, "in_chair")}
-                      className="p-1.5 rounded-button bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                      className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                       title="Nächster"
                     >
                       <UserCheck size={16} />
@@ -126,7 +126,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   {entry.status === "in_chair" && (
                     <button
                       onClick={() => updateStatus(entry.id, "completed")}
-                      className="p-1.5 rounded-button bg-s-sage/20 text-s-sage hover:bg-s-sage/30 transition-colors"
+                      className="p-1.5 rounded-btn bg-s-sage/20 text-s-sage hover:bg-s-sage/30 transition-colors"
                       title="Fertig"
                     >
                       <UserCheck size={16} />
@@ -134,14 +134,14 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   )}
                   <button
                     onClick={() => updateStatus(entry.id, "no_show")}
-                    className="p-1.5 rounded-button bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
+                    className="p-1.5 rounded-btn bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
                     title="Nicht erschienen"
                   >
                     <UserX size={16} />
                   </button>
                   <button
                     onClick={() => updateStatus(entry.id, "cancelled")}
-                    className="p-1.5 rounded-button bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
+                    className="p-1.5 rounded-btn bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
                     title="Abbrechen"
                   >
                     <XCircle size={16} />
