@@ -782,6 +782,8 @@
     },
     "progress": {
       "basics": "Grundlagen",
+      "verification": "Verifizierung",
+      "quickwin": "Erster Service",
       "profile": "Profil",
       "services": "Services",
       "team": "Team",
@@ -792,6 +794,7 @@
     "nav": {
       "back": "Zurück",
       "next": "Weiter",
+      "finish": "Salon erstellen",
       "create": "Salon erstellen"
     },
     "step1": {
@@ -889,9 +892,23 @@
       "save": "Speichern",
       "add": "Hinzufügen"
     },
+    "step2Otp": {
+      "title": "Telefon verifizieren",
+      "subtitle": "Wir senden einen SMS-Code an deine Nummer."
+    },
+    "step3Quick": {
+      "title": "Dein erster Service",
+      "subtitle": "Starte mit einem Service — mehr kannst du im Dashboard hinzufügen.",
+      "serviceName": "Service-Name *",
+      "duration": "Dauer",
+      "price": "Preis CHF",
+      "hint": "Nur ein Anfang!",
+      "hintDesc": "Im Dashboard kannst du beliebig viele Services, Teammitglieder und Öffnungszeiten ergänzen."
+    },
     "done": {
       "title": "Salon erstellt!",
-      "subtitle": "Dein Salon wird jetzt geprüft. Du wirst per E-Mail informiert."
+      "subtitle": "Dein Salon wird jetzt geprüft. Du wirst per E-Mail informiert.",
+      "dashboardHint": "Du wirst gleich zum Dashboard weitergeleitet…"
     }
   },
   "nail_dashboard": {

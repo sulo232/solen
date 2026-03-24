@@ -782,6 +782,8 @@
     },
     "progress": {
       "basics": "Basics",
+      "verification": "Verification",
+      "quickwin": "First Service",
       "profile": "Profile",
       "services": "Services",
       "team": "Team",
@@ -792,6 +794,7 @@
     "nav": {
       "back": "Back",
       "next": "Next",
+      "finish": "Create salon",
       "create": "Create salon"
     },
     "step1": {
@@ -889,9 +892,23 @@
       "save": "Save",
       "add": "Add"
     },
+    "step2Otp": {
+      "title": "Verify your phone",
+      "subtitle": "We'll send an SMS code to your number."
+    },
+    "step3Quick": {
+      "title": "Your first service",
+      "subtitle": "Start with one service — add more in the dashboard.",
+      "serviceName": "Service name *",
+      "duration": "Duration",
+      "price": "Price CHF",
+      "hint": "Just a start!",
+      "hintDesc": "You can add unlimited services, team members, and opening hours in the dashboard."
+    },
     "done": {
       "title": "Salon created!",
-      "subtitle": "Your salon is now being reviewed. You will be notified by email."
+      "subtitle": "Your salon is now being reviewed. You will be notified by email.",
+      "dashboardHint": "Redirecting to your dashboard…"
     }
   },
   "nail_dashboard": {
