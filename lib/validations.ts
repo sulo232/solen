@@ -814,8 +814,8 @@ export const trackViewSchema = z.object({
 });
 
 export const barberReminderSendSchema = z.object({
-  client_ids: z.array(z.string().uuid()).min(1).max(50),
-  barber_id: z.string().uuid().optional(),
+  client_id: z.string().uuid(),
+  salon_id: z.string().uuid(),
 });
 
 export const favoriteToggleSchema = z.object({
@@ -851,3 +851,17 @@ export function validateQuery<T>(schema: z.ZodSchema<T>, params: URLSearchParams
   params.forEach((v, k) => { obj[k] = v; });
   return validateBody(schema, obj);
 }
+
+// ─── Off-Peak Schemas ───────────────────────────────────────────────────────
+
+export const offPeakSlotSchema = z.object({
+  salon_id: uuid,
+  day_of_week: z.number().int().min(0).max(6),
+  start_time: z.string().regex(/^\d{2}:\d{2}$/),
+  end_time: z.string().regex(/^\d{2}:\d{2}$/),
+  discount_percent: z.number().int().min(1).max(50),
+});
+
+export const offPeakDeleteSchema = z.object({
+  id: uuid,
+});
