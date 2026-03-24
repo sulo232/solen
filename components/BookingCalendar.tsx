@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { RotateCcw, Info, ClipboardList, PartyPopper, CreditCard, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { RotateCcw, Info, ClipboardList, PartyPopper, CreditCard, ChevronDown, CalendarX2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
 import SolenDatePicker from "@/components/ui/date-picker";
 import { today as ariaToday, getLocalTimeZone, CalendarDate } from "@internationalized/date";
 import type { DateValue } from "react-aria-components";
@@ -118,7 +121,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
       <button
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50"
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={16} />}
         {processing ? "Wird verarbeitet…" : "Jetzt bezahlen"}
@@ -524,7 +527,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         <PartyPopper size={48} className="text-s-coral" />
         <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Buchung bestätigt!</p>
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">Du erhältst eine Bestätigungs-E-Mail.</p>
-        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
+        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all">
           Meine Buchungen
         </a>
       </div>
@@ -581,7 +584,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       )}
 
       {/* Date picker */}
-      <div className="px-4 py-4">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0 }}
+        className="px-4 py-4"
+      >
         <SolenDatePicker
           label="Datum wählen"
           value={toCalendarDate(selectedDate)}
@@ -590,23 +598,37 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           maxValue={ariaMaxDate}
           isDateUnavailable={isDateFullyBooked}
         />
-      </div>
+      </motion.div>
 
       {/* Time slots */}
-      <div className="px-4 pb-4 min-h-[140px]">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.1 }}
+        className="px-4 pb-4 min-h-[140px]"
+      >
         {loadingSlots ? (
-          <div className="flex justify-center py-10"><Spinner size="md" /></div>
-        ) : availableSlots.length === 0 ? (
-          <div className="text-center py-8 flex flex-col items-center gap-3">
-            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Keine freien Slots an diesem Tag.</p>
-            <button
-              onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
-              className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
-            >
-              <ClipboardList className="w-4 h-4" />
-              Auf Warteliste setzen
-            </button>
+          <div className="flex flex-wrap gap-2 py-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="w-16 h-8 rounded-btn" />
+            ))}
           </div>
+        ) : availableSlots.length === 0 ? (
+          <EmptyState
+            icon={CalendarX2}
+            title="Keine freien Slots an diesem Tag"
+            illustration="no-results"
+            className="py-6"
+            action={
+              <button
+                onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
+                className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
+              >
+                <ClipboardList className="w-4 h-4" />
+                Auf Warteliste setzen
+              </button>
+            }
+          />
         ) : (
           <div className="flex flex-col gap-4">
             {(["morning", "afternoon", "evening"] as const).map((group) => {
@@ -628,8 +650,10 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                         : 0;
                       const offPeakPct = (slot as any).off_peak_discount as number | undefined;
                       return (
-                        <button
+                        <motion.button
                           key={slot.id}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
                             "px-3 py-1.5 rounded-btn text-sm data-text font-medium transition-all duration-200",
@@ -649,7 +673,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           ) : discount > 0 ? (
                             <span className="ml-1.5 text-[10px] text-s-coral">-{discount}%</span>
                           ) : null}
-                        </button>
+                        </motion.button>
                       );
                     })}
                   </div>
@@ -658,11 +682,20 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             })}
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Summary strip — shown after slot selected */}
+      <AnimatePresence>
       {selectedSlot && (
-        <div className="border-t border-s-ink/5 bg-s-bg-surface dark:bg-s-dm-bg px-4 py-4 flex flex-col gap-3">
+        <motion.div
+          key="summary-strip"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="border-t border-s-ink/5 backdrop-blur-sm bg-s-bg-surface/80 dark:bg-s-dm-bg/90 overflow-hidden"
+        >
+          <div className="px-4 py-4 flex flex-col gap-3">
           {/* Package redeem banner */}
           {activePackage && checkoutStep === "select" && (
             <PackageRedeemBanner
@@ -778,34 +811,40 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
           {error && <p className="text-xs text-s-coral">{error}</p>}
 
-          {/* Guest form step */}
-          {checkoutStep === "guest" && (
-            <GuestBookingForm onSubmit={handleGuestSubmit} submitting={confirming} />
-          )}
-
-          {/* Stripe payment step */}
-          {checkoutStep === "payment" && clientSecret && (
-            <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
-              <StripePaymentForm
-                onSuccess={handlePaymentSuccess}
-                onError={(msg) => setError(msg)}
-              />
-            </Elements>
-          )}
+          {/* Guest form / Stripe payment — animated transitions */}
+          <AnimatePresence mode="wait">
+            {checkoutStep === "guest" && (
+              <motion.div key="guest" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                <GuestBookingForm onSubmit={handleGuestSubmit} submitting={confirming} />
+              </motion.div>
+            )}
+            {checkoutStep === "payment" && clientSecret && (
+              <motion.div key="payment" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+                <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
+                  <StripePaymentForm
+                    onSuccess={handlePaymentSuccess}
+                    onError={(msg) => setError(msg)}
+                  />
+                </Elements>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Main action button (shown when not in payment/guest step) */}
           {checkoutStep === "select" && (
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50"
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? "Wird vorbereitet…" : isMoreThan7Days ? "Karte speichern & Buchen" : "Zur Zahlung"}
             </button>
           )}
-        </div>
+          </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Waitlist Modal */}
       {showWaitlist && (
@@ -818,7 +857,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             {waitlistDone ? (
               <div className="text-center py-4">
                 <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
-                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors">
+                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-all">
                   Schliessen
                 </button>
               </div>
@@ -830,7 +869,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 <button
                   onClick={handleWaitlistSubmit}
                   disabled={waitlistSubmitting}
-                  className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                  className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
                 >
                   {waitlistSubmitting ? "Wird eingetragen…" : "Benachrichtige mich"}
                 </button>

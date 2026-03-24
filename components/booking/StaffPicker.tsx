@@ -22,9 +22,9 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
         {/* "Egal" option */}
         <button
           onClick={() => onSelect("any")}
-          className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-card border transition-all duration-250 ${
+          className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-card border transition-all duration-200 ${
             selectedStaff === "any"
-              ? "border-s-coral ring-2 ring-s-coral/20 bg-s-coral-subtle"
+              ? "border-s-coral ring-2 ring-s-coral ring-offset-2 bg-s-coral-subtle"
               : "border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-warm-md"
           }`}
           style={{ minWidth: "90px" }}
@@ -40,9 +40,9 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           <button
             key={s.id}
             onClick={() => onSelect(s.id)}
-            className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-card border transition-all duration-250 ${
+            className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-card border transition-all duration-200 ${
               selectedStaff === s.id
-                ? "border-s-coral ring-2 ring-s-coral/20 bg-s-coral-subtle"
+                ? "border-s-coral ring-2 ring-s-coral ring-offset-2 bg-s-coral-subtle"
                 : "border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-warm-md"
             }`}
             style={{ minWidth: "90px" }}
