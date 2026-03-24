@@ -814,12 +814,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           {/* Guest form / Stripe payment — animated transitions */}
           <AnimatePresence mode="wait">
             {checkoutStep === "guest" && (
-              <motion.div key="guest" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+              <motion.div key="guest" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                 <GuestBookingForm onSubmit={handleGuestSubmit} submitting={confirming} />
               </motion.div>
             )}
             {checkoutStep === "payment" && clientSecret && (
-              <motion.div key="payment" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.25 }}>
+              <motion.div key="payment" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                 <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
                   <StripePaymentForm
                     onSuccess={handlePaymentSuccess}
