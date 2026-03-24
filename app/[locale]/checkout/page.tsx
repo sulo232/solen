@@ -82,7 +82,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
       <PaymentElement options={{ layout: "tabs" }} />
 
       {error && (
-        <div className="rounded-button bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
+        <div className="rounded-input bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
           {error}
         </div>
       )}
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
           <PartyPopper size={48} className="text-s-coral" />
           <p className="font-heading font-bold text-xl text-s-ink">Buchung bestätigt!</p>
           <p className="text-sm text-s-ink/60">Du zahlst direkt im Salon. Bis bald!</p>
-          <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
+          <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
             Meine Buchungen
           </a>
         </div>
@@ -335,7 +335,7 @@ export default function CheckoutPage() {
 
           {/* What you pay now */}
           {paymentMode !== "at_salon" && (
-            <div className="mt-3 bg-s-coral/5 border border-s-coral/15 rounded-button p-3 flex items-center justify-between">
+            <div className="mt-3 bg-s-coral/5 border border-s-coral/15 rounded-input p-3 flex items-center justify-between">
               <div>
                 <p className="text-xs text-s-coral font-semibold">
                   {paymentMode === "prepay" ? "Jetzt zu zahlen" : "Anzahlung jetzt"}
@@ -390,7 +390,7 @@ export default function CheckoutPage() {
           )}
 
           {promoResult && (
-            <div className="flex items-center justify-between bg-s-coral/5 border border-s-coral/15 rounded-button px-3 py-2">
+            <div className="flex items-center justify-between bg-s-coral/5 border border-s-coral/15 rounded-input px-3 py-2">
               <span className="text-sm text-s-coral font-medium">{promoResult.code} angewendet</span>
               <span className="text-sm data-text font-bold text-s-coral">-{formatCurrency(promoResult.discount_amount, locale)}</span>
             </div>
@@ -398,7 +398,7 @@ export default function CheckoutPage() {
 
           {/* User credits */}
           {userCredits > 0 && !promoResult && (
-            <div className="flex items-center justify-between bg-s-bg-surface rounded-button px-3 py-2">
+            <div className="flex items-center justify-between bg-s-bg-surface rounded-input px-3 py-2">
               <span className="text-sm text-s-ink/60 flex items-center gap-1.5">
                 <Wallet className="w-3.5 h-3.5 text-s-coral" />
                 Guthaben verfügbar
@@ -416,7 +416,7 @@ export default function CheckoutPage() {
               Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.
             </p>
             {error && (
-              <div className="rounded-button bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral mb-3">
+              <div className="rounded-input bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral mb-3">
                 {error}
               </div>
             )}
