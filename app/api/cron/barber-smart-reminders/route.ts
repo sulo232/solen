@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { calculateVisitCycle } from "@/lib/barber/visit-cycle-algorithm";
+import { sendSMS } from "@/lib/sms";
 
 // Cron: Daily smart visit-cycle reminders for barbershop clients
 export async function GET(req: NextRequest) {
@@ -13,6 +14,7 @@ export async function GET(req: NextRequest) {
 
   const admin = createAdminSupabaseClient();
   let remindersCreated = 0;
+  let smsSent = 0;
 
   // Get all active barbershops
   const { data: salons } = await admin
@@ -101,8 +103,20 @@ export async function GET(req: NextRequest) {
       });
 
       remindersCreated++;
+
+      // Send SMS if customer has a phone number
+      const { data: authUser } = await admin.auth.admin.getUserById(customerId);
+      const phone = authUser?.user?.phone;
+      if (phone) {
+        const weeks = cycle.avgCycleDays ? Math.round(cycle.avgCycleDays / 7) : 3;
+        const ok = await sendSMS(
+          phone,
+          `Hey ${profile?.display_name ?? ""}, dein letzter Besuch bei ${salon.name} war vor ${weeks} Wochen. Buch deinen nächsten Termin: https://www.solen.ch/de/barbershop`
+        );
+        if (ok) smsSent++;
+      }
     }
   }
 
-  return NextResponse.json({ remindersCreated });
+  return NextResponse.json({ remindersCreated, smsSent });
 }

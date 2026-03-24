@@ -7,7 +7,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
  * Cron handler: send review prompt email 24h after completed appointment.
  * If user already left a 4-5 star review on Solen, send a follow-up nudging them
  * to also leave a Google review for the salon.
- * Runs daily. Protected by CRON_SECRET.
+ * Runs hourly. Protected by CRON_SECRET.
  */
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -23,8 +23,9 @@ export async function GET(req: NextRequest) {
 
   const supabase = createAdminSupabaseClient();
   const now = new Date();
-  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const dayBefore = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+  // 23h–25h window: catch bookings completed ~24h ago
+  const windowStart = new Date(now.getTime() - 25 * 60 * 60 * 1000);
+  const windowEnd = new Date(now.getTime() - 23 * 60 * 60 * 1000);
 
   // Find bookings completed ~24h ago that haven't been prompted
   const { data: bookings } = await supabase
@@ -32,8 +33,8 @@ export async function GET(req: NextRequest) {
     .select("id, user_id, salon_id, starts_at, status, review_prompt_sent, salons(name, slug, google_place_id), profiles(display_name, banned_at, locale)")
     .eq("status", "completed")
     .eq("review_prompt_sent", false)
-    .gte("starts_at", dayBefore.toISOString())
-    .lte("starts_at", yesterday.toISOString())
+    .gte("starts_at", windowStart.toISOString())
+    .lte("starts_at", windowEnd.toISOString())
     .limit(50);
 
   let sentCount = 0;
@@ -50,7 +51,7 @@ export async function GET(req: NextRequest) {
     const { data: authUser } = await supabase.auth.admin.getUserById(booking.user_id);
     const email = authUser?.user?.email;
     if (!email) continue;
-    
+
     const userLocale = profile?.locale || "de";
 
     // Check if user already left a high-rating review for this booking's salon
@@ -59,7 +60,7 @@ export async function GET(req: NextRequest) {
       .select("id, rating")
       .eq("user_id", booking.user_id)
       .eq("salon_id", booking.salon_id)
-      .gte("created_at", dayBefore.toISOString())
+      .gte("created_at", windowStart.toISOString())
       .maybeSingle();
 
     const isHighRating = existingReview && existingReview.rating >= 4;
@@ -116,8 +117,8 @@ export async function GET(req: NextRequest) {
         greeting: `Ciao ${profile?.display_name ?? ""},`
       }
     };
-    
-    // Fallback to German if locale not supported 
+
+    // Fallback to German if locale not supported
     const lang = (t as any)[userLocale] || t.de;
 
     try {
