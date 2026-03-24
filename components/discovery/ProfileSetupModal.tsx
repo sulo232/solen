@@ -111,7 +111,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
     `px-3 py-2 rounded-pill text-sm transition-colors ${active ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-s-ink/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose}>
       <div
         className="w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[16px] sm:rounded-card p-6 space-y-5 max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
