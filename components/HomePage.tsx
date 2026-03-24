@@ -26,7 +26,7 @@ import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import BlobBackground from "@/components/ui/BlobBackground";
 import RecentlyViewed from "@/components/RecentlyViewed";
-import WeatherBanner from "@/components/WeatherBanner";
+// WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
 import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
@@ -57,12 +57,12 @@ const fadeUp = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "Coiffeur",    Icon: Scissors  },
-  { key: "barbershop", label: "Barbershop",  Icon: ScissorsLineDashed },
-  { key: "nails",      label: "Nails",       Icon: Sparkles  },
-  { key: "spa",        label: "Spa & Massage", Icon: Droplets },
-  { key: "makeup",     label: "Makeup",      Icon: Palette   },
-  { key: "waxing",     label: "Waxing",      Icon: Zap       },
+  { key: "coiffeur",   label: "Coiffeur",      Icon: Scissors,          bg: "bg-s-coral-subtle",  border: "border-s-coral/20"  },
+  { key: "barbershop", label: "Barbershop",    Icon: ScissorsLineDashed, bg: "bg-s-ink/5",         border: "border-s-ink/10"    },
+  { key: "nails",      label: "Nails",         Icon: Sparkles,          bg: "bg-s-plum-subtle",   border: "border-s-plum/15"   },
+  { key: "spa",        label: "Spa & Massage", Icon: Droplets,          bg: "bg-s-sage-subtle",   border: "border-s-sage/20"   },
+  { key: "makeup",     label: "Makeup",        Icon: Palette,           bg: "bg-s-amber-subtle",  border: "border-s-amber/15"  },
+  { key: "waxing",     label: "Waxing",        Icon: Zap,               bg: "bg-s-blue-subtle",   border: "border-s-blue/15"   },
 ] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -98,6 +98,12 @@ export default function HomePage() {
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
   const [quartierImages, setQuartierImages] = useState<Record<string, string | null>>({});
+  const [sections, setSections] = useState<Record<string, boolean>>({
+    quartier: true, trending: true, nearby: true, new_salons: true,
+    rebook: true, reviews: true, last_minute: true, featured: true,
+    social_proof: true, partner_cta: true,
+  });
+  const [showNearby, setShowNearby] = useState(false);
 
   const fetchNearby = useCallback(() => {
     if (!navigator.geolocation) {
@@ -120,6 +126,14 @@ export default function HomePage() {
   }, []);
 
   const fetchData = useCallback(() => {
+    // Fetch homepage section visibility config
+    fetch("/api/homepage-sections")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.sections) setSections(data.sections);
+      })
+      .catch(() => {}); // Default to all-visible on error
+
     fetch("/api/salons?limit=8&sort=rating")
       .then((r) => r.json())
       .then((data) => setSalons(data.items ?? []))
@@ -239,7 +253,7 @@ export default function HomePage() {
       <BlobBackground zone={1} />
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden py-20 sm:py-28">
+      <section className="relative overflow-hidden py-16 sm:py-24">
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <motion.div
@@ -247,10 +261,18 @@ export default function HomePage() {
             initial="hidden"
             animate="visible"
           >
+            {!userName && (
+              <motion.span
+                variants={fadeUp}
+                className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber mb-2 block"
+              >
+                VON BASEL, FÜR BASEL
+              </motion.span>
+            )}
             <motion.h1
               variants={fadeUp}
               className="font-display uppercase leading-none text-s-ink dark:text-s-dm-text"
-              style={{ fontSize: "clamp(56px, 8vw, 110px)", letterSpacing: "0.04em" }}
+              style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em" }}
             >
               {userName ? (
                 <>Willkommen{" "}<span className="text-s-coral">{userName}</span></>
@@ -264,7 +286,9 @@ export default function HomePage() {
             >
               {userName && nextBooking
                 ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
-                : "Coiffeur, Barbershop, Nails, Spa & mehr — buche jetzt in deinem Quartier."
+                : userName
+                  ? "Willkommen zurück — was darf's heute sein?"
+                  : "Dein nächster Termin in Basel — buche Coiffeur, Nails, Spa & mehr."
               }
             </motion.p>
             <motion.div variants={fadeUp} className="mt-8">
@@ -279,33 +303,32 @@ export default function HomePage() {
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
       <section id="tour-services" className="max-w-5xl mx-auto px-4 py-10">
+        <div className="mb-6 text-center">
+          <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber block mb-1">
+            KATEGORIEN
+          </span>
+          <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+            Was suchst du?
+          </h2>
+        </div>
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal-stagger"
         >
-          {CATEGORIES.map(({ key, label, Icon }) => (
+          {CATEGORIES.map(({ key, label, Icon, bg, border }) => (
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-card bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 hover:border-s-coral/40 hover:shadow-card-hover transition-all duration-200 hover:-translate-y-1 active:scale-95 group"
+                className={`flex flex-col items-center gap-2 p-6 rounded-card ${bg} dark:bg-s-dm-surface/80 border ${border} dark:border-white/5 hover:scale-[1.03] hover:-rotate-1 hover:shadow-card-hover transition-all duration-200 active:scale-95 group`}
               >
                 <Icon
-                  size={32}
+                  size={36}
                   className="text-s-coral group-hover:scale-110 transition-transform duration-200"
                 />
-                <span
-                  className="font-heading font-medium text-s-ink dark:text-s-dm-text text-sm text-center leading-tight"
-                 
-                >
+                <span className="font-display text-[22px] uppercase text-s-ink dark:text-s-dm-text leading-none">
                   {label}
-                </span>
-                <span
-                  className="text-xs text-s-ink/40 dark:text-s-dm-text/40 font-body"
-                 
-                >
-                  Entdecken
                 </span>
               </Link>
             </motion.div>
@@ -313,11 +336,10 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── Weather Banner ─────────────────────────────────────────────── */}
-      <WeatherBanner />
+      {/* WeatherBanner removed — Phase 0.3 */}
 
       {/* ── Wieder buchen? (logged-in users with past booking) ───────────── */}
-      {lastBookedSalon && (
+      {sections.rebook && lastBookedSalon && (
         <section className="max-w-5xl mx-auto px-4 pt-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -336,7 +358,7 @@ export default function HomePage() {
             </div>
             <Link
               href={`/${locale}/salon/${lastBookedSalon.slug}`}
-              className="shrink-0 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+              className="shrink-0 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
             >
               Nochmal buchen
             </Link>
@@ -348,6 +370,7 @@ export default function HomePage() {
       <RecentlyViewed />
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
+      {sections.featured && (
       <section className="py-10 bg-s-bg-surface/50">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
@@ -389,7 +412,7 @@ export default function HomePage() {
               {salons.map((salon) => (
                 <div
                   key={salon.id}
-                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]"
+                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-card-hover"
                 >
                   <SalonCard
                     salon={salon}
@@ -405,118 +428,10 @@ export default function HomePage() {
           )}
         </div>
       </section>
-
-      {/* ── Trending Section ────────────────────────────────────────────────── */}
-      {trendingSalons.length > 0 && (
-        <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
-          <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
-                    Trending in Basel
-                  </h2>
-                </div>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
-                  Die aktuell angesagtesten Salons
-                </p>
-              </div>
-            </div>
-
-            <div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
-              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
-            >
-              {trendingSalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]">
-                  <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       )}
 
-      {/* ── Near You Section ────────────────────────────────────────────────── */}
-      <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
-                  In deiner Nähe
-                </h2>
-              </div>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
-                Salons ganz in deiner Nähe entdecken
-              </p>
-            </div>
-            {nearbySalons.length > 0 && (
-              <Link href={`/${locale}/coiffeur`} className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4">
-                Alle ansehen →
-              </Link>
-            )}
-          </div>
-
-          {nearbySalons.length > 0 ? (
-            <div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
-              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
-            >
-              {nearbySalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-transform duration-200 hover:scale-[1.02]">
-                  <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
-                </div>
-              ))}
-            </div>
-          ) : locationError ? (
-             <div className="bg-s-ink/5 dark:bg-white/5 rounded-card p-6 flex flex-col items-center justify-center text-center">
-               <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-3">Bitte erlaube den Standortzugriff, um Salons in der Nähe anzuzeigen.</p>
-               <button onClick={fetchNearby} className="px-4 py-2 bg-s-ink dark:bg-white text-s-bg-base dark:text-s-ink text-sm rounded-button font-medium">Standort freigeben</button>
-             </div>
-          ) : (
-            <div className="bg-s-ink/5 dark:bg-white/5 rounded-card p-6 flex flex-col items-center justify-center text-center">
-              <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-3">Entdecke Salons direkt in deiner Umgebung.</p>
-              <button onClick={fetchNearby} className="px-4 py-2 bg-s-coral text-white text-sm rounded-button font-medium">Standort verwenden</button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ── Review Carousel ──────────────────────────────────────────────── */}
-      <ReviewCarousel />
-
-      {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
-      {newSalons.length > 0 && (
-        <section className="py-10 bg-s-bg-surface/50">
-          <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-1">
-                <Sparkles size={20} className="text-s-coral" />
-                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
-                  Neue Salons
-                </h2>
-              </div>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
-                Frisch auf Solen — entdecke die neuesten Salons in Basel
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {newSalons.map((salon) => (
-                <SalonCard
-                  key={salon.id}
-                  salon={salon}
-                  locale={locale}
-                  isFavorited={favoriteIds.has(salon.id)}
-                  onFavoriteToggle={handleFavoriteToggle}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── Last-Minute Section ────────────────────────────────────────────── */}
+      {/* ── Last-Minute Angebote (moved up for urgency — Phase 0.3) ────────── */}
+      {sections.last_minute && (
       <section id="tour-last-minute" className="py-12 my-10 bg-s-coral-subtle/40 dark:bg-s-coral-subtle/5 border-y border-s-coral/10 rounded-blob-e mx-2 sm:mx-6 overflow-hidden relative">
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="mb-6">
@@ -569,8 +484,112 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      )}
+
+      {/* ── Trending Section ────────────────────────────────────────────────── */}
+      {sections.trending && trendingSalons.length > 0 && (
+        <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                    Trending in Basel
+                  </h2>
+                </div>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+                  Die aktuell angesagtesten Salons
+                </p>
+              </div>
+            </div>
+
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
+              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            >
+              {trendingSalons.map((salon) => (
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-card-hover">
+                  <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Near You Section ────────────────────────────────────────────────── */}
+      {sections.nearby && (showNearby || nearbySalons.length > 0) && (
+        <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                    In deiner Nähe
+                  </h2>
+                </div>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+                  Salons ganz in deiner Nähe entdecken
+                </p>
+              </div>
+              {nearbySalons.length > 0 && (
+                <Link href={`/${locale}/coiffeur`} className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4">
+                  Alle ansehen →
+                </Link>
+              )}
+            </div>
+
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
+              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+            >
+              {nearbySalons.map((salon) => (
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-card-hover">
+                  <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Review Carousel ──────────────────────────────────────────────── */}
+      {sections.reviews && <ReviewCarousel />}
+
+      {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
+      {sections.new_salons && newSalons.length > 0 && (
+        <section className="py-10 bg-s-bg-surface/50">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles size={20} className="text-s-coral" />
+                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                  Neue Salons
+                </h2>
+              </div>
+              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+                Frisch auf Solen — entdecke die neuesten Salons in Basel
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {newSalons.map((salon) => (
+                <SalonCard
+                  key={salon.id}
+                  salon={salon}
+                  locale={locale}
+                  isFavorited={favoriteIds.has(salon.id)}
+                  onFavoriteToggle={handleFavoriteToggle}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Last-Minute section moved to after Beliebte Salons — Phase 0.3 */}
 
       {/* ── Quartier Section ───────────────────────────────────────────────── */}
+      {sections.quartier && Object.values(quartierCounts).some(c => c > 0) && (
       <section className="py-10 bg-s-bg-surface/50">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
@@ -615,7 +634,7 @@ export default function HomePage() {
                 >
                   <Link
                     href={`/${locale}/coiffeur?quartier=${slug}`}
-                    className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-warm-md hover:scale-[1.02] transition-all duration-300"
+                    className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-card-hover hover:-translate-y-[5px] transition-all duration-250"
                   >
                     {qImage ? (
                       <Image src={qImage} alt={name} fill className="object-cover" loading="lazy" />
@@ -647,8 +666,10 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
+      {sections.partner_cta && (
       <section className="py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
@@ -665,16 +686,16 @@ export default function HomePage() {
             <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
               <div className="max-w-xl">
                 <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl mb-4 leading-tight text-white">
-                  Sie haben einen Friseur- oder Schönheitssalon?
+                  Hast du einen Salon?
                 </h2>
                 <p className="font-body text-s-bg-base/80 text-lg sm:text-xl">
-                  Bringen Sie Ihr Geschäft auf das nächste Level. Schließen Sie sich Solen an und erreichen Sie Tausende von Kunden in ganz Basel.
+                  Bringe dein Business auf das nächste Level. Werde Teil von Solen und erreiche tausende Kund:innen in Basel.
                 </p>
               </div>
               <div className="shrink-0 pt-4 md:pt-0">
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center px-10 py-5 bg-s-coral text-white font-heading font-bold tracking-wide rounded-blob-a blob-interactive hover:bg-s-coral-hover text-lg shadow-coral-glow transition-all"
+                  className="inline-flex items-center justify-center px-10 py-4 bg-s-coral text-white font-heading font-bold tracking-wide rounded-btn hover:bg-s-coral-hover text-lg shadow-coral-glow hover:shadow-coral-glow-hover transition-all duration-200 hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-pressed uppercase tracking-[.04em]"
                 >
                   Partner werden
                 </Link>
@@ -683,6 +704,7 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}
       <StickyMobileCTA />

@@ -17,6 +17,7 @@ import {
   Label,
   Popover,
 } from "react-aria-components";
+import { I18nProvider } from "react-aria";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DateValue } from "react-aria-components";
@@ -41,6 +42,7 @@ export default function SolenDatePicker({
   className,
 }: SolenDatePickerProps) {
   return (
+    <I18nProvider locale="de-CH">
     <DatePicker
       value={value}
       onChange={(v) => v && onChange?.(v)}
@@ -50,7 +52,7 @@ export default function SolenDatePicker({
       className={cn("flex flex-col gap-1", className)}
     >
       <Label className="text-xs font-medium text-s-ink/60 font-body">{label}</Label>
-      <Group className="flex items-center rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-all">
+      <Group className="flex items-center rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised px-3 py-2 text-sm focus-within:border-s-coral focus-within:ring-2 focus-within:ring-s-coral/20 transition-all">
         <DateInput className="flex flex-1 items-center">
           {(segment) => (
             <DateSegment
@@ -71,14 +73,14 @@ export default function SolenDatePicker({
             <header className="flex items-center justify-between mb-2">
               <Button
                 slot="previous"
-                className="p-1.5 rounded-button hover:bg-s-bg-sunken transition-colors"
+                className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
               >
                 <ChevronLeft className="w-4 h-4 text-s-ink/60" />
               </Button>
               <Heading className="text-sm font-heading font-semibold text-s-ink" />
               <Button
                 slot="next"
-                className="p-1.5 rounded-button hover:bg-s-bg-sunken transition-colors"
+                className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
               >
                 <ChevronRight className="w-4 h-4 text-s-ink/60" />
               </Button>
@@ -97,7 +99,7 @@ export default function SolenDatePicker({
                     date={date}
                     className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
                       cn(
-                        "w-9 h-9 flex items-center justify-center rounded-button text-sm data-text transition-colors cursor-pointer outline-none",
+                        "w-9 h-9 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
                         isSelected && "bg-s-coral text-white font-semibold",
                         !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
                         isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
@@ -113,5 +115,6 @@ export default function SolenDatePicker({
         </Dialog>
       </Popover>
     </DatePicker>
+    </I18nProvider>
   );
 }

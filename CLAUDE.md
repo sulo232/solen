@@ -182,6 +182,7 @@ solen/
 57. **Barber Discovery Signals**: Discovery algorithm barber branch — fade type, barber style, and hair texture scoring for barbershop category items.
 58. **Barber Roster**: Salon page "Unsere Barber" grid section showing staff with portfolio links. Only visible for barbershop-category salons.
 59. **Smart Search**: Unified search bar with date-based availability, category pills, and AI-powered embeddings search (pgvector). Category-scoped results with cross-category suggestions. Homepage 3-part search bar (date + category + AI search). Subpage FilterBar with date picker and availability badges.
+60. **Admin Homepage Section Toggle**: Admin-controlled homepage section visibility via `platform_settings` key `homepage_sections`. Public GET at `/api/homepage-sections`, admin GET/PUT at `/api/admin/homepage-sections`. Sections default to all-visible on fetch failure.
 
 ### 3.6 Commands
 
