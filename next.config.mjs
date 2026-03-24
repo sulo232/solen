@@ -7,6 +7,9 @@ const withNextIntl = createNextIntlPlugin("./i18n.ts");
 const nextConfig = {
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
+  env: {
+    NEXT_PUBLIC_MAPBOX_TOKEN: process.env.MAPBOX_API,
+  },
   images: {
     remotePatterns: [
       {
