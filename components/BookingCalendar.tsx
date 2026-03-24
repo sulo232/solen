@@ -160,6 +160,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const [waitlistDate, setWaitlistDate] = useState<string | null>(null);
   const [serviceCategory, setServiceCategory] = useState<string | null>(null);
   const [nailOptions, setNailOptions] = useState<NailOptions | null>(null);
+  // Barbershop-specific state
+  const [lastBarberCut, setLastBarberCut] = useState<{
+    fade_type: string | null; top_style: string | null; side_length: string | null; beard_style: string | null;
+    staff_members?: { first_name: string; last_name: string } | null;
+  } | null>(null);
+  const [barberChairs, setBarberChairs] = useState<{ chair_count: number; buffer_minutes: number } | null>(null);
   const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
   const [waitlistDone, setWaitlistDone] = useState(false);
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
@@ -287,6 +293,19 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       })
       .catch(() => {});
   }, [serviceId, salonId]);
+
+  // Fetch barbershop-specific data when service is barbershop + user is authenticated
+  useEffect(() => {
+    if (serviceCategory !== "barbershop" || !userId) return;
+    fetch(`/api/clients/${userId}/repeat-last-cut`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.lastCut) setLastBarberCut(d.lastCut); })
+      .catch(() => {});
+    fetch(`/api/salon/chairs?salon_id=${salonId}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.chair_count) setBarberChairs({ chair_count: d.chair_count, buffer_minutes: d.buffer_minutes ?? 5 }); })
+      .catch(() => {});
+  }, [serviceCategory, userId, salonId]);
 
   // Fetch slots
   const fetchSlots = useCallback(async (date: Date) => {
@@ -530,6 +549,33 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         </div>
       )}
 
+      {/* Barbershop: last cut repeat banner */}
+      {serviceCategory === "barbershop" && lastBarberCut && (
+        <div className="mx-4 mt-4 rounded-card bg-s-amber/5 border border-s-amber/20 px-4 py-3 flex items-start gap-3">
+          <span className="text-lg">✂️</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">Letzter Schnitt wiederholen</p>
+            <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 mt-0.5 truncate">
+              {[
+                lastBarberCut.fade_type && lastBarberCut.fade_type !== "none" && `${lastBarberCut.fade_type} fade`,
+                lastBarberCut.top_style && lastBarberCut.top_style !== "other" && lastBarberCut.top_style,
+                lastBarberCut.side_length && `#${lastBarberCut.side_length}`,
+                lastBarberCut.beard_style && lastBarberCut.beard_style !== "none" && lastBarberCut.beard_style,
+              ].filter(Boolean).join(" · ") || "Gleicher Schnitt"}
+              {lastBarberCut.staff_members && ` bei ${lastBarberCut.staff_members.first_name}`}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Barbershop: chair availability indicator */}
+      {serviceCategory === "barbershop" && barberChairs && (
+        <div className="mx-4 mt-2 flex items-center gap-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50">
+          <span className="w-2 h-2 rounded-full bg-s-sage inline-block" />
+          {barberChairs.chair_count} Stühle · {barberChairs.buffer_minutes} Min Puffer
+        </div>
+      )}
+
       {/* Nail booking steps — only for nail services */}
       {serviceCategory === "nails" && (
         <div className="px-4">
@@ -653,7 +699,9 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               onChange={(e) => setRecurring(e.target.checked)}
               className="w-4 h-4 rounded accent-s-coral"
             />
-            <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Serienbuchung</span>
+            <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">
+              {serviceCategory === "barbershop" ? "Regelmässig buchen?" : "Serienbuchung"}
+            </span>
             <RotateCcw className="w-3.5 h-3.5 text-s-coral" />
           </label>
           {recurring && (
