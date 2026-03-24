@@ -11,7 +11,7 @@ import {
   BarChart, Settings, Menu, X, ChevronRight,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
-  UserCheck, Megaphone, Image as ImageIcon, Sparkles,
+  UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -33,6 +33,7 @@ const ADMIN_NAV = [
   { label: "Segmente",            href: "/dashboard/segments",           icon: PieChart },
   { label: "Visual Editor",       href: "/dashboard/editor",             icon: Paintbrush },
   { label: "Discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
+  { label: "Homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
 ] as const;
 
 const OWNER_NAV = [
@@ -212,12 +213,12 @@ export default function DashboardLayout({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 35 }}
-              className="absolute left-0 top-0 h-full w-64 bg-white shadow-warm-2xl"
+              className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-s-dm-surface shadow-warm-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-5 py-4 border-b border-s-ink/5 flex items-center justify-between">
+              <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5 flex items-center justify-between">
                 <span className="font-heading font-bold text-lg">solen<span className="text-s-coral">.</span>ch</span>
-                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40" /></button>
+                <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>
               </div>
               <nav className="py-3 px-2">
                 {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ label, href, icon: Icon }) => {
@@ -266,8 +267,8 @@ export default function DashboardLayout({
       {/* ── Main content ── */}
       <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-20 bg-white shadow-warm-sm border-b border-s-ink/5 px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60">
+        <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-s-dm-surface shadow-warm-sm border-b border-s-ink/5 dark:border-white/5 px-4 py-3 flex items-center gap-3">
+          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60">
             <Menu size={20} />
           </button>
           <span className="font-heading font-bold text-base">solen<span className="text-s-coral">.</span>ch</span>
@@ -279,7 +280,7 @@ export default function DashboardLayout({
       </div>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-s-ink/5 flex">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white dark:bg-s-dm-surface border-t border-s-ink/5 dark:border-white/5 flex">
         {MOBILE_NAV.map(({ label, href, icon: Icon }) => {
           const active = isActive(href);
           const isMessages = href === "/dashboard/messages";
