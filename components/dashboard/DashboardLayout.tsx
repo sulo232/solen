@@ -119,9 +119,9 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-surface flex">
+      <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex">
         {/* Sidebar skeleton */}
-        <div className="hidden md:flex flex-col w-[60px] border-r border-s-ink/5 p-3 gap-4">
+        <div className="hidden md:flex flex-col w-[60px] border-r border-s-ink/5 dark:border-white/5 p-3 gap-4">
           <Skeleton className="h-8 w-8 rounded-card" />
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-8 w-8 rounded-card" />
@@ -147,7 +147,7 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-s-bg-surface flex">
+    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex">
       {/* ── Desktop Sidebar (animated) ── */}
       <Sidebar>
         <SidebarBody>
