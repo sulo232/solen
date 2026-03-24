@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, CheckCheck, Languages, MessageCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components/ui/Spinner";
@@ -330,18 +330,32 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         </button>
       </div>
 
-      {/* Photo Gallery */}
-      <div style={{ display: activeTab === "photos" ? "block" : "none" }} className="flex-1 overflow-y-auto">
-        <PhotoGallery
-          conversationId={conversationId}
-          isSalonOwner={isSalonOwner}
-          isNailSalon={isNailSalon}
-          onCreateOffer={handleCreatePhotoOffer}
-        />
-      </div>
-
-      {/* Chat content */}
-      <div style={{ display: activeTab === "chat" ? "flex" : "none" }} className="flex flex-col flex-1 min-h-0">
+      <AnimatePresence mode="wait">
+       {activeTab === "photos" ? (
+        <motion.div
+          key="photos"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="flex-1 overflow-y-auto"
+        >
+          <PhotoGallery
+            conversationId={conversationId}
+            isSalonOwner={isSalonOwner}
+            isNailSalon={isNailSalon}
+            onCreateOffer={handleCreatePhotoOffer}
+          />
+        </motion.div>
+       ) : (
+        <motion.div
+          key="chat"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="flex flex-col flex-1 min-h-0"
+        >
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
           {loading ? (
@@ -495,7 +509,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         )}
 
         {/* Compose bar */}
-        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-white/10 backdrop-blur-sm bg-white/90 dark:bg-s-dm-surface/90 flex items-end gap-2">
+        <div className="px-4 py-3 border-t border-s-ink/5 dark:border-white/10 backdrop-blur-sm bg-white/90 dark:bg-s-dm-surface/90 shadow-warm-sm flex items-end gap-2">
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
@@ -517,7 +531,9 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}
           </button>
         </div>
-      </div>
+      </motion.div>
+       )}
+      </AnimatePresence>
 
       {/* Price Offer Modal */}
       <PriceOfferModal
