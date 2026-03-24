@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
-import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera } from "lucide-react";
+import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
+import { serviceTemplates } from "@/lib/service-templates";
+import type { ServiceTemplate } from "@/lib/service-templates";
 import type { Service, SalonCategory, AgeGroup, Gender } from "@/lib/types";
 
 const CATEGORY_LABELS: Record<SalonCategory, string> = {
@@ -147,6 +149,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             <div className="flex gap-2">
               {photos.map((url, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-button overflow-hidden border border-s-ink/10">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={url} alt="" className="w-full h-full object-cover" />
                   <button type="button" onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
                     className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center">
@@ -222,6 +225,97 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
 }
 
 // ─────────────────────────────────────────
+// Template Quick-Add
+// ─────────────────────────────────────────
+
+function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, locale }: {
+  salonCategories: SalonCategory[];
+  existingNames: string[];
+  salonId: string | null;
+  onAdded: () => void;
+  locale: string;
+}) {
+  const [collapsed, setCollapsed] = useState(true);
+  const [adding, setAdding] = useState<string | null>(null);
+
+  const templates = salonCategories.flatMap((cat) => serviceTemplates[cat] || []);
+  if (templates.length === 0) return null;
+
+  const isAdded = (t: ServiceTemplate) => existingNames.includes(t.name_de);
+
+  const addTemplate = async (t: ServiceTemplate) => {
+    if (!salonId || isAdded(t)) return;
+    setAdding(t.name_de);
+    try {
+      await fetch("/api/services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salon_id: salonId,
+          name_de: t.name_de,
+          name_en: t.name_en,
+          category: t.category,
+          duration_minutes: t.duration,
+          price: t.price,
+          is_active: true,
+        }),
+      });
+      onAdded();
+    } catch { /* ignore */ }
+    setAdding(null);
+  };
+
+  return (
+    <div className="mb-6">
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors mb-2"
+      >
+        {collapsed ? "Vorlagen anzeigen +" : "Vorlagen ausblenden −"}
+      </button>
+      {!collapsed && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {templates.map((tmpl) => {
+            const added = isAdded(tmpl);
+            return (
+              <button
+                key={`${tmpl.category}-${tmpl.name_de}`}
+                type="button"
+                disabled={added || adding === tmpl.name_de}
+                onClick={() => addTemplate(tmpl)}
+                className={[
+                  "flex items-center justify-between px-3 py-2.5 rounded-card border text-left transition-all",
+                  added
+                    ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
+                    : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
+                ].join(" ")}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{tmpl.name_de}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="inline-flex items-center gap-0.5 text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
+                      <Clock size={10} /> {tmpl.duration} min
+                    </span>
+                    <span className="text-xs data-text font-semibold text-s-ink/60 dark:text-s-dm-text/60">{formatCurrency(tmpl.price, locale)}</span>
+                  </div>
+                </div>
+                {adding === tmpl.name_de ? (
+                  <Spinner size="sm" />
+                ) : added ? (
+                  <Check size={14} className="text-s-coral shrink-0 ml-2" />
+                ) : (
+                  <Plus size={14} className="text-s-coral shrink-0 ml-2" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────
 // Page
 // ─────────────────────────────────────────
 
@@ -291,6 +385,17 @@ export default function ServicesPage() {
         </button>
       </div>
 
+      {/* Template quick-add section */}
+      {salonCategories.length > 0 && (
+        <TemplateQuickAdd
+          salonCategories={salonCategories}
+          existingNames={services.map((s) => s.name_de)}
+          salonId={salonId}
+          onAdded={loadServices}
+          locale={locale}
+        />
+      )}
+
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : services.length === 0 ? (
@@ -332,6 +437,18 @@ export default function ServicesPage() {
           </table>
         </div>
       )}
+
+      {/* Competitor import — subtle secondary link */}
+      <div className="mt-6 text-center">
+        <button
+          onClick={() => window.open("mailto:support@solen.ch?subject=CSV-Import%20Anfrage&body=Hallo%20Solen-Team%2C%20ich%20m%C3%B6chte%20meine%20Services%20aus%20Treatwell%2FFresha%20importieren.", "_blank")}
+          className="text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:underline cursor-pointer transition-colors"
+        >
+          <Upload size={10} className="inline mr-1" />
+          Treatwell / Fresha CSV importieren?
+        </button>
+        <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-1">Coming soon — kontaktiere uns für Concierge-Import</p>
+      </div>
     </DashboardLayout>
   );
 }
