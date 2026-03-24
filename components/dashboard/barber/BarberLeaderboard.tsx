@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trophy, ArrowUpDown, Eye, EyeOff } from "lucide-react";
+import { Trophy, Medal, ArrowUpDown, Eye, EyeOff, BarChart2, Table2 } from "lucide-react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from "recharts";
 
 interface BarberStats {
   staff_id: string;
@@ -20,6 +23,9 @@ interface BarberLeaderboardProps {
 
 type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name">;
 type Period = "week" | "month";
+type ViewMode = "table" | "chart";
+
+const CORAL = "#E8624A";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const [stats, setStats] = useState<BarberStats[]>([]);
@@ -27,9 +33,11 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const [sortBy, setSortBy] = useState<SortKey>("bookings_count");
   const [period, setPeriod] = useState<Period>("week");
   const [anonymized, setAnonymized] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("table");
 
   useEffect(() => {
     const fetchStats = async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/dashboard/barber-leaderboard?salon_id=${salonId}&period=${period}`);
         if (res.ok) {
@@ -55,6 +63,21 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
     { key: "chair_utilization_pct", label: "Stuhl-Ausl.", format: (v) => `${v}%` },
   ];
 
+  const getRankIcon = (rank: number) => {
+    if (rank === 0) return <Trophy size={14} className="text-s-amber" />;
+    if (rank === 1) return <Medal size={14} className="text-s-ink/40 dark:text-s-dm-text/40" />;
+    if (rank === 2) return <Medal size={14} className="text-s-sand" />;
+    return null;
+  };
+
+  const getDisplayName = (barber: BarberStats, index: number) =>
+    anonymized ? `Barber ${String.fromCharCode(65 + index)}` : barber.staff_name;
+
+  const chartData = sorted.map((b, i) => ({
+    name: getDisplayName(b, i),
+    [columns.find((c) => c.key === sortBy)?.label ?? "Wert"]: b[sortBy],
+  }));
+
   return (
     <div className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center justify-between mb-4">
@@ -63,6 +86,15 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Barber Leaderboard</h3>
         </div>
         <div className="flex items-center gap-2">
+          {/* View mode toggle */}
+          <button
+            onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
+            className="p-1.5 rounded-button text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+            title={viewMode === "table" ? "Diagramm anzeigen" : "Tabelle anzeigen"}
+          >
+            {viewMode === "table" ? <BarChart2 size={14} /> : <Table2 size={14} />}
+          </button>
+          {/* Anonymize toggle */}
           <button
             onClick={() => setAnonymized(!anonymized)}
             className="p-1.5 rounded-button text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
@@ -70,6 +102,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           >
             {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
+          {/* Period toggle */}
           <div className="flex rounded-button border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
             {(["week", "month"] as Period[]).map((p) => (
               <button
@@ -92,7 +125,41 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
         <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>
       ) : stats.length === 0 ? (
         <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Keine Daten</div>
+      ) : viewMode === "chart" ? (
+        /* ═══ CHART VIEW ═══ */
+        <div>
+          {/* Metric selector for chart */}
+          <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
+            {columns.map((col) => (
+              <button
+                key={col.key}
+                onClick={() => setSortBy(col.key)}
+                className={`px-2 py-1 rounded-button text-xs whitespace-nowrap transition-colors ${
+                  sortBy === col.key
+                    ? "bg-s-coral/10 text-s-coral font-medium"
+                    : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
+                }`}
+              >
+                {col.label}
+              </button>
+            ))}
+          </div>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#1A120966" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
+              <Bar
+                dataKey={columns.find((c) => c.key === sortBy)?.label ?? "Wert"}
+                fill={CORAL}
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       ) : (
+        /* ═══ TABLE VIEW ═══ */
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -116,9 +183,13 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             <tbody>
               {sorted.map((barber, i) => (
                 <tr key={barber.staff_id} className="border-b border-s-ink/5 dark:border-s-dm-text/5 last:border-0">
-                  <td className="py-2.5 text-s-ink/40 dark:text-s-dm-text/40 pr-4 font-medium">{i + 1}</td>
+                  <td className="py-2.5 pr-4">
+                    <span className="inline-flex items-center gap-1">
+                      {getRankIcon(i) ?? <span className="text-s-ink/40 dark:text-s-dm-text/40 font-medium">{i + 1}</span>}
+                    </span>
+                  </td>
                   <td className="py-2.5 text-s-ink dark:text-s-dm-text pr-4 font-medium whitespace-nowrap">
-                    {anonymized ? `Barber ${String.fromCharCode(65 + i)}` : barber.staff_name}
+                    {getDisplayName(barber, i)}
                   </td>
                   {columns.map((col) => (
                     <td key={col.key} className="py-2.5 text-right text-s-ink/70 dark:text-s-dm-text/70 pr-3 tabular-nums whitespace-nowrap">

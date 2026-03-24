@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, Send, Users } from "lucide-react";
+import { Bell, Send, Users, CheckCircle2, X } from "lucide-react";
 
 interface ReminderClient {
   id: string;
   display_name: string;
+  phone?: string;
   days_overdue: number;
+  cycle_days?: number;
   preferred_barber: string | null;
   last_visit_date: string;
 }
@@ -15,10 +17,36 @@ interface SmartReminderConfigProps {
   salonId: string;
 }
 
+const COOLDOWN_KEY = "solen_reminder_sent";
+const COOLDOWN_DAYS = 7;
+
+function getCooldownMap(): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(COOLDOWN_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+function isOnCooldown(clientId: string): boolean {
+  const map = getCooldownMap();
+  const sentAt = map[clientId];
+  if (!sentAt) return false;
+  return Date.now() - sentAt < COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
+}
+
+function markSent(clientId: string): void {
+  const map = getCooldownMap();
+  map[clientId] = Date.now();
+  localStorage.setItem(COOLDOWN_KEY, JSON.stringify(map));
+}
+
 export default function SmartReminderConfig({ salonId }: SmartReminderConfigProps) {
   const [dueClients, setDueClients] = useState<ReminderClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState<string | null>(null);
+  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
+  const [confirmClient, setConfirmClient] = useState<ReminderClient | null>(null);
 
   useEffect(() => {
     const fetchDue = async () => {
@@ -36,15 +64,19 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
     fetchDue();
   }, [salonId]);
 
-  const handleSendReminder = async (clientId: string) => {
-    setSending(clientId);
+  const handleSendReminder = async (client: ReminderClient) => {
+    setSending(client.id);
+    setConfirmClient(null);
     try {
-      await fetch("/api/dashboard/barber-reminders/send", {
+      const res = await fetch("/api/dashboard/barber-reminders/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ client_id: clientId, salon_id: salonId }),
+        body: JSON.stringify({ client_id: client.id, salon_id: salonId }),
       });
-      setDueClients((prev) => prev.filter((c) => c.id !== clientId));
+      if (res.ok) {
+        markSent(client.id);
+        setSentIds((prev) => new Set(prev).add(client.id));
+      }
     } catch {
       // Error sending
     }
@@ -83,34 +115,91 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
             <div key={barber}>
               <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{barber}</p>
               <div className="space-y-2">
-                {clients.map((client) => (
-                  <div
-                    key={client.id}
-                    className="flex items-center justify-between rounded-button bg-s-bg-surface dark:bg-s-dm-bg p-3"
-                  >
-                    <div>
-                      <p className="text-sm text-s-ink dark:text-s-dm-text font-medium">
-                        {client.display_name}
-                      </p>
-                      <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                        {client.days_overdue > 0
-                          ? `${client.days_overdue} Tage überfällig`
-                          : "Heute fällig"}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleSendReminder(client.id)}
-                      disabled={sending === client.id}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 disabled:opacity-50 transition-colors"
+                {clients.map((client) => {
+                  const cooldown = isOnCooldown(client.id);
+                  const justSent = sentIds.has(client.id);
+
+                  return (
+                    <div
+                      key={client.id}
+                      className="flex items-center justify-between rounded-button bg-s-bg-surface dark:bg-s-dm-bg p-3"
                     >
-                      <Send size={12} />
-                      {sending === client.id ? "..." : "Senden"}
-                    </button>
-                  </div>
-                ))}
+                      <div>
+                        <p className="text-sm text-s-ink dark:text-s-dm-text font-medium">
+                          {client.display_name}
+                        </p>
+                        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+                          {client.days_overdue > 0
+                            ? `${client.days_overdue} Tage überfällig`
+                            : "Heute fällig"}
+                          {client.cycle_days ? ` · Zyklus: ${client.cycle_days} Tage` : ""}
+                          {client.last_visit_date ? ` · Letzter Besuch: ${new Date(client.last_visit_date).toLocaleDateString("de-CH")}` : ""}
+                        </p>
+                      </div>
+
+                      {justSent ? (
+                        <span className="flex items-center gap-1 text-xs text-s-success font-medium">
+                          <CheckCircle2 size={14} />
+                          Gesendet
+                        </span>
+                      ) : cooldown ? (
+                        <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">
+                          Kürzlich gesendet
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmClient(client)}
+                          disabled={sending === client.id}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 disabled:opacity-50 transition-colors"
+                        >
+                          <Send size={12} />
+                          {sending === client.id ? "..." : "Senden"}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Confirmation dialog */}
+      {confirmClient && (
+        <div className="fixed inset-0 z-[55] bg-s-ink/40 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg p-6 max-w-sm w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+                Erinnerung senden?
+              </h4>
+              <button
+                onClick={() => setConfirmClient(null)}
+                className="p-1 rounded-button text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 mb-4">
+              Erinnerung an <strong>{confirmClient.display_name}</strong>
+              {confirmClient.phone ? ` (${confirmClient.phone})` : ""} senden?
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setConfirmClient(null)}
+                className="flex-1 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={() => handleSendReminder(confirmClient)}
+                disabled={sending === confirmClient.id}
+                className="flex-1 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+              >
+                {sending === confirmClient.id ? "Senden..." : "Ja, senden"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

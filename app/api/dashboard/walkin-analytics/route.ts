@@ -60,6 +60,32 @@ export async function GET(req: NextRequest) {
   const chairCount = chairs?.chair_count ?? 1;
   const chairUtil = chairCount > 0 ? Math.min(100, Math.round((completedWalkins / (chairCount * (period === "week" ? 7 : 30) * 8)) * 100)) : 0;
 
+  // Daily breakdown for sparkline trends (last 7 days always)
+  const dailyDays = 7;
+  const dailyData: { walkins: number[]; waits: number[]; conversions: number[]; abandonments: number[] } = {
+    walkins: [], waits: [], conversions: [], abandonments: [],
+  };
+  for (let d = dailyDays - 1; d >= 0; d--) {
+    const dayStart = new Date();
+    dayStart.setDate(dayStart.getDate() - d);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+    const dayWalkins = (walkins ?? []).filter((w) => {
+      const t = new Date(w.created_at);
+      return t >= dayStart && t < dayEnd;
+    });
+    const dayCompleted = dayWalkins.filter((w) => w.status === "completed").length;
+    const dayCancelled = dayWalkins.filter((w) => w.status === "cancelled" || w.status === "no_show").length;
+    const dayWaits = dayWalkins
+      .filter((w) => w.estimated_wait_minutes != null)
+      .map((w) => w.estimated_wait_minutes!);
+    dailyData.walkins.push(dayWalkins.length);
+    dailyData.waits.push(dayWaits.length > 0 ? Math.round(dayWaits.reduce((a, b) => a + b, 0) / dayWaits.length) : 0);
+    dailyData.conversions.push(dayWalkins.length > 0 ? Math.round((dayCompleted / dayWalkins.length) * 100) : 0);
+    dailyData.abandonments.push(dayWalkins.length > 0 ? Math.round((dayCancelled / dayWalkins.length) * 100) : 0);
+  }
+
   return NextResponse.json({
     stats: {
       total_walkins: totalWalkins,
@@ -69,5 +95,6 @@ export async function GET(req: NextRequest) {
       abandonment_rate: totalWalkins > 0 ? Math.round((cancelledWalkins / totalWalkins) * 100) : 0,
       chair_utilization: chairUtil,
     },
+    trends: dailyData,
   });
 }

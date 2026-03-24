@@ -11,6 +11,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import HeatmapChart from "@/components/dashboard/HeatmapChart";
 import StaffComparison from "@/components/dashboard/StaffComparison";
+import BarberLeaderboard from "@/components/dashboard/barber/BarberLeaderboard";
 import { formatCurrency } from "@/lib/format-currency";
 
 type AnalyticsTab = "overview" | "bookings" | "customers" | "services" | "team";
@@ -53,12 +54,14 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<AnalyticsTab>("overview");
   const [salonId, setSalonId] = useState<string | null>(null);
+  const [isBarbershop, setIsBarbershop] = useState(false);
 
   useEffect(() => {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((p) => {
         setSalonId(p?.salon_id ?? null);
+        if (p?.categories?.includes("barbershop")) setIsBarbershop(true);
         if (p?.salon_id) return fetch(`/api/analytics/salon/${p.salon_id}?period=month`).then((r) => r.json());
         return null;
       })
@@ -284,11 +287,14 @@ export default function AnalyticsPage() {
           </>)}
 
           {/* ═══ TEAM TAB ═══ */}
-          {tab === "team" && salonId && (
+          {tab === "team" && salonId && (<>
             <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
               <StaffComparison salonId={salonId} />
             </div>
-          )}
+            {isBarbershop && (
+              <BarberLeaderboard salonId={salonId} />
+            )}
+          </>)}
         </div>
       )}
     </DashboardLayout>
