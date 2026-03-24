@@ -140,14 +140,14 @@ export function NotificationBell({ userId }: { userId?: string }) {
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-zinc-100 z-50 overflow-hidden flex flex-col max-h-[80vh]">
-            <div className="p-4 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
-              <h3 className="font-semibold text-zinc-900">Benachrichtigungen</h3>
+          <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-s-dm-surface rounded-xl shadow-lg border border-s-ink/5 dark:border-white/10 z-50 overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="p-4 border-b border-s-ink/5 dark:border-white/5 flex justify-between items-center bg-s-bg-surface dark:bg-s-dm-bg">
+              <h3 className="font-semibold text-s-ink dark:text-s-dm-text">Benachrichtigungen</h3>
             </div>
-            
+
             <div className="overflow-y-auto flex-1">
               {notifications.length === 0 ? (
-                <div className="p-8 text-center text-zinc-500">
+                <div className="p-8 text-center text-s-ink/50 dark:text-s-dm-text/50">
                   <p className="text-sm">Keine neuen Benachrichtigungen</p>
                 </div>
               ) : (

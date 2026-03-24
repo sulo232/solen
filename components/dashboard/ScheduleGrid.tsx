@@ -125,7 +125,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
         );
       })}
 
-      <div className="sticky bottom-0 bg-white border-t border-s-ink/5 p-3 z-10 -mx-3">
+      <div className="sticky bottom-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/5 dark:border-white/5 p-3 z-10 -mx-3">
         <button
           onClick={handleSave}
           disabled={saving}

@@ -156,13 +156,13 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
   };
 
   return (
-    <div className="bg-white rounded-card border border-s-ink/5 p-4">
+    <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">
       <div className="flex items-center justify-between mb-3">
-        <button onClick={prev} className="p-1 text-s-ink/40 hover:text-s-ink transition-colors">
+        <button onClick={prev} className="p-1 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors">
           <ChevronLeft size={16} />
         </button>
-        <p className="text-sm font-medium text-s-ink capitalize">{monthName}</p>
-        <button onClick={next} className="p-1 text-s-ink/40 hover:text-s-ink transition-colors">
+        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text capitalize">{monthName}</p>
+        <button onClick={next} className="p-1 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors">
           <ChevronRight size={16} />
         </button>
       </div>
@@ -300,7 +300,7 @@ export default function TerminePage() {
                 Nächste Termine ({upcoming.length})
               </h2>
               {upcoming.length === 0 ? (
-                <div className="bg-white rounded-card border border-s-ink/5 p-8 text-center text-s-ink/40">
+                <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
                   <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" />
                   <p className="text-sm font-medium">Keine anstehenden Termine</p>
                   <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs mt-1 hover:underline inline-block">
@@ -314,11 +314,11 @@ export default function TerminePage() {
                     const tooLate = hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
 
                     return (
-                      <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
+                      <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
-                            <p className="font-medium text-sm text-s-ink">{b.salon_name}</p>
-                            <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
+                            <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
+                            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">{b.service_name}</p>
                             {b.staff_name && (
                               <p className="text-xs text-s-ink/40 mt-0.5">mit {b.staff_name}</p>
                             )}
@@ -389,12 +389,12 @@ export default function TerminePage() {
                     <p className="text-sm text-s-ink/40 py-4 text-center">Keine vergangenen Termine</p>
                   ) : (
                     past.map((b) => (
-                      <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
+                      <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
-                            <p className="font-medium text-sm text-s-ink">{b.salon_name}</p>
-                            <p className="text-xs text-s-ink/50 mt-0.5">{b.service_name}</p>
-                            <p className="text-xs text-s-ink/40 mt-1">
+                            <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
+                            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">{b.service_name}</p>
+                            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1">
                               {new Date(b.starts_at).toLocaleDateString("de-CH", {
                                 weekday: "short", day: "numeric", month: "short",
                               })}{" "}

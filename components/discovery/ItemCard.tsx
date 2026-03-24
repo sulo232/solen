@@ -39,7 +39,7 @@ export default memo(function ItemCard({
   const displayImage = item.image_url || item.tiktok_thumbnail_url;
   const isTikTok =
     !!item.tiktok_url || !!item.tiktok_embed_html || item.media_type === "tiktok";
-  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50";
+  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50 dark:bg-white/20";
   const contentLabel = CONTENT_TYPE_LABELS[isTikTok ? "tiktok" : item.content_type] ?? "";
 
   return (

@@ -32,7 +32,7 @@ export default function FrozenSalonBanner({ salon }: { salon: Salon & { frozen_a
             <span className="text-sm text-s-ink/60">Bitte kontaktieren Sie</span>
             <a 
               href="mailto:support@solen.ch" 
-              className="px-3 py-1.5 bg-white border border-s-error/20 rounded-button text-sm font-medium text-s-error hover:bg-s-error/5 transition-colors"
+              className="px-3 py-1.5 bg-white dark:bg-s-dm-surface border border-s-error/20 rounded-button text-sm font-medium text-s-error hover:bg-s-error/5 transition-colors"
             >
               support@solen.ch
             </a>

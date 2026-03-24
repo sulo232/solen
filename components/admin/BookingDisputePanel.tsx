@@ -90,14 +90,14 @@ export default function BookingDisputePanel() {
       <h2 className="font-heading font-bold text-xl text-s-ink mb-4">Buchungsbeschwerden (Kunden)</h2>
       <div className="space-y-4">
         {disputes.map((d) => (
-          <div key={d.id} className="rounded-card border border-s-ink/5 bg-white p-5">
+          <div key={d.id} className="rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-5">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
-                <p className="font-heading font-semibold text-s-ink">
+                <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
                   Kunde: {d.reporter?.display_name || "Unbekannt"} vs Salon: {d.bookings?.salons?.name || d.reported?.display_name || "Unbekannt"}
                 </p>
-                <p className="text-xs text-s-ink/50 font-body mt-0.5">
-                  Art: <span className="font-medium text-s-ink">{d.issue_type}</span> — Buchung: {d.bookings?.starts_at ? new Date(d.bookings.starts_at).toLocaleDateString("de-CH") : d.booking_id.slice(0, 8)}
+                <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body mt-0.5">
+                  Art: <span className="font-medium text-s-ink dark:text-s-dm-text">{d.issue_type}</span> — Buchung: {d.bookings?.starts_at ? new Date(d.bookings.starts_at).toLocaleDateString("de-CH") : d.booking_id.slice(0, 8)}
                 </p>
               </div>
               <span className={`px-2.5 py-1 rounded-pill text-xs font-medium ${statusColors[d.status] || "bg-s-bg-sunken"}`}>

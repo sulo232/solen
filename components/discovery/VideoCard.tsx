@@ -54,7 +54,7 @@ export default memo(function VideoCard({
       .catch(() => {});
   }, [thumbnailUrl, imgError, item.tiktok_url]);
 
-  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50";
+  const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50 dark:bg-white/20";
 
   return (
     <div

@@ -37,10 +37,10 @@ const itemVariants = {
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case "paid": return <span className="px-2 py-1 rounded-pill bg-green-100 text-green-700 text-xs font-medium dark:bg-green-500/20 dark:text-green-300">Ausbezahlt</span>;
-    case "pending": return <span className="px-2 py-1 rounded-pill bg-amber-100 text-amber-700 text-xs font-medium dark:bg-amber-500/20 dark:text-amber-300">In Bearbeitung</span>;
-    case "recorded": return <span className="px-2 py-1 rounded-pill bg-blue-100 text-blue-700 text-xs font-medium dark:bg-blue-500/20 dark:text-blue-300">Offen (Hold)</span>;
-    default: return <span className="px-2 py-1 rounded-pill bg-gray-100 text-gray-700 text-xs font-medium">{status}</span>;
+    case "paid": return <span className="px-2 py-1 rounded-pill bg-s-success-bg text-s-success text-xs font-medium dark:bg-s-success/20 dark:text-s-sage">Ausbezahlt</span>;
+    case "pending": return <span className="px-2 py-1 rounded-pill bg-s-amber-subtle text-s-amber-text text-xs font-medium dark:bg-s-amber/20 dark:text-s-amber">In Bearbeitung</span>;
+    case "recorded": return <span className="px-2 py-1 rounded-pill bg-s-blue-subtle text-s-blue-text text-xs font-medium dark:bg-s-blue/20 dark:text-s-blue">Offen (Hold)</span>;
+    default: return <span className="px-2 py-1 rounded-pill bg-s-ink/10 text-s-ink/70 dark:bg-white/10 dark:text-s-dm-text/70 text-xs font-medium">{status}</span>;
   }
 }
 
