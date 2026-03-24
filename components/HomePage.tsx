@@ -637,7 +637,7 @@ export default function HomePage() {
                     className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-card-hover hover:-translate-y-[5px] transition-all duration-250"
                   >
                     {qImage ? (
-                      <Image src={qImage} alt={name} fill className="object-cover" loading="lazy" />
+                      <Image src={qImage} alt={name} fill sizes="200px" className="object-cover" />
                     ) : (
                       <div className={`absolute inset-0 bg-gradient-to-br ${bg}`} />
                     )}

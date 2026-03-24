@@ -64,7 +64,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       >
         <div className="relative w-16 h-16 rounded-btn overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
-            <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" loading="lazy" />
+            <Image src={salon.cover_photo_url} alt={salon.name} fill sizes="64px" className="object-cover" />
           )}
         </div>
         <div className="min-w-0">
@@ -118,7 +118,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               src={salon.cover_photo_url}
               alt={salon.name}
               fill
-              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
             />
           ) : (

@@ -39,6 +39,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                     alt={m.name}
                     width={64}
                     height={64}
+                    sizes="64px"
                     className="w-full h-full object-cover"
                   />
                 ) : (

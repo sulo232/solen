@@ -126,6 +126,8 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 alt={staff.name}
                 width={96}
                 height={96}
+                priority
+                sizes="96px"
                 className="object-cover w-full h-full"
               />
             ) : (
@@ -215,6 +217,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                   alt={`${staff.name} portfolio ${i + 1}`}
                   width={300}
                   height={300}
+                  sizes="(max-width: 640px) 50vw, 33vw"
                   className="w-full h-full object-cover"
                 />
               </button>
