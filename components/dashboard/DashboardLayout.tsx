@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -23,54 +23,54 @@ import type { Profile, UserRole } from "@/lib/types";
 // ─────────────────────────────────────────
 
 const ADMIN_NAV = [
-  { label: "Genehmigungen",       href: "/dashboard/approvals",           icon: ShieldCheck },
-  { label: "Alle Salons",         href: "/dashboard/all-salons",          icon: Store },
-  { label: "Alle Nutzer",         href: "/dashboard/all-users",           icon: UsersRound },
-  { label: "Umsatz",              href: "/dashboard/revenue",             icon: DollarSign },
-  { label: "Plattform Statistiken", href: "/dashboard/platform-analytics", icon: BarChart3 },
-  { label: "Badges",              href: "/dashboard/badge-manager",       icon: Award },
-  { label: "Inhalte",             href: "/dashboard/content-editor",     icon: FileEdit },
-  { label: "Bewertungen",         href: "/dashboard/review-moderation",  icon: MessageSquareWarning },
-  { label: "Segmente",            href: "/dashboard/segments",           icon: PieChart },
-  { label: "Visual Editor",       href: "/dashboard/editor",             icon: Paintbrush },
-  { label: "Discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
-  { label: "Homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
+  { key: "approvals",       href: "/dashboard/approvals",           icon: ShieldCheck },
+  { key: "allSalons",         href: "/dashboard/all-salons",          icon: Store },
+  { key: "allUsers",         href: "/dashboard/all-users",           icon: UsersRound },
+  { key: "revenue",              href: "/dashboard/revenue",             icon: DollarSign },
+  { key: "platformAnalytics", href: "/dashboard/platform-analytics", icon: BarChart3 },
+  { key: "badges",              href: "/dashboard/badge-manager",       icon: Award },
+  { key: "content",             href: "/dashboard/content-editor",     icon: FileEdit },
+  { key: "reviewModeration",   href: "/dashboard/review-moderation",  icon: MessageSquareWarning },
+  { key: "segments",            href: "/dashboard/segments",           icon: PieChart },
+  { key: "visualEditor",       href: "/dashboard/editor",             icon: Paintbrush },
+  { key: "discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
+  { key: "homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
 ] as const;
 
 const OWNER_NAV = [
-  { label: "Übersicht",    href: "/dashboard",            icon: Home },
-  { label: "Termine",      href: "/dashboard/bookings",   icon: Calendar },
-  { label: "Kalender",     href: "/dashboard/calendar",   icon: Clock },
-  { label: "Nachrichten",  href: "/dashboard/messages",   icon: MessageCircle },
-  { label: "Team",         href: "/dashboard/staff",      icon: Users },
-  { label: "Kunden",       href: "/dashboard/clients",    icon: UserCheck },
-  { label: "Services",     href: "/dashboard/services",   icon: Scissors },
-  { label: "Marketing",    href: "/dashboard/marketing",  icon: Megaphone },
-  { label: "Statistiken",  href: "/dashboard/analytics",  icon: BarChart },
-  { label: "Bewertungen",  href: "/dashboard/reviews",    icon: Star },
-  { label: "Meine Posts",  href: "/dashboard/discovery-posts", icon: Camera },
-  { label: "Nail Kunden",  href: "/dashboard/nail-clients", icon: Sparkles },
-  { label: "Barber Kunden", href: "/dashboard/barber-clients", icon: Scissors },
-  { label: "Barber Ops",   href: "/dashboard/barber-ops",     icon: BarChart3 },
+  { key: "overview",    href: "/dashboard",            icon: Home },
+  { key: "bookings",      href: "/dashboard/bookings",   icon: Calendar },
+  { key: "calendar",     href: "/dashboard/calendar",   icon: Clock },
+  { key: "messages",  href: "/dashboard/messages",   icon: MessageCircle },
+  { key: "team",         href: "/dashboard/staff",      icon: Users },
+  { key: "clients",       href: "/dashboard/clients",    icon: UserCheck },
+  { key: "services",     href: "/dashboard/services",   icon: Scissors },
+  { key: "marketing",    href: "/dashboard/marketing",  icon: Megaphone },
+  { key: "analytics",  href: "/dashboard/analytics",  icon: BarChart },
+  { key: "reviews",        href: "/dashboard/reviews",    icon: Star },
+  { key: "posts",  href: "/dashboard/discovery-posts", icon: Camera },
+  { key: "nailClients",  href: "/dashboard/nail-clients", icon: Sparkles },
+  { key: "barberClients", href: "/dashboard/barber-clients", icon: Scissors },
+  { key: "barberOps",   href: "/dashboard/barber-ops",     icon: BarChart3 },
   { label: "Treueprogramm",href: "/dashboard/loyalty",        icon: Award },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
   { label: "Verifizierung",href: "/dashboard/verification", icon: ShieldCheck },
 ] as const;
 
 const STAFF_NAV = [
-  { label: "Mein Kalender", href: "/dashboard/calendar",  icon: Clock },
-  { label: "Meine Pausen",  href: "/dashboard/my-breaks", icon: Calendar },
-  { label: "Mein Portfolio", href: "/dashboard/my-portfolio", icon: ImageIcon },
-  { label: "Mein Profil",   href: "/dashboard/settings",  icon: Settings },
+  { key: "myCalendar", href: "/dashboard/calendar",  icon: Clock },
+  { key: "myBreaks",  href: "/dashboard/my-breaks", icon: Calendar },
+  { key: "myPortfolio", href: "/dashboard/my-portfolio", icon: ImageIcon },
+  { key: "myProfile",   href: "/dashboard/settings",  icon: Settings },
 ] as const;
 
 // Mobile bottom nav shows 5 items: first 3 + Messages + "Mehr"
 const MOBILE_NAV = [
-  { label: "Übersicht",   href: "/dashboard",           icon: Home },
-  { label: "Termine",     href: "/dashboard/bookings",  icon: Calendar },
-  { label: "Nachrichten", href: "/dashboard/messages",  icon: MessageCircle },
-  { label: "Team",        href: "/dashboard/staff",     icon: Users },
-  { label: "Mehr",        href: "/dashboard/settings",  icon: Menu },
+  { key: "overview",   href: "/dashboard",           icon: Home },
+  { key: "bookings",     href: "/dashboard/bookings",  icon: Calendar },
+  { key: "messages", href: "/dashboard/messages",  icon: MessageCircle },
+  { key: "team",        href: "/dashboard/staff",     icon: Users },
+  { key: "more",        href: "/dashboard/settings",  icon: Menu },
 ] as const;
 
 // ─────────────────────────────────────────
@@ -93,6 +93,7 @@ export default function DashboardLayout({
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const t = useTranslations("dashboard.nav");
   const [authChecked, setAuthChecked] = useState(false);
   const [role, setRole] = useState<UserRole | null>(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -173,7 +174,7 @@ export default function DashboardLayout({
 
           {/* Nav */}
           <nav className="flex-1 overflow-y-auto py-3 px-2">
-            {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ label, href, icon: Icon }) => {
+            {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ key, href, icon: Icon }) => {
               const active = isActive(href);
               const isMessages = href === "/dashboard/messages";
               return (
@@ -190,7 +191,7 @@ export default function DashboardLayout({
           {/* Admin nav */}
           {role === "admin" && (
             <div className="px-2 pb-3 border-t border-s-ink/5 pt-3">
-              {ADMIN_NAV.map(({ label, href, icon: Icon }) => (
+              {ADMIN_NAV.map(({ key, href, icon: Icon }) => (
                 <SidebarLink
                   key={href}
                   link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
@@ -207,7 +208,7 @@ export default function DashboardLayout({
               href={`/${locale}`}
               className="text-xs text-s-ink/30 hover:text-s-coral transition-colors whitespace-nowrap"
             >
-              ← Zur Website
+              ← {t("backToSite")}
             </Link>
           </div>
         </SidebarBody>
@@ -238,7 +239,7 @@ export default function DashboardLayout({
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>
               </div>
               <nav className="py-3 px-2">
-                {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ label, href, icon: Icon }) => {
+                {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ key, href, icon: Icon }) => {
                   const active = isActive(href);
                   return (
                     <Link
@@ -250,7 +251,7 @@ export default function DashboardLayout({
                         active ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
                       ].join(" ")}
                     >
-                      <Icon size={16} />{label}
+                      <Icon size={16} />{t(key)}
                       {href === "/dashboard/messages" && unreadCount > 0 && (
                         <span className="ml-auto w-2 h-2 rounded-full bg-s-coral" />
                       )}
@@ -260,7 +261,7 @@ export default function DashboardLayout({
                 {role === "admin" && (
                   <>
                     <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 mt-3 mb-1">Admin</p>
-                    {ADMIN_NAV.map(({ label, href, icon: Icon }) => (
+                    {ADMIN_NAV.map(({ key, href, icon: Icon }) => (
                       <Link
                         key={href}
                         href={`/${locale}${href}`}
@@ -270,7 +271,7 @@ export default function DashboardLayout({
                           isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
                         ].join(" ")}
                       >
-                        <Icon size={16} />{label}
+                        <Icon size={16} />{t(key)}
                       </Link>
                     ))}
                   </>
@@ -298,7 +299,7 @@ export default function DashboardLayout({
 
       {/* ── Mobile bottom nav ── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-md border-t border-s-ink/5 dark:border-white/5 flex">
-        {MOBILE_NAV.map(({ label, href, icon: Icon }) => {
+        {MOBILE_NAV.map(({ key, href, icon: Icon }) => {
           const active = isActive(href);
           const isMessages = href === "/dashboard/messages";
           return (
@@ -316,7 +317,7 @@ export default function DashboardLayout({
                   <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-coral" />
                 )}
               </div>
-              {label}
+              {t(key)}
             </Link>
           );
         })}
