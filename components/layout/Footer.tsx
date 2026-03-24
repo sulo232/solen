@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Instagram } from "lucide-react";
 import TrustBadges from "@/components/ui/TrustBadges";
 
@@ -16,6 +16,7 @@ const CATEGORIES = [
 
 export default function Footer() {
   const locale = useLocale();
+  const t = useTranslations("footer");
 
   return (
     <footer className="bg-s-ink text-white">
@@ -27,7 +28,7 @@ export default function Footer() {
           SO<span className="text-s-coral">.</span>LEN
         </h2>
         <p className="font-body italic text-white/50 text-sm mt-2 relative z-10">
-          Von Basel, für Basel.
+          {t("tagline")}
         </p>
       </div>
 
@@ -41,7 +42,7 @@ export default function Footer() {
             <h3
               className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
             >
-              Kategorien
+              {t("categories")}
             </h3>
             <ul className="space-y-2">
               {CATEGORIES.map(({ key, label }) => (
@@ -62,16 +63,16 @@ export default function Footer() {
             <h3
               className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
             >
-              Unternehmen
+              {t("company")}
             </h3>
             <ul className="space-y-2">
               {[
-                { label: "Impressum",   href: `/${locale}/impressum` },
-                { label: "AGB",         href: `/${locale}/agb` },
-                { label: "Datenschutz", href: `/${locale}/datenschutz` },
-                { label: "Hilfe",       href: `/${locale}/help` },
+                { label: t("impressum"), href: `/${locale}/impressum` },
+                { label: t("agb"),       href: `/${locale}/agb` },
+                { label: t("privacy"),   href: `/${locale}/datenschutz` },
+                { label: t("help"),      href: `/${locale}/help` },
               ].map(({ label, href }) => (
-                <li key={label}>
+                <li key={href}>
                   <Link
                     href={href}
                     className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
@@ -88,10 +89,10 @@ export default function Footer() {
             <h3
               className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
             >
-              Für Salons
+              {t("forSalons")}
             </h3>
             <p className="text-sm text-white/50 font-body mb-3">
-              Du hast einen Salon? Bring dein Business auf Solen.
+              {t("salonPitch")}
             </p>
             <ul className="space-y-2">
               <li>
@@ -99,7 +100,7 @@ export default function Footer() {
                   href={`/${locale}/partner`}
                   className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
-                  Partner werden
+                  {t("becomePartner")}
                 </Link>
               </li>
               <li>
@@ -107,7 +108,7 @@ export default function Footer() {
                   href={`/${locale}/onboarding/salon`}
                   className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
-                  Salon registrieren
+                  {t("registerSalon")}
                 </Link>
               </li>
               <li>
@@ -115,7 +116,7 @@ export default function Footer() {
                   href={`/${locale}/dashboard`}
                   className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
                 >
-                  Dashboard
+                  {t("dashboard")}
                 </Link>
               </li>
             </ul>
@@ -126,7 +127,7 @@ export default function Footer() {
             <h3
               className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
             >
-              Sozial
+              {t("social")}
             </h3>
             <ul className="space-y-2">
               <li>
@@ -155,10 +156,10 @@ export default function Footer() {
             </span>
             <div className="text-center sm:text-right">
               <p className="text-xs text-white/40 font-body">
-                © {new Date().getFullYear()} solen.ch — Alle Rechte vorbehalten.
+                {t("copyright", { year: new Date().getFullYear() })}
               </p>
               <p className="text-[10px] text-white/30 font-body mt-1">
-                nDSG-konform · Daten in der Schweiz
+                {t("compliance")}
               </p>
             </div>
           </div>
