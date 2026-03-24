@@ -14,6 +14,7 @@ import {
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
 
@@ -118,8 +119,24 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-s-bg-surface flex">
+        {/* Sidebar skeleton */}
+        <div className="hidden md:flex flex-col w-[60px] border-r border-s-ink/5 p-3 gap-4">
+          <Skeleton className="h-8 w-8 rounded-card" />
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-8 w-8 rounded-card" />
+          ))}
+        </div>
+        {/* Content skeleton */}
+        <div className="flex-1 p-6 space-y-6">
+          <Skeleton className="h-8 w-48" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 rounded-card" />
+            ))}
+          </div>
+          <Skeleton className="h-64 rounded-card" />
+        </div>
       </div>
     );
   }
@@ -267,7 +284,7 @@ export default function DashboardLayout({
       {/* ── Main content ── */}
       <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-s-dm-surface shadow-warm-sm border-b border-s-ink/5 dark:border-white/5 px-4 py-3 flex items-center gap-3">
+        <div className="md:hidden sticky top-0 z-20 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm shadow-warm-sm border-b border-s-ink/5 dark:border-white/5 px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60">
             <Menu size={20} />
           </button>
@@ -280,7 +297,7 @@ export default function DashboardLayout({
       </div>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white dark:bg-s-dm-surface border-t border-s-ink/5 dark:border-white/5 flex">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-md border-t border-s-ink/5 dark:border-white/5 flex">
         {MOBILE_NAV.map(({ label, href, icon: Icon }) => {
           const active = isActive(href);
           const isMessages = href === "/dashboard/messages";

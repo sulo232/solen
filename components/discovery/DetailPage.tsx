@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 import type { DiscoveryItem } from "@/lib/types";
 import SourceBadge from "./SourceBadge";
 import LikeButton from "./LikeButton";
@@ -81,7 +82,12 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
       </button>
 
       {/* ═══ Section 1: Hero Media ═══ */}
-      <div className="relative rounded-card overflow-hidden bg-s-ink">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.05 }}
+        className="relative rounded-card overflow-hidden bg-s-ink"
+      >
         {isVideo && videoId ? (
           <div className="relative w-full aspect-[9/16] max-h-[80vh] bg-s-ink">
             <iframe
@@ -107,10 +113,15 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
             {dt.noMedia}
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Source + Author + Date */}
-      <div className="flex items-center gap-2 mt-3 px-1">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.15 }}
+        className="flex items-center gap-2 mt-3 px-1"
+      >
         <SourceBadge contentType={
           (item.tiktok_url || item.tiktok_embed_html || item.media_type === "tiktok")
             ? "tiktok"
@@ -124,7 +135,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
           </span>
         )}
         <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{formatDate(item.created_at, locale)}</span>
-      </div>
+      </motion.div>
 
       {/* ═══ Section 2: Actions Bar ═══ */}
       <div className="flex items-center justify-between mt-3 px-1">
