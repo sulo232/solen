@@ -76,7 +76,19 @@
     "social": "Social",
     "become_partner": "Diventa partner",
     "register_salon": "Registra salone",
-    "copyright": "© {year} solen.ch — Tutti i diritti riservati."
+    "copyright": "© {year} solen.ch — Tutti i diritti riservati.",
+    "tagline": "Da Basilea, per Basilea.",
+    "impressum": "Impronta",
+    "agb": "Termini",
+    "privacy": "Privacy",
+    "help": "Aiuto",
+    "salon_pitch": "Hai un salone? Porta il tuo business su Solen.",
+    "salonPitch": "Hai un salone? Porta il tuo business su Solen.",
+    "forSalons": "Per i saloni",
+    "becomePartner": "Diventa partner",
+    "registerSalon": "Registra salone",
+    "dashboard": "Dashboard",
+    "compliance": "Conforme alla protezione dei dati svizzera"
   },
   "cookie": {
     "title": "Utilizziamo i cookie",

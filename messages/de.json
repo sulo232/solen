@@ -76,7 +76,19 @@
     "social": "Sozial",
     "become_partner": "Partner werden",
     "register_salon": "Salon registrieren",
-    "copyright": "© {year} solen.ch — Alle Rechte vorbehalten."
+    "copyright": "© {year} solen.ch — Alle Rechte vorbehalten.",
+    "tagline": "Von Basel, für Basel.",
+    "impressum": "Impressum",
+    "agb": "AGB",
+    "privacy": "Datenschutz",
+    "help": "Hilfe",
+    "salon_pitch": "Du hast einen Salon? Bring dein Business auf Solen.",
+    "salonPitch": "Du hast einen Salon? Bring dein Business auf Solen.",
+    "forSalons": "Für Salons",
+    "becomePartner": "Partner werden",
+    "registerSalon": "Salon registrieren",
+    "dashboard": "Dashboard",
+    "compliance": "nDSG-konform · Daten in der Schweiz"
   },
   "cookie": {
     "title": "Wir verwenden Cookies",

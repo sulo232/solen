@@ -76,7 +76,19 @@
     "social": "Social",
     "become_partner": "Devenir partenaire",
     "register_salon": "Enregistrer un salon",
-    "copyright": "© {year} solen.ch — Tous droits réservés."
+    "copyright": "© {year} solen.ch — Tous droits réservés.",
+    "tagline": "De Bâle, pour Bâle.",
+    "impressum": "Mentions légales",
+    "agb": "CGV",
+    "privacy": "Confidentialité",
+    "help": "Aide",
+    "salon_pitch": "Vous avez un salon ? Amenez votre business sur Solen.",
+    "salonPitch": "Vous avez un salon ? Amenez votre business sur Solen.",
+    "forSalons": "Pour les salons",
+    "becomePartner": "Devenir partenaire",
+    "registerSalon": "Enregistrer un salon",
+    "dashboard": "Tableau de bord",
+    "compliance": "Conforme à la protection des données suisse"
   },
   "cookie": {
     "title": "Nous utilisons des cookies",
