@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Star, X } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import { motion } from "framer-motion";
 
 interface SubRatingRowProps {
   label: string;
@@ -120,7 +121,12 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-md p-6 relative">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.05 }}
+        className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-md p-6 relative"
+      >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink transition-colors dark:text-s-dm-text/40 dark:hover:text-s-dm-text"
@@ -250,7 +256,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

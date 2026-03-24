@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Palette, Heart, FolderOpen, StickyNote, Tags } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 import DesignHistoryTimeline from "@/components/nail/DesignHistoryTimeline";
 import NailPreferencesForm from "./NailPreferencesForm";
 
@@ -42,21 +43,28 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
       </div>
 
       {/* Tab bar */}
-      <div className="flex gap-1 overflow-x-auto scrollbar-hide mb-4 border-b border-s-ink/5 dark:border-s-dm-text/10">
+      <div className="relative flex gap-1 overflow-x-auto scrollbar-hide mb-4 border-b border-s-ink/5 dark:border-s-dm-text/10">
         {TAB_KEYS.map((key) => {
           const Icon = TAB_ICONS[key];
           return (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
-              className={`flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap border-b-2 transition-colors min-h-12 ${
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors min-h-12 ${
                 activeTab === key
-                  ? "border-s-coral text-s-coral font-medium"
-                  : "border-transparent text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text"
+                  ? "text-s-coral font-medium"
+                  : "text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text"
               }`}
             >
               <Icon size={14} />
               {t(`tab_${key}`)}
+              {activeTab === key && (
+                <motion.div
+                  layoutId="nail-client-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-coral"
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                />
+              )}
             </button>
           );
         })}

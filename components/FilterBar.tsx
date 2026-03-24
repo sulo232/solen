@@ -9,6 +9,7 @@ import SolenDatePicker from "@/components/ui/date-picker";
 import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import type { DateValue } from "react-aria-components";
 import type { Quartier, SalonCategory } from "@/lib/types";
+import { motion } from "framer-motion";
 
 const QUARTIERS: { value: Quartier; label: string }[] = [
   { value: "grossbasel", label: "Grossbasel" },
@@ -91,7 +92,12 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
     searchParams.get("min_price") || searchParams.get("max_price");
 
   return (
-    <div className="sticky top-[57px] z-40 bg-white/80 dark:bg-s-dm-bg/80 backdrop-blur-glass border-b border-s-ink/5 dark:border-white/5">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.05 }}
+      className="sticky top-[57px] z-40 bg-white/80 dark:bg-s-dm-bg/80 backdrop-blur-glass border-b border-s-ink/5 dark:border-white/5"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
           {/* Search autocomplete */}
@@ -260,6 +266,6 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

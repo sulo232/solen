@@ -8,7 +8,7 @@ import {
   Calendar, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
   RotateCcw, Clock,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import GlassModal from "@/components/ui/GlassModal";
 import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
@@ -391,8 +391,16 @@ export default function TerminePage() {
                 <span>Vergangene Termine ({past.length})</span>
                 {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
+              <AnimatePresence mode="wait">
               {pastOpen && (
-                <div className="space-y-3">
+                <motion.div
+                  key="past-bookings"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-3"
+                >
                   {past.length === 0 ? (
                     <EmptyState
                       icon={Clock}
@@ -431,8 +439,9 @@ export default function TerminePage() {
                       </div>
                     ))
                   )}
-                </div>
+                </motion.div>
               )}
+              </AnimatePresence>
             </motion.section>
           </div>
 

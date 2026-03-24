@@ -4,6 +4,7 @@ import { memo } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
+import { motion } from "framer-motion";
 import LikeButton from "./LikeButton";
 import SaveButton from "./SaveButton";
 
@@ -43,7 +44,10 @@ export default memo(function ItemCard({
   const contentLabel = CONTENT_TYPE_LABELS[isTikTok ? "tiktok" : item.content_type] ?? "";
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: 0.05 }}
       onClick={onClick}
       className="group relative rounded-[16px] overflow-hidden cursor-pointer active:scale-[0.98] transition-transform duration-150 w-full h-full"
     >
@@ -131,6 +135,6 @@ export default memo(function ItemCard({
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 });
