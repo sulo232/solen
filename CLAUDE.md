@@ -370,16 +370,18 @@ ls -la app/api/some-endpoint/route.ts
 - Each commit message must reference the sub-phase: `"phase 1.1: fix layout overflow"`
 - After EACH commit: `npm run build` must pass BEFORE pushing
 
-### Rule 4: BUILD BEFORE COMMIT, PUSH AFTER BUILD
+### Rule 4: BUILD BEFORE COMMIT, PUSH AFTER BUILD — ALWAYS PUSH
 ```bash
 # This exact sequence. Every time. No exceptions.
 npm run build           # Step 1: MUST pass
 git add -A              # Step 2: only after build passes
 git commit -m "..."     # Step 3: descriptive message with phase number
-git push origin main    # Step 4: only after commit
-# Step 5: Wait 30s, then verify Vercel deployment status
+git push origin main    # Step 4: ALWAYS push after commit — never ask, just push
+# Step 5: Check Vercel deployment via MCP (list_deployments) — must show READY
+# Step 6: If errors → fix and push again. If READY → done.
 ```
 If `npm run build` fails → **DO NOT commit. DO NOT push. Fix the error first.**
+**IMPORTANT**: After executing a roadmap or task, ALWAYS commit AND push without asking. Do not stop to ask "should I push?" — the answer is always yes. Then verify the Vercel deployment status and fix any errors.
 
 ### Rule 5: FOLLOW THE ROADMAP LITERALLY
 When executing a roadmap from `_tasks/`:
