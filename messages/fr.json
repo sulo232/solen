@@ -780,6 +780,15 @@
     "header": {
       "stepOf": "Étape {step} sur {total}"
     },
+    "progress": {
+      "basics": "Informations",
+      "profile": "Profil",
+      "services": "Services",
+      "team": "Équipe",
+      "hours": "Horaires",
+      "extras": "Extras",
+      "review": "Vérification"
+    },
     "nav": {
       "back": "Retour",
       "next": "Suivant",

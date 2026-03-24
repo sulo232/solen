@@ -1075,3 +1075,11 @@ export interface AvailableDate {
   slot_count: number;     // how many open slots
 }
 
+export interface SalonDraft {
+  id: string;
+  user_id: string;
+  draft_data: Record<string, unknown>;
+  current_step: number;
+  updated_at: string;
+}
+

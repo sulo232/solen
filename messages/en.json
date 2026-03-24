@@ -780,6 +780,15 @@
     "header": {
       "stepOf": "Step {step} of {total}"
     },
+    "progress": {
+      "basics": "Basics",
+      "profile": "Profile",
+      "services": "Services",
+      "team": "Team",
+      "hours": "Hours",
+      "extras": "Extras",
+      "review": "Review"
+    },
     "nav": {
       "back": "Back",
       "next": "Next",

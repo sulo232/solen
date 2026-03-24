@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import Image from "next/image";
@@ -23,6 +23,7 @@ import {
   ChevronRight,
   ArrowLeft,
   PartyPopper,
+  Mail,
 } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { useToast } from "@/components/ui/Toast";
@@ -532,6 +533,17 @@ export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState<WizardStep>(-1);
   const [prevStep, setPrevStep] = useState<WizardStep>(-1);
+  const [salonIntent, setSalonIntent] = useState(false);
+
+  // Read intent=salon from URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("intent") === "salon") {
+      setSalonIntent(true);
+      goTo(0); // Jump straight to registration form
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const goTo = (next: WizardStep) => {
     setPrevStep(step);
@@ -544,7 +556,8 @@ export default function RegisterPage() {
   };
 
   const handleSalonChoice = () => {
-    router.push(`/${locale}/onboarding/salon`);
+    setSalonIntent(true);
+    goTo(0); // Show the registration form first — account must exist before onboarding
   };
 
   const direction =
@@ -608,7 +621,13 @@ export default function RegisterPage() {
                 exit="exit"
               >
                 {step === -1 && <StepRole onCustomer={() => goTo(0)} onSalon={handleSalonChoice} />}
-                {step === 0 && <StepRegister onNext={() => goTo(1)} />}
+                {step === 0 && <StepRegister onNext={() => {
+                  if (salonIntent) {
+                    router.push(`/${locale}/onboarding/salon`);
+                  } else {
+                    goTo(1);
+                  }
+                }} />}
                 {step === 1 && <Step1 onNext={() => goTo(2)} />}
                 {step === 2 && <Step2 onNext={() => goTo(3)} />}
                 {step === 3 && <Step3 onComplete={handleComplete} />}

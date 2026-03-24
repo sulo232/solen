@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Camera, Upload, X, Loader2 } from "lucide-react";
+import { Camera, Upload, X, Loader2, RotateCcw } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 interface ImageUploaderProps {
@@ -26,9 +26,11 @@ export default function ImageUploader({
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastFileRef = useRef<File | null>(null);
 
   const handleFile = useCallback(async (file: File) => {
     setError(null);
+    lastFileRef.current = file;
 
     // Validate type
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
@@ -53,6 +55,17 @@ export default function ImageUploader({
 
     try {
       const supabase = createBrowserSupabaseClient();
+
+      // Check auth before upload — RLS will block unauthenticated uploads
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setError("Bitte melde dich zuerst an, um Bilder hochzuladen.");
+        setPreview(null);
+        setUploading(false);
+        setProgress(0);
+        return;
+      }
+
       const ext = file.name.split(".").pop() || "jpg";
       const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const filePath = `uploads/${fileName}`;
@@ -69,7 +82,7 @@ export default function ImageUploader({
       setProgress(80);
 
       if (uploadError) {
-        setError("Upload fehlgeschlagen. Bitte versuche es erneut.");
+        setError(`Upload fehlgeschlagen: ${uploadError.message}`);
         setPreview(null);
         return;
       }
@@ -170,7 +183,18 @@ export default function ImageUploader({
       )}
 
       {error && (
-        <p className="text-xs text-s-coral mt-1.5">{error}</p>
+        <div className="flex items-center gap-2 mt-1.5">
+          <p className="text-xs text-s-coral flex-1">{error}</p>
+          {lastFileRef.current && (
+            <button
+              type="button"
+              onClick={() => { if (lastFileRef.current) handleFile(lastFileRef.current); }}
+              className="text-xs text-s-coral hover:underline flex items-center gap-1 shrink-0"
+            >
+              <RotateCcw size={10} /> Nochmal versuchen
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

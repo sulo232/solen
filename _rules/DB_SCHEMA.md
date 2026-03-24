@@ -80,4 +80,5 @@
 |---|---|---|
 | `public_profiles` | `id`, `display_name`, `avatar_url` | Safe public view. Use this (not `profiles`) when displaying OTHER users' names/avatars. |
 | `v_trending_salons` | `salon_id`, `solen_score`, `recent_booking_count`, `trending_score` | Computes live trending score based on `solen_score` and recent 14-day bookings. |
+| `salon_drafts` | `id`, `user_id` (UNIQUE), `draft_data` (jsonb), `current_step`, `updated_at` | Wizard draft persistence. One draft per user. Auto-deleted on salon creation. |
 

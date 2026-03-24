@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Plus, Trash2, ChevronRight, ChevronLeft, PartyPopper, Clock, Pencil, Loader2, Eye, ExternalLink, Star, MapPin } from "lucide-react";
+import { Check, Plus, Trash2, ChevronRight, ChevronLeft, PartyPopper, Clock, Pencil, Loader2, Eye, ExternalLink, Star, MapPin, Building2, Scissors, Users, Sparkles } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
@@ -45,6 +46,16 @@ const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 const TOTAL_STEPS = 7;
 
+const STEP_META = [
+  { icon: Building2, label: "basics" },
+  { icon: ImageIcon, label: "profile" },
+  { icon: Scissors, label: "services" },
+  { icon: Users, label: "team" },
+  { icon: Clock, label: "hours" },
+  { icon: Sparkles, label: "extras" },
+  { icon: Eye, label: "review" },
+];
+
 // ─────────────────────────────────────────
 // Step wrappers
 // ─────────────────────────────────────────
@@ -52,7 +63,7 @@ const TOTAL_STEPS = 7;
 function StepContainer({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div className="max-w-xl mx-auto">
-      <div className="bg-white/70 dark:bg-s-dm-surface/80 backdrop-blur-glass rounded-card border border-s-ink/5 dark:border-white/5 shadow-warm-md p-6 sm:p-8">
+      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-warm-md p-6 sm:p-8" role="form">
         <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-1">{title}</h2>
         {subtitle && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{subtitle}</p>}
         {!subtitle && <div className="mb-6" />}
@@ -151,7 +162,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral ${errors.name ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm ${errors.name ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
             placeholder={t("step1.namePlaceholder")}
           />
           {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
@@ -163,7 +174,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral ${errors.email ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm ${errors.email ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
             placeholder={t("step1.emailPlaceholder")}
           />
           {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
@@ -178,7 +189,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-3 py-1.5 rounded-pill text-sm font-medium border transition-colors",
+                  "px-3 py-1.5 rounded-pill text-sm font-medium border transition-all active:scale-[0.97]",
                   data.categories.includes(c.value)
                     ? "bg-s-coral text-white border-s-coral"
                     : "border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral",
@@ -196,7 +207,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
           <select
             value={data.quartier}
             onChange={(e) => onChange({ ...data, quartier: e.target.value })}
-            className={`w-full px-3 py-2.5 rounded-button border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised ${errors.quartier ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all ${errors.quartier ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
           >
             <option value="">{t("step1.selectPlaceholder")}</option>
             {QUARTIERE.map((q) => (
@@ -228,11 +239,11 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 setShowOtp(false);
               }}
               disabled={data.phone_verified}
-              className={`flex-1 px-3 py-2.5 rounded-button border text-sm focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised ${data.phone_verified ? "border-green-500/50 text-green-700 dark:text-green-400" : errors.phone_verified || errors.phone ? "border-s-coral text-s-ink dark:text-s-dm-text" : "border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text"}`}
+              className={`flex-1 px-4 py-3 rounded-input border text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised transition-all shadow-warm-sm ${data.phone_verified ? "border-s-sage/50 text-s-sage-text dark:text-s-sage" : errors.phone_verified || errors.phone ? "border-s-coral text-s-ink dark:text-s-dm-text" : "border-s-ink/5 dark:border-white/5 text-s-ink dark:text-s-dm-text"}`}
               placeholder="+41 61 000 00 00"
             />
             {data.phone_verified ? (
-              <div className="flex items-center justify-center px-4 bg-green-500/10 text-green-600 dark:text-green-400 rounded-button text-sm font-medium">
+              <div className="flex items-center justify-center px-4 bg-s-sage-subtle text-s-sage-text dark:text-s-sage rounded-pill text-sm font-medium">
                 <Check size={16} className="mr-1" /> Verifiziert
               </div>
             ) : (
@@ -240,7 +251,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={sendOtp}
                 disabled={sending || !data.phone || data.phone.length < 9}
-                className="px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 hover:bg-s-coral/90 transition-colors"
+                className="px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider disabled:opacity-40 disabled:pointer-events-none hover:bg-s-coral-hover active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow"
               >
                 {sending ? <Spinner size="sm" invert /> : "Verifizieren"}
               </button>
@@ -258,13 +269,13 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                   value={code}
                   onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
                   placeholder="123456"
-                  className="w-24 px-3 py-2 text-center tracking-widest rounded-button border border-s-coral/30 text-sm focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised"
+                  className="w-24 px-3 py-2 text-center tracking-widest rounded-input border border-s-coral/30 text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised transition-all"
                 />
                 <button
                   type="button"
                   onClick={verifyOtp}
                   disabled={verifying || code.length < 4}
-                  className="px-4 py-2 rounded-button bg-s-coral/10 text-s-coral text-sm font-medium disabled:opacity-50 hover:bg-s-coral/20 transition-colors"
+                  className="px-4 py-2 rounded-btn bg-s-coral/10 text-s-coral text-sm font-medium disabled:opacity-50 hover:bg-s-coral/20 transition-colors"
                 >
                   {verifying ? <Spinner size="sm" /> : "Code prüfen"}
                 </button>
@@ -351,6 +362,9 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{t("step2.gallery")}</label>
+            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
+              {data.gallery_urls.filter(Boolean).length}/5 hochgeladen
+            </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {data.gallery_urls.map((url, i) => (
@@ -362,7 +376,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
                     <button
                       type="button"
                       onClick={() => onChange({ ...data, gallery_urls: data.gallery_urls.filter((_, j) => j !== i) })}
-                      className="absolute top-1 right-1 p-1 rounded-full bg-white/90 dark:bg-s-dm-raised/90 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral"
+                      className="absolute top-1 right-1 p-1 rounded-pill bg-white/90 dark:bg-s-dm-raised/90 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral transition-colors"
                       aria-label={t("step2.removeImage")}
                     >
                       <Trash2 size={10} />
@@ -401,7 +415,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
             onChange={(e) => onChange({ ...data, description_de: e.target.value })}
             maxLength={500}
             rows={3}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral resize-none"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm resize-none"
           />
         </div>
 
@@ -412,7 +426,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
             onChange={(e) => onChange({ ...data, description_en: e.target.value })}
             maxLength={500}
             rows={2}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral resize-none"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm resize-none"
           />
         </div>
 
@@ -421,7 +435,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
           <input
             value={data.instagram_url}
             onChange={(e) => onChange({ ...data, instagram_url: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
             placeholder="https://instagram.com/deinsalon"
           />
           <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 mt-1">{t("step2.instagramHint")}</p>
@@ -432,7 +446,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
           <input
             value={data.website_url}
             onChange={(e) => onChange({ ...data, website_url: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
             placeholder="https://dein-salon.ch"
           />
         </div>
@@ -442,7 +456,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
           <input
             value={data.tiktok_url}
             onChange={(e) => onChange({ ...data, tiktok_url: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
             placeholder="https://tiktok.com/@deinsalon"
           />
         </div>
@@ -458,7 +472,7 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
                     type="button"
                     onClick={() => toggleDay(key)}
                     className={[
-                      "w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors shrink-0",
+                      "w-10 text-center text-xs font-medium py-1.5 rounded-btn transition-colors shrink-0",
                       hours ? "bg-s-coral text-white" : "bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/40 dark:text-s-dm-text/40",
                     ].join(" ")}
                   >
@@ -470,14 +484,14 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
                         type="time"
                         value={hours.open}
                         onChange={(e) => updateHours(key, "open", e.target.value)}
-                        className="px-2 py-1 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+                        className="px-2 py-1.5 rounded-input border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all min-w-[80px]"
                       />
                       <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">–</span>
                       <input
                         type="time"
                         value={hours.close}
                         onChange={(e) => updateHours(key, "close", e.target.value)}
-                        className="px-2 py-1 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+                        className="px-2 py-1.5 rounded-input border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all min-w-[80px]"
                       />
                     </div>
                   ) : (
@@ -486,6 +500,15 @@ function Step2({ data, onChange, t }: { data: ProfileData; onChange: (d: Profile
                 </div>
               );
             })}
+            <button type="button" onClick={() => {
+              const mon = data.opening_hours.mon;
+              if (!mon) return;
+              const updated = { ...data.opening_hours };
+              for (const key of ["tue", "wed", "thu", "fri"]) updated[key] = { ...mon };
+              onChange({ ...data, opening_hours: updated });
+            }} className="text-xs text-s-coral hover:underline mt-2">
+              Mo → Di–Fr kopieren
+            </button>
           </div>
         </div>
       </div>
@@ -702,17 +725,17 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
               value={draft.name_de}
               onChange={(e) => setDraft({ ...draft, name_de: e.target.value, _autoTranslated: false })}
               onBlur={() => { if (draft.name_de && !draft._autoTranslated) autoTranslate(draft.name_de); }}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               placeholder="z. B. Waschen + Schneiden"
             />
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div>
               <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">EN</label>
               <input
                 value={draft.name_en}
                 onChange={(e) => setDraft({ ...draft, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+                className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               />
             </div>
             <div>
@@ -720,7 +743,7 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
               <input
                 value={draft.name_fr}
                 onChange={(e) => setDraft({ ...draft, name_fr: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+                className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               />
             </div>
             <div>
@@ -728,7 +751,7 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
               <input
                 value={draft.name_it}
                 onChange={(e) => setDraft({ ...draft, name_it: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+                className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               />
             </div>
           </div>
@@ -740,13 +763,13 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
           {draft._autoTranslated && !translating && (
             <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{t("step3.translated")}</p>
           )}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step3.category")}</label>
               <select
                 value={draft.category}
                 onChange={(e) => setDraft({ ...draft, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised"
+                className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all"
               >
                 <option value="">{t("step3.selectCategory")}</option>
                 {salonCategories.map((c) => (
@@ -759,7 +782,7 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
               <select
                 value={draft.duration_minutes}
                 onChange={(e) => setDraft({ ...draft, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-raised"
+                className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all"
               >
                 {DURATION_OPTIONS.map((d) => (
                   <option key={d} value={d}>{d} min</option>
@@ -773,15 +796,15 @@ function Step3({ services, onChange, salonCategories, t, locale }: {
                 min={0}
                 value={draft.price}
                 onChange={(e) => setDraft({ ...draft, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+                className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               />
             </div>
           </div>
           <div className="flex gap-2">
             <button type="button" onClick={cancelEdit}
-              className="px-4 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">{t("common.cancel")}</button>
+              className="px-4 py-3 rounded-btn border border-s-ink/5 dark:border-white/5 text-sm font-heading font-semibold uppercase tracking-wider text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink hover:text-s-bg-base dark:hover:bg-white dark:hover:text-s-ink active:translate-y-[1px] active:shadow-pressed transition-all shadow-xs">{t("common.cancel")}</button>
             <button type="button" onClick={saveCustom} disabled={!draft.name_de || !draft.category}
-              className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">
+              className="px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider disabled:opacity-40 disabled:pointer-events-none hover:bg-s-coral-hover active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow">
               {editingIdx !== null ? t("common.save") : t("common.add")}
             </button>
           </div>
@@ -885,8 +908,19 @@ function Step4({ staff, onChange, salonCategories, t }: {
             <input
               value={draft.name}
               onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
               placeholder="z. B. Maria"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Foto (optional)</label>
+            <ImageUploader
+              bucket="salon-photos"
+              label="Foto"
+              maxSizeMB={2}
+              currentImageUrl={draft.avatar_url || undefined}
+              onUpload={(url) => setDraft({ ...draft, avatar_url: url })}
             />
           </div>
 
@@ -935,9 +969,9 @@ function Step4({ staff, onChange, salonCategories, t }: {
 
           <div className="flex gap-2">
             <button type="button" onClick={() => { setAdding(false); setDraft(EMPTY_STAFF); }}
-              className="px-4 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">{t("common.cancel")}</button>
+              className="px-4 py-3 rounded-btn border border-s-ink/5 dark:border-white/5 text-sm font-heading font-semibold uppercase tracking-wider text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink hover:text-s-bg-base dark:hover:bg-white dark:hover:text-s-ink active:translate-y-[1px] active:shadow-pressed transition-all shadow-xs">{t("common.cancel")}</button>
             <button type="button" onClick={save} disabled={!draft.name}
-              className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50">{t("common.add")}</button>
+              className="px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider disabled:opacity-40 disabled:pointer-events-none hover:bg-s-coral-hover active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow">{t("common.add")}</button>
           </div>
         </div>
       ) : (
@@ -947,8 +981,8 @@ function Step4({ staff, onChange, salonCategories, t }: {
             <Plus size={16} /> {t("step4.addStaff")}
           </button>
           {staff.length === 0 && (
-            <button type="button" onClick={() => onChange([{ name: "Nur ich", avatar_url: "", role: "Inhaber:in", specialties: [] }])}
-              className="w-full py-2 rounded-button text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
+            <button type="button" onClick={() => onChange([{ name: "Nur ich", avatar_url: "", role: "Inhaber:in", tier: "Senior", specialties: [] }])}
+              className="w-full py-2 rounded-btn text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
               {t("step4.solo")}
             </button>
           )}
@@ -1010,7 +1044,7 @@ function Step5({ data, onChange, slotCount, t }: {
             <div key={key}>
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                 <button type="button" onClick={() => toggleDay(key)}
-                  className={["w-10 text-center text-xs font-medium py-1.5 rounded-button transition-colors shrink-0",
+                  className={["w-10 text-center text-xs font-medium py-1.5 rounded-btn transition-colors shrink-0",
                     slot ? "bg-s-coral text-white" : "bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/40 dark:text-s-dm-text/40"].join(" ")}>
                   {DAYS[i]}
                 </button>
@@ -1018,11 +1052,11 @@ function Step5({ data, onChange, slotCount, t }: {
                   <div className="flex items-center gap-2 flex-wrap">
                     <input type="time" value={slot.start}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, start: e.target.value } } })}
-                      className="px-2 py-1 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral" />
+                      className="px-2 py-1.5 rounded-input border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all min-w-[80px]" />
                     <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">–</span>
                     <input type="time" value={slot.end}
                       onChange={(e) => onChange({ template: { ...data.template, [key]: { ...slot, end: e.target.value } } })}
-                      className="px-2 py-1 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral" />
+                      className="px-2 py-1.5 rounded-input border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all min-w-[80px]" />
                     <button type="button" onClick={() => addBreak(key)}
                       className="text-[10px] text-s-coral hover:underline shrink-0 ml-1">
                       {t("step5.addBreak")}
@@ -1038,11 +1072,11 @@ function Step5({ data, onChange, slotCount, t }: {
                   <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 w-10 shrink-0">{t("step5.break")}</span>
                   <input type="time" value={brk.start}
                     onChange={(e) => updateBreak(key, bi, "start", e.target.value)}
-                    className="px-1.5 py-0.5 rounded-button border border-s-coral/30 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral" />
+                    className="px-2 py-1.5 rounded-input border border-s-coral/30 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all min-w-[80px]" />
                   <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">–</span>
                   <input type="time" value={brk.end}
                     onChange={(e) => updateBreak(key, bi, "end", e.target.value)}
-                    className="px-1.5 py-0.5 rounded-button border border-s-coral/30 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral" />
+                    className="px-2 py-1.5 rounded-input border border-s-coral/30 text-xs text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all min-w-[80px]" />
                   <button type="button" onClick={() => removeBreak(key, bi)}
                     className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-coral transition-colors">
                     <Trash2 size={10} />
@@ -1082,10 +1116,10 @@ function Step6({ data, onChange, t }: { data: LMData; onChange: (d: LMData) => v
           <button
             type="button"
             onClick={() => onChange({ ...data, enabled: !data.enabled })}
-            className={["w-11 h-6 rounded-full transition-colors relative",
+            className={["w-11 h-6 rounded-pill transition-colors relative",
               data.enabled ? "bg-s-coral" : "bg-s-sand"].join(" ")}
           >
-            <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
+            <span className={["absolute top-0.5 w-5 h-5 rounded-pill bg-white shadow-warm-sm transition-transform",
               data.enabled ? "translate-x-[22px]" : "translate-x-[2px]"].join(" ")} />
           </button>
         </div>
@@ -1215,25 +1249,45 @@ function Step7({ basics, profile, services, staffList, avail, lm, onEdit, t }: {
         </div>
       </div>
 
+      {/* Completeness checklist */}
+      <div className="mb-6 space-y-1.5">
+        {[
+          { done: !!basics.name, label: "Salon-Name" },
+          { done: !!profile.cover_photo_url, label: "Titelbild" },
+          { done: profile.gallery_urls.filter(Boolean).length >= 1, label: "Galerie (mind. 1 Bild)", optional: true },
+          { done: !!profile.description_de, label: "Beschreibung" },
+          { done: services.length >= 1, label: "Services" },
+          { done: staffList.length >= 1, label: "Team" },
+          { done: !!profile.instagram_url, label: "Instagram", optional: true },
+        ].map((c, i) => (
+          <div key={i} className="flex items-center gap-2 text-xs">
+            <Check size={12} className={c.done ? "text-s-sage" : c.optional ? "text-s-amber/50" : "text-s-coral/40"} />
+            <span className={c.done ? "text-s-ink dark:text-s-dm-text" : c.optional ? "text-s-amber dark:text-s-amber" : "text-s-coral"}>
+              {c.label}{c.optional && !c.done ? " (optional)" : ""}
+            </span>
+          </div>
+        ))}
+      </div>
+
       <div className="space-y-2">
         <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-wider mb-3">Abschnitte bearbeiten</p>
         <div className="grid grid-cols-2 gap-2">
-          <button type="button" onClick={() => onEdit(1)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+          <button type="button" onClick={() => onEdit(1)} className="p-4 text-left rounded-btn border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-all text-sm font-heading text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group active:translate-y-[1px] shadow-xs hover:shadow-warm-sm">
             {t("step7.basics")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
           </button>
-          <button type="button" onClick={() => onEdit(2)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+          <button type="button" onClick={() => onEdit(2)} className="p-4 text-left rounded-btn border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-all text-sm font-heading text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group active:translate-y-[1px] shadow-xs hover:shadow-warm-sm">
             {t("step7.profile")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
           </button>
-          <button type="button" onClick={() => onEdit(3)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+          <button type="button" onClick={() => onEdit(3)} className="p-4 text-left rounded-btn border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-all text-sm font-heading text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group active:translate-y-[1px] shadow-xs hover:shadow-warm-sm">
             {t("step7.services")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
           </button>
-          <button type="button" onClick={() => onEdit(4)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+          <button type="button" onClick={() => onEdit(4)} className="p-4 text-left rounded-btn border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-all text-sm font-heading text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group active:translate-y-[1px] shadow-xs hover:shadow-warm-sm">
             {t("step7.team")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
           </button>
-          <button type="button" onClick={() => onEdit(5)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+          <button type="button" onClick={() => onEdit(5)} className="p-4 text-left rounded-btn border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-all text-sm font-heading text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group active:translate-y-[1px] shadow-xs hover:shadow-warm-sm">
             {t("step7.availability")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
           </button>
-          <button type="button" onClick={() => onEdit(6)} className="p-3 text-left rounded-button border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-colors text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group">
+          <button type="button" onClick={() => onEdit(6)} className="p-4 text-left rounded-btn border border-s-ink/5 dark:border-white/5 hover:border-s-coral hover:bg-s-coral/5 transition-all text-sm font-heading text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised flex justify-between items-center group active:translate-y-[1px] shadow-xs hover:shadow-warm-sm">
             {t("step7.lastMinute")} <Pencil size={12} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
           </button>
         </div>
@@ -1254,6 +1308,7 @@ export default function SalonOnboardingPage() {
   const [dir, setDir] = useState<1 | -1>(1);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [stepErrors, setStepErrors] = useState<Record<string, string>>({});
   const [returnToReview, setReturnToReview] = useState(false);
 
@@ -1307,41 +1362,79 @@ export default function SalonOnboardingPage() {
   });
   const [lm, setLm] = useState<LMData>({ enabled: true, discount_percent: 10, window_hours: 6, cancellation_policy: "flexible" });
 
-  // Restore wizard state from sessionStorage on mount
+  // Restore wizard state: DB first, then sessionStorage fallback
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem("solen_wizard");
-      if (saved) {
-        const data = JSON.parse(saved);
-        if (data.basics) setBasics(data.basics);
-        if (data.profile) setProfile(data.profile);
-        if (data.services) setServices(data.services);
-        if (data.staffList) setStaffList(data.staffList);
-        if (data.avail) setAvail(data.avail);
-        if (data.lm) setLm(data.lm);
-        if (data.step) setStep(data.step);
-      }
-    } catch { /* ignore corrupted data */ }
-    setHydrated(true);
+    const restoreFromObj = (data: Record<string, unknown>) => {
+      if (data.basics) setBasics(data.basics as BasicsData);
+      if (data.profile) setProfile(data.profile as ProfileData);
+      if (data.services) setServices(data.services as ServiceDraft[]);
+      if (data.staffList) setStaffList(data.staffList as StaffDraft[]);
+      if (data.avail) setAvail(data.avail as AvailData);
+      if (data.lm) setLm(data.lm as LMData);
+    };
+
+    const loadDraft = async () => {
+      try {
+        const res = await fetch("/api/salon-draft");
+        if (res.ok) {
+          const { draft } = await res.json();
+          if (draft?.draft_data && Object.keys(draft.draft_data).length > 0) {
+            restoreFromObj(draft.draft_data);
+            if (draft.current_step) setStep(draft.current_step);
+            setHydrated(true);
+            return;
+          }
+        }
+      } catch { /* fall through to sessionStorage */ }
+
+      // Fallback: sessionStorage
+      try {
+        const saved = sessionStorage.getItem("solen_wizard");
+        if (saved) {
+          const data = JSON.parse(saved);
+          restoreFromObj(data);
+          if (data.step) setStep(data.step);
+        }
+      } catch { /* ignore corrupted data */ }
+      setHydrated(true);
+    };
+    loadDraft();
   }, []);
 
-  // Save wizard state to sessionStorage on changes
+  // Save wizard state to sessionStorage + DB (debounced)
   useEffect(() => {
     if (!hydrated) return;
     try {
       sessionStorage.setItem("solen_wizard", JSON.stringify({ basics, profile, services, staffList, avail, lm, step }));
     } catch { /* storage full */ }
+
+    const timer = setTimeout(() => {
+      fetch("/api/salon-draft", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          draft_data: { basics, profile, services, staffList, avail, lm },
+          current_step: step,
+        }),
+      }).catch(() => {}); // fire-and-forget
+    }, 2000);
+    return () => clearTimeout(timer);
   }, [hydrated, basics, profile, services, staffList, avail, lm, step]);
 
-  // Pre-fill email from authenticated user (Google OAuth or existing session)
+  // Auth guard — redirect to register if no session
+  const [authChecked, setAuthChecked] = useState(false);
   useEffect(() => {
     const sb = createBrowserSupabaseClient();
     sb.auth.getSession().then(({ data: { session } }) => {
-      const user = session?.user;
-      if (user?.email && !basics.email) {
-        setBasics((prev) => ({ ...prev, email: user.email! }));
+      if (!session) {
+        router.replace(`/${locale}/auth/register?intent=salon`);
+        return;
       }
+      if (session.user?.email && !basics.email) {
+        setBasics((prev) => ({ ...prev, email: session.user!.email! }));
+      }
+      setAuthChecked(true);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1360,8 +1453,9 @@ export default function SalonOnboardingPage() {
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    setSubmitError(null);
     try {
-      await fetch("/api/salons", {
+      const res = await fetch("/api/salons", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1376,16 +1470,36 @@ export default function SalonOnboardingPage() {
           tos_accepted: basics.tos_accepted,
         }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setSubmitError(data.message || `Fehler beim Erstellen (${res.status})`);
+        return;
+      }
       sessionStorage.removeItem("solen_wizard");
+      fetch("/api/salon-draft", { method: "DELETE" }).catch(() => {});
       setDone(true);
       setTimeout(() => router.push(`/${locale}/dashboard?onboarded=1`), 2200);
-    } catch { /* ignore */ } finally {
+    } catch {
+      setSubmitError("Netzwerkfehler — bitte prüfe deine Verbindung und versuche es erneut.");
+    } finally {
       setSubmitting(false);
     }
   };
 
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-s-coral/5 via-white to-s-coral/5 dark:from-s-dm-bg dark:via-s-dm-bg dark:to-s-dm-bg pb-36">
+    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pb-36">
+      {/* Subtle warm radial gradient for depth — NOT a blob (Zone 3 compliant) */}
+      <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-s-coral/[0.04] to-transparent rounded-pill" />
+      </div>
       {/* Celebration overlay */}
       <AnimatePresence>
         {done && (
@@ -1405,7 +1519,15 @@ export default function SalonOnboardingPage() {
               </div>
               <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">{t("done.title")}</h2>
               <p className="text-s-ink/50 dark:text-s-dm-text/50 text-sm max-w-xs">{t("done.subtitle")}</p>
-              <div className="flex gap-1.5 mt-2">
+              <div className="space-y-2 mt-4 w-full">
+                <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Was du eingerichtet hast:</p>
+                <div className="text-xs text-s-ink/60 dark:text-s-dm-text/60 space-y-1">
+                  <p><Check size={12} className="text-s-sage inline mr-1" />Salon erstellt: {basics.name}</p>
+                  <p><Check size={12} className="text-s-sage inline mr-1" />{services.length} Service{services.length !== 1 ? "s" : ""}</p>
+                  <p><Check size={12} className="text-s-sage inline mr-1" />{staffList.length} Teammitglied{staffList.length !== 1 ? "er" : ""}</p>
+                </div>
+              </div>
+              <div className="flex gap-1.5 mt-4">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
@@ -1449,6 +1571,9 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
+          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body mt-2 text-center">
+            {t(`progress.${STEP_META[step - 1]?.label}`)} · ca. {Math.max(1, TOTAL_STEPS - step)} Min. übrig
+          </p>
         </div>
       </div>
 
@@ -1474,6 +1599,15 @@ export default function SalonOnboardingPage() {
         </AnimatePresence>
       </div>
 
+      {/* Submit error banner */}
+      {submitError && step === TOTAL_STEPS && (
+        <div className="max-w-xl mx-auto px-4 mb-4">
+          <div className="bg-s-coral/5 border border-s-coral/20 rounded-card p-4 text-sm text-s-coral">
+            {submitError}
+          </div>
+        </div>
+      )}
+
       {/* Nav buttons */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-lg border-t border-s-ink/5 dark:border-white/5 px-4 py-4" aria-label="Wizard navigation">
         <div className="max-w-xl mx-auto flex gap-3">
@@ -1481,7 +1615,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/5 dark:border-white/5 text-sm font-heading font-semibold uppercase tracking-wider text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink hover:text-s-bg-base dark:hover:bg-white dark:hover:text-s-ink active:translate-y-[1px] active:shadow-pressed transition-all shadow-xs"
             >
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>
@@ -1491,7 +1625,7 @@ export default function SalonOnboardingPage() {
               type="button"
               disabled={submitting}
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors shadow-warm-sm disabled:opacity-50 group"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider hover:bg-s-coral-hover active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow hover:shadow-coral-glow-hover disabled:opacity-40 disabled:pointer-events-none group"
             >
               {submitting && <Spinner size="sm" invert />}
               <span>{t("nav.next")}</span>
