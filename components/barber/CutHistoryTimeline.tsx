@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Scissors, Calendar, RefreshCw } from "lucide-react";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface CutEntry {
   id: string;
@@ -47,15 +49,33 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
   }, [clientId, salonId]);
 
   if (loading) {
-    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>;
+    return (
+      <div className="space-y-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-4 w-full rounded-btn" />
+              <div className="flex gap-1.5">
+                <Skeleton className="h-5 w-14 rounded-pill" />
+                <Skeleton className="h-5 w-14 rounded-pill" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (cuts.length === 0) {
     return (
-      <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">
-        <Scissors size={24} className="mx-auto mb-2 opacity-40" />
-        Noch keine Schnitte erfasst
-      </div>
+      <EmptyState
+        icon={Scissors}
+        title="Noch keine Schnitte erfasst"
+        message="Schnitte werden nach dem ersten Termin angezeigt."
+        className="py-6"
+      />
     );
   }
 

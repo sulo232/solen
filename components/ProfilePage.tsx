@@ -10,7 +10,7 @@ import {
   Settings, ChevronDown, ChevronUp, MessageCircle,
   Gift, Wallet, ChevronRight, Trophy, Share2, Copy, Check, Package, ClipboardList,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
 import GlassModal from "@/components/ui/GlassModal";
@@ -676,24 +676,30 @@ export default function ProfilePage() {
             <Calendar size={16} className="text-s-coral" />
             {t("upcomingBookings")}
           </h2>
+          <AnimatePresence mode="wait">
           {upcoming.length === 0 ? (
-            <EmptyState
-              icon={Calendar}
-              title={t("noBookingsYet")}
-              illustration="no-results"
-              action={
-                <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                  {t("bookNow")} →
-                </Link>
-              }
-            />
+            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+              <EmptyState
+                icon={Calendar}
+                title={t("noBookingsYet")}
+                illustration="no-results"
+                action={
+                  <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                    {t("bookNow")} →
+                  </Link>
+                }
+              />
+            </motion.div>
           ) : (
-            <div className="space-y-3">
-              {upcoming.map((b) => (
-                <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
-              ))}
-            </div>
+            <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+              <div className="space-y-3">
+                {upcoming.map((b) => (
+                  <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
+                ))}
+              </div>
+            </motion.div>
           )}
+          </AnimatePresence>
         </motion.section>
 
         {/* ── Section 2: Past Bookings ── */}

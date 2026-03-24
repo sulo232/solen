@@ -303,19 +303,23 @@ export default function TerminePage() {
               <h2 className="text-sm font-bold text-s-ink/60 uppercase tracking-wide mb-3">
                 Nächste Termine ({upcoming.length})
               </h2>
+              <AnimatePresence mode="wait">
               {upcoming.length === 0 ? (
-                <EmptyState
-                  icon={Calendar}
-                  title="Keine anstehenden Termine"
-                  message="Buche deinen nächsten Termin!"
-                  illustration="no-results"
-                  action={
-                    <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                      Termin buchen →
-                    </Link>
-                  }
-                />
+                <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                  <EmptyState
+                    icon={Calendar}
+                    title="Keine anstehenden Termine"
+                    message="Buche deinen nächsten Termin!"
+                    illustration="no-results"
+                    action={
+                      <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                        Termin buchen →
+                      </Link>
+                    }
+                  />
+                </motion.div>
               ) : (
+                <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                 <div className="space-y-3">
                   {upcoming.map((b) => {
                     const canCancel = hoursUntil(b.starts_at) > 24;
@@ -375,7 +379,9 @@ export default function TerminePage() {
                     );
                   })}
                 </div>
+                </motion.div>
               )}
+              </AnimatePresence>
             </motion.section>
 
             {/* Past bookings (collapsible) */}

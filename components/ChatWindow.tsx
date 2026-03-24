@@ -358,21 +358,26 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
         >
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+          <AnimatePresence mode="wait">
           {loading ? (
-            <div className="space-y-3 py-4">
-              {["w-3/4", "w-5/12", "w-3/5"].map((w, i) => (
-                <div key={i} className={i % 2 ? "flex justify-end" : "flex"}>
-                  <Skeleton className={`h-10 ${w} rounded-card`} />
-                </div>
-              ))}
-            </div>
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+              <div className="space-y-3 py-4">
+                {["w-3/4", "w-5/12", "w-3/5"].map((w, i) => (
+                  <div key={i} className={i % 2 ? "flex justify-end" : "flex"}>
+                    <Skeleton className={`h-10 ${w} rounded-card`} />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           ) : messages.length === 0 ? (
-            <EmptyState
-              icon={MessageCircle}
-              title="Noch keine Nachrichten"
-              message="Starte das Gespräch!"
-              illustration="no-results"
-            />
+            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+              <EmptyState
+                icon={MessageCircle}
+                title="Noch keine Nachrichten"
+                message="Starte das Gespräch!"
+                illustration="no-results"
+              />
+            </motion.div>
           ) : messages.map((msg) => (
             <motion.div
               key={msg.id}
@@ -448,6 +453,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
               </div>
             </motion.div>
           ))}
+          </AnimatePresence>
           {/* Typing indicator */}
           {remoteTyping && <TypingIndicator name={remoteTyping} />}
           <div ref={bottomRef} />

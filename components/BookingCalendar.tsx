@@ -607,29 +607,35 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         transition={{ duration: 0.35, delay: 0.1 }}
         className="px-4 pb-4 min-h-[140px]"
       >
+        <AnimatePresence mode="wait">
         {loadingSlots ? (
-          <div className="flex flex-wrap gap-2 py-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="w-16 h-8 rounded-btn" />
-            ))}
-          </div>
+          <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+            <div className="flex flex-wrap gap-2 py-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="w-16 h-8 rounded-btn" />
+              ))}
+            </div>
+          </motion.div>
         ) : availableSlots.length === 0 ? (
-          <EmptyState
-            icon={CalendarX2}
-            title="Keine freien Slots an diesem Tag"
-            illustration="no-results"
-            className="py-6"
-            action={
-              <button
-                onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
-                className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
-              >
-                <ClipboardList className="w-4 h-4" />
-                Auf Warteliste setzen
-              </button>
-            }
-          />
+          <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+            <EmptyState
+              icon={CalendarX2}
+              title="Keine freien Slots an diesem Tag"
+              illustration="no-results"
+              className="py-6"
+              action={
+                <button
+                  onClick={() => { setWaitlistDate(isoDate(selectedDate)); setWaitlistDone(false); setShowWaitlist(true); }}
+                  className="inline-flex items-center gap-1.5 text-sm text-s-coral hover:text-s-coral/80 transition-colors"
+                >
+                  <ClipboardList className="w-4 h-4" />
+                  Auf Warteliste setzen
+                </button>
+              }
+            />
+          </motion.div>
         ) : (
+          <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
           <div className="flex flex-col gap-4">
             {(["morning", "afternoon", "evening"] as const).map((group) => {
               const groupSlots = grouped[group];
@@ -681,7 +687,9 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               );
             })}
           </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Summary strip — shown after slot selected */}

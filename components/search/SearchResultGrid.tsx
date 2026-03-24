@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { SearchX } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
@@ -42,7 +43,12 @@ export default function SearchResultGrid({
   if (salons.length === 0) {
     return (
       <div className="p-8">
-        <EmptyState illustration="no-results" />
+        <EmptyState
+          icon={SearchX}
+          title="Keine Ergebnisse"
+          message="Versuche andere Suchbegriffe oder ändere deine Filter."
+          illustration="no-results"
+        />
       </div>
     );
   }

@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Camera, Upload, Image as ImageIcon } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import Skeleton from "@/components/ui/Skeleton";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface ClientPhoto {
   id: string;
@@ -56,7 +58,19 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
   const afterPhotos = photos.filter((p) => p.photo_type === "after");
   const progressPhotos = photos.filter((p) => p.photo_type === "progress");
 
-  if (loading) return <div className="flex justify-center py-6"><Spinner size="md" /></div>;
+  if (loading) return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-6 w-24 rounded-btn" />
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i} className="aspect-square rounded-card" />
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -129,10 +143,12 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
       )}
 
       {photos.length === 0 && (
-        <div className="text-center py-8">
-          <ImageIcon size={24} className="mx-auto text-s-ink/20 dark:text-s-dm-text/20 mb-2" />
-          <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">Noch keine Fotos</p>
-        </div>
+        <EmptyState
+          icon={ImageIcon}
+          title="Noch keine Fotos"
+          message="Lade Vorher/Nachher-Fotos hoch, um den Verlauf zu dokumentieren."
+          className="py-6"
+        />
       )}
     </div>
   );
