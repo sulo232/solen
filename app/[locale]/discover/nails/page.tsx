@@ -10,6 +10,10 @@ export const metadata: Metadata = {
     title: "Nail Designs entdecken | solen.ch",
     description: "Die neuesten Nail-Art Trends und Inspirationen aus Basel.",
   },
+  alternates: {
+    canonical: "https://solen.ch/de/discover/nails",
+    languages: { de: "https://solen.ch/de/discover/nails", en: "https://solen.ch/en/discover/nails", fr: "https://solen.ch/fr/discover/nails", it: "https://solen.ch/it/discover/nails" },
+  },
 };
 
 export default function NailDiscoveryPage() {

@@ -9,6 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         "/api/",
         "/de/dashboard/", "/en/dashboard/", "/fr/dashboard/", "/it/dashboard/",
         "/de/account/", "/en/account/", "/fr/account/", "/it/account/",
+        "/de/onboarding/", "/en/onboarding/", "/fr/onboarding/", "/it/onboarding/",
       ],
     },
     sitemap: "https://solen.ch/sitemap.xml",

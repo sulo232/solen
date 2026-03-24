@@ -7,6 +7,10 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Datenschutzerklärung / Privacy Policy — solen.ch",
   description: "Datenschutzerklärung und Privacy Policy für solen.ch",
+  alternates: {
+    canonical: "https://solen.ch/de/privacy",
+    languages: { de: "https://solen.ch/de/privacy", en: "https://solen.ch/en/privacy", fr: "https://solen.ch/fr/privacy", it: "https://solen.ch/it/privacy" },
+  },
 };
 
 export default async function PrivacyPage() {

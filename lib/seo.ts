@@ -1,5 +1,68 @@
 import type { Salon, SalonCategory } from "./types";
 
+const BASE_URL = "https://solen.ch";
+const LOCALES = ["de", "en", "fr", "it"] as const;
+
+/* ─── Canonical URL + hreflang alternates helper ─── */
+
+export function buildAlternates(path: string, locale?: string) {
+  const loc = locale ?? "de";
+  return {
+    canonical: `${BASE_URL}/${loc}/${path}`.replace(/\/+$/, ""),
+    languages: Object.fromEntries(
+      LOCALES.map((l) => [l, `${BASE_URL}/${l}/${path}`.replace(/\/+$/, "")]),
+    ),
+  };
+}
+
+/* ─── Category listing ItemList schema ─── */
+
+interface CategoryListSalon {
+  name: string;
+  slug: string;
+  cover_photo_url?: string | null;
+}
+
+export function generateCategoryListSchema(
+  category: string,
+  salons: CategoryListSalon[],
+  locale: string = "de",
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${category.charAt(0).toUpperCase() + category.slice(1)} in Basel`,
+    url: `https://solen.ch/${locale}/${category}`,
+    numberOfItems: salons.length,
+    itemListElement: salons.slice(0, 20).map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://solen.ch/${locale}/salon/${s.slug}`,
+      name: s.name,
+      ...(s.cover_photo_url ? { image: s.cover_photo_url } : {}),
+    })),
+  };
+}
+
+/* ─── WebSite + SearchAction schema (homepage) ─── */
+
+export function generateWebsiteSchema(locale: string = "de") {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "solen.ch",
+    url: `https://solen.ch/${locale}`,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `https://solen.ch/${locale}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
 const categoryToSchemaType: Record<SalonCategory, string> = {
   coiffeur: "HairSalon",
   barbershop: "HairSalon",

@@ -21,6 +21,7 @@ const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priorit
   { path: "/agb",         freq: "weekly",  priority: 0.3 },
   { path: "/datenschutz", freq: "weekly",  priority: 0.3 },
   { path: "/discover",    freq: "daily",   priority: 0.8 },
+  { path: "/search",      freq: "daily",   priority: 0.8 },
   { path: "/terms/discovery", freq: "weekly", priority: 0.2 },
 ];
 

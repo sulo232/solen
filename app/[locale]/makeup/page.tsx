@@ -12,6 +12,10 @@ export const metadata: Metadata = {
     description: "Professionelle Make-up Artists für jeden Anlass — Hochzeit, Editorial, Alltag.",
     type: "website",
   },
+  alternates: {
+    canonical: "https://solen.ch/de/makeup",
+    languages: { de: "https://solen.ch/de/makeup", en: "https://solen.ch/en/makeup", fr: "https://solen.ch/fr/makeup", it: "https://solen.ch/it/makeup" },
+  },
 };
 
 export default async function Page() {

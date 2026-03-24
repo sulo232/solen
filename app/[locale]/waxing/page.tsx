@@ -12,6 +12,10 @@ export const metadata: Metadata = {
     description: "Professionelles Waxing in Basel — alle Körperzonen. Jetzt Termin buchen.",
     type: "website",
   },
+  alternates: {
+    canonical: "https://solen.ch/de/waxing",
+    languages: { de: "https://solen.ch/de/waxing", en: "https://solen.ch/en/waxing", fr: "https://solen.ch/fr/waxing", it: "https://solen.ch/it/waxing" },
+  },
 };
 
 export default async function Page() {

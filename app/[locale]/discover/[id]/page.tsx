@@ -89,6 +89,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: description.slice(0, 160),
       images: image ? [{ url: image }] : undefined,
     },
+    alternates: {
+      canonical: `https://solen.ch/${locale}/discover/${id}`,
+      languages: {
+        de: `https://solen.ch/de/discover/${id}`,
+        en: `https://solen.ch/en/discover/${id}`,
+        fr: `https://solen.ch/fr/discover/${id}`,
+        it: `https://solen.ch/it/discover/${id}`,
+      },
+    },
   };
 }
 

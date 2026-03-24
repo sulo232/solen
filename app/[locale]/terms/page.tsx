@@ -7,6 +7,10 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "AGB / Terms of Service — solen.ch",
   description: "Allgemeine Geschäftsbedingungen und Terms of Service für solen.ch",
+  alternates: {
+    canonical: "https://solen.ch/de/terms",
+    languages: { de: "https://solen.ch/de/terms", en: "https://solen.ch/en/terms", fr: "https://solen.ch/fr/terms", it: "https://solen.ch/it/terms" },
+  },
 };
 
 export default async function TermsPage() {

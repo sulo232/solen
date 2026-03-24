@@ -12,6 +12,10 @@ export const metadata: Metadata = {
     description: "Entspannung pur — Massagen, Gesichtsbehandlungen und Day-Spa-Pakete in Basel.",
     type: "website",
   },
+  alternates: {
+    canonical: "https://solen.ch/de/spa",
+    languages: { de: "https://solen.ch/de/spa", en: "https://solen.ch/en/spa", fr: "https://solen.ch/fr/spa", it: "https://solen.ch/it/spa" },
+  },
 };
 
 export default async function Page() {

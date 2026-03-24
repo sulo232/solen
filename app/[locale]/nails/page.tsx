@@ -12,6 +12,10 @@ export const metadata: Metadata = {
     description: "Gel, Acryl, BIAB, Nail Art — finde dein Nailstudio in Basel und buche online.",
     type: "website",
   },
+  alternates: {
+    canonical: "https://solen.ch/de/nails",
+    languages: { de: "https://solen.ch/de/nails", en: "https://solen.ch/en/nails", fr: "https://solen.ch/fr/nails", it: "https://solen.ch/it/nails" },
+  },
 };
 
 export default async function Page() {
