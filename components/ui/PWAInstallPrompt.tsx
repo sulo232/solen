@@ -84,14 +84,14 @@ export default function PWAInstallPrompt() {
         </div>
 
         {isIOS ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 dark:text-s-dm-text/60 bg-s-bg-surface dark:bg-white/5 rounded-button p-2.5">
+          <div className="mt-3 flex items-center gap-2 text-xs text-s-ink/60 dark:text-s-dm-text/60 bg-s-bg-surface dark:bg-white/5 rounded-btn p-2.5">
             <Share className="w-4 h-4 shrink-0 text-s-coral" />
             <span>{t("iosInstructions")}</span>
           </div>
         ) : (
           <button
             onClick={handleInstall}
-            className="mt-3 w-full py-2 bg-s-coral text-white text-sm font-medium rounded-button hover:bg-s-coral/90 transition-colors"
+            className="mt-3 w-full py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:bg-s-coral/90 transition-colors"
           >
             {t("installButton")}
           </button>

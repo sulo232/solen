@@ -122,7 +122,7 @@ export default function SegmentsPage() {
                     {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     {isExpanded ? "Ausblenden" : "Mitglieder"}
                   </button>
-                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
+                  <button className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
                     <Mail size={11} />
                     E-Mail senden
                   </button>

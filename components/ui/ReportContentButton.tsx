@@ -70,20 +70,20 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
             </p>
 
             {success ? (
-              <div className="bg-s-sage-bg border border-s-sage/20 text-s-sage px-4 py-8 text-center rounded-button">
+              <div className="bg-s-sage-bg border border-s-sage/20 text-s-sage px-4 py-8 text-center rounded-btn">
                 <Flag className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p className="font-medium">Vielen Dank für Ihre Meldung.</p>
                 <p className="text-xs mt-1 opacity-80">Unser Team wird dies überprüfen.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                {error && <div className="text-xs text-s-error bg-s-error-bg p-2 rounded-button">{error}</div>}
+                {error && <div className="text-xs text-s-error bg-s-error-bg p-2 rounded-btn">{error}</div>}
                 
                 <div>
                   <label className="block text-xs font-medium text-s-ink/60 mb-1">Grund</label>
                   <select 
                     value={reason} onChange={e => setReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral"
+                    className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral"
                   >
                     <option value="inappropriate">Unangemessener Inhalt</option>
                     <option value="spam">Spam oder Werbung</option>
@@ -98,14 +98,14 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
                   <textarea 
                     value={details} onChange={e => setDetails(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
+                    className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
                     placeholder="Bitte beschreiben Sie das Problem genauer..."
                   />
                 </div>
 
                 <button 
                   type="submit" disabled={loading}
-                  className="w-full flex justify-center items-center gap-2 py-2.5 rounded-button bg-s-coral text-white font-medium text-sm disabled:opacity-50"
+                  className="w-full flex justify-center items-center gap-2 py-2.5 rounded-btn bg-s-coral text-white font-medium text-sm disabled:opacity-50"
                 >
                   {loading ? <Loader2 size={16} className="animate-spin" /> : "Meldung absenden"}
                 </button>

@@ -84,7 +84,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Form</span>
           <select value={shape} onChange={(e) => setShape(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {SHAPE_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -92,7 +92,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Stil</span>
           <select value={style} onChange={(e) => setStyle(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {STYLE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -100,7 +100,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Farbe</span>
           <select value={colors} onChange={(e) => setColors(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {COLOR_PRESETS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </label>
@@ -108,7 +108,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">Hautton</span>
           <select value={skinTone} onChange={(e) => setSkinTone(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {SKIN_TONE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -131,7 +131,7 @@ export default function AiArtGenerator() {
 
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50">
         <Wand2 size={16} />
         {generating ? "Generiere..." : "Generieren"}
       </button>

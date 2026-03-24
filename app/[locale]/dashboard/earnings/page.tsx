@@ -76,7 +76,7 @@ export default function SalonEarningsPage() {
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card flex items-center gap-4">
-              <div className="w-12 h-12 rounded-button bg-s-coral/10 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-btn bg-s-coral/10 flex items-center justify-center shrink-0">
                 <Wallet size={24} className="text-s-coral" />
               </div>
               <div>
@@ -87,7 +87,7 @@ export default function SalonEarningsPage() {
             </motion.div>
             
             <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card flex items-center gap-4">
-              <div className="w-12 h-12 rounded-button bg-green-50 flex items-center justify-center shrink-0 dark:bg-green-500/10">
+              <div className="w-12 h-12 rounded-btn bg-green-50 flex items-center justify-center shrink-0 dark:bg-green-500/10">
                 <DollarSign size={24} className="text-green-600 dark:text-green-400" />
               </div>
               <div>

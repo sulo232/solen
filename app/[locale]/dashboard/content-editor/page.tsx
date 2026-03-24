@@ -70,7 +70,7 @@ function ContentField({
             </span>
           )}
         </div>
-        <div className="flex rounded-button overflow-hidden border border-s-ink/10 shrink-0">
+        <div className="flex rounded-btn overflow-hidden border border-s-ink/10 shrink-0">
           {(["de", "en"] as const).map((l) => (
             <button
               key={l}
@@ -90,14 +90,14 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral resize-y"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral resize-y"
         />
       ) : (
         <input
           type={row.content_type === "number" ? "number" : "text"}
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm font-body text-s-ink focus:outline-none focus:border-s-coral"
         />
       )}
 
@@ -110,7 +110,7 @@ function ContentField({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50 hover:bg-s-coral/90 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 hover:bg-s-coral/90 transition-colors"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={12} /> : <Save size={12} />}
           {saved ? "Gespeichert" : "Speichern"}

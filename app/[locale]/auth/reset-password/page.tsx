@@ -121,7 +121,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Neues Passwort"
                   required
-                  className="w-full px-4 py-2.5 pr-10 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+                  className="w-full px-4 py-2.5 pr-10 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
                 />
                 <button
                   type="button"
@@ -148,7 +148,7 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Passwort bestätigen"
                 required
-                className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+                className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
               />
 
               {confirm.length > 0 && !passwordsMatch && (
@@ -158,7 +158,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !passwordValid || !passwordsMatch}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
               >
                 {loading ? <Spinner size="sm" invert /> : <Lock size={15} />}
                 Passwort ändern

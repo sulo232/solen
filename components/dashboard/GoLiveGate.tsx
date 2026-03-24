@@ -146,7 +146,7 @@ export default function GoLiveGate() {
           onClick={status.can_go_live ? handleGoLive : undefined}
           disabled={!status.can_go_live || activating}
           className={[
-            "w-full py-3 rounded-button text-sm font-medium flex items-center justify-center gap-2 transition-colors",
+            "w-full py-3 rounded-btn text-sm font-medium flex items-center justify-center gap-2 transition-colors",
             status.can_go_live
               ? "bg-s-coral text-white hover:bg-s-coral/90 cursor-pointer"
               : "bg-s-ink/5 dark:bg-white/5 text-s-ink/30 dark:text-s-dm-text/30 cursor-not-allowed",

@@ -117,7 +117,7 @@ export default function PromoManager() {
         <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{pl.title}</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           {pl.newCode}
@@ -125,7 +125,7 @@ export default function PromoManager() {
       </div>
 
       {error && (
-        <div className="rounded-button bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
+        <div className="rounded-btn bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
           {error}
         </div>
       )}
@@ -213,7 +213,7 @@ export default function PromoManager() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-button bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-sm hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
+              className="px-4 py-2 rounded-btn bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-sm hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
             >
               {pl.cancel}
             </button>
@@ -235,7 +235,7 @@ export default function PromoManager() {
               className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-4 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-button flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/30"}`}>
+                <div className={`w-9 h-9 rounded-btn flex items-center justify-center ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/30"}`}>
                   {promo.discount_type === "percent" ? <Percent className="w-4 h-4" /> : <Tag className="w-4 h-4" />}
                 </div>
                 <div>

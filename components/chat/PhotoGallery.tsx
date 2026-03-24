@@ -94,7 +94,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
             {isSalonOwner && onCreateOffer && (
               <button
                 onClick={() => { onCreateOffer(lightboxUrl); setLightboxUrl(null); }}
-                className="mt-3 w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+                className="mt-3 w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
               >
                 Angebot erstellen
               </button>
@@ -114,7 +114,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
                   } catch {}
                   setSaving(false);
                 }}
-                className="mt-3 w-full py-2.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-sm font-medium hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="mt-3 w-full py-2.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-sm font-medium hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Bookmark size={14} />
                 {saved.has(lightboxUrl) ? "Gespeichert" : saving ? "Speichern…" : "Auf Board speichern"}

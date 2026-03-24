@@ -111,7 +111,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => approve(salon.id)}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
                   >
                     <Check size={15} />
                     Genehmigen
@@ -119,7 +119,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => setRejectModal({ id: salon.id, name: salon.name })}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-button border border-s-coral/30 text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn border border-s-coral/30 text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors disabled:opacity-50"
                   >
                     <X size={15} />
                     Ablehnen
@@ -140,7 +140,7 @@ export default function ApprovalsPage() {
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):
             </p>
             <textarea
-              className="w-full border border-s-ink/10 rounded-button px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-coral"
+              className="w-full border border-s-ink/10 rounded-btn px-3 py-2 text-sm text-s-ink resize-none focus:outline-none focus:border-s-coral"
               rows={4}
               placeholder="z.B. Unvollständige Angaben, kein Basel-Bezug..."
               value={rejectReason}
@@ -150,14 +150,14 @@ export default function ApprovalsPage() {
             <div className="flex gap-2 mt-4 justify-end">
               <button
                 onClick={() => { setRejectModal(null); setRejectReason(""); }}
-                className="px-4 py-2 rounded-button text-sm text-s-ink/50 hover:text-s-ink transition-colors"
+                className="px-4 py-2 rounded-btn text-sm text-s-ink/50 hover:text-s-ink transition-colors"
               >
                 Abbrechen
               </button>
               <button
                 onClick={reject}
                 disabled={!rejectReason.trim() || actionLoading === rejectModal.id}
-                className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
               >
                 Ablehnen & E-Mail senden
               </button>

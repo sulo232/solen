@@ -88,12 +88,12 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
         )}
         <div className="flex items-center gap-1.5 mt-3 flex-wrap">
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
+            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
               <Phone className="w-3 h-3" />Anrufen
             </a>
           )}
           {entry.website && (
-            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-button bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
+            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
               <Globe className="w-3 h-3" />Website
             </a>
           )}
@@ -250,7 +250,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             }
             routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-sm font-body font-medium text-s-ink/70 hover:border-s-coral hover:text-s-coral transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 text-sm font-body font-medium text-s-ink/70 hover:border-s-coral hover:text-s-coral transition-colors"
         >
           {isMapView ? <List size={16} /> : <MapIcon size={16} />}
           {isMapView ? "Liste" : "Karte"}
@@ -328,7 +328,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             <AnimatePresence>
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
-                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral hover:shadow-warm-sm transition-all disabled:opacity-50">
+                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral hover:shadow-warm-sm transition-all disabled:opacity-50">
                     {loadingMore ? <Spinner size="sm" /> : null}
                     {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
                   </button>
@@ -340,7 +340,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             <AnimatePresence>
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
-                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-button bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-ink/20 transition-colors disabled:opacity-50">
+                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-ink/20 transition-colors disabled:opacity-50">
                     {dirLoadingMore ? <Spinner size="sm" /> : null}
                     {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
                   </button>

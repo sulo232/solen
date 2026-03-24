@@ -191,7 +191,7 @@ export default function WarumSolenPage() {
           </p>
           <button
             onClick={() => document.getElementById("section-chat")?.scrollIntoView({ behavior: "smooth" })}
-            className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-button bg-s-coral text-white font-body font-medium hover:bg-s-coral/90 transition-colors shadow-lg shadow-s-coral/20"
+            className="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white font-body font-medium hover:bg-s-coral/90 transition-colors shadow-lg shadow-s-coral/20"
           >
             Jetzt entdecken
             <ChevronDown className="w-4 h-4 animate-bounce" />
@@ -383,14 +383,14 @@ export default function WarumSolenPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-button bg-s-coral text-white font-body font-medium hover:bg-s-coral/90 transition-colors shadow-lg shadow-s-coral/20"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white font-body font-medium hover:bg-s-coral/90 transition-colors shadow-lg shadow-s-coral/20"
               >
                 Jetzt ausprobieren
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href={`/${locale}/partner`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-button border border-s-ink/10 dark:border-white/20 text-s-ink/70 dark:text-s-dm-text/70 font-body font-medium hover:border-s-coral hover:text-s-coral transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn border border-s-ink/10 dark:border-white/20 text-s-ink/70 dark:text-s-dm-text/70 font-body font-medium hover:border-s-coral hover:text-s-coral transition-colors"
               >
                 Bist du ein Salon?
               </Link>

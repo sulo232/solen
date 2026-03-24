@@ -40,7 +40,7 @@ export default function ReviewCarousel() {
     return (
       <section className="py-10">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="h-6 w-48 bg-s-bg-sunken dark:bg-white/10 rounded-button animate-pulse mb-6" />
+          <div className="h-6 w-48 bg-s-bg-sunken dark:bg-white/10 rounded-btn animate-pulse mb-6" />
           <div className="flex gap-4 md:grid md:grid-cols-3">
             {[0, 1, 2].map((i) => (
               <div key={i} className="shrink-0 w-[280px] md:w-auto bg-white/80 dark:bg-s-dm-surface/80 rounded-card p-5 space-y-3">

@@ -102,7 +102,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
             onChange={(e) => setChairCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
             min={1}
             max={20}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
         <div>
@@ -115,7 +115,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
             onChange={(e) => setBufferMinutes(Math.max(0, Math.min(30, parseInt(e.target.value) || 0)))}
             min={0}
             max={30}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
         </div>
       </div>
@@ -123,7 +123,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="mt-4 w-full flex items-center justify-center gap-2 rounded-button bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+        className="mt-4 w-full flex items-center justify-center gap-2 rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
       >
         <Save size={14} />
         {saving ? "Speichern..." : saved ? "Gespeichert!" : "Speichern"}

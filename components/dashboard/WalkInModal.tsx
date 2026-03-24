@@ -102,7 +102,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
         {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">{l.cancel}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">{l.cancel}</button>
           <button onClick={handleCreate} disabled={!customerName.trim() || !serviceId || loading}
             className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}<Send size={14} /> {l.create}

@@ -60,7 +60,7 @@ export default function MessagesPage() {
         </p>
         <a
           href={`/${locale}/coiffeur`}
-          className="mt-2 px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+          className="mt-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
         >
           Salons entdecken
         </a>

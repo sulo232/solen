@@ -129,7 +129,7 @@ export default function SalonPackagesPage() {
                     </span>
                   </div>
 
-                  <button className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium">
+                  <button className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
                     {l.buy}
                   </button>
                 </motion.div>

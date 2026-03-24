@@ -28,7 +28,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       {/* Trigger button — visible on mobile only */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-button bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60"
+        className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60"
       >
         <SlidersHorizontal size={14} />
         Filters
@@ -67,13 +67,13 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             <div className="flex gap-3 pt-2">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
-                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60"
+                className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60"
               >
                 Reset
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium"
+                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium"
               >
                 Apply
               </button>

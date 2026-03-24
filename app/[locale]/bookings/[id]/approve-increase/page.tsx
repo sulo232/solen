@@ -89,7 +89,7 @@ export default function ApproveIncreasePage() {
                 : "Dein Einspruch wird von unserem Support-Team geprüft."}
             </p>
             <button onClick={() => router.push(`/${locale}/dashboard`)}
-              className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium">
+              className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
               Zurück zum Dashboard
             </button>
           </div>
@@ -134,7 +134,7 @@ export default function ApproveIncreasePage() {
 
             <div className="mb-5">
               <p className="text-xs font-medium text-s-ink/40 uppercase tracking-wide mb-1">Begründung des Salons</p>
-              <p className="text-sm text-s-ink/70 bg-s-bg-surface rounded-button px-3 py-2">{dispute.salon_reason}</p>
+              <p className="text-sm text-s-ink/70 bg-s-bg-surface rounded-btn px-3 py-2">{dispute.salon_reason}</p>
             </div>
 
             {hoursLeft !== null && hoursLeft > 0 && (
@@ -145,12 +145,12 @@ export default function ApproveIncreasePage() {
 
             <div className="flex gap-3">
               <button onClick={() => handleAction("approve")} disabled={submitting}
-                className="flex-1 px-4 py-3 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 px-4 py-3 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {submitting ? <Spinner size="sm" invert /> : <Check size={16} />}
                 Genehmigen
               </button>
               <button onClick={() => handleAction("dispute")} disabled={submitting}
-                className="flex-1 px-4 py-3 rounded-button border border-s-coral text-s-coral text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/5 transition-colors">
+                className="flex-1 px-4 py-3 rounded-btn border border-s-coral text-s-coral text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/5 transition-colors">
                 {submitting ? <Spinner size="sm" /> : <X size={16} />}
                 Einspruch
               </button>

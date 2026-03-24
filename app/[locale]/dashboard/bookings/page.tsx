@@ -76,7 +76,7 @@ function SalonCancelModal({
         <p className="text-sm text-s-ink/50 mb-4">Bitte wähle einen Grund. Der Kunde wird automatisch per E-Mail informiert.</p>
         <div className="space-y-2 mb-5">
           {CANCEL_REASONS.map((r) => (
-            <label key={r.value} className="flex items-center gap-3 p-3 rounded-button border border-s-ink/10 cursor-pointer hover:border-s-coral transition-colors">
+            <label key={r.value} className="flex items-center gap-3 p-3 rounded-btn border border-s-ink/10 cursor-pointer hover:border-s-coral transition-colors">
               <input type="radio" name="reason" value={r.value} checked={reason === r.value}
                 onChange={() => setReason(r.value)} className="accent-s-coral" />
               <span className="text-sm">{r.label}</span>
@@ -84,9 +84,9 @@ function SalonCancelModal({
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleSubmit} disabled={!reason || loading}
-            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Stornieren
           </button>
         </div>
@@ -255,21 +255,21 @@ export default function BookingsPage() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => updateStatus(b.id, "completed")}
-                        className="p-1.5 rounded-button bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                        className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                         title="Abgeschlossen"
                       >
                         <Check size={13} />
                       </button>
                       <button
                         onClick={() => updateStatus(b.id, "no_show")}
-                        className="p-1.5 rounded-button bg-s-bg-sunken text-s-ink/40 hover:bg-s-sand transition-colors"
+                        className="p-1.5 rounded-btn bg-s-bg-sunken text-s-ink/40 hover:bg-s-sand transition-colors"
                         title="Nicht erschienen"
                       >
                         <UserX size={13} />
                       </button>
                       <button
                         onClick={() => setCancelTarget(b.id)}
-                        className="p-1.5 rounded-button bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                        className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                         title="Stornieren"
                       >
                         <X size={13} />
@@ -280,7 +280,7 @@ export default function BookingsPage() {
                     <button
                       onClick={() => confirmPrice(b.id)}
                       disabled={confirmingPrice === b.id}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-button bg-s-coral/10 text-s-coral text-[11px] font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-coral/10 text-s-coral text-[11px] font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
                       title="Preis bestätigen"
                     >
                       <BadgeCheck size={12} />

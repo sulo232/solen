@@ -59,13 +59,13 @@ function ConfirmModal({
         </div>
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
             Abbrechen
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className={`flex-1 py-2.5 rounded-button text-sm font-medium text-white disabled:opacity-50 flex items-center justify-center gap-2 ${confirmCls}`}
+            className={`flex-1 py-2.5 rounded-btn text-sm font-medium text-white disabled:opacity-50 flex items-center justify-center gap-2 ${confirmCls}`}
           >
             {loading && <Spinner size="sm" invert />}
             {confirmLabel}
@@ -166,7 +166,7 @@ export default function AllUsersPage() {
           placeholder="Name oder E-Mail suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -240,7 +240,7 @@ export default function AllUsersPage() {
                     <select
                       value={u.role}
                       onChange={(e) => handleRoleChange(u.id, e.target.value as UserRole)}
-                      className="px-2 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
+                      className="px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/60 bg-white focus:outline-none focus:border-s-coral cursor-pointer"
                     >
                       {ROLE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -251,7 +251,7 @@ export default function AllUsersPage() {
                     {u.is_suspended ? (
                       <button
                         onClick={() => setSuspendTarget(u)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         <CheckCircle size={12} />
                         Freigeben
@@ -259,7 +259,7 @@ export default function AllUsersPage() {
                     ) : (
                       <button
                         onClick={() => setSuspendTarget(u)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         <Ban size={12} />
                         Sperren

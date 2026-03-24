@@ -115,12 +115,12 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+            className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
           />
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
           >
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
@@ -142,7 +142,7 @@ export default function SignIn() {
       <button
         onClick={handleGoogle}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-3 py-3 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors font-body font-medium text-s-ink dark:text-s-dm-text shadow-card disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-3 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors font-body font-medium text-s-ink dark:text-s-dm-text shadow-card disabled:opacity-50"
       >
         {loading ? (
           <Spinner size="sm" />
@@ -171,7 +171,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+          className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
         <div className="relative">
           <input
@@ -180,7 +180,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full px-4 py-2.5 pr-10 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+            className="w-full px-4 py-2.5 pr-10 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface font-body outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
           />
           <button
             type="button"
@@ -194,7 +194,7 @@ export default function SignIn() {
         <button
           type="submit"
           disabled={loading || !email || !password}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 shadow-warm-sm"
         >
           {loading ? <Spinner size="sm" invert /> : <Loader2 size={15} className="hidden" />}
           Anmelden

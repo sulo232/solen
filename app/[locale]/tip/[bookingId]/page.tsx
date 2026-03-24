@@ -106,7 +106,7 @@ export default function TipPage() {
           <div className="grid grid-cols-3 gap-2 mb-3">
             {TIP_PRESETS.map((amount) => (
               <button key={amount} onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
-                className={`py-3 rounded-button text-sm font-medium transition-colors ${!useCustom && selectedAmount === amount ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
+                className={`py-3 rounded-btn text-sm font-medium transition-colors ${!useCustom && selectedAmount === amount ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
                 {formatCurrency(amount / 100, locale)}
               </button>
             ))}
@@ -114,7 +114,7 @@ export default function TipPage() {
 
           {/* Custom amount */}
           <button onClick={() => setUseCustom(true)}
-            className={`w-full py-2.5 rounded-button text-xs font-medium mb-3 transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
+            className={`w-full py-2.5 rounded-btn text-xs font-medium mb-3 transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
             {l.custom}
           </button>
           {useCustom && (
@@ -123,7 +123,7 @@ export default function TipPage() {
               <input type="number" min="1" step="0.5" value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-12 pr-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral data-text"
+                className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral data-text"
                 autoFocus />
             </div>
           )}
@@ -131,7 +131,7 @@ export default function TipPage() {
           {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
 
           <button onClick={handlePay} disabled={paying || tipAmount < 100}
-            className="w-full py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {paying ? <Spinner size="sm" invert /> : <Heart size={14} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>

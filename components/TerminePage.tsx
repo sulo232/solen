@@ -87,18 +87,18 @@ function CancelModal({
           onChange={(e) => setReason(e.target.value)}
           rows={2}
           placeholder="z. B. persönlicher Termin, Krankheit..."
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none"
         />
       </div>
 
       <div className="flex gap-2">
-        <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60 hover:bg-s-bg-surface transition-colors">
+        <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:bg-s-bg-surface transition-colors">
           Abbrechen
         </button>
         <button
           onClick={handleCancel}
           disabled={loading}
-          className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
           Stornieren
@@ -339,17 +339,17 @@ export default function TerminePage() {
                           {canCancel && (
                             <button
                               onClick={() => setCancelTarget(b)}
-                              className="px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
+                              className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
                             >
                               Absagen
                             </button>
                           )}
                           {tooLate && (
                             <div className="relative group">
-                              <button disabled className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/20 cursor-not-allowed">
+                              <button disabled className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/20 cursor-not-allowed">
                                 Absagen
                               </button>
-                              <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-s-ink text-white text-xs rounded-button px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                              <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-s-ink text-white text-xs rounded-btn px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                 Stornierung nicht mehr möglich (weniger als 24h)
                               </div>
                             </div>
@@ -357,7 +357,7 @@ export default function TerminePage() {
                           {b.salon_slug && (
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&reschedule=${b.id}`}
-                              className="px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors"
+                              className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors"
                             >
                               Verschieben
                             </Link>
@@ -409,7 +409,7 @@ export default function TerminePage() {
                           <div className="mt-3 pt-3 border-t border-s-ink/5">
                             <Link
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
                             >
                               <RotateCcw size={12} />
                               Nochmal buchen

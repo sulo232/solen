@@ -17,7 +17,7 @@ export default function InteractiveHoverButton({
   return (
     <button
       className={cn(
-        "group relative w-32 cursor-pointer overflow-hidden rounded-button border border-s-coral/20 bg-white dark:bg-s-dm-surface p-2 text-center font-body font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
+        "group relative w-32 cursor-pointer overflow-hidden rounded-btn border border-s-coral/20 bg-white dark:bg-s-dm-surface p-2 text-center font-body font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
         className
       )}
       {...props}

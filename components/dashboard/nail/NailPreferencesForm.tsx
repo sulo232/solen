@@ -160,7 +160,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
             className="flex-1 px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAllergy())}
           />
-          <button onClick={addAllergy} className="text-xs px-3 py-1.5 rounded-button bg-s-error-bg dark:bg-s-error/10 text-s-error border border-s-error/20">
+          <button onClick={addAllergy} className="text-xs px-3 py-1.5 rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error border border-s-error/20">
             {t("add")}
           </button>
         </div>

@@ -120,7 +120,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-xl w-full max-w-md p-6 relative">
+      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-md p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-s-ink/40 hover:text-s-ink transition-colors dark:text-s-dm-text/40 dark:hover:text-s-dm-text"
@@ -226,7 +226,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs rounded-button">
+            <div className="p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs rounded-btn">
               {error}
             </div>
           )}
@@ -236,14 +236,14 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 justify-center rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/60 dark:text-s-dm-text/60"
+              className="flex-1 py-3 justify-center rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/60 dark:text-s-dm-text/60"
             >
               Abbrechen
             </button>
             <button
               type="submit"
               disabled={loading || rating === 0}
-              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-colors"
+              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-colors"
             >
               {loading && <Spinner size="sm" invert />}
               Senden

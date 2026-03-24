@@ -118,7 +118,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
             {cut.photos.length > 0 && (
               <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-2">
                 {cut.photos.map((url, i) => (
-                  <div key={i} className="relative w-20 h-20 rounded-button overflow-hidden shrink-0">
+                  <div key={i} className="relative w-20 h-20 rounded-btn overflow-hidden shrink-0">
                     <Image src={url} alt="Cut photo" fill className="object-cover" sizes="80px" />
                   </div>
                 ))}

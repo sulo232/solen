@@ -187,7 +187,7 @@ export default function DisputesPage() {
                     <button
                       onClick={() => resolve(d.id, "approved")}
                       disabled={resolving === d.id}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
                     >
                       <CheckCircle className="w-3.5 h-3.5" />
                       Genehmigen
@@ -195,7 +195,7 @@ export default function DisputesPage() {
                     <button
                       onClick={() => resolve(d.id, "rejected")}
                       disabled={resolving === d.id}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
                     >
                       <XCircle className="w-3.5 h-3.5" />
                       Ablehnen
@@ -206,12 +206,12 @@ export default function DisputesPage() {
                         placeholder="CHF"
                         value={compromiseAmount[d.id] ?? ""}
                         onChange={(e) => setCompromiseAmount((p) => ({ ...p, [d.id]: e.target.value }))}
-                        className="w-24 px-2 py-1.5 rounded-button border border-s-ink/10 text-xs data-text"
+                        className="w-24 px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs data-text"
                       />
                       <button
                         onClick={() => resolve(d.id, "compromised")}
                         disabled={resolving === d.id || !compromiseAmount[d.id]}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-ink text-white text-xs font-medium hover:bg-s-ink/90 transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-xs font-medium hover:bg-s-ink/90 transition-colors disabled:opacity-50"
                       >
                         <Scale className="w-3.5 h-3.5" />
                         Kompromiss

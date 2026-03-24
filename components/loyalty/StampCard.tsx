@@ -65,7 +65,7 @@ export default function StampCard({
         href={`/${locale}/salon/${salonSlug}`}
         className="flex items-center gap-3 p-4 pb-3 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
       >
-        <div className="relative w-10 h-10 rounded-button overflow-hidden bg-s-bg-sunken dark:bg-white/10 shrink-0">
+        <div className="relative w-10 h-10 rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-white/10 shrink-0">
           {salonImageUrl ? (
             <Image src={salonImageUrl} alt={salonName} fill className="object-cover" sizes="40px" />
           ) : (

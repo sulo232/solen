@@ -163,7 +163,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       </div>
 
       {/* Cancellation policy */}
-      <div className="flex items-start gap-2 bg-s-amber-subtle/50 rounded-button p-3 mb-4 text-left">
+      <div className="flex items-start gap-2 bg-s-amber-subtle/50 rounded-btn p-3 mb-4 text-left">
         <ShieldCheck size={16} className="text-s-amber shrink-0 mt-0.5" />
         <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
           Kostenlose Stornierung bis {props.cancellationHours ?? 24}h vor dem Termin möglich.
@@ -182,7 +182,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <div className="flex flex-col gap-2">
         <button
           onClick={handleCalendarDownload}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
         >
           <Calendar size={16} />
           Zum Kalender hinzufügen
@@ -190,7 +190,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral transition-colors"
         >
           <Share2 size={16} />
           Mit Freund:in teilen
@@ -198,7 +198,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
 
         <button
           onClick={() => router.push(`/${locale}/salon/${props.salonSlug}`)}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral transition-colors"
         >
           <RotateCcw size={16} />
           Nochmal buchen

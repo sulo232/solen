@@ -86,7 +86,7 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
       href={link.href}
       onClick={onClick}
       className={cn(
-        "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5 relative group",
+        "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5 relative group",
         active ? "text-s-coral" : "text-s-ink/60 hover:bg-s-bg-surface hover:text-s-ink",
         className
       )}
@@ -94,7 +94,7 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
       {active && (
         <motion.div
           layoutId="sidebar-indicator"
-          className="absolute inset-0 rounded-button bg-s-coral/10"
+          className="absolute inset-0 rounded-btn bg-s-coral/10"
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
         />
       )}

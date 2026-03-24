@@ -97,7 +97,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
     <div className="space-y-2">
       {/* Allergy warning banner */}
       {hasAllergyTag && (
-        <div className="flex items-center gap-2 bg-s-error-bg dark:bg-s-error/10 border border-s-error/20 rounded-button px-3 py-2">
+        <div className="flex items-center gap-2 bg-s-error-bg dark:bg-s-error/10 border border-s-error/20 rounded-btn px-3 py-2">
           <AlertTriangle size={14} className="text-s-error shrink-0" />
           <p className="text-xs text-s-error font-medium">
             Achtung: Kundin hat Allergien/Unverträglichkeiten
@@ -148,12 +148,12 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
               onChange={(e) => setNewTag(e.target.value)}
               placeholder="Eigenes Tag…"
               maxLength={50}
-              className="flex-1 px-2.5 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="flex-1 px-2.5 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs focus:outline-none focus:border-s-coral bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
             />
             <select
               value={newColor}
               onChange={(e) => setNewColor(e.target.value)}
-              className="px-2 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
+              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs bg-white dark:bg-s-dm-surface dark:text-s-dm-text"
             >
               <option value="gray">Grau</option>
               <option value="red">Rot</option>
@@ -165,7 +165,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
             <button
               onClick={() => handleAdd()}
               disabled={!newTag.trim() || adding}
-              className="px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50"
+              className="px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50"
             >
               +
             </button>

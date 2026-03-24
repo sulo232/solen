@@ -80,7 +80,7 @@ export default function SearchResultGrid({
           <button
             onClick={onLoadMore}
             disabled={loadingMore}
-            className="px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium shadow-warm-sm hover:shadow-coral-glow transition-all disabled:opacity-50"
+            className="px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium shadow-warm-sm hover:shadow-coral-glow transition-all disabled:opacity-50"
           >
             {loadingMore ? <Spinner /> : "Mehr laden"}
           </button>

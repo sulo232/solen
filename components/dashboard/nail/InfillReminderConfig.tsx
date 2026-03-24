@@ -78,7 +78,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
                   value={svc.reminder_cycle_days ?? ""}
                   onChange={(e) => updateCycle(svc.id, e.target.value ? parseInt(e.target.value) : null)}
                   placeholder="—"
-                  className="w-16 px-2 py-1 text-sm text-center rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
+                  className="w-16 px-2 py-1 text-sm text-center rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
                 />
                 <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("infill_days")}</span>
               </div>

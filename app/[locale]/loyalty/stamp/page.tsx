@@ -71,7 +71,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-button bg-s-coral text-white font-medium py-3 text-sm hover:bg-s-coral-hover transition-colors"
+              className="w-full rounded-btn bg-s-coral text-white font-medium py-3 text-sm hover:bg-s-coral-hover transition-colors"
             >
               Stempel vergeben
             </button>

@@ -138,7 +138,7 @@ export default function RequestList({
             {pendingCount > 0 && (
               <button
                 onClick={handleCopyAllPending}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   copiedAll
                     ? "bg-s-success text-white"
                     : "bg-s-coral text-white hover:bg-s-coral-hover"
@@ -151,7 +151,7 @@ export default function RequestList({
             {selectedIds.size > 0 && (
               <button
                 onClick={handleCopySelected}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   copiedAll
                     ? "bg-s-success text-white"
                     : "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg hover:bg-s-ink/80 dark:hover:bg-s-dm-text/80"
@@ -229,7 +229,7 @@ export default function RequestList({
                   {r.status !== "pending" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "pending")}
-                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
                     >
                       Reset
                     </button>
@@ -237,7 +237,7 @@ export default function RequestList({
                   {r.status !== "in_progress" && r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "in_progress")}
-                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
                     >
                       In Progress
                     </button>
@@ -245,7 +245,7 @@ export default function RequestList({
                   {r.status !== "done" && (
                     <button
                       onClick={() => onStatusUpdate(r.id, "done")}
-                      className="text-[10px] px-2 py-0.5 rounded-button bg-s-success-bg text-s-success hover:bg-s-success/15 transition-colors"
+                      className="text-[10px] px-2 py-0.5 rounded-btn bg-s-success-bg text-s-success hover:bg-s-success/15 transition-colors"
                     >
                       Done
                     </button>
@@ -254,7 +254,7 @@ export default function RequestList({
                   {/* Copy for Claude */}
                   <button
                     onClick={() => handleCopySingle(r)}
-                    className={`text-[10px] px-2 py-0.5 rounded-button flex items-center gap-1 transition-colors ${
+                    className={`text-[10px] px-2 py-0.5 rounded-btn flex items-center gap-1 transition-colors ${
                       copiedId === r.id
                         ? "bg-s-success-bg text-s-success"
                         : "bg-s-coral/10 text-s-coral hover:bg-s-coral/20"
@@ -267,7 +267,7 @@ export default function RequestList({
                   {/* Expand details */}
                   <button
                     onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-                    className="text-[10px] px-2 py-0.5 rounded-button bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center gap-1"
+                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-ink/5 dark:bg-s-dm-text/5 text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors flex items-center gap-1"
                   >
                     {expandedId === r.id ? <ChevronUp size={9} /> : <ChevronDown size={9} />}
                     Details
@@ -277,7 +277,7 @@ export default function RequestList({
                   <button
                     onClick={() => onDelete(r.id)}
                     disabled={deletingId === r.id}
-                    className="text-[10px] px-2 py-0.5 rounded-button bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
+                    className="text-[10px] px-2 py-0.5 rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors flex items-center gap-1 disabled:opacity-50 ml-auto"
                   >
                     {deletingId === r.id ? <Loader2 size={9} className="animate-spin" /> : <Trash2 size={9} />}
                     Delete
@@ -301,7 +301,7 @@ export default function RequestList({
                     )}
                     <div>
                       <p className="text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Claude Prompt Preview</p>
-                      <pre className="text-[10px] bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 overflow-auto max-h-40 text-s-ink/60 dark:text-s-dm-text/60 whitespace-pre-wrap">
+                      <pre className="text-[10px] bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn p-2 overflow-auto max-h-40 text-s-ink/60 dark:text-s-dm-text/60 whitespace-pre-wrap">
                         {formatRequestForClaude(r)}
                       </pre>
                     </div>

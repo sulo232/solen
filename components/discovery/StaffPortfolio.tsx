@@ -85,13 +85,13 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
       {loading ? (
         <div className="grid grid-cols-3 gap-1.5">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="aspect-square rounded-button bg-s-ink/5 dark:bg-white/5 animate-pulse" />
+            <div key={i} className="aspect-square rounded-btn bg-s-ink/5 dark:bg-white/5 animate-pulse" />
           ))}
         </div>
       ) : images.length > 0 ? (
         <div className="grid grid-cols-3 gap-1.5">
           {images.slice(0, 6).map((img) => (
-            <div key={img.id} className="aspect-square rounded-button overflow-hidden relative">
+            <div key={img.id} className="aspect-square rounded-btn overflow-hidden relative">
               <Image src={img.image_url} alt={img.caption ?? ""} fill className="object-cover" sizes="33vw" />
             </div>
           ))}

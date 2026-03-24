@@ -128,7 +128,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             <button
               onClick={handleConnect}
               disabled={connectLoading || connectStatus === "loading"}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
             >
               {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
               {t("payments.connectBank")}
@@ -140,7 +140,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full py-3 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+        className="w-full py-3 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
       >
         {saving ? <Loader2 size={14} className="animate-spin" /> : null}
         {tc("save")}

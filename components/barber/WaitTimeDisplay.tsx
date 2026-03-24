@@ -45,7 +45,7 @@ export default function WaitTimeDisplay({ salonId }: WaitTimeDisplayProps) {
   if (!waitData) return null;
 
   return (
-    <div className="flex items-center gap-3 rounded-button bg-s-bg-surface dark:bg-s-dm-surface px-4 py-3 border border-s-ink/10 dark:border-s-dm-text/10">
+    <div className="flex items-center gap-3 rounded-btn bg-s-bg-surface dark:bg-s-dm-surface px-4 py-3 border border-s-ink/10 dark:border-s-dm-text/10">
       <Clock size={18} className="text-s-coral shrink-0" />
       <div className="text-sm text-s-ink dark:text-s-dm-text">
         <span className="font-medium">

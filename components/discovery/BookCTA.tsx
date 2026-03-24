@@ -83,7 +83,7 @@ export default function BookCTA({ item, locale }: BookCTAProps) {
           </div>
           <Link
             href={href}
-            className="flex items-center gap-2 px-5 py-3 rounded-button bg-s-coral hover:bg-s-coral-hover text-white text-sm font-medium transition-colors shrink-0 shadow-warm-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-btn bg-s-coral hover:bg-s-coral-hover text-white text-sm font-medium transition-colors shrink-0 shadow-warm-sm"
           >
             <Calendar size={14} />
             {CTA_LABELS[locale] ?? CTA_LABELS.de}

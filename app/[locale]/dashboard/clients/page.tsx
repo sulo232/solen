@@ -94,7 +94,7 @@ export default function ClientsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Name suchen…"
-          className="w-full pl-9 pr-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+          className="w-full pl-9 pr-3 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
         />
       </div>
 
@@ -273,7 +273,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
       <div className="flex gap-1 mb-5 overflow-x-auto pb-1">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-button text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-coral/5"}`}>
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-btn text-xs font-medium whitespace-nowrap transition-colors ${tab === t.key ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-coral/5"}`}>
             <t.icon size={12} /> {t.label}
           </button>
         ))}
@@ -295,7 +295,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-button ${b.status === "confirmed" ? "bg-s-success-bg text-s-success" : b.status === "cancelled" ? "bg-s-error-bg text-s-error" : "bg-s-ink/5 text-s-ink/50"}`}>
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-btn ${b.status === "confirmed" ? "bg-s-success-bg text-s-success" : b.status === "cancelled" ? "bg-s-error-bg text-s-error" : "bg-s-ink/5 text-s-ink/50"}`}>
                       {b.status}
                     </span>
                     {b.price_paid != null && <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5 data-text">CHF {b.price_paid}</p>}
@@ -315,10 +315,10 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newNote} onChange={(e) => setNewNote(e.target.value)} placeholder="Notiz hinzufügen…"
-              className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
               onKeyDown={(e) => { if (e.key === "Enter") handleAddNote(); }} />
             <button onClick={handleAddNote} disabled={!newNote.trim() || savingNote}
-              className="px-3 py-2 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50">
+              className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50">
               {savingNote ? <Spinner size="sm" invert /> : "Speichern"}
             </button>
           </div>
@@ -343,15 +343,15 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <div>
           <div className="flex gap-2 mb-4">
             <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder="Neues Tag…"
-              className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
             <select value={tagColor_} onChange={(e) => setTagColor_(e.target.value)}
-              className="px-2 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
+              className="px-2 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral">
               {["gray", "red", "orange", "blue", "purple", "teal"].map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
             <button onClick={handleAddTag} disabled={!newTag.trim() || savingTag}
-              className="px-3 py-2 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50">
+              className="px-3 py-2 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50">
               {savingTag ? <Spinner size="sm" invert /> : "Hinzufügen"}
             </button>
           </div>

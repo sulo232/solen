@@ -200,7 +200,7 @@ export default function HomeSearchBar() {
             placeholder="Service, Stil oder Salon suchen…"
             aria-label="Service, Stil oder Salon suchen"
             id="tour-search"
-            className="w-full rounded-button bg-s-bg-sunken dark:bg-s-dm-bg py-3 pl-10 pr-4 text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 border border-s-ink/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral/30 transition-shadow duration-200"
+            className="w-full rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg py-3 pl-10 pr-4 text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 border border-s-ink/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral/30 transition-shadow duration-200"
           />
         </div>
       </div>

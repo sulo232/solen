@@ -89,7 +89,7 @@ export default function SetupBanner() {
 
         <Link
           href={`/${locale}/dashboard/setup`}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors shrink-0"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors shrink-0"
         >
           {isDE ? "Fortsetzen" : "Continue"}
           <ArrowRight size={14} />

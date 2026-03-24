@@ -180,7 +180,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder="Service oder Salon suchen…"
-          className="w-full pl-9 pr-8 py-2.5 rounded-button bg-white/80 backdrop-blur-sm border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
+          className="w-full pl-9 pr-8 py-2.5 rounded-btn bg-white/80 backdrop-blur-sm border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral/50 focus:ring-1 focus:ring-s-coral/20 transition-colors"
         />
         {query && (
           <button

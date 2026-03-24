@@ -95,12 +95,12 @@ export default function LoyaltyDashboardPage() {
                 value={scanToken}
                 onChange={(e) => setScanToken(e.target.value)}
                 placeholder="Token eingeben..."
-                className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text font-mono focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <button
                 onClick={handleScanSubmit}
                 disabled={!scanToken.trim()}
-                className="w-full rounded-button bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+                className="w-full rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
               >
                 Stempel vergeben
               </button>

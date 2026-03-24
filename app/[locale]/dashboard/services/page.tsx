@@ -88,19 +88,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Name DE *</label>
               <input value={form.name_de} onChange={(e) => setForm({ ...form, name_de: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Name EN</label>
               <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
-                className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Kategorie</label>
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SalonCategory })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm bg-white focus:outline-none focus:border-s-coral">
                 {salonCategories.map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
               </select>
             </div>
@@ -108,19 +108,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Dauer (Min)</label>
               <input type="number" min={15} step={15} value={form.duration_minutes}
                 onChange={(e) => setForm({ ...form, duration_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Preis CHF</label>
               <input type="number" min={0} value={form.price}
                 onChange={(e) => setForm({ ...form, price: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung</label>
             <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
-              rows={2} className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+              rows={2} className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
           </div>
           {/* Time breakdown fields */}
           <div className="grid grid-cols-3 gap-2">
@@ -128,19 +128,19 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Aufbauzeit (Min)</label>
               <input type="number" min={0} step={5} value={form.buffer_minutes}
                 onChange={(e) => setForm({ ...form, buffer_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Einwirkzeit (Min)</label>
               <input type="number" min={0} step={5} value={form.processing_minutes}
                 onChange={(e) => setForm({ ...form, processing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
             <div>
               <label className="block text-xs font-medium text-s-ink/50 mb-1">Nachbereitung (Min)</label>
               <input type="number" min={0} step={5} value={form.finishing_minutes}
                 onChange={(e) => setForm({ ...form, finishing_minutes: +e.target.value })}
-                className="w-full px-2 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+                className="w-full px-2 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
             </div>
           </div>
           {/* Service photos */}
@@ -148,7 +148,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             <label className="block text-xs font-medium text-s-ink/50 mb-1">Fotos (max. 3)</label>
             <div className="flex gap-2">
               {photos.map((url, i) => (
-                <div key={i} className="relative w-16 h-16 rounded-button overflow-hidden border border-s-ink/10">
+                <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-ink/10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={url} alt="" className="w-full h-full object-cover" />
                   <button type="button" onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
@@ -158,7 +158,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
                 </div>
               ))}
               {photos.length < 3 && (
-                <label className="w-16 h-16 rounded-button border-2 border-dashed border-s-ink/10 flex items-center justify-center cursor-pointer hover:border-s-coral/40 transition-colors">
+                <label className="w-16 h-16 rounded-btn border-2 border-dashed border-s-ink/10 flex items-center justify-center cursor-pointer hover:border-s-coral/40 transition-colors">
                   {uploading ? <Spinner size="sm" /> : <Camera size={16} className="text-s-ink/30" />}
                   <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                     const file = e.target.files?.[0];
@@ -213,9 +213,9 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!form.name_de || loading}
-            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
           </button>
         </div>
@@ -367,9 +367,9 @@ export default function ServicesPage() {
             <h3 className="font-heading font-bold text-base mb-3">Service löschen</h3>
             <p className="text-sm text-s-ink/60 mb-4">Möchtest du <strong>{deleteTarget.name_de}</strong> löschen?</p>
             <div className="flex gap-2">
-              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
+              <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">Abbrechen</button>
               <button onClick={handleDelete} disabled={deleteLoading}
-                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {deleteLoading && <Spinner size="sm" invert />}Löschen
               </button>
             </div>
@@ -380,7 +380,7 @@ export default function ServicesPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-heading font-bold text-2xl text-s-ink">Services</h1>
         <button onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
+          className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
           <Plus size={14} /> Hinzufügen
         </button>
       </div>

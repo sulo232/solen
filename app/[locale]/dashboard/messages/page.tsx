@@ -129,7 +129,7 @@ export default function MessagesPage() {
               <div className="relative">
                 <button
                   onClick={() => setShowQuickReplies((s) => !s)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors"
                 >
                   Schnellantwort <ChevronDown size={12} className={showQuickReplies ? "rotate-180" : ""} />
                 </button>

@@ -43,7 +43,7 @@ export default function MarketingPage() {
             key={t.key}
             onClick={() => setTab(t.key)}
             className={[
-              "flex items-center gap-1.5 px-3 py-2 rounded-button text-sm font-medium transition-colors whitespace-nowrap",
+              "flex items-center gap-1.5 px-3 py-2 rounded-btn text-sm font-medium transition-colors whitespace-nowrap",
               tab === t.key
                 ? "bg-s-coral text-white"
                 : "bg-white dark:bg-s-dm-surface text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text border border-s-ink/5 dark:border-white/5",

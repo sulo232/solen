@@ -91,7 +91,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-button text-xs font-medium bg-s-coral text-white"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-btn text-xs font-medium bg-s-coral text-white"
           aria-label={t("retail_new")}
         >
           <Plus size={12} />
@@ -146,7 +146,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 rounded-button text-xs text-s-ink/50 dark:text-s-dm-text/50"
+              className="px-4 py-2 rounded-btn text-xs text-s-ink/50 dark:text-s-dm-text/50"
               aria-label={t("cancel")}
             >
               {t("cancel")}
@@ -173,7 +173,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             <div key={product.id} className={`flex items-center gap-3 p-3 rounded-card border bg-white dark:bg-s-dm-surface ${
               isLowStock ? "border-s-warning/30 bg-s-warning-bg/30" : "border-s-ink/5 dark:border-s-dm-text/10"
             }`}>
-              <div className="w-10 h-10 rounded-button bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-btn bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center shrink-0">
                 <Package size={16} className="text-s-ink/30 dark:text-s-dm-text/30" />
               </div>
               <div className="flex-1 min-w-0">
@@ -191,7 +191,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => adjustStock(product.id, -1)}
-                  className="w-6 h-6 rounded-button flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10"
+                  className="w-6 h-6 rounded-btn flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10"
                   aria-label={t("retail_stock_minus")}
                   disabled={product.stock_count <= 0}
                 >
@@ -200,7 +200,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
                 <span className="text-xs data-text w-6 text-center text-s-ink dark:text-s-dm-text">{product.stock_count}</span>
                 <button
                   onClick={() => adjustStock(product.id, 1)}
-                  className="w-6 h-6 rounded-button flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10"
+                  className="w-6 h-6 rounded-btn flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10"
                   aria-label={t("retail_stock_plus")}
                 >
                   <Plus size={10} />

@@ -252,7 +252,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
           {hasFilters && (
             <button
               onClick={() => router.replace(pathname, { scroll: false })}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-body font-medium text-s-coral border border-s-coral/30 bg-s-coral/5 hover:bg-s-coral/10 transition-all duration-150 shrink-0"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-pill text-xs font-body font-medium text-s-coral border border-s-coral/30 bg-s-coral/5 hover:bg-s-coral/10 transition-all duration-200 shrink-0"
             >
               <X className="w-3 h-3" aria-hidden="true" />
               Filter löschen

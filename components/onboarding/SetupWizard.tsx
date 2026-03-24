@@ -137,7 +137,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
           <button
             onClick={goPrev}
             disabled={currentStep === 0}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-button text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors disabled:opacity-0 disabled:pointer-events-none"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors disabled:opacity-0 disabled:pointer-events-none"
           >
             <ChevronLeft size={16} />
             {t("setup.back")}
@@ -147,14 +147,14 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             {!isLast && (
               <button
                 onClick={goNext}
-                className="px-4 py-2.5 rounded-button text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                className="px-4 py-2.5 rounded-btn text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
               >
                 {t("setup.skip")}
               </button>
             )}
             <button
               onClick={goNext}
-              className="flex items-center gap-1.5 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+              className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors shadow-warm-sm"
             >
               {isLast ? t("setup.goLive") : t("setup.next")}
               {!isLast && <ChevronRight size={16} />}

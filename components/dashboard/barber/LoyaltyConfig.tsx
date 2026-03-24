@@ -148,7 +148,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
       </div>
 
       {/* Preview */}
-      <div className="mt-4 p-3 rounded-button bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/5 dark:border-s-dm-text/5">
+      <div className="mt-4 p-3 rounded-btn bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/5 dark:border-s-dm-text/5">
         <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Vorschau</p>
         <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">{program.name}</p>
         <div className="flex flex-wrap gap-1.5">

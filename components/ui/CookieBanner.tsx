@@ -90,21 +90,21 @@ export default function CookieBanner() {
             <div className="flex items-center gap-2 mt-4">
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
                 aria-label="Cookies akzeptieren"
               >
                 Akzeptieren
               </button>
               <button
                 onClick={rejectAll}
-                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
                 aria-label="Cookies ablehnen"
               >
                 Ablehnen
               </button>
               <button
                 onClick={() => setSettingsOpen(true)}
-                className="p-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                className="p-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
                 aria-label="Cookie-Einstellungen"
               >
                 <Settings className="w-4 h-4" />
@@ -163,13 +163,13 @@ export default function CookieBanner() {
             <div className="flex gap-2 mt-6">
               <button
                 onClick={saveSettings}
-                className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+                className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
               >
                 Einstellungen speichern
               </button>
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+                className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
               >
                 Alle akzeptieren
               </button>

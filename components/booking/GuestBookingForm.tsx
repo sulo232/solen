@@ -50,7 +50,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Vor- und Nachname"
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral transition-colors"
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral transition-colors"
         />
         {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
       </div>
@@ -64,7 +64,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+41791234567"
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral transition-colors"
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral transition-colors"
         />
         {errors.phone && <p className="text-xs text-s-coral mt-0.5">{errors.phone}</p>}
       </div>
@@ -78,7 +78,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="deine@email.ch"
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral transition-colors"
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral transition-colors"
         />
         {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
       </div>
@@ -90,7 +90,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+        className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
       >
         Weiter zur Zahlung
       </button>

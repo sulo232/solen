@@ -60,7 +60,7 @@ export default function RevenuePage() {
           <p className="text-sm text-s-ink/40 mt-0.5">Plattform-Einnahmen</p>
         </div>
         {/* Period picker */}
-        <div className="flex rounded-button overflow-hidden border border-s-ink/10 bg-white shadow-card shrink-0">
+        <div className="flex rounded-btn overflow-hidden border border-s-ink/10 bg-white shadow-card shrink-0">
           {(["week", "month", "year"] as const).map((p) => (
             <button
               key={p}
@@ -138,7 +138,7 @@ export default function RevenuePage() {
                 variants={itemVariants}
                 className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card"
               >
-                <div className={`w-8 h-8 rounded-button ${card.bg} flex items-center justify-center mb-3`}>
+                <div className={`w-8 h-8 rounded-btn ${card.bg} flex items-center justify-center mb-3`}>
                   <card.icon size={15} className={card.color} />
                 </div>
                 <p className="data-text font-bold text-xl text-s-ink leading-tight">{card.value}</p>
@@ -268,7 +268,7 @@ export default function RevenuePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {data.gift_card_revenue != null && (
                 <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-button bg-s-coral/5 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Gift size={18} className="text-s-coral" />
                   </div>
                   <div>
@@ -279,7 +279,7 @@ export default function RevenuePage() {
               )}
               {data.tips_total != null && (
                 <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-button bg-s-coral/5 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Heart size={18} className="text-s-coral" />
                   </div>
                   <div>

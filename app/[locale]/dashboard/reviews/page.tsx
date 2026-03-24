@@ -143,7 +143,7 @@ export default function SalonReviewsPage() {
 
               {/* Existing salon response */}
               {r.review_replies && r.review_replies.length > 0 && (
-                <div className="bg-s-coral/5 rounded-button p-3 mb-3">
+                <div className="bg-s-coral/5 rounded-btn p-3 mb-3">
                   <p className="text-[10px] font-bold text-s-coral mb-1">Deine Antwort</p>
                   <p className="text-xs text-s-ink/70 dark:text-s-dm-text/70">{r.review_replies[0].reply_text}</p>
                 </div>
@@ -160,21 +160,21 @@ export default function SalonReviewsPage() {
                         placeholder="Antwort schreiben..."
                         value={responseText}
                         onChange={(e) => setResponseText(e.target.value)}
-                        className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-xs focus:outline-none focus:border-s-coral resize-none"
+                        className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-xs focus:outline-none focus:border-s-coral resize-none"
                       />
                       <div className="flex gap-2 items-center">
                         <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">{responseText.length}/500</span>
                         <div className="flex-1" />
                         <button
                           onClick={() => { setRespondingTo(null); setResponseText(""); }}
-                          className="px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/40 dark:text-s-dm-text/40 text-xs"
+                          className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/40 dark:text-s-dm-text/40 text-xs"
                         >
                           Abbrechen
                         </button>
                         <button
                           onClick={() => handleRespond(r.id)}
                           disabled={saving || !responseText.trim()}
-                          className="px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1"
+                          className="px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1"
                         >
                           {saving && <Spinner size="sm" invert />}
                           Senden
@@ -184,7 +184,7 @@ export default function SalonReviewsPage() {
                   ) : (
                     <button
                       onClick={() => { setRespondingTo(r.id); setFlagging(null); }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                     >
                       <MessageCircle size={12} />
                       Antwort schreiben
@@ -195,7 +195,7 @@ export default function SalonReviewsPage() {
 
               {/* Flagging form */}
               {flagging === r.id && (
-                <div className="space-y-2 mt-3 p-3 bg-red-50 dark:bg-red-900/10 rounded-button border border-red-100 dark:border-red-900/30">
+                <div className="space-y-2 mt-3 p-3 bg-red-50 dark:bg-red-900/10 rounded-btn border border-red-100 dark:border-red-900/30">
                   <p className="text-xs font-medium text-red-800 dark:text-red-400">Warum meldest du diese Bewertung?</p>
                   <textarea
                     rows={2}
@@ -203,19 +203,19 @@ export default function SalonReviewsPage() {
                     placeholder="Begründung (z.B. Fake-Bewertung, Beleidigung)..."
                     value={flagReason}
                     onChange={(e) => setFlagReason(e.target.value)}
-                    className="w-full px-3 py-2 rounded-button border border-red-200 dark:border-red-900/50 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-xs focus:outline-none focus:border-red-400 resize-none"
+                    className="w-full px-3 py-2 rounded-btn border border-red-200 dark:border-red-900/50 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-xs focus:outline-none focus:border-red-400 resize-none"
                   />
                   <div className="flex gap-2 items-center justify-end mt-2">
                     <button
                       onClick={() => { setFlagging(null); setFlagReason(""); }}
-                      className="px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-xs"
+                      className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-xs"
                     >
                       Abbrechen
                     </button>
                     <button
                       onClick={() => handleFlag(r.id)}
                       disabled={saving || !flagReason.trim()}
-                      className="px-3 py-1.5 rounded-button bg-red-500 hover:bg-red-600 text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-colors"
+                      className="px-3 py-1.5 rounded-btn bg-red-500 hover:bg-red-600 text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-colors"
                     >
                       {saving && <Spinner size="sm" invert />}
                       Melden

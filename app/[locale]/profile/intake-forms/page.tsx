@@ -111,7 +111,7 @@ export default function MyIntakeFormsPage() {
                               {new Date(form.filled_at).toLocaleDateString(localeFmt)}
                             </p>
                           </div>
-                          <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-3 py-1.5 bg-s-ink/5 dark:bg-white/5 rounded-button">
+                          <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-3 py-1.5 bg-s-ink/5 dark:bg-white/5 rounded-btn">
                             {isExpanded ? "Schliessen" : "Anzeigen"}
                           </span>
                         </button>
@@ -135,7 +135,7 @@ export default function MyIntakeFormsPage() {
                                   <p className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-0.5">
                                     {q.replace(/_/g, " ")}
                                   </p>
-                                  <p className="text-sm text-s-ink dark:text-s-dm-text bg-s-bg-surface dark:bg-s-dm-bg px-3 py-2 rounded-button">
+                                  <p className="text-sm text-s-ink dark:text-s-dm-text bg-s-bg-surface dark:bg-s-dm-bg px-3 py-2 rounded-btn">
                                     {String(a)}
                                   </p>
                                 </div>

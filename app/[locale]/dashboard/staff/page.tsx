@@ -139,12 +139,12 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
           <div>
             <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Name *</label>
             <input value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Foto URL</label>
             <input value={avatar} onChange={(e) => setAvatar(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Spezialitäten</label>
@@ -152,8 +152,8 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
               <input value={specInput} onChange={(e) => setSpecInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
-                className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
-              <button type="button" onClick={addSpec} className="px-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"><Plus size={14} /></button>
+                className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              <button type="button" onClick={addSpec} className="px-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -216,9 +216,9 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
           </label>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
           <button onClick={handleSave} disabled={!name || loading}
-            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Speichern
           </button>
         </div>
@@ -274,19 +274,19 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
           <div>
             <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Name *</label>
             <input value={name} onChange={e => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">E-Mail *</label>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
           </div>
         </div>
         {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
           <button onClick={handleSend} disabled={!email || !name.trim() || sending}
-            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {sending && <Spinner size="sm" invert />}<Send size={14} /> Einladen
           </button>
         </div>
@@ -328,9 +328,9 @@ function DeleteModal({ member, onClose, onDeleted }: {
           </p>
         ) : null}
         <div className="flex gap-2 mt-4">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
           <button onClick={handleDelete} disabled={loading}
-            className="flex-1 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+            className="flex-1 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}Löschen
           </button>
         </div>
@@ -457,11 +457,11 @@ export default function StaffPage() {
         <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">Team</h1>
         <div className="flex items-center gap-2">
           <button onClick={() => setInviteOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-button border border-s-coral text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-coral text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
             <Mail size={14} /> Einladen
           </button>
           <button onClick={() => setAddOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
             <Plus size={14} /> Hinzufügen
           </button>
         </div>

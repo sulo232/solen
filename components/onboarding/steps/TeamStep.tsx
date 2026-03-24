@@ -70,7 +70,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="mitarbeiter@email.ch"
-              className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral transition-colors"
+              className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral transition-colors"
             />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t("team.firstName")}
-              className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral transition-colors"
+              className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral transition-colors"
             />
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
         <button
           onClick={sendInvite}
           disabled={!email || sending}
-          className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+          className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
         >
           {sending && <Spinner size="sm" invert />}
           {t("team.sendInvite")}

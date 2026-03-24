@@ -859,7 +859,7 @@ export default function SalonProfilePage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => setShowReviewForm(true)}
-                          className="w-full sm:w-auto py-2.5 px-6 rounded-button bg-s-coral text-white font-medium text-sm transition-colors shadow-warm-sm"
+                          className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-coral text-white font-medium text-sm transition-colors shadow-warm-sm"
                         >
                           Bewertung schreiben
                         </motion.button>
@@ -924,7 +924,7 @@ export default function SalonProfilePage() {
                                 <button
                                   key={photo.id}
                                   onClick={() => setLightboxPhoto(photo.photo_url)}
-                                  className="relative w-16 h-16 rounded-button overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-80 transition-opacity"
+                                  className="relative w-16 h-16 rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-80 transition-opacity"
                                   aria-label="Foto vergrössern"
                                 >
                                   <Image src={photo.photo_url} alt="Review Foto" fill className="object-cover" sizes="64px" />
@@ -955,7 +955,7 @@ export default function SalonProfilePage() {
                     </div>
                     {salon.reviews.length > reviewsVisible.length && (
                       <button onClick={() => setReviewPage((p) => p + 1)}
-                        className="mt-4 w-full py-2.5 border border-s-ink/10 dark:border-white/10 rounded-button text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors">
+                        className="mt-4 w-full py-2.5 border border-s-ink/10 dark:border-white/10 rounded-btn text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors">
                         Mehr Bewertungen
                       </button>
                     )}

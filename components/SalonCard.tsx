@@ -62,7 +62,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         href={href}
         className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-card hover:shadow-card-hover transition-shadow"
       >
-        <div className="relative w-16 h-16 rounded-button overflow-hidden shrink-0 bg-s-bg-sunken">
+        <div className="relative w-16 h-16 rounded-btn overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
             <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" loading="lazy" />
           )}

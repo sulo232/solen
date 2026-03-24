@@ -92,11 +92,11 @@ export default function MyPackagesPage() {
                       </p>
                     </div>
                     {(isUsedUp || isExpired) ? (
-                      <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-2 py-1 bg-s-ink/5 dark:bg-white/5 rounded-button">
+                      <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-2 py-1 bg-s-ink/5 dark:bg-white/5 rounded-btn">
                         {isExpired ? "Abgelaufen" : "Aufgebraucht"}
                       </span>
                     ) : (
-                      <span className="text-xs font-medium text-s-coral px-2.5 py-1 bg-s-coral/10 rounded-button">
+                      <span className="text-xs font-medium text-s-coral px-2.5 py-1 bg-s-coral/10 rounded-btn">
                         Aktiv
                       </span>
                     )}

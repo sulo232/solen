@@ -632,7 +632,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           key={slot.id}
                           onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
-                            "px-3 py-1.5 rounded-btn text-sm data-text font-medium transition-all duration-150",
+                            "px-3 py-1.5 rounded-btn text-sm data-text font-medium transition-all duration-200",
                             isSelected
                               ? "bg-s-coral text-white shadow-card"
                               : offPeakPct

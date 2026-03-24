@@ -68,7 +68,7 @@ export default function ReportProblemModal({
               <button
                 key={type.id}
                 onClick={() => setIssueType(type.id)}
-                className={`px-3 py-1.5 rounded-button text-xs font-medium transition-colors border ${
+                className={`px-3 py-1.5 rounded-btn text-xs font-medium transition-colors border ${
                   isSelected
                     ? "bg-s-coral text-white border-s-coral"
                     : "bg-s-bg-surface text-s-ink border-s-ink/10 dark:bg-s-dm-surface dark:text-s-dm-text dark:border-white/10 hover:border-s-coral/50"
@@ -89,7 +89,7 @@ export default function ReportProblemModal({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Bitte beschreiben Sie detailliert, was vorgefallen ist..."
-          className="w-full min-h-[100px] bg-[#EDE5D8] dark:bg-s-dm-surface/50 rounded-button p-4 text-sm text-s-ink dark:text-s-dm-text border border-s-ink/5 dark:border-white/5 focus:outline-none focus:border-s-coral resize-none"
+          className="w-full min-h-[100px] bg-[#EDE5D8] dark:bg-s-dm-surface/50 rounded-btn p-4 text-sm text-s-ink dark:text-s-dm-text border border-s-ink/5 dark:border-white/5 focus:outline-none focus:border-s-coral resize-none"
         />
         {error && <p className="text-s-coral text-xs mt-2">{error}</p>}
       </div>

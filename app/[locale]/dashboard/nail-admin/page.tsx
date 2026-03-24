@@ -148,13 +148,13 @@ function ImportTab() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Suche: nail art, french manicure, gel nails..."
-          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
+          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm"
           onKeyDown={(e) => e.key === "Enter" && searchStock()}
         />
         <button
           onClick={searchStock}
           disabled={searching}
-          className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium"
+          className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium"
         >
           {searching ? "..." : "Suchen"}
         </button>
@@ -256,13 +256,13 @@ function ModerationTab() {
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => handleAction(item.id, "approve")}
-                    className="flex-1 text-xs py-1 rounded-button bg-s-sage/20 text-s-sage hover:bg-s-sage/30"
+                    className="flex-1 text-xs py-1 rounded-btn bg-s-sage/20 text-s-sage hover:bg-s-sage/30"
                   >
                     Genehmigen
                   </button>
                   <button
                     onClick={() => handleAction(item.id, "reject")}
-                    className="flex-1 text-xs py-1 rounded-button bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15"
+                    className="flex-1 text-xs py-1 rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15"
                   >
                     Ablehnen
                   </button>

@@ -95,7 +95,7 @@ Every API route MUST include ALL 6 layers in order:
 - Text: ink #1A1209 (s-ink), dark mode: #F5EEE4 (s-dm-text)
 - Backgrounds: cream #FAF6EF (s-bg-base), white (cards), dark #151009 (s-dm-bg)
 - Fonts: Bebas Neue (display ≥40px), Syne (headings), DM Sans (body)
-- Radii: rounded-card (12px), rounded-pill (9999px), rounded-button (8px)
+- Radii: rounded-card (12px), rounded-pill (9999px), rounded-btn (8px)
 - Icons: lucide-react ONLY. No emoji in UI.
 
 ## Banned Tokens (NEVER use in any .tsx file)

@@ -39,17 +39,17 @@ function HoursEditor({ hours, onChange }: {
         return (
           <div key={key} className="flex items-center gap-3">
             <button type="button" onClick={() => toggle(key)}
-              className={["w-9 text-center text-xs font-medium py-1.5 rounded-button transition-colors",
+              className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors",
                 h ? "bg-s-coral text-white" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
               {DAYS_LABEL[i]}
             </button>
             {h ? (
               <>
                 <input type="time" value={h.open} onChange={(e) => update(key, "open", e.target.value)}
-                  className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
                 <span className="text-xs text-s-ink/30">–</span>
                 <input type="time" value={h.close} onChange={(e) => update(key, "close", e.target.value)}
-                  className="px-2 py-1 rounded-button border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
+                  className="px-2 py-1 rounded-btn border border-s-ink/10 text-xs focus:outline-none focus:border-s-coral" />
               </>
             ) : <span className="text-xs text-s-ink/30">Geschlossen</span>}
           </div>
@@ -93,55 +93,55 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-1">Salon-Name *</label>
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-1">Cover-Foto URL</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung DE</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-1">Beschreibung EN</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral resize-none" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">Telefon</label>
           <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">Instagram</label>
           <input value={form.instagram_url} onChange={(e) => setForm({ ...form, instagram_url: e.target.value })}
             placeholder="https://instagram.com/..."
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">Facebook</label>
           <input value={form.facebook_url} onChange={(e) => setForm({ ...form, facebook_url: e.target.value })}
             placeholder="https://facebook.com/..."
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">TikTok</label>
           <input value={form.tiktok_url} onChange={(e) => setForm({ ...form, tiktok_url: e.target.value })}
             placeholder="https://tiktok.com/@..."
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-1">Website</label>
         <input value={form.website_url} onChange={(e) => setForm({ ...form, website_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-2">Öffnungszeiten</label>
@@ -154,27 +154,27 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
           <div>
             <label className="block text-[10px] text-s-ink/40 mb-1">Atmosphäre</label>
             <input placeholder="z.B. Modern, Gemütlich"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 mb-1">Expertise</label>
             <input placeholder="z.B. Balayage, Locken"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 mb-1">Produkte</label>
             <input placeholder="z.B. Olaplex, Kérastase"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 mb-1">Anfahrt</label>
             <input placeholder="z.B. Tram 8, Parkplätze"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
           </div>
         </div>
         <div className="mt-3">
           <button type="button" disabled
-            className="px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium opacity-60 cursor-not-allowed"
+            className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium opacity-60 cursor-not-allowed"
             title="Kommt bald">
             Vorschlag generieren (Kommt bald)
           </button>
@@ -187,7 +187,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       </div>
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Spinner size="sm" invert />}Speichern
         </button>
         {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
@@ -246,7 +246,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
         </>
       )}
       <button onClick={handleSave} disabled={saving}
-        className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+        className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
         {saving && <Spinner size="sm" invert />}Speichern
       </button>
     </div>
@@ -298,9 +298,9 @@ function QuickRepliesTab() {
       ))}
       <div className="flex gap-2">
         <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder="Neue Vorlage…"
-          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
-          className="px-3 py-2 rounded-button bg-s-coral text-white text-sm"><Plus size={14} /></button>
+          className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm"><Plus size={14} /></button>
       </div>
     </div>
   );
@@ -351,7 +351,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <div className="pt-2">
         <button onClick={handleSave} disabled={saving}
-          className="px-4 py-2 bg-s-coral text-white text-sm font-medium rounded-button hover:bg-s-coral/90 transition-colors disabled:opacity-50">
+          className="px-4 py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:bg-s-coral/90 transition-colors disabled:opacity-50">
           {saving ? "Speichern…" : saved ? "Gespeichert ✓" : "Speichern"}
         </button>
       </div>
@@ -439,7 +439,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
             step={feeType === "percentage" ? 5 : 1}
             value={feeValue}
             onChange={(e) => setFeeValue(Math.max(0, Number(e.target.value)))}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
+            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral"
           />
         </div>
       )}
@@ -450,7 +450,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
         <select
           value={freeHours}
           onChange={(e) => setFreeHours(Number(e.target.value))}
-          className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
+          className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
         >
           {CANCEL_HOURS_OPTIONS.map((h) => (
             <option key={h} value={h}>{h} Stunden vor dem Termin</option>
@@ -467,7 +467,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
       {/* Save */}
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Spinner size="sm" invert />}Speichern
         </button>
         {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
@@ -499,7 +499,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
           <div>
             <p className="text-sm font-medium text-s-ink">Dein Salon hat {warnings}/3 Warnungen.</p>
             <button onClick={handleVerify} disabled={confirming}
-              className="mt-2 px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium flex items-center gap-2">
+              className="mt-2 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium flex items-center gap-2">
               {confirming && <Spinner size="sm" invert />}Jetzt bestätigen
             </button>
           </div>
@@ -554,7 +554,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   return (
     <div className="py-4 max-w-sm space-y-5">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-button bg-s-coral/5 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center">
           <Palmtree size={18} className="text-s-coral" />
         </div>
         <div>
@@ -577,24 +577,24 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
           <label className="block text-xs font-medium text-s-ink/50 mb-1">Von</label>
           <input type="date" value={start} min={todayStr}
             onChange={(e) => setStart(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink/50 mb-1">Bis</label>
           <input type="date" value={end} min={start || todayStr}
             onChange={(e) => setEnd(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+            className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         </div>
       </div>
 
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Spinner size="sm" invert />}Speichern
         </button>
         {(start || end) && (
           <button onClick={handleClear} disabled={saving}
-            className="px-4 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
+            className="px-4 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/50 hover:border-s-coral hover:text-s-coral transition-colors">
             Deaktivieren
           </button>
         )}
@@ -783,7 +783,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
             <button
               onClick={handleConnect}
               disabled={connectLoading || connectStatus === "loading"}
-              className="flex items-center gap-2 px-4 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink hover:border-s-coral transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink hover:border-s-coral transition-colors disabled:opacity-50"
             >
               {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
               Bankkonto verknüpfen
@@ -796,7 +796,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
           Speichern
@@ -852,11 +852,11 @@ function ClosuresTab({ salon }: { salon: Salon }) {
       <p className="text-xs text-s-ink/50">Tage, an denen Ihr Salon geschlossen ist (Feiertage, Betriebsferien etc.)</p>
       <div className="flex gap-2">
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Grund (optional)"
-          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
+          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
         <button onClick={addClosure} disabled={!date}
-          className="px-3 py-2 rounded-button bg-s-coral text-white text-sm disabled:opacity-50">
+          className="px-3 py-2 rounded-btn bg-s-coral text-white text-sm disabled:opacity-50">
           <Plus size={14} />
         </button>
       </div>
@@ -865,7 +865,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
       ) : (
         <div className="space-y-1">
           {closures.map((c) => (
-            <div key={c.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-button border border-s-ink/5">
+            <div key={c.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-btn border border-s-ink/5">
               <div>
                 <span className="text-sm data-text text-s-ink">{new Date(c.date).toLocaleDateString("de-CH")}</span>
                 {c.reason && <span className="text-xs text-s-ink/40 ml-2">{c.reason}</span>}
@@ -947,13 +947,13 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
           {limitEnabled && (
             <input type="number" min={1} max={50} value={limit}
               onChange={(e) => setLimit(+e.target.value)}
-              className="mt-1 w-24 px-2 py-1.5 rounded-button border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral" />
+              className="mt-1 w-24 px-2 py-1.5 rounded-btn border border-s-ink/10 text-sm data-text focus:outline-none focus:border-s-coral" />
           )}
         </div>
       </div>
       <div className="flex items-center gap-3">
         <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+          className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Speichern
         </button>
         {saved && <span className="text-sm text-s-coral">Gespeichert ✓</span>}
@@ -1013,13 +1013,13 @@ function CommissionTab({ salon }: { salon: Salon }) {
                 const v = Math.min(100, Math.max(0, +e.target.value));
                 setStaff((prev) => prev.map((st) => (st.id === s.id ? { ...st, commission_pct: v } : st)));
               }}
-              className="w-16 px-2 py-1.5 rounded-button border border-s-ink/10 text-sm data-text text-right focus:outline-none focus:border-s-coral"
+              className="w-16 px-2 py-1.5 rounded-btn border border-s-ink/10 text-sm data-text text-right focus:outline-none focus:border-s-coral"
             />
             <span className="text-xs text-s-ink/40">%</span>
             <button
               onClick={() => updateCommission(s.id, s.commission_pct)}
               disabled={saving === s.id}
-              className="px-2 py-1 rounded-button bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
+              className="px-2 py-1 rounded-btn bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 transition-colors disabled:opacity-50"
             >
               {saving === s.id ? "..." : "OK"}
             </button>
@@ -1070,7 +1070,7 @@ export default function SettingsPage() {
             <AlertTriangle size={32} className="text-s-error mx-auto mb-3" />
             <h2 className="font-heading font-bold text-lg text-s-ink mb-2">Salon eingefroren</h2>
             {(salon as any).frozen_reason && (
-              <p className="text-sm text-s-ink/80 mb-2 bg-s-error-bg rounded-button px-3 py-2">{(salon as any).frozen_reason}</p>
+              <p className="text-sm text-s-ink/80 mb-2 bg-s-error-bg rounded-btn px-3 py-2">{(salon as any).frozen_reason}</p>
             )}
             {(salon as any).warning_count > 0 && (
               <p className="text-xs text-s-error/70 mb-2">{(salon as any).warning_count}/3 Warnungen erhalten</p>

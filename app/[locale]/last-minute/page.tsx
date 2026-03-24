@@ -184,7 +184,7 @@ export default function LastMinutePage() {
             action={
               <Link
                 href={`/${locale}/coiffeur`}
-                className="inline-flex items-center px-6 py-3 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+                className="inline-flex items-center px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors shadow-warm-sm"
               >
                 Coiffeure entdecken
               </Link>
@@ -208,7 +208,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-button bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral transition-colors disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

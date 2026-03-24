@@ -133,7 +133,7 @@ export default function RespondAdjustmentPage() {
               {result === "approved" ? l.approvedDesc : l.disputedDesc}
             </p>
             <button onClick={() => router.push(`/${locale}/dashboard`)}
-              className="px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium">
+              className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
               {l.backDashboard}
             </button>
           </div>
@@ -151,7 +151,7 @@ export default function RespondAdjustmentPage() {
             <Clock size={28} className="mx-auto mb-3 text-s-ink/20 dark:text-s-dm-text/20" />
             <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{l.expired}</p>
             <button onClick={() => router.push(`/${locale}/dashboard`)}
-              className="mt-4 px-5 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium">
+              className="mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
               {l.backDashboard}
             </button>
           </div>
@@ -187,7 +187,7 @@ export default function RespondAdjustmentPage() {
 
             <div className="mb-4">
               <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-1">{l.reason}</p>
-              <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 bg-s-bg-surface dark:bg-s-dm-bg rounded-button px-3 py-2">{dispute.salon_reason}</p>
+              <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 bg-s-bg-surface dark:bg-s-dm-bg rounded-btn px-3 py-2">{dispute.salon_reason}</p>
             </div>
 
             <div className="mb-4">
@@ -198,7 +198,7 @@ export default function RespondAdjustmentPage() {
                 placeholder={l.responsePlaceholder}
                 maxLength={500}
                 rows={2}
-                className="w-full text-sm rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-s-bg-sunken dark:bg-s-dm-bg px-3 py-2 text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="w-full text-sm rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-s-bg-sunken dark:bg-s-dm-bg px-3 py-2 text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
             </div>
 
@@ -210,12 +210,12 @@ export default function RespondAdjustmentPage() {
 
             <div className="flex gap-3">
               <button onClick={() => handleAction("approve")} disabled={submitting}
-                className="flex-1 px-4 py-3 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 px-4 py-3 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
                 {submitting ? <Spinner size="sm" invert /> : <Check size={16} />}
                 {l.approve}
               </button>
               <button onClick={() => handleAction("dispute")} disabled={submitting}
-                className="flex-1 px-4 py-3 rounded-button border border-s-coral text-s-coral text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/5 transition-colors">
+                className="flex-1 px-4 py-3 rounded-btn border border-s-coral text-s-coral text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/5 transition-colors">
                 {submitting ? <Spinner size="sm" /> : <X size={16} />}
                 {l.dispute}
               </button>

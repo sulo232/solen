@@ -109,7 +109,7 @@ function InspoGallery({ customerId }: { customerId: string }) {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
       {images.map((img) => (
-        <div key={img.id} className="aspect-square rounded-button overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
+        <div key={img.id} className="aspect-square rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
           <Image src={img.image_url} alt="" width={150} height={150} className="object-cover w-full h-full" />
         </div>
       ))}

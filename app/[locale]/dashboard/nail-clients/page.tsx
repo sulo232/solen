@@ -73,7 +73,7 @@ export default function NailClientsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Name oder E-Mail suchen..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
+            className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
           />
         </div>
 

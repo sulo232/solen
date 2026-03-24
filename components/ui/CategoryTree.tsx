@@ -96,7 +96,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
       <div key={cat.id}>
         <div
           className={[
-            "flex items-center gap-1.5 py-1.5 px-2 rounded-button text-sm font-body transition-colors cursor-pointer",
+            "flex items-center gap-1.5 py-1.5 px-2 rounded-btn text-sm font-body transition-colors cursor-pointer",
             isActive
               ? "bg-s-coral/10 text-s-coral font-medium"
               : "text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-white/5",

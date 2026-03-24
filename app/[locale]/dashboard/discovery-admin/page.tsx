@@ -38,7 +38,7 @@ export default function DiscoveryAdminPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={[
-                "px-4 py-2 rounded-button text-sm font-medium whitespace-nowrap transition-colors",
+                "px-4 py-2 rounded-btn text-sm font-medium whitespace-nowrap transition-colors",
                 activeTab === tab
                   ? "bg-s-coral text-white"
                   : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/10 dark:hover:bg-white/10",
@@ -153,20 +153,20 @@ function StockImportTab() {
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder="Search photos (e.g. curly hair women)"
           aria-label="Search stock photos"
-          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
+          className="flex-1 min-w-[200px] px-4 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
           aria-label="Category filter"
-          className="px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+          className="px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={handleSearch} disabled={loading} className="px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+        <button onClick={handleSearch} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
           {loading ? <Spinner size="sm" /> : <Search size={16} />} Search
         </button>
-        <button onClick={handleBulkImport} disabled={bulkImporting} className="px-4 py-2.5 rounded-button bg-s-amber text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+        <button onClick={handleBulkImport} disabled={bulkImporting} className="px-4 py-2.5 rounded-btn bg-s-amber text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
           {bulkImporting ? <Spinner size="sm" /> : <Sparkles size={16} />} Auto-Import
         </button>
       </div>
@@ -183,7 +183,7 @@ function StockImportTab() {
       )}
 
       {selected.size > 0 && (
-        <button onClick={handleImportSelected} disabled={importing} className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium">
+        <button onClick={handleImportSelected} disabled={importing} className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
           Import {selected.size} Selected
         </button>
       )}
@@ -255,7 +255,7 @@ function TikTokImportTab() {
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label="TikTok import category"
-        className="px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -268,7 +268,7 @@ function TikTokImportTab() {
         className="w-full px-4 py-3 rounded-card bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 font-mono"
       />
       {loading && <AIProcessingIndicator text="Fetching TikTok data & running AI analysis..." />}
-      <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+      <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
         {loading ? <Spinner size="sm" /> : <Video size={16} />} Import TikToks
       </button>
       {result && (
@@ -323,7 +323,7 @@ function ManualUploadTab() {
         value={category}
         onChange={(e) => setCategory(e.target.value as DiscoveryCategory)}
         aria-label="Upload category"
-        className="px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+        className="px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
       >
         {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
@@ -411,25 +411,25 @@ function StagingTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label="Staging category filter"
-          className="px-3 py-2 rounded-button bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+          className="px-3 py-2 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
         >
           <option value="">All Categories</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={fetchItems} disabled={loading} aria-label="Load staging items" className="px-3 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
+        <button onClick={fetchItems} disabled={loading} aria-label="Load staging items" className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load
         </button>
         {items.length > 0 && (
           <>
-            <button onClick={selectAll} aria-label={selected.size === items.length ? "Deselect all items" : "Select all items"} className="px-3 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 text-sm">
+            <button onClick={selectAll} aria-label={selected.size === items.length ? "Deselect all items" : "Select all items"} className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm">
               {selected.size === items.length ? "Deselect All" : "Select All"}
             </button>
             {selected.size > 0 && (
               <>
-                <button onClick={() => handleAction("approve")} disabled={processing} className="px-3 py-2 rounded-button bg-s-success text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
+                <button onClick={() => handleAction("approve")} disabled={processing} className="px-3 py-2 rounded-btn bg-s-success text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
                   <CheckCircle size={14} /> Approve {selected.size}
                 </button>
-                <button onClick={() => handleAction("reject")} disabled={processing} className="px-3 py-2 rounded-button bg-s-error text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
+                <button onClick={() => handleAction("reject")} disabled={processing} className="px-3 py-2 rounded-btn bg-s-error text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
                   <XCircle size={14} /> Reject {selected.size}
                 </button>
               </>
@@ -587,12 +587,12 @@ function PublishedTab() {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           aria-label="Published category filter"
-          className="px-3 py-2 rounded-button bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
+          className="px-3 py-2 rounded-btn bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm"
         >
           <option value="">All Categories</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
+        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load
         </button>
         <span className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{items.length} items</span>
@@ -648,7 +648,7 @@ function FlaggedTab() {
   return (
     <div className="space-y-4">
       <div className="flex gap-3 items-center">
-        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-button bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
+        <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-sm flex items-center gap-1.5">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Load Flagged
         </button>
         <span className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{items.length} flagged items</span>
@@ -673,10 +673,10 @@ function FlaggedTab() {
                 <p className="text-xs text-s-error flex items-center gap-1"><AlertTriangle size={12} /> {item.flag_reason}</p>
               )}
               <div className="flex gap-2">
-                <button onClick={() => handleAction(item.id, "approve")} className="flex-1 py-2 rounded-button bg-s-success text-white text-sm font-medium flex items-center justify-center gap-1">
+                <button onClick={() => handleAction(item.id, "approve")} className="flex-1 py-2 rounded-btn bg-s-success text-white text-sm font-medium flex items-center justify-center gap-1">
                   <CheckCircle size={14} /> Approve
                 </button>
-                <button onClick={() => handleAction(item.id, "remove")} className="flex-1 py-2 rounded-button bg-s-error text-white text-sm font-medium flex items-center justify-center gap-1">
+                <button onClick={() => handleAction(item.id, "remove")} className="flex-1 py-2 rounded-btn bg-s-error text-white text-sm font-medium flex items-center justify-center gap-1">
                   <Trash2 size={14} /> Remove
                 </button>
               </div>

@@ -103,7 +103,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5 dark:border-s-dm-text/10">
           <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("board_title")}</h3>
-          <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink rounded-button">
+          <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink rounded-btn">
             <X size={18} />
           </button>
         </div>
@@ -148,10 +148,10 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               value={newBoardName}
               onChange={(e) => setNewBoardName(e.target.value)}
               placeholder={t("board_name_placeholder")}
-              className="flex-1 text-sm px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
+              className="flex-1 text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-xs px-3 py-1.5 rounded-button bg-s-coral text-white">
+            <button onClick={handleCreateBoard} className="text-xs px-3 py-1.5 rounded-btn bg-s-coral text-white">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} className="text-xs text-s-ink/40">
@@ -175,7 +175,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
                 <button
                   key={img.id}
                   onClick={() => toggleSelect(img.id)}
-                  className={`relative aspect-square rounded-button overflow-hidden border-2 transition-all ${
+                  className={`relative aspect-square rounded-btn overflow-hidden border-2 transition-all ${
                     selected.has(img.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent"
                   }`}
                 >
@@ -196,7 +196,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5 dark:border-s-dm-text/10">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors"
+              className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

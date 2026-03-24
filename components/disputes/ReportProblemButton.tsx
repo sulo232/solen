@@ -20,7 +20,7 @@ export function ReportProblemButton({ bookingId }: { bookingId: string }) {
     return (
       <button
         disabled
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 text-xs text-s-sage cursor-not-allowed"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-sage cursor-not-allowed"
       >
         <Check size={12} />
         {t("problemReported", { fallback: "Gemeldet ✓" })}
@@ -32,7 +32,7 @@ export function ReportProblemButton({ bookingId }: { bookingId: string }) {
     <>
       <button
         onClick={() => setModalOpen(true)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-button border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
       >
         <AlertTriangle size={12} />
         {t("reportProblem", { fallback: "Ein Problem melden" })}

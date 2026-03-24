@@ -152,7 +152,7 @@ function StepRegister({ onNext }: { onNext: () => void }) {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+        className="px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
       />
       <input
         type="password"
@@ -160,7 +160,7 @@ function StepRegister({ onNext }: { onNext: () => void }) {
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+        className="px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
       />
       <div>
         <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Geburtsdatum (mind. 16 Jahre)</label>
@@ -169,14 +169,14 @@ function StepRegister({ onNext }: { onNext: () => void }) {
           required
           value={birthday}
           onChange={(e) => setBirthday(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+          className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
       </div>
 
       <button
         type="submit"
         disabled={!email || !password || !birthday || saving}
-        className="w-full py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+        className="w-full py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         Registrieren
@@ -242,7 +242,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
           placeholder="Avatar-URL (optional)"
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
         />
       </div>
 
@@ -252,20 +252,20 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+        className="px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
       />
       <textarea
         placeholder="Kurze Bio (optional)"
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         rows={3}
-        className="px-4 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all resize-none"
+        className="px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all resize-none"
       />
 
       <button
         type="submit"
         disabled={!name || saving}
-        className="w-full py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+        className="w-full py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         Weiter
@@ -314,7 +314,7 @@ function SelectPill<T extends string>({
           type="button"
           onClick={() => onChange(o.value)}
           className={[
-            "flex items-center gap-2 px-3 py-2 rounded-button border text-sm font-body transition-all",
+            "flex items-center gap-2 px-3 py-2 rounded-btn border text-sm font-body transition-all",
             value === o.value
               ? "border-s-coral bg-s-coral/5 text-s-coral font-medium"
               : "border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30",
@@ -374,14 +374,14 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
         >
           {saving && <Spinner size="sm" invert />}
           Weiter
@@ -473,14 +473,14 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           onClick={onComplete}
-          className="flex-1 py-3 rounded-button border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-button bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
+          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
           Fertig

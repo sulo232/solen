@@ -146,7 +146,7 @@ export default function PriceAdjustmentModal({
             <DollarSign size={18} className="text-s-coral" />
             <h3 id="price-modal-title" className="font-heading font-bold text-s-ink dark:text-s-dm-text">{l.title}</h3>
           </div>
-          <button onClick={onClose} aria-label="Close" className="p-1 rounded-button hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors">
+          <button onClick={onClose} aria-label="Close" className="p-1 rounded-btn hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors">
             <X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" />
           </button>
         </div>

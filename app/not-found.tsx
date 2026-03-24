@@ -12,13 +12,13 @@ export default function NotFound() {
       <div className="flex gap-3">
         <Link
           href="/"
-          className="px-6 py-3 bg-s-coral text-white rounded-button font-medium text-sm hover:bg-s-coral/90 transition-colors"
+          className="px-6 py-3 bg-s-coral text-white rounded-btn font-medium text-sm hover:bg-s-coral/90 transition-colors"
         >
           Zur Startseite
         </Link>
         <Link
           href="/coiffeur"
-          className="px-6 py-3 border border-s-ink/10 text-s-ink/70 rounded-button font-medium text-sm hover:bg-s-bg-surface transition-colors"
+          className="px-6 py-3 border border-s-ink/10 text-s-ink/70 rounded-btn font-medium text-sm hover:bg-s-bg-surface transition-colors"
         >
           Salons entdecken
         </Link>

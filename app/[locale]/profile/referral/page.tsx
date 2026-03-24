@@ -81,12 +81,12 @@ export default function ReferralPage() {
         <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5">
           <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Dein Empfehlungscode</p>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-s-bg-surface dark:bg-white/5 border border-s-ink/10 dark:border-white/10 rounded-button px-4 py-3 data-text font-bold text-lg text-s-ink dark:text-s-dm-text tracking-wider text-center">
+            <div className="flex-1 bg-s-bg-surface dark:bg-white/5 border border-s-ink/10 dark:border-white/10 rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink dark:text-s-dm-text tracking-wider text-center">
               {data.referral_code}
             </div>
             <button
               onClick={copyCode}
-              className="p-3 rounded-button bg-s-coral text-white hover:bg-s-coral/90 transition-colors"
+              className="p-3 rounded-btn bg-s-coral text-white hover:bg-s-coral/90 transition-colors"
             >
               {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
             </button>
@@ -97,14 +97,14 @@ export default function ReferralPage() {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={shareWhatsApp}
-            className="flex items-center justify-center gap-2 py-3 rounded-button bg-[#25D366] text-white text-sm font-medium hover:bg-[#25D366]/90 transition-colors"
+            className="flex items-center justify-center gap-2 py-3 rounded-btn bg-[#25D366] text-white text-sm font-medium hover:bg-[#25D366]/90 transition-colors"
           >
             <Share2 className="w-4 h-4" />
             WhatsApp
           </button>
           <button
             onClick={copyCode}
-            className="flex items-center justify-center gap-2 py-3 rounded-button bg-s-bg-sunken dark:bg-white/10 text-s-ink dark:text-s-dm-text text-sm font-medium hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
+            className="flex items-center justify-center gap-2 py-3 rounded-btn bg-s-bg-sunken dark:bg-white/10 text-s-ink dark:text-s-dm-text text-sm font-medium hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
           >
             <Copy className="w-4 h-4" />
             Link kopieren
@@ -115,12 +115,12 @@ export default function ReferralPage() {
         <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5">
           <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Deine Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-s-bg-surface dark:bg-white/5 rounded-button">
+            <div className="text-center p-3 bg-s-bg-surface dark:bg-white/5 rounded-btn">
               <Users className="w-5 h-5 text-s-coral mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{data.friends_invited}</p>
               <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">Freunde eingeladen</p>
             </div>
-            <div className="text-center p-3 bg-s-bg-surface dark:bg-white/5 rounded-button">
+            <div className="text-center p-3 bg-s-bg-surface dark:bg-white/5 rounded-btn">
               <Gift className="w-5 h-5 text-s-coral mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.total_earned, locale)}</p>
               <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">Verdient</p>

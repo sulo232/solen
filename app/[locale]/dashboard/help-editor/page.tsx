@@ -122,7 +122,7 @@ export default function HelpEditorPage() {
           </div>
           <button
             onClick={openNew}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors"
           >
             <Plus size={16} />
             Neuer Artikel
@@ -140,12 +140,12 @@ export default function HelpEditorPage() {
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
                 placeholder="slug (z.B. wie-buche-ich)"
-                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-button border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="col-span-2 sm:col-span-1 px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               />
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="px-3 py-2 rounded-button border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+                className="px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
               >
                 <option value="customers">Für Kunden</option>
                 <option value="salons">Für Salons</option>
@@ -156,14 +156,14 @@ export default function HelpEditorPage() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="Titel"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             />
             <textarea
               value={form.content}
               onChange={(e) => setForm({ ...form, content: e.target.value })}
               placeholder="Inhalt (Markdown unterstützt: ## Überschrift, - Liste)"
               rows={10}
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm font-body focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-y"
             />
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 text-sm font-body text-s-ink/60">
@@ -179,7 +179,7 @@ export default function HelpEditorPage() {
                 type="number"
                 value={form.sort_order}
                 onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })}
-                className="w-20 px-2 py-1 rounded-button border border-s-ink/10 text-sm font-body"
+                className="w-20 px-2 py-1 rounded-btn border border-s-ink/10 text-sm font-body"
                 placeholder="Reihenfolge"
               />
             </div>
@@ -187,13 +187,13 @@ export default function HelpEditorPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !form.slug || !form.title || !form.content}
-                className="px-5 py-2 rounded-button bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                className="px-5 py-2 rounded-btn bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
               >
                 {saving ? "Speichern…" : editing ? "Aktualisieren" : "Erstellen"}
               </button>
               <button
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-button text-sm font-body text-s-ink/50 hover:text-s-ink/70"
+                className="px-4 py-2 rounded-btn text-sm font-body text-s-ink/50 hover:text-s-ink/70"
               >
                 Abbrechen
               </button>
@@ -232,20 +232,20 @@ export default function HelpEditorPage() {
                 <div className="flex items-center gap-1 shrink-0 ml-3">
                   <button
                     onClick={() => togglePublish(article)}
-                    className="p-1.5 rounded-button text-s-ink/30 hover:text-s-ink/60 transition-colors"
+                    className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-ink/60 transition-colors"
                     title={article.published ? "Verbergen" : "Veröffentlichen"}
                   >
                     {article.published ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
                   <button
                     onClick={() => openEdit(article)}
-                    className="p-1.5 rounded-button text-s-ink/30 hover:text-s-coral transition-colors"
+                    className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-coral transition-colors"
                   >
                     <Pencil size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(article.id)}
-                    className="p-1.5 rounded-button text-s-ink/30 hover:text-s-coral transition-colors"
+                    className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-coral transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>

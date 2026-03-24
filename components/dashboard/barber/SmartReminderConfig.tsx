@@ -122,7 +122,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                   return (
                     <div
                       key={client.id}
-                      className="flex items-center justify-between rounded-button bg-s-bg-surface dark:bg-s-dm-bg p-3"
+                      className="flex items-center justify-between rounded-btn bg-s-bg-surface dark:bg-s-dm-bg p-3"
                     >
                       <div>
                         <p className="text-sm text-s-ink dark:text-s-dm-text font-medium">
@@ -150,7 +150,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                         <button
                           onClick={() => setConfirmClient(client)}
                           disabled={sending === client.id}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 disabled:opacity-50 transition-colors"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-coral/10 text-s-coral text-xs font-medium hover:bg-s-coral/20 disabled:opacity-50 transition-colors"
                         >
                           <Send size={12} />
                           {sending === client.id ? "..." : "Senden"}
@@ -175,7 +175,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
               </h4>
               <button
                 onClick={() => setConfirmClient(null)}
-                className="p-1 rounded-button text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
+                className="p-1 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
               >
                 <X size={16} />
               </button>
@@ -187,14 +187,14 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmClient(null)}
-                className="flex-1 py-2 rounded-button border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+                className="flex-1 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
               >
                 Abbrechen
               </button>
               <button
                 onClick={() => handleSendReminder(confirmClient)}
                 disabled={sending === confirmClient.id}
-                className="flex-1 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+                className="flex-1 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
               >
                 {sending === confirmClient.id ? "Senden..." : "Ja, senden"}
               </button>

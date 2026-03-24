@@ -86,14 +86,14 @@ export default function VerificationPage() {
           <div>
             <h2 className="text-sm font-bold text-s-ink mb-4">Neues Dokument</h2>
             <div className="bg-white rounded-card shadow-card p-5 border border-s-ink/5 space-y-4">
-              {error && <p className="text-xs text-s-error bg-s-error-bg p-2 rounded-button">{error}</p>}
+              {error && <p className="text-xs text-s-error bg-s-error-bg p-2 rounded-btn">{error}</p>}
               
               <div>
                 <label className="block text-xs font-medium text-s-ink/50 mb-1">Dokumentenart</label>
                 <select 
                   value={docType}
                   onChange={(e) => setDocType(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-button border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
+                  className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral"
                 >
                   {docTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                 </select>
@@ -101,7 +101,7 @@ export default function VerificationPage() {
 
               <div>
                 <label className="block text-xs font-medium text-s-ink/50 mb-1">Datei (PDF, JPG, PNG - Max 10MB)</label>
-                <div className="border-2 border-dashed border-s-ink/10 rounded-button p-4 text-center hover:bg-s-bg-surface transition-colors relative cursor-pointer">
+                <div className="border-2 border-dashed border-s-ink/10 rounded-btn p-4 text-center hover:bg-s-bg-surface transition-colors relative cursor-pointer">
                   <input 
                     type="file" 
                     accept="application/pdf,image/jpeg,image/png"
@@ -122,7 +122,7 @@ export default function VerificationPage() {
               <button 
                 onClick={handleUpload} 
                 disabled={!file || uploading}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white font-medium text-sm disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white font-medium text-sm disabled:opacity-50"
               >
                 {uploading ? <Spinner size="sm" invert /> : <Upload size={16} />}
                 Hochladen
@@ -142,7 +142,7 @@ export default function VerificationPage() {
               <div className="space-y-3">
                 {documents.map((doc) => (
                   <div key={doc.id} className="bg-white rounded-card shadow-sm border border-s-ink/5 p-4 flex items-start gap-3">
-                    <div className="p-2 bg-s-bg-surface rounded-button shrink-0 text-s-ink/40">
+                    <div className="p-2 bg-s-bg-surface rounded-btn shrink-0 text-s-ink/40">
                       <File size={20} />
                     </div>
                     <div className="flex-1 min-w-0">

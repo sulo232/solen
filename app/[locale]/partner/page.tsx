@@ -344,9 +344,9 @@ export default function PartnerPage() {
                     <span className="text-sm font-body font-semibold text-s-coral">solen.ch</span>
                     <span className="text-sm font-body font-bold text-s-coral">1%</span>
                   </div>
-                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-button overflow-hidden">
+                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
                     <div
-                      className="h-full bg-s-coral rounded-button"
+                      className="h-full bg-s-coral rounded-btn"
                       style={{ width: "3.3%" }}
                     />
                   </div>
@@ -358,9 +358,9 @@ export default function PartnerPage() {
                     <span className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">{t("compare_treatwell")}</span>
                     <span className="text-sm font-body font-bold text-s-ink/60 dark:text-s-dm-text/60">~30%</span>
                   </div>
-                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-button overflow-hidden">
+                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
                     <div
-                      className="h-full bg-s-ink/20 dark:bg-s-dm-text/20 rounded-button"
+                      className="h-full bg-s-ink/20 dark:bg-s-dm-text/20 rounded-btn"
                       style={{ width: "100%" }}
                     />
                   </div>
@@ -372,9 +372,9 @@ export default function PartnerPage() {
                     <span className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60">{t("compare_others")}</span>
                     <span className="text-sm font-body font-bold text-s-ink/60 dark:text-s-dm-text/60">15–25%</span>
                   </div>
-                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-button overflow-hidden">
+                  <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
                     <div
-                      className="h-full bg-s-ink/15 dark:bg-s-dm-text/15 rounded-button"
+                      className="h-full bg-s-ink/15 dark:bg-s-dm-text/15 rounded-btn"
                       style={{ width: "66%" }}
                     />
                   </div>

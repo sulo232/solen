@@ -89,7 +89,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           {/* View mode toggle */}
           <button
             onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
-            className="p-1.5 rounded-button text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
             title={viewMode === "table" ? "Diagramm anzeigen" : "Tabelle anzeigen"}
           >
             {viewMode === "table" ? <BarChart2 size={14} /> : <Table2 size={14} />}
@@ -97,13 +97,13 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           {/* Anonymize toggle */}
           <button
             onClick={() => setAnonymized(!anonymized)}
-            className="p-1.5 rounded-button text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
             title={anonymized ? "Namen zeigen" : "Anonymisieren"}
           >
             {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
           {/* Period toggle */}
-          <div className="flex rounded-button border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
+          <div className="flex rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
             {(["week", "month"] as Period[]).map((p) => (
               <button
                 key={p}
@@ -134,7 +134,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
               <button
                 key={col.key}
                 onClick={() => setSortBy(col.key)}
-                className={`px-2 py-1 rounded-button text-xs whitespace-nowrap transition-colors ${
+                className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors ${
                   sortBy === col.key
                     ? "bg-s-coral/10 text-s-coral font-medium"
                     : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"

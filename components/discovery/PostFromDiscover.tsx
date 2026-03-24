@@ -182,13 +182,13 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 <div className="flex gap-2">
                   <button
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-button text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-button text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>
@@ -200,7 +200,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     value={tiktokUrl}
                     onChange={(e) => setTiktokUrl(e.target.value)}
                     placeholder="https://www.tiktok.com/@user/video/..."
-                    className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
+                    className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
                   />
                 )}
 
@@ -209,7 +209,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     <input ref={fileRef} type="file" accept="image/*" className="hidden" aria-label={t.uploadPhoto} />
                     <button
                       onClick={() => fileRef.current?.click()}
-                      className="w-full py-8 rounded-button border-2 border-dashed border-s-ink/10 dark:border-white/10 text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-coral/30 transition-colors"
+                      className="w-full py-8 rounded-btn border-2 border-dashed border-s-ink/10 dark:border-white/10 text-sm text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-coral/30 transition-colors"
                     >
                       {t.uploadPhoto}
                     </button>
@@ -253,7 +253,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   value={styleName}
                   onChange={(e) => setStyleName(e.target.value)}
                   placeholder={t.styleNamePh}
-                  className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
+                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
                 />
 
                 <textarea
@@ -261,7 +261,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t.descPh}
                   rows={2}
-                  className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 resize-none"
+                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 resize-none"
                 />
 
                 <input
@@ -269,7 +269,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder={t.tagsPh}
-                  className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
+                  className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
                 />
 
                 <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
@@ -279,7 +279,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 <button
                   onClick={handlePost}
                   disabled={posting || !tosAccepted}
-                  className="w-full py-3 rounded-button bg-s-coral hover:bg-s-coral-hover text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-btn bg-s-coral hover:bg-s-coral-hover text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2"
                 >
                   {posting && <Loader2 size={14} className="animate-spin" />}
                   {t.post}

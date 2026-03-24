@@ -134,7 +134,7 @@ export default function HelpPage() {
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <div className={`w-8 h-8 rounded-button ${group.color} flex items-center justify-center`}>
+                    <div className={`w-8 h-8 rounded-btn ${group.color} flex items-center justify-center`}>
                       <group.Icon size={16} />
                     </div>
                     <h2 className="font-heading font-semibold text-lg text-s-ink">{group.label}</h2>

@@ -52,7 +52,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             <ClipboardList className="w-5 h-5 text-s-coral" />
             <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">Warteliste</h3>
           </div>
-          <button onClick={onClose} aria-label="Schliessen" className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-button hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors">
+          <button onClick={onClose} aria-label="Schliessen" className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-btn hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors">
             <X className="w-4 h-4 text-s-ink/40 dark:text-s-dm-text/40" />
           </button>
         </div>
@@ -64,7 +64,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             </p>
             <button
               onClick={onClose}
-              className="mt-3 px-4 py-2 rounded-button bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors"
+              className="mt-3 px-4 py-2 rounded-btn bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors"
             >
               Schliessen
             </button>
@@ -78,7 +78,7 @@ export default function WaitlistModal({ salonId, serviceId, date, onClose }: Wai
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
             >
               {submitting && <Spinner size="sm" invert />}
               {submitting ? "Wird eingetragen…" : "Benachrichtige mich"}

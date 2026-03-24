@@ -40,7 +40,7 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
     <div>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">Team-Vergleich</h3>
-        <div className="flex rounded-button border border-s-ink/10 dark:border-white/10 overflow-hidden">
+        <div className="flex rounded-btn border border-s-ink/10 dark:border-white/10 overflow-hidden">
           <button onClick={() => setViewMode("table")}
             className={`px-2 py-1 text-xs transition-colors ${viewMode === "table" ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
             <Table2 size={12} />
@@ -82,8 +82,8 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
           {data.map((s) => (
             <div key={s.staff_member_id} className="flex items-center gap-3">
               <span className="text-xs font-medium text-s-ink dark:text-s-dm-text w-20 truncate">{s.name.split(" ")[0]}</span>
-              <div className="flex-1 h-5 bg-s-ink/5 dark:bg-s-dm-bg rounded-button overflow-hidden">
-                <div className="h-full bg-s-coral rounded-button transition-all"
+              <div className="flex-1 h-5 bg-s-ink/5 dark:bg-s-dm-bg rounded-btn overflow-hidden">
+                <div className="h-full bg-s-coral rounded-btn transition-all"
                   style={{ width: `${maxRevenue > 0 ? (s.revenue / maxRevenue) * 100 : 0}%` }} />
               </div>
               <span className="text-xs data-text text-s-ink/60 dark:text-s-dm-text/60 w-16 text-right">

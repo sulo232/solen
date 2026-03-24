@@ -223,7 +223,7 @@ export default function EditPanel({
           <h3 className="text-s-ink dark:text-s-dm-text font-heading font-bold text-sm">
             Edit Panel
           </h3>
-          <button onClick={onClose} className="p-1 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg transition-colors">
+          <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg transition-colors">
             <X size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
           </button>
         </div>
@@ -290,7 +290,7 @@ export default function EditPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder={selectedElements.length > 0 ? "Describe the change you want for these elements..." : "Describe what you want changed on this page..."}
             rows={4}
-            className="w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded-button border border-s-ink/10 dark:border-s-dm-text/10 p-3 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
+            className="w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 p-3 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30 resize-none"
           />
         </div>
 
@@ -304,7 +304,7 @@ export default function EditPanel({
               <button
                 key={p}
                 onClick={() => setPriority(p)}
-                className={`flex-1 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                className={`flex-1 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   priority === p
                     ? "bg-s-coral text-white"
                     : "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg/80"
@@ -318,7 +318,7 @@ export default function EditPanel({
 
         {/* Error */}
         {error && (
-          <div className="bg-s-error-bg dark:bg-s-error/10 border border-s-error/20 rounded-button p-3">
+          <div className="bg-s-error-bg dark:bg-s-error/10 border border-s-error/20 rounded-btn p-3">
             <p className="text-xs text-s-error">{error}</p>
           </div>
         )}
@@ -327,7 +327,7 @@ export default function EditPanel({
         <button
           onClick={handleSaveRequest}
           disabled={saving || !description.trim()}
-          className={`w-full rounded-button px-4 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+          className={`w-full rounded-btn px-4 py-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
             justSaved
               ? "bg-s-success text-white"
               : "bg-s-coral text-white hover:bg-s-coral-hover disabled:opacity-50 disabled:cursor-not-allowed"
@@ -354,7 +354,7 @@ export default function EditPanel({
               {pendingCount > 0 && (
                 <button
                   onClick={handleCopyAllPending}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                     copiedAll
                       ? "bg-s-success text-white"
                       : "bg-s-coral text-white hover:bg-s-coral-hover"
@@ -367,7 +367,7 @@ export default function EditPanel({
               {selectedRequestIds.size > 0 && (
                 <button
                   onClick={handleCopySelected}
-                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-button transition-colors ${
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                     copiedAll
                       ? "bg-s-success text-white"
                       : "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg hover:bg-s-ink/80 dark:hover:bg-s-dm-text/80"
@@ -393,7 +393,7 @@ export default function EditPanel({
           {showHistory && pageRequests.length > 0 && (
             <div className="mt-2 space-y-2">
               {pageRequests.map((r) => (
-                <div key={r.id} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-2 space-y-1.5">
+                <div key={r.id} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn p-2 space-y-1.5">
                   {/* Checkbox + status + date row */}
                   <div className="flex items-center gap-2">
                     <input
@@ -437,7 +437,7 @@ export default function EditPanel({
                     {/* Copy for Claude */}
                     <button
                       onClick={() => handleCopySingle(r)}
-                      className={`flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button transition-colors ${
+                      className={`flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn transition-colors ${
                         copiedId === r.id
                           ? "bg-s-success-bg text-s-success"
                           : "bg-s-coral/10 text-s-coral hover:bg-s-coral/20"
@@ -452,7 +452,7 @@ export default function EditPanel({
                     <button
                       onClick={() => handleDeleteRequest(r.id)}
                       disabled={deletingId === r.id}
-                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-button bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-50 ml-auto"
+                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-btn bg-s-error-bg dark:bg-s-error/10 text-s-error hover:bg-s-error/15 transition-colors disabled:opacity-50 ml-auto"
                       title="Delete request"
                     >
                       {deletingId === r.id ? (

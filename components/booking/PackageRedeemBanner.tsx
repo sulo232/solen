@@ -100,7 +100,7 @@ export default function PackageRedeemBanner({
       <button
         onClick={handleRedeem}
         disabled={redeeming}
-        className="px-4 py-2 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+        className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center gap-2"
       >
         {redeeming && <Spinner size="sm" invert />}
         {l.redeem}

@@ -67,13 +67,13 @@ function ConfirmModal({
         </div>
         <p className="text-sm text-s-ink/50 mb-5">{message}</p>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-button border border-s-ink/10 text-sm text-s-ink/60">
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60">
             Abbrechen
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className={`flex-1 py-2.5 rounded-button text-sm font-medium text-white disabled:opacity-50 flex items-center justify-center gap-2 ${confirmCls}`}
+            className={`flex-1 py-2.5 rounded-btn text-sm font-medium text-white disabled:opacity-50 flex items-center justify-center gap-2 ${confirmCls}`}
           >
             {loading && <Spinner size="sm" invert />}
             {confirmLabel}
@@ -188,7 +188,7 @@ export default function AllSalonsPage() {
           placeholder="Salon suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-button border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm font-body text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
         />
       </div>
 
@@ -271,14 +271,14 @@ export default function AllSalonsPage() {
                     {salon.is_active ? (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "deactivate" })}
-                        className="px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         Einfrieren
                       </button>
                     ) : (
                       <button
                         onClick={() => setConfirmTarget({ salon, action: "activate" })}
-                        className="px-3 py-1.5 rounded-button border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
+                        className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-s-coral text-xs font-medium hover:bg-s-coral/5 transition-colors"
                       >
                         Aktivieren
                       </button>
@@ -287,7 +287,7 @@ export default function AllSalonsPage() {
                     {/* Edit link */}
                     <a
                       href={`/${locale}/dashboard/settings`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-button bg-s-bg-surface text-s-ink/50 text-xs font-medium hover:bg-s-bg-sunken transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-bg-surface text-s-ink/50 text-xs font-medium hover:bg-s-bg-sunken transition-colors"
                     >
                       Bearbeiten <ExternalLink size={10} />
                     </a>

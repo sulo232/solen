@@ -48,7 +48,7 @@ function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, spar
   return (
     <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card">
       <div className="flex items-start justify-between mb-3">
-        <div className={`w-8 h-8 rounded-button ${bg} flex items-center justify-center`}>
+        <div className={`w-8 h-8 rounded-btn ${bg} flex items-center justify-center`}>
           <Icon size={15} className={color} />
         </div>
         {sparklineData && sparklineData.length > 1 && (

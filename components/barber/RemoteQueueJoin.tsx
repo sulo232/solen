@@ -79,7 +79,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {result?.error && (
-        <div className="flex items-center gap-2 text-sm text-s-error bg-s-error-bg dark:bg-s-error/10 rounded-button px-3 py-2">
+        <div className="flex items-center gap-2 text-sm text-s-error bg-s-error-bg dark:bg-s-error/10 rounded-btn px-3 py-2">
           <AlertCircle size={16} />
           {result.error}
         </div>
@@ -95,7 +95,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           onChange={(e) => setName(e.target.value)}
           required
           maxLength={100}
-          className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+          className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           placeholder="Dein Name"
         />
       </div>
@@ -109,7 +109,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           maxLength={20}
-          className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+          className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           placeholder="+41 79 ..."
         />
       </div>
@@ -122,7 +122,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           <select
             value={preferredBarberId}
             onChange={(e) => setPreferredBarberId(e.target.value)}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           >
             <option value="">Kein Favorit</option>
             {staff.map((s) => (
@@ -140,7 +140,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           <select
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
-            className="w-full rounded-button border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           >
             <option value="">Bitte wählen</option>
             {services.map((s) => (
@@ -153,7 +153,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       <button
         type="submit"
         disabled={!name.trim() || submitting}
-        className="w-full flex items-center justify-center gap-2 rounded-button bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full flex items-center justify-center gap-2 rounded-btn bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         <Users size={16} />
         {submitting ? "Wird angemeldet..." : "Jetzt anstellen"}

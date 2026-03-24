@@ -229,7 +229,7 @@ export default function DashboardLayout({
                       href={`/${locale}${href}`}
                       onClick={() => setMobileSidebarOpen(false)}
                       className={[
-                        "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5",
+                        "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5",
                         active ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
                       ].join(" ")}
                     >
@@ -249,7 +249,7 @@ export default function DashboardLayout({
                         href={`/${locale}${href}`}
                         onClick={() => setMobileSidebarOpen(false)}
                         className={[
-                          "flex items-center gap-3 px-3 py-2.5 rounded-button text-sm font-medium transition-colors mb-0.5",
+                          "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5",
                           isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
                         ].join(" ")}
                       >

@@ -90,7 +90,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
     <div className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Walk-in Statistiken</h3>
-        <div className="flex rounded-button border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
+        <div className="flex rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
           {(["week", "month"] as const).map((p) => (
             <button
               key={p}

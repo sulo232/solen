@@ -91,7 +91,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
               <button
                 onClick={() => toggle(key)}
                 className={[
-                  "w-20 text-center text-xs font-medium py-2 rounded-button transition-all",
+                  "w-20 text-center text-xs font-medium py-2 rounded-btn transition-all",
                   h ? "bg-s-coral text-white shadow-warm-sm" : "bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/50 dark:hover:text-s-dm-text/50",
                 ].join(" ")}
               >
@@ -104,14 +104,14 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                     type="time"
                     value={h.open}
                     onChange={(e) => update(key, "open", e.target.value)}
-                    className="px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                    className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
                   />
                   <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
                   <input
                     type="time"
                     value={h.close}
                     onChange={(e) => update(key, "close", e.target.value)}
-                    className="px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                    className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
                   />
                 </div>
               ) : (
@@ -127,7 +127,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
       <button
         onClick={handleSave}
         disabled={!hasAnyOpen || saving}
-        className="w-full py-3 rounded-button bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
+        className="w-full py-3 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-colors shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

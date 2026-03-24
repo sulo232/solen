@@ -167,7 +167,7 @@ export default function EditorPage() {
         {/* Back */}
         <button
           onClick={() => router.push(`/${locale}/dashboard`)}
-          className="p-1.5 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg transition-colors"
+          className="p-1.5 rounded-btn hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg transition-colors"
           title="Back to Dashboard"
         >
           <ArrowLeft size={16} className="text-s-ink dark:text-s-dm-text" />
@@ -181,13 +181,13 @@ export default function EditorPage() {
             value={urlPath}
             onChange={(e) => setUrlPath(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleNavigate()}
-            className="flex-1 bg-s-bg-sunken dark:bg-s-dm-bg rounded-button border border-s-ink/10 dark:border-s-dm-text/10 px-3 py-1.5 text-xs font-mono text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="flex-1 bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 px-3 py-1.5 text-xs font-mono text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
             placeholder="/de/..."
           />
         </div>
 
         {/* Device presets */}
-        <div className="flex items-center gap-0.5 bg-s-bg-sunken dark:bg-s-dm-bg rounded-button p-0.5">
+        <div className="flex items-center gap-0.5 bg-s-bg-sunken dark:bg-s-dm-bg rounded-btn p-0.5">
           {([
             { key: "desktop" as const, icon: Monitor, label: "Desktop" },
             { key: "tablet" as const, icon: Tablet, label: "Tablet" },
@@ -196,7 +196,7 @@ export default function EditorPage() {
             <button
               key={key}
               onClick={() => setDevice(key)}
-              className={`p-1.5 rounded-button transition-colors ${
+              className={`p-1.5 rounded-btn transition-colors ${
                 device === key
                   ? "bg-white dark:bg-s-dm-surface shadow-warm-sm text-s-coral"
                   : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
@@ -211,7 +211,7 @@ export default function EditorPage() {
         {/* Revert */}
         <button
           onClick={handleRevert}
-          className="p-1.5 rounded-button hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+          className="p-1.5 rounded-btn hover:bg-s-bg-sunken dark:hover:bg-s-dm-bg text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
           title="Revert to live"
         >
           <RotateCcw size={14} />
@@ -220,7 +220,7 @@ export default function EditorPage() {
         {/* Edit mode toggle */}
         <button
           onClick={() => setEditMode(!editMode)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-button text-xs font-medium transition-colors ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn text-xs font-medium transition-colors ${
             editMode
               ? "bg-s-coral text-white"
               : "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"
@@ -236,7 +236,7 @@ export default function EditorPage() {
             setSelectedElements([]);
             setShowPanel(true);
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-button text-xs font-medium bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn text-xs font-medium bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
           title="Describe a change without selecting an element"
         >
           <Pencil size={12} />
@@ -246,7 +246,7 @@ export default function EditorPage() {
         {/* View toggle */}
         <button
           onClick={() => setView(view === "preview" ? "requests" : "preview")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-button text-xs font-medium transition-colors ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-btn text-xs font-medium transition-colors ${
             view === "requests"
               ? "bg-s-ink dark:bg-s-dm-text text-white dark:text-s-dm-bg"
               : "bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"

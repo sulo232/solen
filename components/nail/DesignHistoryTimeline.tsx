@@ -72,7 +72,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
               <div className="flex items-start gap-3">
                 {/* Design image */}
                 {d.image_url && (
-                  <div className="w-20 h-20 rounded-button overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg shrink-0">
+                  <div className="w-20 h-20 rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg shrink-0">
                     <Image src={d.image_url} alt="" width={80} height={80} className="object-cover w-full h-full" />
                   </div>
                 )}

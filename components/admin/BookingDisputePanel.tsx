@@ -105,13 +105,13 @@ export default function BookingDisputePanel() {
               </span>
             </div>
 
-            <div className="mb-3 p-3 bg-s-bg-surface rounded-button">
+            <div className="mb-3 p-3 bg-s-bg-surface rounded-btn">
               <p className="text-xs text-s-ink/40 font-body mb-1">Problembeschreibung (Kunde)</p>
               <p className="text-sm text-s-ink/80">{d.description}</p>
             </div>
 
             {d.salon_response && (
-              <div className="mb-3 p-3 bg-s-coral-subtle rounded-button">
+              <div className="mb-3 p-3 bg-s-coral-subtle rounded-btn">
                 <p className="text-xs text-s-ink/40 font-body mb-1">Stellungnahme (Salon)</p>
                 <p className="text-sm text-s-ink/80">{d.salon_response}</p>
               </div>
@@ -130,28 +130,28 @@ export default function BookingDisputePanel() {
                   placeholder="Notiz für Lösung (optional)"
                   value={resolutionNote[d.id] || ""}
                   onChange={(e) => setResolutionNote((prev) => ({ ...prev, [d.id]: e.target.value }))}
-                  className="px-3 py-2 rounded-button border border-s-ink/10 text-xs w-full mb-2"
+                  className="px-3 py-2 rounded-btn border border-s-ink/10 text-xs w-full mb-2"
                 />
                 
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => handleAction(d.id, "dismiss")}
                     disabled={resolving === d.id}
-                    className="px-3 py-1.5 rounded-button bg-s-ink/5 hover:bg-s-ink/10 text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 rounded-btn bg-s-ink/5 hover:bg-s-ink/10 text-xs font-medium transition-colors"
                   >
                     Abweisen
                   </button>
                   <button
                     onClick={() => handleAction(d.id, "warn_salon")}
                     disabled={resolving === d.id}
-                    className="px-3 py-1.5 rounded-button bg-s-amber-subtle text-s-amber-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 rounded-btn bg-s-amber-subtle text-s-amber-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
                   >
                     Salon verwarnen
                   </button>
                   <button
                     onClick={() => handleAction(d.id, "warn_customer")}
                     disabled={resolving === d.id}
-                    className="px-3 py-1.5 rounded-button bg-s-amber-subtle text-s-amber-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
+                    className="px-3 py-1.5 rounded-btn bg-s-amber-subtle text-s-amber-text hover:bg-s-amber-subtle/80 text-xs font-medium transition-colors"
                   >
                     Kunde verwarnen
                   </button>
@@ -160,7 +160,7 @@ export default function BookingDisputePanel() {
                     <button
                       onClick={() => handleAction(d.id, "escalate")}
                       disabled={resolving === d.id}
-                      className="px-3 py-1.5 rounded-button bg-s-coral/10 text-s-coral hover:bg-s-coral/20 text-xs font-medium flex items-center gap-1 transition-colors"
+                      className="px-3 py-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 text-xs font-medium flex items-center gap-1 transition-colors"
                     >
                       <Scale size={14} /> Eskalieren (30 Tage)
                     </button>
@@ -172,12 +172,12 @@ export default function BookingDisputePanel() {
                       placeholder="CHF Refund"
                       value={refundAmount[d.id] || ""}
                       onChange={(e) => setRefundAmount((prev) => ({ ...prev, [d.id]: e.target.value }))}
-                      className="w-24 px-2 py-1.5 rounded-button border border-s-ink/10 text-xs"
+                      className="w-24 px-2 py-1.5 rounded-btn border border-s-ink/10 text-xs"
                     />
                     <button
                       onClick={() => handleAction(d.id, "refund")}
                       disabled={resolving === d.id || !refundAmount[d.id]}
-                      className="px-3 py-1.5 rounded-button bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
+                      className="px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
                     >
                       Rückerstatten
                     </button>

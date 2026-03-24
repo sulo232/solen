@@ -97,11 +97,11 @@ export default function MyGiftCardsPage() {
                       </h3>
                     </div>
                     {isInactive ? (
-                      <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-2.5 py-1 bg-s-ink/5 dark:bg-white/5 rounded-button">
+                      <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-2.5 py-1 bg-s-ink/5 dark:bg-white/5 rounded-btn">
                         {isExpired ? "Abgelaufen" : "Eingelöst"}
                       </span>
                     ) : (
-                      <span className="text-xs font-medium text-s-coral px-2.5 py-1 bg-s-coral/10 rounded-button">
+                      <span className="text-xs font-medium text-s-coral px-2.5 py-1 bg-s-coral/10 rounded-btn">
                         Aktiv
                       </span>
                     )}
@@ -110,12 +110,12 @@ export default function MyGiftCardsPage() {
                   <div className="mb-4">
                     <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">Online Code</p>
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 px-3 py-2 bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/10 rounded-button font-mono text-sm tracking-widest text-s-ink dark:text-s-dm-text">
+                      <div className="flex-1 px-3 py-2 bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/10 rounded-btn font-mono text-sm tracking-widest text-s-ink dark:text-s-dm-text">
                         {card.code}
                       </div>
                       <button
                         onClick={() => copyCode(card.code)}
-                        className="p-2.5 rounded-button bg-s-ink/5 dark:bg-white/5 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+                        className="p-2.5 rounded-btn bg-s-ink/5 dark:bg-white/5 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
                         title="Code kopieren"
                       >
                         {copiedCode === card.code ? <Check size={16} className="text-s-success" /> : <Copy size={16} className="text-s-ink/60 dark:text-s-dm-text/60" />}

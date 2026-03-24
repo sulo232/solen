@@ -103,13 +103,13 @@ export default function GiftCardPage() {
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}
-                  className={`py-2.5 rounded-button text-sm font-medium transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
+                  className={`py-2.5 rounded-btn text-sm font-medium transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
                   {(a / 100).toFixed(0)}
                 </button>
               ))}
             </div>
             <button onClick={() => setUseCustom(true)}
-              className={`w-full py-2 rounded-button text-xs font-medium transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
+              className={`w-full py-2 rounded-btn text-xs font-medium transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
               Eigener Betrag
             </button>
             {useCustom && (
@@ -117,7 +117,7 @@ export default function GiftCardPage() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink/30 dark:text-s-dm-text/30">CHF</span>
                 <input type="number" min="5" step="5" value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)} placeholder="0"
-                  className="w-full pl-12 pr-3 py-2.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral data-text" />
+                  className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral data-text" />
               </div>
             )}
           </div>
@@ -126,16 +126,16 @@ export default function GiftCardPage() {
           <div>
             <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Empfänger *</label>
             <input value={recipientName} onChange={(e) => setRecipientName(e.target.value)} placeholder="Name"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral mb-2" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral mb-2" />
             <input type="email" value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)} placeholder="E-Mail"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
           </div>
 
           {/* Message */}
           <div>
             <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Persönliche Nachricht</label>
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} placeholder="Optional…"
-              className="w-full px-3 py-2 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral resize-none" />
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral resize-none" />
           </div>
 
           {/* Preview */}
@@ -151,7 +151,7 @@ export default function GiftCardPage() {
           {error && <p className="text-xs text-s-coral">{error}</p>}
 
           <button onClick={handlePurchase} disabled={paying || amount < 500 || !recipientName.trim() || !recipientEmail.trim()}
-            className="w-full py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {paying ? <Spinner size="sm" invert /> : <Send size={14} />}
             Geschenkkarte kaufen · {formatCurrency(amount / 100)}
           </button>

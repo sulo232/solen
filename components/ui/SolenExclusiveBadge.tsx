@@ -26,7 +26,7 @@ export default function SolenExclusiveBadge({
         Nur bei Solen
       </span>
       {showTooltip && (
-        <span className="absolute z-10 bg-s-ink text-white text-xs px-3 py-2 rounded-button shadow-warm-lg max-w-[200px] -top-10 left-1/2 -translate-x-1/2 pointer-events-none">
+        <span className="absolute z-10 bg-s-ink text-white text-xs px-3 py-2 rounded-btn shadow-warm-lg max-w-[200px] -top-10 left-1/2 -translate-x-1/2 pointer-events-none">
           {featureDescription}
           <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
         </span>

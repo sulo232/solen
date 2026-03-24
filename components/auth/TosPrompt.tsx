@@ -86,11 +86,11 @@ export default function TosPrompt() {
         
         <div className="p-6 bg-s-bg-sunken dark:bg-s-dm-bg">
           <div className="flex flex-col gap-3">
-            <a href="/de/legal/terms" target="_blank" className="flex items-center justify-between p-3 rounded-button bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
+            <a href="/de/legal/terms" target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
               <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">Allgemeine Geschäftsbedingungen</span>
               <span className="text-xs text-s-coral group-hover:underline">Lesen</span>
             </a>
-            <a href="/de/legal/privacy" target="_blank" className="flex items-center justify-between p-3 rounded-button bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
+            <a href="/de/legal/privacy" target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
               <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">Datenschutzerklärung</span>
               <span className="text-xs text-s-coral group-hover:underline">Lesen</span>
             </a>
@@ -101,7 +101,7 @@ export default function TosPrompt() {
           <button
             onClick={handleAccept}
             disabled={saving}
-            className="w-full py-3 rounded-button bg-s-coral text-white font-medium text-sm hover:bg-s-coral/90 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-btn bg-s-coral text-white font-medium text-sm hover:bg-s-coral/90 transition-colors flex items-center justify-center gap-2"
           >
             {saving ? <Spinner size="sm" invert /> : <Check size={18} />}
             Ich akzeptiere die neuen Bedingungen

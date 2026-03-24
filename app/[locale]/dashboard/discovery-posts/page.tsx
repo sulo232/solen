@@ -137,16 +137,16 @@ export default function DiscoveryPostsPage() {
 
             {/* Mode toggle */}
             <div className="flex gap-2">
-              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-button text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>
+              <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>
                 <Upload size={14} /> Foto
               </button>
-              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-button text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>
+              <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60"}`}>
                 <LinkIcon size={14} /> TikTok
               </button>
             </div>
 
             {mode === "tiktok" && (
-              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
+              <input type="url" value={tiktokUrl} onChange={(e) => setTiktokUrl(e.target.value)} placeholder="https://www.tiktok.com/@user/video/..." className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
             )}
 
             <div>
@@ -167,14 +167,14 @@ export default function DiscoveryPostsPage() {
               </div>
             </div>
 
-            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder="Stilname (optional)" className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Beschreibung (optional)" rows={2} className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 resize-none" />
-            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (Kommagetrennt)" className="w-full px-3 py-2.5 rounded-button bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
+            <input type="text" value={styleName} onChange={(e) => setStyleName(e.target.value)} placeholder="Stilname (optional)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Beschreibung (optional)" rows={2} className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 resize-none" />
+            <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (Kommagetrennt)" className="w-full px-3 py-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30" />
 
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}
 
-            <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-button bg-s-coral hover:bg-s-coral-hover text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2">
+            <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-coral hover:bg-s-coral-hover text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2">
               {posting && <Loader2 size={14} className="animate-spin" />}
               Veröffentlichen
             </button>
@@ -191,7 +191,7 @@ export default function DiscoveryPostsPage() {
               <div className="space-y-3">
                 {posts.map((post) => (
                   <div key={post.id} className="p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-button bg-s-ink/5 dark:bg-white/5 shrink-0 overflow-hidden">
+                    <div className="w-14 h-14 rounded-btn bg-s-ink/5 dark:bg-white/5 shrink-0 overflow-hidden">
                       {post.image_url && <img src={post.image_url} alt="" className="w-full h-full object-cover" />}
                     </div>
                     <div className="flex-1 min-w-0">
