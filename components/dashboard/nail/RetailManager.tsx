@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Package, Plus, DollarSign } from "lucide-react";
+import { Package, Plus, DollarSign, AlertTriangle, Minus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
@@ -14,6 +14,8 @@ interface RetailProduct {
   category: string;
   image_url: string | null;
   stock_count: number;
+  low_stock_threshold?: number;
+  is_active: boolean;
 }
 
 export default function RetailManager({ salonId }: { salonId: string }) {
@@ -58,7 +60,25 @@ export default function RetailManager({ salonId }: { salonId: string }) {
     }
   };
 
-  const totalRevenue = products.reduce((sum, p) => sum + p.price, 0);
+  const lowStockProducts = products.filter((p) => p.stock_count <= (p.low_stock_threshold ?? 5));
+
+  const adjustStock = async (productId: string, delta: number) => {
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+    const newCount = Math.max(0, product.stock_count + delta);
+    // Optimistic update
+    setProducts((prev) => prev.map((p) => p.id === productId ? { ...p, stock_count: newCount } : p));
+    try {
+      await fetch("/api/nail/retail", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: productId, stock_count: newCount }),
+      });
+    } catch {
+      // Revert on failure
+      setProducts((prev) => prev.map((p) => p.id === productId ? { ...p, stock_count: product.stock_count } : p));
+    }
+  };
 
   if (loading) return <div className="flex justify-center py-6"><Spinner /></div>;
 
@@ -135,24 +155,63 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         </div>
       )}
 
+      {/* Low-stock alert */}
+      {lowStockProducts.length > 0 && (
+        <div className="flex items-center gap-2 p-3 rounded-card bg-s-warning-bg dark:bg-s-warning/10">
+          <AlertTriangle size={14} className="text-s-warning shrink-0" />
+          <span className="text-xs text-s-warning">
+            {t("retail_low_stock_alert", { count: lowStockProducts.length })}
+          </span>
+        </div>
+      )}
+
       {/* Product list */}
       <div className="space-y-2">
-        {products.map((product) => (
-          <div key={product.id} className="flex items-center gap-3 p-3 rounded-card border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface">
-            <div className="w-10 h-10 rounded-button bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center shrink-0">
-              <Package size={16} className="text-s-ink/30 dark:text-s-dm-text/30" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{product.name}</p>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50">
-                {product.category}
+        {products.map((product) => {
+          const isLowStock = product.stock_count <= (product.low_stock_threshold ?? 5);
+          return (
+            <div key={product.id} className={`flex items-center gap-3 p-3 rounded-card border bg-white dark:bg-s-dm-surface ${
+              isLowStock ? "border-s-warning/30 bg-s-warning-bg/30" : "border-s-ink/5 dark:border-s-dm-text/10"
+            }`}>
+              <div className="w-10 h-10 rounded-button bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center shrink-0">
+                <Package size={16} className="text-s-ink/30 dark:text-s-dm-text/30" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{product.name}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50">
+                    {product.category}
+                  </span>
+                  <span className={`text-[10px] data-text ${isLowStock ? "text-s-warning font-medium" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+                    {t("retail_stock", { count: product.stock_count })}
+                  </span>
+                </div>
+              </div>
+              {/* Stock adjustment buttons */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => adjustStock(product.id, -1)}
+                  className="w-6 h-6 rounded-button flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10"
+                  aria-label={t("retail_stock_minus")}
+                  disabled={product.stock_count <= 0}
+                >
+                  <Minus size={10} />
+                </button>
+                <span className="text-xs data-text w-6 text-center text-s-ink dark:text-s-dm-text">{product.stock_count}</span>
+                <button
+                  onClick={() => adjustStock(product.id, 1)}
+                  className="w-6 h-6 rounded-button flex items-center justify-center bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/10"
+                  aria-label={t("retail_stock_plus")}
+                >
+                  <Plus size={10} />
+                </button>
+              </div>
+              <span className="text-sm font-medium data-text text-s-ink dark:text-s-dm-text">
+                {formatCurrency(product.price / 100, locale)}
               </span>
             </div>
-            <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">
-              {formatCurrency(product.price / 100, locale)}
-            </span>
-          </div>
-        ))}
+          );
+        })}
         {products.length === 0 && (
           <p className="text-center text-sm text-s-ink/30 dark:text-s-dm-text/30 py-6">{t("retail_empty")}</p>
         )}

@@ -84,14 +84,29 @@ export default function StationManager({ salonId }: { salonId: string }) {
         </label>
       </div>
 
-      {/* Utilization bar */}
-      <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg">
-        <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60 mb-1">
+      {/* Per-station utilization bars */}
+      <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg space-y-2">
+        <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60">
           <span>{t("stations_utilization")}</span>
           <span>{t("stations_used_of", { used: 0, total: config.total_stations })}</span>
         </div>
-        <div className="h-2 rounded-full bg-s-ink/10 dark:bg-s-dm-text/10">
-          <div className="h-full rounded-full bg-s-sage" style={{ width: "0%" }} />
+        {Array.from({ length: config.total_stations }, (_, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 w-8 shrink-0">#{i + 1}</span>
+            <div className="flex-1 h-3 rounded-pill bg-s-ink/10 dark:bg-s-dm-text/10 overflow-hidden flex">
+              {/* Booked portion — placeholder 0% until real booking data */}
+              <div className="h-full bg-s-coral" style={{ width: "0%" }} />
+              {/* Buffer portion */}
+              <div className="h-full bg-s-ink/10 dark:bg-s-dm-text/10" style={{ width: "0%" }} />
+            </div>
+            <span className="text-[9px] data-text text-s-ink/30 dark:text-s-dm-text/30 w-8 text-right">0%</span>
+          </div>
+        ))}
+        {/* Legend */}
+        <div className="flex items-center gap-3 mt-1">
+          <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-coral" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("stations_booked")}</span></div>
+          <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-sand-subtle" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("stations_available")}</span></div>
+          <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-ink/10" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("stations_buffer")}</span></div>
         </div>
       </div>
 

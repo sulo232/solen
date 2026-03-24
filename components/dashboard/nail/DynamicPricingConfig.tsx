@@ -111,23 +111,43 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
         </button>
       </div>
 
-      {/* Weekly heatmap preview */}
-      <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg">
+      {/* Weekly heatmap — 7 days × 12 hours */}
+      <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg overflow-x-auto">
         <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-2">{t("pricing_overview")}</p>
-        <div className="grid grid-cols-7 gap-1">
-          {DAYS.map((day, i) => {
-            const dayRules = rules.filter((r) => r.day_of_week === i && r.is_active);
-            const maxMod = dayRules.length > 0 ? Math.max(...dayRules.map((r) => r.modifier)) : 1;
-            const color = maxMod > 1.3 ? "bg-s-coral" : maxMod > 1.1 ? "bg-s-amber" : maxMod < 0.9 ? "bg-s-sage" : "bg-s-ink/10 dark:bg-s-dm-text/10";
-            return (
-              <div key={i} className="text-center">
-                <span className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40">{day}</span>
-                <div className={`h-6 rounded-sm ${color} mt-0.5 flex items-center justify-center`}>
-                  {maxMod !== 1 && <span className="text-[8px] text-white font-medium">{maxMod.toFixed(1)}x</span>}
-                </div>
-              </div>
-            );
-          })}
+        <div className="min-w-[320px]">
+          {/* Hour headers */}
+          <div className="grid gap-0.5" style={{ gridTemplateColumns: "40px repeat(12, 1fr)" }}>
+            <div />
+            {Array.from({ length: 12 }, (_, h) => (
+              <span key={h} className="text-[8px] text-center text-s-ink/30 dark:text-s-dm-text/30">{(h + 8).toString().padStart(2, "0")}</span>
+            ))}
+          </div>
+          {/* Day rows */}
+          {DAYS.map((day, dayIdx) => (
+            <div key={dayIdx} className="grid gap-0.5 mt-0.5" style={{ gridTemplateColumns: "40px repeat(12, 1fr)" }}>
+              <span className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 leading-5 truncate">{day}</span>
+              {Array.from({ length: 12 }, (_, h) => {
+                const hour = h + 8;
+                const hourStr = `${hour.toString().padStart(2, "0")}:00`;
+                const matching = rules.filter(
+                  (r) => r.is_active && r.day_of_week === dayIdx && r.start_time && r.end_time && r.start_time <= hourStr && r.end_time > hourStr
+                );
+                const maxMod = matching.length > 0 ? Math.max(...matching.map((r) => r.modifier)) : 1;
+                const bg = maxMod > 1.3 ? "bg-s-coral-subtle" : maxMod > 1.1 ? "bg-s-coral-subtle/50" : maxMod < 0.9 ? "bg-s-sage-subtle" : "bg-white dark:bg-s-dm-surface";
+                return (
+                  <div key={h} className={`h-5 rounded-sm ${bg} flex items-center justify-center border border-s-ink/5 dark:border-s-dm-text/5`}>
+                    {maxMod !== 1 && <span className="text-[7px] text-s-ink/60 dark:text-s-dm-text/60 data-text">{maxMod.toFixed(1)}x</span>}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          {/* Legend */}
+          <div className="flex items-center gap-3 mt-2">
+            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-s-sage-subtle" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("pricing_discount")}</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-white dark:bg-s-dm-surface border border-s-ink/5" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("pricing_base")}</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-s-coral-subtle" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("pricing_premium")}</span></div>
+          </div>
         </div>
       </div>
 
