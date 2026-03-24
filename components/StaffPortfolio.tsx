@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
-import { Star } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { StaffMember } from "@/lib/types";
 
 interface PortfolioImage {
@@ -40,12 +40,12 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
           {member.specialties?.length > 0 && (
             <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{member.specialties.join(", ")}</p>
           )}
-          {(member as StaffMember & { avg_rating?: number; review_count?: number }).avg_rating != null && (
+          {member.average_rating != null && member.average_rating > 0 && (
             <p className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
               <Star size={10} className="fill-s-coral text-s-coral" />
-              {(member as StaffMember & { avg_rating: number }).avg_rating.toFixed(1)}
-              {(member as StaffMember & { review_count?: number }).review_count != null && (
-                <span className="text-s-ink/30 dark:text-s-dm-text/30">({(member as StaffMember & { review_count: number }).review_count})</span>
+              <span className="data-text">{member.average_rating.toFixed(1)}</span>
+              {member.review_count != null && member.review_count > 0 && (
+                <span className="text-s-ink/30 dark:text-s-dm-text/30">({member.review_count})</span>
               )}
             </p>
           )}
@@ -53,9 +53,9 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
       </div>
 
       {/* Bio */}
-      {(member as StaffMember & { bio?: string }).bio && (
+      {member.bio && (
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-3 leading-relaxed">
-          {(member as StaffMember & { bio?: string }).bio}
+          {member.bio}
         </p>
       )}
 
@@ -83,23 +83,46 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
       {/* Book button */}
       <button
         onClick={() => onBook?.(member.id)}
-        className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors"
+        className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors shadow-warm-sm"
       >
         Bei {member.name} buchen
       </button>
 
-      {/* Simple lightbox */}
+      {/* Lightbox with navigation */}
       {lightboxIndex !== null && (
         <div
-          className="fixed inset-0 z-60 bg-s-ink/80 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 z-modal bg-s-ink/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center"
           onClick={() => setLightboxIndex(null)}
         >
+          <button
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }}
+            className="absolute top-4 right-4 text-white/80 hover:text-white"
+          >
+            <X size={24} />
+          </button>
+          {lightboxIndex > 0 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }}
+              className="absolute left-4 text-white/80 hover:text-white"
+            >
+              <ChevronLeft size={32} />
+            </button>
+          )}
+          {lightboxIndex < sortedImages.length - 1 && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }}
+              className="absolute right-4 text-white/80 hover:text-white"
+            >
+              <ChevronRight size={32} />
+            </button>
+          )}
           <Image
             src={sortedImages[lightboxIndex].image_url}
             alt=""
             width={800}
             height={800}
             className="max-w-[90vw] max-h-[90vh] object-contain rounded-card"
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

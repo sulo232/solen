@@ -11,6 +11,7 @@ import { today as ariaToday, getLocalTimeZone, CalendarDate } from "@internation
 import type { DateValue } from "react-aria-components";
 import { formatCurrency } from "@/lib/format-currency";
 import type { AvailabilitySlot, RecurringFrequency, StaffMember } from "@/lib/types";
+import StaffPicker from "@/components/booking/StaffPicker";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import GuestBookingForm, { type GuestInfo } from "@/components/booking/GuestBookingForm";
@@ -117,7 +118,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
       <button
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={16} />}
         {processing ? "Wird verarbeitet…" : "Jetzt bezahlen"}
@@ -523,7 +524,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         <PartyPopper size={48} className="text-s-coral" />
         <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Buchung bestätigt!</p>
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">Du erhältst eine Bestätigungs-E-Mail.</p>
-        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
+        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
           Meine Buchungen
         </a>
       </div>
@@ -533,21 +534,11 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   return (
     <div className="rounded-card border border-s-ink/5 bg-white dark:bg-s-dm-raised overflow-hidden">
       {/* Staff picker */}
-      {staffList.length > 0 && (
-        <div className="px-4 pt-4">
-          <select
-            value={selectedStaff}
-            onChange={(e) => setSelectedStaff(e.target.value)}
-            className="w-full px-3 py-2 rounded-button border border-s-ink/10 text-sm text-s-ink bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral transition-colors"
-            aria-label="Mitarbeiter wählen"
-          >
-            <option value="any">Egal (wer verfügbar ist)</option>
-            {staffList.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
-        </div>
-      )}
+      <StaffPicker
+        staffList={staffList}
+        selectedStaff={selectedStaff}
+        onSelect={setSelectedStaff}
+      />
 
       {/* Barbershop: last cut repeat banner */}
       {serviceCategory === "barbershop" && lastBarberCut && (
@@ -641,7 +632,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           key={slot.id}
                           onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
-                            "px-3 py-1.5 rounded-button text-sm data-text font-medium transition-all duration-150",
+                            "px-3 py-1.5 rounded-btn text-sm data-text font-medium transition-all duration-150",
                             isSelected
                               ? "bg-s-coral text-white shadow-card"
                               : offPeakPct
@@ -713,7 +704,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="text-sm px-3 py-1.5 rounded-button border border-s-ink/10 bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral"
+              className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral"
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -725,7 +716,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <select
             value={acquisitionSource}
             onChange={e => setAcquisitionSource(e.target.value)}
-            className="text-sm px-3 py-1.5 rounded-button border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-s-ink/70 dark:text-s-dm-text/70 outline-none focus:border-s-coral"
+            className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-s-ink/70 dark:text-s-dm-text/70 outline-none focus:border-s-coral"
           >
             {ACQUISITION_SOURCES.map(src => (
               <option key={src.value} value={src.value}>{locale === "en" ? src.label_en : src.label_de}</option>
@@ -768,7 +759,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           </div>
 
           {/* Cancellation policy */}
-          <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/5 rounded-button px-3 py-2">
+          <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/5 rounded-btn px-3 py-2">
             <Info className="w-3.5 h-3.5 shrink-0" />
             Kostenlose Stornierung bis {cancelWindowHours}h vor dem Termin. Danach werden {cancelFeePercent}% einbehalten.
           </div>
@@ -807,7 +798,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-button bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50"
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? "Wird vorbereitet…" : isMoreThan7Days ? "Karte speichern & Buchen" : "Zur Zahlung"}
@@ -827,7 +818,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             {waitlistDone ? (
               <div className="text-center py-4">
                 <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
-                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-button bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors">
+                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-colors">
                   Schliessen
                 </button>
               </div>
@@ -839,7 +830,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 <button
                   onClick={handleWaitlistSubmit}
                   disabled={waitlistSubmitting}
-                  className="w-full py-2.5 rounded-button bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                  className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
                 >
                   {waitlistSubmitting ? "Wird eingetragen…" : "Benachrichtige mich"}
                 </button>

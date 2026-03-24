@@ -15,6 +15,7 @@ import { formatCurrency } from "@/lib/format-currency";
 import { Gift, Package } from "lucide-react";
 import BookingCalendar from "@/components/BookingCalendar";
 import StaffPortfolio from "@/components/StaffPortfolio";
+import StaffSection from "@/components/salon/StaffSection";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
 import ReviewForm from "@/components/ReviewForm";
 import NearbySalons from "@/components/NearbySalons";
@@ -645,19 +646,14 @@ export default function SalonProfilePage() {
                     <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Team</h2>
                     <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "team" ? "rotate-180" : ""}`} />
                   </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Team</h2>
 
-                  <div className={`${openAccordion === "team" ? "" : "hidden md:block"}`}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
-                      {salon.staff.map((m) => (
-                        <StaffPortfolio
-                          key={m.id}
-                          member={m}
-                          salonSlug={slug}
-                          onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
-                        />
-                      ))}
-                    </div>
+                  <div className={`${openAccordion === "team" ? "" : "hidden md:block"} mt-3 md:mt-0`}>
+                    <StaffSection
+                      staff={salon.staff}
+                      salonSlug={slug}
+                      locale={locale}
+                      onBook={(staffId) => { setSelectedStaff(staffId); setCalendarOpen(true); }}
+                    />
                   </div>
                 </div>
               )}
