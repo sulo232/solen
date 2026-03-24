@@ -4,12 +4,52 @@ import { useState } from "react";
 import { Star, X } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
+interface SubRatingRowProps {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+}
+
+function SubRatingRow({ label, value, onChange }: SubRatingRowProps) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70 w-28 shrink-0">{label}</span>
+      <div className="flex gap-0.5" onMouseLeave={() => setHover(0)}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onMouseEnter={() => setHover(star)}
+            onClick={() => onChange(value === star ? 0 : star)}
+            className="p-0.5 focus:outline-none transition-transform hover:scale-110"
+          >
+            <Star
+              size={20}
+              strokeWidth={1.5}
+              className={(hover || value) >= star
+                ? "fill-s-coral text-s-coral"
+                : "text-s-ink/20 dark:text-s-dm-text/20"}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 interface ReviewFormProps {
   salonId: string;
   bookingId: string;
   onSuccess: () => void;
   onClose: () => void;
 }
+
+type SubRatings = {
+  score_ergebnis: number;
+  score_atmosphaere: number;
+  score_preis_leistung: number;
+};
 
 export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: ReviewFormProps) {
   const [rating, setRating] = useState<number>(0);
@@ -19,6 +59,11 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
   const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [subRatings, setSubRatings] = useState<SubRatings>({
+    score_ergebnis: 0,
+    score_atmosphaere: 0,
+    score_preis_leistung: 0,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +83,9 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
           booking_id: bookingId,
           rating,
           comment: comment.trim() || undefined,
+          ...(subRatings.score_ergebnis > 0 && { score_ergebnis: subRatings.score_ergebnis }),
+          ...(subRatings.score_atmosphaere > 0 && { score_atmosphaere: subRatings.score_atmosphaere }),
+          ...(subRatings.score_preis_leistung > 0 && { score_preis_leistung: subRatings.score_preis_leistung }),
         }),
       });
 
@@ -112,6 +160,25 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 h-4">
               {rating > 0 ? `${rating} von 5 Sternen` : "Wähle eine Bewertung"}
             </p>
+          </div>
+
+          {/* Sub-category ratings — optional */}
+          <div className="space-y-3 pt-4 border-t border-s-ink/5 dark:border-white/5">
+            <p className="text-xs font-heading font-semibold text-s-ink/60 dark:text-s-dm-text/60 uppercase tracking-[.15em]">
+              Detailbewertung (Optional)
+            </p>
+            {([
+              { key: "score_ergebnis" as const, label: "Ergebnis" },
+              { key: "score_atmosphaere" as const, label: "Atmosphäre" },
+              { key: "score_preis_leistung" as const, label: "Preis-Leistung" },
+            ]).map(({ key, label }) => (
+              <SubRatingRow
+                key={key}
+                label={label}
+                value={subRatings[key]}
+                onChange={(v) => setSubRatings(prev => ({ ...prev, [key]: v }))}
+              />
+            ))}
           </div>
 
           {/* Comment */}

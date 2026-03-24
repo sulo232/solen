@@ -125,6 +125,9 @@ export interface StaffMember {
   can_manage_portfolio?: boolean;
   average_rating?: number;
   review_count?: number;
+  bio?: string | null;
+  instagram_url?: string | null;
+  years_experience?: number | null;
 }
 
 export interface Service {
@@ -254,6 +257,9 @@ export interface Review {
   removal_reason?: string | null;
   admin_response?: string | null;
   admin_response_at?: string | null;
+  score_ergebnis?: number | null;       // 1-5 Ergebnis (quality of result)
+  score_atmosphaere?: number | null;    // 1-5 Atmosphäre (friendliness)
+  score_preis_leistung?: number | null; // 1-5 Preis-Leistung (value for money)
   created_at: string;
 }
 

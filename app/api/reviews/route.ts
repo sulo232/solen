@@ -26,7 +26,12 @@ export async function POST(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(createReviewSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { booking_id, rating, comment, staff_member_id } = validated;
+  const { booking_id, rating: rawRating, comment, staff_member_id, score_ergebnis, score_atmosphaere, score_preis_leistung } = validated;
+
+  // If all 3 sub-ratings provided, compute weighted overall rating (half-star granularity)
+  const rating = (score_ergebnis && score_atmosphaere && score_preis_leistung)
+    ? Math.round((score_ergebnis * 0.5 + score_atmosphaere * 0.25 + score_preis_leistung * 0.25) * 2) / 2
+    : rawRating;
 
   // Verify booking belongs to user and is completed
   const { data: booking } = await supabase
@@ -63,6 +68,9 @@ export async function POST(request: NextRequest) {
       is_flagged: modResult.flagged,
       is_hidden: modResult.hidden,
       flag_reason: modResult.reason,
+      score_ergebnis: score_ergebnis ?? null,
+      score_atmosphaere: score_atmosphaere ?? null,
+      score_preis_leistung: score_preis_leistung ?? null,
     })
     .select()
     .single();

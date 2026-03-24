@@ -33,6 +33,9 @@ export const createReviewSchema = z.object({
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(500).optional(),
   staff_member_id: uuid.optional(),
+  score_ergebnis: z.number().int().min(1).max(5).optional(),
+  score_atmosphaere: z.number().int().min(1).max(5).optional(),
+  score_preis_leistung: z.number().int().min(1).max(5).optional(),
 });
 
 export const createMessageSchema = z.object({
