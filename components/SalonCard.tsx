@@ -13,6 +13,8 @@ import type { LucideIcon } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 
+const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgOCA1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiNFOEU0REYiLz48L3N2Zz4=";
+
 const BADGE_ICONS: Record<string, LucideIcon> = {
   Star, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
   Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal,
@@ -119,6 +121,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               alt={salon.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDER}
               className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
             />
           ) : (
