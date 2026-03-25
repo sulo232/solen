@@ -41,6 +41,7 @@ interface SalonCardProps {
     nextDate?: string; // ISO date if unavailable
   };
   offPeakToday?: { discount_percent: number } | null;
+  aiReason?: string; // AI-generated recommendation reason text (from /api/recommendations)
 }
 
 const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
@@ -62,7 +63,7 @@ const quartierLabels: Record<string, string> = {
   breite: "Breite",
 };
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
@@ -278,12 +279,23 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             ) : (
               <span className="text-[11px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill shadow-warm-xs">Neu auf Solen</span>
             )}
-            
+
             {salon.avg_price != null && salon.avg_price > 0 && (
               <>
                 <span className="text-xs text-s-ink/30 font-body ml-1">·</span>
                 <span className="text-xs data-text text-s-ink/60 ml-1">Ø {formatCurrency(salon.avg_price, locale)}</span>
               </>
+            )}
+
+            {/* AI Recommendation Reason Tooltip */}
+            {aiReason && (
+              <div className="relative group ml-1">
+                <Sparkles className="w-3.5 h-3.5 text-s-coral cursor-help" />
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-card shadow-warm-md border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 z-10">
+                  {aiReason}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-white dark:border-t-s-dm-surface" />
+                </div>
+              </div>
             )}
           </div>
           <div className="flex gap-1.5 flex-wrap mt-2">
