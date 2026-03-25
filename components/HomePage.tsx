@@ -443,26 +443,23 @@ export default function HomePage() {
       </section>
       )}
 
-      {/* ── Last-Minute Angebote (moved up for urgency — Phase 0.3) ────────── */}
+      {/* ── Last-Minute Angebote ────────────────────────────────────────── */}
       {sections.last_minute && (
-      <section id="tour-last-minute" className="py-12 my-10 bg-s-coral-subtle/40 dark:bg-s-coral-subtle/5 border-y border-s-coral/10 rounded-blob-e mx-2 sm:mx-6 overflow-hidden relative">
+      <section id="tour-last-minute" className="py-20 bg-s-plum relative overflow-hidden">
+        {/* Deco blobs on dark bg */}
+        <div className="absolute w-[400px] h-[400px] rounded-full bg-s-coral/14 right-[-80px] top-[-80px] pointer-events-none" />
+        <div className="absolute w-[300px] h-[300px] rounded-full bg-s-blue/08 left-[-60px] bottom-[-60px] pointer-events-none" />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock size={20} className="text-s-coral" />
-              <h2
-                className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text"
-               
-              >
-                Last-Minute Angebote
+          <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
+            <div>
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-yellow mb-2">Last Minute</span>
+              <h2 className="font-heading font-extrabold text-white" style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                Spare bis zu 50%
               </h2>
             </div>
-            <p
-              className="text-sm text-s-ink/60 font-body"
-             
-            >
-              Spare bis zu 50% auf kurzfristige Termine
-            </p>
+            <Link href={`/${locale}/last-minute`} className="text-white/60 border border-white/20 text-sm px-4 py-2 rounded-pill font-heading font-bold uppercase tracking-[.04em] hover:text-white hover:border-white/40 transition-all">
+              Alle ansehen →
+            </Link>
           </div>
 
           {lastMinuteSlots.length > 0 ? (
@@ -477,20 +474,17 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-card bg-gradient-to-r from-s-coral/5 to-s-coral/10 border border-s-coral/20 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
+              className="rounded-card bg-white/08 border border-white/12 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
             >
               <div className="flex-1">
-                <p
-                  className="text-sm text-s-ink/60 dark:text-s-dm-text/60 font-body"
-                 
-                >
+                <p className="text-sm text-white/60 font-body">
                   Aktuell keine Last-Minute Angebote — schau bald wieder vorbei!
                 </p>
               </div>
               <Link href={`/${locale}/last-minute`} className="shrink-0">
                 <InteractiveHoverButton
                   text="Angebote ansehen"
-                  className="w-44 border-s-coral/20"
+                  className="w-44 border-white/20"
                 />
               </Link>
             </motion.div>
