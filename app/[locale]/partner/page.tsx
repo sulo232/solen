@@ -38,17 +38,21 @@ export default function PartnerPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-s-dm-bg">
       {/* Hero — Split Layout */}
-      <div className="bg-gradient-to-b from-s-coral/5 to-white dark:from-s-coral/10 dark:to-s-dm-bg pt-24 pb-16 overflow-hidden">
+      <div className="pt-24 pb-16 overflow-hidden"
+        style={{ background: "linear-gradient(180deg, rgba(232,98,74,.04) 0%, rgba(255,255,255,0) 100%)" }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          
+
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-3">
+              Für Saloninhaber
+            </p>
             <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-s-ink dark:text-s-dm-text mb-4 leading-tight">
               {t("hero_title_1")}{" "}
               <span className="text-s-coral">{t("hero_title_accent")}</span>
               <br />{t("hero_title_2")}
             </h1>
-            <p className="text-lg text-s-ink/60 dark:text-s-dm-text/60 max-w-lg mb-8">
+            <p className="text-lg font-body text-s-ink/60 dark:text-s-dm-text/60 max-w-lg mb-8">
               {t("hero_subtitle")}
             </p>
             <Link href={`/${locale}/onboarding/salon?utm_source=partner_page&utm_content=hero`}>
@@ -57,7 +61,7 @@ export default function PartnerPage() {
                 className="w-auto px-8 py-4"
               />
             </Link>
-            <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-3">
+            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35 mt-3">
               {t("hero_subtext")}
             </p>
           </div>
@@ -71,7 +75,8 @@ export default function PartnerPage() {
                 alt={t("alt_dashboard")}
                 width={600}
                 height={400}
-                className="rounded-card shadow-warm-md"
+                className="rounded-[12px]"
+                style={{ boxShadow: "0 4px 8px rgba(26,18,9,.08), 0 16px 48px rgba(26,18,9,.12)" }}
                 priority
               />
               {/* Phone mockup — overlapping bottom-right */}
@@ -81,19 +86,22 @@ export default function PartnerPage() {
                   alt={t("alt_profile")}
                   width={180}
                   height={360}
-                  className="rounded-card shadow-warm-md border-4 border-white dark:border-s-dm-surface"
+                  className="rounded-[12px] border-4 border-white dark:border-s-dm-surface"
+                  style={{ boxShadow: "0 4px 8px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.14)" }}
                 />
               </div>
             </div>
 
             {/* Floating value badges — desktop only */}
-            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-card px-3 py-2 shadow-warm-sm border border-s-ink/5 dark:border-s-dm-text/10 items-center gap-2" aria-hidden="true">
+            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
+              style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
               <TrendingUp className="w-4 h-4 text-s-sage" />
-              <span className="text-xs font-body font-medium text-s-ink dark:text-s-dm-text">{t("badge_bookings")}</span>
+              <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_bookings")}</span>
             </div>
-            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-card px-3 py-2 shadow-warm-sm border border-s-ink/5 dark:border-s-dm-text/10 items-center gap-2" aria-hidden="true">
+            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
+              style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
               <Star className="w-4 h-4 text-s-yellow" />
-              <span className="text-xs font-body font-medium text-s-ink dark:text-s-dm-text">{t("badge_rating")}</span>
+              <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_rating")}</span>
             </div>
           </div>
         </div>
@@ -102,6 +110,9 @@ export default function PartnerPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            Funktionen
+          </p>
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
             {t("features_title")}
           </h2>
@@ -111,21 +122,25 @@ export default function PartnerPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {FEATURES.map((f, i) => (
-            <div key={i} className="p-5 rounded-card bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 hover:shadow-warm-sm transition-shadow duration-200">
-              <div className="w-10 h-10 rounded-card bg-s-coral/10 flex items-center justify-center mb-3">
+            <div key={i} className="p-5 rounded-[14px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] hover:shadow-warm-sm transition-shadow duration-200">
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3"
+                style={{ background: "rgba(232,98,74,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />
               </div>
               <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(f.title)}</h3>
-              <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">{t(f.desc)}</p>
+              <p className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55 leading-relaxed">{t(f.desc)}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Categories */}
-      <div className="py-16 bg-s-bg-surface dark:bg-s-dm-surface">
+      <div className="py-16 bg-s-bg-base dark:bg-s-dm-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              Kategorien
+            </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("cat_title")}
             </h2>
@@ -142,10 +157,10 @@ export default function PartnerPage() {
               { icon: Star, key: "cat_makeup" },
               { icon: Zap, key: "cat_waxing" },
             ].map((cat) => (
-              <div key={cat.key} className="p-5 rounded-card bg-white dark:bg-s-dm-bg border border-s-ink/5 dark:border-s-dm-text/10 hover:border-s-coral/20 hover:shadow-warm-sm transition-all duration-200">
+              <div key={cat.key} className="p-5 rounded-[14px] bg-white dark:bg-s-dm-bg border border-s-ink/[0.05] dark:border-white/[0.06] hover:border-s-coral/20 hover:shadow-warm-sm transition-all duration-200">
                 <cat.icon className="w-6 h-6 text-s-coral mb-3" />
                 <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(`${cat.key}_title`)}</h3>
-                <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{t(`${cat.key}_desc`)}</p>
+                <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{t(`${cat.key}_desc`)}</p>
               </div>
             ))}
           </div>
@@ -156,6 +171,9 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-surface dark:bg-s-dm-surface">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              Wie es funktioniert
+            </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("hiw_title")}
             </h2>
@@ -184,7 +202,8 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-xs font-body font-medium text-s-coral bg-s-coral/10 px-3 py-1 rounded-pill">
+                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
+                  style={{ background: "rgba(232,98,74,.10)" }}>
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -203,7 +222,8 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-xs font-body font-medium text-s-coral bg-s-coral/10 px-3 py-1 rounded-pill">
+                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-coral px-3 py-1.5 rounded-pill"
+                  style={{ background: "rgba(232,98,74,.10)" }}>
                   {t("hiw_step2_time")}
                 </span>
               </div>
@@ -222,7 +242,8 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">
                   {t("hiw_step3_desc")}
                 </p>
-                <span className="inline-block text-xs font-body font-medium text-s-sage bg-s-sage/10 px-3 py-1 rounded-pill">
+                <span className="inline-block text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-sage px-3 py-1.5 rounded-pill"
+                  style={{ background: "rgba(123,166,136,.10)" }}>
                   {t("hiw_step3_time")}
                 </span>
               </div>
@@ -235,6 +256,9 @@ export default function PartnerPage() {
       <div className="py-16 bg-white dark:bg-s-dm-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              Partner sagen
+            </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("social_title")}
             </h2>
@@ -251,9 +275,9 @@ export default function PartnerPage() {
               { icon: CreditCard, key: "trust_stripe" },
               { icon: Check, key: "trust_no_contract" },
             ].map((badge) => (
-              <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-surface dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-s-dm-text/10">
+              <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-surface dark:bg-s-dm-surface rounded-[14px] border border-s-ink/[0.05] dark:border-white/[0.06]">
                 <badge.icon className="w-6 h-6 text-s-coral mb-2" />
-                <span className="text-xs font-body font-semibold text-s-ink dark:text-s-dm-text">{t(badge.key)}</span>
+                <span className="text-xs font-heading font-bold text-s-ink dark:text-s-dm-text">{t(badge.key)}</span>
               </div>
             ))}
           </div>
@@ -261,18 +285,19 @@ export default function PartnerPage() {
           {/* Testimonials */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {["testimonial_1", "testimonial_2", "testimonial_3"].map((key) => (
-              <div key={key} className="bg-s-bg-surface dark:bg-s-dm-surface rounded-card p-6 border border-s-ink/5 dark:border-s-dm-text/10">
+              <div key={key} className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[16px] p-6 border border-s-ink/[0.05] dark:border-white/[0.06]">
                 <Quote className="w-5 h-5 text-s-coral/30 mb-3" />
-                <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed mb-4 italic">
+                <p className="text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed mb-4 italic">
                   &ldquo;{t(`${key}_quote`)}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-pill bg-s-coral/10 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                    style={{ background: "rgba(232,98,74,.12)" }}>
                     <span className="text-xs font-heading font-bold text-s-coral">{t(`${key}_initial`)}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-body font-semibold text-s-ink dark:text-s-dm-text">{t(`${key}_name`)}</p>
-                    <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t(`${key}_role`)}</p>
+                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t(`${key}_name`)}</p>
+                    <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50">{t(`${key}_role`)}</p>
                   </div>
                 </div>
               </div>
@@ -286,6 +311,9 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           {/* Section header */}
           <div className="text-center mb-12">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              Preise
+            </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("pricing_title")}
             </h2>
@@ -296,9 +324,11 @@ export default function PartnerPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Left — Pricing Card */}
-            <div className="bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 rounded-card shadow-warm-md p-8 relative overflow-hidden">
+            <div className="bg-white dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] rounded-[18px] p-8 relative overflow-hidden"
+              style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 32px rgba(26,18,9,.09)" }}>
               {/* Badge */}
-              <div className="absolute top-4 right-4 bg-s-coral/10 text-s-coral text-xs font-body font-semibold px-3 py-1 rounded-pill">
+              <div className="absolute top-4 right-4 text-s-coral text-[9px] font-heading font-bold uppercase tracking-[.14em] px-3 py-1.5 rounded-pill"
+                style={{ background: "rgba(232,98,74,.10)" }}>
                 {t("pricing_badge")}
               </div>
 
@@ -331,7 +361,7 @@ export default function PartnerPage() {
             </div>
 
             {/* Right — Competitor Comparison Chart */}
-            <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-card p-8">
+            <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[16px] p-8">
               <h3 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text mb-6">
                 {t("compare_title")}
               </h3>
@@ -382,9 +412,10 @@ export default function PartnerPage() {
               </div>
 
               {/* Savings callout */}
-              <div className="mt-8 p-4 bg-s-sage/10 rounded-card border border-s-sage/20">
-                <p className="text-sm text-s-sage-text dark:text-s-sage font-body">
-                  <span className="font-semibold">{t("compare_savings_bold")}</span>{" "}
+              <div className="mt-8 p-4 rounded-[12px] border border-s-sage/20"
+                style={{ background: "rgba(107,166,120,.08)" }}>
+                <p className="text-sm font-body text-s-sage-text dark:text-s-sage">
+                  <span className="font-heading font-bold">{t("compare_savings_bold")}</span>{" "}
                   {t("compare_savings_text")}
                 </p>
               </div>
@@ -397,6 +428,9 @@ export default function PartnerPage() {
       <div className="py-16 bg-s-bg-surface dark:bg-s-dm-bg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              Häufige Fragen
+            </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("faq_title")}
             </h2>
@@ -411,10 +445,10 @@ export default function PartnerPage() {
               <button
                 key={key}
                 onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
-                className={`snap-start shrink-0 w-72 sm:w-80 text-left rounded-card border transition-all duration-300 ${
+                className={`snap-start shrink-0 w-72 sm:w-80 text-left rounded-[16px] border transition-all duration-300 ${
                   expandedFaq === i
                     ? "bg-white dark:bg-s-dm-surface border-s-coral/30 shadow-warm-md"
-                    : "bg-white dark:bg-s-dm-surface border-s-ink/5 dark:border-s-dm-text/10 shadow-warm-sm hover:shadow-warm-md hover:border-s-coral/20"
+                    : "bg-white dark:bg-s-dm-surface border-s-ink/[0.05] dark:border-white/[0.06] shadow-warm-sm hover:shadow-warm-md hover:border-s-coral/20"
                 }`}
               >
                 <div className="p-6">
@@ -464,8 +498,12 @@ export default function PartnerPage() {
       />
 
       {/* CTA */}
-      <div className="bg-gradient-to-b from-s-bg-surface to-s-coral/5 dark:from-s-dm-surface dark:to-s-coral/10 py-20">
+      <div className="py-20"
+        style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(232,98,74,.05) 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+            Jetzt starten
+          </p>
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
             {t("cta_title")}
           </h2>
@@ -481,7 +519,7 @@ export default function PartnerPage() {
             </Link>
             <a
               href={`mailto:info@solen.ch?subject=${encodeURIComponent(t("cta_consult_subject"))}`}
-              className="text-sm font-body font-medium text-s-coral hover:text-s-coral-dark transition-colors underline underline-offset-4"
+              className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral/80 transition-colors underline underline-offset-4"
             >
               {t("cta_consult")}
             </a>
