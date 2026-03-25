@@ -167,6 +167,18 @@ export interface Service {
   daily_limit_per_staff?: number | null;
 }
 
+export interface PricingRule {
+  id: string;
+  salon_id: string;
+  rule_type: 'weekend_surcharge' | 'last_minute_discount' | 'peak_hour_surcharge' | 'off_peak_discount' | 'holiday_surcharge';
+  day_of_week: number | null; // 0-6 (Sunday-Saturday), null for all days
+  modifier_type: 'fixed_chf' | 'percentage';
+  modifier_value: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AvailabilitySlot {
   id: string;
   salon_id: string;
@@ -351,6 +363,7 @@ export interface SalonCard extends Salon {
   distance_km?: number;
   available_on_date?: boolean;
   next_available_date?: string;
+  pricing_surcharge?: { amount: number; label: string } | null;
 }
 
 // ---------------------------------------------------------------------------

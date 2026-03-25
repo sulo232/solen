@@ -310,6 +310,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 Off-Peak -{offPeakToday.discount_percent}%
               </span>
             )}
+            {salon.pricing_surcharge && (
+              <span className="inline-flex items-center gap-1 text-[11px] bg-s-coral-subtle dark:bg-s-coral/10 text-s-coral-text dark:text-s-coral px-2 py-0.5 rounded-pill font-medium">
+                {salon.pricing_surcharge.label}
+              </span>
+            )}
           </div>
         </div>
       </Link>
