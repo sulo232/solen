@@ -70,7 +70,11 @@ export default function ReviewCarousel() {
     <section className="py-10">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-6">
-          <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+            Bewertungen
+          </span>
+          <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+            style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
             Was Basler:innen sagen
           </h2>
           <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
@@ -89,7 +93,14 @@ export default function ReviewCarousel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: i * 0.1 }}
-              className="snap-start shrink-0 w-[280px] md:w-auto bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-card p-5 hover:shadow-card transition-shadow"
+              className="snap-start shrink-0 w-[280px] md:w-auto rounded-[20px] p-5 hover:-translate-y-[3px] transition-transform duration-[250ms]"
+              style={{
+                background: "rgba(255,255,255,.62)",
+                backdropFilter: "blur(16px) saturate(1.2)",
+                WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+                border: "1px solid rgba(255,255,255,.55)",
+                boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)",
+              }}
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`w-9 h-9 rounded-full ${COLORS[i % COLORS.length]} flex items-center justify-center text-white text-xs font-bold`}>

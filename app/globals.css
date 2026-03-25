@@ -213,12 +213,16 @@
 .reveal-stagger > *:nth-child(5) { animation-delay: 0.28s; }
 .reveal-stagger > *:nth-child(6) { animation-delay: 0.35s; }
 
+/* ── Smooth scroll for anchor links ────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
 /* ── Accessibility: prefers-reduced-motion (universal) ────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

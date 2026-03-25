@@ -22,12 +22,13 @@ export default function Footer() {
     <footer className="bg-s-ink text-white">
       {/* ── Brand Banner ─────────────────────────────────────── */}
       <div className="text-center py-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-s-coral/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-s-blue/8 rounded-full blur-3xl" />
-        <h2 className="font-display text-white/90 relative z-10" style={{ fontSize: "clamp(44px, 6vw, 80px)", letterSpacing: "0.02em" }}>
-          SO<span className="text-s-coral">.</span>LEN
+        <div className="absolute top-0 right-0 w-[240px] h-[240px] rounded-full pointer-events-none"
+          style={{ background: "rgba(232,98,74,.10)", filter: "blur(60px)" }} />
+        <h2 className="font-display relative z-10"
+          style={{ fontSize: "clamp(44px, 6vw, 80px)", letterSpacing: "0.02em", color: "rgba(245,238,228,.90)" }}>
+          SO<span style={{ color: "#E8624A" }}>.</span>LEN
         </h2>
-        <p className="font-body italic text-white/50 text-sm mt-2 relative z-10">
+        <p className="font-body italic mt-2 text-sm relative z-10" style={{ color: "rgba(245,238,228,.50)" }}>
           {t("tagline")}
         </p>
       </div>
@@ -160,6 +161,9 @@ export default function Footer() {
               </p>
               <p className="text-[10px] text-white/30 font-body mt-1">
                 {t("compliance")}
+              </p>
+              <p className="text-xs mt-3" style={{ color: "rgba(245,238,228,.28)" }}>
+                nDSG-konform — Deine Daten bleiben in der Schweiz.
               </p>
             </div>
           </div>

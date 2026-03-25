@@ -6,7 +6,6 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Scissors,
-  Sparkles,
   RefreshCw,
   Search,
 } from "lucide-react";
@@ -20,6 +19,7 @@ import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import BlobBackground from "@/components/ui/BlobBackground";
 import HeroVisualCard from "@/components/ui/HeroVisualCard";
+import HomeSearchBar from "@/components/ui/HomeSearchBar";
 import RecentlyViewed from "@/components/RecentlyViewed";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
 import ReviewCarousel from "@/components/ReviewCarousel";
@@ -40,12 +40,18 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  visible: {
+    opacity: 1, y: 0,
+    transition: { type: "spring", stiffness: 320, damping: 28 },
+  },
 } as const;
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
+  visible: {
+    opacity: 1, y: 0, filter: "blur(0px)",
+    transition: { type: "spring", stiffness: 300, damping: 30, mass: 0.8 },
+  },
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -53,12 +59,12 @@ const fadeUp = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "COIFFEUR",   count: "42 Salons",   grad: "from-s-amber to-s-coral" },
-  { key: "barbershop", label: "BARBER",     count: "18 Shops",    grad: "from-s-plum to-s-blue" },
-  { key: "nails",      label: "NAILS",      count: "24 Studios",  grad: "from-s-coral to-s-yellow" },
-  { key: "spa",        label: "SPA",        count: "11 Anbieter", grad: "from-s-sage to-s-blue" },
-  { key: "makeup",     label: "MAKEUP",     count: "8 Studios",   grad: "from-s-sand to-s-coral" },
-  { key: "waxing",     label: "WAXING",     count: "15 Salons",   grad: "from-s-plum to-s-sage" },
+  { key: "coiffeur",   label: "COIFFEUR",   count: "42",  grad: "linear-gradient(145deg,#D4870A,#E8624A)" },
+  { key: "barbershop", label: "BARBER",     count: "18",  grad: "linear-gradient(145deg,#4A1E3C,#6BA3C8)" },
+  { key: "nails",      label: "NAILS",      count: "24",  grad: "linear-gradient(145deg,#E8624A,#F2C144)" },
+  { key: "spa",        label: "SPA",        count: "11",  grad: "linear-gradient(145deg,#7BA688,#6BA3C8)" },
+  { key: "makeup",     label: "MAKEUP",     count: "8",   grad: "linear-gradient(145deg,#C9A96E,#E8624A)" },
+  { key: "waxing",     label: "WAXING",     count: "15",  grad: "linear-gradient(145deg,#4A1E3C,#7BA688)" },
 ] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -240,65 +246,59 @@ export default function HomePage() {
       <BlobBackground zone={1} />
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden py-16 sm:py-24 min-h-screen flex items-center">
+      <section className="relative overflow-hidden py-16 sm:py-24 min-h-[80vh] flex items-center">
         <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-          >
-            {/* Left: editorial text */}
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-10 lg:gap-16 items-center">
+
+            {/* LEFT: editorial text stack */}
+            <motion.div variants={containerVariants} initial="hidden" animate="visible">
               {!userName && (
-                <motion.span
-                  variants={fadeUp}
-                  className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber block mb-3"
-                >
+                <motion.span variants={fadeUp}
+                  className="font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber block mb-3">
                   Von Basel, für Basel
                 </motion.span>
               )}
-              <motion.h1
-                variants={fadeUp}
-                className="font-display uppercase leading-[0.87] text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em" }}
-              >
+              <motion.h1 variants={fadeUp}
+                className="font-display uppercase text-s-ink dark:text-s-dm-text"
+                style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em", lineHeight: "0.87" }}>
                 {userName ? (
-                  <>Willkommen<br /><span className="text-s-coral">{userName}</span></>
+                  <>Hallo{" "}<span className="text-s-coral">{userName}</span></>
                 ) : (
-                  <>BEAUTY.<br /><span className="text-s-coral">BASEL.</span></>
+                  <>BEAUTY<span className="text-s-coral">.</span><br />BASEL<span className="text-s-coral">.</span></>
                 )}
               </motion.h1>
-              <motion.p
-                variants={fadeUp}
-                className="mt-5 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.82] max-w-md text-[17px]"
-              >
+              <motion.p variants={fadeUp}
+                className="mt-5 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.82] max-w-md"
+                style={{ fontSize: "17px" }}>
                 {userName && nextBooking
                   ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
                   : userName
                     ? "Willkommen zurück — was darf's heute sein?"
-                    : "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier."
-                }
+                    : "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier."}
               </motion.p>
+
+              {/* Hero CTAs — two pill buttons */}
               <motion.div variants={fadeUp} className="mt-8 flex gap-3 flex-wrap">
-                <Link
-                  href={`/${locale}/search`}
-                  className="inline-flex items-center gap-2 px-9 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:bg-s-coral-hover hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150"
-                >
-                  <Search size={15} /> Salon finden
+                <Link href={`/${locale}/search`}
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:bg-s-coral-hover hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150">
+                  <Search size={15} aria-hidden="true" /> Salon finden
                 </Link>
-                <Link
-                  href={`/${locale}/last-minute`}
-                  className="inline-flex items-center gap-2 px-9 py-4 rounded-pill border-[1.5px] border-s-ink/28 dark:border-white/28 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-s-bg-base hover:shadow-warm-md hover:-translate-y-px transition-all duration-150"
-                >
+                <Link href={`/${locale}/last-minute`}
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill border-[1.5px] border-s-ink/20 dark:border-white/20 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-white hover:shadow-warm-md hover:-translate-y-px transition-all duration-150">
                   Last Minute →
                 </Link>
               </motion.div>
-            </div>
-            {/* Right: floating hero card */}
+            </motion.div>
+
+            {/* RIGHT: floating hero visual card (desktop only) */}
             <HeroVisualCard />
-          </motion.div>
+          </div>
         </div>
+      </section>
+
+      {/* ── Search Bar ─────────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 -mt-6 relative z-20 mb-12">
+        <HomeSearchBar />
       </section>
 
       {/* ── Social Proof ─────────────────────────────────────────────────── */}
@@ -314,26 +314,21 @@ export default function HomePage() {
             Was suchst du?
           </h2>
         </div>
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal-stagger"
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.map(({ key, label, count, grad }) => (
-            <motion.div key={key} variants={itemVariants}>
-              <Link
-                href={`/${locale}/${key}`}
-                className={`relative aspect-square rounded-[20px] overflow-hidden bg-gradient-to-br ${grad} shadow-warm-sm hover:shadow-warm-float hover:scale-[1.04] hover:-rotate-1 transition-all duration-[250ms] group flex`}
-              >
-                <div className="absolute inset-0 flex flex-col justify-end p-3 bg-gradient-to-t from-s-ink/68 to-transparent">
-                  <div className="font-display text-[22px] text-white leading-none">{label}</div>
-                  <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-white/62 mt-0.5">{count}</div>
-                </div>
-              </Link>
-            </motion.div>
+            <Link key={key} href={`/${locale}/${key}`}
+              className="relative aspect-square rounded-[20px] overflow-hidden group"
+              style={{ boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
+              <div className="absolute inset-0 transition-transform duration-[250ms] group-hover:scale-[1.04] group-hover:-rotate-1"
+                style={{ background: grad }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-s-ink/60 to-transparent" />
+              <div className="absolute bottom-0 inset-x-0 p-3">
+                <div className="font-display text-[22px] text-white leading-none">{label}</div>
+                <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-white/55 mt-0.5">{count} Salons</div>
+              </div>
+            </Link>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       {/* WeatherBanner removed — Phase 0.3 */}
@@ -341,26 +336,24 @@ export default function HomePage() {
       {/* ── Wieder buchen? (logged-in users with past booking) ───────────── */}
       {sections.rebook && lastBookedSalon && (
         <section className="max-w-5xl mx-auto px-4 pt-6">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="flex items-center gap-4 p-4 rounded-card bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/15 dark:border-s-coral/20"
-          >
-            <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0">
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
+            className="flex items-center gap-4 p-4 rounded-[20px]"
+            style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
+                     WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+                     border: "1px solid rgba(255,255,255,.55)",
+                     boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}>
+            <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+              style={{ background: "rgba(232,98,74,.12)" }}>
               <RefreshCw size={18} className="text-s-coral" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">Wieder buchen?</p>
-              <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body truncate">
-                Dein letzter Besuch: {lastBookedSalon.name}
-              </p>
+              <p className="font-heading font-bold text-s-ink dark:text-s-dm-text text-sm">Wieder buchen?</p>
+              <p className="text-xs text-s-ink/50 font-body truncate">Dein letzter Besuch: {lastBookedSalon.name}</p>
             </div>
-            <Link
-              href={`/${locale}/salon/${lastBookedSalon.slug}`}
-              className="shrink-0 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all"
-            >
-              Nochmal buchen
+            <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
+              className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em]"
+              style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
+              Nochmal
             </Link>
           </motion.div>
         </section>
@@ -371,18 +364,18 @@ export default function HomePage() {
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
       {sections.featured && (
-      <section className="py-10 bg-s-bg-surface/50">
+      <section className="py-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h2
-                className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text"
-              >
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                Beliebt in Basel
+              </span>
+              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
                 Beliebte Salons
               </h2>
-              <p
-                className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body"
-              >
+              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
                 Die bestbewerteten Salons in Basel
               </p>
             </div>
@@ -412,7 +405,7 @@ export default function HomePage() {
               {salons.map((salon) => (
                 <div
                   key={salon.id}
-                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-warm-lg"
+                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink"
                 >
                   <SalonCard
                     salon={salon}
@@ -432,19 +425,25 @@ export default function HomePage() {
 
       {/* ── Last-Minute Angebote ────────────────────────────────────────── */}
       {sections.last_minute && (
-      <section id="tour-last-minute" className="py-20 bg-s-plum relative overflow-hidden">
-        {/* Deco blobs on dark bg */}
-        <div className="absolute w-[400px] h-[400px] rounded-full bg-s-coral/14 right-[-80px] top-[-80px] pointer-events-none" />
-        <div className="absolute w-[300px] h-[300px] rounded-full bg-s-blue/08 left-[-60px] bottom-[-60px] pointer-events-none" />
+      <section id="tour-last-minute" className="py-20 overflow-hidden relative"
+        style={{ background: "#4A1E3C" }}>
+        {/* Deco blobs on dark */}
+        <div className="absolute w-[360px] h-[360px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
+          style={{ background: "rgba(232,98,74,.14)" }} />
+        <div className="absolute w-[240px] h-[240px] rounded-full left-[-50px] bottom-[-50px] pointer-events-none"
+          style={{ background: "rgba(107,163,200,.08)" }} />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
             <div>
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-yellow mb-2">Last Minute</span>
-              <h2 className="font-heading font-extrabold text-white" style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2"
+                style={{ color: "#F2C144" }}>Last Minute</span>
+              <h2 className="font-heading font-extrabold text-white"
+                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
                 Spare bis zu 50%
               </h2>
             </div>
-            <Link href={`/${locale}/last-minute`} className="text-white/60 border border-white/20 text-sm px-4 py-2 rounded-pill font-heading font-bold uppercase tracking-[.04em] hover:text-white hover:border-white/40 transition-all">
+            <Link href={`/${locale}/last-minute`}
+              className="text-white/60 border border-white/20 text-xs px-4 py-2 rounded-pill font-heading font-bold uppercase tracking-[.04em] hover:text-white hover:border-white/40 transition-all">
               Alle ansehen →
             </Link>
           </div>
@@ -482,19 +481,19 @@ export default function HomePage() {
 
       {/* ── Trending Section ────────────────────────────────────────────────── */}
       {sections.trending && trendingSalons.length > 0 && (
-        <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
+        <section className="py-12">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
-                    Trending in Basel
-                  </h2>
-                </div>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
-                  Die aktuell angesagtesten Salons
-                </p>
-              </div>
+            <div className="mb-6">
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                Trending
+              </span>
+              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                Trending in Basel
+              </h2>
+              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+                Die aktuell angesagtesten Salons
+              </p>
             </div>
 
             <div
@@ -502,7 +501,7 @@ export default function HomePage() {
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
             >
               {trendingSalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-warm-lg">
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink">
                   <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
                 </div>
               ))}
@@ -513,16 +512,18 @@ export default function HomePage() {
 
       {/* ── Near You Section ────────────────────────────────────────────────── */}
       {sections.nearby && (showNearby || nearbySalons.length > 0) && (
-        <section className="py-10 bg-s-bg-surface/50 border-t border-s-ink/5 dark:border-white/5">
+        <section className="py-12">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
-                    In deiner Nähe
-                  </h2>
-                </div>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                  In deiner Nähe
+                </span>
+                <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                  In deiner Nähe
+                </h2>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
                   Salons ganz in deiner Nähe entdecken
                 </p>
               </div>
@@ -538,7 +539,7 @@ export default function HomePage() {
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
             >
               {nearbySalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-warm-lg">
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink">
                   <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
                 </div>
               ))}
@@ -552,16 +553,17 @@ export default function HomePage() {
 
       {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
       {sections.new_salons && newSalons.length > 0 && (
-        <section className="py-10 bg-s-bg-surface/50">
+        <section className="py-12">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
-              <div className="flex items-center gap-2 mb-1">
-                <Sparkles size={20} className="text-s-coral" />
-                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
-                  Neue Salons
-                </h2>
-              </div>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                Neu dabei
+              </span>
+              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                Neue Salons
+              </h2>
+              <p className="text-sm text-s-ink/50 mt-1 font-body">
                 Frisch auf Solen — entdecke die neuesten Salons in Basel
               </p>
             </div>
@@ -584,23 +586,31 @@ export default function HomePage() {
 
       {/* ── Quartier Section (Dark) ─────────────────────────────────────── */}
       {sections.quartier && Object.values(quartierCounts).some(c => c > 0) && (
-      <section className="py-20 bg-s-ink relative overflow-hidden">
-        <div className="absolute w-[400px] h-[400px] rounded-full bg-s-coral/08 right-[-100px] top-[-100px] pointer-events-none" />
+      <section className="py-20 overflow-hidden relative" style={{ background: "#1A1209" }}>
+        <div className="absolute w-[400px] h-[400px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
+          style={{ background: "rgba(232,98,74,.08)" }} />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
-          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-yellow mb-2">Dein Quartier</span>
-          <h2 className="font-display text-white mb-2" style={{ fontSize: "clamp(36px,5vw,64px)", lineHeight: 0.87 }}>
-            Entdecke<br /><span className="text-s-coral">Basel</span>
+          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-3"
+            style={{ color: "#F2C144" }}>Dein Quartier</span>
+          <h2 className="font-display text-white mb-2"
+            style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
+            ENTDECKE<br /><span style={{ color: "#E8624A" }}>BASEL</span>
           </h2>
-          <p className="font-body italic text-white/45 text-[15px] leading-[1.8] mb-8 max-w-md">
-            Salons direkt bei dir im Quartier — vom Kleinbasel bis ins Bruderholz.
+          <p className="font-body italic mb-10 max-w-sm text-[15px] leading-[1.82]"
+            style={{ color: "rgba(245,238,228,.45)" }}>
+            Salons direkt in deinem Quartier — von Kleinbasel bis Bruderholz.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {QUARTIERS.filter(q => (quartierCounts[q.slug] ?? 0) > 0).map(({ slug, name }, i) => (
               <Link key={slug} href={`/${locale}/coiffeur?quartier=${slug}`}
-                className="relative rounded-[20px] border border-white/10 bg-white/06 p-5 hover:bg-white/10 hover:-translate-y-[3px] hover:shadow-warm-lg transition-all duration-200 overflow-hidden group">
-                <p className="font-heading font-bold text-white text-[15px] mb-1">{name}</p>
-                <p className="text-xs text-white/45">{quartierCounts[slug]} {quartierCounts[slug] === 1 ? "Salon" : "Salons"}</p>
-                <span className="font-display text-[64px] absolute right-[-8px] bottom-[-16px] text-white/05 leading-none pointer-events-none">
+                className="relative rounded-[20px] p-5 overflow-hidden hover:-translate-y-[3px] hover:opacity-90 transition-all duration-[250ms] group"
+                style={{ border: "1px solid rgba(255,255,255,.10)", background: "rgba(255,255,255,.06)" }}>
+                <p className="font-heading font-bold text-white text-[15px] mb-0.5">{name}</p>
+                <p className="text-xs" style={{ color: "rgba(245,238,228,.45)" }}>
+                  {quartierCounts[slug]} {quartierCounts[slug] === 1 ? "Salon" : "Salons"}
+                </p>
+                <span className="font-display text-[72px] absolute right-[-8px] bottom-[-20px] leading-none select-none pointer-events-none"
+                  style={{ color: "rgba(255,255,255,.05)" }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </Link>
@@ -614,33 +624,29 @@ export default function HomePage() {
       {sections.partner_cta && (
       <section className="py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="rounded-[20px] overflow-hidden relative shadow-warm-float"
-            style={{ background: "linear-gradient(135deg, #D4870A 0%, #E8624A 55%, #4A1E3C 100%)" }}
-          >
-            {/* Inner background blobs for the banner */}
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-white/08 rounded-full blur-3xl transform -translate-x-1/3 translate-y-1/3" />
-
-            <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-              <div className="max-w-xl">
-                <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl mb-4 leading-tight text-white">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }} transition={{ duration: 0.5 }}
+            className="rounded-[20px] overflow-hidden relative"
+            style={{ background: "linear-gradient(135deg,#D4870A 0%,#E8624A 55%,#4A1E3C 100%)",
+                     boxShadow: "0 24px 72px rgba(26,18,9,.18)" }}>
+            {/* Inner blobs */}
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full pointer-events-none"
+              style={{ background: "rgba(255,255,255,.12)", filter: "blur(60px)", transform: "translate(50%,-50%)" }} />
+            <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="max-w-xl text-center md:text-left">
+                <h2 className="font-heading font-bold text-white mb-4 leading-tight"
+                  style={{ fontSize: "clamp(26px, 4vw, 52px)", letterSpacing: "-0.02em" }}>
                   Hast du einen Salon?
                 </h2>
-                <p className="font-body text-white/80 text-lg sm:text-xl">
-                  Bringe dein Business auf das nächste Level. Werde Teil von Solen und erreiche tausende Kund:innen in Basel.
+                <p className="font-body italic text-white/70 text-lg leading-[1.82]">
+                  Bring dein Business auf das nächste Level — erreiche tausende Kund:innen in Basel.
                 </p>
               </div>
-              <div className="shrink-0 pt-4 md:pt-0">
-                <Link
-                  href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center px-10 py-4 bg-white text-s-ink font-heading font-bold tracking-wide rounded-pill hover:bg-white/90 text-lg shadow-warm-lg transition-all duration-200 hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-pressed uppercase tracking-[.04em]"
-                >
-                  Partner werden
+              <div className="shrink-0">
+                <Link href={`/${locale}/partner`}
+                  className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white text-s-ink font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base hover:-translate-y-px transition-all duration-150"
+                  style={{ boxShadow: "0 2px 4px rgba(26,18,9,.12), 0 4px 16px rgba(26,18,9,.10)" }}>
+                  Partner werden →
                 </Link>
               </div>
             </div>
