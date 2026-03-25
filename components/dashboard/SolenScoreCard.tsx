@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trophy, TrendingUp, Star, MessageCircle, UserCheck, Briefcase, Clock, Activity, Shield, Circle } from "lucide-react";
+import { TrendingUp, Star, MessageCircle, UserCheck, Briefcase, Clock, Activity, Shield, Circle } from "lucide-react";
 
 interface ScoreDetails {
   rating: number;    // max 30
@@ -43,32 +43,6 @@ const TIPS: Record<string, string> = {
   activity: "Logge dich regelmässig ein und halte deinen Kalender aktuell.",
 };
 
-/** Circular SVG progress meter */
-function ScoreMeter({ score, tier }: { score: number; tier: SolenScoreData["solen_tier"] }) {
-  const radius = 54;
-  const circumference = 2 * Math.PI * radius;
-  const progress = (score / 100) * circumference;
-  const tierColor = TIER_CONFIG[tier].color;
-
-  return (
-    <div className="relative w-32 h-32 mx-auto">
-      <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-        {/* Background circle */}
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="currentColor" strokeWidth="8"
-          className="text-s-ink/10 dark:text-s-dm-text/20" />
-        {/* Progress arc */}
-        <circle cx="60" cy="60" r={radius} fill="none" stroke={tierColor} strokeWidth="8"
-          strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={circumference - progress}
-          className="transition-all duration-1000 ease-out" />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="data-text font-bold text-3xl text-s-ink dark:text-s-dm-text">{score}</span>
-        <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide">Score</span>
-      </div>
-    </div>
-  );
-}
-
 export default function SolenScoreCard({ salonId }: { salonId: string }) {
   const [data, setData] = useState<SolenScoreData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,11 +58,11 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 shadow-card animate-pulse">
-        <div className="h-32 w-32 mx-auto rounded-full bg-s-bg-sunken dark:bg-s-dm-surface" />
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-6 animate-pulse">
+        <div className="h-12 w-24 rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface" />
         <div className="mt-4 space-y-2">
-          <div className="h-4 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-2/3 mx-auto" />
-          <div className="h-3 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-1/2 mx-auto" />
+          <div className="h-4 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-2/3" />
+          <div className="h-3 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-1/2" />
         </div>
       </div>
     );
@@ -107,24 +81,21 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
   }, FACTOR_CONFIG[0]);
 
   return (
-    <div className={`rounded-card border ${tier.border} ${tier.bg} p-6 shadow-card`}>
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <Trophy size={18} style={{ color: tier.color }} />
-        <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">Dein Solen Score</h3>
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white dark:bg-s-dm-surface">
+      {/* Eyebrow */}
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-3">Solen Score</p>
+
+      {/* Score display */}
+      <div className="flex items-baseline gap-1 mb-1">
+        <span className="font-heading font-bold text-[48px] leading-none text-s-ink dark:text-s-dm-text">{data.solen_score}</span>
+        <span className="text-sm text-s-ink/35">/100</span>
       </div>
+      <p className="text-[10px] font-heading uppercase tracking-[.12em]" style={{ color: tier.color }}>{tier.label}</p>
 
-      {/* Score meter */}
-      <ScoreMeter score={data.solen_score} tier={data.solen_tier} />
-
-      {/* Tier badge */}
-      <div className="flex justify-center mt-3">
-        <span
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill text-xs font-bold"
-          style={{ color: tier.color, backgroundColor: `${tier.color}15` }}
-        >
-          <tier.Icon size={12} /> {tier.label}
-        </span>
+      {/* Score bar */}
+      <div className="h-2 rounded-full bg-s-ink/[0.06] mt-4 overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${data.solen_score}%`, background: data.solen_score >= 75 ? "#4CAF6F" : data.solen_score >= 50 ? "#D4870A" : "#E8624A" }} />
       </div>
 
       {/* Factor breakdown */}
@@ -154,7 +125,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
       {/* Improvement tip */}
       {data.solen_score < 80 && (
-        <div className="mt-4 p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+        <div className="mt-4 p-3 rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06]">
           <div className="flex items-start gap-2">
             <TrendingUp size={14} className="text-s-coral shrink-0 mt-0.5" />
             <div>

@@ -51,7 +51,7 @@ export function SidebarBody({ children, className }: SidebarBodyProps) {
   return (
     <motion.aside
       className={cn(
-        "hidden md:flex flex-col fixed left-0 top-0 h-full bg-white/90 backdrop-blur-lg border-r border-s-ink/5 z-30 overflow-hidden",
+        "hidden md:flex flex-col fixed left-0 top-0 h-full bg-s-bg-raised border-r border-s-ink/[0.06] z-30 overflow-hidden",
         className
       )}
       animate={{ width: animate ? (open ? 240 : 60) : 240 }}

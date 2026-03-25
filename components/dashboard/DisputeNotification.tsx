@@ -39,7 +39,8 @@ export default function DisputeNotification({
   };
 
   return (
-    <div className="bg-s-coral-subtle border border-s-coral/20 rounded-card p-4 mt-3">
+    <div className="rounded-[12px] p-4 mt-3"
+      style={{ background: "rgba(212,135,10,.08)", border: "1px solid rgba(212,135,10,.22)" }}>
       <div className="flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
@@ -56,7 +57,7 @@ export default function DisputeNotification({
           {!showReply ? (
             <button
               onClick={() => setShowReply(true)}
-              className="mt-3 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-all"
+              className="mt-3 px-3 py-1.5 rounded-[8px] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors"
             >
               Antworten
             </button>
@@ -79,7 +80,7 @@ export default function DisputeNotification({
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 disabled:opacity-50 flex items-center gap-1.5 transition-all"
+                  className="px-4 py-1.5 rounded-[8px] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
                 >
                   {loading && <Spinner size="xs" invert />}
                   Senden <Send size={12} />

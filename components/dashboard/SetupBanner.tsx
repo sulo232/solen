@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Check } from "lucide-react";
-import Link from "next/link";
 import { useLocale } from "next-intl";
+import Link from "next/link";
 
 interface Step {
   key: string;
@@ -40,61 +38,36 @@ export default function SetupBanner() {
     if (typeof sessionStorage !== "undefined") sessionStorage.setItem("setup_banner_dismissed", "1");
   };
 
-  const circumference = 2 * Math.PI * 20;
-  const strokeDashoffset = circumference - (data.percentage / 100) * circumference;
   const incompleteSteps = data.steps.filter((s) => !s.complete);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-s-dm-surface rounded-card border border-s-coral/20 dark:border-s-coral/30 p-5 mb-6 shadow-warm-sm"
-    >
-      <div className="flex items-center gap-4">
-        {/* Progress circle */}
-        <div className="relative w-14 h-14 shrink-0">
-          <svg className="w-14 h-14 -rotate-90" viewBox="0 0 44 44">
-            <circle cx="22" cy="22" r="20" fill="none" stroke="#F5E6DC" strokeWidth="3" />
-            <motion.circle
-              cx="22" cy="22" r="20" fill="none" stroke="#E8624A" strokeWidth="3"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              initial={{ strokeDashoffset: circumference }}
-              animate={{ strokeDashoffset }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            />
-          </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-s-coral data-text">
-            {data.percentage}%
-          </span>
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
-            {isDE ? "Salon-Setup" : "Salon Setup"} — {data.completed}/{data.total} {isDE ? "erledigt" : "done"}
-          </p>
-          <div className="flex flex-wrap gap-1 mt-1.5">
-            {incompleteSteps.slice(0, 3).map((step) => (
-              <span key={step.key} className="px-2 py-0.5 rounded-pill text-[10px] bg-s-coral/5 text-s-coral font-medium">
-                {isDE ? step.label : step.label_en}
-              </span>
-            ))}
-            {incompleteSteps.length > 3 && (
-              <span className="px-2 py-0.5 rounded-pill text-[10px] bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/30 dark:text-s-dm-text/30">
-                +{incompleteSteps.length - 3}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <Link
-          href={`/${locale}/dashboard/setup`}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all shrink-0"
-        >
-          {isDE ? "Fortsetzen" : "Continue"}
-          <ArrowRight size={14} />
-        </Link>
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white dark:bg-s-dm-surface">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-1">Einrichtung</p>
+      <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text mb-3">
+        {isDE ? "Salon-Setup" : "Salon Setup"} — {data.completed}/{data.total} {isDE ? "erledigt" : "done"}
+      </p>
+      {/* Progress bar */}
+      <div className="h-1.5 rounded-full bg-s-ink/[0.06] mb-4 overflow-hidden">
+        <div className="h-full bg-s-coral rounded-full transition-all duration-500"
+          style={{ width: `${data.percentage}%` }} />
       </div>
-    </motion.div>
+      {/* Steps list */}
+      {incompleteSteps.slice(0, 3).map((step) => (
+        <div key={step.key} className="flex items-center gap-3 py-2.5 border-b border-s-ink/[0.04] last:border-0">
+          <div className="w-5 h-5 rounded-[6px] flex items-center justify-center shrink-0 border border-s-ink/15">
+          </div>
+          <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text flex-1">
+            {isDE ? step.label : step.label_en}
+          </p>
+          <Link href={`/${locale}/dashboard/setup`}
+            className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral">
+            Einrichten →
+          </Link>
+        </div>
+      ))}
+      {incompleteSteps.length > 3 && (
+        <p className="text-[10px] text-s-ink/30 mt-2">+{incompleteSteps.length - 3} weitere</p>
+      )}
+    </div>
   );
 }

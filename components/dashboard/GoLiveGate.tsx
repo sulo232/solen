@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Rocket, CheckCircle2, ExternalLink, Image, CreditCard, Scissors } from "lucide-react";
+import { Rocket, CheckCircle2, Image, CreditCard, Scissors } from "lucide-react";
 import { useLocale } from "next-intl";
 import Spinner from "@/components/ui/Spinner";
 
@@ -81,58 +80,39 @@ export default function GoLiveGate() {
   const doneCount = requirements.filter((r) => r.done).length;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/8 dark:border-white/8 shadow-warm-sm mb-6 overflow-hidden"
-    >
-      {/* Header bar */}
-      <div className="bg-gradient-to-r from-s-coral/8 to-s-amber/8 dark:from-s-coral/15 dark:to-s-amber/15 px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] mb-6 bg-white dark:bg-s-dm-surface overflow-hidden">
+      {/* Header */}
+      <div className="px-4 py-4 border-b border-s-ink/[0.04]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-s-coral/10 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center">
               <Rocket size={18} className="text-s-coral" />
             </div>
             <div>
-              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Salon noch nicht live</p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
-                {doneCount} von {requirements.length} Anforderungen erfüllt
-              </p>
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-0.5">Einrichtung</p>
+              <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">Salon noch nicht live</p>
             </div>
           </div>
-          {/* Mini progress pills */}
-          <div className="flex gap-1">
-            {requirements.map((r) => (
-              <div
-                key={r.key}
-                className={`w-2 h-2 rounded-full transition-colors ${r.done ? "bg-s-coral" : "bg-s-ink/10 dark:bg-white/10"}`}
-              />
-            ))}
-          </div>
+          <p className="text-xs data-text font-medium text-s-ink/40">{doneCount}/{requirements.length}</p>
         </div>
       </div>
 
       {/* Checklist */}
-      <div className="px-5 py-4 space-y-2">
+      <div className="px-4 py-4 space-y-2">
         {requirements.map(({ key, label, done, href, Icon }) => (
-          <div key={key} className="flex items-center gap-3">
-            {done ? (
-              <CheckCircle2 size={16} className="text-s-coral shrink-0" />
-            ) : (
-              <div className="w-4 h-4 rounded-full border-2 border-s-ink/15 dark:border-white/15 shrink-0" />
-            )}
+          <div key={key} className={`flex items-center gap-3 ${done ? "opacity-50" : ""}`}>
+            <div className={`w-5 h-5 rounded-[6px] flex items-center justify-center shrink-0 ${done ? "bg-[#4CAF6F]" : "border border-s-ink/15"}`}>
+              {done && <CheckCircle2 size={11} className="text-white" />}
+            </div>
             <div className="flex-1 flex items-center gap-2">
               <Icon size={13} className={done ? "text-s-coral" : "text-s-ink/30 dark:text-s-dm-text/30"} />
-              <span className={`text-sm ${done ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+              <span className={`text-xs font-heading font-semibold ${done ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
                 {label}
               </span>
             </div>
             {!done && (
-              <a
-                href={href}
-                className="flex items-center gap-1 text-xs text-s-coral hover:underline shrink-0"
-              >
-                Einrichten <ExternalLink size={10} />
+              <a href={href} className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral shrink-0">
+                Einrichten →
               </a>
             )}
           </div>
@@ -140,26 +120,22 @@ export default function GoLiveGate() {
       </div>
 
       {/* Go Live button */}
-      <div className="px-5 pb-5">
+      <div className="px-4 pb-4">
         {error && <p className="text-xs text-s-coral mb-2">{error}</p>}
         <button
           onClick={status.can_go_live ? handleGoLive : undefined}
           disabled={!status.can_go_live || activating}
           className={[
-            "w-full py-3 rounded-btn text-sm font-medium flex items-center justify-center gap-2 transition-colors",
+            "w-full py-3 rounded-[8px] text-xs font-heading font-bold uppercase tracking-[.04em] flex items-center justify-center gap-2 transition-colors",
             status.can_go_live
               ? "bg-s-coral text-white hover:bg-s-coral/90 cursor-pointer"
               : "bg-s-ink/5 dark:bg-white/5 text-s-ink/30 dark:text-s-dm-text/30 cursor-not-allowed",
           ].join(" ")}
         >
-          {activating ? (
-            <Spinner size="sm" invert={status.can_go_live} />
-          ) : (
-            <Rocket size={15} />
-          )}
-          {status.can_go_live ? "Salon jetzt live schalten" : "Noch nicht bereit für Go Live"}
+          {activating ? <Spinner size="sm" invert={status.can_go_live} /> : <Rocket size={15} />}
+          {status.can_go_live ? "Salon jetzt live schalten" : "Noch nicht bereit"}
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }

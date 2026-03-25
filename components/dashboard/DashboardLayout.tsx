@@ -13,9 +13,9 @@ import {
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid,
 } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
+
 import Skeleton from "@/components/ui/Skeleton";
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
 
 // ─────────────────────────────────────────
@@ -55,6 +55,51 @@ const OWNER_NAV = [
   { label: "Treueprogramm",href: "/dashboard/loyalty",        icon: Award },
   { label: "Einstellungen",href: "/dashboard/settings",   icon: Settings },
   { label: "Verifizierung",href: "/dashboard/verification", icon: ShieldCheck },
+] as const;
+
+const OWNER_NAV_GROUPS = [
+  {
+    label: "Betrieb",
+    items: [
+      { key: "overview",  href: "/dashboard",          icon: Home },
+      { key: "bookings",  href: "/dashboard/bookings", icon: Calendar },
+      { key: "calendar",  href: "/dashboard/calendar", icon: Clock },
+      { key: "messages",  href: "/dashboard/messages", icon: MessageCircle },
+    ],
+  },
+  {
+    label: "Team & Kunden",
+    items: [
+      { key: "team",    href: "/dashboard/staff",   icon: Users },
+      { key: "clients", href: "/dashboard/clients", icon: UserCheck },
+    ],
+  },
+  {
+    label: "Business",
+    items: [
+      { key: "services",   href: "/dashboard/services",        icon: Scissors },
+      { key: "marketing",  href: "/dashboard/marketing",       icon: Megaphone },
+      { key: "analytics",  href: "/dashboard/analytics",       icon: BarChart },
+      { key: "reviews",    href: "/dashboard/reviews",         icon: Star },
+      { key: "posts",      href: "/dashboard/discovery-posts", icon: Camera },
+    ],
+  },
+  {
+    label: "Spezial",
+    items: [
+      { key: "nailClients",  href: "/dashboard/nail-clients",   icon: Sparkles },
+      { key: "barberClients", href: "/dashboard/barber-clients", icon: Scissors },
+      { key: "barberOps",   href: "/dashboard/barber-ops",      icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Mehr",
+    items: [
+      { label: "Treueprogramm", href: "/dashboard/loyalty",       icon: Award },
+      { label: "Einstellungen", href: "/dashboard/settings",      icon: Settings },
+      { label: "Verifizierung", href: "/dashboard/verification",  icon: ShieldCheck },
+    ],
+  },
 ] as const;
 
 const STAFF_NAV = [
@@ -120,12 +165,12 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex">
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex">
         {/* Sidebar skeleton */}
-        <div className="hidden md:flex flex-col w-[60px] border-r border-s-ink/5 dark:border-white/5 p-3 gap-4">
-          <Skeleton className="h-8 w-8 rounded-card" />
+        <div className="hidden md:flex flex-col w-[60px] border-r border-s-ink/[0.06] dark:border-white/[0.06] p-3 gap-4">
+          <Skeleton className="h-8 w-8 rounded-[8px]" />
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-8 rounded-card" />
+            <Skeleton key={i} className="h-8 w-8 rounded-[8px]" />
           ))}
         </div>
         {/* Content skeleton */}
@@ -133,10 +178,10 @@ export default function DashboardLayout({
           <Skeleton className="h-8 w-48" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 rounded-card" />
+              <Skeleton key={i} className="h-24 rounded-[12px]" />
             ))}
           </div>
-          <Skeleton className="h-64 rounded-card" />
+          <Skeleton className="h-64 rounded-[12px]" />
         </div>
       </div>
     );
@@ -148,62 +193,100 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg flex">
+    <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex">
       {/* ── Desktop Sidebar (animated) ── */}
       <Sidebar>
         <SidebarBody>
-          {/* Logo */}
-          <div className="px-4 py-5 border-b border-s-ink/5">
-            <Link href={`/${locale}`} className="font-heading font-bold text-xl text-s-ink whitespace-nowrap">
-              solen<span className="text-s-coral">.</span>ch
-            </Link>
+          {/* Salon identity */}
+          <div className="px-4 py-4 border-b border-s-ink/[0.05]">
+            {salonAvatar && (
+              <Image src={salonAvatar} alt={salonName ?? ""} width={32} height={32}
+                className="rounded-[8px] mb-3" />
+            )}
+            {!salonAvatar && salonName && (
+              <div className="w-8 h-8 rounded-[8px] bg-s-coral/10 flex items-center justify-center mb-3">
+                <span className="text-xs font-bold text-s-coral">{salonName[0]}</span>
+              </div>
+            )}
+            <p className="font-heading font-bold text-sm text-s-ink truncate">{salonName ?? "Dashboard"}</p>
+            <p className="text-[9px] font-heading uppercase tracking-[.18em] text-s-ink/35 mt-0.5">Dashboard</p>
           </div>
 
-          {/* Salon identity */}
-          {salonName && (
-            <div className="px-3 py-3 border-b border-s-ink/5 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center overflow-hidden shrink-0">
-                {salonAvatar ? (
-                  <Image src={salonAvatar} alt="" width={32} height={32} className="object-cover w-full h-full" />
-                ) : (
-                  <span className="text-xs font-bold text-s-coral">{salonName[0]}</span>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Nav */}
-          <nav className="flex-1 overflow-y-auto py-3 px-2">
-            {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ key, href, icon: Icon }) => {
-              const active = isActive(href);
-              const isMessages = href === "/dashboard/messages";
-              return (
-                <SidebarLink
-                  key={href}
-                  link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
-                  active={active}
-                  badge={isMessages && unreadCount > 0 ? <span className="w-2 h-2 rounded-full bg-s-coral" /> : undefined}
-                />
-              );
-            })}
+          <nav className="flex-1 overflow-y-auto py-2 px-1">
+            {isStaff ? (
+              STAFF_NAV.map((item) => {
+                const { href, icon: Icon } = item;
+                const active = isActive(href);
+                return (
+                  <Link key={href} href={`/${locale}${href}`}
+                    aria-current={active ? "page" : undefined}
+                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                      active
+                        ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                        : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                    }`}>
+                    <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                    <span className="flex-1 overflow-hidden whitespace-nowrap">{t(item.key)}</span>
+                  </Link>
+                );
+              })
+            ) : (
+              OWNER_NAV_GROUPS.map((group) => (
+                <div key={group.label} className="px-3 pt-4 pb-1">
+                  <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
+                  {group.items.map((item) => {
+                    const { href, icon: Icon } = item;
+                    const label = "key" in item ? t(item.key as string) : (item as any).label;
+                    const active = isActive(href);
+                    const isMessages = href === "/dashboard/messages";
+                    return (
+                      <Link key={href} href={`/${locale}${href}`}
+                        aria-current={active ? "page" : undefined}
+                        className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                          active
+                            ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                            : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                        }`}>
+                        <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                        <span className="flex-1 overflow-hidden whitespace-nowrap">{label}</span>
+                        {isMessages && unreadCount > 0 && (
+                          <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-[6px] bg-s-coral text-white">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))
+            )}
           </nav>
 
           {/* Admin nav */}
           {role === "admin" && (
-            <div className="px-2 pb-3 border-t border-s-ink/5 pt-3">
-              {ADMIN_NAV.map(({ key, href, icon: Icon }) => (
-                <SidebarLink
-                  key={href}
-                  link={{ label, href: `/${locale}${href}`, icon: <Icon size={16} /> }}
-                  active={isActive(href)}
-                  className={isActive(href) ? "text-s-coral" : undefined}
-                />
-              ))}
+            <div className="px-1 pb-3 border-t border-s-ink/[0.06] pt-3">
+              <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4">Admin</p>
+              {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
+                const active = isActive(href);
+                return (
+                  <Link key={href} href={`/${locale}${href}`}
+                    aria-current={active ? "page" : undefined}
+                    className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                      active
+                        ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                        : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                    }`}>
+                    <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                    <span className="flex-1 overflow-hidden whitespace-nowrap">{t(key)}</span>
+                  </Link>
+                );
+              })}
             </div>
           )}
 
           {/* Footer */}
-          <div className="px-3 py-3 border-t border-s-ink/5">
+          <div className="px-3 py-3 border-t border-s-ink/[0.06]">
             <Link
               href={`/${locale}`}
               className="text-xs text-s-ink/30 hover:text-s-coral transition-colors whitespace-nowrap"
@@ -230,16 +313,18 @@ export default function DashboardLayout({
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 35 }}
-              className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-s-dm-surface shadow-warm-2xl"
+              transition={{ duration: 0.15 }}
+              className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-s-dm-surface border-r border-s-ink/[0.06]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5 flex items-center justify-between">
-                <span className="font-heading font-bold text-lg">solen<span className="text-s-coral">.</span>ch</span>
+              <div className="px-4 py-4 border-b border-s-ink/[0.06] dark:border-white/[0.06] flex items-center justify-between">
+                <span className="font-heading font-bold text-base text-s-ink">solen<span className="text-s-coral">.</span>ch</span>
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>
               </div>
-              <nav className="py-3 px-2">
-                {(isStaff ? STAFF_NAV : OWNER_NAV).map(({ key, href, icon: Icon }) => {
+              <nav className="py-3 px-1 overflow-y-auto">
+                {(isStaff ? STAFF_NAV : OWNER_NAV).map((item) => {
+                  const { href, icon: Icon } = item;
+                  const label = "key" in item ? t(item.key) : (item as any).label;
                   const active = isActive(href);
                   return (
                     <Link
@@ -247,35 +332,44 @@ export default function DashboardLayout({
                       href={`/${locale}${href}`}
                       onClick={() => setMobileSidebarOpen(false)}
                       aria-current={active ? "page" : undefined}
-                      className={[
-                        "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5",
-                        active ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
-                      ].join(" ")}
+                      className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                        active
+                          ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                          : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                      }`}
                     >
-                      <Icon size={16} />{t(key)}
+                      <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                      <span className="flex-1">{label}</span>
                       {href === "/dashboard/messages" && unreadCount > 0 && (
-                        <span className="ml-auto w-2 h-2 rounded-full bg-s-coral" />
+                        <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-[6px] bg-s-coral text-white">
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
                       )}
                     </Link>
                   );
                 })}
                 {role === "admin" && (
                   <>
-                    <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 mt-3 mb-1">Admin</p>
-                    {ADMIN_NAV.map(({ key, href, icon: Icon }) => (
-                      <Link
-                        key={href}
-                        href={`/${locale}${href}`}
-                        onClick={() => setMobileSidebarOpen(false)}
-                        aria-current={isActive(href) ? "page" : undefined}
-                        className={[
-                          "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5",
-                          isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
-                        ].join(" ")}
-                      >
-                        <Icon size={16} />{t(key)}
-                      </Link>
-                    ))}
+                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">Admin</p>
+                    {ADMIN_NAV.map(({ key, href, icon: Icon }) => {
+                      const active = isActive(href);
+                      return (
+                        <Link
+                          key={href}
+                          href={`/${locale}${href}`}
+                          onClick={() => setMobileSidebarOpen(false)}
+                          aria-current={active ? "page" : undefined}
+                          className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                            active
+                              ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                              : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                          }`}
+                        >
+                          <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                          <span className="flex-1">{t(key)}</span>
+                        </Link>
+                      );
+                    })}
                   </>
                 )}
               </nav>
@@ -287,7 +381,7 @@ export default function DashboardLayout({
       {/* ── Main content ── */}
       <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
         {/* Mobile top bar */}
-        <div className="md:hidden sticky top-0 z-20 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm shadow-warm-sm border-b border-s-ink/5 dark:border-white/5 px-4 py-3 flex items-center gap-3">
+        <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] dark:border-white/[0.06] px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60">
             <Menu size={20} />
           </button>
@@ -300,29 +394,33 @@ export default function DashboardLayout({
       </div>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-md border-t border-s-ink/5 dark:border-white/5 flex">
-        {MOBILE_NAV.map(({ key, href, icon: Icon }) => {
-          const active = isActive(href);
-          const isMessages = href === "/dashboard/messages";
-          return (
-            <Link
-              key={href}
-              href={`/${locale}${href}`}
-              className={[
-                "flex-1 flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors relative",
-                active ? "text-s-coral" : "text-s-ink/40",
-              ].join(" ")}
-            >
-              <div className="relative">
-                <Icon size={20} />
-                {isMessages && unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-coral" />
-                )}
-              </div>
-              {t(key)}
-            </Link>
-          );
-        })}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-s-ink/[0.06] bg-white dark:bg-s-dm-surface"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+        <div className="flex">
+          {MOBILE_NAV.map(({ key, href, icon: Icon }) => {
+            const active = isActive(href);
+            const isMessages = href === "/dashboard/messages";
+            return (
+              <Link
+                key={href}
+                href={`/${locale}${href}`}
+                className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-colors ${
+                  active ? "text-s-coral" : "text-s-ink/40"
+                }`}
+              >
+                <div className="relative">
+                  <Icon size={20} />
+                  {isMessages && unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-coral" />
+                  )}
+                </div>
+                <span className="text-[8px] font-heading font-semibold uppercase tracking-[.08em]">
+                  {t(key)}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </div>
   );
