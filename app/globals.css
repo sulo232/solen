@@ -119,23 +119,33 @@
 @layer base {
   a:focus-visible,
   button:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible,
   [tabindex]:focus-visible {
     outline: 2px solid rgba(232, 98, 74, 0.5);
     outline-offset: 2px;
     border-radius: 4px;
   }
 
+  /* Inputs use box-shadow ring (respects border-radius) */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+    border-color: #E8624A;
+    box-shadow: 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), 0 0 0 3px #FAECE7;
+  }
+
   /* Dark mode: brighter ring */
   .dark a:focus-visible,
   .dark button:focus-visible,
-  .dark input:focus-visible,
-  .dark textarea:focus-visible,
-  .dark select:focus-visible,
   .dark [tabindex]:focus-visible {
     outline-color: rgba(232, 98, 74, 0.9);
+  }
+
+  .dark input:focus-visible,
+  .dark textarea:focus-visible,
+  .dark select:focus-visible {
+    border-color: #F07560;
+    box-shadow: 0 0 0 3px rgba(240,117,96,.20);
   }
 }
 
@@ -203,18 +213,12 @@
 .reveal-stagger > *:nth-child(5) { animation-delay: 0.28s; }
 .reveal-stagger > *:nth-child(6) { animation-delay: 0.35s; }
 
-/* ── Accessibility: prefers-reduced-motion ────────────────────────── */
+/* ── Accessibility: prefers-reduced-motion (universal) ────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .animate-blob-float,
-  .animate-blob-float-delayed,
-  .animate-coral-pulse,
-  .stamp-new,
-  .confetti,
-  .animate-fade-in-up,
-  .reveal-stagger > * {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
 }
 
