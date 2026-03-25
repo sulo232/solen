@@ -47,6 +47,15 @@ export type PreferredDay = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun"
 // Core Entities
 // ---------------------------------------------------------------------------
 
+export interface CustomerPreferences {
+  allergies?: string;
+  skinType?: string;
+  stylistGender?: 'male' | 'female' | 'no-preference';
+  accessibilityNeeds?: string;
+  language?: string;
+  notes?: string;
+}
+
 export interface Profile {
   id: string;
   display_name: string;
@@ -67,6 +76,7 @@ export interface Profile {
   // Megabuild extensions
   staff_salon_id?: string | null;
   birthday?: string | null;
+  customer_preferences?: CustomerPreferences;
 }
 
 export interface OpeningHours {
