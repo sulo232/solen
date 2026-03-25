@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
-import { Heart, Check } from "lucide-react";
+import { Heart, Check, AlertCircle } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -64,17 +64,34 @@ export default function TipPage() {
     }
   };
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg"><Spinner size="md" /></div>;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg">
+      <div className="flex gap-1.5">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
+            style={{ animationDelay: `${i * 0.2}s` }} />
+        ))}
+      </div>
+    </div>
+  );
 
   if (done) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-s-bg-base dark:bg-s-dm-bg px-4">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-4 animate-bounce">
-            <Check size={32} className="text-s-coral" />
+          <div className="w-16 h-16 rounded-[18px] flex items-center justify-center mx-auto mb-5 animate-bounce"
+            style={{ background: "rgba(232,98,74,.10)" }}>
+            <Check size={28} className="text-s-coral" />
           </div>
-          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">{l.thanks}</h1>
-          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">{formatCurrency(tipAmount / 100, locale)} {l.sent}</p>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+            Trinkgeld gesendet
+          </p>
+          <h1 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
+            {l.thanks}
+          </h1>
+          <p className="text-xs font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50">
+            {formatCurrency(tipAmount / 100, locale)} {l.sent}
+          </p>
         </div>
       </div>
     );
@@ -99,14 +116,23 @@ export default function TipPage() {
           <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{serviceName}</p>
         </div>
 
-        <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-card p-5">
-          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-3">{l.give}</p>
+        <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-5"
+          style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 20px rgba(26,18,9,.07)" }}>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/35 dark:text-s-dm-text/35 mb-3">
+            {l.give}
+          </p>
 
           {/* Preset amounts */}
           <div className="grid grid-cols-3 gap-2 mb-3">
             {TIP_PRESETS.map((amount) => (
-              <button key={amount} onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
-                className={`py-3 rounded-btn text-sm font-medium transition-colors ${!useCustom && selectedAmount === amount ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
+              <button key={amount}
+                onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
+                className={`py-3 rounded-btn text-xs font-heading font-bold transition-all ${
+                  !useCustom && selectedAmount === amount
+                    ? "bg-s-coral text-white"
+                    : "border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/50"
+                }`}
+                style={(!useCustom && selectedAmount === amount) ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}>
                 {formatCurrency(amount / 100, locale)}
               </button>
             ))}
@@ -114,25 +140,40 @@ export default function TipPage() {
 
           {/* Custom amount */}
           <button onClick={() => setUseCustom(true)}
-            className={`w-full py-2.5 rounded-btn text-xs font-medium mb-3 transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
+            className={`w-full py-2.5 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.06em] mb-3 transition-colors ${
+              useCustom
+                ? "border border-s-coral/25 text-s-coral"
+                : "border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/45 dark:text-s-dm-text/45"
+            }`}
+            style={useCustom ? { background: "rgba(232,98,74,.06)" } : undefined}>
             {l.custom}
           </button>
           {useCustom && (
             <div className="relative mb-3">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-s-ink/30 dark:text-s-dm-text/30">CHF</span>
-              <input type="number" min="1" step="0.5" value={customAmount}
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-heading font-bold text-s-ink/35 dark:text-s-dm-text/35">
+                CHF
+              </span>
+              <input type="number" min="1" step="0.5"
+                value={customAmount}
                 onChange={(e) => setCustomAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-12 pr-3 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral data-text"
+                className="w-full pl-12 pr-3 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
                 autoFocus />
             </div>
           )}
 
-          {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
+          {error && (
+            <div className="flex items-center gap-1.5 mb-3">
+              <AlertCircle size={12} className="text-s-coral shrink-0" />
+              <p className="text-[10px] font-heading font-bold text-s-coral">{error}</p>
+            </div>
+          )}
 
-          <button onClick={handlePay} disabled={paying || tipAmount < 100}
-            className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-            {paying ? <Spinner size="sm" invert /> : <Heart size={14} />}
+          <button onClick={handlePay}
+            disabled={paying || tipAmount < 100}
+            className="w-full py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+            {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}
           </button>
         </div>
