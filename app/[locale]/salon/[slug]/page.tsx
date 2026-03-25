@@ -856,7 +856,7 @@ export default function SalonProfilePage() {
                     <RemoteQueueJoin
                       salonId={salon.id}
                       staff={salon.staff.map((s) => ({ id: s.id, name: s.name }))}
-                      services={salon.services.map((s) => ({ id: s.id, name_de: s.name_de ?? s.name }))}
+                      services={salon.services.map((s) => ({ id: s.id, name_de: s.name_de ?? "" }))}
                     />
                     <ExpressRebook salonId={salon.id} />
                   </div>

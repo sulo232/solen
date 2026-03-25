@@ -93,7 +93,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         type="submit"
         disabled={!stripe || loading}
         text={loading ? "Verarbeite..." : `Jetzt buchen · ${formatCurrency(intent.deposit_amount, locale)}`}
-        className="w-full py-3.5 rounded-btn shadow-coral-glow disabled:opacity-60"
+        className="w-full py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
       />
 
       <p className="text-[9px] text-center font-heading uppercase tracking-[.10em] text-s-ink/30 mt-3">
@@ -274,7 +274,7 @@ export default function CheckoutPage() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-1">Fehler</p>
           <p className="text-xs font-body text-s-ink/55 mb-5">{error ?? "Etwas ist schiefgelaufen."}</p>
           <a href={`/${locale}`}
-            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-colors">
+            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-btn border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-colors">
             Zurück zur Startseite
           </a>
         </div>
@@ -305,7 +305,7 @@ export default function CheckoutPage() {
               <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
             </div>
             <a href={`/${locale}/profile`}
-              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-all hover:brightness-[1.06]"
               style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
               Meine Buchungen
             </a>
@@ -442,7 +442,7 @@ export default function CheckoutPage() {
             {promoResult ? (
               <button
                 onClick={() => { setPromoResult(null); setPromoCode(""); }}
-                className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors"
+                className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 hover:border-s-ink/20 transition-colors"
               >
                 Entfernen
               </button>
@@ -451,7 +451,7 @@ export default function CheckoutPage() {
                 onClick={handlePromoValidate}
                 disabled={promoLoading || !promoCode.trim()}
                 text={promoLoading ? "..." : "Anwenden"}
-                className="px-5 rounded-btn shadow-coral-glow disabled:opacity-50"
+                className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-50"
               />
             )}
           </div>
@@ -520,7 +520,7 @@ export default function CheckoutPage() {
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
               text={confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
-              className="w-full py-4 rounded-btn shadow-coral-glow disabled:opacity-60"
+              className="w-full py-4 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
             />
             <p className="text-[10px] text-center font-heading uppercase tracking-[.10em] text-s-ink/25 mt-3">
               Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24}h vorher
@@ -548,7 +548,6 @@ export default function CheckoutPage() {
                       colorPrimary: "#E8624A",
                       colorDanger: "#A32D2D",
                       borderRadius: "12px",
-                      colorBorder: "#EAE2D6",
                       fontFamily: "DM Sans, sans-serif",
                     },
                   },
