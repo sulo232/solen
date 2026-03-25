@@ -15,7 +15,8 @@
     "dashboard": "Tableau de bord",
     "login": "Se connecter",
     "logout": "Se déconnecter",
-    "messages": "Messages"
+    "messages": "Messages",
+    "registerSalon": "Inscrire votre salon"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",

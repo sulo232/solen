@@ -15,7 +15,8 @@
     "dashboard": "Dashboard",
     "login": "Sign in",
     "logout": "Sign out",
-    "messages": "Messages"
+    "messages": "Messages",
+    "registerSalon": "Register your salon"
   },
   "home": {
     "hero_title": "Your salon in Basel",

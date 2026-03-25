@@ -15,7 +15,8 @@
     "dashboard": "Dashboard",
     "login": "Accedi",
     "logout": "Esci",
-    "messages": "Messaggi"
+    "messages": "Messaggi",
+    "registerSalon": "Registra il tuo salone"
   },
   "home": {
     "hero_title": "Il tuo salone a Basilea",

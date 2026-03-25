@@ -15,7 +15,8 @@
     "dashboard": "Dashboard",
     "login": "Anmelden",
     "logout": "Abmelden",
-    "messages": "Nachrichten"
+    "messages": "Nachrichten",
+    "registerSalon": "Salon eintragen"
   },
   "home": {
     "hero_title": "Dein Salon in Basel",

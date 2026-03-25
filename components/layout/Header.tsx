@@ -311,30 +311,59 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
             }}
           >
-            <nav className="flex flex-col gap-3">
-              {NAV_LINKS.map(({ key, href }) => {
-                const isActive = pathname.includes(href);
+            <nav className="flex flex-col gap-2">
+              {/* Mobile nav items — complete set including migrated BottomNav items */}
+              {[
+                // Core navigation:
+                { key: "discover", href: `/${locale}/discover`, icon: Compass },
+                { key: "last_minute", href: `/${locale}/last-minute`, icon: Compass },
+                // Migrated from BottomNav:
+                { key: "bookings", href: `/${locale}/bookings`, icon: CalendarDays },
+                { key: "favorites", href: `/${locale}/favorites`, icon: Heart },
+                { key: "messages", href: `/${locale}/account/messages`, icon: MessageCircle },
+              ].map(({ key, href, icon: Icon }) => {
+                const active = pathname === href || pathname.startsWith(href + "/");
                 return (
                   <Link
                     key={key}
-                    href={`/${locale}${href}`}
+                    href={href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center py-3 px-2 text-sm font-heading font-semibold transition-colors rounded-[10px] min-h-[44px]",
-                      isActive ? "text-s-coral" : "text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                      "flex items-center gap-3 py-3 px-3 text-sm font-heading font-semibold transition-colors rounded-[10px] min-h-[44px]",
+                      active ? "text-s-coral bg-s-coral/[0.05]" : "text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03]"
                     )}
                   >
+                    <Icon size={18} className="shrink-0" strokeWidth={active ? 2.2 : 1.8} />
                     {t(key)}
                   </Link>
                 );
               })}
-              <div className="pt-2 border-t border-s-ink/5 dark:border-white/5">
+
+              {/* Divider */}
+              <div className="border-t border-s-ink/[0.06] my-2" />
+
+              {/* Logged in: profile shortcut */}
+              {isLoggedIn && (
                 <Link
-                  href={profileHref}
-                  className="text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:text-s-coral transition-colors min-h-12 flex items-center"
+                  href={`/${locale}/profile`}
                   onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 py-3 px-3 text-sm font-heading font-semibold text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03] transition-colors rounded-[10px] min-h-[44px]"
                 >
-                  {isLoggedIn ? t("account") : t("login")}
+                  <User size={18} className="shrink-0" strokeWidth={1.8} />
+                  {t("account")}
+                </Link>
+              )}
+
+              {/* Salon Eintragen CTA */}
+              <div className="pt-2">
+                <Link
+                  href={`/${locale}/partner`}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-pill bg-s-coral text-white text-sm font-heading font-bold transition-colors hover:brightness-[1.06] active:scale-[0.98] min-h-[44px]"
+                  style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}
+                >
+                  <Building2 size={16} />
+                  {t("registerSalon")}
                 </Link>
               </div>
             </nav>
