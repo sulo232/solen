@@ -1134,20 +1134,11 @@ export default function SalonProfilePage() {
         </div>
 
         {/* Mobile sticky CTA */}
-        <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 dark:bg-s-dm-bg/95 backdrop-blur-sm border-t border-s-ink/5 dark:border-white/5 px-4 py-3">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setMobileSheetOpen(true)}
-            className="w-full py-3.5 rounded-card bg-s-coral text-white font-body font-semibold text-base shadow-warm-md flex items-center justify-center gap-2"
-          >
-            <span>Termin buchen</span>
-            {salon.services.length > 0 && (
-              <span className="text-white/80 data-text text-sm">
-                — ab {formatCurrency(Math.min(...salon.services.map((s) => s.price)), locale)}
-              </span>
-            )}
-          </motion.button>
-        </div>
+        <button onClick={() => setMobileSheetOpen(true)}
+          className="fixed bottom-5 left-4 right-4 lg:hidden py-4 rounded-btn text-white font-heading font-bold text-sm uppercase tracking-[.04em] z-40"
+          style={{ background: "#E8624A", boxShadow: "0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22)" }}>
+          Jetzt buchen
+        </button>
 
         {/* Mobile bottom sheet */}
         <BottomSheet isOpen={mobileSheetOpen} onClose={() => setMobileSheetOpen(false)} title="Termin buchen">

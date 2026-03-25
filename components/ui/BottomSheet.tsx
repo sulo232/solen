@@ -30,15 +30,20 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
             onClick={onClose}
           />
           <motion.div
-            className="absolute bottom-0 inset-x-0 bg-white dark:bg-s-dm-surface rounded-t-3xl shadow-warm-xl overscroll-contain max-h-[90vh] overflow-y-auto"
+            className="absolute bottom-0 inset-x-0 rounded-t-[28px] overflow-hidden overscroll-contain max-h-[90vh] overflow-y-auto"
+            style={{ background: "rgba(250,246,239,.96)", backdropFilter: "blur(28px) saturate(1.3)",
+                     WebkitBackdropFilter: "blur(28px) saturate(1.3)",
+                     boxShadow: "0 -8px 32px rgba(26,18,9,.12), inset 0 1px 0 rgba(255,255,255,.80)" }}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {/* Handle bar */}
-            <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm z-10 rounded-t-3xl">
-              <div className="w-12 h-1.5 rounded-full bg-s-sand-dark dark:bg-white/20" />
+            {/* Drag handle */}
+            <div className="flex justify-center pt-5 pb-2 sticky top-0 z-10 rounded-t-[28px]"
+              style={{ background: "rgba(250,246,239,.96)", backdropFilter: "blur(28px) saturate(1.3)",
+                       WebkitBackdropFilter: "blur(28px) saturate(1.3)" }}>
+              <div className="w-10 h-1 rounded-full bg-s-ink/15" />
             </div>
             {/* Header */}
             {title && (
