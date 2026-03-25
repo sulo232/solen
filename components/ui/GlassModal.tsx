@@ -125,7 +125,7 @@ export default function GlassModal({
               "relative w-full z-10",
               maxWidth,
               "rounded-card border border-white/60",
-              "bg-white/90 backdrop-blur-glass shadow-glass-hover",
+              "bg-white/90 backdrop-blur-glass shadow-warm-xl",
               className
             )}
           >

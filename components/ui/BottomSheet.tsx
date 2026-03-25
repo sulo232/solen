@@ -30,7 +30,7 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
             onClick={onClose}
           />
           <motion.div
-            className="absolute bottom-0 inset-x-0 bg-white dark:bg-s-dm-surface rounded-t-3xl shadow-glass-hover overscroll-contain max-h-[90vh] overflow-y-auto"
+            className="absolute bottom-0 inset-x-0 bg-white dark:bg-s-dm-surface rounded-t-3xl shadow-warm-xl overscroll-contain max-h-[90vh] overflow-y-auto"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}

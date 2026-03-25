@@ -137,7 +137,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           el.style.cssText += `
             width:10px;height:10px;border-radius:50%;
             background:#9CA3AF;border:1.5px solid white;
-            box-shadow:0 1px 3px rgba(0,0,0,0.1);opacity:0.7;
+            box-shadow:0 1px 3px rgba(26,18,9,.08);opacity:0.7;
           `;
         } else if (minPrice && minPrice > 0) {
           // Price badge pin with color coding
@@ -146,7 +146,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           el.style.cssText += `
             display:flex;align-items:center;justify-content:center;
             padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;
-            white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.1);
+            white-space:nowrap;box-shadow:0 2px 6px rgba(26,18,9,.08);
             opacity:${opacity};
             background:${isSelected ? "#E8624A" : "white"};
             color:${isSelected ? "white" : priceColor};
@@ -160,7 +160,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
           el.style.cssText += `
             width:14px;height:14px;border-radius:50%;
             background:${dotColor};border:2px solid white;
-            box-shadow:0 1px 4px rgba(0,0,0,0.12);opacity:${opacity};
+            box-shadow:0 1px 4px rgba(26,18,9,.10);opacity:${opacity};
           `;
         }
 

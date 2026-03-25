@@ -49,7 +49,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9, y: -8 }}
       transition={{ duration: 0.3 }}
-      whileHover={{ y: -3, boxShadow: "0 10px 28px rgba(0,0,0,0.10)" }}
+      whileHover={{ y: -3, boxShadow: "0 10px 28px rgba(26,18,9,.10)" }}
       className="will-change-transform"
     >
       <Link

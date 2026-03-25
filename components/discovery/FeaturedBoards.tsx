@@ -42,7 +42,7 @@ export default function FeaturedBoards({ onBoardSelect }: FeaturedBoardsProps) {
               gender: board.gender as DiscoveryFilters["gender"],
               texture: board.texture as DiscoveryFilters["texture"],
             })}
-            className="flex-shrink-0 w-36 rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:shadow-card-hover hover:-translate-y-[5px] transition-all duration-250"
+            className="flex-shrink-0 w-36 rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
           >
             <div className="grid grid-cols-2 gap-0.5 aspect-square bg-s-ink/5 dark:bg-white/5">
               {board.cover_images.slice(0, 4).map((img, i) => (

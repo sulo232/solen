@@ -51,11 +51,11 @@ module.exports = {
         input: "12px",
       },
       boxShadow: {
-        // ── Keep (deprecated aliases): ──
-        card: "0 4px 12px rgba(0,0,0,0.08)",
-        "card-hover": "0 8px 24px rgba(0,0,0,0.12)",
-        glass: "0 8px 32px rgba(0,0,0,0.06)",
-        "glass-hover": "0 16px 48px rgba(0,0,0,0.10)",
+        // ── Deprecated aliases (now warm values for backwards compat): ──
+        card: "0 1px 2px rgba(26,18,9,.06)",
+        "card-hover": "0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08)",
+        glass: "0 8px 32px rgba(26,18,9,0.06)",
+        "glass-hover": "0 16px 48px rgba(26,18,9,0.10)",
         // ── V3 Apple Warm Shadow System ──
         "warm-xs":    "0 1px 2px rgba(26,18,9,.06)",
         "warm-sm":    "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
@@ -67,7 +67,7 @@ module.exports = {
         "coral-glow":       "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)",
         "coral-glow-hover": "0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22)",
         "amber-glow":       "0 2px 4px rgba(212,135,10,.22), 0 4px 16px rgba(212,135,10,.14)",
-        "pressed":          "0 1px 1px rgba(26,18,9,.12)",
+        "pressed":          "0 1px 1px rgba(26,18,9,.12), inset 0 1px 2px rgba(26,18,9,.06)",
       },
       zIndex: {
         55: '55',
