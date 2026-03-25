@@ -74,7 +74,7 @@ export default function HeroVisualCard() {
                  boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), inset 0 1px 0 rgba(255,255,255,.70)" }}
         animate={reduced ? {} : { y: [0, -10, 0], rotate: [-0.5, 0.5, -0.5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
-        <div className="font-display text-[44px] leading-none text-s-coral">247</div>
+        <div className="font-display text-[44px] leading-none text-s-coral">~250</div>
         <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/50 mt-0.5 leading-tight">
           Buchungen<br />diese Woche
         </div>
