@@ -43,6 +43,15 @@ interface SalonCardProps {
   offPeakToday?: { discount_percent: number } | null;
 }
 
+const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
+  coiffeur:   { bg: "bg-s-yellow-subtle", text: "text-s-yellow-text" },
+  barbershop: { bg: "bg-s-plum/[0.12]",  text: "text-s-plum" },
+  nails:      { bg: "bg-s-coral-subtle",  text: "text-s-coral-text" },
+  spa:        { bg: "bg-s-sage-subtle",   text: "text-s-sage-text" },
+  makeup:     { bg: "bg-s-amber-subtle",  text: "text-s-amber-text" },
+  waxing:     { bg: "bg-s-blue-subtle",   text: "text-s-blue-text" },
+};
+
 const quartierLabels: Record<string, string> = {
   grossbasel: "Grossbasel",
   kleinbasel: "Kleinbasel",
@@ -62,7 +71,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-card hover:shadow-card-hover transition-shadow"
+        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-warm-sm hover:shadow-warm-float transition-shadow duration-[250ms]"
       >
         <div className="relative w-16 h-16 rounded-btn overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
@@ -86,14 +95,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       variants={cardPopIn}
       initial="hidden"
       animate="visible"
-      whileHover={
-        typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? {}
-          : { y: -4, borderRadius: "60% 40% 45% 55% / 50% 60% 40% 50%", boxShadow: "0 12px 32px rgba(26,18,9,0.10)" }
-      }
-      transition={{ type: "spring", stiffness: 400, damping: 28 }}
-      style={{ borderRadius: "40% 60% 55% 45% / 30% 30% 70% 70%" }}
-      className={`will-change-transform ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
+      className={`relative rounded-[20px] shadow-warm-sm transition-all duration-[250ms] hover:shadow-warm-float hover:-translate-y-[5px] will-change-transform ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
       {/* Date-based availability overlay */}
@@ -112,7 +114,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </span>
       )}
 
-      <Link href={href} className="block w-full h-full rounded-[inherit] bg-white dark:bg-s-dm-surface shadow-card overflow-hidden group hover:shadow-card-hover transition-all duration-200">
+      <Link href={href} className="block w-full h-full rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group transition-all duration-[250ms]">
         {/* Cover photo */}
         <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden">
           {salon.cover_photo_url ? (
@@ -239,8 +241,13 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             )}
           </div>
           {showAvailability && salon.next_available_slot && (
-            <div className="mt-1">
-              <span className="text-xs text-s-coral font-medium font-body">{salon.next_available_slot}</span>
+            <div className="mt-2">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-s-sage-text bg-s-sage-subtle px-2.5 py-1 rounded-btn shadow-warm-xs">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                </svg>
+                {salon.next_available_slot}
+              </span>
             </div>
           )}
           <div className="flex items-center gap-1 mt-2 flex-wrap">
@@ -253,6 +260,16 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 <span className="text-xs data-text text-s-ink/60">Ø {formatCurrency(salon.avg_price, locale)}</span>
               </>
             )}
+          </div>
+          <div className="flex gap-1.5 flex-wrap mt-2">
+            {salon.categories.slice(0, 2).map(cat => {
+              const colours = CAT_COLOURS[cat] ?? { bg: "bg-s-bg-sunken", text: "text-s-ink/60" };
+              return (
+                <span key={cat} className={`inline-flex px-2 py-0.5 rounded-btn ${colours.bg} ${colours.text} text-[10px] font-heading font-bold uppercase tracking-[.06em] shadow-warm-xs`}>
+                  {cat}
+                </span>
+              );
+            })}
           </div>
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
             {stampProgress && stampProgress.current > 0 && (
