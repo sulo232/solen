@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { RotateCcw, Info, ClipboardList, PartyPopper, CreditCard, ChevronDown, CalendarX2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -136,6 +136,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
 
 export default function BookingCalendar({ salonId, serviceId, staffMemberId, slotId }: BookingCalendarProps) {
   const locale = useLocale();
+  const tc = useTranslations("common");
   const router = useRouter();
 
   const todayDate = new Date();
@@ -607,6 +608,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         transition={{ duration: 0.35, delay: 0.1 }}
         className="px-4 pb-4 min-h-[140px]"
       >
+        <div aria-live="polite" aria-label="Verfügbare Zeitslots">
         <AnimatePresence mode="wait">
         {loadingSlots ? (
           <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
@@ -620,7 +622,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
             <EmptyState
               icon={CalendarX2}
-              title="Keine freien Slots an diesem Tag"
+              title={tc("noFreeSlots")}
               illustration="no-results"
               className="py-6"
               action={
@@ -690,6 +692,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           </motion.div>
         )}
         </AnimatePresence>
+        </div>
       </motion.div>
 
       {/* Summary strip — shown after slot selected */}
@@ -817,7 +820,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
 
-          {error && <p className="text-xs text-s-coral">{error}</p>}
+          {error && <p role="alert" className="text-xs text-s-coral">{error}</p>}
 
           {/* Guest form / Stripe payment — animated transitions */}
           <AnimatePresence mode="wait">

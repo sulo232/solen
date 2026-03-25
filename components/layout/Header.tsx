@@ -142,6 +142,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 <Link
                   key={key}
                   href={`/${locale}${href}`}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "text-sm font-medium transition-all duration-200 rounded-full",
                     scrolled ? "px-2 py-1 text-xs" : "px-3 py-1.5",

@@ -50,9 +50,11 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Vor- und Nachname"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "guest-name-error" : undefined}
           className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
         />
-        {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
+        {errors.name && <p id="guest-name-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
       </div>
 
       <div>
@@ -64,9 +66,11 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="+41791234567"
+          aria-invalid={!!errors.phone}
+          aria-describedby={errors.phone ? "guest-phone-error" : undefined}
           className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
         />
-        {errors.phone && <p className="text-xs text-s-coral mt-0.5">{errors.phone}</p>}
+        {errors.phone && <p id="guest-phone-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.phone}</p>}
       </div>
 
       <div>
@@ -78,9 +82,11 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="deine@email.ch"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "guest-email-error" : undefined}
           className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
         />
-        {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
+        {errors.email && <p id="guest-email-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
       </div>
 
       <p className="text-[10px] text-s-ink/60 dark:text-s-dm-text/60 text-center px-2 mt-4 mb-2">

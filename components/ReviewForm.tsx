@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Star, X } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
@@ -53,6 +54,7 @@ type SubRatings = {
 };
 
 export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: ReviewFormProps) {
+  const tc = useTranslations("common");
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState("");
@@ -69,7 +71,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) {
-      setError("Bitte wähle eine Bewertung aus");
+      setError(tc("pleaseSelectRating"));
       return;
     }
 
@@ -232,7 +234,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs rounded-btn">
+            <div id="review-error" role="alert" className="p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs rounded-btn">
               {error}
             </div>
           )}

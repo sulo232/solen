@@ -28,10 +28,17 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <PostHogProvider>
         <ToastProvider>
+          {/* Skip-to-content: first focusable element for keyboard users */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-s-coral focus:text-white focus:rounded-btn focus:shadow-warm-md focus:text-sm focus:font-medium"
+          >
+            Zum Inhalt springen
+          </a>
           <Header locale={locale} />
-          <div className="pb-16 md:pb-0">
+          <main id="main-content" tabIndex={-1} className="pb-16 md:pb-0">
             {children}
-          </div>
+          </main>
           <BottomNav />
           <CookieBanner />
           <PWAInstallPrompt />

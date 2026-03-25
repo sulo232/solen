@@ -246,6 +246,7 @@ export default function DashboardLayout({
                       key={href}
                       href={`/${locale}${href}`}
                       onClick={() => setMobileSidebarOpen(false)}
+                      aria-current={active ? "page" : undefined}
                       className={[
                         "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5",
                         active ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",
@@ -266,6 +267,7 @@ export default function DashboardLayout({
                         key={href}
                         href={`/${locale}${href}`}
                         onClick={() => setMobileSidebarOpen(false)}
+                        aria-current={isActive(href) ? "page" : undefined}
                         className={[
                           "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5",
                           isActive(href) ? "bg-s-coral/10 text-s-coral" : "text-s-ink/60",

@@ -1,10 +1,55 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { modalVariants } from "@/lib/animations";
+
+// ── Focus trap hook ──────────────────────────
+function useFocusTrap(ref: React.RefObject<HTMLDivElement | null>, isOpen: boolean) {
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen || !ref.current) return;
+
+    previousFocusRef.current = document.activeElement as HTMLElement;
+
+    const focusableSelectors =
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const focusableElements =
+      ref.current.querySelectorAll<HTMLElement>(focusableSelectors);
+    const firstEl = focusableElements[0];
+
+    firstEl?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const els = ref.current?.querySelectorAll<HTMLElement>(focusableSelectors);
+      if (!els?.length) return;
+      const first = els[0];
+      const last = els[els.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen, ref]);
+}
 
 interface GlassModalProps {
   open: boolean;
@@ -18,7 +63,7 @@ interface GlassModalProps {
 
 /**
  * Modal with glassmorphic backdrop blur.
- * Traps scroll and supports Escape-to-close.
+ * Traps focus, scroll, and supports Escape-to-close.
  */
 export default function GlassModal({
   open,
@@ -28,6 +73,9 @@ export default function GlassModal({
   children,
   className,
 }: GlassModalProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(panelRef, open);
+
   // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -65,6 +113,10 @@ export default function GlassModal({
 
           {/* Panel */}
           <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
             variants={modalVariants}
             initial="hidden"
             animate="visible"

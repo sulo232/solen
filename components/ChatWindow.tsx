@@ -357,7 +357,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
           className="flex flex-col flex-1 min-h-0"
         >
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" aria-live="polite" aria-label="Nachrichten">
           <AnimatePresence mode="wait">
           {loading ? (
             <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
