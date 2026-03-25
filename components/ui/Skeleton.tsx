@@ -18,7 +18,7 @@ export default function Skeleton({ variant = "text", className }: SkeletonProps)
 
   if (variant === "card") {
     return (
-      <div className={cn("rounded-card overflow-hidden border border-s-ink/5", className)}>
+      <div className={cn("rounded-[20px] overflow-hidden border border-s-ink/5", className)}>
         {/* Photo placeholder */}
         <div className={cn(base, "h-40 w-full rounded-none")} />
         {/* Text lines */}

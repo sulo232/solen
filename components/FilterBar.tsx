@@ -34,13 +34,17 @@ const RATING_OPTIONS = [
   { value: "4.5", label: "4.5+", stars: true },
 ];
 
-// Shared pill classes
+// Shared pill classes — V3 spec
 const pillBase =
-  "px-3 py-1.5 min-h-12 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border flex items-center";
+  "px-3.5 py-2 min-h-[36px] rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-all duration-200 border flex items-center gap-1.5";
 const pillActive =
-  "bg-s-coral text-white border-s-coral shadow-warm-sm";
+  "bg-s-coral text-white border-s-coral"
+  + " shadow-[0_2px_4px_rgba(232,98,74,.25),0_4px_16px_rgba(232,98,74,.15)]";
 const pillInactive =
-  "bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm text-s-ink/70 dark:text-s-dm-text/70 border-white/60 dark:border-white/10 hover:border-s-coral/50 hover:bg-white/90 dark:hover:bg-s-dm-raised/90 shadow-warm-sm";
+  "text-s-ink/65 dark:text-s-dm-text/65 border-s-ink/[0.08] dark:border-white/10"
+  + " bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm"
+  + " hover:border-s-coral/40 hover:bg-white/90 dark:hover:bg-s-dm-raised/90"
+  + " shadow-[0_1px_2px_rgba(26,18,9,.06)]";
 
 interface FilterBarProps {
   category?: SalonCategory;
@@ -96,7 +100,10 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.05 }}
-      className="sticky top-[57px] z-40 bg-white/80 dark:bg-s-dm-bg/80 backdrop-blur-glass border-b border-s-ink/5 dark:border-white/5"
+      className="sticky top-[57px] z-40 isolate"
+      style={{ background: "rgba(250,246,239,.82)", backdropFilter: "blur(28px) saturate(1.3)",
+               WebkitBackdropFilter: "blur(28px) saturate(1.3)",
+               boxShadow: "inset 0 -1px 0 rgba(26,18,9,.06), 0 1px 3px rgba(26,18,9,.04)" }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
@@ -148,7 +155,11 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
               Preis
             </button>
             {priceOpen && (
-              <div className="absolute top-full left-0 mt-2 w-64 p-4 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-glass rounded-card shadow-glass border border-white/60 dark:border-white/10 z-50">
+              <div className="absolute top-full left-0 mt-2 w-64 p-5 z-50 rounded-[20px]"
+                style={{ background: "rgba(255,255,255,.92)", backdropFilter: "blur(24px) saturate(1.3)",
+                         WebkitBackdropFilter: "blur(24px) saturate(1.3)",
+                         border: "1px solid rgba(255,255,255,.80)",
+                         boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), inset 0 1px 0 rgba(255,255,255,.90)" }}>
                 <PriceSlider />
               </div>
             )}
@@ -238,12 +249,16 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
               <ChevronDown className={`w-3 h-3 transition-transform duration-150 ${sortOpen ? "rotate-180" : ""}`} />
             </button>
             {sortOpen && (
-              <div className="absolute top-full right-0 mt-2 w-52 bg-white dark:bg-s-dm-surface shadow-warm-lg rounded-card border border-s-ink/5 dark:border-white/10 py-1 z-50">
+              <div className="absolute top-full right-0 mt-2 w-52 z-50 rounded-[20px] overflow-hidden py-1"
+                style={{ background: "rgba(255,255,255,.92)", backdropFilter: "blur(24px) saturate(1.3)",
+                         WebkitBackdropFilter: "blur(24px) saturate(1.3)",
+                         border: "1px solid rgba(255,255,255,.80)",
+                         boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), inset 0 1px 0 rgba(255,255,255,.90)" }}>
                 {SORT_OPTIONS.map(({ value, label }) => (
                   <button
                     key={value}
                     onClick={() => { setParam("sort", value); setSortOpen(false); }}
-                    className="w-full flex items-center justify-between px-4 py-2 text-sm font-body text-s-ink/80 dark:text-s-dm-text/80 hover:bg-s-bg-surface dark:hover:bg-s-dm-raised transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/70 hover:bg-s-coral/[0.06] hover:text-s-coral transition-colors"
                     aria-label={`Sortieren nach ${label}`}
                   >
                     {label}

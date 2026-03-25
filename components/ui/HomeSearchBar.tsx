@@ -37,11 +37,15 @@ const CATEGORIES: { key: SalonCategory; label: string; Icon: typeof Scissors }[]
 // ─────────────────────────────────────────────────────────────────────────────
 
 const pillBase =
-  "px-3 py-1.5 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border flex items-center gap-1.5";
+  "px-3.5 py-2 min-h-[36px] rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-all duration-200 border flex items-center gap-1.5";
 const pillActive =
-  "bg-s-coral text-white border-s-coral shadow-warm-sm";
+  "bg-s-coral text-white border-s-coral"
+  + " shadow-[0_2px_4px_rgba(232,98,74,.25),0_4px_16px_rgba(232,98,74,.15)]";
 const pillInactive =
-  "bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm text-s-ink/70 dark:text-s-dm-text/70 border-white/60 dark:border-white/10 hover:border-s-coral/50 hover:bg-white/90 dark:hover:bg-s-dm-raised/90 shadow-warm-sm";
+  "text-s-ink/65 dark:text-s-dm-text/65 border-s-ink/[0.08] dark:border-white/10"
+  + " bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm"
+  + " hover:border-s-coral/40 hover:bg-white/90 dark:hover:bg-s-dm-raised/90"
+  + " shadow-[0_1px_2px_rgba(26,18,9,.06)]";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Date helpers
@@ -124,105 +128,62 @@ export default function HomeSearchBar() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-2xl mx-auto"
-      role="search"
-      aria-label="Salon suchen"
-    >
-      {/* Main search card */}
-      <div className="bg-white/90 dark:bg-s-dm-surface/90 backdrop-blur-sm rounded-card shadow-card border border-s-ink/5 dark:border-white/10 p-4 space-y-4">
+    <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto" role="search" aria-label="Salon suchen">
 
-        {/* Row 1: Date section */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <Calendar size={16} className="text-s-ink/40 dark:text-s-dm-text/40 shrink-0" aria-hidden="true" />
-          <button
-            type="button"
-            onClick={() => handleDateChip("today")}
-            className={[pillBase, activeDateChip === "today" ? pillActive : pillInactive].join(" ")}
-          >
-            Heute
-          </button>
-          <button
-            type="button"
-            onClick={() => handleDateChip("tomorrow")}
-            className={[pillBase, activeDateChip === "tomorrow" ? pillActive : pillInactive].join(" ")}
-          >
-            Morgen
-          </button>
-          <div className="shrink-0">
-            <SolenDatePicker
-              label=""
-              value={selectedDate}
-              onChange={handleCustomDate}
-              minValue={todayValue}
-              className="[&_label]:hidden"
-            />
+      {/* ── Main segmented bar ── */}
+      <div className="rounded-search overflow-hidden"
+        style={{ background: "rgba(255,255,255,.92)", backdropFilter: "blur(24px) saturate(1.3)",
+                 WebkitBackdropFilter: "blur(24px) saturate(1.3)",
+                 border: "1px solid rgba(255,255,255,.80)",
+                 boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), inset 0 1px 0 rgba(255,255,255,.90)" }}>
+
+        {/* Row: dates + categories side by side on lg, stacked on sm */}
+        <div className="flex flex-col lg:flex-row">
+          {/* Segment 1: Date */}
+          <div className="flex items-center gap-2 px-5 py-4 lg:border-r border-b lg:border-b-0 border-s-ink/[0.06] flex-wrap">
+            <Calendar size={14} className="text-s-ink/35 shrink-0" aria-hidden="true" />
+            <button type="button" onClick={() => handleDateChip("today")}
+              className={[pillBase, activeDateChip === "today" ? pillActive : pillInactive].join(" ")}>Heute</button>
+            <button type="button" onClick={() => handleDateChip("tomorrow")}
+              className={[pillBase, activeDateChip === "tomorrow" ? pillActive : pillInactive].join(" ")}>Morgen</button>
+            <SolenDatePicker label="" value={selectedDate} onChange={handleCustomDate} minValue={todayValue} className="[&_label]:hidden" />
           </div>
-        </div>
 
-        {/* Row 2: Category pills */}
-        {categoryHint && (
-          <p className="text-xs text-s-coral font-body font-medium -mb-2 animate-pulse">
-            Bitte wähle eine Kategorie
-          </p>
-        )}
-        <div className={`flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5 ${categoryHint ? "ring-2 ring-s-coral/30 rounded-pill p-1 -m-1" : ""}`}>
-          {CATEGORIES.map(({ key, label, Icon }) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setSelectedCategory(selectedCategory === key ? null : key)}
-              className={[
-                pillBase,
-                selectedCategory === key ? pillActive : pillInactive,
-              ].join(" ")}
-              aria-pressed={selectedCategory === key}
-              aria-label={`Kategorie ${label} ${selectedCategory === key ? "entfernen" : "wählen"}`}
-            >
-              <Icon size={14} aria-hidden="true" />
-              {label}
+          {/* Segment 2: Categories */}
+          <div className={`flex items-center gap-1.5 px-5 py-4 overflow-x-auto no-scrollbar border-b lg:border-b-0 border-s-ink/[0.06] flex-1 ${categoryHint ? "ring-2 ring-s-coral/30 ring-inset" : ""}`}>
+            {CATEGORIES.map(({ key, label, Icon }) => (
+              <button key={key} type="button"
+                onClick={() => setSelectedCategory(selectedCategory === key ? null : key)}
+                className={[pillBase, selectedCategory === key ? pillActive : pillInactive].join(" ")}
+                aria-pressed={selectedCategory === key} aria-label={`Kategorie ${label}`}>
+                <Icon size={13} aria-hidden="true" />{label}
+              </button>
+            ))}
+          </div>
+
+          {/* Segment 3: Text input + Search button inline */}
+          <div className="relative flex items-stretch">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-s-ink/30" aria-hidden="true"/>
+            <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
+              placeholder="Service oder Salon…" aria-label="Service oder Salon suchen" id="tour-search"
+              className="w-full lg:w-56 py-4 pl-10 pr-2 text-sm font-body text-s-ink placeholder:text-s-ink/35 bg-transparent focus:outline-none border-b lg:border-b-0 border-s-ink/[0.06]" />
+
+            {/* Submit — nested inside bar */}
+            <button type="submit" disabled={detecting}
+              className="shrink-0 m-2 px-5 py-3 rounded-input bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.04em] flex items-center gap-1.5 shadow-coral-glow hover:bg-s-coral-hover hover:shadow-coral-glow-hover transition-all disabled:opacity-60">
+              {detecting ? <Loader2 size={14} className="animate-spin" /> : <Search size={13} aria-hidden="true" />}
+              {detecting ? "…" : "Suchen"}
             </button>
-          ))}
-        </div>
-
-        {/* Row 3: Search input */}
-        <div className="relative">
-          <Search
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30"
-            aria-hidden="true"
-          />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Service, Stil oder Salon suchen…"
-            aria-label="Service, Stil oder Salon suchen"
-            id="tour-search"
-            className="w-full rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg py-3 pl-10 pr-4 text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 border border-s-ink/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:border-s-coral transition-shadow duration-200"
-          />
+          </div>
         </div>
       </div>
 
-      {/* Submit button */}
-      <button
-        type="submit"
-        disabled={detecting}
-        className="mt-4 w-full sm:w-auto sm:mx-auto sm:flex sm:px-10 justify-center items-center gap-2 py-3 px-6 rounded-pill bg-s-coral hover:bg-s-coral-hover text-white font-heading font-semibold text-sm shadow-warm-sm hover:shadow-warm-md transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex"
-      >
-        {detecting ? (
-          <>
-            <Loader2 size={16} className="animate-spin" aria-hidden="true" />
-            Erkennung…
-          </>
-        ) : (
-          <>
-            <Search size={16} aria-hidden="true" />
-            Suchen
-          </>
-        )}
-      </button>
+      {/* Category hint text */}
+      {categoryHint && (
+        <p className="text-xs text-s-coral font-body font-medium mt-2 text-center animate-pulse">
+          Bitte wähle eine Kategorie
+        </p>
+      )}
     </form>
   );
 }

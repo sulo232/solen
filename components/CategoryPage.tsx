@@ -30,12 +30,12 @@ const categoryLabels: Record<SalonCategory, string> = {
 };
 
 const categoryGradients: Record<SalonCategory, string> = {
-  coiffeur: "from-s-coral/10 via-white to-transparent",
-  barbershop: "from-s-ink/5 via-white to-transparent",
-  nails: "from-s-coral/8 via-white to-transparent",
-  spa: "from-s-coral/8 via-white to-transparent",
-  makeup: "from-s-coral/10 via-white to-transparent",
-  waxing: "from-s-coral/6 via-white to-transparent",
+  coiffeur:   "from-[rgba(232,98,74,0.12)] via-[rgba(250,246,239,0.80)] to-transparent",
+  barbershop: "from-[rgba(74,30,60,0.10)] via-[rgba(250,246,239,0.80)] to-transparent",
+  nails:      "from-[rgba(232,98,74,0.10)] via-[rgba(242,193,68,0.06)] to-transparent",
+  spa:        "from-[rgba(123,166,136,0.14)] via-[rgba(250,246,239,0.80)] to-transparent",
+  makeup:     "from-[rgba(212,135,10,0.12)] via-[rgba(250,246,239,0.80)] to-transparent",
+  waxing:     "from-[rgba(107,163,200,0.12)] via-[rgba(250,246,239,0.80)] to-transparent",
 };
 
 interface CategoryPageProps {
@@ -213,18 +213,36 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
   return (
     <div className="min-h-screen bg-s-bg-base relative overflow-x-hidden">
       <BlobBackground zone={2} />
-      {/* Mesh gradient hero */}
-      <div className={`pt-28 pb-10 relative z-10`}>
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+      {/* Hero — category gradient + Bebas Neue H1 */}
+      <div className="pt-24 pb-12 relative z-10 overflow-hidden">
+        {/* Category gradient overlay */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} pointer-events-none`} />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-          <nav className="text-xs text-s-ink/40 mb-2 font-body flex items-center gap-1">
-            <span>{locale === "de" ? "Startseite" : "Home"}</span>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-s-ink/70">{categoryLabel}</span>
+          {/* Breadcrumb — eyebrow style */}
+          <nav aria-label="Breadcrumb" className="mb-4">
+            <ol className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.12em]">
+              <li><span className="text-s-ink/30">{locale === "de" ? "Startseite" : "Home"}</span></li>
+              <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
+              <li className="text-s-ink/60" aria-current="page">{categoryLabel}</li>
+            </ol>
           </nav>
-          <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">{categoryLabel} in Basel</h1>
+
+          {/* Amber eyebrow */}
+          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-3">
+            Basel · {categoryLabel}
+          </span>
+
+          {/* Hero H1 — Bebas Neue at display size */}
+          <h1 className="font-display text-s-ink dark:text-s-dm-text"
+            style={{ fontSize: "clamp(48px, 8vw, 96px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
+            {categoryLabel.toUpperCase()} IN{" "}
+            <span className="text-s-coral">BASEL</span>
+          </h1>
+
+          {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
-            <p className="text-sm text-s-ink/50 mt-2 font-body">
+            <p className="font-body italic text-s-ink/50 mt-3 text-[15px] leading-[1.82]">
               {total} {total === 1 ? "Salon" : "Salons"} auf Solen
               {dirTotal > 0 && ` · ${dirTotal} weitere in Basel`}
             </p>
@@ -235,12 +253,15 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
       {/* Quartier banner */}
       {topQuartierBanner && !bannerDismissed && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-2">
-          <div className="flex items-center justify-between bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-2.5 text-sm">
-            <span className="text-s-coral font-body font-medium">
-              Zeige Salons in {topQuartierBanner} — dein meistbesuchtes Quartier
+          <div className="flex items-center justify-between px-4 py-3 rounded-[16px]"
+            style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)",
+                     boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.50)" }}>
+            <span className="text-xs font-heading font-bold text-s-coral">
+              📍 {topQuartierBanner} — dein meistbesuchtes Quartier
             </span>
-            <button onClick={() => setBannerDismissed(true)} className="text-s-coral/60 hover:text-s-coral ml-4 text-xs font-body">
-              Ausblenden
+            <button onClick={() => setBannerDismissed(true)}
+              className="text-s-coral/60 hover:text-s-coral ml-4 text-[10px] font-heading uppercase tracking-[.08em]">
+              ✕
             </button>
           </div>
         </div>
@@ -249,23 +270,38 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
       <FilterBar category={category} />
 
       {/* Map/List toggle */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-end gap-2">
-        <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
-        <button
-          onClick={() => {
-            const params = new URLSearchParams(searchParams.toString());
-            if (isMapView) {
-              params.delete("view");
-            } else {
-              params.set("view", "map");
-            }
-            routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
-          }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 text-sm font-body font-medium text-s-ink/70 hover:border-s-coral hover:text-s-coral transition-colors"
-        >
-          {isMapView ? <List size={16} /> : <MapIcon size={16} />}
-          {isMapView ? "Liste" : "Karte"}
-        </button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-between gap-3">
+        {/* Results count — left */}
+        {!loading && salons.length > 0 && (
+          <p className="text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40">
+            {salons.length} von {total} Salons
+          </p>
+        )}
+
+        <div className="flex items-center gap-2 ml-auto">
+          <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
+          {/* Toggle pill */}
+          <button
+            onClick={() => {
+              const params = new URLSearchParams(searchParams.toString());
+              if (isMapView) {
+                params.delete("view");
+              } else {
+                params.set("view", "map");
+              }
+              routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
+            }}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all"
+            style={{ border: "1px solid rgba(26,18,9,.10)",
+                     background: isMapView ? "#E8624A" : "rgba(255,255,255,.80)",
+                     color: isMapView ? "#fff" : "rgba(26,18,9,.65)",
+                     boxShadow: isMapView
+                       ? "0 2px 4px rgba(232,98,74,.25)"
+                       : "0 1px 2px rgba(26,18,9,.06)" }}>
+            {isMapView ? <List size={14} /> : <MapIcon size={14} />}
+            {isMapView ? "Liste" : "Karte"}
+          </button>
+        </div>
       </div>
 
       {/* Above grid slot (e.g. barbershop filter pills) */}
@@ -339,9 +375,15 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             <AnimatePresence>
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
-                  <button onClick={handleLoadMore} disabled={loadingMore} className="flex items-center gap-2 px-7 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral hover:shadow-warm-sm transition-all disabled:opacity-50">
+                  <button onClick={handleLoadMore} disabled={loadingMore}
+                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all disabled:opacity-50"
+                    style={{ border: "1px solid rgba(26,18,9,.10)",
+                             background: "rgba(255,255,255,.70)", backdropFilter: "blur(8px)",
+                             WebkitBackdropFilter: "blur(8px)",
+                             color: "rgba(26,18,9,.70)",
+                             boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
                     {loadingMore ? <Spinner size="sm" /> : null}
-                    {loadingMore ? "Lade mehr…" : `Mehr laden (${total - salons.length} weitere)`}
+                    {loadingMore ? "Lade mehr…" : `${total - salons.length} weitere Salons`}
                   </button>
                 </motion.div>
               )}
@@ -351,9 +393,15 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             <AnimatePresence>
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
-                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore} className="flex items-center gap-2 px-7 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm font-body font-medium text-s-ink dark:text-s-dm-text hover:border-s-ink/20 transition-colors disabled:opacity-50">
+                  <button onClick={handleDirLoadMore} disabled={dirLoadingMore}
+                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all disabled:opacity-50"
+                    style={{ border: "1px solid rgba(26,18,9,.10)",
+                             background: "rgba(255,255,255,.70)", backdropFilter: "blur(8px)",
+                             WebkitBackdropFilter: "blur(8px)",
+                             color: "rgba(26,18,9,.70)",
+                             boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
                     {dirLoadingMore ? <Spinner size="sm" /> : null}
-                    {dirLoadingMore ? "Lade mehr…" : `Mehr laden (${dirTotal - dirEntries.length} weitere)`}
+                    {dirLoadingMore ? "Lade mehr…" : `${dirTotal - dirEntries.length} weitere Einträge`}
                   </button>
                 </motion.div>
               )}
