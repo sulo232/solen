@@ -94,14 +94,14 @@ const CancelModal = memo(function CancelModal({
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+            className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
@@ -480,7 +480,7 @@ const SettingsSection = memo(function SettingsSection({
               type="button"
               onClick={() => setLang(l)}
               className={[
-                "px-4 py-2 rounded-btn text-sm font-medium border transition-colors",
+                "px-4 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors",
                 lang === l
                   ? "bg-s-coral text-white border-s-coral"
                   : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",
@@ -496,7 +496,7 @@ const SettingsSection = memo(function SettingsSection({
         <button
           type="submit"
           disabled={!name || saving}
-          className="px-5 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center gap-2"
+          className="px-5 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50 flex items-center gap-2"
         >
           {saving && <Spinner size="sm" invert />}
           {t("save")}
@@ -710,7 +710,7 @@ export default function ProfilePage() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text truncate">{profile.display_name}</p>
-                <SolenExclusiveBadge profile={profile} />
+                <SolenExclusiveBadge featureDescription={t("exclusiveMember") || "Exclusive Member"} />
               </div>
               <p className="text-xs font-body italic text-s-ink/45 dark:text-s-dm-text/45 mt-0.5 truncate">{profile.bio}</p>
             </div>
@@ -881,104 +881,104 @@ export default function ProfilePage() {
           )}
         </motion.section>
 
-        {/* ── Section: Discovery ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.16 }}
-          className="mb-6"
-        >
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-5">
-            <ProfileDiscoverySections
-              userId={profile.id}
-              profile={{
-                disc_gender: (profile as any).disc_gender ?? null,
-                disc_hair_texture: (profile as any).disc_hair_texture ?? null,
-                disc_hair_length: (profile as any).disc_hair_length ?? null,
-                disc_face_shape: (profile as any).disc_face_shape ?? null,
-                disc_skin_tone: (profile as any).disc_skin_tone ?? null,
-                disc_preferred_categories: null,
-              }}
-            />
-          </div>
-        </motion.section>
+      {/* ── Section: Discovery ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.16 }}
+        className="mb-6"
+      >
+        <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/10 p-5">
+          <ProfileDiscoverySections
+            userId={profile.id}
+            profile={{
+              disc_gender: (profile as any).disc_gender ?? null,
+              disc_hair_texture: (profile as any).disc_hair_texture ?? null,
+              disc_hair_length: (profile as any).disc_hair_length ?? null,
+              disc_face_shape: (profile as any).disc_face_shape ?? null,
+              disc_skin_tone: (profile as any).disc_skin_tone ?? null,
+              disc_preferred_categories: null,
+            }}
+          />
+        </div>
+      </motion.section>
 
-        {/* ── Section: Credit & Referral ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-        >
-          <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-            <Wallet size={16} className="text-s-coral" />
-            {t("creditAndReferral")}
-          </h2>
-          <ReferralSection locale={locale} />
-        </motion.section>
+      {/* ── Section: Credit & Referral ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
+      >
+        <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
+          <Wallet size={16} className="text-s-coral" />
+          {t("creditAndReferral")}
+        </h2>
+        <ReferralSection locale={locale} />
+      </motion.section>
 
-        {/* ── Section: Packages, Gift Cards, Forms ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.18 }}
-        >
-          <div className="space-y-3">
-            <Link
-              href={`/${locale}/profile/packages`}
-              className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <Package size={18} className="text-s-blue" />
-                <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myPackages")}</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myPackagesDesc")}</p>
-                </div>
+      {/* ── Section: Packages, Gift Cards, Forms ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.18 }}
+      >
+        <div className="space-y-3">
+          <Link
+            href={`/${locale}/profile/packages`}
+            className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <Package size={18} className="text-s-blue" />
+              <div>
+                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myPackages")}</p>
+                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myPackagesDesc")}</p>
               </div>
-              <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-            </Link>
-            <Link
-              href={`/${locale}/profile/gift-cards`}
-              className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <Gift size={18} className="text-s-coral" />
-                <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myGiftCards")}</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myGiftCardsDesc")}</p>
-                </div>
+            </div>
+            <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </Link>
+          <Link
+            href={`/${locale}/profile/gift-cards`}
+            className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <Gift size={18} className="text-s-coral" />
+              <div>
+                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myGiftCards")}</p>
+                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myGiftCardsDesc")}</p>
               </div>
-              <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-            </Link>
-            <Link
-              href={`/${locale}/profile/intake-forms`}
-              className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
-            >
-              <div className="flex items-center gap-3">
-                <ClipboardList size={18} className="text-s-amber" />
-                <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myForms")}</p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myFormsDesc")}</p>
-                </div>
+            </div>
+            <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </Link>
+          <Link
+            href={`/${locale}/profile/intake-forms`}
+            className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <ClipboardList size={18} className="text-s-amber" />
+              <div>
+                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myForms")}</p>
+                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myFormsDesc")}</p>
               </div>
-              <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-            </Link>
-          </div>
-        </motion.section>
+            </div>
+            <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
+          </Link>
+        </div>
+      </motion.section>
 
-        {/* ── Section: Settings ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-        >
-          <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-            <Settings size={16} className="text-s-ink/60 dark:text-s-dm-text/60" />
-            {t("settings")}
-          </h2>
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-5">
-            <SettingsSection profile={profile} onSave={handleSaveProfile} />
-          </div>
-        </motion.section>
+      {/* ── Section: Settings ── */}
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
+          <Settings size={16} className="text-s-ink/60 dark:text-s-dm-text/60" />
+          {t("settings")}
+        </h2>
+        <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/10 p-5">
+          <SettingsSection profile={profile} onSave={handleSaveProfile} />
+        </div>
+      </motion.section>
 
         {/* ── Recently Viewed ── */}
         <RecentlyViewed />
