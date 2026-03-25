@@ -4,7 +4,6 @@ import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import Header from "@/components/layout/Header";
-import BottomNav from "@/components/layout/BottomNav";
 import CookieBanner from "@/components/ui/CookieBanner";
 import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
 import TosPrompt from "@/components/auth/TosPrompt";
@@ -36,10 +35,9 @@ export default async function LocaleLayout({
             Zum Inhalt springen
           </a>
           <Header locale={locale} />
-          <main id="main-content" tabIndex={-1} className="pb-16 md:pb-0">
+          <main id="main-content" tabIndex={-1}>
             {children}
           </main>
-          <BottomNav />
           <CookieBanner />
           <PWAInstallPrompt />
           <TosPrompt />
