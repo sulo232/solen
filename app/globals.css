@@ -243,7 +243,10 @@
 .reveal-stagger > *:nth-child(6) { animation-delay: 0.35s; }
 
 /* ── Smooth scroll for anchor links ────────────────────────────────── */
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  transition: background-color 300ms ease, color 300ms ease;
+}
 
 /* ── Accessibility: prefers-reduced-motion (universal) ────────────── */
 @media (prefers-reduced-motion: reduce) {
