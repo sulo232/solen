@@ -116,16 +116,29 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
   };
 
   return (
-    <div className="space-y-3">
-      <PaymentElement options={{ layout: "tabs" }} />
+    <div className="space-y-5">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">Zahlung</p>
+
+      {/* Stripe sandbox — wrapper only */}
+      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
+        style={{ background: "#FFFFFF", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
+        <PaymentElement options={{ layout: "tabs" }} />
+      </div>
+
       <button
+        type="button"
         onClick={handleSubmit}
         disabled={processing || !stripe}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50"
+        className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
       >
-        {processing ? <Spinner size="sm" invert /> : <CreditCard size={16} />}
-        {processing ? "Wird verarbeitet…" : "Jetzt bezahlen"}
+        {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
+        {processing ? "Verarbeitung…" : "Jetzt bezahlen"}
       </button>
+
+      <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 text-center">
+        Verschlüsselt durch Stripe · nDSG-konform
+      </p>
     </div>
   );
 }
@@ -524,11 +537,23 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
   if (confirmed) {
     return (
-      <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center">
-        <PartyPopper size={48} className="text-s-coral" />
-        <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Buchung bestätigt!</p>
-        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">Du erhältst eine Bestätigungs-E-Mail.</p>
-        <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all">
+      <div className="text-center px-4 py-8 space-y-4">
+        {/* Success icon */}
+        <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center"
+          style={{ background: "rgba(76,175,111,.12)" }}>
+          <PartyPopper size={28} className="text-[#4CAF6F]" />
+        </div>
+        <div>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-[#4CAF6F] mb-2">
+            Buchung bestätigt
+          </p>
+          <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Alles klar!</p>
+          <p className="font-body italic text-s-ink/50 dark:text-s-dm-text/50 text-sm mt-1 leading-relaxed">
+            Dein Termin ist gebucht. Du erhältst eine Bestätigung per E-Mail.
+          </p>
+        </div>
+        <a href={`/${locale}/profile`}
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral hover:text-s-coral transition-colors">
           Meine Buchungen
         </a>
       </div>
@@ -536,7 +561,26 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   }
 
   return (
-    <div className="rounded-card border border-s-ink/5 bg-white dark:bg-s-dm-raised overflow-hidden">
+    <div className="w-full overflow-hidden">
+      {/* P2 — Step progress bar */}
+      <div className="px-4 pt-4 pb-2">
+        <div className="flex gap-1.5">
+          {(["Termin", "Details", "Zahlung"] as const).map((label, i) => {
+            const stepIndex = checkoutStep === "payment" ? 2 : checkoutStep === "guest" ? 1 : selectedSlot ? 1 : 0;
+            return (
+              <div key={label} className="flex-1">
+                <div className={`h-1 rounded-full transition-all duration-300 ${
+                  i <= stepIndex ? "bg-s-coral" : "bg-s-ink/10 dark:bg-white/10"
+                }`} />
+                <p className={`text-[9px] font-heading uppercase tracking-[.12em] mt-1 ${
+                  i === stepIndex ? "text-s-coral font-bold" : "text-s-ink/30 dark:text-s-dm-text/30"
+                }`}>{label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Staff picker */}
       <StaffPicker
         staffList={staffList}
@@ -612,9 +656,9 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
         <AnimatePresence mode="wait">
         {loadingSlots ? (
           <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-            <div className="flex flex-wrap gap-2 py-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="w-16 h-8 rounded-btn" />
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className="h-[40px] rounded-[10px] bg-s-bg-sunken dark:bg-s-dm-bg animate-pulse" />
               ))}
             </div>
           </motion.div>
@@ -644,7 +688,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
               if (!groupSlots.length) return null;
               return (
                 <div key={group}>
-                  <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">{GROUP_LABELS[group]}</p>
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-2 mt-4 first:mt-0">{GROUP_LABELS[group]}</p>
                   <div className="flex flex-wrap gap-2">
                     {groupSlots.map((slot) => {
                       const timeStr = new Date(slot.starts_at).toLocaleTimeString(
@@ -664,12 +708,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
-                            "px-3 py-1.5 rounded-btn text-sm data-text font-medium transition-all duration-200",
+                            "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-all duration-150 border",
                             isSelected
-                              ? "bg-s-coral text-white shadow-card"
+                              ? "bg-s-coral text-white border-s-coral shadow-[0_2px_4px_rgba(232,98,74,.20)]"
                               : offPeakPct
-                                ? "bg-s-sage-subtle text-s-ink hover:bg-s-sage/20 hover:text-s-sage-text dark:bg-s-sage/10 dark:text-s-dm-text dark:hover:bg-s-sage/20"
-                                : "bg-s-bg-sunken text-s-ink hover:bg-s-coral/10 hover:text-s-coral dark:bg-s-dm-bg dark:text-s-dm-text dark:hover:bg-s-coral/10",
+                                ? "bg-s-sage-subtle border-s-sage/20 text-s-ink hover:border-s-sage/40 hover:text-s-sage-text dark:bg-s-sage/10 dark:text-s-dm-text dark:border-s-sage/20"
+                                : "bg-white dark:bg-s-dm-bg border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral/50 hover:text-s-coral",
                           ].join(" ")}
                           aria-label={`Termin um ${timeStr}${duration ? ` · ${duration} Min` : ""}${offPeakPct ? `, ${offPeakPct}% Off-Peak Rabatt` : discount > 0 ? `, ${discount}% Rabatt` : ""}`}
                           aria-pressed={isSelected}
@@ -704,7 +748,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="border-t border-s-ink/5 backdrop-blur-sm bg-s-bg-surface/80 dark:bg-s-dm-bg/90 overflow-hidden"
+          className="border-t border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden"
         >
           <div className="px-4 py-4 flex flex-col gap-3">
           {/* Package redeem banner */}
@@ -748,7 +792,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <select
               value={recurringFreq}
               onChange={(e) => setRecurringFreq(e.target.value as RecurringFrequency)}
-              className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 bg-white dark:bg-s-dm-raised dark:text-s-dm-text dark:border-white/10 outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
+              style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%231A1209' stroke-opacity='0.4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
             >
               {FREQ_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -760,7 +805,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           <select
             value={acquisitionSource}
             onChange={e => setAcquisitionSource(e.target.value)}
-            className="text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-s-ink/70 dark:text-s-dm-text/70 outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors appearance-none"
+            style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%231A1209' stroke-opacity='0.4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center" }}
           >
             {ACQUISITION_SOURCES.map(src => (
               <option key={src.value} value={src.value}>{locale === "en" ? src.label_en : src.label_de}</option>
@@ -803,7 +849,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
           </div>
 
           {/* Cancellation policy */}
-          <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/5 rounded-btn px-3 py-2">
+          <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/[0.06] rounded-[10px] px-3 py-2.5">
             <Info className="w-3.5 h-3.5 shrink-0" />
             Kostenlose Stornierung bis {cancelWindowHours}h vor dem Termin. Danach werden {cancelFeePercent}% einbehalten.
           </div>
@@ -820,7 +866,13 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             Nach dem Termin kann der Salon den Preis anpassen. Du hast 48h zum Bestätigen.
           </div>
 
-          {error && <p role="alert" className="text-xs text-s-coral">{error}</p>}
+          {error && (
+            <div role="alert" className="flex items-center gap-2 px-3 py-3 rounded-[10px] border border-s-coral/20"
+              style={{ background: "rgba(232,98,74,.06)" }}>
+              <CalendarX2 size={15} className="text-s-coral shrink-0" />
+              <p className="text-xs font-body text-s-coral">{error}</p>
+            </div>
+          )}
 
           {/* Guest form / Stripe payment — animated transitions */}
           <AnimatePresence mode="wait">
@@ -846,7 +898,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             <button
               onClick={handleProceedToPayment}
               disabled={confirming}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50"
+              className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
             >
               {confirming && <Spinner size="sm" invert />}
               {confirming ? "Wird vorbereitet…" : isMoreThan7Days ? "Karte speichern & Buchen" : "Zur Zahlung"}
