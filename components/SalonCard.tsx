@@ -137,7 +137,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               placeholder="blur"
               blurDataURL={BLUR_PLACEHOLDER}
-              className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+              className="object-cover transition-transform duration-500"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-s-ink/20 text-4xl font-heading">

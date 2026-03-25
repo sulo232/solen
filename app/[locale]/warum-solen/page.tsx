@@ -142,9 +142,9 @@ function MockCompare() {
 function MockMap() {
   const pins = [
     { left: "25%", top: "35%", price: "ab CHF 45", color: "bg-s-coral" },
-    { left: "55%", top: "20%", price: "ab CHF 65", color: "bg-yellow-400" },
+    { left: "55%", top: "20%", price: "ab CHF 65", color: "bg-s-amber" },
     { left: "70%", top: "55%", price: "ab CHF 38", color: "bg-s-coral" },
-    { left: "40%", top: "65%", price: "ab CHF 52", color: "bg-yellow-400" },
+    { left: "40%", top: "65%", price: "ab CHF 52", color: "bg-s-amber" },
   ];
   return (
     <div className="relative w-full max-w-md mx-auto h-64 rounded-[14px] overflow-hidden border border-s-coral/[0.15] dark:border-s-coral/[0.12]"

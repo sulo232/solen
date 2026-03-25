@@ -37,10 +37,10 @@ export default async function PrivacyPage() {
             Privacy Policy
           </h2>
           
-          <div className="mt-8 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900/50 rounded-xl text-s-ink dark:text-s-dm-text text-sm">
+          <div className="mt-8 p-4 bg-s-yellow-subtle dark:bg-s-yellow-subtle/20 border border-s-yellow/20 dark:border-s-yellow/50 rounded-xl text-s-ink dark:text-s-dm-text text-sm">
             <p className="font-semibold mb-1">Hinweis: Die deutsche Fassung dieser Datenschutzerklärung ist massgebend.</p>
             <p>Die englische Übersetzung dient ausschliesslich der Information. Bei Widersprüchen zwischen den beiden Fassungen gilt die deutsche Version.</p>
-            <div className="h-px w-full bg-yellow-200 dark:bg-yellow-900/50 my-3" />
+            <div className="h-px w-full border-t border-s-yellow/20 dark:border-s-yellow/50 my-3" />
             <p className="font-semibold mb-1 italic">Note: The German version of this Privacy Policy is authoritative.</p>
             <p className="italic">The English translation is provided for information purposes only. In case of any discrepancy between the two versions, the German version shall prevail.</p>
           </div>

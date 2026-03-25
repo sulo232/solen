@@ -29,7 +29,7 @@ const COLOR_PRESETS = [
   { value: "#D4870A", label: "Amber" },
   { value: "#22C55E", label: "Green" },
   { value: "#8B5CF6", label: "Purple" },
-  { value: "#F59E0B", label: "Amber" },
+  { value: "#F2C144", label: "Yellow" },
 ];
 
 function hexToBgColor(hex: string) {
