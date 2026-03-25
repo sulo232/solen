@@ -7,21 +7,18 @@ import CategoryTabBar from "@/components/discovery/CategoryTabBar";
 import MasonryGrid from "@/components/discovery/MasonryGrid";
 import ItemCard from "@/components/discovery/ItemCard";
 import VideoCard from "@/components/discovery/VideoCard";
-import CategoryPills from "@/components/discovery/CategoryPills";
-import GenderToggle from "@/components/discovery/GenderToggle";
 import DiscoverySearchBar from "@/components/discovery/SearchBar";
 import DiscoveryGridSkeleton from "@/components/discovery/DiscoveryGridSkeleton";
 import DiscoveryEmptyState from "@/components/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components/discovery/ProfileSetupModal";
-import PatternSelector from "@/components/discovery/PatternSelector";
-import StyleNamePills from "@/components/discovery/StyleNamePills";
 import FeaturedBoards from "@/components/discovery/FeaturedBoards";
 import FilterDrawer from "@/components/discovery/FilterDrawer";
 import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
 import PostFromDiscover from "@/components/discovery/PostFromDiscover";
 import ForYouSection from "@/components/discovery/ForYouSection";
 import DiscoveryAdmin from "@/components/discovery/DiscoveryAdmin";
-import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters } from "@/lib/types";
+import FilterBar from "@/components/ui/FilterBar";
+import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
 
 function DiscoverPageContent() {
   const locale = useLocale();
@@ -38,12 +35,15 @@ function DiscoverPageContent() {
   const [category, setCategory] = useState<DiscoveryCategory | "all">(
     (searchParams?.get("category") as DiscoveryCategory | "all") || "all"
   );
-  const [gender, setGender] = useState<DiscoveryGender | "all">("all");
   const [search, setSearch] = useState("");
-  const [texture, setTexture] = useState<string | null>(null);
-  const [style, setStyle] = useState<string | null>(null);
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
   const [gridVisible, setGridVisible] = useState(true);
+
+  // Derive filter values from activeFilters
+  const gender = activeFilters.find((f) => f.pillId === "gender")?.subId as DiscoveryGender | undefined || "all";
+  const texture = activeFilters.find((f) => f.pillId === "texture")?.subId || null;
+  const style = activeFilters.find((f) => f.pillId === "style")?.subId || null;
 
   const handleCategoryChange = (key: string) => {
     setGridVisible(false);
@@ -167,19 +167,49 @@ function DiscoverPageContent() {
 
   const handleBoardSelect = (filters: Partial<DiscoveryFilters>) => {
     if (filters.category) setCategory(filters.category);
-    if (filters.gender) setGender(filters.gender);
-    if (filters.texture) setTexture(filters.texture);
+    const newFilters: ActiveFilter[] = [];
+    if (filters.gender && filters.gender !== "all") {
+      newFilters.push({ pillId: "gender", subId: filters.gender, label: filters.gender });
+    }
+    if (filters.texture) {
+      newFilters.push({ pillId: "texture", subId: filters.texture, label: filters.texture });
+    }
+    setActiveFilters(newFilters);
   };
 
-  const hasActiveFilters = category !== "all" || gender !== "all" || texture || style;
+  const hasActiveFilters = category !== "all" || activeFilters.length > 0;
 
   const resetFilters = () => {
     setCategory("all");
-    setGender("all");
-    setTexture(null);
-    setStyle(null);
+    setActiveFilters([]);
     setSearch("");
   };
+
+  // Build filter pills
+  const filterPills: FilterPill[] = [
+    {
+      id: "gender",
+      label: "Gender",
+      subFilters: [
+        { id: "all", label: "All" },
+        { id: "female", label: "Women" },
+        { id: "male", label: "Men" },
+        { id: "unisex", label: "Unisex" },
+      ],
+    },
+    {
+      id: "texture",
+      label: "Texture",
+      subFilters: [
+        { id: "straight", label: "Straight" },
+        { id: "wavy", label: "Wavy" },
+        { id: "curly", label: "Curly" },
+        { id: "coily", label: "Coily" },
+        { id: "protective", label: "Protective" },
+        { id: "bald", label: "Bald" },
+      ],
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pt-4 pb-24">
@@ -204,9 +234,27 @@ function DiscoverPageContent() {
             texture={texture}
             style={style}
             onCategoryChange={setCategory}
-            onGenderChange={setGender}
-            onTextureChange={setTexture}
-            onStyleChange={setStyle}
+            onGenderChange={(g) => {
+              const newFilters = activeFilters.filter((f) => f.pillId !== "gender");
+              if (g !== "all") {
+                newFilters.push({ pillId: "gender", subId: g, label: g });
+              }
+              setActiveFilters(newFilters);
+            }}
+            onTextureChange={(t) => {
+              const newFilters = activeFilters.filter((f) => f.pillId !== "texture");
+              if (t) {
+                newFilters.push({ pillId: "texture", subId: t, label: t });
+              }
+              setActiveFilters(newFilters);
+            }}
+            onStyleChange={(s) => {
+              const newFilters = activeFilters.filter((f) => f.pillId !== "style");
+              if (s) {
+                newFilters.push({ pillId: "style", subId: s, label: s });
+              }
+              setActiveFilters(newFilters);
+            }}
             onReset={resetFilters}
           />
         </div>
@@ -219,23 +267,15 @@ function DiscoverPageContent() {
           />
         </div>
 
-        {/* Desktop filters */}
-        <div className="hidden md:block space-y-3 mb-6">
-          <DiscoverySearchBar value={search} onChange={setSearch} />
-          <div className="flex items-center gap-3 flex-wrap">
-            <CategoryPills selected={category} onSelect={setCategory} />
-            <GenderToggle selected={gender} onSelect={setGender} />
-          </div>
-          <PatternSelector
-            category={category === "all" ? null : category}
-            selected={texture}
-            onSelect={setTexture}
+        {/* Universal FilterBar (Zone 1) - placed BELOW CategoryTabBar */}
+        <div className="mb-6">
+          <FilterBar
+            pills={filterPills}
+            activeFilters={activeFilters}
+            onFilterChange={setActiveFilters}
+            zone={1}
+            className="mb-4"
           />
-          <StyleNamePills selected={style} onSelect={setStyle} />
-        </div>
-
-        {/* Mobile search (visible on mobile, above grid) */}
-        <div className="md:hidden mb-4">
           <DiscoverySearchBar value={search} onChange={setSearch} />
         </div>
 
