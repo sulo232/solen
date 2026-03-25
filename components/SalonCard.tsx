@@ -44,12 +44,12 @@ interface SalonCardProps {
 }
 
 const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
-  coiffeur:   { bg: "bg-s-yellow-subtle", text: "text-s-yellow-text" },
-  barbershop: { bg: "bg-s-plum/[0.12]",  text: "text-s-plum" },
-  nails:      { bg: "bg-s-coral-subtle",  text: "text-s-coral-text" },
-  spa:        { bg: "bg-s-sage-subtle",   text: "text-s-sage-text" },
-  makeup:     { bg: "bg-s-amber-subtle",  text: "text-s-amber-text" },
-  waxing:     { bg: "bg-s-blue-subtle",   text: "text-s-blue-text" },
+  coiffeur:   { bg: "rgba(212,135,10,.12)",  text: "#7A4A00" },
+  barbershop: { bg: "rgba(74,30,60,.12)",    text: "#4A1E3C" },
+  nails:      { bg: "rgba(232,98,74,.12)",   text: "#7A2415" },
+  spa:        { bg: "rgba(123,166,136,.15)", text: "#2A5438" },
+  makeup:     { bg: "rgba(201,169,110,.14)", text: "#6B4005" },
+  waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
 };
 
 const quartierLabels: Record<string, string> = {
@@ -95,7 +95,13 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       variants={cardPopIn}
       initial="hidden"
       animate="visible"
-      className={`relative rounded-[20px] shadow-warm-sm transition-all duration-[250ms] hover:shadow-warm-float hover:-translate-y-[5px] will-change-transform ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
+      whileHover={{ y: -5, boxShadow: "0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08), inset 0 1px 0 rgba(255,255,255,.80)" }}
+      transition={{ type: "spring", stiffness: 320, damping: 28 }}
+      className={`relative rounded-[20px] overflow-hidden cursor-pointer will-change-transform ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
+      style={{ background: "rgba(255,255,255,.80)", backdropFilter: "blur(16px) saturate(1.2)",
+               WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+               border: "1px solid rgba(255,255,255,.55)",
+               boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
       {/* Date-based availability overlay */}
@@ -114,7 +120,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </span>
       )}
 
-      <Link href={href} className="block w-full h-full rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group transition-all duration-[250ms]">
+      <Link href={href} className="block w-full h-full group transition-all duration-[250ms]">
         {/* Cover photo */}
         <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden">
           {salon.cover_photo_url ? (
@@ -263,9 +269,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
           <div className="flex gap-1.5 flex-wrap mt-2">
             {salon.categories.slice(0, 2).map(cat => {
-              const colours = CAT_COLOURS[cat] ?? { bg: "bg-s-bg-sunken", text: "text-s-ink/60" };
+              const colours = CAT_COLOURS[cat] ?? { bg: "rgba(232,98,74,.10)", text: "#7A2415" };
               return (
-                <span key={cat} className={`inline-flex px-2 py-0.5 rounded-btn ${colours.bg} ${colours.text} text-[10px] font-heading font-bold uppercase tracking-[.06em] shadow-warm-xs`}>
+                <span key={cat}
+                  className="text-[9px] font-heading font-bold uppercase tracking-[.10em] px-2 py-0.5 rounded-btn"
+                  style={{ background: colours.bg, color: colours.text,
+                           boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
                   {cat}
                 </span>
               );
