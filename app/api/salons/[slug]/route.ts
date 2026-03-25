@@ -81,6 +81,7 @@ export async function PATCH(
     "sms_reminder_24h", "sms_reminder_1h",
     "vacation_start", "vacation_end",
     "instagram_url", "facebook_url", "tiktok_url", "website_url",
+    "is_top_pick",
   ];
 
   const updates: Record<string, unknown> = {};

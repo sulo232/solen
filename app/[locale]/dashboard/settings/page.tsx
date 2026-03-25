@@ -76,6 +76,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
     website_url: ext.website_url ?? "",
     cover_photo_url: salon.cover_photo_url ?? "",
     opening_hours: salon.opening_hours ?? {},
+    is_top_pick: salon.is_top_pick ?? false,
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -146,6 +147,17 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-2">Öffnungszeiten</label>
         <HoursEditor hours={form.opening_hours} onChange={(h) => setForm({ ...form, opening_hours: h })} />
+      </div>
+      {/* Top Pick Toggle */}
+      <div className="border-t border-s-ink/5 pt-4 mt-4">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" checked={form.is_top_pick} onChange={(e) => setForm({ ...form, is_top_pick: e.target.checked })}
+            className="w-5 h-5 rounded border-s-ink/20 text-s-coral focus:ring-s-coral focus:ring-offset-0" />
+          <div>
+            <span className="block text-sm font-medium text-s-ink">Solen Top Pick</span>
+            <span className="block text-xs text-s-ink/50">Zeigt einen "Solen Top Pick" Badge auf deiner Salon-Karte</span>
+          </div>
+        </label>
       </div>
       {/* Structured info fields */}
       <div className="border-t border-s-ink/5 pt-4 mt-4">

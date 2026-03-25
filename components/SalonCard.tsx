@@ -156,6 +156,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               Top Salon
             </div>
           )}
+          {/* Top Pick badge (dynamic from DB) */}
+          {salon.is_top_pick && !solenTier && (
+            <div className="absolute top-2 right-2 bg-s-yellow-subtle text-s-yellow-text px-2.5 py-1 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.08em] z-[1]">
+              Solen Top Pick
+            </div>
+          )}
           {/* Glass category pills on photo */}
           <div className="absolute bottom-2 left-2 flex gap-1.5 flex-wrap">
             {salon.categories.slice(0, 2).map((cat) => (

@@ -118,6 +118,7 @@ export interface Salon {
   auto_assign_method?: AutoAssignMethod;
   auto_complete_enabled?: boolean;
   booking_confirmation_mode?: "instant" | "manual_approval";
+  is_top_pick?: boolean;
 }
 
 export interface StaffMember {
