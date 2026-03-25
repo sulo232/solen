@@ -180,7 +180,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder="Service oder Salon suchen…"
-          className="w-full pl-9 pr-8 py-2.5 rounded-btn bg-white/80 backdrop-blur-sm border border-s-ink/10 text-sm text-s-ink placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+          className="w-full pl-9 pr-8 py-2.5 rounded-btn bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
         />
         {query && (
           <button
@@ -193,7 +193,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       </div>
 
       {open && totalItems > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 backdrop-blur-lg rounded-card shadow-surface border border-s-ink/5 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-lg rounded-card shadow-surface border border-s-ink/5 dark:border-white/10 overflow-hidden z-50">
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
