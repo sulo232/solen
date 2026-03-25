@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface InteractiveHoverButtonProps
@@ -17,19 +16,13 @@ export default function InteractiveHoverButton({
   return (
     <button
       className={cn(
-        "group relative w-32 cursor-pointer overflow-hidden rounded-btn border border-s-coral/20 bg-white dark:bg-s-dm-surface p-2 text-center font-body font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200",
+        "flex items-center justify-center gap-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-60",
         className
       )}
+      style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
       {...props}
     >
-      <span className="inline-block translate-x-1 transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
-        {text}
-      </span>
-      <div className="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-white opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100">
-        <span>{text}</span>
-        <ArrowRight size={16} />
-      </div>
-      <div className="absolute left-[20%] top-[40%] h-2 w-2 scale-0 rounded-full bg-s-coral transition-all duration-300 group-hover:left-[0%] group-hover:top-[0%] group-hover:h-full group-hover:w-full group-hover:scale-[1.8] group-hover:bg-s-coral" />
+      {text}
     </button>
   );
 }

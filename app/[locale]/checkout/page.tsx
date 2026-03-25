@@ -11,7 +11,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
-import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper } from "lucide-react";
+import { MapPin, Calendar, User, Shield, ChevronRight, Loader2, Lock, CreditCard, Tag, Wallet, PartyPopper, AlertCircle, CheckCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
@@ -82,8 +82,10 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
       <PaymentElement options={{ layout: "tabs" }} />
 
       {error && (
-        <div className="rounded-input bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral">
-          {error}
+        <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
+          style={{ background: "rgba(232,98,74,.06)" }}>
+          <AlertCircle size={13} className="text-s-coral shrink-0" />
+          <p className="text-xs font-body text-s-coral">{error}</p>
         </div>
       )}
 
@@ -94,8 +96,8 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
         className="w-full py-3.5 rounded-btn shadow-coral-glow disabled:opacity-60"
       />
 
-      <p className="text-xs text-center text-s-ink/40">
-        Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24} Stunden vorher
+      <p className="text-[9px] text-center font-heading uppercase tracking-[.10em] text-s-ink/30 mt-3">
+        Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24}h vorher
       </p>
     </form>
   );
@@ -232,21 +234,49 @@ export default function CheckoutPage() {
     }
   };
 
+  // P13 — Loading skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
-        <Spinner size="lg" />
+      <div className="min-h-screen bg-s-bg-base py-12 px-4">
+        <div className="max-w-lg mx-auto space-y-4 animate-pulse">
+          {/* Summary card skeleton */}
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
+            <div className="h-2.5 w-20 bg-s-bg-sunken rounded mb-3" />
+            <div className="h-4 w-36 bg-s-bg-sunken rounded mb-5" />
+            <div className="space-y-3">
+              <div className="h-3 w-48 bg-s-bg-sunken rounded" />
+              <div className="h-3 w-40 bg-s-bg-sunken rounded" />
+              <div className="h-3 w-32 bg-s-bg-sunken rounded" />
+            </div>
+          </div>
+          {/* Payment card skeleton */}
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
+            <div className="h-3 w-28 bg-s-bg-sunken rounded mb-4" />
+            <div className="h-10 w-full bg-s-bg-sunken rounded-[10px] mb-3" />
+            <div className="h-10 w-full bg-s-bg-sunken rounded-[10px] mb-3" />
+            <div className="h-12 w-full bg-s-bg-sunken rounded-btn" />
+          </div>
+        </div>
       </div>
     );
   }
 
+  // P14 — Error state
   if (error || !intent) {
     return (
-      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center">
-        <div className="text-center p-8">
-          <p className="text-s-coral font-medium mb-2">Fehler</p>
-          <p className="text-s-ink/60 text-sm">{error ?? "Etwas ist schiefgelaufen."}</p>
-          <a href={`/${locale}`} className="mt-4 inline-block text-s-coral text-sm underline">Zurück zur Startseite</a>
+      <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
+        <div className="w-full max-w-sm rounded-[14px] border border-s-coral/20 p-8 text-center"
+          style={{ background: "rgba(232,98,74,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
+          <div className="w-12 h-12 rounded-[12px] flex items-center justify-center mx-auto mb-4"
+            style={{ background: "rgba(232,98,74,.12)" }}>
+            <AlertCircle size={22} className="text-s-coral" />
+          </div>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-1">Fehler</p>
+          <p className="text-xs font-body text-s-ink/55 mb-5">{error ?? "Etwas ist schiefgelaufen."}</p>
+          <a href={`/${locale}`}
+            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-colors">
+            Zurück zur Startseite
+          </a>
         </div>
       </div>
     );
@@ -256,17 +286,30 @@ export default function CheckoutPage() {
   const chargeAmount = paymentMode === "prepay" ? intent.estimated_price : intent.deposit_amount;
   const remainder = intent.estimated_price - chargeAmount;
 
-  // At-salon confirmed success
+  // P9 — At-salon confirmed success
   if (atSalonConfirmed) {
     return (
-      <div className="min-h-screen bg-s-bg-surface flex items-center justify-center px-4">
-        <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full">
-          <PartyPopper size={48} className="text-s-coral" />
-          <p className="font-heading font-bold text-xl text-s-ink">Buchung bestätigt!</p>
-          <p className="text-sm text-s-ink/60">Du zahlst direkt im Salon. Bis bald!</p>
-          <a href={`/${locale}/profile`} className="mt-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
-            Meine Buchungen
-          </a>
+      <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="rounded-[16px] border border-[#4CAF6F]/20 p-8 flex flex-col items-center gap-4"
+            style={{ background: "rgba(76,175,111,.06)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
+            <div className="w-16 h-16 rounded-[18px] flex items-center justify-center"
+              style={{ background: "rgba(76,175,111,.14)" }}>
+              <PartyPopper size={28} className="text-[#4CAF6F]" />
+            </div>
+            <div>
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-[#4CAF6F] mb-2">
+                Buchung bestätigt
+              </p>
+              <p className="font-heading font-bold text-xl text-s-ink">Termin fixiert!</p>
+              <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
+            </div>
+            <a href={`/${locale}/profile`}
+              className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+              Meine Buchungen
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -276,34 +319,57 @@ export default function CheckoutPage() {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="min-h-screen bg-s-bg-surface py-12 px-4"
+      transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+      className="min-h-screen bg-s-bg-base py-12 px-4"
     >
-      {/* Breadcrumb */}
-      <div className="max-w-lg mx-auto mb-4 text-xs text-s-ink/40 flex items-center gap-1">
-        <a href={`/${locale}`} className="hover:text-s-coral transition-colors">Startseite</a>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-s-ink/60">Buchung abschliessen</span>
+      {/* P15 — Breadcrumb */}
+      <div className="max-w-lg mx-auto mb-4 flex items-center gap-1.5">
+        <a href={`/${locale}`}
+          className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors">
+          Startseite
+        </a>
+        <ChevronRight className="w-2.5 h-2.5 text-s-ink/20" />
+        <span className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50">
+          Checkout
+        </span>
       </div>
 
       <div className="max-w-lg mx-auto space-y-4">
-        {/* Booking summary card */}
-        <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5">
-          <h1 className="font-heading font-bold text-lg text-s-ink mb-4">Buchungsübersicht</h1>
+        {/* P2 — Booking summary card */}
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.07]"
+          style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+          <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
+              Deine Buchung
+            </p>
+            <h1 className="font-heading font-bold text-base text-s-ink">Buchungsübersicht</h1>
+          </div>
+          <div className="px-5 py-4">
 
-          <div className="space-y-2.5 text-sm">
-            <div className="flex items-start gap-2.5 text-s-ink/70">
+          {/* P3 — Booking detail rows */}
+          <div className="space-y-3">
+            {/* Salon + address */}
+            <div className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-s-coral mt-0.5 shrink-0" />
-              <span><strong className="text-s-ink">{intent.salon_name}</strong>{intent.salon_address ? ` · ${intent.salon_address}` : ""}</span>
+              <div>
+                <p className="text-xs font-heading font-semibold text-s-ink">{intent.salon_name}</p>
+                {intent.salon_address && (
+                  <p className="text-[10px] font-body text-s-ink/45 mt-0.5">{intent.salon_address}</p>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-2.5 text-s-ink/70">
+            {/* Date + time */}
+            <div className="flex items-center gap-2.5">
               <Calendar className="w-4 h-4 text-s-coral shrink-0" />
-              <span>{intent.date} · {intent.time} Uhr</span>
+              <p className="text-xs font-heading font-semibold text-s-ink">
+                {intent.date} · {intent.time} Uhr
+              </p>
             </div>
+            {/* Staff */}
             {intent.staff_name && (
-              <div className="flex items-center gap-2.5 text-s-ink/70">
+              <div className="flex items-center gap-2.5">
                 <User className="w-4 h-4 text-s-coral shrink-0" />
-                <span>{intent.staff_name}</span>
+                <p className="text-xs font-heading font-semibold text-s-ink">{intent.staff_name}</p>
               </div>
             )}
           </div>
@@ -333,30 +399,35 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* What you pay now */}
+          {/* P4 — What you pay now */}
           {paymentMode !== "at_salon" && (
-            <div className="mt-3 bg-s-coral/5 border border-s-coral/15 rounded-input p-3 flex items-center justify-between">
+            <div className="mt-4 rounded-[10px] border-l-4 border-s-coral pl-3 pr-4 py-3 flex items-center justify-between"
+              style={{ background: "rgba(232,98,74,.05)", borderTopColor: "rgba(232,98,74,.15)", borderRightColor: "rgba(232,98,74,.15)", borderBottomColor: "rgba(232,98,74,.15)" }}>
               <div>
-                <p className="text-xs text-s-coral font-semibold">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
                   {paymentMode === "prepay" ? "Jetzt zu zahlen" : "Anzahlung jetzt"}
                 </p>
-                <p className="text-xs text-s-ink/40 mt-0.5">
+                <p className="text-[10px] font-body text-s-ink/40 mt-0.5">
                   {paymentMode === "prepay"
                     ? "Voller Betrag wird jetzt belastet"
-                    : "Wird bei Erscheinen auf den Gesamtpreis angerechnet"}
+                    : "Wird bei Erscheinen angerechnet"}
                 </p>
               </div>
-              <span className="font-heading font-bold text-lg text-s-coral">{formatCurrency(chargeAmount, locale)}</span>
+              <span className="font-heading font-bold text-xl text-s-coral">{formatCurrency(chargeAmount, locale)}</span>
             </div>
           )}
+          </div>
         </div>
 
-        {/* Promo code + credits */}
-        <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5 space-y-3">
-          <h2 className="font-heading font-semibold text-sm text-s-ink flex items-center gap-2">
-            <Tag className="w-4 h-4 text-s-coral" />
-            Promo-Code oder Guthaben
-          </h2>
+        {/* P5 — Promo code + credits */}
+        <div className="bg-white rounded-[12px] border border-s-ink/[0.07] p-5 space-y-3"
+          style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+          <div className="flex items-center gap-2">
+            <Tag className="w-3.5 h-3.5 text-s-coral" />
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
+              Promo-Code oder Guthaben
+            </p>
+          </div>
 
           {/* Promo code input */}
           <div className="flex gap-2">
@@ -366,12 +437,12 @@ export default function CheckoutPage() {
               onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
               placeholder="Code eingeben"
               disabled={!!promoResult}
-              className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 bg-white text-sm text-s-ink placeholder:text-s-ink/30 focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 outline-none disabled:opacity-50"
+              className="flex-1 px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink uppercase tracking-[.08em] placeholder:text-s-ink/25 placeholder:normal-case placeholder:tracking-normal focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none disabled:opacity-50 transition-colors"
             />
             {promoResult ? (
               <button
                 onClick={() => { setPromoResult(null); setPromoCode(""); }}
-                className="px-3 py-2 rounded-btn bg-s-bg-sunken text-s-ink/60 text-sm hover:bg-s-sand transition-colors"
+                className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors"
               >
                 Entfernen
               </button>
@@ -380,60 +451,92 @@ export default function CheckoutPage() {
                 onClick={handlePromoValidate}
                 disabled={promoLoading || !promoCode.trim()}
                 text={promoLoading ? "..." : "Anwenden"}
-                className="px-4 py-2 rounded-btn shadow-coral-glow disabled:opacity-50"
+                className="px-5 rounded-btn shadow-coral-glow disabled:opacity-50"
               />
             )}
           </div>
 
+          {/* P6 — Promo error/success states */}
           {promoError && (
-            <p className="text-xs text-s-coral">{promoError}</p>
-          )}
-
-          {promoResult && (
-            <div className="flex items-center justify-between bg-s-coral/5 border border-s-coral/15 rounded-input px-3 py-2">
-              <span className="text-sm text-s-coral font-medium">{promoResult.code} angewendet</span>
-              <span className="text-sm data-text font-bold text-s-coral">-{formatCurrency(promoResult.discount_amount, locale)}</span>
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
+              style={{ background: "rgba(232,98,74,.06)" }}>
+              <AlertCircle size={13} className="text-s-coral shrink-0" />
+              <p className="text-xs font-body text-s-coral">{promoError}</p>
             </div>
           )}
 
-          {/* User credits */}
+          {promoResult && (
+            <div className="flex items-center justify-between rounded-[10px] border border-[#4CAF6F]/25 px-3 py-2.5"
+              style={{ background: "rgba(76,175,111,.06)" }}>
+              <div className="flex items-center gap-2">
+                <CheckCircle size={13} className="text-[#4CAF6F] shrink-0" />
+                <span className="text-xs font-heading font-semibold text-[#1f6535]">{promoResult.code} angewendet</span>
+              </div>
+              <span className="text-xs font-heading font-bold text-[#1f6535]">-{formatCurrency(promoResult.discount_amount, locale)}</span>
+            </div>
+          )}
+
+          {/* P7 — User credits */}
           {userCredits > 0 && !promoResult && (
-            <div className="flex items-center justify-between bg-s-bg-surface rounded-input px-3 py-2">
-              <span className="text-sm text-s-ink/60 flex items-center gap-1.5">
-                <Wallet className="w-3.5 h-3.5 text-s-coral" />
-                Guthaben verfügbar
-              </span>
-              <span className="text-sm data-text font-semibold text-s-coral">{formatCurrency(userCredits, locale)}</span>
+            <div className="flex items-center justify-between rounded-[10px] px-3 py-2.5"
+              style={{ background: "rgba(212,135,10,.06)", border: "1px solid rgba(212,135,10,.15)" }}>
+              <div className="flex items-center gap-2">
+                <Wallet className="w-3.5 h-3.5 text-s-amber shrink-0" />
+                <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-amber/80">
+                  Guthaben verfügbar
+                </p>
+              </div>
+              <span className="text-xs font-heading font-bold text-s-amber">{formatCurrency(userCredits, locale)}</span>
             </div>
           )}
         </div>
 
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
-          <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5">
-            <h2 className="font-heading font-bold text-base text-s-ink mb-3">Zahlung vor Ort</h2>
-            <p className="text-sm text-s-ink/60 mb-4">
-              Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.
-            </p>
+          // P8 — At-salon confirm card
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] p-5"
+            style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
+                style={{ background: "rgba(76,175,111,.10)" }}>
+                <Wallet size={17} className="text-[#4CAF6F]" />
+              </div>
+              <div>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 mb-0.5">
+                  Zahlungsart
+                </p>
+                <h2 className="font-heading font-bold text-base text-s-ink">Zahlung vor Ort</h2>
+                <p className="text-xs font-body text-s-ink/50 mt-1">Keine Online-Zahlung nötig. Du bezahlst direkt im Salon.</p>
+              </div>
+            </div>
             {error && (
-              <div className="rounded-input bg-s-coral/10 border border-s-coral/20 px-3 py-2.5 text-sm text-s-coral mb-3">
-                {error}
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20 mb-3"
+                style={{ background: "rgba(232,98,74,.06)" }}>
+                <AlertCircle size={13} className="text-s-coral shrink-0" />
+                <p className="text-xs font-body text-s-coral">{error}</p>
               </div>
             )}
             <InteractiveHoverButton
               onClick={handleAtSalonConfirm}
               disabled={confirmingAtSalon}
               text={confirmingAtSalon ? "Wird bestätigt..." : "Termin bestätigen"}
-              className="w-full py-3.5 rounded-btn shadow-coral-glow disabled:opacity-60"
+              className="w-full py-4 rounded-btn shadow-coral-glow disabled:opacity-60"
             />
-            <p className="text-xs text-center text-s-ink/40 mt-3">
-              Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24} Stunden vorher
+            <p className="text-[10px] text-center font-heading uppercase tracking-[.10em] text-s-ink/25 mt-3">
+              Kostenlose Stornierung bis {intent.free_cancel_hours ?? 24}h vorher
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-card border border-s-ink/5 shadow-warm-lg p-5">
-            <h2 className="font-heading font-bold text-base text-s-ink mb-4">Zahlung</h2>
-
+          // P10 — Payment card (Stripe Elements) — header only, DO NOT touch Elements/appearance
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] overflow-hidden"
+            style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+            <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
+              <Lock size={13} className="text-s-ink/35 shrink-0" />
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35">
+                Sichere Zahlung
+              </p>
+            </div>
+            <div className="p-5">
             {clientSecret ? (
               <Elements
                 stripe={stripePromise}
@@ -458,20 +561,25 @@ export default function CheckoutPage() {
                 />
               </Elements>
             ) : (
-              <div className="flex justify-center py-8"><Spinner size="lg" /></div>
+              <div className="flex justify-center py-6"><Spinner size="lg" /></div>
             )}
+            </div>
           </div>
         )}
 
-        {/* Payment method icons */}
-        <div className="flex items-center justify-center gap-4 text-xs text-s-ink/30 pb-8 flex-wrap">
-          <span className="flex items-center gap-1"><Lock size={11} /> 256-bit SSL</span>
-          <span>·</span>
-          <span className="flex items-center gap-1"><CreditCard size={11} /> Visa, Mastercard, Apple Pay</span>
-          <span>·</span>
-          <span>TWINT</span>
-          <span>·</span>
-          <span className="flex items-center gap-1"><Shield size={11} /> Powered by Stripe</span>
+        {/* P12 — Trust strip */}
+        <div className="flex items-center justify-center flex-wrap gap-3 py-6">
+          {[
+            { icon: Lock,       label: "256-bit SSL" },
+            { icon: CreditCard, label: "Visa · Mastercard · Apple Pay" },
+            { icon: Shield,     label: "Powered by Stripe" },
+          ].map(({ icon: Icon, label }) => (
+            <span key={label} className="flex items-center gap-1.5 text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/25">
+              <Icon size={10} />
+              {label}
+            </span>
+          ))}
+          <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/25">TWINT</span>
         </div>
       </div>
     </motion.div>
