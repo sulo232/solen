@@ -97,11 +97,21 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       <div className="flex items-center justify-center gap-3">
         {/* Main nav pill */}
         <div className={cn(
-          "flex items-center justify-between transition-all duration-500 ease-out rounded-full",
+          "flex items-center justify-between rounded-full transition-[background,box-shadow,padding,max-width] duration-300 ease-out",
           scrolled
-            ? "mt-3 max-w-3xl glass shadow-warm-sm py-2 px-4 sm:px-6 dark:bg-s-dm-surface/80 dark:border-white/5"
-            : "mt-2 max-w-5xl bg-s-bg-base/60 backdrop-blur-lg py-3 px-5 sm:px-8 border border-transparent dark:bg-s-dm-bg/60"
-        )}>
+            ? "mt-3 max-w-3xl py-2 px-4 sm:px-6 dark:border-white/[0.06]"
+            : "mt-2 max-w-5xl py-3 px-5 sm:px-8 bg-s-bg-base/50 dark:bg-s-dm-bg/50"
+        )}
+        style={scrolled ? {
+          background: "rgba(255,255,255,.82)",
+          backdropFilter: "blur(16px) saturate(1.3)",
+          WebkitBackdropFilter: "blur(16px) saturate(1.3)",
+          border: "1px solid rgba(255,255,255,.70)",
+          boxShadow: "0 2px 6px rgba(26,18,9,.08), 0 8px 24px rgba(26,18,9,.06)"
+        } : {
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)"
+        }}>
           {/* Logo + Sub-site icon */}
           <div className="flex items-center gap-2 shrink-0">
             <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
@@ -121,7 +131,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       animate={{ opacity: 1, width: "auto" }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.25, ease: "easeOut" }}
-                      className="text-sm font-medium hidden sm:inline overflow-hidden whitespace-nowrap"
+                      style={{ willChange: "width" }}
+                      className="text-xs font-heading font-semibold hidden sm:inline overflow-hidden whitespace-nowrap text-s-coral"
                     >
                       {categoryInfo.label}
                     </motion.span>
@@ -188,12 +199,13 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         <Link
           href={profileHref}
           className={cn(
-            "hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-s-coral text-white hover:bg-s-coral-hover hover:scale-105 active:scale-95 transition-all duration-200 shadow-warm-sm shrink-0",
+            "hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-s-coral text-white hover:bg-s-coral-hover active:scale-[0.98] transition-all duration-200 shrink-0",
             scrolled ? "mt-3" : "mt-2"
           )}
+          style={{ boxShadow: "0 2px 4px rgba(232,98,74,.30)" }}
           aria-label="Profil"
         >
-          <User className="w-5 h-5" />
+          <User className="w-4 h-4" />
         </Link>
       </div>
 
@@ -201,23 +213,36 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="md:hidden mt-2 rounded-card glass p-4 dark:bg-s-dm-surface/90 dark:border-white/5 shadow-warm-md overflow-hidden"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
+            className="md:hidden mt-2 rounded-[16px] p-4 dark:border-white/[0.06] overflow-hidden"
+            style={{
+              background: "rgba(255,255,255,.92)",
+              backdropFilter: "blur(20px) saturate(1.3)",
+              WebkitBackdropFilter: "blur(20px) saturate(1.3)",
+              border: "1px solid rgba(255,255,255,.75)",
+              boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
+            }}
           >
             <nav className="flex flex-col gap-3">
-              {NAV_LINKS.map(({ key, href }) => (
-                <Link
-                  key={key}
-                  href={`/${locale}${href}`}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-sm font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:text-s-coral hover:pl-2 hover:border-l-2 hover:border-s-coral transition-all py-1 min-h-12 flex items-center"
-                >
-                  {t(key)}
-                </Link>
-              ))}
+              {NAV_LINKS.map(({ key, href }) => {
+                const isActive = pathname.includes(href);
+                return (
+                  <Link
+                    key={key}
+                    href={`/${locale}${href}`}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "flex items-center py-3 px-2 text-sm font-heading font-semibold transition-colors rounded-[10px] min-h-[44px]",
+                      isActive ? "text-s-coral" : "text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                    )}
+                  >
+                    {t(key)}
+                  </Link>
+                );
+              })}
               <div className="pt-2 border-t border-s-ink/5 dark:border-white/5">
                 <Link
                   href={profileHref}

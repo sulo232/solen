@@ -111,9 +111,10 @@ export default function BottomNav() {
       <ExpandableNavTabs
         tabs={tabs}
         activeColor="text-s-coral"
-        className="w-full justify-center bg-white/90 dark:bg-s-dm-surface/90 backdrop-blur-lg shadow-glass border-s-ink/5 dark:border-white/5 min-h-12"
+        className="w-full justify-center bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.05] min-h-12"
         onTabChange={handleTabChange}
         aria-label="Hauptnavigation"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       />
     </div>
   );

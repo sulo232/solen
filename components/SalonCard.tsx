@@ -73,7 +73,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         href={href}
         className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-warm-sm hover:shadow-warm-float transition-shadow duration-[250ms]"
       >
-        <div className="relative w-16 h-16 rounded-btn overflow-hidden shrink-0 bg-s-bg-sunken">
+        <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
             <Image src={salon.cover_photo_url} alt={salon.name} fill sizes="64px" className="object-cover" />
           )}
@@ -140,7 +140,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
           {/* Available today pill */}
           {availableToday != null && availableToday > 0 && (
-            <div className="absolute top-2 left-2 bg-s-success text-white text-xs font-semibold px-2 py-0.5 rounded-full shadow-warm-sm z-[1]">
+            <div className="absolute top-2 left-2 bg-s-success text-white text-xs font-semibold px-2 py-0.5 rounded-pill shadow-warm-sm z-[1]">
               {availableToday} {availableToday === 1 ? "Termin" : "Termine"} heute frei
             </div>
           )}
@@ -248,7 +248,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
           {showAvailability && salon.next_available_slot && (
             <div className="mt-2">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-s-sage-text bg-s-sage-subtle px-2.5 py-1 rounded-btn shadow-warm-xs">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-s-sage-text bg-s-sage-subtle px-2.5 py-1 rounded-pill shadow-card">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
                 </svg>
@@ -272,7 +272,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               const colours = CAT_COLOURS[cat] ?? { bg: "rgba(232,98,74,.10)", text: "#7A2415" };
               return (
                 <span key={cat}
-                  className="text-[9px] font-heading font-bold uppercase tracking-[.10em] px-2 py-0.5 rounded-btn"
+                  className="text-[9px] font-heading font-bold uppercase tracking-[.10em] px-2 py-0.5 rounded-pill"
                   style={{ background: colours.bg, color: colours.text,
                            boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
                   {cat}
@@ -282,12 +282,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
             {stampProgress && stampProgress.current > 0 && (
-              <span className="inline-flex items-center gap-1 text-xs bg-s-amber-subtle dark:bg-s-amber/10 text-s-amber-text px-2 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-xs bg-s-amber-subtle dark:bg-s-amber/10 text-s-amber-text px-2 py-0.5 rounded-pill">
                 <Star size={12} className="fill-s-amber text-s-amber" /> {stampProgress.current}/{stampProgress.total}
               </span>
             )}
             {offPeakToday && (
-              <span className="inline-flex items-center gap-1 text-[11px] bg-s-sage-subtle dark:bg-s-sage/10 text-s-sage-text dark:text-s-sage px-2 py-0.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1 text-[11px] bg-s-sage-subtle dark:bg-s-sage/10 text-s-sage-text dark:text-s-sage px-2 py-0.5 rounded-pill font-medium">
                 Off-Peak -{offPeakToday.discount_percent}%
               </span>
             )}

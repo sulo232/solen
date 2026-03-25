@@ -40,9 +40,7 @@ export default function Footer() {
 
           {/* Kategorien */}
           <div>
-            <h3
-              className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
-            >
+            <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("categories")}
             </h3>
             <ul className="space-y-2">
@@ -50,7 +48,7 @@ export default function Footer() {
                 <li key={key}>
                   <Link
                     href={`/${locale}/${key}`}
-                    className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
+                    className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                   >
                     {label}
                   </Link>
@@ -61,9 +59,7 @@ export default function Footer() {
 
           {/* Unternehmen */}
           <div>
-            <h3
-              className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
-            >
+            <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("company")}
             </h3>
             <ul className="space-y-2">
@@ -76,7 +72,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
+                    className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                   >
                     {label}
                   </Link>
@@ -87,19 +83,17 @@ export default function Footer() {
 
           {/* Für Salons */}
           <div>
-            <h3
-              className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
-            >
+            <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("forSalons")}
             </h3>
-            <p className="text-sm text-white/50 font-body mb-3">
+            <p className="text-xs text-white/40 font-body mb-3">
               {t("salonPitch")}
             </p>
             <ul className="space-y-2">
               <li>
                 <Link
                   href={`/${locale}/partner`}
-                  className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
+                  className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                 >
                   {t("becomePartner")}
                 </Link>
@@ -107,7 +101,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/onboarding/salon`}
-                  className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
+                  className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                 >
                   {t("registerSalon")}
                 </Link>
@@ -115,7 +109,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/dashboard`}
-                  className="text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
+                  className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                 >
                   {t("dashboard")}
                 </Link>
@@ -125,9 +119,7 @@ export default function Footer() {
 
           {/* Sozial */}
           <div>
-            <h3
-              className="text-sm font-medium text-white/60 uppercase tracking-[.20em] mb-4 font-body"
-            >
+            <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("social")}
             </h3>
             <ul className="space-y-2">
@@ -136,9 +128,9 @@ export default function Footer() {
                   href="https://instagram.com/solen.ch"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/70 hover:text-white hover:underline underline-offset-4 transition-colors font-body"
+                  className="flex items-center gap-2 text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150"
                 >
-                  <Instagram size={14} />
+                  <Instagram size={13} />
                   Instagram
                 </a>
               </li>
@@ -156,15 +148,18 @@ export default function Footer() {
               so<span className="text-s-coral">.</span>len
             </span>
             <div className="text-center sm:text-right">
-              <p className="text-xs text-white/40 font-body">
+              <p className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-white/30">
                 {t("copyright", { year: new Date().getFullYear() })}
               </p>
-              <p className="text-[10px] text-white/30 font-body mt-1">
+              <p className="text-[9px] font-heading uppercase tracking-[.10em] text-white/20 mt-1">
                 {t("compliance")}
               </p>
-              <p className="text-xs mt-3" style={{ color: "rgba(245,238,228,.28)" }}>
-                nDSG-konform — Deine Daten bleiben in der Schweiz.
-              </p>
+              <div className="flex items-center justify-center sm:justify-end gap-1.5 mt-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF6F]" />
+                <p className="text-[9px] font-heading uppercase tracking-[.08em]" style={{ color: "rgba(76,175,111,.60)" }}>
+                  nDSG-konform · Schweizer Datenschutz
+                </p>
+              </div>
             </div>
           </div>
         </div>

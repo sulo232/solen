@@ -29,9 +29,9 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 const icons: Record<ToastType, React.ReactNode> = {
-  success: <CheckCircle size={18} className="text-s-coral flex-shrink-0" />,
-  error: <XCircle size={18} className="text-s-coral flex-shrink-0" />,
-  info: <Info size={18} className="text-s-ink/50 dark:text-s-dm-text/50 flex-shrink-0" />,
+  success: <CheckCircle size={16} className="flex-shrink-0" style={{ color: "#4CAF6F" }} />,
+  error: <XCircle size={16} className="text-s-coral flex-shrink-0" />,
+  info: <Info size={16} className="text-s-amber flex-shrink-0" />,
 };
 
 function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string) => void }) {
@@ -53,15 +53,17 @@ function ToastItem({ item, onRemove }: { item: ToastItem; onRemove: (id: string)
       animate="visible"
       exit="exit"
       className={cn(
-        "flex items-center gap-3 min-w-[260px] max-w-[360px]",
-        "bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-glass border border-white/80 dark:border-white/10",
-        "rounded-card shadow-glass px-4 py-3",
-        item.type === "error" && "border-s-coral/20",
-        item.type === "success" && "border-s-coral/20"
+        "flex items-center gap-3 min-w-[260px] max-w-sm",
+        "bg-white dark:bg-s-dm-surface border",
+        "rounded-[14px] px-4 py-3.5",
+        item.type === "error" && "border-s-coral/25",
+        item.type === "success" && "border-[#4CAF6F]/25",
+        item.type === "info" && "border-s-ink/[0.08]"
       )}
+      style={{ boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 28px rgba(26,18,9,.08)" }}
     >
       {icons[item.type]}
-      <p className="flex-1 text-sm text-s-ink dark:text-s-dm-text font-body leading-snug">{item.message}</p>
+      <p className="flex-1 text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text leading-snug">{item.message}</p>
       <button
         onClick={() => onRemove(item.id)}
         className="p-0.5 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/60 dark:hover:text-s-dm-text/60 transition-colors"

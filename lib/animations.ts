@@ -77,20 +77,18 @@ export const modalVariants: Variants = {
   },
 };
 
-/** Toast slide in from top-right */
+/** Toast slide in from below */
 export const toastVariants: Variants = {
-  hidden: { opacity: 0, x: 48, scale: 0.96 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
-    x: 0,
-    scale: 1,
-    transition: { duration: 0.35, ease: [0.34, 1.2, 0.64, 1] },
+    y: 0,
+    transition: { duration: 0.25, ease: [0.25, 1, 0.5, 1] },
   },
   exit: {
     opacity: 0,
-    x: 48,
-    scale: 0.96,
-    transition: { duration: 0.25, ease: "easeIn" },
+    y: -6,
+    transition: { duration: 0.18, ease: "easeIn" },
   },
 };
 
