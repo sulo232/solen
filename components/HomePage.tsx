@@ -247,6 +247,8 @@ export default function HomePage() {
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden py-16 sm:py-24 min-h-[80vh] flex items-center">
+        {/* Mobile text legibility gradient overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-s-bg-base/90 to-transparent pointer-events-none md:hidden" />
         <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-10 lg:gap-16 items-center">
 
