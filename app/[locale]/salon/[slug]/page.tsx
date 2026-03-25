@@ -1097,8 +1097,12 @@ export default function SalonProfilePage() {
 
             {/* ── Right: sticky booking sidebar (desktop only) */}
             <div className="hidden lg:block lg:col-span-1">
-              <div className="lg:sticky lg:top-24">
-                <div className="rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-5 shadow-card">
+              <div className="sticky top-[calc(57px+1rem)]">
+                <div className="rounded-[20px] overflow-hidden p-5"
+                  style={{ background: "rgba(255,255,255,.92)", backdropFilter: "blur(24px) saturate(1.3)",
+                           WebkitBackdropFilter: "blur(24px) saturate(1.3)",
+                           border: "1px solid rgba(255,255,255,.80)",
+                           boxShadow: "0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08), inset 0 1px 0 rgba(255,255,255,.90)" }}>
                   {!calendarOpen ? (
                     <div className="flex flex-col gap-3">
                       <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-center">Termin buchen</p>
