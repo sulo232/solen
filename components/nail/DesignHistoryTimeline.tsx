@@ -68,7 +68,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
             <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-coral border-2 border-white dark:border-s-dm-surface" />
 
             {/* Card */}
-            <div className="rounded-card border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface p-3">
+            <div className="rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface p-3">
               <div className="flex items-start gap-3">
                 {/* Design image */}
                 {d.image_url && (
@@ -124,7 +124,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   <button
                     onClick={() => handlePublish(d)}
                     disabled={publishingId === d.id}
-                    className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral disabled:opacity-50"
+                    className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:brightness-[1.06] disabled:opacity-50 transition-colors"
                   >
                     <Share2 size={10} />
                     {publishingId === d.id ? t("timeline_publishing") : t("timeline_publish")}

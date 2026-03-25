@@ -59,6 +59,7 @@
 - **Button Hover:** `translateY(-1px)` + intensified shadow, 150ms ease. **Active:** `translateY(+1px)` + pressed shadow + inset shadow, 100ms.
 - **Category Tile Hover:** `scale(1.03) rotate(-1deg)` + shadow upgrade, 250ms. Inner image: `scale(1.07)`, 400ms.
 - **Tab Switching:** Use a smooth **slide left/right** animation (like turning pages), not a simple fade.
+  - **Exception — Filter/Category tabs:** When a tab switch changes a **filter state** (not a page section), use a 150ms `opacity` fade on the content grid only — NOT a slide animation. Slide animations imply page-level navigation. Example: switching from "Hair" to "Nails" on `/discover` is a filter state change, not navigation. Correct pattern: `transition-opacity duration-150` on the grid wrapper, toggled via state.
 - **Lists/Grids:** Use stagger with **80ms delay** between children for page-load entrance animations.
 - **Float Animation:** `.hero-blob` applies `solen-float` keyframes (6s ease-in-out infinite, translateY(-14px) + slight rotate) for Zone 1 hero background blobs. One element per page only. Not on interactive elements.
 - **No blob morphing on interactive elements.** `.blob-interactive` is RETIRED for buttons and cards. Blob shapes are decorative only.
@@ -76,13 +77,14 @@
 
 ## 6. Layout Specifics
 - **Login:** Centered, single glassmorphic card.
-- **Salon Cards:** Must display: Cover photo + Name + Rating + Glass Category Pills + Location.
+- **Salon Cards:** Must display: Cover photo + Name + Rating + Glass Category Pills + Location. The cover photo MUST use a strict `3:2` aspect ratio (`aspect-[3/2] relative overflow-hidden`) with `object-cover` to prevent stretching.
+- **Category Icons/Tiles:** Must use a strict `1:1` aspect ratio (`aspect-square relative overflow-hidden`) with `object-cover` so images fit like a profile picture without stretching.
 - **Dashboard Stats:** Must include count-up number animations and mini sparkline charts.
 - **Last-Minute:** Must include an urgency timer counting down to when the appointment *starts*. 
 
 ## 7. 21st.dev Components
 - **InteractiveHoverButton:** Use for all primary CTAs. Customized with `bg-s-coral` and `text-white`.
-- **ExpandableNavTabs:** Used for mobile bottom nav. Spring animations, `s-coral` active color. Hidden on desktop.
+- **ExpandableNavTabs:** RETIRED. We now use a single top-bar navigation architecture across all devices.
 - **Sidebar (dashboard):** Animated collapse/expand sidebar for dashboard layout.
 - All 21st.dev components require shadcn CSS variables defined in `globals.css` (`--primary`, `--muted`, `--accent`, etc.).
 
@@ -412,6 +414,10 @@ Use this checklist when building or reviewing ANY component:
 | Border radius | Mixed `rounded-lg`, `rounded-2xl`, `rounded-full` | Consistent `rounded-card`, `rounded-button`, `rounded-pill` |
 | Colors | Raw Tailwind colors (`yellow-400`, `emerald-500`) | Design tokens (`s-yellow`, `s-success`) |
 
+### 19f. Strict Font Scaling & Line Heights
+- **NEVER** use arbitrary `leading-*` (line-height) classes that decouple from the defined font sizes, unless explicitly needed for a hero overlap or specific design element. Let the base text sizes (`text-sm`, `text-base`, `text-lg`) dictate their default `leading` as defined in the type scale.
+- **Placeholders:** Input placeholders MUST inherit the exact same line-height and font-family as the input body text to prevent vertical misalignment while typing.
+
 ## 20. Next-Gen Fluidity & Urgency (Phase 2 Vision)
 - **Map vs Grid Equality:** The discovery experience (`app/[locale]/search`) MUST feature a Split View architecture on desktop (50% Map, 50% Grid) and a "Coin-Flip" floating action button on mobile that instantly swaps views without a page reload.
 - **Hyper-Fluid Booking Success:** Do not use full-page redirects for booking success. The `[Book Now]` button MUST use Framer Motion `layoutId` to compress, morph into a circle spinner, and then expand into a glassmorphic Receipt Card Modal containing a self-drawing premium SVG checkmark. **No Confetti.**
@@ -464,10 +470,15 @@ The following CSS classes are BANNED. If you write ANY of these, the code is wro
 | `rounded-button` (8px) | `rounded-pill` (99px) for buttons, `rounded-input` (12px) for inputs | Old 8px token retired |
 | `.blob-interactive` on buttons | **RETIRED** | Blob morphing is decorative only |
 | Any emoji in JSX | Lucide React icon | UI_RULES §5: no emoji in UI |
+| `#00A19C` | `bg-s-coral` / `text-s-coral` / `s-blue` | Old teal brand hex (BANNED) |
+| `#F59E0B` | `s-warning` / `s-yellow` | Generic Tailwind warning orange (BANNED) |
+| `#6B7280` | `text-s-ink/50` | Cool gray text (BANNED) |
+| `#0F0F0F` / `#1A1A1A` / `#2D2D2D` | `bg-s-dm-bg` / `s-dm-surface` | Pure black/cold dark grays (BANNED) |
+| `#E5E7EB` | `border-s-ink/10` | Light cold gray border (BANNED) |
 
 **Enforcement**: After EVERY commit, run:
 ```bash
-grep -Ern "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-gray-|dark:bg-dm-|dark:text-dm-|shadow-teal|accent-teal|bg-mesh-teal|border-t-teal|bg-amber-|border-amber-|fill-amber-|bg-yellow-|text-yellow-|ring-yellow-|bg-emerald-|text-emerald-|bg-green-|text-green-|bg-purple-|text-purple-|bg-rose-|text-rose-|shadow-sm[^a]|shadow-md|shadow-lg|shadow-xl|shadow-2xl|rounded-lg|rounded-xl|rounded-2xl|rounded-3xl|rounded-full" components/ app/ --include="*.tsx" | grep -v "node_modules\|darkMode\|//\|s-dm\|s-ink\|s-amber\|s-yellow\|s-success\|shadow-warm\|shadow-card\|shadow-glass\|shadow-coral\|rounded-card\|rounded-button\|rounded-pill\|rounded-blob" | head -10
+grep -Ern "text-dark[^M]|bg-dark[^M]|bg-black|bg-gray-|text-gray-|border-gray-|dark:bg-dm-|dark:text-dm-|shadow-teal|accent-teal|bg-mesh-teal|border-t-teal|bg-amber-|border-amber-|fill-amber-|bg-yellow-|text-yellow-|ring-yellow-|bg-emerald-|text-emerald-|bg-green-|text-green-|bg-purple-|text-purple-|bg-rose-|text-rose-|shadow-sm[^a]|shadow-md|shadow-lg|shadow-xl|shadow-2xl|rounded-lg|rounded-xl|rounded-2xl|rounded-3xl|rounded-full|#00A19C|#F59E0B|#6B7280|#0F0F0F|#1A1A1A|#2D2D2D|#E5E7EB" components/ app/ --include="*.tsx" | grep -v "node_modules\|darkMode\|//\|s-dm\|s-ink\|s-amber\|s-yellow\|s-success\|shadow-warm\|shadow-card\|shadow-glass\|shadow-coral\|rounded-card\|rounded-button\|rounded-pill\|rounded-blob" | head -10
 ```
 If this returns ANY results, fix them before pushing.
 
@@ -664,6 +675,46 @@ npx tsc --noEmit 2>&1 | grep "has no exported member"
 
 **A feature is NOT complete until all 9 checks pass.**
 
+### Rule 31: FILTER COMPONENT ZONE COMPLIANCE (MANDATORY)
+
+> **CONTEXT**: The `FilterBar` and `FilterBottomSheet` are shared components used across Zone 1 (discovery/search), Zone 2 (category pages), Zone 3 (booking flow), and Zone 4 (dashboard). A single implementation that uses glassmorphism or slide animations will **violate zone rules** the moment it appears in Zone 3 or Zone 4.
+
+**All shared filter components MUST accept a `zone` prop (1 | 2 | 3 | 4) and apply the following behaviour:**
+
+| Feature | Zone 1 | Zone 2 | Zone 3 | Zone 4 |
+|---|---|---|---|---|
+| Glass on bottom sheet | ✅ Tier 2 glass | ✅ Tier 3 glass | ❌ Solid surface only | ❌ Solid surface only |
+| Slide/reveal animations | ✅ 220–400ms | ✅ 220ms max | ❌ ZERO animation | ❌ ZERO animation |
+| Backdrop carpet blob bg | ✅ | ✅ | ❌ | ❌ |
+| Expand drawer animation | ✅ | ✅ | ❌ | ❌ |
+
+**Implementation contract:**
+```tsx
+// ✅ CORRECT — zone-aware filter
+<FilterBar zone={1} />         // Discovery/search — full glass + animation
+<FilterBar zone={3} />         // Booking flow — solid bg, no animation
+
+// ❌ BANNED — same static component used everywhere without zone prop
+<FilterBar />                  // Missing zone = unknown behaviour = rule violation
+```
+
+**Rules:**
+1. **NEVER** render a glassmorphic bottom sheet in Zone 3 or Zone 4 pages.
+2. **NEVER** add slide/reveal/expand animations to filter components in Zone 3 or Zone 4.
+3. The `zone` prop defaults to `1` only as a DX convenience — always pass it explicitly.
+4. In Zone 3/4: bottom sheet becomes a plain `rounded-input` (12px) modal with `bg-[--raised]`, `shadow-warm-lg`, and ZERO backdrop-filter.
+5. When building a new page that uses `FilterBar`, declare its zone in a comment above the import.
+
+```bash
+# Verify no zone violations — Zone 3/4 pages must not have backdrop-filter in filter components:
+grep -rn "backdrop-blur\|backdrop-filter\|glass-tier" \
+  app/\[locale\]/booking/ app/\[locale\]/checkout/ app/\[locale\]/auth/ \
+  --include="*.tsx"
+# Expected: 0 results
+```
+
+---
+
 ### Rule 30: PREMIUM DESIGN ENFORCEMENT (MANDATORY)
 
 > **CONTEXT**: A design audit on 2026-03-23 found ~125 violations of the premium design system. Generic Tailwind classes were used instead of design tokens, breaking Apple-level consistency.
@@ -682,4 +733,18 @@ npx tsc --noEmit 2>&1 | grep "has no exported member"
 grep -Ern "shadow-sm[^a]|shadow-md|shadow-lg[^a]|shadow-xl|shadow-2xl|rounded-lg[^a]|rounded-xl|rounded-2xl|rounded-3xl|rounded-full|bg-yellow-|bg-emerald-|bg-green-|bg-purple-|bg-rose-|bg-blue-[0-3]|gap-5|gap-7|gap-9" components/ app/ --include="*.tsx" | grep -v "shadow-warm\|shadow-card\|shadow-glass\|shadow-coral\|rounded-card\|rounded-button\|rounded-pill\|rounded-blob\|s-dm\|//\|node_modules" | head -10
 # Must return 0 results.
 ```
+
+### Rule 32: NO HARDCODED MARKETING STATS
+> **CONTEXT**: On 2026-03-25, an audit revealed that "247 Buchungen diese Woche" was hardcoded into a decorative hero component, while right next to it the `SocialProofStrip` displayed "0+ Buchungen" from a live API, creating a direct data contradiction.
+
+**Rules:**
+1. **NEVER** hardcode metric numbers (like bookings, salon counts, ratings) in production UI components without clearly labeling them as decorative/illustrative (e.g., using a "~" prefix or faded watermark styling).
+2. If a number looks like real data, it MUST pull from a real API or database query.
+
+### Rule 33: BADGE DATA INTEGRITY
+> **CONTEXT**: An audit revealed that the "Solen Top Pick" badge was hardcoded onto specific salon cards, meaning it could never be updated or removed without a code deployment.
+
+**Rules:**
+1. **NEVER** hardcode conditional badges (like "Top Pick", "Neu", "Premium") into UI components.
+2. If a badge implies a shifting status, it MUST be conditionally rendered based on a database flag (e.g., `salons.is_top_pick`).
 

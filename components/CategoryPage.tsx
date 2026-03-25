@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List } from "lucide-react";
 import dynamic from "next/dynamic";
-import FilterBar from "@/components/FilterBar";
+import SearchFilterBar from "@/components/SearchFilterBar";
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
@@ -267,7 +267,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
         </div>
       )}
 
-      <FilterBar category={category} />
+      <SearchFilterBar category={category} />
 
       {/* Map/List toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-between gap-3">

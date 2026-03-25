@@ -1,0 +1,394 @@
+.next/types/app/[locale]/datenschutz/page.ts(34,29): error TS2344: Type '{ params: { locale: string; }; }' does not satisfy the constraint 'PageProps'.
+  Types of property 'params' are incompatible.
+    Type '{ locale: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/help/[slug]/route.ts(49,7): error TS2344: Type '{ __tag__: "GET"; __param_position__: "second"; __param_type__: { params: { slug: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ slug: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/reviews/[id]/flag/route.ts(166,7): error TS2344: Type '{ __tag__: "POST"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+.next/types/app/api/reviews/[id]/photos/route.ts(166,7): error TS2344: Type '{ __tag__: "POST"; __param_position__: "second"; __param_type__: { params: { id: string; }; }; }' does not satisfy the constraint 'ParamCheck<RouteContext>'.
+  The types of '__param_type__.params' are incompatible between these types.
+    Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+app/[locale]/auth/register/page.tsx(582,40): error TS2367: This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.
+app/[locale]/behandlungen/[...slug]/page.tsx(141,19): error TS2322: Type '{ icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>; title: string; description: string; illustration: "no-results"; }' is not assignable to type 'IntrinsicAttributes & EmptyStateProps'.
+  Property 'description' does not exist on type 'IntrinsicAttributes & EmptyStateProps'.
+app/[locale]/behandlungen/[...slug]/page.tsx(152,21): error TS2322: Type '{ key: string; salon: any; locale: string; minPrice: number | undefined; featuredServices: { name_de: string; name_en: string; price: number; duration_minutes: number; }[]; onQuickPreview: () => void; }' is not assignable to type 'IntrinsicAttributes & SalonCardProps'.
+  Property 'minPrice' does not exist on type 'IntrinsicAttributes & SalonCardProps'.
+app/[locale]/behandlungen/[...slug]/TreatmentsClient.tsx(154,21): error TS2322: Type '{ key: string; salon: any; locale: string; minPrice: number | undefined; featuredServices: { name_de: string; name_en: string; price: number; duration_minutes: number; }[]; onQuickPreview: () => void; }' is not assignable to type 'IntrinsicAttributes & SalonCardProps'.
+  Property 'minPrice' does not exist on type 'IntrinsicAttributes & SalonCardProps'.
+app/[locale]/checkout/page.tsx(551,23): error TS2353: Object literal may only specify known properties, and 'colorBorder' does not exist in type '{ fontFamily?: string | undefined; fontSmooth?: string | undefined; fontVariantLigatures?: string | undefined; fontVariationSettings?: string | undefined; fontLineHeight?: string | undefined; ... 87 more ...; borderRadius?: string | undefined; }'.
+app/[locale]/dashboard/bookings/page.tsx(21,7): error TS2739: Type '{ confirmed: string; cancelled: string; completed: string; no_show: string; }' is missing the following properties from type 'Record<BookingStatus, string>': pending, pending_approval
+app/[locale]/dashboard/bookings/page.tsx(27,7): error TS2739: Type '{ confirmed: string; cancelled: string; completed: string; no_show: string; }' is missing the following properties from type 'Record<BookingStatus, string>': pending, pending_approval
+app/[locale]/dashboard/services/page.tsx(44,22): error TS2352: Conversion of type 'Service | undefined' to type 'Record<string, number>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Service' is not comparable to type 'Record<string, number>'.
+    Index signature for type 'string' is missing in type 'Service'.
+app/[locale]/dashboard/services/page.tsx(45,26): error TS2352: Conversion of type 'Service | undefined' to type 'Record<string, number>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Service' is not comparable to type 'Record<string, number>'.
+    Index signature for type 'string' is missing in type 'Service'.
+app/[locale]/dashboard/services/page.tsx(46,25): error TS2352: Conversion of type 'Service | undefined' to type 'Record<string, number>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Service' is not comparable to type 'Record<string, number>'.
+    Index signature for type 'string' is missing in type 'Service'.
+app/[locale]/dashboard/services/page.tsx(51,51): error TS2352: Conversion of type 'Service | undefined' to type 'Record<string, string[]>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Service' is not comparable to type 'Record<string, string[]>'.
+    Index signature for type 'string' is missing in type 'Service'.
+app/[locale]/last-minute/page.tsx(48,103): error TS2339: Property 'original_price' does not exist on type 'LastMinuteSlot'.
+app/[locale]/onboarding/salon/page.tsx(786,90): error TS2322: Type '{ <TargetKey extends any>(key: TargetKey, values?: TranslationValues | undefined, formats?: Formats | undefined): string; rich<TargetKey extends any>(key: TargetKey, values?: RichTranslationValues | undefined, formats?: Formats | undefined): ReactNode; markup<TargetKey extends any>(key: TargetKey, values?: MarkupTra...' is not assignable to type 'TFunc'.
+  Types of parameters 'values' and 'params' are incompatible.
+    Type 'Record<string, unknown> | undefined' is not assignable to type 'TranslationValues | undefined'.
+      Type 'Record<string, unknown>' is not assignable to type 'TranslationValues'.
+        'string' index signatures are incompatible.
+          Type 'unknown' is not assignable to type 'TranslationValue'.
+app/[locale]/onboarding/salon/page.tsx(794,17): error TS2322: Type '{ <TargetKey extends any>(key: TargetKey, values?: TranslationValues | undefined, formats?: Formats | undefined): string; rich<TargetKey extends any>(key: TargetKey, values?: RichTranslationValues | undefined, formats?: Formats | undefined): ReactNode; markup<TargetKey extends any>(key: TargetKey, values?: MarkupTra...' is not assignable to type 'TFunc'.
+  Types of parameters 'values' and 'params' are incompatible.
+    Type 'Record<string, unknown> | undefined' is not assignable to type 'TranslationValues | undefined'.
+      Type 'Record<string, unknown>' is not assignable to type 'TranslationValues'.
+        'string' index signatures are incompatible.
+          Type 'unknown' is not assignable to type 'TranslationValue'.
+app/[locale]/onboarding/salon/page.tsx(802,17): error TS2322: Type '{ <TargetKey extends any>(key: TargetKey, values?: TranslationValues | undefined, formats?: Formats | undefined): string; rich<TargetKey extends any>(key: TargetKey, values?: RichTranslationValues | undefined, formats?: Formats | undefined): ReactNode; markup<TargetKey extends any>(key: TargetKey, values?: MarkupTra...' is not assignable to type 'TFunc'.
+  Types of parameters 'values' and 'params' are incompatible.
+    Type 'Record<string, unknown> | undefined' is not assignable to type 'TranslationValues | undefined'.
+      Type 'Record<string, unknown>' is not assignable to type 'TranslationValues'.
+        'string' index signatures are incompatible.
+          Type 'unknown' is not assignable to type 'TranslationValue'.
+app/[locale]/profile/gift-cards/page.tsx(80,37): error TS2339: Property 'balance' does not exist on type 'GiftCard'.
+app/[locale]/profile/gift-cards/page.tsx(80,58): error TS2339: Property 'status' does not exist on type 'GiftCard'.
+app/[locale]/profile/gift-cards/page.tsx(83,64): error TS2339: Property 'status' does not exist on type 'GiftCard'.
+app/[locale]/profile/gift-cards/page.tsx(96,46): error TS2339: Property 'balance' does not exist on type 'GiftCard'.
+app/[locale]/profile/packages/page.tsx(87,33): error TS2339: Property 'session_count' does not exist on type 'ServicePackage'.
+app/[locale]/profile/packages/page.tsx(101,48): error TS2339: Property 'name_de' does not exist on type 'ServicePackage'.
+app/[locale]/profile/packages/page.tsx(101,62): error TS2339: Property 'name_en' does not exist on type 'ServicePackage'.
+app/[locale]/profile/packages/page.tsx(104,48): error TS2339: Property 'created_at' does not exist on type 'PurchaseWithPackage'.
+app/[locale]/salon/[slug]/page.tsx(859,96): error TS2339: Property 'name' does not exist on type 'Service'.
+app/api/admin/booking-disputes/[id]/action/route.ts(149,9): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/admin/commission/route.ts(64,33): error TS2339: Property 'rate_percent' does not exist on type '{ salon_id: string; rate: number; }'.
+app/api/admin/commission/route.ts(78,9): error TS2554: Expected 4-6 arguments, but got 2.
+app/api/admin/discovery/analyze/route.ts(9,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/analyze/route.ts(29,20): error TS2339: Property 'image_url' does not exist on type '{ item_id: string; }'.
+app/api/admin/discovery/backfill/route.ts(17,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/backfill/route.ts(47,36): error TS2339: Property 'limit' does not exist on type '{ ids: string[]; }'.
+app/api/admin/discovery/backfill/route.ts(48,27): error TS2339: Property 'force' does not exist on type '{ ids: string[]; }'.
+app/api/admin/discovery/bulk-import/route.ts(18,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/bulk-import/route.ts(38,11): error TS2339: Property 'category' does not exist on type '{ items: { image_url: string; category?: "hair" | "beard" | "nails" | "makeup" | "waxing" | undefined; gender?: "male" | "female" | "unisex" | undefined; source?: string | undefined; }[]; }'.
+app/api/admin/discovery/bulk-import/route.ts(69,37): error TS2345: Argument of type '"discovery.import"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/import-tiktok/route.ts(17,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/moderation/route.ts(9,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/moderation/route.ts(32,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/moderation/route.ts(52,11): error TS2339: Property 'id' does not exist on type '{ item_id: string; action: "approve" | "reject" | "flag"; reason?: string | undefined; }'.
+app/api/admin/discovery/moderation/route.ts(60,39): error TS2345: Argument of type '"discovery.moderate"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/moderation/route.ts(65,39): error TS2345: Argument of type '"discovery.flag_remove"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/route.ts(10,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/route.ts(48,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/route.ts(68,11): error TS2339: Property 'id' does not exist on type '{ category: "hair" | "beard" | "nails" | "makeup" | "waxing"; gender?: "male" | "female" | "unisex" | undefined; content_type?: "inspo" | "tutorial" | "before_after" | undefined; ... 4 more ...; description?: string | undefined; }'.
+app/api/admin/discovery/route.ts(78,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/route.ts(102,37): error TS2345: Argument of type '"discovery.archive"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/search-stock/route.ts(10,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/search-stock/route.ts(32,54): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/admin/discovery/search-stock/route.ts(34,37): error TS2345: Argument of type '"discovery.import"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/smart-import/route.ts(22,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/smart-import/route.ts(51,11): error TS2339: Property 'description' does not exist on type '{ query: string; source: "all" | "unsplash" | "pexels" | "pixabay"; count: number; category?: "hair" | "beard" | "nails" | "makeup" | "waxing" | undefined; }'.
+app/api/admin/discovery/smart-import/route.ts(51,34): error TS2339: Property 'limit' does not exist on type '{ query: string; source: "all" | "unsplash" | "pexels" | "pixabay"; count: number; category?: "hair" | "beard" | "nails" | "makeup" | "waxing" | undefined; }'.
+app/api/admin/discovery/staging/route.ts(9,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/staging/route.ts(34,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/staging/route.ts(64,39): error TS2345: Argument of type '"discovery.reject"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/staging/route.ts(131,37): error TS2345: Argument of type '"discovery.publish"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/discovery/upload/route.ts(8,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/admin/discovery/upload/route.ts(61,39): error TS2345: Argument of type '"discovery.publish"' is not assignable to parameter of type 'AuditAction'.
+app/api/admin/disputes/route.ts(50,23): error TS2339: Property 'decision' does not exist on type '{ dispute_id: string; action: "dismiss" | "refund" | "resolve"; admin_notes?: string | undefined; }'.
+app/api/admin/disputes/route.ts(50,33): error TS2339: Property 'admin_amount' does not exist on type '{ dispute_id: string; action: "dismiss" | "refund" | "resolve"; admin_notes?: string | undefined; }'.
+app/api/admin/disputes/route.ts(67,9): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/admin/help/route.ts(84,9): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/admin/help/route.ts(119,9): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/admin/help/route.ts(151,9): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/admin/nail/generate/route.ts(54,25): error TS2339: Property 'colors' does not exist on type '{ style?: string | undefined; shape?: string | undefined; color?: string | undefined; skin_tone?: string | undefined; prompt?: string | undefined; }'.
+app/api/admin/nail/generate/route.ts(54,33): error TS2339: Property 'length' does not exist on type '{ style?: string | undefined; shape?: string | undefined; color?: string | undefined; skin_tone?: string | undefined; prompt?: string | undefined; }'.
+app/api/admin/nail/generate/route.ts(54,41): error TS2339: Property 'material' does not exist on type '{ style?: string | undefined; shape?: string | undefined; color?: string | undefined; skin_tone?: string | undefined; prompt?: string | undefined; }'.
+app/api/admin/nail/generate/route.ts(54,51): error TS2339: Property 'skinTone' does not exist on type '{ style?: string | undefined; shape?: string | undefined; color?: string | undefined; skin_tone?: string | undefined; prompt?: string | undefined; }'.
+app/api/admin/nail/generate/route.ts(54,61): error TS2339: Property 'shotType' does not exist on type '{ style?: string | undefined; shape?: string | undefined; color?: string | undefined; skin_tone?: string | undefined; prompt?: string | undefined; }'.
+app/api/admin/nail/generate/route.ts(59,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/admin/nail/generate/route.ts(62,7): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/admin/notify-new-salon/route.ts(25,113): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/admin/salons/[id]/freeze/route.ts(63,70): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/admin/salons/[id]/warn/route.ts(56,37): error TS2345: Argument of type '"salon.warn"' is not assignable to parameter of type 'AuditAction'.
+app/api/ai/intake-recommendation/route.ts(29,11): error TS2339: Property 'intake_id' does not exist on type '{ template_type: "hair" | "makeup" | "waxing" | "spa" | "nail"; responses: Record<string, unknown>; salon_id?: string | undefined; }'.
+app/api/analytics/track-view/route.ts(21,21): error TS2339: Property 'source' does not exist on type '{ salon_id: string; type: "page_view" | "card_click" | "booking_start"; }'.
+app/api/auth/callback/route.ts(28,18): error TS7006: Parameter 'cookiesToSet' implicitly has an 'any' type.
+app/api/auth/callback/route.ts(29,37): error TS7031: Binding element 'name' implicitly has an 'any' type.
+app/api/auth/callback/route.ts(29,43): error TS7031: Binding element 'value' implicitly has an 'any' type.
+app/api/auth/callback/route.ts(29,50): error TS7031: Binding element 'options' implicitly has an 'any' type.
+app/api/availability/manage/route.ts(23,30): error TS2345: Argument of type '(slot: { service_id: string; staff_member_id?: string; starts_at: string; ends_at: string; status?: string; }) => { salon_id: string; service_id: string; staff_member_id: string | null; starts_at: string; ends_at: string; status: string; }' is not assignable to parameter of type '(value: { start_time: string; end_time: string; service_id?: string | undefined; }, index: number, array: { start_time: string; end_time: string; service_id?: string | undefined; }[]) => { ...; }'.
+  Types of parameters 'slot' and 'value' are incompatible.
+    Type '{ start_time: string; end_time: string; service_id?: string | undefined; }' is missing the following properties from type '{ service_id: string; staff_member_id?: string | undefined; starts_at: string; ends_at: string; status?: string | undefined; }': starts_at, ends_at
+app/api/bookings/[id]/cancel/route.ts(11,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/bookings/[id]/cancel/route.ts(90,13): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/bookings/[id]/inspo/route.ts(74,17): error TS2339: Property 'inspo_image_id' does not exist on type '{ image_ids: string[]; }'.
+app/api/bookings/[id]/inspo/route.ts(78,27): error TS2339: Property 'inspo_image_id' does not exist on type '{ image_ids: string[]; }'.
+app/api/bookings/[id]/inspo/route.ts(85,18): error TS2339: Property 'image_url' does not exist on type '{ image_ids: string[]; }'.
+app/api/bookings/[id]/inspo/route.ts(92,28): error TS2339: Property 'image_url' does not exist on type '{ image_ids: string[]; }'.
+app/api/bookings/[id]/inspo/route.ts(93,24): error TS2339: Property 'notes' does not exist on type '{ image_ids: string[]; }'.
+app/api/bookings/[id]/refund/route.ts(11,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/bookings/[id]/report/route.ts(31,46): error TS2345: Argument of type '"dispute_reporting"' is not assignable to parameter of type 'FeatureKey'.
+app/api/bookings/[id]/route.ts(83,7): error TS2367: This comparison appears to be unintentional because the types '"completed" | "no_show"' and '"cancelled"' have no overlap.
+app/api/bookings/[id]/route.ts(91,69): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/bookings/[id]/route.ts(160,7): error TS2367: This comparison appears to be unintentional because the types '"completed" | "no_show"' and '"cancelled"' have no overlap.
+app/api/bookings/express-rebook/confirm/route.ts(28,20): error TS2339: Property 'service_id' does not exist on type '{ slot_id: string; }'.
+app/api/bookings/express-rebook/confirm/route.ts(28,32): error TS2339: Property 'staff_id' does not exist on type '{ slot_id: string; }'.
+app/api/bookings/express-rebook/confirm/route.ts(28,42): error TS2339: Property 'source_booking_id' does not exist on type '{ slot_id: string; }'.
+app/api/bookings/express-rebook/route.ts(28,11): error TS2339: Property 'rebook_from_booking_id' does not exist on type '{ salon_id: string; service_id: string; }'.
+app/api/bookings/recurring/route.ts(16,11): error TS2339: Property 'salon_id' does not exist on type '{ service_id: string; day_of_week: number; start_time: string; recurrence_type: "weekly" | "biweekly" | "monthly"; count: number; staff_member_id?: string | undefined; }'.
+app/api/bookings/recurring/route.ts(16,50): error TS2339: Property 'frequency' does not exist on type '{ service_id: string; day_of_week: number; start_time: string; recurrence_type: "weekly" | "biweekly" | "monthly"; count: number; staff_member_id?: string | undefined; }'.
+app/api/bookings/recurring/route.ts(16,61): error TS2339: Property 'custom_interval_days' does not exist on type '{ service_id: string; day_of_week: number; start_time: string; recurrence_type: "weekly" | "biweekly" | "monthly"; count: number; staff_member_id?: string | undefined; }'.
+app/api/bookings/recurring/route.ts(16,83): error TS2339: Property 'preferred_day' does not exist on type '{ service_id: string; day_of_week: number; start_time: string; recurrence_type: "weekly" | "biweekly" | "monthly"; count: number; staff_member_id?: string | undefined; }'.
+app/api/bookings/recurring/route.ts(16,98): error TS2339: Property 'preferred_time' does not exist on type '{ service_id: string; day_of_week: number; start_time: string; recurrence_type: "weekly" | "biweekly" | "monthly"; count: number; staff_member_id?: string | undefined; }'.
+app/api/clients/[id]/intake/route.ts(40,11): error TS2339: Property 'template_key' does not exist on type '{ template_type: "hair" | "makeup" | "waxing" | "spa" | "nail"; responses: Record<string, unknown>; }'.
+app/api/conversations/[id]/price-offer/route.ts(29,36): error TS2339: Property 'photo_url' does not exist on type '{ amount_chf: number; expires_hours: number; description?: string | undefined; }'.
+app/api/cron/no-show/route.ts(39,69): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/cron/no-show/route.ts(59,15): error TS2554: Expected 4-6 arguments, but got 1.
+app/api/cron/pending-timeout/route.ts(67,69): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/cron/pre-charge/route.ts(9,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/cron/rebooking-nudge/route.ts(25,6): error TS2551: Property 'catch' does not exist on type 'PostgrestFilterBuilder<any, any, any, any, "get_rebooking_candidates", null, "RPC">'. Did you mean 'match'?
+app/api/cron/release-payments/route.ts(8,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/discovery/boards/route.ts(7,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/comments/route.ts(9,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/comments/route.ts(69,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/feed/route.ts(8,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/generate-description/route.ts(11,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/like/route.ts(8,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/post/route.ts(9,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/salons-for-style/route.ts(7,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/save/route.ts(8,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/save/sync/route.ts(13,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/saves/route.ts(7,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/similar/route.ts(7,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/discovery/style-names/route.ts(7,46): error TS2345: Argument of type '"discovery"' is not assignable to parameter of type 'FeatureKey'.
+app/api/gift-cards/purchase/route.ts(13,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/loyalty/award/route.ts(24,11): error TS2339: Property 'salon_id' does not exist on type '{ customer_id: string; card_id: string; }'.
+app/api/packages/purchase/route.ts(11,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/profile/accept-tos/route.ts(34,39): error TS2345: Argument of type '"account.tos_accepted"' is not assignable to parameter of type 'AuditAction'.
+app/api/profile/delete/route.ts(53,37): error TS2345: Argument of type '"account.delete_requested"' is not assignable to parameter of type 'AuditAction'.
+app/api/profile/export/route.ts(60,39): error TS2345: Argument of type '"account.data_export"' is not assignable to parameter of type 'AuditAction'.
+app/api/reviews/[id]/respond/route.ts(51,11): error TS2339: Property 'salon_response' does not exist on type '{ reply_text: string; is_public: boolean; }'.
+app/api/salon/retail/purchase/route.ts(35,11): error TS2339: Property 'product_ids' does not exist on type '{ product_id: string; quantity: number; }'.
+app/api/salon/retail/purchase/route.ts(35,24): error TS2339: Property 'salon_id' does not exist on type '{ product_id: string; quantity: number; }'.
+app/api/services/route.ts(33,11): error TS2339: Property 'salon_id' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,74): error TS2339: Property 'description_de' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,90): error TS2339: Property 'buffer_minutes' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,106): error TS2339: Property 'processing_minutes' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,126): error TS2339: Property 'finishing_minutes' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,145): error TS2339: Property 'suitable_for' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,159): error TS2339: Property 'suitable_gender' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,176): error TS2339: Property 'is_active' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/services/route.ts(33,187): error TS2339: Property 'photos' does not exist on type '{ name_de: string; category: string; duration_minutes: number; price: number; name_en?: string | undefined; name_fr?: string | undefined; name_it?: string | undefined; description?: string | undefined; }'.
+app/api/stripe/save-card/route.ts(51,5): error TS2353: Object literal may only specify known properties, and 'customer' does not exist in type 'RequestOptions'.
+app/api/stripe/save-card/route.ts(61,5): error TS18048: 'setupIntentParams' is possibly 'undefined'.
+app/api/stripe/save-card/route.ts(61,23): error TS2339: Property 'on_behalf_of' does not exist on type 'RequestOptions'.
+app/api/tips/route.ts(11,55): error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2026-02-25.clover"'.
+app/api/translate/route.ts(30,17): error TS2339: Property 'from' does not exist on type '{ text: string; target_locale: "de" | "en" | "fr" | "it"; source_locale?: "de" | "en" | "fr" | "it" | undefined; }'.
+app/api/translate/route.ts(30,23): error TS2339: Property 'to' does not exist on type '{ text: string; target_locale: "de" | "en" | "fr" | "it"; source_locale?: "de" | "en" | "fr" | "it" | undefined; }'.
+app/api/waitlist/route.ts(16,21): error TS2339: Property 'service_id' does not exist on type '{ email: string; salon_id?: string | undefined; }'.
+app/api/waitlist/route.ts(16,33): error TS2339: Property 'preferred_date' does not exist on type '{ email: string; salon_id?: string | undefined; }'.
+app/api/waitlist/route.ts(16,49): error TS2339: Property 'preferred_time_range' does not exist on type '{ email: string; salon_id?: string | undefined; }'.
+components/dashboard/DisputeNotification.tsx(85,40): error TS2322: Type '"xs"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+components/dashboard/nail/DynamicPricingConfig.tsx(20,3): error TS2322: Type '"peak_hour"' is not assignable to type 'DynamicPricingRuleType'.
+components/dashboard/nail/DynamicPricingConfig.tsx(22,3): error TS2322: Type '"weekend"' is not assignable to type 'DynamicPricingRuleType'.
+components/dashboard/nail/DynamicPricingConfig.tsx(23,3): error TS2322: Type '"last_minute"' is not assignable to type 'DynamicPricingRuleType'.
+components/dashboard/nail/DynamicPricingConfig.tsx(24,3): error TS2322: Type '"loyalty"' is not assignable to type 'DynamicPricingRuleType'.
+components/dashboard/nail/DynamicPricingConfig.tsx(28,3): error TS2353: Object literal may only specify known properties, and 'peak_hour' does not exist in type 'Record<DynamicPricingRuleType, string>'.
+components/dashboard/nail/DynamicPricingConfig.tsx(107,45): error TS2322: Type '"peak_hour"' is not assignable to type 'DynamicPricingRuleType | undefined'.
+components/discovery/UserPostsSection.tsx(47,16): error TS2367: This comparison appears to be unintentional because the types 'DiscoveryMediaType' and '"video"' have no overlap.
+components/MapView.tsx(218,14): error TS18047: 'bounds' is possibly 'null'.
+components/MapView.tsx(219,14): error TS18047: 'bounds' is possibly 'null'.
+components/MapView.tsx(220,13): error TS18047: 'bounds' is possibly 'null'.
+components/MapView.tsx(221,13): error TS18047: 'bounds' is possibly 'null'.
+components/nail/DesignHistoryTimeline.tsx(30,17): error TS2339: Property 'image_url' does not exist on type 'NailDesignHistory'.
+components/nail/DesignHistoryTimeline.tsx(37,29): error TS2339: Property 'image_url' does not exist on type 'NailDesignHistory'.
+components/nail/DesignHistoryTimeline.tsx(38,25): error TS2339: Property 'style' does not exist on type 'NailDesignHistory'.
+components/nail/DesignHistoryTimeline.tsx(74,20): error TS2339: Property 'image_url' does not exist on type 'NailDesignHistory'.
+components/nail/DesignHistoryTimeline.tsx(76,35): error TS2339: Property 'image_url' does not exist on type 'NailDesignHistory'.
+components/nail/DesignHistoryTimeline.tsx(89,25): error TS2339: Property 'style' does not exist on type 'NailDesignHistory'.
+components/nail/DesignHistoryTimeline.tsx(123,20): error TS2339: Property 'image_url' does not exist on type 'NailDesignHistory'.
+components/nail/TechPortfolio.tsx(32,5): error TS2322: Type '"3d_art"' is not assignable to type 'NailStyleCategory'.
+components/nail/TechPortfolio.tsx(36,5): error TS2322: Type '"minimal"' is not assignable to type 'NailStyleCategory'.
+components/nail/TechPortfolio.tsx(39,5): error TS2322: Type '"bridal"' is not assignable to type 'NailStyleCategory'.
+components/nail/TechPortfolio.tsx(167,15): error TS2322: Type '{ key: string; id: string; imageUrl: string; style: NailStyleCategory | null | undefined; shape: NailShape | null | undefined; material: NailMaterial | null | undefined; staffName: string; showBookCta: boolean; bookingUrl: string | undefined; }' is not assignable to type 'IntrinsicAttributes & NailDesignCardProps'.
+  Property 'showBookCta' does not exist on type 'IntrinsicAttributes & NailDesignCardProps'.
+components/NearbySalons.tsx(73,13): error TS2322: Type '{ key: string; salon: any; locale: string; variant: "compact"; showDistance: true; minPrice: number | undefined; }' is not assignable to type 'IntrinsicAttributes & SalonCardProps'.
+  Property 'minPrice' does not exist on type 'IntrinsicAttributes & SalonCardProps'.
+components/search/SplitView.tsx(192,46): error TS2339: Property 'name' does not exist on type 'Service'.
+components/TutorialTour.tsx(31,22): error TS2307: Cannot find module 'driver.js/dist/driver.css' or its corresponding type declarations.
+components/ui/SearchAutocomplete.tsx(62,23): error TS2554: Expected 1 arguments, but got 0.
+components/ui/SearchAutocomplete.tsx(63,28): error TS2554: Expected 1 arguments, but got 0.
+lib/email-templates/audit-notifications.ts(1,23): error TS2459: Module '"../email"' declares 'EmailPayload' locally, but it is not exported.
+lib/email-templates/booking-notifications.ts(32,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/booking-notifications.ts(32,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/booking-notifications.ts(51,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/booking-notifications.ts(51,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/booking-notifications.ts(70,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/booking-notifications.ts(70,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(21,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(21,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(35,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(35,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(49,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(49,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(63,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(63,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(77,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/salon-onboarding.ts(77,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/welcome-series.ts(21,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/welcome-series.ts(21,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/welcome-series.ts(35,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/welcome-series.ts(35,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/welcome-series.ts(49,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email-templates/welcome-series.ts(49,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(64,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(64,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(82,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(82,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(100,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(100,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(118,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(118,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(136,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(136,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(154,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(154,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(172,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(172,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(190,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(190,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(208,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(208,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(226,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(226,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(244,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(244,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(305,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(305,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(327,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(327,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(349,25): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(349,49): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: string; en: string; fr: string; }'.
+  Property 'it' does not exist on type '{ de: string; en: string; fr: string; }'.
+lib/email.ts(379,13): error TS7053: Element implicitly has an 'any' type because expression of type 'EmailLocale' can't be used to index type '{ de: { subject: string; html: string; }[]; en: { subject: string; html: string; }[]; fr: { subject: string; html: string; }[]; }'.
+  Property 'it' does not exist on type '{ de: { subject: string; html: string; }[]; en: { subject: string; html: string; }[]; fr: { subject: string; html: string; }[]; }'.
+lib/posthog-server.ts(73,20): error TS2339: Property 'flushAsync' does not exist on type 'PostHog'.
+lib/registration-validation.ts(13,19): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: readonly Literal[], params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodLiteral<...>', gave the following error.
+    Argument of type 'boolean' is not assignable to parameter of type 'readonly Literal[]'.
+  Overload 2 of 2, '(value: true, params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodLiteral<...>', gave the following error.
+    Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+lib/registration-validation.ts(36,15): error TS2554: Expected 2-3 arguments, but got 1.
+lib/strikes.ts(55,8): error TS2551: Property 'catch' does not exist on type 'PostgrestFilterBuilder<any, any, any, null, "audit_log", unknown, "POST">'. Did you mean 'match'?
+lib/supabase.ts(31,16): error TS7006: Parameter 'cookiesToSet' implicitly has an 'any' type.
+lib/supabase.ts(34,37): error TS7031: Binding element 'name' implicitly has an 'any' type.
+lib/supabase.ts(34,43): error TS7031: Binding element 'value' implicitly has an 'any' type.
+lib/supabase.ts(34,50): error TS7031: Binding element 'options' implicitly has an 'any' type.
+lib/validations.ts(141,19): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: readonly Literal[], params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodLiteral<...>', gave the following error.
+    Argument of type 'boolean' is not assignable to parameter of type 'readonly Literal[]'.
+  Overload 2 of 2, '(value: true, params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodLiteral<...>', gave the following error.
+    Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+lib/validations.ts(168,20): error TS2554: Expected 2-3 arguments, but got 1.
+lib/validations.ts(185,28): error TS2554: Expected 2-3 arguments, but got 1.
+middleware.ts(107,18): error TS7006: Parameter 'cookiesToSet' implicitly has an 'any' type.
+middleware.ts(108,37): error TS7031: Binding element 'name' implicitly has an 'any' type.
+middleware.ts(108,43): error TS7031: Binding element 'value' implicitly has an 'any' type.
+middleware.ts(112,37): error TS7031: Binding element 'name' implicitly has an 'any' type.
+middleware.ts(112,43): error TS7031: Binding element 'value' implicitly has an 'any' type.
+middleware.ts(112,50): error TS7031: Binding element 'options' implicitly has an 'any' type.
+supabase/functions/booking-reminder/index.ts(5,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/booking-reminder/index.ts(7,21): error TS2304: Cannot find name 'Deno'.
+supabase/functions/booking-reminder/index.ts(8,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/booking-reminder/index.ts(9,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/booking-reminder/index.ts(24,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/compute-analytics/index.ts(6,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/compute-analytics/index.ts(8,21): error TS2304: Cannot find name 'Deno'.
+supabase/functions/compute-analytics/index.ts(9,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/compute-analytics/index.ts(19,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/compute-analytics/index.ts(51,12): error TS7006: Parameter 'b' implicitly has an 'any' type.
+supabase/functions/compute-analytics/index.ts(53,52): error TS7006: Parameter 'b' implicitly has an 'any' type.
+supabase/functions/compute-analytics/index.ts(57,48): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+supabase/functions/compute-analytics/index.ts(57,53): error TS7006: Parameter 'b' implicitly has an 'any' type.
+supabase/functions/compute-analytics/index.ts(58,62): error TS7006: Parameter 'b' implicitly has an 'any' type.
+supabase/functions/post-booking-preferences/index.ts(5,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/post-booking-preferences/index.ts(7,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/post-booking-preferences/index.ts(17,7): error TS2304: Cannot find name 'Deno'.
+supabase/functions/post-booking-preferences/index.ts(18,7): error TS2304: Cannot find name 'Deno'.
+supabase/functions/recurring-booking-processor/index.ts(5,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/recurring-booking-processor/index.ts(7,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/recurring-booking-processor/index.ts(28,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/recurring-booking-processor/index.ts(30,5): error TS2304: Cannot find name 'Deno'.
+supabase/functions/recurring-booking-processor/index.ts(31,5): error TS2304: Cannot find name 'Deno'.
+supabase/functions/recurring-booking-processor/index.ts(143,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/salon-verification/index.ts(5,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/salon-verification/index.ts(7,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/salon-verification/index.ts(8,18): error TS2304: Cannot find name 'Deno'.
+supabase/functions/salon-verification/index.ts(21,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/salon-verification/index.ts(23,5): error TS2304: Cannot find name 'Deno'.
+supabase/functions/salon-verification/index.ts(24,5): error TS2304: Cannot find name 'Deno'.
+supabase/functions/salon-verification/index.ts(117,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/slot-auto-release/index.ts(6,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/slot-auto-release/index.ts(8,21): error TS2304: Cannot find name 'Deno'.
+supabase/functions/slot-auto-release/index.ts(9,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/slot-auto-release/index.ts(11,1): error TS2304: Cannot find name 'Deno'.
+supabase/functions/slot-auto-release/index.ts(38,36): error TS7006: Parameter 'b' implicitly has an 'any' type.
+supabase/functions/slot-auto-release/index.ts(39,33): error TS7006: Parameter 'b' implicitly has an 'any' type.
+supabase/functions/smart-nudges/index.ts(5,30): error TS2307: Cannot find module 'https://esm.sh/@supabase/supabase-js@2' or its corresponding type declarations.
+supabase/functions/smart-nudges/index.ts(7,21): error TS2304: Cannot find name 'Deno'.
+supabase/functions/smart-nudges/index.ts(8,24): error TS2304: Cannot find name 'Deno'.
+supabase/functions/smart-nudges/index.ts(9,19): error TS2304: Cannot find name 'Deno'.
+supabase/functions/smart-nudges/index.ts(27,1): error TS2304: Cannot find name 'Deno'.

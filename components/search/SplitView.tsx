@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import FilterBar from "@/components/FilterBar";
+import SearchFilterBar from "@/components/SearchFilterBar";
 import SearchResultGrid from "@/components/search/SearchResultGrid";
 import MobileViewToggle from "@/components/search/MobileViewToggle";
 import QuickPreviewSheet from "@/components/ui/QuickPreviewSheet";
@@ -141,7 +141,7 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
   return (
     <div className="flex flex-col">
       {/* Filter bar */}
-      <FilterBar category={category || undefined} />
+      <SearchFilterBar category={category || undefined} />
 
       {/* Split view: grid on desktop, toggle on mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0 min-h-[calc(100vh-140px)]">

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
+import CategoryTabBar from "@/components/discovery/CategoryTabBar";
 import MasonryGrid from "@/components/discovery/MasonryGrid";
 import ItemCard from "@/components/discovery/ItemCard";
 import VideoCard from "@/components/discovery/VideoCard";
@@ -22,9 +23,10 @@ import ForYouSection from "@/components/discovery/ForYouSection";
 import DiscoveryAdmin from "@/components/discovery/DiscoveryAdmin";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters } from "@/lib/types";
 
-export default function DiscoverPage() {
+function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [items, setItems] = useState<DiscoveryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,11 +35,30 @@ export default function DiscoverPage() {
   const [error, setError] = useState(false);
 
   // Filters
-  const [category, setCategory] = useState<DiscoveryCategory | "all">("all");
+  const [category, setCategory] = useState<DiscoveryCategory | "all">(
+    (searchParams?.get("category") as DiscoveryCategory | "all") || "all"
+  );
   const [gender, setGender] = useState<DiscoveryGender | "all">("all");
   const [search, setSearch] = useState("");
   const [texture, setTexture] = useState<string | null>(null);
   const [style, setStyle] = useState<string | null>(null);
+
+  const [gridVisible, setGridVisible] = useState(true);
+
+  const handleCategoryChange = (key: string) => {
+    setGridVisible(false);
+    setTimeout(() => {
+      setCategory(key as DiscoveryCategory | "all");
+      setGridVisible(true);
+      const params = new URLSearchParams(searchParams?.toString() ?? "");
+      if (key === "all") {
+        params.delete("category");
+      } else {
+        params.set("category", key);
+      }
+      router.push(`?${params.toString()}`, { scroll: false });
+    }, 80);
+  };
 
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -190,6 +211,14 @@ export default function DiscoverPage() {
           />
         </div>
 
+        {/* Category tab row */}
+        <div className="mb-6">
+          <CategoryTabBar
+            activeCategory={category}
+            onChange={handleCategoryChange}
+          />
+        </div>
+
         {/* Desktop filters */}
         <div className="hidden md:block space-y-3 mb-6">
           <DiscoverySearchBar value={search} onChange={setSearch} />
@@ -231,24 +260,29 @@ export default function DiscoverPage() {
         ) : items.length === 0 ? (
           <DiscoveryEmptyState />
         ) : (
-          <MasonryGrid
-            items={items}
-            renderItem={(item, width) =>
-              item.media_type === "tiktok" ? (
-                <VideoCard
-                  item={item}
-                  onClick={() => handleItemClick(item)}
-                  isAuthenticated={isAuthenticated}
-                />
-              ) : (
-                <ItemCard
-                  item={item}
-                  onClick={() => handleItemClick(item)}
-                  isAuthenticated={isAuthenticated}
-                />
-              )
-            }
-          />
+          <div
+            className="transition-opacity duration-150"
+            style={{ opacity: gridVisible ? 1 : 0 }}
+          >
+            <MasonryGrid
+              items={items}
+              renderItem={(item, width) =>
+                item.media_type === "tiktok" ? (
+                  <VideoCard
+                    item={item}
+                    onClick={() => handleItemClick(item)}
+                    isAuthenticated={isAuthenticated}
+                  />
+                ) : (
+                  <ItemCard
+                    item={item}
+                    onClick={() => handleItemClick(item)}
+                    isAuthenticated={isAuthenticated}
+                  />
+                )
+              }
+            />
+          </div>
         )}
 
         {/* Infinite scroll trigger */}
@@ -273,5 +307,13 @@ export default function DiscoverPage() {
         onSave={handleProfileSave}
       />
     </main>
+  );
+}
+
+export default function DiscoverPage() {
+  return (
+    <Suspense fallback={<DiscoveryGridSkeleton />}>
+      <DiscoverPageContent />
+    </Suspense>
   );
 }

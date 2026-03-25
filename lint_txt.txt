@@ -1,0 +1,5 @@
+
+> solen@0.1.0 lint
+> next lint
+
+Cannot find package 'eslint-plugin-react-refresh' imported from C:\Users\sulod\solen\eslint.config.js

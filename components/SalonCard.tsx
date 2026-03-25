@@ -81,10 +81,16 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         <div className="min-w-0">
           <p className="font-heading font-medium text-sm text-s-ink truncate">{salon.name}</p>
           <p className="text-xs text-s-ink/50 font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</p>
-          <div className="flex items-center gap-1 mt-0.5">
-            <Star className="w-3 h-3 fill-s-coral text-s-coral" />
-            <span className="text-xs data-text text-s-ink/70">{salon.average_rating.toFixed(1)}</span>
-          </div>
+          {salon.review_count >= 5 ? (
+            <div className="flex items-center gap-1 mt-0.5">
+              <Star className="w-3 h-3 fill-s-coral text-s-coral" />
+              <span className="text-xs data-text text-s-ink/70">{salon.average_rating.toFixed(1)}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 mt-0.5">
+              <span className="text-[10px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-1.5 py-0.5 rounded-pill">Neu</span>
+            </div>
+          )}
         </div>
       </Link>
     );
@@ -257,13 +263,20 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           )}
           <div className="flex items-center gap-1 mt-2 flex-wrap">
-            <Star className="w-4 h-4 fill-s-coral text-s-coral" />
-            <span className="text-sm data-text font-medium text-s-ink">{salon.average_rating.toFixed(1)}</span>
-            <span className="text-xs text-s-ink/40 font-body">({salon.review_count})</span>
+            {salon.review_count >= 5 ? (
+              <>
+                <Star className="w-4 h-4 fill-s-coral text-s-coral" />
+                <span className="text-sm data-text font-medium text-s-ink">{salon.average_rating.toFixed(1)}</span>
+                <span className="text-xs text-s-ink/40 font-body">({salon.review_count})</span>
+              </>
+            ) : (
+              <span className="text-[11px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill shadow-warm-xs">Neu auf Solen</span>
+            )}
+            
             {salon.avg_price != null && salon.avg_price > 0 && (
               <>
-                <span className="text-xs text-s-ink/30 font-body">·</span>
-                <span className="text-xs data-text text-s-ink/60">Ø {formatCurrency(salon.avg_price, locale)}</span>
+                <span className="text-xs text-s-ink/30 font-body ml-1">·</span>
+                <span className="text-xs data-text text-s-ink/60 ml-1">Ø {formatCurrency(salon.avg_price, locale)}</span>
               </>
             )}
           </div>

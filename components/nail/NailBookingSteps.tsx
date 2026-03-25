@@ -133,7 +133,7 @@ export default function NailBookingSteps({
         <button
           type="button"
           onClick={handleRepeatLast}
-          className="flex items-center gap-2 w-full p-3 rounded-card border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors"
+          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors"
         >
           <RefreshCw size={16} className="text-s-coral shrink-0" />
           <div>
@@ -162,7 +162,7 @@ export default function NailBookingSteps({
 
       {/* Tier pricing display */}
       {tierLabel && tierPrice != null && (
-        <div className="flex items-center justify-between p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg">
+        <div className="flex items-center justify-between p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg">
           <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">
             {tierLabel.charAt(0).toUpperCase() + tierLabel.slice(1)} {t("nail_artist")}
           </span>

@@ -44,13 +44,13 @@ export default function ReviewBreakdown({
       <div className="flex gap-6 items-center">
         <div className="text-center shrink-0">
           <p className="data-text font-bold text-4xl text-s-ink dark:text-s-dm-text">
-            {averageRating.toFixed(1)}
+            {reviewCount >= 5 ? averageRating.toFixed(1) : "Neu"}
           </p>
           <span className="flex gap-0.5 justify-center">
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                className={`w-4 h-4 ${i <= Math.round(averageRating) ? "fill-s-coral text-s-coral" : "text-s-ink/20 dark:text-s-dm-text/20"}`}
+                className={`w-4 h-4 ${reviewCount >= 5 && i <= Math.round(averageRating) ? "fill-s-coral text-s-coral" : "text-s-ink/20 dark:text-s-dm-text/20"}`}
               />
             ))}
           </span>
@@ -58,7 +58,7 @@ export default function ReviewBreakdown({
             onClick={onReviewCountClick}
             className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1 hover:text-s-coral transition-colors"
           >
-            {reviewCount} Bewertungen
+            {reviewCount > 0 ? `${reviewCount} Bewertungen` : "Noch keine Bewertungen"}
           </button>
         </div>
         <div className="flex-1 flex flex-col gap-1.5">

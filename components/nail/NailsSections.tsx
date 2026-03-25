@@ -31,7 +31,7 @@ function PillGroup({
         <button
           key={opt}
           onClick={() => onToggle(active === i ? null : i)}
-          className={`px-3 py-1.5 rounded-pill text-xs font-body font-medium transition-all ${
+          className={`px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all ${
             active === i
               ? `${activeClass} text-white shadow-warm-sm`
               : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border border-s-ink/10 dark:border-white/10 hover:border-s-coral/40"
@@ -50,7 +50,7 @@ export function NailsAboveGrid() {
   const [styleIdx, setStyleIdx] = useState<number | null>(null);
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 rounded-card px-4 py-3 flex flex-col gap-3">
+    <div className="bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-3">
       <PillGroup label="Form" options={SHAPES} active={shapeIdx} onToggle={setShapeIdx} activeClass="bg-s-coral" />
       <PillGroup label="Material" options={MATERIALS} active={matIdx} onToggle={setMatIdx} activeClass="bg-s-coral" />
       <PillGroup label="Stil" options={STYLES} active={styleIdx} onToggle={setStyleIdx} activeClass="bg-s-coral" />
@@ -86,7 +86,7 @@ export function NailsBelowGrid() {
             </p>
           </div>
           <Link
-            href={`/${locale}/discover/nails`}
+            href={`/${locale}/discover?category=nails`}
             className="flex items-center gap-1 text-sm text-s-coral hover:underline font-body shrink-0"
           >
             Alle Designs <ChevronRight size={14} />
@@ -96,8 +96,8 @@ export function NailsBelowGrid() {
           {INSPO_PLACEHOLDERS.map((item) => (
             <Link
               key={item.label}
-              href={`/${locale}/discover/nails`}
-              className={`rounded-card bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-warm-xl transition-all duration-250`}
+              href={`/${locale}/discover?category=nails`}
+              className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-warm-xl transition-all duration-250`}
             >
               <span className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 leading-tight">
                 {item.label}
@@ -108,7 +108,7 @@ export function NailsBelowGrid() {
       </section>
 
       {/* AI Nail Art Inspo teaser */}
-      <section className="rounded-card bg-gradient-to-r from-s-coral/5 to-s-plum/5 dark:from-s-coral/10 dark:to-s-plum/10 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <section className="rounded-[20px] bg-gradient-to-r from-s-coral/5 to-s-plum/5 dark:from-s-coral/10 dark:to-s-plum/10 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div className="w-12 h-12 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
           <Sparkles size={22} className="text-s-coral" />
         </div>
@@ -121,8 +121,8 @@ export function NailsBelowGrid() {
           </p>
         </div>
         <Link
-          href={`/${locale}/discover/nails`}
-          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-hover transition-colors shadow-warm-sm"
+          href={`/${locale}/discover?category=nails`}
+          className="shrink-0 px-4 py-2 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors shadow-warm-sm"
         >
           Inspo entdecken →
         </Link>

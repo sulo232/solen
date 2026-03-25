@@ -58,7 +58,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
   return (
     <>
       <div
-        className={`rounded-card p-4 border ${
+        className={`rounded-[16px] p-4 border ${
           isComplete && !isRedeemed
             ? "border-s-coral/30 bg-s-coral/5 dark:bg-s-coral/10 shadow-[0_0_12px_rgba(232,98,74,0.15)]"
             : isRedeemed
@@ -109,7 +109,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
             <button
               onClick={handleShowQR}
               disabled={loadingQR}
-              className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral-hover transition-colors"
+              className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors"
             >
               <QrCode size={14} />
               {loadingQR ? "..." : "QR zeigen"}
@@ -124,7 +124,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
           className="fixed inset-0 z-50 bg-s-ink/80 dark:bg-s-dm-bg/90 flex items-center justify-center p-8"
           onClick={() => setShowQR(false)}
         >
-          <div className="relative bg-white dark:bg-s-dm-surface rounded-card p-6 max-w-xs w-full text-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative bg-white dark:bg-s-dm-surface rounded-[24px] p-6 max-w-xs w-full text-center" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={() => setShowQR(false)}
               className="absolute top-3 right-3 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"

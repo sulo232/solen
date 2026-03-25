@@ -93,7 +93,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
         return (
           <div
             key={cut.id}
-            className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4"
+            className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4"
           >
             <div className="flex items-start justify-between mb-2">
               <div>
@@ -112,7 +112,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
               {onRepeat && (
                 <button
                   onClick={() => onRepeat(cut)}
-                  className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral-hover transition-colors"
+                  className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors"
                 >
                   <RefreshCw size={12} />
                   Wiederholen

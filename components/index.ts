@@ -28,7 +28,7 @@ export { default as SalonCard } from "@/components/SalonCard";
 export { default as QuartierTile } from "@/components/QuartierTile";
 export { default as ServiceTile } from "@/components/ServiceTile";
 export { default as LastMinuteCard } from "@/components/LastMinuteCard";
-export { default as FilterBar } from "@/components/FilterBar";
+export { default as SearchFilterBar } from "@/components/SearchFilterBar";
 export { default as CategoryPage } from "@/components/CategoryPage";
 export { default as HomePage } from "@/components/HomePage";
 export { default as MapView } from "@/components/MapView";

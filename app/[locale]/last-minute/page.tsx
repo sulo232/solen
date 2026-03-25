@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Scissors, Sparkles, Droplets, Palette, Zap, X, Clock } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import FilterBar from "@/components/FilterBar";
+import SearchFilterBar from "@/components/SearchFilterBar";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import Spinner from "@/components/ui/Spinner";
 import EmptyState from "@/components/ui/EmptyState";
@@ -130,7 +130,7 @@ export default function LastMinutePage() {
         </div>
       </div>
 
-      <FilterBar />
+      <SearchFilterBar />
 
       {/* Category chips + price filter */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">

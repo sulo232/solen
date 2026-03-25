@@ -33,7 +33,7 @@ export default function AllergyWarning({ customerId }: AllergyWarningProps) {
 
   return (
     <div
-      className={`flex items-start gap-2.5 p-3 rounded-card border ${
+      className={`flex items-start gap-2.5 p-3 rounded-[16px] border ${
         isSevere
           ? "border-s-coral/30 bg-s-coral/5 dark:border-s-coral/20 dark:bg-s-coral/10"
           : "border-s-amber/30 bg-s-amber-subtle dark:border-s-amber/20 dark:bg-s-amber/5"

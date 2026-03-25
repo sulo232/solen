@@ -38,6 +38,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
   const [activeCategory, setActiveCategory] = useState("all");
   const [showAreaSearch, setShowAreaSearch] = useState(false);
+  const [mapError, setMapError] = useState(!process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
   const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Filter salons by category
@@ -47,7 +48,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
   // Init map once
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || mapError) return;
 
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
@@ -56,6 +57,11 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       style: "mapbox://styles/mapbox/light-v11",
       center: BASEL_CENTER,
       zoom: 13,
+    });
+
+    map.on('error', (e) => {
+      console.warn("Mapbox error:", e);
+      setMapError(true);
     });
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
@@ -214,6 +220,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
     const map = mapRef.current;
     if (!map || !onAreaSearch) return;
     const bounds = map.getBounds();
+    if (!bounds) return;
     onAreaSearch({
       north: bounds.getNorth(),
       south: bounds.getSouth(),
@@ -226,7 +233,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   return (
     <div className="relative w-full h-full min-h-[400px]">
       {/* Category filter chips */}
-      {enhanced && (
+      {enhanced && !mapError && (
         <div className="absolute top-3 left-3 right-12 z-10 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
           {CATEGORY_CHIPS.map((chip) => (
             <button
@@ -245,10 +252,29 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       )}
 
       {/* Map container */}
-      <div ref={containerRef} className="w-full h-full min-h-[400px] rounded-card overflow-hidden" />
+      <div ref={containerRef} className={`w-full h-full min-h-[400px] rounded-card overflow-hidden ${mapError ? 'hidden' : ''}`} />
+
+      {/* Fallback Error UI */}
+      {mapError && (
+        <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center p-6 text-center bg-s-bg-sunken dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5">
+          <MapPin className="w-10 h-10 text-s-coral mb-3 opacity-80" />
+          <h3 className="font-heading text-lg font-semibold text-s-ink dark:text-s-dm-text mb-1">Karte nicht verfügbar</h3>
+          <p className="text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 mb-4 max-w-sm">
+            Die interaktive Karte kann momentan nicht geladen werden.
+          </p>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Basel,+Switzerland"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-s-coral hover:bg-s-coral-hover text-white text-sm font-medium rounded-pill shadow-warm-sm transition-colors"
+          >
+            In Google Maps öffnen
+          </a>
+        </div>
+      )}
 
       {/* "In diesem Bereich suchen" floating button */}
-      {enhanced && showAreaSearch && onAreaSearch && (
+      {enhanced && showAreaSearch && onAreaSearch && !mapError && (
         <button
           onClick={handleAreaSearch}
           className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-4 py-2.5 rounded-pill bg-white text-s-ink text-sm font-medium shadow-warm-lg border border-s-ink/10 hover:bg-s-bg-surface transition-colors"

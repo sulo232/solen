@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import SalonCard from "@/components/SalonCard";
 import CategoryTree from "@/components/ui/CategoryTree";
 import QuickPreviewSheet from "@/components/ui/QuickPreviewSheet";
-import FilterBar from "@/components/FilterBar";
+import SearchFilterBar from "@/components/SearchFilterBar";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { Search } from "lucide-react";
@@ -85,8 +85,8 @@ export default function TreatmentsClient() {
   return (
     <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg relative overflow-x-hidden">
       <BlobBackground zone={2} />
-      {/* FilterBar */}
-      <FilterBar />
+      {/* SearchFilterBar */}
+      <SearchFilterBar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}

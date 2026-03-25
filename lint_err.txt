@@ -1,0 +1,7 @@
+
+> solen@0.1.0 lint
+> next lint
+
+Cannot read config file: C:\Users\sulod\solen\node_modules\eslint-config-next\index.js
+Error: Cannot find module 'C:\Users\sulod\solen\node_modules\@typescript-eslint\eslint-plugin\dist\index.js'
+Referenced from: C:\Users\sulod\solen\node_modules\eslint-config-next\core-web-vitals.js

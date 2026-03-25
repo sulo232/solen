@@ -108,7 +108,7 @@ solen/
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
 - **Loading**: Use `<Skeleton variant="card" />` for full-page loading states. Use `<Spinner>` only for inline/button loading.
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
-- **Mobile nav**: Bottom nav uses `<ExpandableNavTabs>` (from `expandable-tabs.tsx`). Hidden on desktop. Returns null on dashboard pages.
+- **Mobile nav**: Single top bar architecture. Hamburger menu contains all navigation items including those previously in a bottom bar. Bottom navigation is **retired** to maximize screen real estate.
 - **Empty states**: Use `<EmptyState>` with optional `illustration` prop (`"no-results"` or `"coming-soon"`).
 - **Social proof**: `<SocialProofStrip>` between hero and content. `<TrustBadges>` in footer.
 - **Dashboard sidebar**: Animated `<Sidebar>` from `sidebar.tsx` — collapses to 60px icons, expands on hover.
@@ -352,6 +352,10 @@ Before writing `import Foo from "@/components/Foo"`:
 ls -la components/Foo.tsx  # Must return the file, not "No such file"
 ```
 
+### Rule 1b: THIRD-PARTY FALLBACKS (MANDATORY)
+> **INCIDENT**: The Mapbox MapView broke production when the API key was missing or connection failed, leaving a blank gap.
+- **ALWAYS** implement generic text/link fallback UI states for third-party widgets (e.g., Maps, Video players) in case of missing API keys, rate limits, or network failures. Never let a missing API token cause a blank screen or crash.
+
 ### Rule 2: VERIFY API ROUTES EXIST BEFORE CALLING THEM
 Before writing `fetch("/api/some-endpoint")`:
 1. **Check** if `app/api/some-endpoint/route.ts` exists
@@ -472,6 +476,11 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 > This codebase requires strict enforcement of Rate Limiting, Supabase RLS policies, feature flags, audit logging, and payload validation (Zod). All API routes must implement this middleware-like stack.
 > Read `_rules/SECURITY_RULES.md` before making ANY route/API modification.
 
+### Rule 12b: MANDATORY RLS INSERTS
+> **INCIDENT**: Users couldn't submit new reviews because the RLS INSERT policy was missing on the table itself, even though the API route was authenticated.
+- **ALWAYS** configure RLS `INSERT` policies when creating new tables that take user submissions (e.g., reviews).
+- If building UI that displays averages (like rating), **always** establish a minimum data threshold (e.g. 5+ reviews) before calculating/displaying the average to avoid statistical insignificance pointing out 5-star ratings with 1 review.
+
 ### Rule 13: VERIFY YOUR BRANCH NAME BEFORE WORKING
 
 > **INCIDENT**: On 2026-03-18, a parallel session agent was told to create `moat/session2` but ended up on `moat/session3` (created by another agent running in parallel). All Session 2 commits landed on the wrong branch, causing confusion during merge.
@@ -499,6 +508,15 @@ After ALL phases complete:
 3. Minor UI bugs → fix immediately
 4. Major design issues → STOP and ask user
 
+### Rule 15: EMPTY STATES ALWAYS USE `<EmptyState>`
+
+> **CONTEXT**: On 2026-03-25, an audit found raw oversized emojis used as empty states ("Noch keine Salons 🥲"), which violates the UI_RULES ban on functional emojis and looks unpolished.
+
+**Rules:**
+1. **NEVER** build custom empty states with raw text and emojis.
+2. **ALWAYS** use the `<EmptyState>` component with an appropriate `illustration` or standard Lucide icon.
+3. Empty state messaging must be human, empathetic, and professional (no giant smiley faces).
+
 ---
 
 ## 12. 📋 ROADMAP CREATION STANDARDS (MANDATORY FOR ALL ROADMAPS)
@@ -513,3 +531,66 @@ After ALL phases complete:
 > ➡️ **Moved to `_rules/UI_RULES.md`**
 > All legacy Tailwind color tokens (like `text-dark`, `bg-black`, standard shapes) are strictly banned. Everything related to visual frontend modifications must strictly obey the design tokens architecture (e.g., `s-ink`, `rounded-card`, `rounded-blob-a`).
 > **Before writing ANY UI code, you MUST check `_rules/UI_RULES.md`.** It acts as the single source of truth for all frontend consistency logic.
+
+---
+
+## 14. 🗺️ ROUTING RULES (MANDATORY)
+
+### Rule 32: ONE DISCOVERY PAGE — NO PARALLEL CATEGORY ROUTES
+
+> **INCIDENT**: `/discover/nails` existed as a separate page with its own layout, fragmenting navigation. Users switching categories had to fully leave the page, breaking the editorial flow of the discovery experience.
+
+- The discovery experience MUST live at a single route: `/[locale]/discover`.
+- **NEVER** create `/[locale]/discover/[category-name]` as an independent page with its own layout.
+- Category separation is handled via `?category=VALUE` query params + in-place tab switching via `CategoryTabBar.tsx`.
+- If a category needs special content sections, extend `discover/page.tsx` WITHIN the same page — do not create a new route.
+- Adding a new beauty vertical? Add a tab to `DISCOVERY_CATEGORIES` in `components/discovery/CategoryTabBar.tsx` — NOT a new route.
+- Old category-specific discovery routes MUST redirect using `permanentRedirect()` → `/discover?category=X`.
+
+```bash
+# Verify no parallel category discovery routes exist:
+ls app/[locale]/discover/
+# Expected: page.tsx, error.tsx, [id]/ only.
+# Any other named subdirectory (nails/, hair/, makeup/, etc.) = Rule 32 violation.
+```
+
+### Rule 33: ROUTER REFRESH FOR COOKIE PREFERENCES
+> **INCIDENT**: The language toggle only pushed the URL but did not trigger server-side re-renders, leaving the user with mixed languages.
+- When updating structural user preferences stored in cookies (like language or theme) that affect Server Components, you MUST call `router.refresh()` alongside `router.push(newPath)` to force Next.js to reconstruct the server UI with the new context.
+
+---
+
+## 15. 🌍 INTERNATIONALISATION (I18N) STANDARDS (MANDATORY)
+
+> **CONTEXT**: On 2026-03-25, an audit revealed that 90% of the UI remained in German when switching to English, internal links reverted to `/de/`, and layouts broke because German words are longer than English words. These rules prevent i18n regressions.
+
+### Rule 33: NO HARDCODED STRINGS IN UI
+- **NEVER** hardcode user-facing text (e.g., `Startseite`, `Buchen`).
+- **ALWAYS** use `next-intl`'s `useTranslations()` or `getTranslations()`.
+- Untranslated strings should fail the build or trigger a linter warning.
+- Ensure the Cookie Banner, 404 pages, and all Layout components use translation contexts.
+
+### Rule 34: LOCALE-AWARE ROUTING ONLY
+- **NEVER** construct URLs manually with hardcoded locales (e.g., `<a href="/de/partner">`).
+- **ALWAYS** use the `<Link>` component from the `next-intl/navigation` routing configuration.
+- **NEVER** use standard `next/link` or generic `<a>` tags for internal navigation.
+
+### Rule 35: FLUID LAYOUTS FOR TEXT CONTAINERS
+- **NEVER** use fixed-width text containers (e.g., `w-48`, `w-64`) that assume English or German word lengths.
+- **ALWAYS** use padding (`p-4`, `px-6`) and allow containers to size fluidly, up to a `max-w-*`.
+- **Reasoning**: German copy is typically 30% longer than English and features extensive compound words. Fixed widths clip translations.
+
+### Rule 36: STYLED LOCALE-AWARE 404 PAGES
+- The `not-found.tsx` component MUST adhere to the **Zone 1** or **Zone 3** rules in `UI_RULES.md`.
+### Rule 37: FEATURE PROMPT COPY MUST BE TRANSLATED
+- When a feature request includes specific German copy (e.g., "Teile deine Präferenzen"), **NEVER** hardcode it into the component.
+- **ALWAYS** treat it as a placeholder for a translation key and add it to the `messages/de.json`, `en.json`, `fr.json`, and `it.json` files.
+- Feature roadmaps must explicitly include a step to add these translation keys.
+
+### Rule 38: FEATURE HIDING VIA FEATURE FLAGS
+- When a feature (like a category or a popup) needs to be "removed for now" but the backend remains, **ALWAYS** use `lib/feature-flags.ts` (or equivalent boolean toggles) instead of deleting the code.
+- This ensures the UI can be safely hidden without destroying the underlying infrastructure.
+
+### Rule 39: AI-GENERATED CONTENT LOCALIZATION & GROUNDING
+- **Localization:** Whenever using Gemini or other LLMs to generate user-facing copy (e.g., AI recommendations, descriptions), you **MUST** pass the current `locale` to the prompt so the output matches the UI language. Do not assume German. Hardcoded copy (e.g., "✦ Für dich") generated by the AI must map to valid `next-intl` translation keys (`t('for-you')`) or be explicitly generated in the user's language.
+- **Grounding (No Hallucinations):** For explainable AI features ("Warum?"), the LLM must be strictly prompted to *only* use provided user context (e.g., booking history) to generate reasons. Never allow the LLM to invent past interactions.

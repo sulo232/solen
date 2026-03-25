@@ -48,7 +48,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="border-2 border-dashed border-s-ink/10 dark:border-s-dm-text/10 rounded-card p-4 text-center hover:border-s-coral/30 transition-colors"
+        className="border-2 border-dashed border-s-ink/10 dark:border-s-dm-text/10 rounded-[16px] p-4 text-center hover:border-s-coral/30 transition-colors"
       >
         <Upload size={24} className="mx-auto text-s-ink/20 dark:text-s-dm-text/20 mb-2" />
         <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-3">

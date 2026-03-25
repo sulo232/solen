@@ -101,6 +101,12 @@ Before writing ANY phase:
 4. **Read `_tasks/completed/`** for past decisions that affect the new feature
 5. **Verify all imports/components/APIs** referenced in the roadmap actually exist
 
+### R11: STRICT ZONE COMPLIANCE FOR NEW STEPS
+If a roadmap adds a new step to an existing flow (e.g., adding a preferences step to the booking flow):
+1. **Identify the Zone** of the existing flow (e.g., Booking Flow = Zone 3).
+2. **Explicitly state the Zone constraints** in the roadmap phase (e.g., "This is Zone 3. DO NOT use glassmorphism. DO NOT use entry animations.").
+3. Failing to document the Zone constraints in the roadmap will lead to degraded, inconsistent UI.
+
 
 ## 9. Spec → Roadmap Fidelity Rules (MANDATORY)
 

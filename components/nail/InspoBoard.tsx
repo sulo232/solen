@@ -99,7 +99,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
       <div className="absolute inset-0 bg-s-ink/40 dark:bg-s-dm-bg/60" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-lg max-h-[80vh] bg-white dark:bg-s-dm-surface rounded-t-[12px] sm:rounded-card shadow-warm-lg flex flex-col overflow-hidden">
+      <div className="relative w-full sm:max-w-lg max-h-[80vh] bg-white dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5 dark:border-s-dm-text/10">
           <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("board_title")}</h3>
@@ -112,10 +112,10 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto border-b border-s-ink/5 dark:border-s-dm-text/10 scrollbar-hide">
           <button
             onClick={() => setActiveBoard(null)}
-            className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors ${
+            className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors ${
               activeBoard === null
                 ? "bg-s-coral text-white border-s-coral"
-                : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60"
+                : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60 hover:brightness-[1.06]"
             }`}
           >
             {t("board_all")}
@@ -124,10 +124,10 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
             <button
               key={b.id}
               onClick={() => setActiveBoard(b.id)}
-              className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors ${
+              className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors ${
                 activeBoard === b.id
                   ? "bg-s-coral text-white border-s-coral"
-                  : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60"
+                  : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60 hover:brightness-[1.06]"
               }`}
             >
               {b.name} ({b.image_count})
@@ -151,7 +151,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               className="flex-1 text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-xs px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white transition-all">
+            <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-all">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} className="text-xs text-s-ink/40">
@@ -196,7 +196,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5 dark:border-s-dm-text/10">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-all"
+              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-all"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

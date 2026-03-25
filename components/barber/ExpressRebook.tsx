@@ -126,7 +126,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
     .join(" + ") || lastCut.service_name;
 
   return (
-    <div className="rounded-card bg-white dark:bg-s-dm-surface shadow-card p-4 border border-s-ink/5 dark:border-s-dm-text/10">
+    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface shadow-warm-xl p-4 border border-s-ink/5 dark:border-s-dm-text/10">
       <div className="flex items-start gap-3">
         <div className="p-2 rounded-full bg-s-coral/10 shrink-0">
           <Scissors size={18} className="text-s-coral" />
@@ -139,7 +139,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           {step === "idle" && (
             <button
               onClick={handleRebook}
-              className="mt-3 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover transition-all"
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-all"
             >
               <RefreshCw size={16} />
               Gleich nochmal buchen
@@ -165,7 +165,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
               </div>
               <button
                 onClick={handleConfirm}
-                className="w-full rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover transition-all"
+                className="w-full rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-all"
               >
                 Bestätigen
               </button>

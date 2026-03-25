@@ -44,6 +44,7 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
     // Set cookie so middleware remembers the choice
     document.cookie = `NEXT_LOCALE=${newLocale};path=/;max-age=31536000`;
     router.push(newPath);
+    router.refresh();
     setOpen(false);
   };
 
