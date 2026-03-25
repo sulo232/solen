@@ -1089,3 +1089,36 @@ export interface SalonDraft {
   updated_at: string;
 }
 
+// ---------------------------------------------------------------------------
+// Filter System Types (added: roadmap-filter-pills-A-infrastructure, Phase 1)
+// ---------------------------------------------------------------------------
+
+export type FilterZone = 1 | 2 | 3 | 4;
+
+export interface FilterPill {
+  id: string;          // e.g. "nails", "hair", "lashes"
+  label: string;       // Display label (translated)
+  icon?: string;       // Optional lucide icon name
+  subFilters?: FilterSubItem[];
+}
+
+export interface FilterSubItem {
+  id: string;
+  label: string;
+  count?: number;      // Optional result count badge
+}
+
+export interface ActiveFilter {
+  pillId: string;
+  subId: string;
+  label: string;       // For the removable chip display
+}
+
+export interface FilterBarProps {
+  pills: FilterPill[];
+  activeFilters: ActiveFilter[];
+  onFilterChange: (filters: ActiveFilter[]) => void;
+  zone: FilterZone;    // MANDATORY — per UI_RULES Rule 31
+  className?: string;
+}
+
