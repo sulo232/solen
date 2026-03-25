@@ -63,10 +63,12 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
   const totalDuration = services.reduce((s, svc) => s + svc.duration_minutes, 0) + activeAddons.reduce((s, a) => s + a.duration_minutes, 0);
 
   return (
-    <div className="rounded-card border border-s-ink/5 bg-white dark:bg-s-dm-surface p-4 space-y-4">
-      <div className="flex items-center gap-2">
-        <ShoppingBag size={16} className="text-s-coral" />
-        <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">Warenkorb</h3>
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4"
+      style={{ boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
+      {/* P6 — Header eyebrow */}
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">Warenkorb</p>
+        <ShoppingBag size={13} className="text-s-ink/25 dark:text-s-dm-text/25" />
       </div>
 
       {/* Services */}
@@ -74,77 +76,94 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
         <div key={svc.id} className="space-y-2">
           <div className="flex justify-between text-sm">
             <div>
-              <p className="font-medium text-s-ink dark:text-s-dm-text">
+              <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
                 {locale === "en" ? svc.name_en : svc.name_de}
               </p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{svc.duration_minutes} Min</p>
+              <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">{svc.duration_minutes} Min</p>
             </div>
-            <span className="data-text font-medium text-s-ink dark:text-s-dm-text">
+            <span className="data-text font-bold text-base text-s-ink dark:text-s-dm-text">
               {formatCurrency(svc.price, locale)}
             </span>
           </div>
 
-          {/* Addons for this service */}
+          {/* P7 — Addon checkboxes (custom coral checkbox) */}
           {addons[svc.id]?.map(addon => (
-            <label key={addon.id} className="flex items-center gap-2 text-sm cursor-pointer pl-2">
-              <input
-                type="checkbox"
-                checked={selectedAddons.has(addon.id)}
-                onChange={() => toggleAddon(addon.id)}
-                className="w-3.5 h-3.5 rounded accent-s-coral"
-              />
-              <Plus size={10} className="text-s-ink/30" />
-              <span className="text-s-ink/70 dark:text-s-dm-text/70 flex-1">{addon.name}</span>
-              <span className="text-xs data-text text-s-ink/50 dark:text-s-dm-text/50">
-                +{formatCurrency(addon.price, locale)} · {addon.duration_minutes} Min
-              </span>
+            <label key={addon.id}
+              className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-s-bg-base dark:hover:bg-s-dm-bg transition-colors"
+              style={{ border: selectedAddons.has(addon.id) ? "1px solid rgba(232,98,74,.25)" : "1px solid rgba(26,18,9,.06)" }}>
+              {/* Custom checkbox */}
+              <div className={`w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0 transition-all ${
+                selectedAddons.has(addon.id)
+                  ? "bg-s-coral border-s-coral"
+                  : "border-s-ink/15 dark:border-white/15 bg-white dark:bg-s-dm-surface"
+              }`}>
+                {selectedAddons.has(addon.id) && (
+                  <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                    <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </div>
+              <input type="checkbox" checked={selectedAddons.has(addon.id)} onChange={() => toggleAddon(addon.id)} className="sr-only" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{addon.name}</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/35 dark:text-s-dm-text/35">{addon.duration_minutes} Min</p>
+              </div>
+              <span className="text-xs font-heading font-bold text-s-ink/70 dark:text-s-dm-text/70">+{formatCurrency(addon.price, locale)}</span>
             </label>
           ))}
         </div>
       ))}
 
       {staffName && (
-        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Stylist: {staffName}</p>
+        <div className="flex items-center gap-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50">
+          <span className="w-4 h-4 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg flex items-center justify-center text-[10px]">✂</span>
+          {staffName}
+        </div>
       )}
 
-      {/* Gift card & referral code */}
-      <div className="space-y-2 pt-2 border-t border-s-ink/5 dark:border-white/5">
-        <div className="flex items-center gap-2">
-          <Gift size={12} className="text-s-ink/30" />
+      {/* P8 — Gift card & referral code inputs */}
+      <div className="space-y-2 pt-3 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35">Rabatt-Codes</p>
+        <div className="relative">
+          <Gift size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
           <input
             type="text"
             value={giftCardCode}
             onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
             placeholder="Gutschein-Code"
-            className="flex-1 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-xs font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <Tag size={12} className="text-s-ink/30" />
+        <div className="relative">
+          <Tag size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
           <input
             type="text"
             value={referralCode}
             onChange={e => setReferralCode(e.target.value.toUpperCase())}
             placeholder="Empfehlungs-Code"
-            className="flex-1 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-xs text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-xs font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
       </div>
 
-      {/* Total */}
-      <div className="flex justify-between items-center pt-2 border-t border-s-ink/5 dark:border-white/5">
+      {/* P9 — Total row */}
+      <div className="flex justify-between items-center pt-3 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
         <div>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Total · {totalDuration} Min</p>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35 dark:text-s-dm-text/35">Gesamt</p>
+          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{totalDuration} Minuten</p>
         </div>
-        <span className="data-text font-bold text-lg text-s-coral">
-          {formatCurrency(totalPrice, locale)}
-        </span>
+        <div className="text-right">
+          <span className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">{formatCurrency(totalPrice, locale)}</span>
+          <p className="text-[9px] text-s-ink/35 dark:text-s-dm-text/35 mt-0.5">inkl. MwSt.</p>
+        </div>
       </div>
 
+      {/* P9 — CTA */}
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
       >
         {checking && <Spinner size="sm" invert />}
         Bezahlen & Buchen
