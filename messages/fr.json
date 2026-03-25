@@ -1270,5 +1270,16 @@
     "cat_makeup_desc": "Forfaits mariée, galerie avant/après et réservations événements.",
     "cat_waxing_title": "Épilation",
     "cat_waxing_desc": "Tarifs par zone, rappels de traitement et intervalles."
+  },
+  "filters": {
+    "filter": "Filtre",
+    "close": "Fermer",
+    "reset": "Réinitialiser",
+    "apply": "Appliquer",
+    "closeFilter": "Fermer le filtre",
+    "moreFilters": "Ouvrir {count} filtres supplémentaires",
+    "more": "plus",
+    "removeFilter": "Retirer le filtre {name}",
+    "clearAll": "Tout effacer"
   }
 }

@@ -1270,5 +1270,16 @@
     "cat_makeup_desc": "Pacchetti sposa, galleria prima/dopo e prenotazioni eventi.",
     "cat_waxing_title": "Ceretta",
     "cat_waxing_desc": "Prezzi per zona, promemoria trattamenti e intervalli."
+  },
+  "filters": {
+    "filter": "Filtro",
+    "close": "Chiudi",
+    "reset": "Reimposta",
+    "apply": "Applica",
+    "closeFilter": "Chiudi filtro",
+    "moreFilters": "Apri {count} altri filtri",
+    "more": "altri",
+    "removeFilter": "Rimuovi filtro {name}",
+    "clearAll": "Rimuovi tutto"
   }
 }

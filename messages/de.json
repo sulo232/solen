@@ -1270,5 +1270,16 @@
     "cat_makeup_desc": "Bridal-Packages, Vorher/Nachher-Galerie und Event-Buchungen.",
     "cat_waxing_title": "Waxing",
     "cat_waxing_desc": "Zonen-basierte Preise, Behandlungs-Erinnerungen und Intervalle."
+  },
+  "filters": {
+    "filter": "Filter",
+    "close": "Schliessen",
+    "reset": "Zurücksetzen",
+    "apply": "Anwenden",
+    "closeFilter": "Filter schliessen",
+    "moreFilters": "{count} weitere Filter öffnen",
+    "more": "weitere",
+    "removeFilter": "Filter {name} entfernen",
+    "clearAll": "Alle entfernen"
   }
 }

@@ -1270,5 +1270,16 @@
     "cat_makeup_desc": "Bridal packages, before/after gallery and event bookings.",
     "cat_waxing_title": "Waxing",
     "cat_waxing_desc": "Zone-based pricing, treatment reminders and intervals."
+  },
+  "filters": {
+    "filter": "Filter",
+    "close": "Close",
+    "reset": "Reset",
+    "apply": "Apply",
+    "closeFilter": "Close filter",
+    "moreFilters": "Open {count} more filters",
+    "more": "more",
+    "removeFilter": "Remove filter {name}",
+    "clearAll": "Clear all"
   }
 }
