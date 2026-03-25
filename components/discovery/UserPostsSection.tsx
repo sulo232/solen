@@ -39,7 +39,7 @@ export default function UserPostsSection({ userId }: UserPostsSectionProps) {
   return (
     <div className="grid grid-cols-3 gap-2">
       {posts.map((post) => (
-        <div key={post.id} className="relative rounded-card overflow-hidden bg-s-ink/5 dark:bg-white/5 aspect-square group">
+        <div key={post.id} className="relative rounded-[16px] overflow-hidden bg-s-ink/5 dark:bg-white/5 aspect-square group">
           {post.image_url ? (
             <Image src={post.image_url} alt={post.style_name ?? ""} fill className="object-cover" sizes="33vw" />
           ) : (

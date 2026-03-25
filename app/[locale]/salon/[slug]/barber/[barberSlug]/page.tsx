@@ -207,7 +207,7 @@ export default function BarberProfilePage() {
         {portfolio.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pb-8">
             {portfolio.map((img) => (
-              <div key={img.id} className="relative aspect-square rounded-card overflow-hidden group">
+              <div key={img.id} className="relative aspect-square rounded-[16px] overflow-hidden group">
                 <Image
                   src={img.image_url}
                   alt={img.caption ?? "Portfolio"}

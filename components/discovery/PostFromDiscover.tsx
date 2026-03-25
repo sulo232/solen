@@ -164,7 +164,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div className="absolute inset-0 bg-s-ink/40" onClick={() => setOpen(false)} />
           <div
-            className="relative w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[16px] sm:rounded-card p-5 max-h-[85vh] overflow-y-auto"
+            className="relative w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[16px] sm:rounded-[16px] p-5 max-h-[85vh] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label={t.newPost}
@@ -186,13 +186,13 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 <div className="flex gap-2">
                   <button
                     onClick={() => setMode("photo")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${mode === "photo" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
                   >
                     <Upload size={14} /> {t.photo}
                   </button>
                   <button
                     onClick={() => setMode("tiktok")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${mode === "tiktok" ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60"}`}
                   >
                     <LinkIcon size={14} /> {t.tiktok}
                   </button>

@@ -19,7 +19,7 @@ export default function ProductRecommendations({ products, locale }: ProductReco
 
   return (
     <div className="mt-4 px-1">
-      <div className="p-4 rounded-card bg-s-amber/5 dark:bg-s-dm-surface border border-s-amber/10 dark:border-s-amber/10">
+      <div className="p-4 rounded-[16px] bg-s-amber/5 dark:bg-s-dm-surface border border-s-amber/10 dark:border-s-amber/10">
         <div className="flex items-center gap-2 mb-3">
           <ShoppingBag size={14} className="text-s-amber" />
           <span className="text-xs font-medium text-s-amber">{TITLES[locale] ?? TITLES.en}</span>

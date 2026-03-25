@@ -78,7 +78,7 @@ export default function GiftCardPage() {
           <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-4">
             {formatCurrency(amount / 100)} für {recipientName}
           </p>
-          <div className="bg-white dark:bg-s-dm-surface rounded-card p-4 border border-s-ink/5 dark:border-white/5">
+          <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-4 border border-s-ink/5 dark:border-white/5">
             <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Code</p>
             <p className="font-mono text-lg font-bold text-s-coral">{giftCode}</p>
           </div>
@@ -96,20 +96,20 @@ export default function GiftCardPage() {
           <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{salon.name}</p>
         </div>
 
-        <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-card p-5 space-y-4">
+        <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-card p-5 space-y-4">
           {/* Amount */}
           <div>
             <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2 block">Betrag</label>
             <div className="grid grid-cols-4 gap-2 mb-2">
               {AMOUNT_PRESETS.map((a) => (
                 <button key={a} onClick={() => { setSelectedAmount(a); setUseCustom(false); }}
-                  className={`py-2.5 rounded-btn text-sm font-medium transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
+                  className={`py-2.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${!useCustom && selectedAmount === a ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral"}`}>
                   {(a / 100).toFixed(0)}
                 </button>
               ))}
             </div>
             <button onClick={() => setUseCustom(true)}
-              className={`w-full py-2 rounded-btn text-xs font-medium transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
+              className={`w-full py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${useCustom ? "bg-s-coral/10 text-s-coral border border-s-coral/20" : "border border-s-ink/10 dark:border-white/10 text-s-ink/50 dark:text-s-dm-text/50"}`}>
               Eigener Betrag
             </button>
             {useCustom && (
@@ -139,7 +139,7 @@ export default function GiftCardPage() {
           </div>
 
           {/* Preview */}
-          <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-4 text-center">
+          <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 text-center">
             <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-wider mb-2">Vorschau</p>
             <Gift size={20} className="text-s-coral mx-auto mb-1" />
             <p className="font-heading font-bold text-lg text-s-coral data-text">{formatCurrency(amount / 100)}</p>

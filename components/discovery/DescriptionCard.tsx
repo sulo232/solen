@@ -33,7 +33,7 @@ export default function DescriptionCard({ item, locale }: DescriptionCardProps) 
 
   return (
     <div className="mt-4 px-1">
-      <div className="p-4 rounded-card bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+      <div className="p-4 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
         {/* AI-generated tag */}
         <div className="flex items-center gap-1.5 mb-3">
           <Sparkles size={12} className="text-violet-400" />

@@ -44,7 +44,7 @@ export default function SalonScript({ item, locale }: SalonScriptProps) {
   };
 
   return (
-    <div className="p-4 rounded-card bg-s-coral/5 border border-s-coral/10">
+    <div className="p-4 rounded-[16px] bg-s-coral/5 border border-s-coral/10">
       <div className="flex items-center gap-2 mb-2">
         <Scissors size={14} className="text-s-coral" />
         <span className="text-xs font-medium text-s-coral">

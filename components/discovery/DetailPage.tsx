@@ -86,7 +86,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="relative rounded-card overflow-hidden bg-s-ink"
+        className="relative rounded-[16px] overflow-hidden bg-s-ink"
       >
         {isVideo && videoId ? (
           <div className="relative w-full aspect-[9/16] max-h-[80vh] bg-s-ink">
@@ -208,7 +208,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
             {dt.cutGuide}
           </button>
           {showCutGuide && (
-            <div className="mt-2 p-4 rounded-card bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+            <div className="mt-2 p-4 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
               <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-mono leading-relaxed whitespace-pre-line">
                 {item.cut_guide}
               </p>

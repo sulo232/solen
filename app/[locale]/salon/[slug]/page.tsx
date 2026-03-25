@@ -930,7 +930,7 @@ export default function SalonProfilePage() {
               <div className="flex gap-3 my-4">
                 <Link
                   href={`/${locale}/salon/${slug}/gift-card`}
-                  className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors"
+                  className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors"
                 >
                   <Gift size={18} className="text-s-coral shrink-0" />
                   <div>
@@ -940,7 +940,7 @@ export default function SalonProfilePage() {
                 </Link>
                 <Link
                   href={`/${locale}/salon/${slug}/packages`}
-                  className="flex-1 flex items-center gap-3 p-3 rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:bg-s-bg-surface dark:hover:bg-s-dm-raised transition-colors"
+                  className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:bg-s-bg-surface dark:hover:bg-s-dm-raised transition-colors"
                 >
                   <Package size={18} className="text-s-blue shrink-0" />
                   <div>
@@ -1015,7 +1015,7 @@ export default function SalonProfilePage() {
 
                     <div className="flex flex-col gap-4">
                       {reviewsVisible.map((rev) => (
-                        <div key={rev.id} className="border border-s-ink/5 dark:border-white/5 rounded-card p-4 dark:bg-s-dm-surface">
+                        <div key={rev.id} className="border border-s-ink/5 dark:border-white/5 rounded-[16px] p-4 dark:bg-s-dm-surface">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
                               <div className="w-7 h-7 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden flex items-center justify-center text-xs text-s-ink/40 dark:text-s-dm-text/40">
@@ -1132,7 +1132,7 @@ export default function SalonProfilePage() {
                   <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-s-coral" />Standort
                   </h2>
-                  <div className="h-48 rounded-card overflow-hidden">
+                  <div className="h-48 rounded-[16px] overflow-hidden">
                     <MapView salons={[mapSalon]} />
                   </div>
                   <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
@@ -1167,7 +1167,7 @@ export default function SalonProfilePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setCalendarOpen(true)}
-                        className="w-full py-4 rounded-card bg-s-coral text-white font-body font-semibold text-base hover:bg-s-coral/90 transition-colors shadow-warm-md"
+                        className="w-full py-4 rounded-[16px] bg-s-coral text-white font-body font-semibold text-base hover:bg-s-coral/90 transition-colors shadow-warm-md"
                       >
                         Jetzt buchen
                       </motion.button>
@@ -1230,7 +1230,7 @@ export default function SalonProfilePage() {
                   alt="Review Foto"
                   width={1200}
                   height={800}
-                  className="rounded-card object-contain w-full h-auto max-h-[80vh]"
+                  className="rounded-[16px] object-contain w-full h-auto max-h-[80vh]"
                 />
               </motion.div>
             </motion.div>

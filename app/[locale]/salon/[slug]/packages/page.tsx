@@ -103,7 +103,7 @@ export default function SalonPackagesPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="bg-white dark:bg-s-dm-surface rounded-card shadow-card p-5"
+                  className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-card p-5"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
@@ -129,7 +129,7 @@ export default function SalonPackagesPage() {
                     </span>
                   </div>
 
-                  <button className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium">
+                  <button className="w-full py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em]">
                     {l.buy}
                   </button>
                 </motion.div>

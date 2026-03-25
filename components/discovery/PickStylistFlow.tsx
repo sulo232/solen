@@ -51,7 +51,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
     return (
       <div className="space-y-2">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-16 rounded-card bg-s-ink/5 dark:bg-white/5 animate-pulse" />
+          <div key={i} className="h-16 rounded-[16px] bg-s-ink/5 dark:bg-white/5 animate-pulse" />
         ))}
       </div>
     );
@@ -65,7 +65,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
         {/* "Anyone" option */}
         <button
           onClick={() => onSelect(null)}
-          className="w-full flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors text-left"
+          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors text-left"
         >
           <div className="w-10 h-10 rounded-full bg-s-ink/5 dark:bg-white/5 flex items-center justify-center text-s-ink/30 dark:text-s-dm-text/30">
             <Star size={16} />
@@ -79,7 +79,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
           <div key={member.id}>
             <button
               onClick={() => setExpanded(expanded === member.id ? null : member.id)}
-              className="w-full flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors text-left"
             >
               <div className="w-10 h-10 rounded-full bg-s-ink/5 dark:bg-white/5 overflow-hidden shrink-0">
                 {member.avatar_url ? (

@@ -46,7 +46,7 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
       {loading ? (
         <div className="grid grid-cols-2 gap-3">
           {[0, 1].map((i) => (
-            <div key={i} className="aspect-[9/16] rounded-card bg-s-ink/5 dark:bg-white/5 shimmer" />
+            <div key={i} className="aspect-[9/16] rounded-[16px] bg-s-ink/5 dark:bg-white/5 shimmer" />
           ))}
         </div>
       ) : (
@@ -55,7 +55,7 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
             const vid = extractVideoId(item.tiktok_url);
             if (!vid) return null;
             return (
-              <div key={item.id} className="rounded-card overflow-hidden border border-s-ink/5 dark:border-white/5">
+              <div key={item.id} className="rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
                 <div className="aspect-[9/16] relative">
                   <iframe
                     src={`https://www.tiktok.com/embed/v2/${vid}?autoplay=0`}
