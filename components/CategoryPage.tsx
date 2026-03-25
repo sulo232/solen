@@ -60,41 +60,51 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-blob-d hover:rounded-blob-b blob-interactive bg-white dark:bg-s-dm-surface border border-s-ink/5 overflow-hidden hover:border-s-coral/20 hover:shadow-card transition-all opacity-80"
+      className="rounded-[20px] overflow-hidden hover:-translate-y-[3px] transition-all duration-[250ms]"
+      style={{ border: "1.5px dashed rgba(26,18,9,.12)",
+               background: "rgba(255,255,255,.55)",
+               boxShadow: "0 1px 3px rgba(26,18,9,.06)" }}
     >
-      <div className="h-36 bg-s-bg-sunken relative overflow-hidden">
+      {/* Photo */}
+      <div className="h-36 relative overflow-hidden bg-s-bg-sunken">
         {entry.photo_url ? (
-          <img src={entry.photo_url} alt={entry.name} className="w-full h-full object-cover opacity-80" />
+          <img src={entry.photo_url} alt={entry.name} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-s-ink/30">
+          <div className="w-full h-full flex items-center justify-center text-s-ink/20">
             <Building2 className="w-10 h-10" />
           </div>
         )}
-        <div className="absolute top-2 right-2 text-xs text-white px-2.5 py-0.5 rounded-full font-medium font-body bg-s-coral">
+        {/* Directory badge */}
+        <span className="absolute top-2 right-2 text-[10px] font-heading font-bold uppercase tracking-[.08em] px-2.5 py-1 rounded-btn"
+          style={{ background: "rgba(26,18,9,.55)", color: "rgba(255,255,255,.85)" }}>
           Nicht buchbar
-        </div>
+        </span>
       </div>
-      <div className="p-3">
-        <h3 className="font-heading font-medium text-s-ink text-sm leading-tight">{entry.name}</h3>
-        {entry.address && <p className="text-xs text-s-ink/50 mt-0.5 truncate font-body">{entry.address}</p>}
+
+      <div className="p-4">
+        <h3 className="font-heading font-semibold text-s-ink text-sm leading-tight mb-1">{entry.name}</h3>
+        {entry.address && <p className="text-xs text-s-ink/50 truncate font-body mb-2">{entry.address}</p>}
         {entry.google_rating != null && (
-          <div className="flex items-center gap-1 mt-1.5">
+          <div className="flex items-center gap-1 mb-3">
             <Star className="w-3 h-3 fill-s-amber text-s-amber" />
-            <span className="text-xs data-text font-medium text-s-ink/70">{entry.google_rating}</span>
+            <span className="text-xs data-text font-bold text-s-ink/70">{entry.google_rating}</span>
             {entry.google_review_count != null && entry.google_review_count > 0 && (
-              <span className="text-xs text-s-ink/40 font-body">({entry.google_review_count})</span>
+              <span className="text-xs text-s-ink/35">({entry.google_review_count})</span>
             )}
+            <span className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/30 ml-1">Google</span>
           </div>
         )}
-        <div className="flex items-center gap-1.5 mt-3 flex-wrap">
+        <div className="flex gap-2">
           {entry.phone && (
-            <a href={`tel:${entry.phone}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
-              <Phone className="w-3 h-3" />Anrufen
+            <a href={`tel:${entry.phone}`}
+              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-all">
+              <Phone className="w-3 h-3 inline mr-1" />Anrufen
             </a>
           )}
           {entry.website && (
-            <a href={entry.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2.5 py-1.5 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/5 dark:border-white/5 text-xs text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-bg-sunken dark:hover:bg-s-dm-surface font-body transition-colors">
-              <Globe className="w-3 h-3" />Website
+            <a href={entry.website} target="_blank" rel="noopener noreferrer"
+              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-all">
+              <Globe className="w-3 h-3 inline mr-1" />Website
             </a>
           )}
         </div>
