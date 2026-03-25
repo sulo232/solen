@@ -131,7 +131,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 className="object-cover w-full h-full"
               />
             ) : (
-              <span className="text-3xl font-bold text-s-ink/20 dark:text-s-dm-text/20">
+              <span className="data-text text-3xl font-bold text-s-ink/20 dark:text-s-dm-text/20">
                 {staff.name[0]}
               </span>
             )}
@@ -249,7 +249,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
                 </div>
                 <Link
                   href={`/${locale}/salon/${salonSlug}?staffId=${staff.id}&serviceId=${s.id}`}
-                  className="px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-all shadow-warm-sm"
+                  className="px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all shadow-warm-sm"
                 >
                   Buchen
                 </Link>

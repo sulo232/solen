@@ -282,7 +282,7 @@ function Step2({ phone, phoneVerified, onPhoneChange, onVerified, errors, t }: {
                 type="button"
                 onClick={sendOtp}
                 disabled={sending || !phone || phone.length < 9}
-                className="px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider disabled:opacity-40 disabled:pointer-events-none hover:bg-s-coral-hover active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow"
+                className="px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider disabled:opacity-40 disabled:pointer-events-none hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow"
               >
                 {sending ? <Spinner size="sm" invert /> : "Verifizieren"}
               </button>

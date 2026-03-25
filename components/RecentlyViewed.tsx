@@ -81,8 +81,8 @@ export default function RecentlyViewed() {
         {salons.map((salon, i) => (
           <motion.div
             key={salon.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.3 }}
             className="snap-start shrink-0"
           >

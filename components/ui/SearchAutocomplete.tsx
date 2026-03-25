@@ -286,7 +286,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     }`}
                   >
                     <span className="font-medium truncate">{result.name}</span>
-                    <span className="text-[10px] text-s-ink/30 shrink-0 ml-2 uppercase">
+                    <span className="text-[10px] text-s-ink/30 shrink-0 ml-2 uppercase tracking-[.08em]">
                       {result.category}
                     </span>
                   </button>

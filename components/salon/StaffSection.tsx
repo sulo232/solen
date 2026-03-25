@@ -73,7 +73,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             {/* Book button */}
             <button
               onClick={() => onBook?.(m.id)}
-              className="w-full mt-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:bg-s-coral-hover transition-all shadow-warm-sm"
+              className="w-full mt-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-all shadow-warm-sm"
             >
               Buchen
             </button>

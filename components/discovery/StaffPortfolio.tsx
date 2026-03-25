@@ -73,7 +73,7 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
           {onBookWith && (
             <button
               onClick={() => onBookWith(staff.id)}
-              className="text-xs px-3 py-1.5 rounded-pill bg-s-coral text-white hover:bg-s-coral-hover transition-colors"
+              className="text-xs px-3 py-1.5 rounded-pill bg-s-coral text-white hover:brightness-[1.06] transition-colors"
             >
               Book
             </button>

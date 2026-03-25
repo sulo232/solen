@@ -283,7 +283,7 @@ export default function HomePage() {
               {/* Hero CTAs — two pill buttons */}
               <motion.div variants={fadeUp} className="mt-8 flex gap-3 flex-wrap">
                 <Link href={`/${locale}/search`}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:bg-s-coral-hover hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150">
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150">
                   <Search size={15} aria-hidden="true" /> Salon finden
                 </Link>
                 <Link href={`/${locale}/last-minute`}

@@ -121,9 +121,9 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
           <motion.div
             key={currentStep}
             custom={direction}
-            initial={{ opacity: 0, x: direction * 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction * -60 }}
+            initial={{ opacity: 0, y: direction * 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: direction * -20 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             {typeof children[currentStep] === "function"

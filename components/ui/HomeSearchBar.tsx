@@ -170,7 +170,7 @@ export default function HomeSearchBar() {
 
             {/* Submit — nested inside bar */}
             <button type="submit" disabled={detecting}
-              className="shrink-0 m-2 px-5 py-3 rounded-input bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.04em] flex items-center gap-1.5 shadow-coral-glow hover:bg-s-coral-hover hover:shadow-coral-glow-hover transition-all disabled:opacity-60">
+              className="shrink-0 m-2 px-5 py-3 rounded-input bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.04em] flex items-center gap-1.5 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-all disabled:opacity-60">
               {detecting ? <Loader2 size={14} className="animate-spin" /> : <Search size={13} aria-hidden="true" />}
               {detecting ? "…" : "Suchen"}
             </button>

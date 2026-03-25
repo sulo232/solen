@@ -454,8 +454,8 @@ export default function TerminePage() {
 
           {/* ── Sidebar: Mini calendar ── */}
           <motion.aside
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.15 }}
             className="lg:w-64 shrink-0"
           >

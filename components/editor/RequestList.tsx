@@ -141,7 +141,7 @@ export default function RequestList({
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-btn transition-colors ${
                   copiedAll
                     ? "bg-s-success text-white"
-                    : "bg-s-coral text-white hover:bg-s-coral-hover"
+                    : "bg-s-coral text-white hover:brightness-[1.06]"
                 }`}
               >
                 {copiedAll ? <Check size={12} /> : <Copy size={12} />}

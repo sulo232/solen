@@ -171,7 +171,7 @@ export default function BarberProfilePage() {
         {/* Book CTA */}
         <Link
           href={`/${locale}/salon/${salonSlug}?staff=${barber.id}`}
-          className="block w-full text-center rounded-btn bg-s-coral text-white font-medium py-3 text-sm hover:bg-s-coral-hover transition-colors mb-6"
+          className="block w-full text-center rounded-btn bg-s-coral text-white font-medium py-3 text-sm hover:brightness-[1.06] transition-colors mb-6"
         >
           Bei {barber.name} buchen
         </Link>

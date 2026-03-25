@@ -100,7 +100,7 @@ export default function LoyaltyDashboardPage() {
               <button
                 onClick={handleScanSubmit}
                 disabled={!scanToken.trim()}
-                className="w-full rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-colors"
+                className="w-full rounded-btn bg-s-coral text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 transition-colors"
               >
                 Stempel vergeben
               </button>

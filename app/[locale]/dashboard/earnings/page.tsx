@@ -81,7 +81,7 @@ export default function SalonEarningsPage() {
               </div>
               <div>
                 <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-widest mb-1">Verfügbares Guthaben</p>
-                <p className="font-bold text-3xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.pending_balance, locale)}</p>
+                <p className="data-text font-bold text-3xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.pending_balance, locale)}</p>
                 <p className="text-xs text-s-ink/40 mt-1">Wird gemäss deinem Payout Schedule überwiesen.</p>
               </div>
             </motion.div>
@@ -92,7 +92,7 @@ export default function SalonEarningsPage() {
               </div>
               <div>
                 <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-widest mb-1">Total Ausbezahlt</p>
-                <p className="font-bold text-3xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.total_earnings, locale)}</p>
+                <p className="data-text font-bold text-3xl text-s-ink dark:text-s-dm-text">{formatCurrency(data.total_earnings, locale)}</p>
                 <p className="text-xs text-s-ink/40 mt-1">Summe aller bisherigen Auszahlungen.</p>
               </div>
             </motion.div>

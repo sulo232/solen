@@ -283,7 +283,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                 <button
                   onClick={handlePost}
                   disabled={posting || !tosAccepted}
-                  className="w-full py-3 rounded-btn bg-s-coral hover:bg-s-coral-hover text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-btn bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2"
                 >
                   {posting && <Loader2 size={14} className="animate-spin" />}
                   {t.post}

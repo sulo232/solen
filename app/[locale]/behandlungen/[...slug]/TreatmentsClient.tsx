@@ -115,7 +115,7 @@ export default function TreatmentsClient() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="font-display uppercase text-4xl sm:text-5xl text-s-ink dark:text-s-dm-text leading-none">
+                <h1 className="font-heading uppercase text-4xl sm:text-5xl text-s-ink dark:text-s-dm-text leading-none">
                   {pageTitle || "Behandlungen"}<span className="text-s-coral">.</span>
                 </h1>
                 {!loading && (

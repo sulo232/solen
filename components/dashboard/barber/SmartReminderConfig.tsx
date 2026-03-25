@@ -194,7 +194,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
               <button
                 onClick={() => handleSendReminder(confirmClient)}
                 disabled={sending === confirmClient.id}
-                className="flex-1 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral-hover disabled:opacity-50 transition-all"
+                className="flex-1 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 transition-all"
               >
                 {sending === confirmClient.id ? "Senden..." : "Ja, senden"}
               </button>

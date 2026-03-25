@@ -144,7 +144,7 @@ export default function Footer() {
         {/* Divider */}
         <div className="border-t border-white/10 pt-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <span className="font-display text-5xl sm:text-6xl tracking-[0.06em] uppercase text-white/90">
+            <span className="font-heading text-5xl sm:text-6xl tracking-[0.06em] uppercase text-white/90">
               so<span className="text-s-coral">.</span>len
             </span>
             <div className="text-center sm:text-right">

@@ -266,7 +266,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             href="https://www.google.com/maps/search/?api=1&query=Basel,+Switzerland"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-s-coral hover:bg-s-coral-hover text-white text-sm font-medium rounded-pill shadow-warm-sm transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-s-coral hover:brightness-[1.06] text-white text-sm font-medium rounded-pill shadow-warm-sm transition-colors"
           >
             In Google Maps öffnen
           </a>

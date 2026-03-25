@@ -148,7 +148,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
         </Link>
         <button
           onClick={() => onBook(member.id)}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:bg-s-coral-hover transition-colors"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:brightness-[1.06] transition-colors"
         >
           Buchen
         </button>

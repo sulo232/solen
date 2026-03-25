@@ -146,7 +146,7 @@ export default function NailTechProfilePage() {
           {tech.salon_slug && (
             <Link
               href={`/${locale}/salon/${tech.salon_slug}?staffId=${tech.id}`}
-              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-coral text-white font-medium text-sm hover:bg-s-coral-hover transition-colors"
+              className="mt-4 inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-colors"
             >
               <Sparkles size={16} />
               Bei {tech.name} buchen

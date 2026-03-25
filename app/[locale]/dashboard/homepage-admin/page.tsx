@@ -125,7 +125,7 @@ export default function HomepageAdminPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {saving && <Loader2 size={14} className="animate-spin" />}
               Speichern
