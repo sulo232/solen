@@ -395,7 +395,31 @@
     "package_redeem": "Redeem now",
     "package_redeemed": "Redeemed!",
     "package_no_charge": "No additional charge.",
-    "package_redeem_failed": "Redemption failed"
+    "package_redeem_failed": "Redemption failed",
+    "preferences": {
+      "title": "Share your preferences",
+      "subtitle": "Help your salon get to know you better (optional)",
+      "label_optional": "Optional",
+      "allergies_label": "Allergies",
+      "allergies_placeholder": "e.g. Latex, certain ingredients...",
+      "skin_type_label": "Skin type",
+      "skin_type_placeholder": "e.g. sensitive, dry, oily...",
+      "stylist_gender_label": "Preferred stylist gender",
+      "stylist_gender_male": "Male",
+      "stylist_gender_female": "Female",
+      "stylist_gender_no_preference": "No preference",
+      "accessibility_label": "Accessibility",
+      "accessibility_placeholder": "e.g. Wheelchair, hearing aid...",
+      "language_label": "Preferred language",
+      "language_placeholder": "e.g. German, English, French...",
+      "notes_label": "Additional requests",
+      "notes_placeholder": "Any other requests or notes...",
+      "skip": "Skip",
+      "save": "Save",
+      "saving": "Saving...",
+      "success_save": "Preferences saved",
+      "error_save": "Error saving"
+    }
   },
   "chat": {
     "send": "Send",
@@ -1333,5 +1357,10 @@
       "brows": "Brows",
       "makeup": "Makeup"
     }
+  },
+  "recommendations": {
+    "for_you": "✦ For You",
+    "why": "Why?",
+    "refresh": "Refresh Recommendations ↻"
   }
 }

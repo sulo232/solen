@@ -1333,5 +1333,10 @@
       "brows": "Sopracciglia",
       "makeup": "Trucco"
     }
+  },
+  "recommendations": {
+    "for_you": "✦ Per te",
+    "why": "Perché?",
+    "refresh": "Aggiorna raccomandazioni ↻"
   }
 }

@@ -395,7 +395,31 @@
     "package_redeem": "Utiliser maintenant",
     "package_redeemed": "Utilisé !",
     "package_no_charge": "Aucun montant supplémentaire.",
-    "package_redeem_failed": "Utilisation échouée"
+    "package_redeem_failed": "Utilisation échouée",
+    "preferences": {
+      "title": "Partagez vos préférences",
+      "subtitle": "Aidez votre salon à mieux vous connaître (facultatif)",
+      "label_optional": "Facultatif",
+      "allergies_label": "Allergies",
+      "allergies_placeholder": "p. ex. latex, certains ingrédients...",
+      "skin_type_label": "Type de peau",
+      "skin_type_placeholder": "p. ex. sensible, sèche, grasse...",
+      "stylist_gender_label": "Genre de styliste préféré",
+      "stylist_gender_male": "Masculin",
+      "stylist_gender_female": "Féminin",
+      "stylist_gender_no_preference": "Aucune préférence",
+      "accessibility_label": "Accessibilité",
+      "accessibility_placeholder": "p. ex. fauteuil roulant, appareil auditif...",
+      "language_label": "Langue préférée",
+      "language_placeholder": "p. ex. allemand, anglais, français...",
+      "notes_label": "Demandes supplémentaires",
+      "notes_placeholder": "Toute autre demande ou note...",
+      "skip": "Passer",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "success_save": "Préférences enregistrées",
+      "error_save": "Erreur lors de l'enregistrement"
+    }
   },
   "chat": {
     "send": "Envoyer",
@@ -1333,5 +1357,10 @@
       "brows": "Sourcils",
       "makeup": "Maquillage"
     }
+  },
+  "recommendations": {
+    "for_you": "✦ Pour vous",
+    "why": "Pourquoi?",
+    "refresh": "Actualiser les recommandations ↻"
   }
 }

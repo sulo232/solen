@@ -395,7 +395,31 @@
     "package_redeem": "Jetzt einlösen",
     "package_redeemed": "Eingelöst!",
     "package_no_charge": "Kein zusätzlicher Betrag fällig.",
-    "package_redeem_failed": "Einlösung fehlgeschlagen"
+    "package_redeem_failed": "Einlösung fehlgeschlagen",
+    "preferences": {
+      "title": "Teile deine Präferenzen",
+      "subtitle": "Hilf deinem Salon, dich besser kennenzulernen (optional)",
+      "label_optional": "Optional",
+      "allergies_label": "Allergien",
+      "allergies_placeholder": "z.B. Latex, bestimmte Inhaltsstoffe...",
+      "skin_type_label": "Hauttyp",
+      "skin_type_placeholder": "z.B. empfindlich, trocken, ölig...",
+      "stylist_gender_label": "Bevorzugtes Geschlecht des Stylisten",
+      "stylist_gender_male": "Männlich",
+      "stylist_gender_female": "Weiblich",
+      "stylist_gender_no_preference": "Keine Präferenz",
+      "accessibility_label": "Barrierefreiheit",
+      "accessibility_placeholder": "z.B. Rollstuhl, Hörgerät...",
+      "language_label": "Bevorzugte Sprache",
+      "language_placeholder": "z.B. Deutsch, Englisch, Französisch...",
+      "notes_label": "Weitere Wünsche",
+      "notes_placeholder": "Sonstige Wünsche oder Anmerkungen...",
+      "skip": "Überspringen",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "success_save": "Präferenzen gespeichert",
+      "error_save": "Fehler beim Speichern"
+    }
   },
   "chat": {
     "send": "Senden",
@@ -1333,5 +1357,10 @@
       "brows": "Brows",
       "makeup": "Makeup"
     }
+  },
+  "recommendations": {
+    "for_you": "✦ Für dich",
+    "why": "Warum?",
+    "refresh": "Neue Empfehlungen laden ↻"
   }
 }
