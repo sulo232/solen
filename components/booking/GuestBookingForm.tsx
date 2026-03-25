@@ -38,12 +38,18 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
   };
 
   return (
-    <div className="rounded-card border border-s-ink/5 dark:border-white/5 bg-s-bg-surface dark:bg-s-dm-surface p-4 space-y-3">
-      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Gastbuchung — deine Daten</p>
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4"
+      style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
+      <div>
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">
+          Gastbuchung
+        </p>
+        <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mt-0.5">Deine Kontaktdaten</p>
+      </div>
 
       <div>
-        <label className="flex items-center gap-2 text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-          <User size={12} /> Name *
+        <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+          <User size={10} className="inline mr-1" /> Name *
         </label>
         <input
           type="text"
@@ -52,14 +58,14 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           placeholder="Vor- und Nachname"
           aria-invalid={!!errors.name}
           aria-describedby={errors.name ? "guest-name-error" : undefined}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
         />
         {errors.name && <p id="guest-name-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
       </div>
 
       <div>
-        <label className="flex items-center gap-2 text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-          <Phone size={12} /> Telefon *
+        <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+          <Phone size={10} className="inline mr-1" /> Telefon *
         </label>
         <input
           type="tel"
@@ -68,14 +74,14 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           placeholder="+41791234567"
           aria-invalid={!!errors.phone}
           aria-describedby={errors.phone ? "guest-phone-error" : undefined}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
         />
         {errors.phone && <p id="guest-phone-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.phone}</p>}
       </div>
 
       <div>
-        <label className="flex items-center gap-2 text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-          <Mail size={12} /> E-Mail (optional)
+        <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+          <Mail size={10} className="inline mr-1" /> E-Mail (optional)
         </label>
         <input
           type="email"
@@ -84,7 +90,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
           placeholder="deine@email.ch"
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "guest-email-error" : undefined}
-          className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+          className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
         />
         {errors.email && <p id="guest-email-error" role="alert" className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
       </div>
@@ -96,9 +102,10 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
+        className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-50"
+        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 6px 20px rgba(232,98,74,.15)" }}
       >
-        Weiter zur Zahlung
+        Weiter zur Zahlung →
       </button>
     </div>
   );
