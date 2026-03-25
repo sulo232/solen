@@ -1167,7 +1167,7 @@ export default function SalonProfilePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setCalendarOpen(true)}
-                        className="w-full py-4 rounded-[16px] bg-s-coral text-white font-body font-semibold text-base hover:bg-s-coral/90 transition-colors shadow-warm-md"
+                        className="w-full py-4 rounded-[16px] bg-s-coral text-white font-body font-semibold text-base hover:brightness-[1.06] transition-colors shadow-warm-md"
                       >
                         Jetzt buchen
                       </motion.button>

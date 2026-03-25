@@ -86,7 +86,7 @@ export default function ReferralPage() {
             </div>
             <button
               onClick={copyCode}
-              className="p-3 rounded-btn bg-s-coral text-white hover:bg-s-coral/90 transition-colors"
+              className="p-3 rounded-btn bg-s-coral text-white hover:brightness-[1.06] transition-colors"
             >
               {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
             </button>

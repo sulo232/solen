@@ -105,7 +105,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
         </h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/90 transition-all"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all"
         >
           <Plus size={12} /> {pl.newPkg}
         </button>

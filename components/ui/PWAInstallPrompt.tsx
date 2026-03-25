@@ -91,7 +91,7 @@ export default function PWAInstallPrompt() {
         ) : (
           <button
             onClick={handleInstall}
-            className="mt-3 w-full py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:bg-s-coral/90 transition-colors"
+            className="mt-3 w-full py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-colors"
           >
             {t("installButton")}
           </button>

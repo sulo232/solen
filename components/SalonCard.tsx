@@ -128,7 +128,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
       <Link href={href} className="block w-full h-full group transition-all duration-[250ms]">
         {/* Cover photo */}
-        <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden">
+        <div className="relative w-full aspect-[3/2] bg-s-bg-sunken overflow-hidden rounded-t-[12px]">
           {salon.cover_photo_url ? (
             <Image
               src={salon.cover_photo_url}

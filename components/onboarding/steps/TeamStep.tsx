@@ -92,7 +92,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
         <button
           onClick={sendInvite}
           disabled={!email || sending}
-          className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-all shadow-warm-sm"
+          className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
         >
           {sending && <Spinner size="sm" invert />}
           {t("team.sendInvite")}

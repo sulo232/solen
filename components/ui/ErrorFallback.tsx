@@ -28,7 +28,7 @@ export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
         </p>
         <button
           onClick={reset}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 active:scale-[0.98] transition-all shadow-warm-sm"
+          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.98] transition-all shadow-warm-sm"
         >
           <RotateCcw size={14} />
           Nochmal versuchen

@@ -151,7 +151,7 @@ export default function GiftCardPage() {
           {error && <p className="text-xs text-s-coral">{error}</p>}
 
           <button onClick={handlePurchase} disabled={paying || amount < 500 || !recipientName.trim() || !recipientEmail.trim()}
-            className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+            className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {paying ? <Spinner size="sm" invert /> : <Send size={14} />}
             Geschenkkarte kaufen · {formatCurrency(amount / 100)}
           </button>

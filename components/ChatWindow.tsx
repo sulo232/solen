@@ -533,7 +533,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
             onKeyDown={handleKeyDown} placeholder="Nachricht schreiben…" rows={1}
             className="flex-1 resize-none px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 max-h-32 overflow-y-auto bg-white dark:bg-s-dm-surface dark:text-s-dm-text min-h-[38px]" />
           <button onClick={() => sendMessage("text")} disabled={!text.trim() || sending}
-            className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:bg-s-coral/90 transition-colors shrink-0">
+            className="p-2 rounded-full bg-s-coral text-white disabled:opacity-40 hover:brightness-[1.06] transition-colors shrink-0">
             {sending ? <Spinner size="sm" invert /> : <Send size={16} />}
           </button>
         </div>

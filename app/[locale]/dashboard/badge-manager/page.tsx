@@ -350,7 +350,7 @@ export default function BadgeManagerPage() {
         </div>
         <button
           onClick={() => setModalBadge("new")}
-          className="inline-flex items-center gap-1.5 bg-s-coral text-white rounded-btn px-4 py-2 text-sm font-medium hover:bg-s-coral/90 transition-colors shrink-0"
+          className="inline-flex items-center gap-1.5 bg-s-coral text-white rounded-btn px-4 py-2 text-sm font-medium hover:brightness-[1.06] transition-colors shrink-0"
         >
           <Plus size={15} />
           Neues Badge

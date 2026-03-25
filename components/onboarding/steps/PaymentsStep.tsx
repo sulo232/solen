@@ -140,7 +140,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-all shadow-warm-sm"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
       >
         {saving ? <Loader2 size={14} className="animate-spin" /> : null}
         {tc("save")}

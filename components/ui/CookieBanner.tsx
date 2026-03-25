@@ -90,7 +90,7 @@ export default function CookieBanner() {
             <div className="flex items-center gap-2 mt-4">
               <button
                 onClick={acceptAll}
-                className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all"
+                className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all"
                 aria-label="Cookies akzeptieren"
               >
                 Akzeptieren
@@ -163,7 +163,7 @@ export default function CookieBanner() {
             <div className="flex gap-2 mt-6">
               <button
                 onClick={saveSettings}
-                className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all"
+                className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all"
               >
                 Einstellungen speichern
               </button>

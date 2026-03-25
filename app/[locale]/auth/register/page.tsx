@@ -278,7 +278,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
       <button
         type="submit"
         disabled={!name || saving}
-        className="w-full py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+        className="w-full py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         Weiter
@@ -394,7 +394,7 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
         >
           {saving && <Spinner size="sm" invert />}
           Weiter
@@ -493,7 +493,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
+          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
           Fertig

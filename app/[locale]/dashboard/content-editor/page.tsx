@@ -110,7 +110,7 @@ function ContentField({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 hover:bg-s-coral/90 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-s-coral text-white text-xs font-medium disabled:opacity-50 hover:brightness-[1.06] transition-colors"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={12} /> : <Save size={12} />}
           {saved ? "Gespeichert" : "Speichern"}

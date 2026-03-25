@@ -93,7 +93,7 @@ export default function StaffInvitePage() {
             <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.success}</h2>
             {salonName && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-1">{salonName}</p>}
             <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{l.successDesc}</p>
-            <a href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors">
+            <a href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
               {l.goToDashboard}
             </a>
           </div>
@@ -121,7 +121,7 @@ export default function StaffInvitePage() {
             <button
               onClick={handleAccept}
               disabled={loading || !token}
-              className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-btn bg-s-coral text-white font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading && <Spinner size="sm" invert />}
               {l.accept}

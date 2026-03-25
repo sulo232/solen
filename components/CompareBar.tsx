@@ -35,7 +35,7 @@ export default function CompareBar({ salons, onRemove, onCompare }: CompareBarPr
         <button
           onClick={onCompare}
           disabled={salons.length < 2}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-semibold disabled:opacity-40 hover:bg-s-coral/90 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-semibold disabled:opacity-40 hover:brightness-[1.06] transition-colors"
         >
           Vergleichen
           <ArrowRight size={12} />

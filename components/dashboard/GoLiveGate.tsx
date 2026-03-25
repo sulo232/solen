@@ -128,7 +128,7 @@ export default function GoLiveGate() {
           className={[
             "w-full py-3 rounded-[8px] text-xs font-heading font-bold uppercase tracking-[.04em] flex items-center justify-center gap-2 transition-colors",
             status.can_go_live
-              ? "bg-s-coral text-white hover:bg-s-coral/90 cursor-pointer"
+              ? "bg-s-coral text-white hover:brightness-[1.06] cursor-pointer"
               : "bg-s-ink/5 dark:bg-white/5 text-s-ink/30 dark:text-s-dm-text/30 cursor-not-allowed",
           ].join(" ")}
         >

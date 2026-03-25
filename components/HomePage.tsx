@@ -319,7 +319,7 @@ export default function HomePage() {
             <Link key={key} href={`/${locale}/${key}`}
               className="relative aspect-square rounded-[20px] overflow-hidden group"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
-              <div className="absolute inset-0 transition-transform duration-[250ms] group-hover:scale-[1.04] group-hover:-rotate-1"
+              <div className="absolute inset-0 transition-transform duration-[250ms]"
                 style={{ background: grad }} />
               <div className="absolute inset-0 bg-gradient-to-t from-s-ink/60 to-transparent" />
               <div className="absolute bottom-0 inset-x-0 p-3">

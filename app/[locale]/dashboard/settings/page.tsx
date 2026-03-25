@@ -351,7 +351,7 @@ function SmsRemindersTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       <div className="pt-2">
         <button onClick={handleSave} disabled={saving}
-          className="px-4 py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:bg-s-coral/90 transition-colors disabled:opacity-50">
+          className="px-4 py-2 bg-s-coral text-white text-sm font-medium rounded-btn hover:brightness-[1.06] transition-colors disabled:opacity-50">
           {saving ? "Speichern…" : saved ? "Gespeichert ✓" : "Speichern"}
         </button>
       </div>

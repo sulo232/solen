@@ -304,7 +304,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
               </span>
               <Link
                 href={`/${locale}/${suggestedCategory}?q=${encodeURIComponent(query)}`}
-                className="ml-auto px-3 py-1 rounded-pill bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-colors shrink-0"
+                className="ml-auto px-3 py-1 rounded-pill bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-colors shrink-0"
                 onClick={() => setOpen(false)}
               >
                 Wechseln

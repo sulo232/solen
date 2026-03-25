@@ -104,7 +104,7 @@ export default function ReportProblemModal({
         <div onClick={(!loading) ? handleSubmit : undefined}>
           <InteractiveHoverButton
             text={loading ? "Wird gemeldet..." : "Melden"}
-            className="bg-s-coral border-none text-white hover:bg-s-coral/90"
+            className="bg-s-coral border-none text-white hover:brightness-[1.06]"
           />
         </div>
       </div>

@@ -111,7 +111,7 @@ export default function ApprovalsPage() {
                   <button
                     onClick={() => approve(salon.id)}
                     disabled={actionLoading === salon.id}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
                   >
                     <Check size={15} />
                     Genehmigen
@@ -157,7 +157,7 @@ export default function ApprovalsPage() {
               <button
                 onClick={reject}
                 disabled={!rejectReason.trim() || actionLoading === rejectModal.id}
-                className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
               >
                 Ablehnen & E-Mail senden
               </button>

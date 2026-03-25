@@ -103,7 +103,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 text-sm rounded-btn active:scale-[0.98] bg-s-coral text-white hover:bg-s-coral/90 transition-all shadow-warm-sm"
+            className="px-4 py-2 text-sm rounded-btn active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-all shadow-warm-sm"
           >
             {l.send}
           </button>

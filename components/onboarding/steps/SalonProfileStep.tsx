@@ -143,7 +143,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:bg-s-coral/90 transition-all shadow-warm-sm"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

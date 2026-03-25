@@ -921,7 +921,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
             {waitlistDone ? (
               <div className="text-center py-4">
                 <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Du wirst benachrichtigt, sobald ein Platz frei wird.</p>
-                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm hover:bg-s-coral/90 transition-all">
+                <button onClick={() => setShowWaitlist(false)} className="mt-3 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm hover:brightness-[1.06] transition-all">
                   Schliessen
                 </button>
               </div>
@@ -933,7 +933,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                 <button
                   onClick={handleWaitlistSubmit}
                   disabled={waitlistSubmitting}
-                  className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
+                  className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all disabled:opacity-50"
                 >
                   {waitlistSubmitting ? "Wird eingetragen…" : "Benachrichtige mich"}
                 </button>
