@@ -124,18 +124,24 @@ export default function GlassModal({
             className={cn(
               "relative w-full z-10",
               maxWidth,
-              "rounded-card border border-white/60",
-              "bg-white/90 backdrop-blur-glass shadow-warm-xl",
+              "rounded-[16px] overflow-hidden",
               className
             )}
+            style={{
+              background: "#FFFFFF",
+              boxShadow: "0 8px 24px rgba(26,18,9,.12), 0 32px 64px rgba(26,18,9,.10)"
+            }}
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-s-ink/5">
-                <h2 className="font-heading font-semibold text-s-ink text-lg">{title}</h2>
+              <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-s-ink/[0.06]">
+                <div>
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-1">Buchung</p>
+                  <h2 className="font-heading font-bold text-s-ink text-lg">{title}</h2>
+                </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-full text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors"
+                  className="p-1.5 rounded-[8px] text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors"
                   aria-label="Schliessen"
                 >
                   <X size={18} />

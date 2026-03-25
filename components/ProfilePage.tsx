@@ -81,13 +81,13 @@ const CancelModal = memo(function CancelModal({
         <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">{t("cancelFreeHint")}</p>
 
         <div className="mb-5">
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("reasonOptional")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("reasonOptional")}</label>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={2}
             placeholder={t("reasonPlaceholder")}
-            className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+            className="w-full px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors resize-none"
           />
         </div>
 
@@ -152,70 +152,89 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
     window.open(`sms:?body=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (loading) return <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-4"><Spinner size="sm" /></div>;
+  if (loading) return <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5"><Spinner size="sm" /></div>;
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-4 space-y-3">
-      {/* Referral code */}
-      <div className="flex items-center justify-between p-3 rounded-card bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/15">
-        <div className="flex items-center gap-3">
-          <Gift className="w-5 h-5 text-s-coral shrink-0" />
-          <div>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("inviteFriends")}</p>
-            <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("bothGetCredit")}</p>
-          </div>
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4">
+      {/* Eyebrow header */}
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35">
+        Freunde einladen
+      </p>
+
+      {/* Referral invite banner */}
+      <div className="flex items-center gap-3 p-3 rounded-[10px]"
+        style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.15)" }}>
+        <Gift className="w-5 h-5 text-s-coral shrink-0" />
+        <div>
+          <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("inviteFriends")}</p>
+          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("bothGetCredit")}</p>
         </div>
       </div>
 
       {/* Code display */}
       {code && (
         <div className="flex items-center gap-2">
-          <div className="flex-1 px-3 py-2 rounded-input bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/10 dark:border-white/10 font-mono text-sm text-s-ink dark:text-s-dm-text tracking-wide">
+          <div className="flex-1 px-4 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg"
+            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "14px", letterSpacing: ".12em", color: "var(--s-ink)" }}>
             {code}
           </div>
           <button
             onClick={copyCode}
-            className="px-3 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
             aria-label={t("copyCode")}
+            className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-all ${
+              copied
+                ? "border-[#4CAF6F] bg-[#4CAF6F]/10"
+                : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40"
+            }`}
           >
-            {copied ? <Check size={16} className="text-s-sage" /> : <Copy size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />}
+            {copied
+              ? <Check size={15} className="text-[#4CAF6F]" />
+              : <Copy size={15} className="text-s-ink/40 dark:text-s-dm-text/40" />}
           </button>
         </div>
       )}
 
       {/* Share buttons */}
-      <div className="flex gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <button
           onClick={shareWhatsApp}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-btn bg-[#25D366] text-white text-xs font-medium hover:bg-[#1DA851] transition-colors"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] transition-all"
+          style={{ background: "#25D366" }}
         >
           <Share2 size={12} /> WhatsApp
         </button>
         <button
           onClick={shareSMS}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-btn bg-s-blue text-white text-xs font-medium hover:bg-s-blue/80 transition-colors"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] transition-all"
+          style={{ background: "#0A84FF" }}
         >
           <MessageCircle size={12} /> SMS
         </button>
         <button
           onClick={copyCode}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-btn bg-s-ink/5 dark:bg-white/5 text-s-ink dark:text-s-dm-text text-xs font-medium hover:bg-s-ink/10 dark:hover:bg-white/10 transition-colors"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral transition-colors"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
       </div>
 
       {/* Reward tracking */}
-      <div className="flex items-center justify-between pt-2 border-t border-s-ink/5 dark:border-white/5">
+      <div className="flex items-center justify-between pt-3 border-t border-s-ink/[0.05] dark:border-white/[0.05]">
         <div className="flex items-center gap-2">
-          <Trophy size={14} className="text-s-amber" />
-          <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-            {t("friendsInvited", { count: stats.friends_invited })}
-          </span>
+          <Trophy size={13} className="text-s-amber" />
+          <div>
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">
+              Eingeladen
+            </p>
+            <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{stats.friends_invited}</p>
+          </div>
         </div>
-        <span className="data-text text-sm font-bold text-s-coral">
-          {t("earned", { amount: formatCurrency(stats.total_earned / 100, locale) })}
-        </span>
+        <div className="text-right">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">Verdient</p>
+          <p className="font-heading font-bold text-sm text-s-coral">
+            {formatCurrency(stats.total_earned / 100, locale)}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -227,11 +246,12 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
 
 type BookingWithDetails = Booking & { salon_name: string; service_name: string; salon_slug?: string };
 
-const STATUS_COLOR: Record<string, string> = {
-  confirmed: "text-s-coral",
-  cancelled: "text-s-coral",
-  completed: "text-s-ink/50 dark:text-s-dm-text/50",
-  no_show: "text-s-ink/30 dark:text-s-dm-text/30",
+// Status badges — semantic pill colours
+const STATUS_BADGE_MAP: Record<string, { bg: string; color: string }> = {
+  confirmed: { bg: "rgba(76,175,111,.12)",  color: "#1f6535" },
+  cancelled: { bg: "rgba(232,98,74,.10)",   color: "#7A2415" },
+  completed: { bg: "rgba(26,18,9,.06)",     color: "rgba(26,18,9,.50)" },
+  no_show:   { bg: "rgba(26,18,9,.04)",     color: "rgba(26,18,9,.30)" },
 };
 
 function hoursUntil(startsAt: string) {
@@ -251,39 +271,45 @@ const BookingCard = memo(function BookingCard({
   const canCancel = b.status === "confirmed" && hoursUntil(b.starts_at) > 24;
   const tooLate = b.status === "confirmed" && hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
 
-  const STATUS_LABEL: Record<string, string> = {
-    confirmed: t("statusConfirmed"),
-    cancelled: t("statusCancelled"),
-    completed: t("statusCompleted"),
-    no_show: t("statusNoShow"),
+  const STATUS_BADGE: Record<string, { label: string; bg: string; color: string }> = {
+    confirmed: { label: t("statusConfirmed"), ...STATUS_BADGE_MAP.confirmed },
+    cancelled: { label: t("statusCancelled"), ...STATUS_BADGE_MAP.cancelled },
+    completed: { label: t("statusCompleted"), ...STATUS_BADGE_MAP.completed },
+    no_show:   { label: t("statusNoShow"),    ...STATUS_BADGE_MAP.no_show },
   };
 
   const localeFmt = locale === "de" ? "de-CH" : locale;
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-4">
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface">
       <div className="flex justify-between items-start gap-4">
         <div>
-          <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">{b.service_name}</p>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-1">
+          <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
+          <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{b.service_name}</p>
+          <p className="text-xs font-body text-s-ink/40 dark:text-s-dm-text/40 mt-1">
             {new Date(b.starts_at).toLocaleDateString(localeFmt, {
               weekday: "short", day: "numeric", month: "short",
-            })}{" "}
+            })}{" · "}
             {new Date(b.starts_at).toLocaleTimeString(localeFmt, { hour: "2-digit", minute: "2-digit" })}
           </p>
         </div>
-        <span className={["text-xs font-medium", STATUS_COLOR[b.status] ?? "text-s-ink/40 dark:text-s-dm-text/40"].join(" ")}>
-          {STATUS_LABEL[b.status] ?? b.status}
-        </span>
+        {(() => {
+          const badge = STATUS_BADGE[b.status];
+          return (
+            <span className="text-[9px] font-heading font-bold uppercase tracking-[.08em] px-2 py-1 rounded-[6px] shrink-0"
+              style={{ background: badge?.bg, color: badge?.color }}>
+              {badge?.label ?? b.status}
+            </span>
+          );
+        })()}
       </div>
 
       {(b.status === "confirmed" || b.salon_slug) && (
-        <div className="flex gap-2 mt-3 pt-3 border-t border-s-ink/5 dark:border-white/10">
+        <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-s-ink/[0.05] dark:border-white/[0.05]">
           {b.salon_slug && (
             <Link
               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&staff=${b.staff_member_id ?? ""}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:border-s-coral transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:border-s-coral/40 transition-colors"
             >
               <RotateCcw size={12} />
               {t("rebookAction")}
@@ -293,8 +319,9 @@ const BookingCard = memo(function BookingCard({
           {canCancel && (
             <button
               onClick={() => onCancel(b)}
-              className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-coral/25 text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:bg-s-coral/[0.05] transition-colors"
             >
+              <X size={12} />
               {t("cancelAction")}
             </button>
           )}
@@ -304,15 +331,17 @@ const BookingCard = memo(function BookingCard({
           )}
 
           {tooLate && (
-            <div className="relative group">
+            <div className="relative group inline-block">
               <button
                 disabled
-                className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[8px] border border-s-ink/[0.06] dark:border-white/[0.06] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed"
               >
+                <X size={12} />
                 {t("cancelAction")}
               </button>
-              <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-s-ink dark:bg-s-dm-raised text-white text-xs rounded-card px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                {t("cancelTooLate")}
+              <div className="absolute bottom-full left-0 mb-2 w-48 rounded-[8px] px-3 py-2 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                style={{ background: "rgba(26,18,9,.92)" }}>
+                <p className="text-[10px] font-heading text-white/80">{t("cancelTooLate")}</p>
               </div>
             </div>
           )}
@@ -479,6 +508,17 @@ const SettingsSection = memo(function SettingsSection({
 });
 
 // ─────────────────────────────────────────
+// Section label
+// ─────────────────────────────────────────
+
+const ProfileSectionLabel = ({ children, icon: Icon }: { children: React.ReactNode; icon?: React.ElementType }) => (
+  <div className="flex items-center gap-2 mb-4">
+    {Icon && <Icon size={13} className="text-s-ink/35 dark:text-s-dm-text/35" />}
+    <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35">{children}</p>
+  </div>
+);
+
+// ─────────────────────────────────────────
 // Main ProfilePage component
 // ─────────────────────────────────────────
 
@@ -596,19 +636,32 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg px-4 py-8 max-w-lg mx-auto space-y-6">
-        {/* Profile header skeleton */}
-        <div className="flex items-center gap-4">
-          <Skeleton variant="avatar" className="w-16 h-16" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-5 w-2/3" />
-            <Skeleton className="h-3 w-1/3" />
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg py-8 px-4">
+        <div className="max-w-2xl mx-auto space-y-4">
+          {/* Hero skeleton */}
+          <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 bg-white dark:bg-s-dm-surface animate-pulse">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-32 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+                <div className="h-3 w-48 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+              </div>
+            </div>
           </div>
+          {/* Booking row skeletons */}
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
+              <div className="flex gap-4">
+                <div className="flex-1 space-y-2">
+                  <div className="h-3.5 w-36 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+                  <div className="h-2.5 w-24 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+                  <div className="h-2.5 w-28 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+                </div>
+                <div className="w-14 h-5 bg-s-bg-sunken dark:bg-s-dm-bg rounded-[6px]" />
+              </div>
+            </div>
+          ))}
         </div>
-        {/* Booking cards skeleton */}
-        {Array.from({ length: 2 }).map((_, i) => (
-          <Skeleton key={i} variant="card" />
-        ))}
       </div>
     );
   }
@@ -639,31 +692,34 @@ export default function ProfilePage() {
         )}
 
         {/* ── Hero ── */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="flex items-center gap-4 mb-8"
-        >
-          <div className="w-16 h-16 rounded-full bg-s-coral/10 overflow-hidden flex items-center justify-center text-2xl font-heading text-s-coral shrink-0">
-            {profile.avatar_url ? (
-              <Image src={profile.avatar_url} alt="" width={64} height={64} className="object-cover w-full h-full" loading="lazy" />
-            ) : (
-              profile.display_name[0] ?? "?"
-            )}
+        <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 mb-6"
+          style={{ background: "rgba(255,255,255,.90)", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30 mb-4">
+            Mein Profil
+          </p>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg flex items-center justify-center relative shrink-0">
+              {profile.avatar_url ? (
+                <Image src={profile.avatar_url} alt={profile.display_name ?? ""} fill className="object-cover" />
+              ) : (
+                <span className="text-2xl font-heading font-bold text-s-ink/20 dark:text-s-dm-text/20">
+                  {(profile.display_name ?? "?")[0].toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text truncate">{profile.display_name}</p>
+                <SolenExclusiveBadge profile={profile} />
+              </div>
+              <p className="text-xs font-body italic text-s-ink/45 dark:text-s-dm-text/45 mt-0.5 truncate">{profile.bio}</p>
+            </div>
+            <a href={`/${locale}/profile/settings`}
+              className="w-9 h-9 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] flex items-center justify-center hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors shrink-0">
+              <Settings size={15} className="text-s-ink/40 dark:text-s-dm-text/40" />
+            </a>
           </div>
-          <div>
-            <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{profile.display_name}</p>
-            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("myProfile")}</p>
-          </div>
-          <Link
-            href={`/${locale}/account/messages`}
-            className="ml-auto relative p-2 rounded-btn border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors"
-            aria-label={t("myProfile")}
-          >
-            <MessageCircle size={18} className="text-s-ink/50 dark:text-s-dm-text/50" />
-          </Link>
-        </motion.div>
+        </div>
 
         {/* ── Section 1: Upcoming Bookings ── */}
         <motion.section
@@ -740,32 +796,27 @@ export default function ProfilePage() {
           transition={{ duration: 0.4, delay: 0.15 }}
           className="mb-6"
         >
-          <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-            <Heart size={16} className="text-s-coral" />
-            {t("favorites")}
-          </h2>
+          <ProfileSectionLabel icon={Heart}>{t("favorites")}</ProfileSectionLabel>
           {favorites.length === 0 ? (
-            <EmptyState
-              icon={Heart}
-              title={t("noFavorites")}
-              illustration="no-results"
-              action={
-                <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                  {t("discoverSalons")} →
-                </Link>
-              }
-            />
+            <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] border-dashed p-8 text-center">
+              <Heart size={24} className="mx-auto mb-2 text-s-ink/15 dark:text-s-dm-text/15" />
+              <p className="text-xs font-heading text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-[.10em]">{t("noFavorites")}</p>
+              <Link href={`/${locale}/coiffeur`}
+                className="inline-block mt-3 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:underline">
+                {t("discoverSalons")} →
+              </Link>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {favorites.map((salon) => (
-                <div key={salon.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 overflow-hidden flex gap-3 p-3 group relative">
+                <div key={salon.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] overflow-hidden flex gap-3 p-3 group relative">
                   {salon.cover_photo_url && (
-                    <div className="w-14 h-14 rounded-card overflow-hidden shrink-0 bg-s-bg-sunken dark:bg-s-dm-bg">
+                    <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken dark:bg-s-dm-bg">
                       <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-medium text-sm text-s-ink dark:text-s-dm-text hover:text-s-coral transition-colors truncate block">
+                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text hover:text-s-coral transition-colors truncate block">
                       {salon.name}
                     </Link>
                     <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1 mt-0.5">
@@ -778,7 +829,7 @@ export default function ProfilePage() {
                   </div>
                   <button
                     onClick={() => removeFav(salon.id)}
-                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-pill text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
                     title={t("removeFromFavorites")}
                     aria-label={t("removeFromFavorites")}
                   >

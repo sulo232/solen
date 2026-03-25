@@ -45,7 +45,18 @@ export default function MyPackagesPage() {
   }, [locale, router]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
+    return (
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center">
+        <div className="grid gap-4 w-full max-w-3xl px-4">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 bg-white dark:bg-s-dm-surface animate-pulse">
+              <div className="h-4 w-40 bg-s-bg-sunken dark:bg-s-dm-bg rounded mb-3" />
+              <div className="h-2 w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -64,9 +75,9 @@ export default function MyPackagesPage() {
 
         {/* List */}
         {purchases.length === 0 ? (
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
-            <Package className="w-10 h-10 mx-auto mb-3 opacity-30" />
-            <p className="text-sm font-medium">Bisher keine Abo-Pakete gekauft</p>
+          <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-8 text-center bg-white dark:bg-s-dm-surface">
+            <Package className="w-10 h-10 mx-auto mb-3 text-s-ink/15 dark:text-s-dm-text/15" />
+            <p className="text-xs font-heading uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">Keine Pakete gefunden</p>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -81,7 +92,9 @@ export default function MyPackagesPage() {
               const isExpired = expireDate && expireDate.getTime() < Date.now();
 
               return (
-                <div key={p.id} className={`bg-white dark:bg-s-dm-surface rounded-card border ${isUsedUp || isExpired ? "border-s-ink/5 dark:border-white/5 opacity-60" : "border-s-coral/20"} p-5`}>
+                <div key={p.id} className={`rounded-[12px] border p-5 bg-white dark:bg-s-dm-surface ${
+                  isUsedUp || isExpired ? "border-s-ink/[0.06] dark:border-white/[0.06] opacity-60" : "border-s-coral/20"
+                }`}>
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
@@ -92,27 +105,33 @@ export default function MyPackagesPage() {
                       </p>
                     </div>
                     {(isUsedUp || isExpired) ? (
-                      <span className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 px-2 py-1 bg-s-ink/5 dark:bg-white/5 rounded-btn">
+                      <span className="text-[9px] font-heading font-bold uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
+                        style={{ background: "rgba(26,18,9,.06)", color: "rgba(26,18,9,.35)" }}>
                         {isExpired ? "Abgelaufen" : "Aufgebraucht"}
                       </span>
                     ) : (
-                      <span className="text-xs font-medium text-s-coral px-2.5 py-1 bg-s-coral/10 rounded-btn">
+                      <span className="text-[9px] font-heading font-bold uppercase tracking-[.08em] px-2 py-1 rounded-[6px]"
+                        style={{ background: "rgba(76,175,111,.12)", color: "#1f6535" }}>
                         Aktiv
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="flex-1">
-                      <div className="flex justify-between text-xs mb-1.5">
-                        <span className="text-s-ink/60 dark:text-s-dm-text/60">{remaining} von {total} übrig</span>
-                      </div>
-                      <div className="h-2 w-full bg-s-bg-surface dark:bg-s-dm-bg rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${isUsedUp ? 'bg-s-ink/20' : 'bg-s-coral'} transition-all`} 
-                          style={{ width: `${(used / total) * 100}%` }}
-                        />
-                      </div>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">
+                        {remaining} von {total} übrig
+                      </p>
+                      <p className="text-[9px] font-heading text-s-ink/25 dark:text-s-dm-text/25">{used} genutzt</p>
+                    </div>
+                    <div className="h-2 w-full rounded-full overflow-hidden"
+                      style={{ background: "rgba(26,18,9,.06)" }}>
+                      <div className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(used / total) * 100}%`,
+                          background: isUsedUp ? "rgba(26,18,9,.15)" : "#E8624A"
+                        }}
+                      />
                     </div>
                   </div>
 
