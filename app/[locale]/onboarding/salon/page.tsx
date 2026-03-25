@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Phone, Sparkles } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Phone, Sparkles, AlertCircle } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
@@ -50,10 +50,15 @@ const STEP_META = [
 function StepContainer({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div className="max-w-xl mx-auto">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-warm-md p-6 sm:p-8" role="form">
-        <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-1">{title}</h2>
-        {subtitle && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{subtitle}</p>}
-        {!subtitle && <div className="mb-6" />}
+      <div className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.07] dark:border-white/[0.06] p-6 sm:p-8"
+        style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
+        role="form">
+        {subtitle && (
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30 mb-1.5">
+            {subtitle}
+          </p>
+        )}
+        <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-6">{title}</h2>
         {children}
       </div>
     </div>
@@ -91,7 +96,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
     <StepContainer title={t("step1.title")} subtitle={t("step1.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step1.name")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.name")}</label>
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
@@ -102,7 +107,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step1.email")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.email")}</label>
           <input
             type="email"
             value={data.email}
@@ -114,7 +119,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("step1.categories")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">{t("step1.categories")}</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => (
               <button
@@ -122,11 +127,12 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-3 py-1.5 rounded-pill text-sm font-medium border transition-all active:scale-[0.97]",
+                  "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-all active:scale-[0.98]",
                   data.categories.includes(c.value)
                     ? "bg-s-coral text-white border-s-coral"
-                    : "border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral",
+                    : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
                 ].join(" ")}
+                style={data.categories.includes(c.value) ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
               >
                 {c.label}
               </button>
@@ -136,7 +142,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step1.quartier")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.quartier")}</label>
           <select
             value={data.quartier}
             onChange={(e) => onChange({ ...data, quartier: e.target.value })}
@@ -151,7 +157,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step1.address")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.address")}</label>
           <AddressAutocomplete
             value={data.address}
             onChange={(val) => onChange({ ...data, address: val })}
@@ -254,7 +260,7 @@ function Step2({ phone, phoneVerified, onPhoneChange, onVerified, errors, t }: {
     <StepContainer title={t("step2Otp.title")} subtitle={t("step2Otp.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("step1.phone")}</label>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.phone")}</label>
           <div className="flex gap-2">
             <input
               value={phone}
@@ -267,8 +273,9 @@ function Step2({ phone, phoneVerified, onPhoneChange, onVerified, errors, t }: {
               placeholder="+41 61 000 00 00"
             />
             {phoneVerified ? (
-              <div className="flex items-center justify-center px-4 bg-s-sage-subtle text-s-sage-text dark:text-s-sage rounded-pill text-sm font-medium">
-                <Check size={16} className="mr-1" /> Verifiziert
+              <div className="flex items-center gap-1.5 px-4 py-3 rounded-[10px] text-[10px] font-heading font-bold uppercase tracking-[.10em]"
+                style={{ background: "rgba(76,175,111,.10)", color: "#2e7d32" }}>
+                <Check size={13} className="shrink-0" /> Verifiziert
               </div>
             ) : (
               <button
@@ -284,35 +291,50 @@ function Step2({ phone, phoneVerified, onPhoneChange, onVerified, errors, t }: {
           {(errors.phone || errors.phone_verified) && <p className="text-xs text-s-coral mt-1">{errors.phone || errors.phone_verified}</p>}
 
           {showOtp && !phoneVerified && (
-            <div className="mt-2 p-3 bg-s-coral/5 rounded-card border border-s-coral/20">
-              <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 mb-2">Code per SMS erhalten?</p>
+            <div className="mt-3 p-4 rounded-[12px] border border-s-coral/20"
+              style={{ background: "rgba(232,98,74,.04)" }}>
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-2.5">
+                SMS-Code eingeben
+              </p>
               <div className="flex gap-2">
                 <input
                   type="text"
                   maxLength={6}
                   value={code}
                   onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                  placeholder="123456"
-                  className="w-24 px-3 py-2 text-center tracking-widest rounded-input border border-s-coral/30 text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised transition-all"
+                  placeholder="000000"
+                  className="w-28 px-3 py-3 text-center font-mono text-lg tracking-[.25em] rounded-[10px] border border-s-coral/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 bg-white dark:bg-s-dm-raised transition-all"
                 />
                 <button
                   type="button"
                   onClick={verifyOtp}
                   disabled={verifying || code.length < 4}
-                  className="px-4 py-2 rounded-btn bg-s-coral/10 text-s-coral text-sm font-medium disabled:opacity-50 hover:bg-s-coral/20 transition-colors"
+                  className="flex-1 px-4 py-3 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] disabled:opacity-50 transition-all active:scale-[0.98]"
+                  style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}
                 >
-                  {verifying ? <Spinner size="sm" /> : "Code prüfen"}
+                  {verifying ? <Spinner size="sm" invert /> : "Code prüfen"}
                 </button>
               </div>
-              {verifyError && <p className="text-xs text-s-coral mt-1.5">{verifyError}</p>}
+              {verifyError && <p className="text-[10px] font-body text-s-coral mt-2">{verifyError}</p>}
             </div>
           )}
         </div>
 
         {phoneVerified && (
-          <div className="bg-s-sage-subtle border border-s-sage/20 rounded-card p-4 text-sm text-s-sage-text">
-            <Check size={16} className="inline mr-1.5" />
-            Telefonnummer erfolgreich verifiziert. Weiter zum nächsten Schritt.
+          <div className="flex items-start gap-3 rounded-[12px] border border-[#4CAF6F]/20 p-4"
+            style={{ background: "rgba(76,175,111,.06)" }}>
+            <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
+              style={{ background: "rgba(76,175,111,.15)" }}>
+              <Check size={15} className="text-[#4CAF6F]" />
+            </div>
+            <div>
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-[#2e7d32] mb-0.5">
+                Verifiziert
+              </p>
+              <p className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55">
+                Telefonnummer verifiziert. Weiter zum nächsten Schritt.
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -368,7 +390,7 @@ function Step3({ data, onChange, category, t }: {
     <StepContainer title={t("step3Quick.title")} subtitle={t("step3Quick.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
             {t("step3Quick.serviceName")}
           </label>
           <div className="relative">
@@ -385,15 +407,18 @@ function Step3({ data, onChange, category, t }: {
             )}
           </div>
           {suggested && data.service_name && (
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-1 flex items-center gap-1">
-              <Sparkles size={10} className="text-s-coral" /> KI-Vorschlag — du kannst den Namen anpassen
-            </p>
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <Sparkles size={10} className="text-s-coral" />
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35">
+                KI-Vorschlag · anpassbar
+              </p>
+            </div>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
               {t("step3Quick.duration")}
             </label>
             <select
@@ -407,7 +432,7 @@ function Step3({ data, onChange, category, t }: {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
               {t("step3Quick.price")}
             </label>
             <input
@@ -421,9 +446,17 @@ function Step3({ data, onChange, category, t }: {
           </div>
         </div>
 
-        <div className="bg-s-coral/5 border border-s-coral/10 rounded-card p-4 text-xs text-s-ink/60 dark:text-s-dm-text/60">
-          <p className="font-medium text-s-ink dark:text-s-dm-text mb-1">{t("step3Quick.hint")}</p>
-          <p>{t("step3Quick.hintDesc")}</p>
+        <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
+          style={{ background: "rgba(232,98,74,.04)" }}>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <Sparkles size={12} className="text-s-coral shrink-0" />
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+              {t("step3Quick.hint")}
+            </p>
+          </div>
+          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">
+            {t("step3Quick.hintDesc")}
+          </p>
         </div>
       </div>
     </StepContainer>
@@ -617,17 +650,45 @@ export default function SalonOnboardingPage() {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center">
-        <Spinner />
+      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
+        {/* Header skeleton */}
+        <div className="bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] px-4 py-4">
+          <div className="max-w-xl mx-auto space-y-3 animate-pulse">
+            <div className="flex justify-between">
+              <div className="h-4 w-20 bg-s-bg-sunken rounded" />
+              <div className="h-3 w-16 bg-s-bg-sunken rounded" />
+            </div>
+            <div className="h-2 w-full bg-s-bg-sunken rounded-full" />
+            <div className="h-2.5 w-32 bg-s-bg-sunken rounded mx-auto" />
+          </div>
+        </div>
+        {/* Card skeleton */}
+        <div className="px-4 py-8">
+          <div className="max-w-xl mx-auto rounded-[16px] border border-s-ink/[0.06] bg-white dark:bg-s-dm-surface p-8 animate-pulse">
+            <div className="h-2 w-24 bg-s-bg-sunken rounded mb-3" />
+            <div className="h-7 w-48 bg-s-bg-sunken rounded mb-8" />
+            <div className="space-y-5">
+              <div>
+                <div className="h-2 w-16 bg-s-bg-sunken rounded mb-2" />
+                <div className="h-12 w-full bg-s-bg-sunken rounded-[12px]" />
+              </div>
+              <div>
+                <div className="h-2 w-16 bg-s-bg-sunken rounded mb-2" />
+                <div className="h-12 w-full bg-s-bg-sunken rounded-[12px]" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pb-36">
-      {/* Subtle warm radial gradient for depth — NOT a blob (Zone 3 compliant) */}
+      {/* Subtle warm linear gradient for depth — Zone 3 compliant */}
       <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-s-coral/[0.04] to-transparent rounded-pill" />
+        <div className="absolute top-0 left-0 right-0 h-[300px]"
+          style={{ background: "linear-gradient(180deg, rgba(232,98,74,.03) 0%, transparent 100%)" }} />
       </div>
 
       {/* Celebration overlay */}
@@ -636,28 +697,43 @@ export default function SalonOnboardingPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/90 dark:bg-s-dm-bg/90 backdrop-blur-lg"
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 dark:bg-s-dm-bg/95"
           >
             <motion.div
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex flex-col items-center gap-4 text-center px-6"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+              className="flex flex-col items-center gap-5 text-center px-6"
             >
-              <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center">
-                <PartyPopper size={36} className="text-s-coral" />
+              {/* Icon box — NO scale animation */}
+              <div className="w-20 h-20 rounded-[22px] flex items-center justify-center"
+                style={{ background: "rgba(232,98,74,.10)" }}>
+                <PartyPopper size={34} className="text-s-coral" />
               </div>
-              <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">{t("done.title")}</h2>
-              <p className="text-s-ink/50 dark:text-s-dm-text/50 text-sm max-w-xs">{t("done.subtitle")}</p>
-              <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-2">
-                {t("done.dashboardHint")}
-              </p>
-              <div className="flex gap-1.5 mt-4">
+
+              <div>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+                  Willkommen
+                </p>
+                <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">
+                  {t("done.title")}
+                </h2>
+                <p className="text-xs font-body text-s-ink/45 dark:text-s-dm-text/45 max-w-xs mt-2 leading-relaxed">
+                  {t("done.subtitle")}
+                </p>
+                <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mt-3">
+                  {t("done.dashboardHint")}
+                </p>
+              </div>
+
+              {/* Opacity-only pulse dots — NO scale */}
+              <div className="flex gap-2 mt-1">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    animate={{ scale: [1, 1.4, 1] }}
-                    transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.2 }}
                     className="w-2 h-2 rounded-full bg-s-coral"
                   />
                 ))}
@@ -668,13 +744,15 @@ export default function SalonOnboardingPage() {
       </AnimatePresence>
 
       {/* Header */}
-      <div className="bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-lg border-b border-s-ink/5 dark:border-white/5 px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] dark:border-white/[0.05] px-4 py-4 sticky top-0 z-10">
         <div className="max-w-xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             <span className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
               solen<span className="text-s-coral">.</span>ch
             </span>
-            <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("header.stepOf", { step, total: TOTAL_STEPS })}</span>
+            <span className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35 dark:text-s-dm-text/35">
+              {t("header.stepOf", { step, total: TOTAL_STEPS })}
+            </span>
           </div>
           {/* Progress Segment Line */}
           <div className="flex items-center gap-1 mt-1 bg-s-bg-sunken dark:bg-s-dm-raised rounded-full p-1" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-label={t("header.stepOf", { step, total: TOTAL_STEPS })}>
@@ -688,7 +766,7 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
-          <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body mt-2 text-center">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35 mt-2 text-center">
             {t(`progress.${STEP_META[step - 1]?.label}`)}
           </p>
         </div>
@@ -731,20 +809,22 @@ export default function SalonOnboardingPage() {
       {/* Submit error banner */}
       {submitError && step === TOTAL_STEPS && (
         <div className="max-w-xl mx-auto px-4 mb-4">
-          <div className="bg-s-coral/5 border border-s-coral/20 rounded-card p-4 text-sm text-s-coral">
-            {submitError}
+          <div className="flex items-start gap-3 rounded-[12px] border border-s-coral/20 p-4"
+            style={{ background: "rgba(232,98,74,.05)" }}>
+            <AlertCircle size={15} className="text-s-coral shrink-0 mt-0.5" />
+            <p className="text-xs font-body text-s-coral">{submitError}</p>
           </div>
         </div>
       )}
 
       {/* Nav buttons */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-lg border-t border-s-ink/5 dark:border-white/5 px-4 py-4" aria-label="Wizard navigation">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.05] px-4 py-4" aria-label="Wizard navigation">
         <div className="max-w-xl mx-auto flex gap-3">
           {step > 1 && (
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/5 dark:border-white/5 text-sm font-heading font-semibold uppercase tracking-wider text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink hover:text-s-bg-base dark:hover:bg-white dark:hover:text-s-ink active:translate-y-[1px] active:shadow-pressed transition-all shadow-xs"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-all"
             >
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>
@@ -753,7 +833,8 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider hover:bg-s-coral-hover active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow hover:shadow-coral-glow-hover disabled:opacity-40 disabled:pointer-events-none group"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-all group"
+              style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
             >
               <span>{t("nav.next")}</span>
               <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
