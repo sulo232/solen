@@ -14,6 +14,7 @@ import {
   Zap,
   Clock,
   RefreshCw,
+  Search,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -25,6 +26,7 @@ import SocialProofStrip from "@/components/ui/SocialProofStrip";
 import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import BlobBackground from "@/components/ui/BlobBackground";
+import HeroVisualCard from "@/components/ui/HeroVisualCard";
 import RecentlyViewed from "@/components/RecentlyViewed";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
 import ReviewCarousel from "@/components/ReviewCarousel";
@@ -255,47 +257,63 @@ export default function HomePage() {
       <BlobBackground zone={1} />
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden py-16 sm:py-24">
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
+      <section className="relative overflow-hidden py-16 sm:py-24 min-h-screen flex items-center">
+        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
           >
-            {!userName && (
-              <motion.span
-                variants={fadeUp}
-                className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber mb-2 block"
-              >
-                VON BASEL, FÜR BASEL
-              </motion.span>
-            )}
-            <motion.h1
-              variants={fadeUp}
-              className="font-display uppercase leading-none text-s-ink dark:text-s-dm-text"
-              style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em" }}
-            >
-              {userName ? (
-                <>Willkommen{" "}<span className="text-s-coral">{userName}</span></>
-              ) : (
-                <>Beauty<span className="text-s-coral">.</span> Basel<span className="text-s-coral">.</span></>
+            {/* Left: editorial text */}
+            <div>
+              {!userName && (
+                <motion.span
+                  variants={fadeUp}
+                  className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber block mb-3"
+                >
+                  Von Basel, für Basel
+                </motion.span>
               )}
-            </motion.h1>
-            <motion.p
-              variants={fadeUp}
-              className="mt-4 text-base sm:text-lg text-s-ink/60 dark:text-s-dm-text/60 font-body max-w-xl mx-auto"
-            >
-              {userName && nextBooking
-                ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
-                : userName
-                  ? "Willkommen zurück — was darf's heute sein?"
-                  : "Dein nächster Termin in Basel — buche Coiffeur, Nails, Spa & mehr."
-              }
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-8">
-              <HomeSearchBar />
-            </motion.div>
+              <motion.h1
+                variants={fadeUp}
+                className="font-display uppercase leading-[0.87] text-s-ink dark:text-s-dm-text"
+                style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em" }}
+              >
+                {userName ? (
+                  <>Willkommen<br /><span className="text-s-coral">{userName}</span></>
+                ) : (
+                  <>BEAUTY.<br /><span className="text-s-coral">BASEL.</span></>
+                )}
+              </motion.h1>
+              <motion.p
+                variants={fadeUp}
+                className="mt-5 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.82] max-w-md text-[17px]"
+              >
+                {userName && nextBooking
+                  ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
+                  : userName
+                    ? "Willkommen zurück — was darf's heute sein?"
+                    : "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier."
+                }
+              </motion.p>
+              <motion.div variants={fadeUp} className="mt-8 flex gap-3 flex-wrap">
+                <Link
+                  href={`/${locale}/search`}
+                  className="inline-flex items-center gap-2 px-9 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:bg-s-coral-hover hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150"
+                >
+                  <Search size={15} /> Salon finden
+                </Link>
+                <Link
+                  href={`/${locale}/last-minute`}
+                  className="inline-flex items-center gap-2 px-9 py-4 rounded-pill border-[1.5px] border-s-ink/28 dark:border-white/28 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-s-bg-base hover:shadow-warm-md hover:-translate-y-px transition-all duration-150"
+                >
+                  Last Minute →
+                </Link>
+              </motion.div>
+            </div>
+            {/* Right: floating hero card */}
+            <HeroVisualCard />
           </motion.div>
         </div>
       </section>
@@ -323,7 +341,7 @@ export default function HomePage() {
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className={`flex flex-col items-center gap-2 p-6 rounded-card ${bg} dark:bg-s-dm-surface/80 border ${border} dark:border-white/5 hover:scale-[1.03] hover:-rotate-1 hover:shadow-card-hover transition-all duration-200 active:scale-95 group`}
+                className={`flex flex-col items-center gap-2 p-6 rounded-card ${bg} dark:bg-s-dm-surface/80 border ${border} dark:border-white/5 hover:scale-[1.03] hover:-rotate-1 hover:shadow-warm-lg transition-all duration-200 active:scale-95 group`}
               >
                 <Icon
                   size={36}
@@ -414,7 +432,7 @@ export default function HomePage() {
               {salons.map((salon) => (
                 <div
                   key={salon.id}
-                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-card-hover"
+                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-warm-lg"
                 >
                   <SalonCard
                     salon={salon}
@@ -510,7 +528,7 @@ export default function HomePage() {
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
             >
               {trendingSalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-card-hover">
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-warm-lg">
                   <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
                 </div>
               ))}
@@ -546,7 +564,7 @@ export default function HomePage() {
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
             >
               {nearbySalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-card-hover">
+                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink transition-all duration-200 hover:-translate-y-[5px] hover:shadow-warm-lg">
                   <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
                 </div>
               ))}
@@ -636,7 +654,7 @@ export default function HomePage() {
                 >
                   <Link
                     href={`/${locale}/coiffeur?quartier=${slug}`}
-                    className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-card-hover hover:-translate-y-[5px] transition-all duration-250"
+                    className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
                   >
                     {qImage ? (
                       <Image src={qImage} alt={name} fill sizes="200px" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} className="object-cover" />
