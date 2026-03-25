@@ -9,19 +9,21 @@ interface RemoteQueueJoinProps {
   services?: { id: string; name_de: string }[];
 }
 
+interface RemoteQueueResult {
+  success: boolean;
+  position?: number;
+  estimated_wait_minutes?: number;
+  tracking_token?: string;
+  error?: string;
+}
+
 export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueueJoinProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [preferredBarberId, setPreferredBarberId] = useState("");
   const [serviceId, setServiceId] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<{
-    success: boolean;
-    position?: number;
-    estimated_wait_minutes?: number;
-    tracking_token?: string;
-    error?: string;
-  } | null>(null);
+  const [result, setResult] = useState<RemoteQueueResult | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,6 +155,8 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       <button
         type="submit"
         disabled={!name.trim() || submitting}
+        className="w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+      >
         <Users size={16} />
         {submitting ? "Wird angemeldet..." : "Jetzt anstellen"}
       </button>
