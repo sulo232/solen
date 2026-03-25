@@ -74,7 +74,7 @@ export default function ExpandableNavTabs({
       role="navigation"
       {...rest}
       className={cn(
-        "flex items-center gap-1 rounded-pill border border-s-ink/10 bg-white/90 dark:bg-s-dm-surface/90 backdrop-blur-lg p-1.5 shadow-glass",
+        "flex items-center gap-1 rounded-pill border border-s-ink/10 bg-white/90 dark:bg-s-dm-surface/90 backdrop-blur-lg p-1.5 shadow-surface",
         className
       )}
     >

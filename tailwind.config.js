@@ -37,25 +37,25 @@ module.exports = {
         display: ["Bebas Neue", "sans-serif"],
       },
       borderRadius: {
-        // Legacy
+        // Legacy Tailwind vars (keep for shadcn compat)
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        // Solen Design System
-        card: "12px",
-        button: "8px",
-        pill: "9999px",
-        blob: "30% 70% 70% 30% / 30% 30% 70% 70%",
-        // V3 tokens
-        btn: "99px",
-        input: "12px",
+        // ── Solen V3 Design System ──
+        card: "12px",      // Zone 2 cards, salon profiles
+        pill: "9999px",    // availability pills, tags
+        btn:  "99px",      // CTA buttons, action buttons (V3 standard)
+        input: "12px",     // form inputs
+        // NOTE: rounded-button (8px) REMOVED — use rounded-btn (99px)
+        // NOTE: rounded-blob REMOVED — NEVER rule #6
       },
       boxShadow: {
-        // ── Deprecated aliases (now warm values for backwards compat): ──
+        // ── Legacy warm aliases (renamed for V3 clarity) ──
         card: "0 1px 2px rgba(26,18,9,.06)",
         "card-hover": "0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08)",
-        glass: "0 8px 32px rgba(26,18,9,0.06)",
-        "glass-hover": "0 16px 48px rgba(26,18,9,0.10)",
+        // shadow-glass renamed to shadow-surface (values unchanged — already warm):
+        surface:        "0 8px 32px rgba(26,18,9,0.06)",
+        "surface-hover": "0 16px 48px rgba(26,18,9,0.10)",
         // ── V3 Apple Warm Shadow System ──
         "warm-xs":    "0 1px 2px rgba(26,18,9,.06)",
         "warm-sm":    "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
@@ -76,7 +76,7 @@ module.exports = {
       },
       backdropBlur: {
         xs: "4px",
-        glass: "20px",
+        panel: "20px",  // was: glass — renamed for V3
       },
       backgroundImage: {
         "glass-gradient": "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%)",

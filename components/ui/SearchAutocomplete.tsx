@@ -193,7 +193,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       </div>
 
       {open && totalItems > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 backdrop-blur-lg rounded-card shadow-glass border border-s-ink/5 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 backdrop-blur-lg rounded-card shadow-surface border border-s-ink/5 overflow-hidden z-50">
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">

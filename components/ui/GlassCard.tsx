@@ -18,8 +18,8 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
       ref={ref}
       className={cn(
         "relative rounded-card border border-white/60",
-        "bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-glass",
-        "shadow-glass",
+        "bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-panel",
+        "shadow-surface",
         !noPadding && "p-6",
         elevated && "bg-white/90 dark:bg-s-dm-surface/90 shadow-warm-xl border-white/80",
         className

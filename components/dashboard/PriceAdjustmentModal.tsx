@@ -140,7 +140,7 @@ export default function PriceAdjustmentModal({
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="price-modal-title">
-      <div className="bg-white/90 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-card p-6 mx-4 max-w-sm w-full shadow-glass" onClick={e => e.stopPropagation()}>
+      <div className="bg-white/90 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-card p-6 mx-4 max-w-sm w-full shadow-surface" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <DollarSign size={18} className="text-s-coral" />

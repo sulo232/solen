@@ -1,13 +1,13 @@
 import type { Variants } from "framer-motion";
 
-/** Stagger children with 200ms delay between each */
+/** Stagger children with 80ms delay (V3: max 100ms per child) */
 export const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.05,
+      staggerChildren: 0.08,
+      delayChildren: 0.04,
     },
   },
 };
@@ -49,14 +49,13 @@ export const exitFade: Variants = {
   },
 };
 
-/** Card pop-in — for grid items appearing on load */
+/** Card fade in — for grid items appearing on load */
 export const cardPopIn: Variants = {
-  hidden: { opacity: 0, scale: 0.96, y: 10 },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
-    scale: 1,
     y: 0,
-    transition: { duration: 0.35, ease: [0.34, 1.56, 0.64, 1] },
+    transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] },
   },
 };
 
@@ -104,8 +103,8 @@ export const staggerContainer = {
   animate: { transition: { staggerChildren: 0.1 } },
 };
 
-/** Press animation — tactile button feedback */
+/** Press animation — tactile button feedback (max 2% shrink per V3 rules) */
 export const pressAnimation = {
-  whileTap: { scale: 0.95 },
-  transition: { type: "spring", stiffness: 400, damping: 17 },
+  whileTap: { scale: 0.98 },
+  transition: { duration: 0.12, ease: "easeOut" },
 };

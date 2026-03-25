@@ -107,7 +107,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose}>
-      <div className="bg-white dark:bg-s-dm-surface rounded-card p-6 mx-4 max-w-lg w-full shadow-glass max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-white dark:bg-s-dm-surface rounded-card p-6 mx-4 max-w-lg w-full shadow-surface max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users size={18} className="text-s-coral" />

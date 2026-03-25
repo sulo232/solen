@@ -30,7 +30,7 @@ export default function StickyMobileCTA() {
           <div onClick={() => router.push(`/${locale}/coiffeur`)}>
             <InteractiveHoverButton
               text="Salons entdecken"
-              className="w-full border-s-coral/20 shadow-glass"
+              className="w-full border-s-coral/20 shadow-surface"
             />
           </div>
         </motion.div>

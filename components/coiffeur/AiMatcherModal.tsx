@@ -89,7 +89,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-s-ink/40 backdrop-blur-glass"
+        className="absolute inset-0 bg-s-ink/40 backdrop-blur-panel"
         onClick={onClose}
         aria-hidden="true"
       />

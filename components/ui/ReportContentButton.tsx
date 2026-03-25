@@ -56,7 +56,7 @@ export function ReportContentButton({ targetType, targetId, className = "" }: Re
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-glass w-full max-w-md p-6 relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-surface w-full max-w-md p-6 relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => !loading && setIsOpen(false)}
               className="absolute top-4 right-4 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5 p-1 rounded transition-colors"

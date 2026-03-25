@@ -104,7 +104,7 @@ export default function CompareDrawer({ salons, open, onClose }: CompareDrawerPr
             animate={{ y: "15%" }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 35 }}
-            className="fixed inset-x-0 bottom-0 z-60 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-glass h-[85vh]"
+            className="fixed inset-x-0 bottom-0 z-60 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-t-2xl shadow-surface h-[85vh]"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
