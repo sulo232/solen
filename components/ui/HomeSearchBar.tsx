@@ -131,7 +131,7 @@ export default function HomeSearchBar() {
     <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto" role="search" aria-label="Salon suchen">
 
       {/* ── Main segmented bar ── */}
-      <div className="rounded-search overflow-hidden"
+      <div className="rounded-search overflow-x-hidden sm:overflow-hidden"
         style={{ background: "rgba(255,255,255,.92)", backdropFilter: "blur(24px) saturate(1.3)",
                  WebkitBackdropFilter: "blur(24px) saturate(1.3)",
                  border: "1px solid rgba(255,255,255,.80)",
