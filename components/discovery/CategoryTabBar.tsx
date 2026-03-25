@@ -1,19 +1,20 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 
 export interface CategoryTab {
   key: string;
-  label: string;
+  labelKey: string;
 }
 
 export const DISCOVERY_CATEGORIES: CategoryTab[] = [
-  { key: "all",     label: "Alle" },
-  { key: "hair",    label: "Hair" },
-  { key: "nails",   label: "Nails" },
-  { key: "lashes",  label: "Lashes" },
-  { key: "brows",   label: "Brows" },
-  { key: "makeup",  label: "Makeup" },
+  { key: "all",     labelKey: "all" },
+  { key: "hair",    labelKey: "hair" },
+  { key: "nails",   labelKey: "nails" },
+  { key: "lashes",  labelKey: "lashes" },
+  { key: "brows",   labelKey: "brows" },
+  { key: "makeup",  labelKey: "makeup" },
 ];
 
 interface CategoryTabBarProps {
@@ -22,6 +23,7 @@ interface CategoryTabBarProps {
 }
 
 export default function CategoryTabBar({ activeCategory, onChange }: CategoryTabBarProps) {
+  const t = useTranslations("discover.tabs");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -51,7 +53,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
                 : undefined
             }
           >
-            {tab.label}
+            {t(tab.labelKey)}
           </button>
         );
       })}

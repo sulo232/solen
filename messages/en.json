@@ -1323,5 +1323,15 @@
     "sortBy": "Sort by {option}",
     "remove": "remove",
     "add": "filter"
+  },
+  "discover": {
+    "tabs": {
+      "all": "All",
+      "hair": "Hair",
+      "nails": "Nails",
+      "lashes": "Lashes",
+      "brows": "Brows",
+      "makeup": "Makeup"
+    }
   }
 }

@@ -1323,5 +1323,15 @@
     "sortBy": "Ordina per {option}",
     "remove": "rimuovi",
     "add": "filtra"
+  },
+  "discover": {
+    "tabs": {
+      "all": "Tutto",
+      "hair": "Capelli",
+      "nails": "Unghie",
+      "lashes": "Ciglia",
+      "brows": "Sopracciglia",
+      "makeup": "Trucco"
+    }
   }
 }
