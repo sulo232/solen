@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import CategoryPage from "@/components/CategoryPage";
-import { WaxingAboveGrid, WaxingBelowGrid } from "@/components/waxing/WaxingSections";
-import { createAdminSupabaseClient } from "@/lib/supabase";
-import { generateCategoryListSchema } from "@/lib/seo";
+import { WaxingBelowGrid } from "@/components/waxing/WaxingSections";
 
 export const metadata: Metadata = {
   title: "Waxing in Basel — solen.ch",
@@ -18,35 +15,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Page() {
-  let jsonLd = null;
-  try {
-    const supabase = createAdminSupabaseClient();
-    const { data: salons } = await supabase
-      .from("salons")
-      .select("name, slug, cover_photo_url, average_rating, review_count")
-      .contains("categories", ["waxing"])
-      .eq("is_active", true)
-      .order("average_rating", { ascending: false })
-      .limit(20);
-    if (salons?.length) {
-      jsonLd = generateCategoryListSchema("waxing", salons, "de");
-    }
-  } catch { /* graceful degradation */ }
-
+export default function Page() {
   return (
-    <>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-      <CategoryPage
-        category="waxing"
-        aboveGrid={<WaxingAboveGrid />}
-        belowGrid={<WaxingBelowGrid />}
-      />
-    </>
+    <div className="min-h-screen pt-24 pb-16 flex flex-col items-center justify-center">
+      <WaxingBelowGrid />
+    </div>
   );
 }
