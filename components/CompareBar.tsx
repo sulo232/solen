@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { Salon } from "@/lib/types";
 
 interface CompareBarProps {
@@ -11,6 +12,8 @@ interface CompareBarProps {
 }
 
 export default function CompareBar({ salons, onRemove, onCompare }: CompareBarProps) {
+  const t = useTranslations("common");
+
   if (salons.length === 0) return null;
 
   return (
@@ -37,7 +40,7 @@ export default function CompareBar({ salons, onRemove, onCompare }: CompareBarPr
           disabled={salons.length < 2}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-semibold disabled:opacity-40 hover:brightness-[1.06] transition-colors"
         >
-          Vergleichen
+          {t("compare")}
           <ArrowRight size={12} />
         </button>
       </motion.div>

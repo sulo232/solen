@@ -86,7 +86,10 @@
     "noFreeSlots": "Aucun créneau disponible ce jour",
     "savedToBoard": "Enregistrer sur le board",
     "savingToBoard": "Enregistrement…",
-    "savedLabel": "Enregistré"
+    "savedLabel": "Enregistré",
+    "comingSoon": "Bientôt disponible",
+    "comingSoonMessage": "Nous travaillons pour rendre cette catégorie disponible pour vous.",
+    "compare": "Comparer"
   },
   "weather": {
     "rain": "Jour de pluie? Offrez-vous quelque chose.",

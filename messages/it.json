@@ -86,7 +86,10 @@
     "noFreeSlots": "Nessuno slot disponibile in questo giorno",
     "savedToBoard": "Salva sulla bacheca",
     "savingToBoard": "Salvataggio…",
-    "savedLabel": "Salvato"
+    "savedLabel": "Salvato",
+    "comingSoon": "Prossimamente",
+    "comingSoonMessage": "Stiamo lavorando per rendere questa categoria disponibile per te.",
+    "compare": "Confronta"
   },
   "weather": {
     "rain": "Giornata di pioggia? Concediti qualcosa.",

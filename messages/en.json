@@ -86,7 +86,10 @@
     "noFreeSlots": "No available slots on this day",
     "savedToBoard": "Save to board",
     "savingToBoard": "Saving…",
-    "savedLabel": "Saved"
+    "savedLabel": "Saved",
+    "comingSoon": "Coming soon",
+    "comingSoonMessage": "We're working on making this category available for you.",
+    "compare": "Compare"
   },
   "weather": {
     "rain": "Rainy day? Treat yourself.",
