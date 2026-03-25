@@ -308,7 +308,7 @@ export default function HomePage() {
       <SocialProofStrip />
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
-      <section id="tour-services" className="max-w-5xl mx-auto px-4 py-10">
+      <section id="tour-services" className="max-w-5xl mx-auto px-4 py-16 md:py-24">
         <div className="mb-6 text-center">
           <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber block mb-1">
             KATEGORIEN
@@ -320,7 +320,7 @@ export default function HomePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, grad }) => (
             <Link key={key} href={`/${locale}/${key}`}
-              className="relative aspect-square rounded-[20px] overflow-hidden group hover:brightness-[1.06] transition-all duration-200"
+              className="relative aspect-square rounded-[20px] overflow-hidden group hover:-translate-y-[5px] transition-all duration-[250ms]"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
               <div className="absolute inset-0"
                 style={{ background: grad }} />
@@ -367,7 +367,7 @@ export default function HomePage() {
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
       {sections.featured && (
-      <section className="py-10">
+      <section className="py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -384,7 +384,7 @@ export default function HomePage() {
             </div>
             <Link
               href={`/${locale}/coiffeur`}
-              className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4"
+              className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4"
             >
               Alle ansehen →
             </Link>
@@ -397,8 +397,9 @@ export default function HomePage() {
           ) : salons.length === 0 ? (
             <EmptyState
               icon={Scissors}
-              title="Noch keine Salons"
-              message="Bald verfügbar — schau später wieder vorbei!"
+              illustration="coming-soon"
+              title="Wir wachsen gerade"
+              message="Bald mehr Salons in deiner Nähe"
             />
           ) : (
             <div
@@ -428,7 +429,7 @@ export default function HomePage() {
 
       {/* ── Last-Minute Angebote ────────────────────────────────────────── */}
       {sections.last_minute && (
-      <section id="tour-last-minute" className="py-20 overflow-hidden relative"
+      <section id="tour-last-minute" className="py-16 md:py-24 overflow-hidden relative"
         style={{ background: "#4A1E3C" }}>
         {/* Deco blobs on dark */}
         <div className="absolute w-[360px] h-[360px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
@@ -446,7 +447,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link href={`/${locale}/last-minute`}
-              className="text-white/60 border border-white/20 text-xs px-4 py-2 rounded-pill font-heading font-bold uppercase tracking-[.04em] hover:text-white hover:border-white/40 transition-all">
+              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-all">
               Alle ansehen →
             </Link>
           </div>
@@ -484,7 +485,7 @@ export default function HomePage() {
 
       {/* ── Trending Section ────────────────────────────────────────────────── */}
       {sections.trending && trendingSalons.length > 0 && (
-        <section className="py-12">
+        <section className="py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
@@ -515,7 +516,7 @@ export default function HomePage() {
 
       {/* ── Near You Section ────────────────────────────────────────────────── */}
       {sections.nearby && (showNearby || nearbySalons.length > 0) && (
-        <section className="py-12">
+        <section className="py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6 flex items-center justify-between">
               <div>
@@ -531,7 +532,7 @@ export default function HomePage() {
                 </p>
               </div>
               {nearbySalons.length > 0 && (
-                <Link href={`/${locale}/coiffeur`} className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4">
+                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4">
                   Alle ansehen →
                 </Link>
               )}
@@ -556,7 +557,7 @@ export default function HomePage() {
 
       {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
       {sections.new_salons && newSalons.length > 0 && (
-        <section className="py-12">
+        <section className="py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
@@ -589,7 +590,7 @@ export default function HomePage() {
 
       {/* ── Quartier Section (Dark) ─────────────────────────────────────── */}
       {sections.quartier && Object.values(quartierCounts).some(c => c > 0) && (
-      <section className="py-20 overflow-hidden relative" style={{ background: "#1A1209" }}>
+      <section className="py-16 md:py-24 overflow-hidden relative" style={{ background: "#1A1209" }}>
         <div className="absolute w-[400px] h-[400px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
           style={{ background: "rgba(232,98,74,.08)" }} />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
