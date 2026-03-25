@@ -3,6 +3,13 @@ import { NextResponse } from "next/server";
 
 type FeatureKey = "bookings" | "payments" | "messaging" | "reviews" | "registration" | "last_minute" | "maintenance_mode" | "visual_editor" | "nail_features" | "barber_features";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Client-side feature flags (build-time toggles)
+// ─────────────────────────────────────────────────────────────────────────────
+export const CLIENT_FEATURE_FLAGS = {
+  isMassageSpaEnabled: false, // Phase 1: Hide Massage & Spa category
+} as const;
+
 export async function checkFeatureEnabled(featureKey: FeatureKey): Promise<NextResponse | null> {
   const admin = createAdminSupabaseClient();
 

@@ -25,6 +25,7 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
+import { CLIENT_FEATURE_FLAGS } from "@/lib/feature-flags";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -317,11 +318,11 @@ export default function HomePage() {
           </h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {CATEGORIES.map(({ key, label, count, grad }) => (
+          {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, grad }) => (
             <Link key={key} href={`/${locale}/${key}`}
-              className="relative aspect-square rounded-[20px] overflow-hidden group"
+              className="relative aspect-square rounded-[20px] overflow-hidden group hover:brightness-[1.06] transition-all duration-200"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
-              <div className="absolute inset-0 transition-transform duration-[250ms]"
+              <div className="absolute inset-0"
                 style={{ background: grad }} />
               <div className="absolute inset-0 bg-gradient-to-t from-s-ink/60 to-transparent" />
               <div className="absolute bottom-0 inset-x-0 p-3">
