@@ -15,24 +15,24 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
 
   return (
     <div className="px-4 pt-4">
-      <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 uppercase tracking-wider mb-2">
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
         Mitarbeiter wählen
       </p>
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
         {/* "Egal" option */}
         <button
           onClick={() => onSelect("any")}
-          className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-card border transition-all duration-200 ${
+          className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-all duration-200 ${
             selectedStaff === "any"
-              ? "border-s-coral ring-2 ring-s-coral ring-offset-2 bg-s-coral-subtle scale-105"
-              : "border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-warm-md"
+              ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
+              : "border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface hover:-translate-y-[4px] hover:border-s-coral/40 hover:shadow-warm-sm"
           }`}
           style={{ minWidth: "90px" }}
         >
           <div className="w-12 h-12 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg flex items-center justify-center">
             <Users size={20} className="text-s-ink/30 dark:text-s-dm-text/30" />
           </div>
-          <span className="text-xs font-medium text-s-ink dark:text-s-dm-text">Egal</span>
+          <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Egal</span>
         </button>
 
         {/* Staff cards */}
@@ -40,10 +40,10 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           <button
             key={s.id}
             onClick={() => onSelect(s.id)}
-            className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-card border transition-all duration-200 ${
+            className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-all duration-200 ${
               selectedStaff === s.id
-                ? "border-s-coral ring-2 ring-s-coral ring-offset-2 bg-s-coral-subtle scale-105"
-                : "border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-warm-md"
+                ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
+                : "border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface hover:-translate-y-[4px] hover:border-s-coral/40 hover:shadow-warm-sm"
             }`}
             style={{ minWidth: "90px" }}
           >
@@ -62,7 +62,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
                 </span>
               )}
             </div>
-            <span className="text-xs font-medium text-s-ink dark:text-s-dm-text text-center leading-tight max-w-[80px] truncate">
+            <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text text-center leading-tight max-w-[80px] truncate">
               {s.name}
             </span>
             {s.specialties?.length > 0 && (
