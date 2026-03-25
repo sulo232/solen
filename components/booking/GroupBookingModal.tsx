@@ -107,7 +107,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose}>
-      <div className="bg-white dark:bg-s-dm-surface rounded-card p-6 mx-4 max-w-lg w-full shadow-surface max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-6 mx-4 max-w-lg w-full shadow-surface max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users size={18} className="text-s-coral" />
@@ -177,7 +177,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-semibold text-sm hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {submitting && <Spinner size="sm" invert />}
           Gruppe buchen
