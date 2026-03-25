@@ -367,6 +367,7 @@ const SettingsSection = memo(function SettingsSection({
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("Profile");
+  const tPrefs = useTranslations("booking.preferences");
   const [name, setName] = useState(profile.display_name);
   const [bio, setBio] = useState(profile.bio ?? "");
   const [avatar, setAvatar] = useState(profile.avatar_url ?? "");
@@ -375,6 +376,16 @@ const SettingsSection = memo(function SettingsSection({
   const [lang, setLang] = useState<"de" | "en" | "fr" | "it">(profile.locale ?? "de");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // Customer preferences
+  const [allergies, setAllergies] = useState(profile.customer_preferences?.allergies || "");
+  const [skinType, setSkinType] = useState(profile.customer_preferences?.skinType || "");
+  const [stylistGender, setStylistGender] = useState<"male" | "female" | "no-preference">(
+    profile.customer_preferences?.stylistGender || "no-preference"
+  );
+  const [accessibilityNeeds, setAccessibilityNeeds] = useState(profile.customer_preferences?.accessibilityNeeds || "");
+  const [prefLanguage, setPrefLanguage] = useState(profile.customer_preferences?.language || "");
+  const [prefNotes, setPrefNotes] = useState(profile.customer_preferences?.notes || "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -386,6 +397,14 @@ const SettingsSection = memo(function SettingsSection({
       birthday: birthday || null,
       notification_email: emailOn,
       locale: lang,
+      customer_preferences: {
+        allergies: allergies.trim() || undefined,
+        skinType: skinType.trim() || undefined,
+        stylistGender,
+        accessibilityNeeds: accessibilityNeeds.trim() || undefined,
+        language: prefLanguage.trim() || undefined,
+        notes: prefNotes.trim() || undefined,
+      },
     } as Partial<Profile>);
     setSaving(false);
     setSaved(true);
@@ -489,6 +508,95 @@ const SettingsSection = memo(function SettingsSection({
               {l === "de" ? "Deutsch" : l === "en" ? "English" : l === "fr" ? "Français" : "Italiano"}
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Customer Preferences */}
+      <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-4">
+        <div>
+          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-1">{tPrefs("title")}</p>
+          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-3">{tPrefs("subtitle")}</p>
+        </div>
+
+        {/* Allergies */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("allergies_label")}</label>
+          <input
+            type="text"
+            value={allergies}
+            onChange={(e) => setAllergies(e.target.value)}
+            placeholder={tPrefs("allergies_placeholder")}
+            className={INPUT_CLS}
+          />
+        </div>
+
+        {/* Skin Type */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("skin_type_label")}</label>
+          <input
+            type="text"
+            value={skinType}
+            onChange={(e) => setSkinType(e.target.value)}
+            placeholder={tPrefs("skin_type_placeholder")}
+            className={INPUT_CLS}
+          />
+        </div>
+
+        {/* Stylist Gender */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{tPrefs("stylist_gender_label")}</label>
+          <div className="flex gap-2">
+            {(["male", "female", "no-preference"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setStylistGender(option)}
+                className={`flex-1 px-4 py-2 rounded-btn border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${
+                  stylistGender === option
+                    ? "border-s-coral bg-s-coral text-white"
+                    : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60"
+                }`}
+              >
+                {tPrefs(`stylist_gender_${option}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Accessibility Needs */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("accessibility_label")}</label>
+          <input
+            type="text"
+            value={accessibilityNeeds}
+            onChange={(e) => setAccessibilityNeeds(e.target.value)}
+            placeholder={tPrefs("accessibility_placeholder")}
+            className={INPUT_CLS}
+          />
+        </div>
+
+        {/* Preferred Language */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("language_label")}</label>
+          <input
+            type="text"
+            value={prefLanguage}
+            onChange={(e) => setPrefLanguage(e.target.value)}
+            placeholder={tPrefs("language_placeholder")}
+            className={INPUT_CLS}
+          />
+        </div>
+
+        {/* Notes */}
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">{tPrefs("notes_label")}</label>
+          <textarea
+            value={prefNotes}
+            onChange={(e) => setPrefNotes(e.target.value)}
+            placeholder={tPrefs("notes_placeholder")}
+            rows={2}
+            className={`${INPUT_CLS} resize-none`}
+          />
         </div>
       </div>
 
