@@ -66,7 +66,7 @@ function CheckoutForm({ intent, paymentIntentId, onSuccess }: {
     const { error: confirmError } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/de/checkout/success?booking_intent=${encodeURIComponent(window.location.search.replace("?booking_intent=", ""))}&pi=${paymentIntentId}`,
+        return_url: `${window.location.origin}/${locale}/checkout/success?booking_intent=${encodeURIComponent(window.location.search.replace("?booking_intent=", ""))}&pi=${paymentIntentId}`,
       },
     });
 
@@ -291,14 +291,14 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="rounded-[16px] border border-[#4CAF6F]/20 p-8 flex flex-col items-center gap-4"
-            style={{ background: "rgba(76,175,111,.06)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
+          <div className="rounded-[16px] border border-s-success/20 p-8 flex flex-col items-center gap-4"
+            style={{ background: "rgba(46,125,50,.06)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
             <div className="w-16 h-16 rounded-[18px] flex items-center justify-center"
-              style={{ background: "rgba(76,175,111,.14)" }}>
-              <PartyPopper size={28} className="text-[#4CAF6F]" />
+              style={{ background: "rgba(46,125,50,.12)" }}>
+              <PartyPopper size={28} className="text-s-success" />
             </div>
             <div>
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-[#4CAF6F] mb-2">
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-success mb-2">
                 Buchung bestätigt
               </p>
               <p className="font-heading font-bold text-xl text-s-ink">Termin fixiert!</p>
@@ -466,13 +466,13 @@ export default function CheckoutPage() {
           )}
 
           {promoResult && (
-            <div className="flex items-center justify-between rounded-[10px] border border-[#4CAF6F]/25 px-3 py-2.5"
-              style={{ background: "rgba(76,175,111,.06)" }}>
+            <div className="flex items-center justify-between rounded-[10px] border border-s-success/25 px-3 py-2.5"
+              style={{ background: "rgba(46,125,50,.06)" }}>
               <div className="flex items-center gap-2">
-                <CheckCircle size={13} className="text-[#4CAF6F] shrink-0" />
-                <span className="text-xs font-heading font-semibold text-[#1f6535]">{promoResult.code} angewendet</span>
+                <CheckCircle size={13} className="text-s-success shrink-0" />
+                <span className="text-xs font-heading font-semibold text-s-success">{promoResult.code} angewendet</span>
               </div>
-              <span className="text-xs font-heading font-bold text-[#1f6535]">-{formatCurrency(promoResult.discount_amount, locale)}</span>
+              <span className="text-xs font-heading font-bold text-s-success">-{formatCurrency(promoResult.discount_amount, locale)}</span>
             </div>
           )}
 

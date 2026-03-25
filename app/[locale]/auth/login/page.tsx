@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import SignIn from "@/components/auth/SignIn";
 
 export const dynamic = "force-dynamic";
@@ -19,20 +20,20 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
-          <a href="/"
-            className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity">
+          <Link
+            href={`/${locale}`}
+            className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity"
+          >
             solen<span className="text-s-coral">.</span>ch
-          </a>
+          </Link>
           <p className="text-xs font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-3">
             Willkommen zurück
           </p>
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
-        <div className="rounded-[16px] border border-white/70 dark:border-white/10 p-8"
-          style={{ background: "rgba(255,255,255,.90)", backdropFilter: "blur(20px) saturate(1.2)",
-                   WebkitBackdropFilter: "blur(20px) saturate(1.2)",
-                   boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.90)" }}>
+        <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.08] p-8 bg-white dark:bg-s-dm-surface"
+          style={{ boxShadow: "0 4px 12px rgba(26,18,9,.08), 0 16px 40px rgba(26,18,9,.06)" }}>
           <Suspense>
             <SignIn />
           </Suspense>

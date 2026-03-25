@@ -460,7 +460,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-card bg-white/08 border border-white/12 px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
+              className="rounded-card bg-white/[0.08] border border-white/[0.12] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
             >
               <div className="flex-1">
                 <p className="text-sm text-white/60 font-body">
@@ -517,7 +517,7 @@ export default function HomePage() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                  In deiner Nähe
+                  Standort
                 </span>
                 <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
                   style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>

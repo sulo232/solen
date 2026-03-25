@@ -267,6 +267,11 @@ export default function SalonProfilePage() {
   const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  // Review flag inline form state
+  const [flaggingReviewId, setFlaggingReviewId] = useState<string | null>(null);
+  const [flagReason, setFlagReason] = useState("");
+  const [flagLoading, setFlagLoading] = useState(false);
+  const [flagSuccess, setFlagSuccess] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -322,6 +327,16 @@ export default function SalonProfilePage() {
     });
   }, [salon?.id, salon?.slug, salon?.name, salon?.cover_photo_url, salon?.average_rating, salon?.categories, posthog]);
 
+  // ESC key handler to close photo lightbox
+  useEffect(() => {
+    if (!lightboxPhoto) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxPhoto(null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxPhoto]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><Spinner size="lg" /></div>;
   }
@@ -353,24 +368,28 @@ export default function SalonProfilePage() {
   const reviewsVisible = sortedReviews.slice(0, reviewPage * 5);
 
   const handleFlagReview = async (reviewId: string) => {
-    const reason = window.prompt("Warum möchtest du diese Bewertung melden?");
-    if (!reason || reason.trim().length < 5) {
-      if (reason) alert("Bitte gib einen Grund an (mindestens 5 Zeichen).");
-      return;
-    }
-    
+    setFlaggingReviewId(reviewId);
+    setFlagReason("");
+    setFlagSuccess(false);
+  };
+
+  const submitFlag = async () => {
+    if (!flaggingReviewId || flagReason.trim().length < 5) return;
+    setFlagLoading(true);
     try {
-      const res = await fetch(`/api/reviews/${reviewId}/flag`, {
+      const res = await fetch(`/api/reviews/${flaggingReviewId}/flag`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: reason.trim() })
+        body: JSON.stringify({ reason: flagReason.trim() })
       });
-      if (!res.ok) throw new Error("Fehler beim Melden der Bewertung");
-      alert("Bewertung wurde gemeldet und wird geprüft.");
-      // Optionally reload salon here
+      if (!res.ok) throw new Error("Fehler");
+      setFlagSuccess(true);
+      setTimeout(() => { setFlaggingReviewId(null); setFlagSuccess(false); }, 2000);
       fetch(`/api/salons/${slug}`).then((r) => r.json()).then(setSalon).catch(() => {});
-    } catch (err) {
-      alert("Fehler beim Melden der Bewertung.");
+    } catch {
+      // keep form open on error
+    } finally {
+      setFlagLoading(false);
     }
   };
 
@@ -1015,17 +1034,50 @@ export default function SalonProfilePage() {
                            </div>
                           {rev.comment && <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed">{rev.comment}</p>}
                           
-                          {/* Owner Actions */}
-                          {isOwner && (
-                            <div className="mt-2 flex justify-end">
-                              <button 
-                                onClick={() => handleFlagReview(rev.id)} 
-                                className="text-xs text-s-coral hover:underline"
+                          {/* Flag Review — inline form (no window.prompt) */}
+                          <div className="mt-2 flex justify-end">
+                            {flaggingReviewId === rev.id ? (
+                              <div className="w-full rounded-[12px] p-3 mt-1"
+                                style={{ background: "rgba(255,255,255,.70)", backdropFilter: "blur(12px)", border: "1px solid rgba(232,98,74,.15)" }}>
+                                {flagSuccess ? (
+                                  <p className="text-xs text-s-success font-heading font-semibold py-1">✓ Bewertung gemeldet. Danke!</p>
+                                ) : (
+                                  <>
+                                    <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mb-2">Grund angeben</p>
+                                    <textarea
+                                      value={flagReason}
+                                      onChange={(e) => setFlagReason(e.target.value)}
+                                      placeholder="Bitte beschreibe deinen Grund (min. 5 Zeichen)…"
+                                      rows={2}
+                                      className="w-full text-xs font-body text-s-ink dark:text-s-dm-text bg-transparent border border-s-ink/10 dark:border-white/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-s-ink/30 transition-colors"
+                                    />
+                                    <div className="flex gap-2 mt-2 justify-end">
+                                      <button
+                                        onClick={() => setFlaggingReviewId(null)}
+                                        className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors"
+                                      >
+                                        Abbrechen
+                                      </button>
+                                      <button
+                                        onClick={submitFlag}
+                                        disabled={flagLoading || flagReason.trim().length < 5}
+                                        className="text-xs text-white font-heading font-bold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral disabled:opacity-50 transition-all shadow-coral-glow"
+                                      >
+                                        {flagLoading ? "…" : "Melden"}
+                                      </button>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleFlagReview(rev.id)}
+                                className="text-xs text-s-ink/30 hover:text-s-coral transition-colors font-heading font-semibold uppercase tracking-[.08em]"
                               >
                                 Melden
                               </button>
-                            </div>
-                          )}
+                            )}
+                          </div>
 
                           {/* Review photos */}
                           {rev.review_photos && rev.review_photos.length > 0 && (
