@@ -63,13 +63,13 @@ export function LastMinutePage({ locale = "de" }: { locale?: string }) {
         <div className="flex items-center gap-2 mt-4">
           <button
             onClick={() => setViewMode("list")}
-            className={`px-3 py-1.5 rounded-button text-xs font-medium border transition-colors ${viewMode === "list" ? "bg-dark text-white border-dark" : "border-gray-200 text-dark"}`}
+            className={`px-3 py-1.5 rounded-btn text-xs font-medium border transition-colors ${viewMode === "list" ? "bg-dark text-white border-dark" : "border-gray-200 text-dark"}`}
           >
             Liste
           </button>
           <button
             onClick={() => setViewMode("map")}
-            className={`px-3 py-1.5 rounded-button text-xs font-medium border transition-colors ${viewMode === "map" ? "bg-dark text-white border-dark" : "border-gray-200 text-dark"}`}
+            className={`px-3 py-1.5 rounded-btn text-xs font-medium border transition-colors ${viewMode === "map" ? "bg-dark text-white border-dark" : "border-gray-200 text-dark"}`}
           >
             Karte
           </button>
@@ -100,7 +100,7 @@ export function LastMinutePage({ locale = "de" }: { locale?: string }) {
                 <button
                   onClick={() => { setPage((p) => p + 1); fetchItems(false); }}
                   disabled={isLoading}
-                  className="px-6 py-2.5 rounded-button border border-teal text-teal text-sm font-medium hover:bg-teal/5 transition-colors disabled:opacity-60"
+                  className="px-6 py-2.5 rounded-btn border border-teal text-teal text-sm font-medium hover:bg-teal/5 transition-colors disabled:opacity-60"
                 >
                   Mehr laden
                 </button>

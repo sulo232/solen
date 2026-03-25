@@ -73,7 +73,7 @@ export function MessagesPage({ locale = "de" }: MessagesPageProps) {
         <div className="w-80 flex-shrink-0 border-r border-gray-100 flex flex-col">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
             <h2 className="font-heading font-semibold text-dark text-sm">Nachrichten</h2>
-            <button className="p-1.5 rounded-button hover:bg-gray-100 text-gray-500 hover:text-dark transition-colors">
+            <button className="p-1.5 rounded-btn hover:bg-gray-100 text-gray-500 hover:text-dark transition-colors">
               <Plus size={16} />
             </button>
           </div>

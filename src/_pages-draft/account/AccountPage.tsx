@@ -25,19 +25,19 @@ function CancellationModal({ booking, onClose, onConfirm }: { booking: Booking; 
           onChange={(e) => setReason(e.target.value)}
           placeholder="Grund (optional)"
           rows={3}
-          className="w-full border border-gray-200 rounded-button px-3 py-2 text-sm mb-4 resize-none focus:outline-none focus:border-teal"
+          className="w-full border border-gray-200 rounded-btn px-3 py-2 text-sm mb-4 resize-none focus:outline-none focus:border-teal"
         />
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-button border border-gray-200 text-sm text-dark hover:bg-gray-50"
+            className="flex-1 py-2.5 rounded-btn border border-gray-200 text-sm text-dark hover:bg-gray-50"
           >
             Abbrechen
           </button>
           <button
             onClick={async () => { setIsConfirming(true); await onConfirm(booking.id, reason); }}
             disabled={isConfirming}
-            className="flex-1 py-2.5 rounded-button bg-coral text-white text-sm font-semibold hover:bg-coral/90 disabled:opacity-60"
+            className="flex-1 py-2.5 rounded-btn bg-coral text-white text-sm font-semibold hover:bg-coral/90 disabled:opacity-60"
           >
             {isConfirming ? "..." : "Ja, stornieren"}
           </button>
@@ -126,21 +126,21 @@ export function AccountPage({ locale = "de" }: AccountPageProps) {
                           <div className="flex gap-2 mt-3">
                             <a
                               href={`/${locale}/salon/${booking.salon.slug}?service=${booking.service_id}&staff=${booking.staff_member_id ?? ""}`}
-                              className="flex-1 text-center py-2 text-xs font-semibold text-teal border border-teal rounded-button hover:bg-teal/5 flex items-center justify-center gap-1"
+                              className="flex-1 text-center py-2 text-xs font-semibold text-teal border border-teal rounded-btn hover:bg-teal/5 flex items-center justify-center gap-1"
                             >
                               <RotateCcw size={12} /> Nochmal buchen
                             </a>
                             {canCancel(booking) ? (
                               <button
                                 onClick={() => setCancelModalBooking(booking)}
-                                className="flex-1 text-center py-2 text-xs font-semibold text-coral border border-coral/30 rounded-button hover:bg-coral/5"
+                                className="flex-1 text-center py-2 text-xs font-semibold text-coral border border-coral/30 rounded-btn hover:bg-coral/5"
                               >
                                 Stornieren
                               </button>
                             ) : (
                               <span
                                 title="Stornierung nicht mehr möglich (weniger als 24h vor Termin)"
-                                className="flex-1 text-center py-2 text-xs text-gray-300 border border-gray-100 rounded-button cursor-not-allowed flex items-center justify-center gap-1"
+                                className="flex-1 text-center py-2 text-xs text-gray-300 border border-gray-100 rounded-btn cursor-not-allowed flex items-center justify-center gap-1"
                               >
                                 <AlertTriangle size={11} /> Stornieren
                               </span>

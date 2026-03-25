@@ -74,7 +74,7 @@ export function ProfilePage({ locale = "de" }: ProfilePageProps) {
               type="text"
               value={profile?.display_name ?? ""}
               onChange={(e) => update({ display_name: e.target.value })}
-              className="w-full border border-gray-200 rounded-button px-3 py-2 text-sm focus:outline-none focus:border-teal"
+              className="w-full border border-gray-200 rounded-btn px-3 py-2 text-sm focus:outline-none focus:border-teal"
             />
           </div>
 
@@ -85,7 +85,7 @@ export function ProfilePage({ locale = "de" }: ProfilePageProps) {
               value={profile?.bio ?? ""}
               onChange={(e) => update({ bio: e.target.value })}
               rows={2}
-              className="w-full border border-gray-200 rounded-button px-3 py-2 text-sm resize-none focus:outline-none focus:border-teal"
+              className="w-full border border-gray-200 rounded-btn px-3 py-2 text-sm resize-none focus:outline-none focus:border-teal"
             />
           </div>
 
@@ -147,7 +147,7 @@ export function ProfilePage({ locale = "de" }: ProfilePageProps) {
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="w-full py-3 bg-teal text-white font-semibold rounded-button text-sm hover:bg-teal/90 disabled:opacity-60 flex items-center justify-center gap-2"
+          className="w-full py-3 bg-teal text-white font-semibold rounded-btn text-sm hover:bg-teal/90 disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {isSaving ? <Spinner size={16} invert /> : saved ? <Check size={16} /> : null}
           {saved ? "Gespeichert!" : "Speichern"}

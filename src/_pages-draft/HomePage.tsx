@@ -208,7 +208,7 @@ export function HomePage({ locale = "de" }: { locale?: string }) {
 
         {/* Search bar */}
         <div className="relative mt-4">
-          <div className="relative flex items-center bg-white border border-gray-200 rounded-button shadow-card overflow-hidden focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
+          <div className="relative flex items-center bg-white border border-gray-200 rounded-btn shadow-card overflow-hidden focus-within:border-teal focus-within:ring-2 focus-within:ring-teal/20 transition-all">
             <Search size={18} className="absolute left-4 text-gray-400 pointer-events-none" />
             <input
               ref={searchRef}

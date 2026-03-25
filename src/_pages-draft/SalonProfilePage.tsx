@@ -238,7 +238,7 @@ export function SalonProfilePage({ slug, preSelectedServiceId, preSelectedSlotId
                             setSelectedServiceId(service.id);
                             document.getElementById("booking-calendar")?.scrollIntoView({ behavior: "smooth" });
                           }}
-                          className="px-3 py-1.5 bg-teal text-white text-xs font-semibold rounded-button hover:bg-teal/90 transition-colors"
+                          className="px-3 py-1.5 bg-teal text-white text-xs font-semibold rounded-btn hover:bg-teal/90 transition-colors"
                         >
                           Buchen
                         </button>
