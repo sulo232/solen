@@ -114,10 +114,14 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         }}>
           {/* Logo + Sub-site icon */}
           <div className="flex items-center gap-2 shrink-0">
-            <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="Solen Startseite">
-              <span className="font-display text-2xl tracking-[0.06em] uppercase text-s-ink dark:text-s-dm-text">
-                so<span className="text-s-coral">.</span>len
-              </span>
+            <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label="Solen.ch – Zur Startseite">
+              <img
+                src="/logo.svg"
+                alt="Solen.ch"
+                className="h-8 w-auto dark:invert"
+                width={96}
+                height={32}
+              />
             </Link>
             {CategoryIcon && categoryInfo && (
               <div className="flex items-center gap-1.5 text-s-coral ml-1">

@@ -1,0 +1,8 @@
+<svg width="96" height="32" viewBox="0 0 96 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- "so" in warm ink -->
+  <text x="0" y="24" font-family="'Bebas Neue', sans-serif" font-size="28" font-weight="400" fill="#1A1209" letter-spacing="1.7">SO</text>
+  <!-- "." in coral -->
+  <circle cx="34" cy="20" r="3.5" fill="#E8624A"/>
+  <!-- "len" in warm ink -->
+  <text x="42" y="24" font-family="'Bebas Neue', sans-serif" font-size="28" font-weight="400" fill="#1A1209" letter-spacing="1.7">LEN</text>
+</svg>
