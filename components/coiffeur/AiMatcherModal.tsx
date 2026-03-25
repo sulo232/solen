@@ -96,7 +96,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
 
       {/* Panel */}
       <div
-        className="relative z-10 w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-card shadow-warm-xl overflow-hidden"
+        className="relative z-10 w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl overflow-hidden"
         style={{ animation: "slideUp 0.35s var(--ease, cubic-bezier(0.34,1.56,0.64,1)) both" }}
       >
         {/* Progress bar */}
@@ -152,7 +152,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                   <button
                     key={opt}
                     onClick={() => setSelected(opt === selected ? null : opt)}
-                    className={`px-4 py-2 rounded-pill text-sm font-body font-medium border transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-all duration-200 ${
                       selected === opt
                         ? "bg-s-coral text-white border-s-coral shadow-warm-sm"
                         : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border-s-ink/10 dark:border-white/10 hover:border-s-coral"
@@ -167,7 +167,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <button
                 onClick={handleNext}
                 disabled={!selected}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-body font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-s-coral-hover transition-all shadow-warm-sm"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-all shadow-warm-sm"
               >
                 {step < STEPS.length - 1 ? "Weiter" : "Empfehlung anzeigen"}
                 <ChevronRight size={16} />
@@ -191,7 +191,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <Link
                 href={`/${locale}/coiffeur?q=${encodeURIComponent(searchQuery.trim())}`}
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-body font-medium text-sm hover:bg-s-coral-hover transition-all shadow-warm-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-all shadow-warm-sm"
               >
                 Salons entdecken <ChevronRight size={16} />
               </Link>

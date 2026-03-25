@@ -60,7 +60,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
   if (result?.success) {
     return (
-      <div className="rounded-card bg-s-sage/10 dark:bg-s-sage/20 border border-s-sage/20 p-5 text-center">
+      <div className="rounded-[16px] bg-s-sage/10 dark:bg-s-sage/20 border border-s-sage/20 p-5 text-center">
         <CheckCircle size={32} className="text-s-sage mx-auto mb-3" />
         <h4 className="font-heading text-base font-bold text-s-ink dark:text-s-dm-text mb-1">
           Du bist angestellt!
@@ -153,8 +153,6 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       <button
         type="submit"
         disabled={!name.trim() || submitting}
-        className="w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2.5 text-sm hover:bg-s-coral-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      >
         <Users size={16} />
         {submitting ? "Wird angemeldet..." : "Jetzt anstellen"}
       </button>

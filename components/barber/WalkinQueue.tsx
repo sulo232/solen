@@ -91,7 +91,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
           {activeQueue.map((entry, i) => (
             <div
               key={entry.id}
-              className={`rounded-card p-3 border ${
+              className={`rounded-[16px] p-3 border ${
                 entry.status === "in_chair"
                   ? "border-s-coral/30 bg-s-coral/5 dark:bg-s-coral/10"
                   : "border-s-ink/10 bg-white dark:bg-s-dm-surface dark:border-s-dm-text/10"

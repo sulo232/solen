@@ -38,7 +38,7 @@ export function CoiffeurAboveGrid() {
   };
 
   return (
-    <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-card px-4 py-3 flex items-center gap-3 flex-wrap">
+    <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[16px] px-4 py-3 flex items-center gap-3 flex-wrap">
       <span className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold shrink-0">
         Haartyp
       </span>
@@ -46,7 +46,7 @@ export function CoiffeurAboveGrid() {
         <button
           key={type}
           onClick={() => handlePillClick(type)}
-          className={`px-3 py-1.5 rounded-pill text-xs font-body font-medium transition-all ${
+          className={`px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all ${
             activeType === type
               ? "bg-s-coral text-white shadow-warm-sm"
               : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border border-s-ink/10 dark:border-white/10 hover:border-s-coral"
@@ -101,9 +101,9 @@ export function CoiffeurBelowGrid() {
               <Link
                 key={style.label}
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
-                className={`rounded-card bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-warm-xl hover:-translate-y-[5px] transition-all duration-250`}
+                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-warm-xl hover:-translate-y-[5px] transition-all duration-250`}
               >
-                <span className="text-xs rounded-pill px-2 py-0.5 bg-white/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 font-body self-start">
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-white/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 self-start">
                   {style.tag}
                 </span>
                 <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">
@@ -115,7 +115,7 @@ export function CoiffeurBelowGrid() {
         </section>
 
         {/* AI matching CTA */}
-        <section className="rounded-card bg-gradient-to-r from-s-coral/5 to-s-coral/10 dark:from-s-coral/10 dark:to-s-coral/5 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <section className="rounded-[16px] bg-gradient-to-r from-s-coral/5 to-s-coral/10 dark:from-s-coral/10 dark:to-s-coral/5 border border-s-coral/15 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="w-12 h-12 rounded-pill bg-s-coral/10 flex items-center justify-center shrink-0">
             <Brain size={22} className="text-s-coral" />
           </div>
@@ -129,7 +129,7 @@ export function CoiffeurBelowGrid() {
           </div>
           <button
             onClick={() => setAiModalOpen(true)}
-            className="shrink-0 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-body font-medium hover:bg-s-coral-hover transition-all shadow-warm-sm"
+            className="shrink-0 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-all shadow-warm-sm"
           >
             KI-Empfehlung →
           </button>
