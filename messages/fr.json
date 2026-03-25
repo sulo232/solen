@@ -248,7 +248,8 @@
     "contact": "Contact",
     "no_reviews": "Pas encore d'avis",
     "write_review": "Écrire un avis",
-    "instagram": "Voir Instagram"
+    "instagram": "Voir Instagram",
+    "similarSalons": "Salons similaires"
   },
   "booking": {
     "select_service": "Choisir une prestation",

@@ -248,7 +248,8 @@
     "contact": "Contatto",
     "no_reviews": "Ancora nessuna recensione",
     "write_review": "Scrivi una recensione",
-    "instagram": "Vedi Instagram"
+    "instagram": "Vedi Instagram",
+    "similarSalons": "Saloni simili"
   },
   "booking": {
     "select_service": "Scegli servizio",
@@ -395,7 +396,31 @@
     "package_redeem": "Riscatta ora",
     "package_redeemed": "Riscattato!",
     "package_no_charge": "Nessun importo aggiuntivo.",
-    "package_redeem_failed": "Riscatto fallito"
+    "package_redeem_failed": "Riscatto fallito",
+    "preferences": {
+      "title": "Condividi le tue preferenze",
+      "subtitle": "Aiuta il tuo salone a conoscerti meglio (facoltativo)",
+      "label_optional": "Facoltativo",
+      "allergies_label": "Allergie",
+      "allergies_placeholder": "es. lattice, alcuni ingredienti...",
+      "skin_type_label": "Tipo di pelle",
+      "skin_type_placeholder": "es. sensibile, secca, grassa...",
+      "stylist_gender_label": "Genere di stilista preferito",
+      "stylist_gender_male": "Maschile",
+      "stylist_gender_female": "Femminile",
+      "stylist_gender_no_preference": "Nessuna preferenza",
+      "accessibility_label": "Accessibilità",
+      "accessibility_placeholder": "es. sedia a rotelle, apparecchio acustico...",
+      "language_label": "Lingua preferita",
+      "language_placeholder": "es. tedesco, inglese, francese...",
+      "notes_label": "Richieste aggiuntive",
+      "notes_placeholder": "Altre richieste o note...",
+      "skip": "Salta",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "success_save": "Preferenze salvate",
+      "error_save": "Errore durante il salvataggio"
+    }
   },
   "chat": {
     "send": "Invia",

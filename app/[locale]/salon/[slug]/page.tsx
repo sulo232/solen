@@ -19,6 +19,7 @@ import StaffSection from "@/components/salon/StaffSection";
 import ReviewBreakdown from "@/components/ReviewBreakdown";
 import ReviewForm from "@/components/ReviewForm";
 import NearbySalons from "@/components/NearbySalons";
+import SimilarSalons from "@/components/salon/SimilarSalons";
 import WaitTimeDisplay from "@/components/barber/WaitTimeDisplay";
 import RemoteQueueJoin from "@/components/barber/RemoteQueueJoin";
 import ExpressRebook from "@/components/barber/ExpressRebook";
@@ -1143,8 +1144,15 @@ export default function SalonProfilePage() {
                 </div>
               )}
 
-              {/* Nearby salons — lazy loaded */}
-              <NearbySalons salonSlug={slug} />
+              {/* Similar Salons */}
+              {salon.categories.length > 0 && (
+                <SimilarSalons
+                  currentSalonId={salon.id}
+                  quartier={salon.quartier}
+                  category={salon.categories[0]}
+                  locale={locale}
+                />
+              )}
             </div>
 
             {/* ── Right: sticky booking sidebar (desktop only) */}
