@@ -1,21 +1,18 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Scissors,
   Sparkles,
-  Clock,
   RefreshCw,
   Search,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
-import HomeSearchBar from "@/components/ui/HomeSearchBar";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
@@ -29,7 +26,6 @@ import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 
-const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgOCA1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiNFOEU0REYiLz48L3N2Zz4=";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -70,13 +66,13 @@ const CATEGORIES = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 const QUARTIERS = [
-  { slug: "grossbasel",  name: "Grossbasel",  bg: "from-s-coral/40 to-s-coral/10"   },
-  { slug: "kleinbasel",  name: "Kleinbasel",  bg: "from-s-blue/40 to-s-blue/10" },
-  { slug: "gundeli",     name: "Gundeli",     bg: "from-s-coral/30 to-s-blue/20"  },
-  { slug: "st_johann",   name: "St. Johann",  bg: "from-s-amber/40 to-s-amber-subtle" },
-  { slug: "iselin",      name: "Iselin",      bg: "from-s-plum-subtle to-s-plum-subtle/10" },
-  { slug: "bruderholz",  name: "Bruderholz",  bg: "from-s-sage/40 to-s-sage-subtle" },
-  { slug: "breite",      name: "Breite",      bg: "from-s-coral/30 to-s-coral-subtle" },
+  { slug: "grossbasel",  name: "Grossbasel"  },
+  { slug: "kleinbasel",  name: "Kleinbasel"  },
+  { slug: "gundeli",     name: "Gundeli"     },
+  { slug: "st_johann",   name: "St. Johann"  },
+  { slug: "iselin",      name: "Iselin"      },
+  { slug: "bruderholz",  name: "Bruderholz"  },
+  { slug: "breite",      name: "Breite"      },
 ] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -97,7 +93,6 @@ export default function HomePage() {
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
-  const [quartierImages, setQuartierImages] = useState<Record<string, string | null>>({});
   const [sections, setSections] = useState<Record<string, boolean>>({
     quartier: true, trending: true, nearby: true, new_salons: true,
     rebook: true, reviews: true, last_minute: true, featured: true,
@@ -207,14 +202,6 @@ export default function HomePage() {
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.counts) setQuartierCounts(data.counts);
-      })
-      .catch(() => {});
-
-    // Fetch quartier featured images
-    fetch("/api/salons/quartier-featured")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.images) setQuartierImages(data.images);
       })
       .catch(() => {});
 
@@ -595,82 +582,30 @@ export default function HomePage() {
 
       {/* Last-Minute section moved to after Beliebte Salons — Phase 0.3 */}
 
-      {/* ── Quartier Section ───────────────────────────────────────────────── */}
+      {/* ── Quartier Section (Dark) ─────────────────────────────────────── */}
       {sections.quartier && Object.values(quartierCounts).some(c => c > 0) && (
-      <section className="py-10 bg-s-bg-surface/50">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <span
-                className="inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 font-body bg-s-coral/[0.125] text-s-coral"
-              >
-                DEIN QUARTIER
-              </span>
-              <h2
-                className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text"
-               
-              >
-                Entdecke dein Quartier
-              </h2>
-            </div>
-            <Link
-              href={`/${locale}/coiffeur`}
-              className="text-sm text-s-coral hover:underline font-body shrink-0 ml-4"
-             
-            >
-              Alle ansehen →
-            </Link>
+      <section className="py-20 bg-s-ink relative overflow-hidden">
+        <div className="absolute w-[400px] h-[400px] rounded-full bg-s-coral/08 right-[-100px] top-[-100px] pointer-events-none" />
+        <div className="max-w-5xl mx-auto px-4 relative z-10">
+          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-yellow mb-2">Dein Quartier</span>
+          <h2 className="font-display text-white mb-2" style={{ fontSize: "clamp(36px,5vw,64px)", lineHeight: 0.87 }}>
+            Entdecke<br /><span className="text-s-coral">Basel</span>
+          </h2>
+          <p className="font-body italic text-white/45 text-[15px] leading-[1.8] mb-8 max-w-md">
+            Salons direkt bei dir im Quartier — vom Kleinbasel bis ins Bruderholz.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {QUARTIERS.filter(q => (quartierCounts[q.slug] ?? 0) > 0).map(({ slug, name }, i) => (
+              <Link key={slug} href={`/${locale}/coiffeur?quartier=${slug}`}
+                className="relative rounded-[20px] border border-white/10 bg-white/06 p-5 hover:bg-white/10 hover:-translate-y-[3px] hover:shadow-warm-lg transition-all duration-200 overflow-hidden group">
+                <p className="font-heading font-bold text-white text-[15px] mb-1">{name}</p>
+                <p className="text-xs text-white/45">{quartierCounts[slug]} {quartierCounts[slug] === 1 ? "Salon" : "Salons"}</p>
+                <span className="font-display text-[64px] absolute right-[-8px] bottom-[-16px] text-white/05 leading-none pointer-events-none">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </Link>
+            ))}
           </div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4"
-            style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
-          >
-            {QUARTIERS.map(({ slug, name, bg }) => {
-              const count = quartierCounts[slug] ?? 0;
-              const qImage = quartierImages[slug];
-              return (
-                <motion.div
-                  key={slug}
-                  variants={itemVariants}
-                  className="snap-start shrink-0"
-                >
-                  <Link
-                    href={`/${locale}/coiffeur?quartier=${slug}`}
-                    className="block w-[200px] h-[250px] rounded-card overflow-hidden relative group hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
-                  >
-                    {qImage ? (
-                      <Image src={qImage} alt={name} fill sizes="200px" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} className="object-cover" />
-                    ) : (
-                      <div className={`absolute inset-0 bg-gradient-to-br ${bg}`} />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-s-ink/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <p
-                        className="font-heading font-bold text-white text-base leading-tight"
-                       
-                      >
-                        {name}
-                      </p>
-                      <p
-                        className="text-white/70 text-xs mt-0.5 font-body"
-                       
-                      >
-                        {count > 0
-                          ? `${count} ${count === 1 ? "Salon" : "Salons"}`
-                          : "Bald hier"
-                        }
-                      </p>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </motion.div>
         </div>
       </section>
       )}
@@ -684,25 +619,26 @@ export default function HomePage() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="rounded-blob-c bg-s-ink text-s-bg-base overflow-hidden relative shadow-warm-float"
+            className="rounded-[20px] overflow-hidden relative shadow-warm-float"
+            style={{ background: "linear-gradient(135deg, #D4870A 0%, #E8624A 55%, #4A1E3C 100%)" }}
           >
             {/* Inner background blobs for the banner */}
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-s-blue/20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-s-coral/20 rounded-[70%_30%_50%_50%/40%_60%_40%_60%] blur-3xl transform -translate-x-1/3 translate-y-1/3" />
-            
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-white/08 rounded-full blur-3xl transform -translate-x-1/3 translate-y-1/3" />
+
             <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
               <div className="max-w-xl">
                 <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl mb-4 leading-tight text-white">
                   Hast du einen Salon?
                 </h2>
-                <p className="font-body text-s-bg-base/80 text-lg sm:text-xl">
+                <p className="font-body text-white/80 text-lg sm:text-xl">
                   Bringe dein Business auf das nächste Level. Werde Teil von Solen und erreiche tausende Kund:innen in Basel.
                 </p>
               </div>
               <div className="shrink-0 pt-4 md:pt-0">
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center px-10 py-4 bg-s-coral text-white font-heading font-bold tracking-wide rounded-btn hover:bg-s-coral-hover text-lg shadow-coral-glow hover:shadow-coral-glow-hover transition-all duration-200 hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-pressed uppercase tracking-[.04em]"
+                  className="inline-flex items-center justify-center px-10 py-4 bg-white text-s-ink font-heading font-bold tracking-wide rounded-pill hover:bg-white/90 text-lg shadow-warm-lg transition-all duration-200 hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-pressed uppercase tracking-[.04em]"
                 >
                   Partner werden
                 </Link>
@@ -712,6 +648,26 @@ export default function HomePage() {
         </div>
       </section>
       )}
+
+      {/* ── Trust Strip ──────────────────────────────────────────────────── */}
+      <div className="px-4 pb-16">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-[16px] bg-s-bg-base/50 dark:bg-s-dm-surface/50 backdrop-blur-[8px] border border-white/25 dark:border-white/10 shadow-warm-xs">
+            {[
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, label: "Sichere Zahlung — Stripe verschlüsselt" },
+              { icon: <span className="text-sm font-bold">CH</span>, label: "Swiss Made — Entwickelt in Basel" },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>, label: "nDSG konform" },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>, label: "Kostenlose Stornierung bis 24h" },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>, label: "TWINT · Kreditkarte · Bar" },
+            ].map(({ icon, label }) => (
+              <div key={label} className="flex items-center gap-2 text-xs text-s-ink/70 dark:text-s-dm-text/70">
+                <div className="w-7 h-7 rounded-[8px] bg-white dark:bg-s-dm-surface border border-s-ink/08 dark:border-white/08 flex items-center justify-center text-s-ink/60 dark:text-s-dm-text/60 shadow-warm-xs shrink-0">{icon}</div>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}
       <StickyMobileCTA />
