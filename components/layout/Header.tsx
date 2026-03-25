@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Menu, X, MessageCircle, User,
+  Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut, Building2,
   Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -47,6 +47,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
   const [scrolled, setScrolled] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   // Scroll morph — pill shrinks after scrolling
   useEffect(() => {
@@ -64,6 +66,17 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
     return () => document.removeEventListener("keydown", handler);
   }, [mobileOpen]);
 
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   // Hide global header on dashboard and auth pages (they have their own navigation)
   const isHidden = pathname.includes("/dashboard") || pathname.includes("/auth/");
 
@@ -80,6 +93,15 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
     }).catch(() => {});
   }, []);
 
+  // Sign out handler
+  const handleSignOut = async () => {
+    setProfileOpen(false);
+    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+    const supabase = createBrowserSupabaseClient();
+    await supabase.auth.signOut();
+    window.location.href = `/${locale}`;
+  };
+
   if (isHidden) return null;
 
   // Detect current category for sub-site icon
@@ -88,9 +110,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   );
   const categoryInfo = currentCategory ? CATEGORY_ICONS[currentCategory] : null;
   const CategoryIcon = categoryInfo?.icon;
-
-  // Profile link: redirect to login if not logged in
-  const profileHref = isLoggedIn ? `/${locale}/profile` : `/${locale}/auth/login`;
 
   return (
     <header className="sticky top-0 z-50 w-full px-4">
@@ -199,18 +218,80 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           </div>
         </div>
 
-        {/* Profile circle — outside nav pill */}
-        <Link
-          href={profileHref}
-          className={cn(
-            "hidden sm:flex items-center justify-center w-10 h-10 rounded-full bg-s-coral text-white hover:bg-s-coral-hover active:scale-[0.98] transition-all duration-200 shrink-0",
-            scrolled ? "mt-3" : "mt-2"
+        {/* Profile button — outside nav pill */}
+        <div className={cn("hidden sm:block relative shrink-0", scrolled ? "mt-3" : "mt-2")} ref={profileRef}>
+          {isLoggedIn ? (
+            <>
+              {/* Logged-in: button opens dropdown */}
+              <button
+                onClick={() => setProfileOpen(prev => !prev)}
+                aria-label={t("account")}
+                aria-expanded={profileOpen}
+                className={cn(
+                  "flex items-center justify-center w-10 h-10 rounded-full bg-s-coral text-white",
+                  "active:scale-[0.98] transition-all duration-200",
+                  profileOpen && "ring-2 ring-s-coral/30"
+                )}
+                style={{ boxShadow: "0 2px 4px rgba(232,98,74,.30)" }}
+              >
+                <User className="w-4 h-4" />
+              </button>
+
+              {/* Dropdown panel */}
+              {profileOpen && (
+                <div
+                  className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-input z-[60] overflow-hidden"
+                  style={{
+                    background: "rgba(255,255,255,.96)",
+                    backdropFilter: "blur(16px) saturate(1.2)",
+                    WebkitBackdropFilter: "blur(16px) saturate(1.2)",
+                    border: "1px solid rgba(255,255,255,.70)",
+                    boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
+                  }}
+                >
+                  <nav className="py-1" role="menu">
+                    {[
+                      { label: t("account"), href: `/${locale}/profile`, icon: User },
+                      { label: t("bookings"), href: `/${locale}/bookings`, icon: CalendarDays },
+                      { label: t("favorites"), href: `/${locale}/favorites`, icon: Heart },
+                      { label: t("messages"), href: `/${locale}/account/messages`, icon: MessageCircle },
+                    ].map(({ label, href, icon: Icon }) => (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={() => setProfileOpen(false)}
+                        role="menuitem"
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm font-heading font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-ink/[0.03] transition-colors min-h-[40px]"
+                      >
+                        <Icon size={15} className="shrink-0 text-s-ink/40" />
+                        {label}
+                      </Link>
+                    ))}
+                    <div className="border-t border-s-ink/[0.06] my-1" />
+                    {/* Sign out */}
+                    <button
+                      onClick={handleSignOut}
+                      role="menuitem"
+                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-heading font-medium text-s-coral hover:bg-s-coral/[0.04] transition-colors min-h-[40px]"
+                    >
+                      <LogOut size={15} className="shrink-0" />
+                      {t("logout")}
+                    </button>
+                  </nav>
+                </div>
+              )}
+            </>
+          ) : (
+            /* Logged-out: direct link to login */
+            <Link
+              href={`/${locale}/auth/login`}
+              aria-label={t("login")}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-ink/[0.06] text-s-ink hover:bg-s-ink/[0.10] active:scale-[0.98] transition-all duration-200"
+            >
+              <User className="w-4 h-4" />
+            </Link>
           )}
-          style={{ boxShadow: "0 2px 4px rgba(232,98,74,.30)" }}
-          aria-label="Profil"
-        >
-          <User className="w-4 h-4" />
-        </Link>
+        </div>
       </div>
 
       {/* Mobile menu */}
