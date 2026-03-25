@@ -25,7 +25,6 @@ export { default as Header } from "@/components/layout/Header";
 export { default as BottomNav } from "@/components/layout/BottomNav";
 
 export { default as SalonCard } from "@/components/SalonCard";
-export { default as QuartierTile } from "@/components/QuartierTile";
 export { default as ServiceTile } from "@/components/ServiceTile";
 export { default as LastMinuteCard } from "@/components/LastMinuteCard";
 export { default as SearchFilterBar } from "@/components/SearchFilterBar";
