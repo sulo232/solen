@@ -99,8 +99,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         <div className={cn(
           "flex items-center justify-between rounded-full transition-[background,box-shadow,padding,max-width] duration-300 ease-out",
           scrolled
-            ? "mt-3 max-w-3xl py-2 px-4 sm:px-6 dark:border-white/[0.06]"
-            : "mt-2 max-w-5xl py-3 px-5 sm:px-8 bg-s-bg-base/50 dark:bg-s-dm-bg/50"
+            ? "mt-2 max-w-3xl min-h-[56px] py-2 px-4 sm:px-6 dark:border-white/[0.06]"
+            : "mt-3 max-w-5xl min-h-[64px] py-3 px-5 sm:px-8 bg-s-bg-base/50 dark:bg-s-dm-bg/50"
         )}
         style={scrolled ? {
           background: "rgba(255,255,255,.82)",
