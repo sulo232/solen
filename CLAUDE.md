@@ -68,7 +68,7 @@ solen/
 │   ├── nail/           # Nail category UI components (booking flow, portfolio, discovery)
 │   ├── editor/         # Visual Editor (admin-only)
 │   ├── layout/         # Header, Footer, BottomNav
-│   └── ui/             # Shared UI primitives (Skeleton, SearchBar, ExpandableTabs, etc.)
+│   └── ui/             # Shared UI primitives (Skeleton, SearchBar, ExpandableTabs, FilterBar, etc.)
 ├── lib/                # Utility libraries (Dev 1 owns)
 │   ├── supabase.ts     # Supabase client helpers (server + admin)
 │   ├── posthog-server.ts # Server-side event tracking utility
@@ -116,6 +116,7 @@ solen/
 - **Background blobs**: `<BlobBackground>` from `BlobBackground.tsx` — accepts `zone={1}` (maximalist) or `zone={2}` (soft/subtle). Decorative gradient blobs for hero/section backgrounds.
 - **Radii**: card 12px, pill 9999px, button 8px, blob-a/b/c/d/e organic % (see UI_RULES.md §10)
 - **Blob physics**: `.blob-interactive` for 500ms spring border-radius morphing on hover
+- **Filter System**: `<FilterBar>` from `FilterBar.tsx` — universal zone-aware filter pill row with sub-filters. Requires `zone` prop (1-4). Desktop: inline dropdown + overflow drawer (max 5 visible pills). Mobile: bottom sheet. Active filter chips with remove buttons. Uses `useTranslations('filters')` for i18n. Companion components: `<FilterBottomSheet>` (mobile), `<FilterDrawer>` (desktop inline/drawer).
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
