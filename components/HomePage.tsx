@@ -7,11 +7,7 @@ import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Scissors,
-  ScissorsLineDashed,
   Sparkles,
-  Droplets,
-  Palette,
-  Zap,
   Clock,
   RefreshCw,
   Search,
@@ -61,12 +57,12 @@ const fadeUp = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "Coiffeur",      Icon: Scissors,          bg: "bg-s-coral-subtle",  border: "border-s-coral/20"  },
-  { key: "barbershop", label: "Barbershop",    Icon: ScissorsLineDashed, bg: "bg-s-ink/5",         border: "border-s-ink/10"    },
-  { key: "nails",      label: "Nails",         Icon: Sparkles,          bg: "bg-s-plum-subtle",   border: "border-s-plum/15"   },
-  { key: "spa",        label: "Spa & Massage", Icon: Droplets,          bg: "bg-s-sage-subtle",   border: "border-s-sage/20"   },
-  { key: "makeup",     label: "Makeup",        Icon: Palette,           bg: "bg-s-amber-subtle",  border: "border-s-amber/15"  },
-  { key: "waxing",     label: "Waxing",        Icon: Zap,               bg: "bg-s-blue-subtle",   border: "border-s-blue/15"   },
+  { key: "coiffeur",   label: "COIFFEUR",   count: "42 Salons",   grad: "from-s-amber to-s-coral" },
+  { key: "barbershop", label: "BARBER",     count: "18 Shops",    grad: "from-s-plum to-s-blue" },
+  { key: "nails",      label: "NAILS",      count: "24 Studios",  grad: "from-s-coral to-s-yellow" },
+  { key: "spa",        label: "SPA",        count: "11 Anbieter", grad: "from-s-sage to-s-blue" },
+  { key: "makeup",     label: "MAKEUP",     count: "8 Studios",   grad: "from-s-sand to-s-coral" },
+  { key: "waxing",     label: "WAXING",     count: "15 Salons",   grad: "from-s-plum to-s-sage" },
 ] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -337,19 +333,16 @@ export default function HomePage() {
           animate="visible"
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal-stagger"
         >
-          {CATEGORIES.map(({ key, label, Icon, bg, border }) => (
+          {CATEGORIES.map(({ key, label, count, grad }) => (
             <motion.div key={key} variants={itemVariants}>
               <Link
                 href={`/${locale}/${key}`}
-                className={`flex flex-col items-center gap-2 p-6 rounded-card ${bg} dark:bg-s-dm-surface/80 border ${border} dark:border-white/5 hover:scale-[1.03] hover:-rotate-1 hover:shadow-warm-lg transition-all duration-200 active:scale-95 group`}
+                className={`relative aspect-square rounded-[20px] overflow-hidden bg-gradient-to-br ${grad} shadow-warm-sm hover:shadow-warm-float hover:scale-[1.04] hover:-rotate-1 transition-all duration-[250ms] group flex`}
               >
-                <Icon
-                  size={36}
-                  className="text-s-coral group-hover:scale-110 transition-transform duration-200"
-                />
-                <span className="font-display text-[22px] uppercase text-s-ink dark:text-s-dm-text leading-none">
-                  {label}
-                </span>
+                <div className="absolute inset-0 flex flex-col justify-end p-3 bg-gradient-to-t from-s-ink/68 to-transparent">
+                  <div className="font-display text-[22px] text-white leading-none">{label}</div>
+                  <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-white/62 mt-0.5">{count}</div>
+                </div>
               </Link>
             </motion.div>
           ))}
