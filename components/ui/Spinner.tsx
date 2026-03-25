@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 interface SpinnerProps {
   size?: "sm" | "md" | "lg";
   invert?: boolean;
+  coral?: boolean;
   className?: string;
 }
 
@@ -14,7 +15,7 @@ const sizeMap = {
   lg: "w-8 h-8",
 };
 
-export default function Spinner({ size = "md", invert = false, className }: SpinnerProps) {
+export default function Spinner({ size = "md", invert = false, coral = false, className }: SpinnerProps) {
   return (
     <div
       role="status"
@@ -24,6 +25,8 @@ export default function Spinner({ size = "md", invert = false, className }: Spin
         sizeMap[size],
         invert
           ? "border-white/30 border-t-white"
+          : coral
+          ? "border-s-coral/20 border-t-s-coral"
           : "border-s-ink/[0.10] border-t-s-ink/60",
         className
       )}
