@@ -125,7 +125,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           {/* Day rows */}
           {DAYS.map((day, dayIdx) => (
             <div key={dayIdx} className="grid gap-0.5 mt-0.5" style={{ gridTemplateColumns: "40px repeat(12, 1fr)" }}>
-              <span className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 leading-5 truncate">{day}</span>
+              <span className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 truncate">{day}</span>
               {Array.from({ length: 12 }, (_, h) => {
                 const hour = h + 8;
                 const hourStr = `${hour.toString().padStart(2, "0")}:00`;

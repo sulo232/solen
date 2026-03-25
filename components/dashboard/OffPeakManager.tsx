@@ -100,7 +100,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
           ))}
           {HOURS.map((hour) => (
             <div key={`row-${hour}`} className="contents">
-              <div className="text-right pr-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 data-text leading-6">
+              <div className="text-right pr-2 text-[10px] text-s-ink/30 dark:text-s-dm-text/30 data-text">
                 {String(hour).padStart(2, "0")}:00
               </div>
               {Array.from({ length: 7 }, (_, day) => {

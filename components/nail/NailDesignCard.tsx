@@ -64,7 +64,7 @@ export default function NailDesignCard({
 
       {/* ── Top-left: Category badge ── */}
       <div className="absolute top-2 left-2 z-10">
-        <span className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-md font-medium text-white bg-pink-500/70">
+        <span className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-md font-medium text-white bg-s-plum/70">
           <span>Nails</span>
           {primaryBadge && (
             <>
