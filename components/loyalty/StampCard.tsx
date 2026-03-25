@@ -114,15 +114,18 @@ export default function StampCard({
         <p className="text-xs font-heading font-semibold text-s-amber">
           {rewardText}
         </p>
-        <span className="text-[10px] data-text font-medium text-s-ink/40 dark:text-s-dm-text/40 whitespace-nowrap">
+        <span className="text-[10px] font-heading font-bold text-s-ink/35 dark:text-s-dm-text/35 whitespace-nowrap uppercase tracking-[.08em]">
           {stampsCollected}/{stampsTotal}
         </span>
       </div>
 
       {/* Complete overlay */}
       {isComplete && (
-        <div className="absolute bottom-0 left-0 right-0 bg-s-coral/10 dark:bg-s-coral/20 border-t border-s-coral/20 px-4 py-2 text-center">
-          <p className="text-xs font-medium text-s-coral">
+        <div
+          className="absolute bottom-0 left-0 right-0 border-t border-s-coral/20 px-4 py-2.5 text-center"
+          style={{ background: "rgba(232,98,74,.08)" }}
+        >
+          <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-coral">
             Belohnung freigeschaltet!
           </p>
         </div>
