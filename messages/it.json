@@ -1283,6 +1283,22 @@
     "moreFilters": "Apri {count} altri filtri",
     "more": "altri",
     "removeFilter": "Rimuovi filtro {name}",
-    "clearAll": "Rimuovi tutto"
+    "clearAll": "Rimuovi tutto",
+    "price": "Prezzo",
+    "today": "Oggi",
+    "tomorrow": "Domani",
+    "onlinePayment": "Pagamento online",
+    "offPeak": "Orari tranquilli",
+    "sortByRating": "Più popolari",
+    "sortByPrice": "Prezzo (basso → alto)",
+    "sortByNearest": "Più vicini",
+    "sortByNewest": "Più recenti",
+    "sortByNextSlot": "Prossimo disponibile",
+    "filterQuartier": "Quartiere {name} {action}",
+    "filterToday": "Filtra i saloni disponibili oggi",
+    "filterTomorrow": "Filtra i saloni disponibili domani",
+    "sortBy": "Ordina per {option}",
+    "remove": "rimuovi",
+    "add": "filtra"
   }
 }

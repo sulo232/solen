@@ -10,6 +10,7 @@ import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import type { DateValue } from "react-aria-components";
 import type { Quartier, SalonCategory } from "@/lib/types";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 const QUARTIERS: { value: Quartier; label: string }[] = [
   { value: "grossbasel", label: "Grossbasel" },
@@ -21,12 +22,13 @@ const QUARTIERS: { value: Quartier; label: string }[] = [
   { value: "breite", label: "Breite" },
 ];
 
-const SORT_OPTIONS = [
-  { value: "rating",    label: "Beliebteste"        },
-  { value: "price",     label: "Preis (tief → hoch)" },
-  { value: "nearest",   label: "Nächste"             },
-  { value: "newest",    label: "Neueste"              },
-  { value: "next_slot", label: "Nächster Termin"      },
+// SORT_OPTIONS now uses translation keys
+const SORT_OPTIONS_KEYS = [
+  { value: "rating",    key: "sortByRating"    },
+  { value: "price",     key: "sortByPrice"     },
+  { value: "nearest",   key: "sortByNearest"   },
+  { value: "newest",    key: "sortByNewest"    },
+  { value: "next_slot", key: "sortByNextSlot"  },
 ];
 
 const RATING_OPTIONS = [
@@ -55,11 +57,18 @@ function dateValueToIso(d: DateValue): string {
 }
 
 export default function FilterBar({ category }: FilterBarProps = {}) {
+  const t = useTranslations("filters");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [priceOpen, setPriceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+
+  // Build localized sort options
+  const SORT_OPTIONS = useMemo(() =>
+    SORT_OPTIONS_KEYS.map(({ value, key }) => ({ value, label: t(key) })),
+    [t]
+  );
 
   const setParam = useCallback(
     (key: string, value: string | null) => {
@@ -129,7 +138,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
                   pillBase,
                   activeQuartier === value ? pillActive : pillInactive,
                 ].join(" ")}
-                aria-label={`Quartier ${label} ${activeQuartier === value ? "entfernen" : "filtern"}`}
+                aria-label={t("filterQuartier", { name: label, action: activeQuartier === value ? t("remove") : t("add") })}
                 aria-pressed={activeQuartier === value}
               >
                 {label}
@@ -152,7 +161,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
               ].join(" ")}
             >
               <SlidersHorizontal className="w-3 h-3" aria-hidden="true" />
-              Preis
+              {t("price")}
             </button>
             {priceOpen && (
               <div className="absolute top-full left-0 mt-2 w-64 p-5 z-50 rounded-[20px]"
@@ -170,18 +179,18 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
             <button
               onClick={() => setParam("date", activeDate === todayIso ? null : todayIso)}
               className={[pillBase, activeDate === todayIso ? pillActive : pillInactive].join(" ")}
-              aria-label="Heute verfügbare Salons filtern"
+              aria-label={t("filterToday")}
               aria-pressed={activeDate === todayIso}
             >
-              Heute
+              {t("today")}
             </button>
             <button
               onClick={() => setParam("date", activeDate === tomorrowIso ? null : tomorrowIso)}
               className={[pillBase, activeDate === tomorrowIso ? pillActive : pillInactive].join(" ")}
-              aria-label="Morgen verfügbare Salons filtern"
+              aria-label={t("filterTomorrow")}
               aria-pressed={activeDate === tomorrowIso}
             >
-              Morgen
+              {t("tomorrow")}
             </button>
             <SolenDatePicker
               label=""
@@ -217,7 +226,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
             ].join(" ")}
           >
             <CreditCard className="w-3 h-3" />
-            Online-Zahlung
+            {t("onlinePayment")}
           </button>
 
           {/* Off-peak / Nebenzeiten */}
@@ -230,7 +239,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
             ].join(" ")}
           >
             <Tag className="w-3 h-3" />
-            Nebenzeiten
+            {t("offPeak")}
           </button>
 
           <div className="w-px h-5 bg-s-sand/80 shrink-0" />
@@ -259,7 +268,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
                     key={value}
                     onClick={() => { setParam("sort", value); setSortOpen(false); }}
                     className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/70 hover:bg-s-coral/[0.06] hover:text-s-coral transition-colors"
-                    aria-label={`Sortieren nach ${label}`}
+                    aria-label={t("sortBy", { option: label })}
                   >
                     {label}
                     {activeSort === value && <Check className="w-3.5 h-3.5 text-s-coral" />}
@@ -276,7 +285,7 @@ export default function FilterBar({ category }: FilterBarProps = {}) {
               className="flex items-center gap-1 px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral border border-s-coral/30 bg-s-coral/5 hover:bg-s-coral/10 transition-all duration-200 shrink-0"
             >
               <X className="w-3 h-3" aria-hidden="true" />
-              Filter löschen
+              {t("clearAll")}
             </button>
           )}
         </div>

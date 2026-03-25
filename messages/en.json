@@ -1283,6 +1283,22 @@
     "moreFilters": "Open {count} more filters",
     "more": "more",
     "removeFilter": "Remove filter {name}",
-    "clearAll": "Clear all"
+    "clearAll": "Clear all",
+    "price": "Price",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "onlinePayment": "Online Payment",
+    "offPeak": "Off-Peak",
+    "sortByRating": "Most Popular",
+    "sortByPrice": "Price (low → high)",
+    "sortByNearest": "Nearest",
+    "sortByNewest": "Newest",
+    "sortByNextSlot": "Next Available",
+    "filterQuartier": "Quartier {name} {action}",
+    "filterToday": "Filter salons available today",
+    "filterTomorrow": "Filter salons available tomorrow",
+    "sortBy": "Sort by {option}",
+    "remove": "remove",
+    "add": "filter"
   }
 }

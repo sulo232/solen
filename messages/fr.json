@@ -1283,6 +1283,22 @@
     "moreFilters": "Ouvrir {count} filtres supplémentaires",
     "more": "plus",
     "removeFilter": "Retirer le filtre {name}",
-    "clearAll": "Tout effacer"
+    "clearAll": "Tout effacer",
+    "price": "Prix",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "onlinePayment": "Paiement en ligne",
+    "offPeak": "Heures creuses",
+    "sortByRating": "Les plus populaires",
+    "sortByPrice": "Prix (bas → haut)",
+    "sortByNearest": "Les plus proches",
+    "sortByNewest": "Les plus récents",
+    "sortByNextSlot": "Prochain disponible",
+    "filterQuartier": "Quartier {name} {action}",
+    "filterToday": "Filtrer les salons disponibles aujourd'hui",
+    "filterTomorrow": "Filtrer les salons disponibles demain",
+    "sortBy": "Trier par {option}",
+    "remove": "retirer",
+    "add": "filtrer"
   }
 }

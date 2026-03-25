@@ -1283,6 +1283,22 @@
     "moreFilters": "{count} weitere Filter öffnen",
     "more": "weitere",
     "removeFilter": "Filter {name} entfernen",
-    "clearAll": "Alle entfernen"
+    "clearAll": "Alle entfernen",
+    "price": "Preis",
+    "today": "Heute",
+    "tomorrow": "Morgen",
+    "onlinePayment": "Online-Zahlung",
+    "offPeak": "Nebenzeiten",
+    "sortByRating": "Beliebteste",
+    "sortByPrice": "Preis (tief → hoch)",
+    "sortByNearest": "Nächste",
+    "sortByNewest": "Neueste",
+    "sortByNextSlot": "Nächster Termin",
+    "filterQuartier": "Quartier {name} {action}",
+    "filterToday": "Heute verfügbare Salons filtern",
+    "filterTomorrow": "Morgen verfügbare Salons filtern",
+    "sortBy": "Sortieren nach {option}",
+    "remove": "entfernen",
+    "add": "filtern"
   }
 }
