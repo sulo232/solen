@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { usePostHog } from "posthog-js/react";
 import { SalonCard } from "@/components";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { RefreshCw } from "lucide-react";
@@ -38,6 +39,7 @@ interface KISectionProps {
 export function KISection({ zone = 1, className = "" }: KISectionProps) {
   const t = useTranslations("recommendations");
   const locale = useLocale() as "de" | "en" | "fr" | "it";
+  const posthog = usePostHog();
 
   const [recommendations, setRecommendations] = useState<RecommendedSalon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -103,7 +105,13 @@ export function KISection({ zone = 1, className = "" }: KISectionProps) {
             {t("for_you")}
           </h2>
           <button
-            onClick={() => fetchRecommendations(true)}
+            onClick={() => {
+              posthog?.capture("ki_refresh_clicked", {
+                locale,
+                zone,
+              });
+              fetchRecommendations(true);
+            }}
             disabled={isRefreshing}
             className="flex items-center gap-2 px-4 py-2 text-sm font-heading font-bold uppercase tracking-[0.06em] text-s-ink-secondary hover:text-s-coral transition-colors disabled:opacity-50"
             aria-label={t("refresh")}
@@ -135,7 +143,19 @@ export function KISection({ zone = 1, className = "" }: KISectionProps) {
         {!isLoading && recommendations.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {recommendations.map((salon) => (
-              <div key={salon.id} className="relative">
+              <div
+                key={salon.id}
+                className="relative"
+                onClick={() => {
+                  posthog?.capture("ki_card_clicked", {
+                    salon_id: salon.id,
+                    salon_name: salon.name,
+                    salon_slug: salon.slug,
+                    ai_score: salon.ai_score,
+                    is_ki_recommendation: true,
+                  });
+                }}
+              >
                 <SalonCard
                   salon={salon}
                   aiReason={salon.ai_reason}
