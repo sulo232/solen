@@ -1,25 +1,32 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { FileQuestion } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("notFound");
+
   return (
-    <div className="min-h-[60vh] flex items-center justify-center px-4">
+    <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex flex-col items-center justify-center p-8">
       <div className="max-w-md w-full text-center">
-        <p className="font-display text-7xl text-s-coral mb-4">404</p>
+        <div className="w-20 h-20 rounded-full bg-s-coral/10 mx-auto flex items-center justify-center mb-6">
+          <FileQuestion size={40} className="text-s-coral" />
+        </div>
+        <p className="font-display text-7xl text-s-coral dark:text-s-coral mb-4">
+          404
+        </p>
         <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
-          Seite nicht gefunden
+          {t("title")}
         </h2>
-        <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mb-6">
-          Die Seite existiert nicht oder wurde verschoben.
+        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 font-body leading-relaxed mb-8">
+          {t("description")}
         </p>
         <Link
-          href="/de"
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.98] transition-all shadow-warm-sm"
+          href="/"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.98] transition-all shadow-warm-sm"
         >
-          <Search size={14} />
-          Zur Startseite
+          {t("homeButton")}
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

@@ -91,6 +91,26 @@
     "comingSoonMessage": "Wir arbeiten daran, diese Kategorie für dich verfügbar zu machen.",
     "compare": "Vergleichen"
   },
+  "cookies": {
+    "title": "Wir verwenden Cookies",
+    "description": "Wir nutzen Cookies für die Funktion der Website und optional für Analytics. Mehr dazu in unserer",
+    "privacyLink": "Datenschutzerklärung",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen",
+    "settings": "Cookie-Einstellungen",
+    "settingsTitle": "Cookie-Einstellungen",
+    "necessary": "Notwendig",
+    "necessaryDesc": "Erforderlich für die Grundfunktion",
+    "analytics": "Analytics",
+    "analyticsDesc": "Hilft uns, die Website zu verbessern",
+    "saveSettings": "Einstellungen speichern",
+    "acceptAll": "Alle akzeptieren"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Die Seite existiert nicht oder wurde verschoben.",
+    "homeButton": "Zur Startseite"
+  },
   "weather": {
     "rain": "Regentag? Gönn dir was Gutes.",
     "snow": "Schneewetter! Perfekt für Wellness.",

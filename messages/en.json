@@ -91,6 +91,26 @@
     "comingSoonMessage": "We're working on making this category available for you.",
     "compare": "Compare"
   },
+  "cookies": {
+    "title": "We use cookies",
+    "description": "We use cookies for the website's functionality and optionally for analytics. Learn more in our",
+    "privacyLink": "Privacy Policy",
+    "accept": "Accept",
+    "reject": "Reject",
+    "settings": "Cookie Settings",
+    "settingsTitle": "Cookie Settings",
+    "necessary": "Necessary",
+    "necessaryDesc": "Required for basic functionality",
+    "analytics": "Analytics",
+    "analyticsDesc": "Helps us improve the website",
+    "saveSettings": "Save settings",
+    "acceptAll": "Accept all"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "This page doesn't exist or has been moved.",
+    "homeButton": "Go to homepage"
+  },
   "weather": {
     "rain": "Rainy day? Treat yourself.",
     "snow": "Snowy weather! Perfect for wellness.",
