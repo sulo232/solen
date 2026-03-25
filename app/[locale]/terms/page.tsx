@@ -41,7 +41,7 @@ export default async function TermsPage() {
           
           <div className="mt-8 p-4 bg-s-yellow-subtle dark:bg-s-yellow-subtle/20 border border-s-yellow/20 dark:border-s-yellow/50 rounded-xl text-s-ink dark:text-s-dm-text text-sm">
             <p className="font-semibold mb-1">Hinweis: Die deutsche Fassung dieser AGB ist massgebend.</p>
-            <p className="Die englische Übersetzung dient ausschliesslich der Information. Bei Widersprüchen zwischen den beiden Fassungen gilt die deutsche Version.</p>
+            <p>Die englische Übersetzung dient ausschliesslich der Information. Bei Widersprüchen zwischen den beiden Fassungen gilt die deutsche Version.</p>
             <div className="h-px w-full border-t border-s-yellow/20 dark:border-s-yellow/50 my-3" />
             <p className="font-semibold mb-1 italic">Note: The German version of these Terms of Service is authoritative.</p>
             <p className="italic">The English translation is provided for information purposes only. In case of any discrepancy between the two versions, the German version shall prevail.</p>
