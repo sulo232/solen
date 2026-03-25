@@ -88,7 +88,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
       {DAYS.map(day => {
         const entry = schedule.find(s => s.day_of_week === day.value)!;
         return (
-          <div key={day.value} className={`flex items-center gap-3 p-3 rounded-card border transition-colors ${entry.active ? "border-s-coral/20 bg-white dark:bg-s-dm-surface" : "border-s-ink/5 dark:border-white/5 bg-s-bg-surface dark:bg-s-dm-bg opacity-60"}`}>
+          <div key={day.value} className={`flex items-center gap-3 p-3 rounded-[16px] border transition-colors ${entry.active ? "border-s-coral/20 bg-white dark:bg-s-dm-surface" : "border-s-ink/5 dark:border-white/5 bg-s-bg-surface dark:bg-s-dm-bg opacity-60"}`}>
             <label className="flex items-center gap-2 w-28 shrink-0 cursor-pointer">
               <input
                 type="checkbox"
@@ -131,7 +131,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/90 transition-all disabled:opacity-50"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={14} /> : <Save size={14} />}
           {saved ? tc("saved") : tc("save")}

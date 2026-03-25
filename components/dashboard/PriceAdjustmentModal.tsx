@@ -140,7 +140,7 @@ export default function PriceAdjustmentModal({
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="price-modal-title">
-      <div className="bg-white/90 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-card p-6 mx-4 max-w-sm w-full shadow-surface" onClick={e => e.stopPropagation()}>
+      <div className="bg-white/90 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-[16px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <DollarSign size={18} className="text-s-coral" />
@@ -152,7 +152,7 @@ export default function PriceAdjustmentModal({
         </div>
 
         {pendingDispute ? (
-          <div className="rounded-card border border-s-amber/20 bg-s-amber-subtle p-4">
+          <div className="rounded-[16px] border border-s-amber/20 bg-s-amber-subtle p-4">
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle size={14} className="text-s-amber" />
               <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{l.pending}</p>
@@ -200,7 +200,7 @@ export default function PriceAdjustmentModal({
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {submitting && <Spinner size="sm" invert />}
               {l.submit}

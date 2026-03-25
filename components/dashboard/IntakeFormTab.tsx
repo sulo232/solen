@@ -113,7 +113,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
       </div>
 
       {showForm && (
-        <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-4">
+        <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-4">
           {/* Template selector */}
           <div>
             <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Vorlage</label>
@@ -135,7 +135,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
                     const val = label === "Ja";
                     return (
                       <button key={label} onClick={() => setResponses((p) => ({ ...p, [q.question_key]: val }))}
-                        className={`px-3 py-1.5 rounded-btn text-xs font-medium transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60"}`}>
+                        className={`px-3 py-1.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${responses[q.question_key] === val ? "bg-s-coral text-white" : "border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60"}`}>
                         {label}
                       </button>
                     );
@@ -171,7 +171,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
               className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
             <button onClick={handleSave} disabled={saving}
-              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-all">
+              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 transition-all">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>
@@ -186,7 +186,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
           {history.map((h) => {
             const tpl = TEMPLATE_OPTIONS.find((t) => t.key === h.template_key);
             return (
-              <div key={h.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3">
+              <div key={h.id} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{tpl?.label ?? h.template_key}</p>
                   <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">{new Date(h.filled_at).toLocaleDateString("de-CH")}</span>

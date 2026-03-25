@@ -79,7 +79,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   }));
 
   return (
-    <div className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Trophy size={18} className="text-s-amber" />

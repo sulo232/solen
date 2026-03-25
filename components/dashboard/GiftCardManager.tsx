@@ -68,7 +68,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
           { label: l.active, value: stats.active_cards },
           { label: l.open, value: formatCurrency(stats.unredeemed_balance / 100, locale) },
         ].map((s) => (
-          <div key={s.label} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3 text-center">
+          <div key={s.label} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 text-center">
             <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">{s.value}</p>
             <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{s.label}</p>
           </div>
@@ -81,7 +81,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
       ) : (
         <div className="space-y-2">
           {cards.map((c) => (
-            <div key={c.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3 flex items-center justify-between">
+            <div key={c.id} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 flex items-center justify-between">
               <div>
                 <p className="text-sm font-mono font-medium text-s-ink dark:text-s-dm-text">{c.code}</p>
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">

@@ -178,7 +178,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
             </div>
           </div>
           <button onClick={handleAdd} disabled={saving}
-            className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-1.5 transition-all">
+            className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1.5 transition-all">
             {saving && <Spinner size="sm" invert />}
             Hinzufugen
           </button>

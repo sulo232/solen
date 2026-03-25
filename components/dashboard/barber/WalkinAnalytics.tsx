@@ -87,7 +87,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
   ] : [];
 
   return (
-    <div className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Walk-in Statistiken</h3>
         <div className="flex rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
@@ -114,7 +114,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {metrics.map((m) => (
-            <div key={m.label} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+            <div key={m.label} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 p-4">
               <p className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold">
                 {m.label}
               </p>

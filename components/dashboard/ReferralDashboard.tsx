@@ -47,7 +47,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
           { label: "Abgeschlossen", value: data.completed_referrals, icon: Gift },
           { label: "Umsatz durch Empfehlungen", value: formatCurrency(data.total_revenue_from_referrals, locale), icon: TrendingUp },
         ].map((s) => (
-          <div key={s.label} className="bg-s-bg-surface/50 dark:bg-s-dm-bg/50 rounded-card border border-s-ink/5 dark:border-white/5 p-3 text-center">
+          <div key={s.label} className="bg-s-bg-surface/50 dark:bg-s-dm-bg/50 rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 text-center">
             <s.icon size={16} className="text-s-coral mx-auto mb-1" />
             <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">{s.value}</p>
             <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{s.label}</p>

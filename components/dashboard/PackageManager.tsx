@@ -105,7 +105,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
         </h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:bg-s-coral/90 transition-all"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/90 transition-all"
         >
           <Plus size={12} /> {pl.newPkg}
         </button>
@@ -113,7 +113,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
 
       {/* Create form */}
       {showForm && (
-        <div className="bg-s-bg-surface dark:bg-s-dm-bg rounded-card border border-s-ink/5 dark:border-white/5 p-4 mb-4 space-y-3">
+        <div className="bg-s-bg-surface dark:bg-s-dm-bg rounded-[16px] border border-s-ink/5 dark:border-white/5 p-4 mb-4 space-y-3">
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -168,7 +168,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
             <button
               onClick={handleCreate}
               disabled={saving || !form.name || !form.service_id}
-              className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50 transition-all"
+              className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 transition-all"
             >
               {saving ? pl.saving : pl.create}
             </button>
@@ -182,7 +182,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
       ) : (
         <div className="space-y-2 mb-6">
           {packages.map((pkg) => (
-            <div key={pkg.id} className="flex items-center justify-between bg-s-bg-surface/50 dark:bg-s-dm-bg/50 rounded-card border border-s-ink/5 dark:border-white/5 p-3">
+            <div key={pkg.id} className="flex items-center justify-between bg-s-bg-surface/50 dark:bg-s-dm-bg/50 rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
               <div>
                 <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{pkg.name}</p>
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">

@@ -72,7 +72,7 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
       </div>
 
       {showAdd && (
-        <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
+        <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Von</label>
@@ -95,7 +95,7 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
           <div className="flex gap-2">
             <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
             <button onClick={handleAdd} disabled={!startDate || !endDate || saving}
-              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-all">
+              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 transition-all">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>
@@ -107,7 +107,7 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
       ) : (
         <div className="space-y-2">
           {closures.map(c => (
-            <div key={c.id} className="flex items-center justify-between bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3">
+            <div key={c.id} className="flex items-center justify-between bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
               <div>
                 <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{c.reason || "Schliessung"}</p>
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">

@@ -61,7 +61,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
           {services.map((svc) => (
             <div
               key={svc.id}
-              className="flex items-center justify-between p-3 rounded-card border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface"
+              className="flex items-center justify-between p-3 rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface"
             >
               <div>
                 <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{svc.name_de}</p>
@@ -89,7 +89,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
 
       {/* Due clients summary */}
       {dueClients.length > 0 && (
-        <div className="mt-4 p-3 rounded-card bg-s-amber-subtle dark:bg-s-amber/5 border border-s-amber/20">
+        <div className="mt-4 p-3 rounded-[16px] bg-s-amber-subtle dark:bg-s-amber/5 border border-s-amber/20">
           <p className="text-sm font-medium text-s-amber-text dark:text-s-amber flex items-center gap-1.5">
             <Users size={14} />
             {t("infill_due_clients", { count: dueClients.length })}

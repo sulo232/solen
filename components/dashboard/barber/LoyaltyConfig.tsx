@@ -73,7 +73,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
   const previewFilled = Math.floor(program.stamps_required * 0.6);
 
   return (
-    <div className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+    <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center gap-2 mb-4">
         <Award size={18} className="text-s-coral" />
         <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Treueprogramm</h3>

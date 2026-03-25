@@ -65,7 +65,7 @@ export default function AiArtGenerator() {
 
       {/* Budget tracker */}
       {budget && (
-        <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg">
+        <div className="p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg">
           <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60 mb-1">
             <span>Diesen Monat</span>
             <span className="data-text">{budget.spent.toFixed(2)} / {budget.budget.toFixed(2)} CHF</span>
@@ -131,7 +131,7 @@ export default function AiArtGenerator() {
 
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-all disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral-hover transition-all disabled:opacity-50">
         <Wand2 size={16} />
         {generating ? "Generiere..." : "Generieren"}
       </button>
@@ -140,7 +140,7 @@ export default function AiArtGenerator() {
 
       {/* Result preview */}
       {result && (
-        <div className="rounded-card border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden bg-white dark:bg-s-dm-surface">
+        <div className="rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden bg-white dark:bg-s-dm-surface">
           <img src={result.image_url} alt="AI generated nail art" className="w-full aspect-square object-cover" />
           <div className="p-3 space-y-2">
             <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 line-clamp-2">{result.prompt}</p>

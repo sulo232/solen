@@ -91,7 +91,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-btn text-xs font-medium bg-s-coral text-white"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-12 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white"
           aria-label={t("retail_new")}
         >
           <Plus size={12} />
@@ -100,14 +100,14 @@ export default function RetailManager({ salonId }: { salonId: string }) {
       </div>
 
       {/* Revenue summary */}
-      <div className="flex items-center gap-2 p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg">
+      <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg">
         <DollarSign size={14} className="text-s-sage" />
         <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60">{t("retail_products_count", { count: products.length })}</span>
       </div>
 
       {/* Add form */}
       {showForm && (
-        <div className="p-3 rounded-card border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface space-y-3">
           <input
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -139,7 +139,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
             <button
               onClick={handleAdd}
               disabled={saving}
-              className="px-4 py-2 min-h-12 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium transition-all"
+              className="px-4 py-2 min-h-12 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all"
               aria-label={saving ? t("saving") : t("add")}
             >
               {saving ? t("saving") : t("add")}
@@ -157,7 +157,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
 
       {/* Low-stock alert */}
       {lowStockProducts.length > 0 && (
-        <div className="flex items-center gap-2 p-3 rounded-card bg-s-warning-bg dark:bg-s-warning/10">
+        <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-warning-bg dark:bg-s-warning/10">
           <AlertTriangle size={14} className="text-s-warning shrink-0" />
           <span className="text-xs text-s-warning">
             {t("retail_low_stock_alert", { count: lowStockProducts.length })}
@@ -170,7 +170,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
         {products.map((product) => {
           const isLowStock = product.stock_count <= (product.low_stock_threshold ?? 5);
           return (
-            <div key={product.id} className={`flex items-center gap-3 p-3 rounded-card border bg-white dark:bg-s-dm-surface ${
+            <div key={product.id} className={`flex items-center gap-3 p-3 rounded-[16px] border bg-white dark:bg-s-dm-surface ${
               isLowStock ? "border-s-warning/30 bg-s-warning-bg/30" : "border-s-ink/5 dark:border-s-dm-text/10"
             }`}>
               <div className="w-10 h-10 rounded-btn bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center shrink-0">

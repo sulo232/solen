@@ -105,14 +105,14 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{t("pricing_title")}</h3>
         </div>
         <button onClick={() => setNewRule({ rule_type: "peak_hour", modifier: 1.2, day_of_week: 6, start_time: "10:00", end_time: "14:00" })}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-btn text-xs font-medium bg-s-coral text-white">
+          className="flex items-center gap-1 px-3 py-1.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white">
           <Plus size={12} />
           {t("pricing_new_rule")}
         </button>
       </div>
 
       {/* Weekly heatmap — 7 days × 12 hours */}
-      <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg overflow-x-auto">
+      <div className="p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg overflow-x-auto">
         <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-2">{t("pricing_overview")}</p>
         <div className="min-w-[320px]">
           {/* Hour headers */}
@@ -153,7 +153,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
 
       {/* New rule form */}
       {newRule && (
-        <div className="p-3 rounded-card border border-s-coral/20 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="p-3 rounded-[16px] border border-s-coral/20 bg-white dark:bg-s-dm-surface space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <select value={newRule.rule_type || "peak_hour"}
               onChange={(e) => setNewRule({ ...newRule, rule_type: e.target.value as DynamicPricingRuleType })}
@@ -192,7 +192,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
           </p>
           <div className="flex gap-2">
             <button onClick={addRule} disabled={saving}
-              className="flex items-center gap-1 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium transition-all">
+              className="flex items-center gap-1 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all">
               <Save size={12} />
               {saving ? t("saving") : t("save")}
             </button>
@@ -206,7 +206,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
       {/* Existing rules */}
       <div className="space-y-2">
         {rules.map((rule) => (
-          <div key={rule.id} className="flex items-center justify-between p-3 rounded-card border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface">
+          <div key={rule.id} className="flex items-center justify-between p-3 rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface">
             <div>
               <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">
                 {getRuleTypeLabel(rule.rule_type)}

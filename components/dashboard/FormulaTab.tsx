@@ -80,7 +80,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
       </div>
 
       {showAdd && (
-        <div className="rounded-card border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
+        <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">Marke</label>
@@ -118,7 +118,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
           <div className="flex gap-2">
             <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
-              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium disabled:opacity-50 flex items-center gap-1 transition-all">
+              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 transition-all">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>
@@ -130,7 +130,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
       ) : (
         <div className="space-y-2">
           {formulas.map((f) => (
-            <div key={f.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3">
+            <div key={f.id} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
               <p className="text-sm font-medium text-s-ink dark:text-s-dm-text font-mono">{f.mix_formula}</p>
               <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-xs text-s-ink/40 dark:text-s-dm-text/40">
                 {f.brand && <span>{f.brand}{f.product_line ? ` · ${f.product_line}` : ""}</span>}

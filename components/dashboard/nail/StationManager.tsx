@@ -85,7 +85,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
       </div>
 
       {/* Per-station utilization bars */}
-      <div className="p-3 rounded-card bg-s-bg-surface dark:bg-s-dm-bg space-y-2">
+      <div className="p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg space-y-2">
         <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60">
           <span>{t("stations_utilization")}</span>
           <span>{t("stations_used_of", { used: 0, total: config.total_stations })}</span>
@@ -114,7 +114,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         onClick={handleSave}
         disabled={saving}
         aria-label={t("save")}
-        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral-hover transition-all disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral-hover transition-all disabled:opacity-50"
       >
         <Save size={14} />
         {saving ? t("saving") : t("save")}
