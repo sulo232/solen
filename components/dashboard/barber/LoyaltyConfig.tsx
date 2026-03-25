@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Award, Save, Check, Circle } from "lucide-react";
 
@@ -17,6 +18,7 @@ interface LoyaltyConfigProps {
 }
 
 export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
+  const tc = useTranslations("common");
   const [program, setProgram] = useState<LoyaltyProgram>({
     name: "Treuekarte",
     stamps_required: 10,
@@ -171,7 +173,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
         className="mt-4 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-all"
       >
         <Save size={14} />
-        {saving ? "Speichern..." : saved ? "Gespeichert!" : "Speichern"}
+        {saving ? tc("saving") : saved ? tc("saved") : tc("save")}
       </button>
     </div>
   );

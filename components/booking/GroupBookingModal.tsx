@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useLocale } from "next-intl";
 import { Users, X, Plus, Minus } from "lucide-react";
@@ -35,6 +36,7 @@ interface GroupBookingModalProps {
 }
 
 export default function GroupBookingModal({ salonId, slotId, services, onClose, onSuccess }: GroupBookingModalProps) {
+  const tc = useTranslations("common");
   const locale = useLocale();
   const [eventType, setEventType] = useState("other");
   const [members, setMembers] = useState<GroupMember[]>([
@@ -72,7 +74,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
 
   const handleSubmit = async () => {
     if (members.some(m => !m.name.trim())) {
-      setError("Bitte alle Namen ausfüllen");
+      setError(tc("pleaseFill"));
       return;
     }
     setSubmitting(true);

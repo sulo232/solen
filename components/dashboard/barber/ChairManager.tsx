@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Armchair, Save } from "lucide-react";
 
@@ -8,6 +9,7 @@ interface ChairManagerProps {
 }
 
 export default function ChairManager({ salonId }: ChairManagerProps) {
+  const tc = useTranslations("common");
   const [chairCount, setChairCount] = useState(1);
   const [bufferMinutes, setBufferMinutes] = useState(5);
   const [occupiedChairs, setOccupiedChairs] = useState(0);
@@ -126,7 +128,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
         className="mt-4 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium py-2 text-sm hover:bg-s-coral-hover disabled:opacity-50 transition-all"
       >
         <Save size={14} />
-        {saving ? "Speichern..." : saved ? "Gespeichert!" : "Speichern"}
+        {saving ? tc("saving") : saved ? tc("saved") : tc("save")}
       </button>
     </div>
   );

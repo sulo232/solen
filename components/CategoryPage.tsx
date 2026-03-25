@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -105,6 +105,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
 
 export default function CategoryPage({ category, aboveGrid, belowGrid }: CategoryPageProps) {
   const locale = useLocale();
+  const tc = useTranslations("common");
   const searchParams = useSearchParams();
   const routerNav = useRouter();
   const currentPathname = usePathname();
@@ -281,7 +282,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
         ) : salons.length === 0 && dirEntries.length === 0 ? (
           <EmptyState
             icon={Scissors}
-            title="Keine Salons gefunden"
+            title={tc("noSalonsFound")}
             message="Versuche andere Filteroptionen oder wähle ein anderes Quartier."
           />
         ) : (

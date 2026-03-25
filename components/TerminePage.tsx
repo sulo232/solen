@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   Calendar, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
@@ -205,6 +205,7 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
 
 export default function TerminePage() {
   const locale = useLocale();
+  const tc = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
@@ -308,7 +309,7 @@ export default function TerminePage() {
                 <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                   <EmptyState
                     icon={Calendar}
-                    title="Keine anstehenden Termine"
+                    title={tc("noUpcoming")}
                     message="Buche deinen nächsten Termin!"
                     illustration="no-results"
                     action={
@@ -410,7 +411,7 @@ export default function TerminePage() {
                   {past.length === 0 ? (
                     <EmptyState
                       icon={Clock}
-                      title="Keine vergangenen Termine"
+                      title={tc("noPast")}
                       className="py-6"
                     />
                   ) : (

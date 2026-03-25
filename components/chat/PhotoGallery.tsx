@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X, Bookmark } from "lucide-react";
@@ -20,6 +21,7 @@ interface PhotoMessage {
 }
 
 export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon, onCreateOffer }: PhotoGalleryProps) {
+  const tc = useTranslations("common");
   const [photos, setPhotos] = useState<PhotoMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
@@ -117,7 +119,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
                 className="mt-3 w-full py-2.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-sm font-medium hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Bookmark size={14} />
-                {saved.has(lightboxUrl) ? "Gespeichert" : saving ? "Speichern…" : "Auf Board speichern"}
+                {saved.has(lightboxUrl) ? tc("savedLabel") : saving ? tc("savingToBoard") : tc("savedToBoard")}
               </button>
             )}
           </div>

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,6 +13,7 @@ import type { DiscoveryItem } from "@/lib/types";
 
 export default function NailDiscoveryGrid() {
   const router = useRouter();
+  const tc = useTranslations("common");
   const searchParams = useSearchParams();
 
   const style = searchParams.get("style");
@@ -105,7 +107,7 @@ export default function NailDiscoveryGrid() {
       {items.length === 0 && !loading ? (
         <EmptyState
           icon={Sparkles}
-          title="Keine Nail-Designs gefunden"
+          title={tc("noNailDesigns")}
           message="Versuche andere Filter oder schau später nochmal vorbei."
           illustration="no-results"
         />

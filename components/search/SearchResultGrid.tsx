@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { motion } from "framer-motion";
 import { SearchX } from "lucide-react";
@@ -30,6 +31,7 @@ export default function SearchResultGrid({
   selectedId,
   onSelect,
 }: SearchResultGridProps) {
+  const tc = useTranslations("common");
   if (loading) {
     return (
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -45,7 +47,7 @@ export default function SearchResultGrid({
       <div className="p-8">
         <EmptyState
           icon={SearchX}
-          title="Keine Ergebnisse"
+          title={tc("noResults")}
           message="Versuche andere Suchbegriffe oder ändere deine Filter."
           illustration="no-results"
         />

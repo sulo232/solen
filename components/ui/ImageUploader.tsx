@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState, useRef, useCallback } from "react";
 import { Camera, Upload, X, Loader2, RotateCcw } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -24,6 +25,7 @@ export default function ImageUploader({
   const [preview, setPreview] = useState<string | null>(currentImageUrl || null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const tc = useTranslations("common");
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastFileRef = useRef<File | null>(null);
@@ -59,7 +61,7 @@ export default function ImageUploader({
       // Check auth before upload — RLS will block unauthenticated uploads
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        setError("Bitte melde dich zuerst an, um Bilder hochzuladen.");
+        setError(tc("pleaseLogin"));
         setPreview(null);
         setUploading(false);
         setProgress(0);

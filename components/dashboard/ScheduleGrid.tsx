@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Save, Check } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
@@ -28,6 +29,7 @@ interface ScheduleGridProps {
 }
 
 export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
+  const tc = useTranslations("common");
   const [schedule, setSchedule] = useState<ScheduleEntry[]>(
     DAYS.map(d => ({ day_of_week: d.value, start_time: "09:00", end_time: "18:00", active: false }))
   );
@@ -132,7 +134,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
           className="flex items-center gap-2 px-4 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:bg-s-coral/90 transition-all disabled:opacity-50"
         >
           {saving ? <Spinner size="sm" invert /> : saved ? <Check size={14} /> : <Save size={14} />}
-          {saved ? "Gespeichert" : "Speichern"}
+          {saved ? tc("saved") : tc("save")}
         </button>
       </div>
     </div>
