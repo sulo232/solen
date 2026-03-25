@@ -20,32 +20,37 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
   if (styles.length === 0) return null;
 
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
-      <button
-        onClick={() => onSelect(null)}
-        className={cn(
-          "px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-colors border",
-          !selected
-            ? "bg-s-coral text-white border-s-coral"
-            : "bg-white dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border-s-ink/10 dark:border-white/10"
-        )}
-      >
-        All Styles
-      </button>
-      {styles.slice(0, 20).map((s) => (
+    <div>
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+        Style
+      </p>
+      <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
         <button
-          key={s.name}
-          onClick={() => onSelect(s.name)}
+          onClick={() => onSelect(null)}
           className={cn(
-            "px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-colors border",
-            selected === s.name
-              ? "bg-s-coral text-white border-s-coral"
-              : "bg-white dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border-s-ink/10 dark:border-white/10"
+            "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-all duration-150",
+            !selected
+              ? "border-s-amber bg-s-amber/[0.08] text-s-amber"
+              : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-amber/40"
           )}
         >
-          {s.name} ({s.count})
+          Alle Styles
         </button>
-      ))}
+        {styles.slice(0, 20).map((s) => (
+          <button
+            key={s.name}
+            onClick={() => onSelect(s.name)}
+            className={cn(
+              "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-all duration-150",
+              selected === s.name
+                ? "border-s-amber bg-s-amber/[0.08] text-s-amber"
+                : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-amber/40"
+            )}
+          >
+            {s.name} ({s.count})
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

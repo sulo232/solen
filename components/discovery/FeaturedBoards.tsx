@@ -32,7 +32,11 @@ export default function FeaturedBoards({ onBoardSelect }: FeaturedBoardsProps) {
 
   return (
     <div className="mb-4">
-      <h3 className="text-sm font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-2">Featured Collections</h3>
+      <div className="mb-3 flex items-center gap-2">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30">
+          Kollektionen
+        </p>
+      </div>
       <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
         {boards.map((board) => (
           <button
@@ -42,18 +46,21 @@ export default function FeaturedBoards({ onBoardSelect }: FeaturedBoardsProps) {
               gender: board.gender as DiscoveryFilters["gender"],
               texture: board.texture as DiscoveryFilters["texture"],
             })}
-            className="flex-shrink-0 w-36 rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
+            className="flex-shrink-0 w-40 rounded-[12px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] hover:shadow-warm-lg hover:-translate-y-[6px] active:scale-[0.98] transition-all duration-250"
           >
-            <div className="grid grid-cols-2 gap-0.5 aspect-square bg-s-ink/5 dark:bg-white/5">
+            <div className="grid grid-cols-2 gap-px aspect-square overflow-hidden"
+              style={{ background: "rgba(26,18,9,.05)" }}>
               {board.cover_images.slice(0, 4).map((img, i) => (
                 <div key={i} className="relative">
-                  <Image src={img} alt="" fill className="object-cover" sizes="72px" />
+                  <Image src={img} alt="" fill className="object-cover" sizes="80px" />
                 </div>
               ))}
             </div>
-            <div className="p-2">
-              <p className="text-xs font-medium text-s-ink dark:text-s-dm-text truncate">{board.name}</p>
-              <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{board.pin_count} pins</p>
+            <div className="px-3 py-2.5">
+              <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{board.name}</p>
+              <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35 mt-0.5">
+                {board.pin_count} Pins
+              </p>
             </div>
           </button>
         ))}

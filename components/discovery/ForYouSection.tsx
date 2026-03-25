@@ -50,13 +50,10 @@ export default function ForYouSection() {
   if (loading) {
     return (
       <div className="mb-6 space-y-4">
-        <div className="h-4 bg-s-ink/5 dark:bg-white/5 rounded-pill w-48 shimmer" />
+        <div className="h-4 bg-s-ink/5 dark:bg-white/5 rounded-pill w-48 animate-pulse" />
         <div className="flex gap-3 overflow-hidden">
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="w-32 shrink-0 rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
-              <div className="aspect-[3/4] bg-s-ink/5 dark:bg-white/5 shimmer" />
-              <div className="p-2"><div className="h-2.5 bg-s-ink/5 dark:bg-white/5 rounded-pill w-3/4 shimmer" /></div>
-            </div>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex-shrink-0 w-40 aspect-[3/4] rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface animate-pulse" />
           ))}
         </div>
       </div>
@@ -67,17 +64,20 @@ export default function ForYouSection() {
     <div className="mb-6 space-y-6">
       {sections.map(({ item, similar }) => (
         <div key={item.id}>
-          <h3 className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-3">
-            {locale === "de"
-              ? `Weil du "${item.style_name || item.category}" gespeichert hast`
-              : `Because you saved "${item.style_name || item.category}"`}
-          </h3>
+          <div className="mb-4 flex items-center gap-2">
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30">
+              {locale === "de"
+                ? `Weil du „${item.style_name || item.category}" gespeichert hast`
+                : `Because you saved "${item.style_name || item.category}"`}
+            </p>
+            <div className="flex-1 h-px bg-s-ink/[0.05] dark:bg-white/[0.05]" />
+          </div>
           <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-hide">
             {similar.map((sim) => (
               <div
                 key={sim.id}
                 onClick={() => router.push(`/${locale}/discover/${sim.id}`)}
-                className="w-32 shrink-0 snap-start rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
+                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
               >
                 <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
                   {(sim.image_url || sim.tiktok_thumbnail_url) && (

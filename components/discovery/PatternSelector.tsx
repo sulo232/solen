@@ -33,21 +33,26 @@ export default function PatternSelector({ category, selected, onSelect }: Patter
   if (category && !["hair", "beard"].includes(category)) return null;
 
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
-      {options.map((opt) => (
-        <button
-          key={opt.value ?? "all"}
-          onClick={() => onSelect(opt.value)}
-          className={cn(
-            "px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-colors border",
-            selected === opt.value
-              ? "bg-s-coral text-white border-s-coral"
-              : "bg-white dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border-s-ink/10 dark:border-white/10 hover:border-s-coral/30"
-          )}
-        >
-          {opt.label}
-        </button>
-      ))}
+    <div>
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+        Textur
+      </p>
+      <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+        {options.map((opt) => (
+          <button
+            key={opt.value ?? "all"}
+            onClick={() => onSelect(opt.value)}
+            className={cn(
+              "px-3 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-all border",
+              selected === opt.value
+                ? "border-s-coral bg-s-coral/[0.08] text-s-coral"
+                : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-coral/40"
+            )}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

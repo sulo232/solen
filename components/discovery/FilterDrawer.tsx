@@ -28,54 +28,62 @@ export default function FilterDrawer(props: FilterDrawerProps) {
       {/* Trigger button — visible on mobile only */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center gap-1.5 px-3 py-2 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60"
+        className="md:hidden flex items-center gap-1.5 px-3 py-2.5 rounded-pill border text-[10px] font-heading font-bold uppercase tracking-[.08em] transition-colors"
+        style={hasFilters
+          ? { borderColor: "rgba(232,98,74,.40)", color: "#E8624A", background: "rgba(232,98,74,.06)" }
+          : { borderColor: "rgba(26,18,9,.08)", color: "rgba(26,18,9,.60)" }}
       >
-        <SlidersHorizontal size={14} />
-        Filters
-        {hasFilters && <span className="w-2 h-2 rounded-full bg-s-coral" />}
+        <SlidersHorizontal size={13} />
+        Filter {hasFilters && <span className="ml-0.5 text-s-coral">·</span>}
       </button>
 
       {/* Drawer overlay */}
       {open && (
         <div className="fixed inset-0 z-50 flex items-end md:hidden">
           <div className="absolute inset-0 bg-s-ink/40" onClick={() => setOpen(false)} />
-          <div className="relative w-full bg-white dark:bg-s-dm-surface rounded-t-[16px] p-5 pb-8 space-y-4 max-h-[80vh] overflow-y-auto animate-in slide-in-from-bottom">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-heading font-bold text-s-ink dark:text-s-dm-text">Filters</h3>
-              <button onClick={() => setOpen(false)} className="p-1"><X size={20} /></button>
+          <div className="relative w-full bg-white dark:bg-s-dm-surface shadow-warm-float flex flex-col rounded-t-[16px] max-h-[80vh] animate-in slide-in-from-bottom">
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-s-ink/[0.06] dark:border-white/[0.06] flex items-center justify-between">
+              <div>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30">Filter</p>
+                <p className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">Suche verfeinern</p>
+              </div>
+              <button onClick={() => setOpen(false)} className="p-2 rounded-[8px] hover:bg-s-ink/[0.04] dark:hover:bg-white/[0.04]">
+                <X size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
+              </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
               <div>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">Category</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Kategorie</p>
                 <CategoryPills selected={props.category} onSelect={props.onCategoryChange} />
               </div>
               <div>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">Gender</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Geschlecht</p>
                 <GenderToggle selected={props.gender} onSelect={props.onGenderChange} />
               </div>
               <div>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">Texture / Type</p>
                 <PatternSelector category={props.category === "all" ? null : props.category} selected={props.texture} onSelect={props.onTextureChange} />
               </div>
               <div>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">Style</p>
                 <StyleNamePills selected={props.style} onSelect={props.onStyleChange} />
               </div>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            {/* Footer */}
+            <div className="px-5 py-4 border-t border-s-ink/[0.06] dark:border-white/[0.06] flex gap-2">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
-                className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60"
+                className="flex-1 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-ink/20 transition-colors"
               >
-                Reset
+                Zurücksetzen
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium transition-all"
+                className="flex-1 py-3 rounded-btn text-white text-xs font-heading font-bold active:scale-[0.98] transition-all"
+                style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
               >
-                Apply
+                Anwenden
               </button>
             </div>
           </div>

@@ -149,10 +149,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
       {/* Floating + button */}
       <button
         onClick={handleOpen}
-        className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full bg-s-coral hover:bg-s-coral-hover text-white shadow-warm-md flex items-center justify-center transition-colors"
+        className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white active:scale-[0.96] transition-all"
+        style={{
+          background: "#E8624A",
+          boxShadow: "0 4px 12px rgba(232,98,74,.40), 0 12px 32px rgba(232,98,74,.22)"
+        }}
         aria-label={t.newPost}
       >
-        <Plus size={24} />
+        <Plus size={20} strokeWidth={2.5} />
       </button>
 
       {/* Modal */}

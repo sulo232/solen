@@ -17,7 +17,6 @@ import StyleNamePills from "@/components/discovery/StyleNamePills";
 import FeaturedBoards from "@/components/discovery/FeaturedBoards";
 import FilterDrawer from "@/components/discovery/FilterDrawer";
 import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
-import Spinner from "@/components/ui/Spinner";
 import PostFromDiscover from "@/components/discovery/PostFromDiscover";
 import ForYouSection from "@/components/discovery/ForYouSection";
 import DiscoveryAdmin from "@/components/discovery/DiscoveryAdmin";
@@ -165,10 +164,17 @@ export default function DiscoverPage() {
     <main className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg pt-4 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink dark:text-s-dm-text mb-1">Discover</h1>
-            <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Find your next look</p>
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
+              solen discover
+            </p>
+            <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
+              Discover
+            </h1>
+            <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-1.5">
+              Dein nächster Look
+            </p>
           </div>
           {/* Mobile filter drawer trigger */}
           <FilterDrawer
@@ -248,8 +254,11 @@ export default function DiscoverPage() {
         {/* Infinite scroll trigger */}
         {hasMore && <div ref={observerRef} className="h-20" />}
         {loading && items.length > 0 && (
-          <div className="flex justify-center py-8">
-            <Spinner size="md" />
+          <div className="flex items-center justify-center gap-1.5 py-10">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="w-1.5 h-1.5 rounded-full bg-s-coral/50 animate-pulse"
+                style={{ animationDelay: `${i * 0.2}s` }} />
+            ))}
           </div>
         )}
       </div>
