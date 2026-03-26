@@ -11,7 +11,7 @@ interface StatItem {
 
 const DEFAULT_STATS: StatItem[] = [
   { value: 247, label: "Buchungen diese Woche", icon: "\u{1F4C5}" },
-  { value: 38, label: "Salons in Basel", icon: "\u2702" },
+  { value: 38, label: "Partner Salons", icon: "\u2702" },
   { value: 4.9, label: "\u00D8 Bewertung", icon: "\u2605", isDecimal: true },
 ];
 
@@ -81,7 +81,7 @@ export default function SocialProofStrip() {
         if (data?.customers || data?.salons || data?.bookings_this_week || data?.avg_rating) {
           setStats([
             { value: data.bookings_this_week ?? DEFAULT_STATS[0].value, label: "Buchungen diese Woche", icon: "\u{1F4C5}" },
-            { value: data.salons ?? DEFAULT_STATS[1].value, label: "Salons in Basel", icon: "\u2702" },
+            { value: data.salons ?? DEFAULT_STATS[1].value, label: "Partner Salons", icon: "\u2702" },
             { value: data.avg_rating ?? DEFAULT_STATS[2].value, label: "\u00D8 Bewertung", icon: "\u2605", isDecimal: true },
           ]);
         }

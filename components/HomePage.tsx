@@ -58,17 +58,24 @@ const fadeUp = {
   },
 } as const;
 
+import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
+import { BarberIcon } from "@/components/icons/category/BarberIcon";
+import { NailsIcon } from "@/components/icons/category/NailsIcon";
+import { SpaIcon } from "@/components/icons/category/SpaIcon";
+import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
+import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Category grid data
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "COIFFEUR",   count: "42",  grad: "linear-gradient(145deg,#D4870A,#E8624A)" },
-  { key: "barbershop", label: "BARBER",     count: "18",  grad: "linear-gradient(145deg,#4A1E3C,#6BA3C8)" },
-  { key: "nails",      label: "NAILS",      count: "24",  grad: "linear-gradient(145deg,#E8624A,#F2C144)" },
-  { key: "spa",        label: "SPA",        count: "11",  grad: "linear-gradient(145deg,#7BA688,#6BA3C8)" },
-  { key: "makeup",     label: "MAKEUP",     count: "8",   grad: "linear-gradient(145deg,#C9A96E,#E8624A)" },
-  { key: "waxing",     label: "WAXING",     count: "15",  grad: "linear-gradient(145deg,#4A1E3C,#7BA688)" },
+  { key: "coiffeur",   label: "COIFFEUR",   count: "42",  Icon: CoiffeurIcon, color: "text-s-coral", bg: "rgba(232,98,74,.05)" },
+  { key: "barbershop", label: "BARBER",     count: "18",  Icon: BarberIcon,   color: "text-s-ink", bg: "rgba(26,18,9,.05)" },
+  { key: "nails",      label: "NAILS",      count: "24",  Icon: NailsIcon,    color: "text-s-amber", bg: "rgba(242,193,68,.05)" },
+  { key: "spa",        label: "SPA",        count: "11",  Icon: SpaIcon,      color: "text-[#7BA688]", bg: "rgba(123,166,136,.05)" },
+  { key: "makeup",     label: "MAKEUP",     count: "8",   Icon: MakeupIcon,   color: "text-[#C9A96E]", bg: "rgba(201,169,110,.05)" },
+  { key: "waxing",     label: "WAXING",     count: "15",  Icon: WaxingIcon,   color: "text-[#4A1E3C]", bg: "rgba(74,30,60,.05)" },
 ] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -331,19 +338,58 @@ export default function HomePage() {
           </h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, grad }) => (
+          {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, Icon, color, bg }) => (
             <Link key={key} href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-              className="relative aspect-square rounded-[20px] overflow-hidden group hover:-translate-y-[5px] transition-all duration-[250ms]"
-              style={{ boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
-              <div className="absolute inset-0"
-                style={{ background: grad }} />
-              <div className="absolute inset-0 bg-gradient-to-t from-s-ink/60 to-transparent" />
-              <div className="absolute bottom-0 inset-x-0 p-3">
-                <div className="font-display text-[22px] text-white leading-none">{label}</div>
-                <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-white/55 mt-0.5">{count} {t("categories.salonsCount")}</div>
+              className="relative aspect-square rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:scale-[1.03] hover:-rotate-1 transition-all duration-[250ms] flex flex-col items-center justify-center p-4 border border-s-ink/10 dark:border-s-dm-border"
+              style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors duration-300" style={{ backgroundColor: bg }}>
+                <Icon className={`w-6 h-6 ${color}`} />
+              </div>
+              <div className="font-display text-[18px] text-s-ink dark:text-s-dm-text leading-none text-center">
+                {label}
+              </div>
+              <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1">
+                {count} {t("categories.salonsCount")}
               </div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* ── Discover Preview (Phase 3) ─────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+        <div className="relative rounded-[20px] p-8 md:p-12 overflow-hidden bg-s-bg-base/80 dark:bg-s-dm-surface border border-s-ink/10 shadow-warm-sm group cursor-pointer"
+             onClick={() => window.location.href = `/${locale}/discover`}>
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-s-coral/5 dark:bg-s-coral/10 blur-[60px] transform translate-x-1/3 -translate-y-1/3 pointer-events-none transition-transform duration-700 group-hover:scale-110" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 justify-between">
+            <div className="max-w-md text-center md:text-left">
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">Entdecken</span>
+              <h2 className="font-display text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(32px, 5vw, 48px)", letterSpacing: "0.01em", lineHeight: "0.95" }}>
+                FINDE DEINE<br /><span className="text-s-coral">INSPIRATION</span>
+              </h2>
+              <p className="mt-4 font-body text-s-ink/60 dark:text-s-dm-text/60 italic leading-relaxed">
+                Nicht sicher, was du suchst? Entdecke tausende Styles und Trends aus deiner Stadt.
+              </p>
+              
+              <Link href={`/${locale}/discover`}
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-btn border border-s-ink/20 text-s-ink font-heading font-bold text-xs uppercase tracking-[.04em] hover:bg-s-ink hover:text-white transition-all">
+                Alle entdecken →
+              </Link>
+            </div>
+
+            <div className="flex gap-4 items-center shrink-0 perspective-1000">
+              <div className="w-24 h-36 md:w-32 md:h-48 rounded-[16px] overflow-hidden bg-s-ink/10 transform -rotate-6 shadow-warm-md group-hover:-rotate-12 transition-transform duration-500 scale-90">
+                <img src="/assets/placeholder/discover-3.jpg" className="w-full h-full object-cover opacity-80" alt="" />
+              </div>
+              <div className="w-32 h-44 md:w-40 md:h-56 rounded-[16px] overflow-hidden bg-s-ink/10 shadow-warm-lg z-10 group-hover:-translate-y-2 transition-transform duration-500">
+                <img src="/assets/placeholder/discover-1.jpg" className="w-full h-full object-cover" alt="Inspiration" />
+              </div>
+              <div className="w-24 h-36 md:w-32 md:h-48 rounded-[16px] overflow-hidden bg-s-ink/10 transform rotate-6 shadow-warm-md group-hover:rotate-12 transition-transform duration-500 scale-90">
+                <img src="/assets/placeholder/discover-2.jpg" className="w-full h-full object-cover opacity-80" alt="" />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -441,7 +487,7 @@ export default function HomePage() {
       </section>
       )}
 
-      {/* ── Last-Minute Angebote ────────────────────────────────────────── */}
+      {/* ── Deals ────────────────────────────────────────── */}
       {sections.last_minute && (
       <section id="tour-last-minute" className="py-16 md:py-24 overflow-hidden relative"
         style={{ background: "#4A1E3C" }}>
@@ -454,16 +500,16 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
             <div>
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2"
-                style={{ color: "#F2C144" }}>{t("lastMinute.eyebrow")}</span>
+                style={{ color: "#F2C144" }}>Deals</span>
               <h2 className="font-heading font-extrabold text-white"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                {t("lastMinute.title")}
+                Aktuelle Deals
               </h2>
             </div>
-            <Link href={`/${locale}/last-minute`}
+            <Link href={`/${locale}/deals`}
               className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-all"
-              aria-label={t("lastMinute.viewAll")}>
-              {t("lastMinute.viewAll")} →
+              aria-label="Alle ansehen">
+              Alle ansehen →
             </Link>
           </div>
 
@@ -486,9 +532,9 @@ export default function HomePage() {
                   {t("lastMinute.emptyMessage")}
                 </p>
               </div>
-              <Link href={`/${locale}/last-minute`} className="shrink-0">
+              <Link href={`/${locale}/deals`} className="shrink-0">
                 <InteractiveHoverButton
-                  text={t("lastMinute.viewOffers")}
+                  text="Angebote entdecken"
                   className="w-44 border-white/20"
                 />
               </Link>
@@ -566,6 +612,63 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      {/* ── Map Preview Section (Phase 3) ──────────────────────────────────── */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                In deiner Nähe
+              </span>
+              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                SALONS AUF DER KARTE
+              </h2>
+            </div>
+            <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
+              className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:bg-s-ink hover:text-white dark:hover:bg-white dark:hover:text-s-ink transition-all shrink-0">
+              Karte öffnen →
+            </Link>
+          </div>
+
+          <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`} className="block group">
+            <div className="relative w-full h-[300px] md:h-[400px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm group-hover:shadow-warm-md transition-shadow">
+              {/* Map abstract background */}
+              <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
+              
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-background/80" />
+              
+              {/* Floating map pins */}
+              <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 group-hover:-translate-y-2">
+                <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-coral text-s-coral">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
+                </div>
+              </div>
+
+              <div className="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 delay-75 group-hover:-translate-y-2">
+                <div className="w-8 h-8 rounded-full bg-s-coral shadow-coral-glow flex items-center justify-center text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
+                </div>
+              </div>
+
+              <div className="absolute bottom-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 delay-150 group-hover:-translate-y-2">
+                <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-ink text-s-ink">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
+                </div>
+              </div>
+              
+              {/* Overlay CTA */}
+              <div className="absolute bottom-6 inset-x-0 flex justify-center">
+                <div className="px-6 py-3 rounded-full bg-white/90 backdrop-blur-sm border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 group-hover:scale-105 transition-transform">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Karte erkunden
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
 
       {/* ── Review Carousel ──────────────────────────────────────────────── */}
       {sections.reviews && <ReviewCarousel />}

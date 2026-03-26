@@ -1,14 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabase = createClient(
+const getSupabase = () => createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
 export async function POST(
   req: Request,
-  { params }: { params: { salonId: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const formData = await req.formData();
@@ -19,17 +19,17 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser(sessionToken);
+    const { data: { user }, error: authError } = await getSupabase().auth.getUser(sessionToken);
     
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Auth validation - is this person the salon owner?
-    const { data: salon, error: salonError } = await supabase
+    const { data: salon, error: salonError } = await getSupabase()
       .from("salons")
       .select("owner_id, gallery_urls")
-      .eq("id", params.salonId)
+      .eq("id", params.slug)
       .single();
 
     if (salonError || !salon || salon.owner_id !== user.id) {
@@ -66,11 +66,11 @@ export async function POST(
     }
 
     const fileExt = file.name.split(".").pop();
-    const fileName = `${params.salonId}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    const filePath = `${params.salonId}/${fileName}`;
+    const fileName = `${params.slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `${params.slug}/${fileName}`;
 
     // Upload to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: uploadData, error: uploadError } = await getSupabase().storage
       .from("salon-gallery")
       .upload(filePath, file, {
         cacheControl: "3600",
@@ -83,17 +83,17 @@ export async function POST(
     }
 
     // Get public URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = getSupabase().storage
       .from("salon-gallery")
       .getPublicUrl(filePath);
 
     // Append to existing array
     const updatedGallery = [...currentPhotos, publicUrl];
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await getSupabase()
       .from("salons")
       .update({ gallery_urls: updatedGallery })
-      .eq("id", params.salonId);
+      .eq("id", params.slug);
 
     if (updateError) {
       console.error("DB update error:", updateError);
@@ -112,7 +112,7 @@ export async function POST(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { salonId: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const { url } = await req.json();
@@ -122,16 +122,16 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser(sessionToken);
+    const { data: { user }, error: authError } = await getSupabase().auth.getUser(sessionToken);
     
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: salon, error: salonError } = await supabase
+    const { data: salon, error: salonError } = await getSupabase()
       .from("salons")
       .select("owner_id, gallery_urls")
-      .eq("id", params.salonId)
+      .eq("id", params.slug)
       .single();
 
     if (salonError || !salon || salon.owner_id !== user.id) {
@@ -150,7 +150,7 @@ export async function DELETE(
         const filePath = urlParts[1];
         
         // Remove from storage
-        const { error: deleteError } = await supabase.storage
+        const { error: deleteError } = await getSupabase().storage
           .from("salon-gallery")
           .remove([filePath]);
           
@@ -161,12 +161,12 @@ export async function DELETE(
     }
 
     // Update DB
-    const updatedGallery = (salon.gallery_urls || []).filter(u => u !== url);
+    const updatedGallery = (salon.gallery_urls || []).filter((u: string) => u !== url);
     
-    const { error: updateError } = await supabase
+    const { error: updateError } = await getSupabase()
       .from("salons")
       .update({ gallery_urls: updatedGallery })
-      .eq("id", params.salonId);
+      .eq("id", params.slug);
 
     if (updateError) {
       return NextResponse.json({ error: "Failed to update DB" }, { status: 500 });
@@ -181,7 +181,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { salonId: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
     const { urls } = await req.json();
@@ -191,16 +191,16 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser(sessionToken);
+    const { data: { user }, error: authError } = await getSupabase().auth.getUser(sessionToken);
     
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: salon, error: salonError } = await supabase
+    const { data: salon, error: salonError } = await getSupabase()
       .from("salons")
       .select("owner_id")
-      .eq("id", params.salonId)
+      .eq("id", params.slug)
       .single();
 
     if (salonError || !salon || salon.owner_id !== user.id) {
@@ -211,10 +211,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid URLs array" }, { status: 400 });
     }
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await getSupabase()
       .from("salons")
       .update({ gallery_urls: urls })
-      .eq("id", params.salonId);
+      .eq("id", params.slug);
 
     if (updateError) {
       return NextResponse.json({ error: "Failed to update order" }, { status: 500 });
