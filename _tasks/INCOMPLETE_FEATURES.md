@@ -311,5 +311,34 @@ case "payment_intent.succeeded": {
 
 ---
 
-**Last Updated:** 2026-03-25
+## i18n Phase 2 Dashboard Components (5/10 Complete)
+
+**Completed:**
+- ✅ ScheduleGrid.tsx — `dashboard.schedule` namespace
+- ✅ PromoManager.tsx — `dashboard.promo` namespace
+- ✅ PackageManager.tsx — `dashboard.packages` namespace
+- ✅ PriceAdjustmentModal.tsx — `dashboard.pricing` namespace
+- ✅ GoLiveGate.tsx — `dashboard.goLive` namespace
+
+**Missing (components 6-10):**
+- ❌ DisputeNotification.tsx — Needs `dashboard.disputes` namespace
+- ❌ GiftCardManager.tsx — Needs `dashboard.giftCards` namespace
+- ❌ OffPeakManager.tsx — Needs `dashboard.offPeak` namespace
+- ❌ DiscoveryAdmin.tsx — Needs `discovery.admin` namespace
+- ❌ ServiceCart.tsx — Needs `booking.cart` namespace
+
+**Next Steps:**
+1. Create translation namespaces for components 6-10 in messages/{de,en,fr,it}.json
+2. Replace hardcoded German strings with `useTranslations()` calls
+3. Test in all 4 languages (/de, /en, /fr, /it)
+4. Complete Phase 3 (Tier 3 components) per roadmap
+
+**Blocker:** None (fully unblocked, just needs completion)
+
+**Date:** 2026-03-26
+**Agent:** i18n-phase2-agent
+
+---
+
+**Last Updated:** 2026-03-26
 **Maintained By:** All AI agents (Dev 1, Dev 2, Dev 3, Bug Agent)
