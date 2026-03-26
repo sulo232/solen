@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import {
@@ -13,7 +13,10 @@ import {
   Zap,
   Calendar,
   Loader2,
+  MapPin,
 } from "lucide-react";
+import { getPersistedCity } from "@/lib/city-cookie";
+import { CITY_SLUGS } from "@/lib/cities";
 import SolenDatePicker from "@/components/ui/date-picker";
 import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import type { DateValue } from "react-aria-components";
@@ -71,22 +74,15 @@ export default function HomeSearchBar() {
 
   const [selectedDate, setSelectedDate] = useState<DateValue>(todayValue);
   const [selectedCategory, setSelectedCategory] = useState<SalonCategory | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [detecting, setDetecting] = useState(false);
   const [categoryHint, setCategoryHint] = useState(false);
 
-  // Quick date chips
-  const [activeDateChip, setActiveDateChip] = useState<"today" | "tomorrow" | "custom">("today");
-
-  const handleDateChip = (chip: "today" | "tomorrow") => {
-    setActiveDateChip(chip);
-    setSelectedDate(chip === "today" ? todayValue : tomorrowValue());
-  };
-
-  const handleCustomDate = (d: DateValue) => {
-    setActiveDateChip("custom");
-    setSelectedDate(d);
-  };
+  // Pre-fill city on mount
+  useEffect(() => {
+    setSelectedCity(getPersistedCity());
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -106,82 +102,101 @@ export default function HomeSearchBar() {
           if (data.category) category = data.category;
         }
       } catch {
-        // Detection failed — leave category null
+        // Detection failed
       } finally {
         setDetecting(false);
       }
     }
 
-    // If still no category: require user to pick one
-    if (!category) {
-      // Briefly highlight the category pills to draw attention
+    if (!category && !query.trim()) {
+      // Nothing search related, but they clicked search. Just highlight something visually or default.
       setCategoryHint(true);
       setTimeout(() => setCategoryHint(false), 2000);
       return;
     }
 
-    const params = new URLSearchParams();
-    params.set("date", dateIso);
-    if (query.trim()) params.set("q", encodeURIComponent(query.trim()));
+    const citySlug = selectedCity ?? "";
+    const basePath = citySlug
+      ? `/${locale}/${citySlug}/${category ?? "search"}`
+      : `/${locale}/search`;
 
-    router.push(`/${locale}/${category}?${params.toString()}`);
+    const params = new URLSearchParams();
+    if (dateIso !== dateValueToIso(todayValue)) params.set("date", dateIso);
+    if (!category && query.trim()) params.set("q", encodeURIComponent(query.trim())); 
+
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-3xl mx-auto" role="search" aria-label="Salon suchen">
-
-      {/* ── Main segmented bar ── */}
-      <div className="rounded-search overflow-x-hidden sm:overflow-hidden"
+    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto" role="search" aria-label="Salon suchen">
+      <div className="rounded-search overflow-hidden"
         style={{ background: "var(--glass-bg-strong)", backdropFilter: "blur(24px) saturate(1.3)",
                  WebkitBackdropFilter: "blur(24px) saturate(1.3)",
                  border: "1px solid var(--glass-bg-card)",
                  boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), var(--glass-shadow-inset)" }}>
-
-        {/* Row: dates + categories side by side on lg, stacked on sm */}
-        <div className="flex flex-col lg:flex-row">
-          {/* Segment 1: Date */}
-          <div className="flex items-center gap-2 px-5 py-4 lg:border-r border-b lg:border-b-0 border-s-ink/[0.06] flex-wrap">
-            <Calendar size={14} className="text-s-ink/35 shrink-0" aria-hidden="true" />
-            <button type="button" onClick={() => handleDateChip("today")}
-              className={[pillBase, activeDateChip === "today" ? pillActive : pillInactive].join(" ")}>Heute</button>
-            <button type="button" onClick={() => handleDateChip("tomorrow")}
-              className={[pillBase, activeDateChip === "tomorrow" ? pillActive : pillInactive].join(" ")}>Morgen</button>
-            <SolenDatePicker label="" value={selectedDate} onChange={handleCustomDate} minValue={todayValue} className="[&_label]:hidden" />
+        
+        <div className="flex flex-col md:flex-row items-stretch">
+          
+          {/* Field 1: Service (Text Input) */}
+          <div className="relative flex-1 min-w-0 border-b md:border-b-0 md:border-r border-s-ink/[0.06] flex items-center bg-transparent transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus-within:bg-black/5 dark:focus-within:bg-white/5">
+            <Search size={18} className="absolute left-5 text-s-ink/40" aria-hidden="true" />
+            <input type="text" value={query} onChange={(e) => { setQuery(e.target.value); setSelectedCategory(null); }}
+              placeholder="Welchen Service suchst du?" aria-label="Service suchen"
+              className={`w-full py-5 md:py-6 pl-12 pr-4 text-sm md:text-[15px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "ring-2 ring-s-coral/30 ring-inset" : ""}`} />
+            
+            {/* If they type something that maps exactly, show pill? For now just keep input */}
           </div>
 
-          {/* Segment 2: Categories */}
-          <div className={`flex items-center gap-1.5 px-5 py-4 overflow-x-auto no-scrollbar border-b lg:border-b-0 border-s-ink/[0.06] flex-1 ${categoryHint ? "ring-2 ring-s-coral/30 ring-inset" : ""}`}>
-            {CATEGORIES.map(({ key, label, Icon }) => (
-              <button key={key} type="button"
-                onClick={() => setSelectedCategory(selectedCategory === key ? null : key)}
-                className={[pillBase, selectedCategory === key ? pillActive : pillInactive].join(" ")}
-                aria-pressed={selectedCategory === key} aria-label={`Kategorie ${label}`}>
-                <Icon size={13} aria-hidden="true" />{label}
-              </button>
-            ))}
+          {/* Field 2: City Dropdown */}
+          <div className="relative md:w-48 xl:w-56 shrink-0 border-b md:border-b-0 md:border-r border-s-ink/[0.06] flex items-center group transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus-within:bg-black/5 dark:focus-within:bg-white/5 cursor-pointer">
+            <MapPin size={18} className="absolute left-5 text-s-ink/40" aria-hidden="true" />
+            <select
+              value={selectedCity || ""}
+              onChange={(e) => setSelectedCity(e.target.value || null)}
+              className="w-full h-full py-5 md:py-6 pl-12 pr-8 text-sm md:text-[15px] font-body font-medium text-s-ink dark:text-s-dm-text bg-transparent appearance-none focus:outline-none cursor-pointer"
+              aria-label="Stadt wählen"
+            >
+              <option value="" className="text-black">Ganze Schweiz</option>
+              {CITY_SLUGS.map((slug: string) => (
+                <option key={slug} value={slug} className="text-black">
+                  {slug.charAt(0).toUpperCase() + slug.slice(1)}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-5 pointer-events-none text-s-ink/40">
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </div>
 
-          {/* Segment 3: Text input + Search button inline */}
-          <div className="relative flex items-stretch">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-s-ink/30" aria-hidden="true"/>
-            <input type="text" value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Service oder Salon…" aria-label="Service oder Salon suchen" id="tour-search"
-              className="w-full lg:w-56 py-4 pl-10 pr-2 text-sm font-body text-s-ink placeholder:text-s-ink/35 bg-transparent focus:outline-none border-b lg:border-b-0 border-s-ink/[0.06]" />
-
-            {/* Submit — nested inside bar */}
+          {/* Field 3: Date Picker & Submit */}
+          <div className="relative md:w-64 xl:w-72 shrink-0 flex items-center justify-between pl-2 pr-2 py-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus-within:bg-black/5 dark:focus-within:bg-white/5">
+            <div className="flex-1 flex items-center">
+              <SolenDatePicker 
+                label="" 
+                value={selectedDate} 
+                onChange={setSelectedDate} 
+                minValue={todayValue} 
+                className="[&_label]:hidden w-full [&_button]:w-full [&_button]:border-none [&_button]:shadow-none [&_button]:bg-transparent [&_button]:text-s-ink dark:[&_button]:text-s-dm-text [&_button]:text-sm md:[&_button]:text-[15px] [&_button]:font-medium [&>div]:w-full" 
+              />
+            </div>
+            
+            {/* Submit Button */}
             <button type="submit" disabled={detecting}
-              className="shrink-0 m-2 px-5 py-3 rounded-input bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.04em] flex items-center gap-1.5 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-all disabled:opacity-60">
-              {detecting ? <Loader2 size={14} className="animate-spin" /> : <Search size={13} aria-hidden="true" />}
-              {detecting ? "…" : "Suchen"}
+              className="shrink-0 ml-2 px-6 py-3 md:py-4 rounded-input bg-s-coral text-white font-heading font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-all disabled:opacity-60 min-w[100px] h-full h-[44px] md:h-[48px]">
+              {detecting ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} aria-hidden="true" />}
+              <span className="hidden sm:inline">{detecting ? "Suche..." : "Suchen"}</span>
             </button>
           </div>
+
         </div>
       </div>
-
+      
       {/* Category hint text */}
       {categoryHint && (
-        <p className="text-xs text-s-coral font-body font-medium mt-2 text-center animate-pulse">
-          Bitte wähle eine Kategorie
+        <p className="text-xs text-s-coral font-body font-medium mt-3 text-center animate-pulse">
+          Bitte gib einen Service ein
         </p>
       )}
     </form>
