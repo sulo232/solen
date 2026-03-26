@@ -1,28 +1,46 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import ItemCard from "@/components/discovery/ItemCard";
+import Skeleton from "@/components/ui/Skeleton";
+import type { DiscoveryItem } from "@/lib/types";
 
-const MOCK_DISCOVER_ITEMS = [
-  { id: "1", src: "/assets/placeholder/discover-1.jpg", alt: "Balayage" },
-  { id: "2", src: "/assets/placeholder/discover-2.jpg", alt: "Nail Art" },
-  { id: "3", src: "/assets/placeholder/discover-3.jpg", alt: "Barber Fade" },
-  { id: "4", src: "/assets/placeholder/discover-4.jpg", alt: "Makeup Look" },
-  { id: "5", src: "/assets/placeholder/discover-5.jpg", alt: "Spa Day" },
-  { id: "6", src: "/assets/placeholder/discover-6.jpg", alt: "Hair Coloring" },
-  { id: "7", src: "/assets/placeholder/discover-7.jpg", alt: "Manicure" },
-  { id: "8", src: "/assets/placeholder/discover-8.jpg", alt: "Beard Trim" },
-  { id: "9", src: "/assets/placeholder/discover-1.jpg", alt: "Wedding Makeup" },
-  { id: "10", src: "/assets/placeholder/discover-2.jpg", alt: "Facial" },
-];
+// Helper to shuffle array
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 export default function DiscoverCarousel({ locale }: { locale: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [items, setItems] = useState<DiscoveryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // We rely on CSS snap to keep the UX smooth.
-  // The "middle is big" will be achieved with a simple hover scale for now,
-  // or via scroll-driven animations if deployed on modern browsers.
-  
+  useEffect(() => {
+    async function loadItems() {
+      try {
+        // Fetch up to 30 items to give the algorithm/shuffling good variety
+        const res = await fetch("/api/discovery/feed?limit=30");
+        const json = await res.json();
+        if (json.items && json.items.length > 0) {
+          // Shuffle them so it's not the same ones every time
+          const shuffled = shuffleArray(json.items as DiscoveryItem[]);
+          setItems(shuffled.slice(0, 10)); // Take top 10 for the carousel
+        }
+      } catch (err) {
+        console.error("Failed to fetch discover carousel items:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadItems();
+  }, []);
+
   return (
     <div className="w-full relative py-8 overflow-hidden">
       <div 
@@ -30,39 +48,39 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 md:px-12 pb-8 pt-4 hide-scrollbar"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {MOCK_DISCOVER_ITEMS.map((item, index) => (
-          <Link
-            key={item.id}
-            href={`/${locale}/discover?id=${item.id}`}
-            className="shrink-0 snap-center group relative block"
-          >
-            {/* 3D rotation and scale to keep the "bouncy, playful" vibe the user liked */}
-            <div className={`
-              w-44 h-64 md:w-56 md:h-80 rounded-[20px] overflow-hidden 
-              shadow-warm-sm group-hover:shadow-warm-lg transition-all duration-500
-              transform group-hover:-translate-y-2 group-hover:scale-[1.03]
-              ${index % 2 === 0 ? "rotate-2 group-hover:-rotate-1" : "-rotate-2 group-hover:rotate-1"}
-            `}>
-              <div className="absolute inset-0 bg-s-ink/5 dark:bg-black/20 z-10 group-hover:bg-transparent transition-colors duration-300" />
-              <img 
-                src={item.src} 
-                alt={item.alt} 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback for missing mock images
-                  e.currentTarget.src = "/assets/placeholder/discover-1.jpg";
-                }}
-              />
+        {isLoading ? (
+          // Skeletons matching the TikTok aspect ratio styling
+          Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="shrink-0 snap-center w-[170px] h-[300px] md:w-[200px] md:h-[355px] rounded-[16px]">
+              <Skeleton className="w-full h-full rounded-[16px]" />
             </div>
-          </Link>
-        ))}
+          ))
+        ) : items.length > 0 ? (
+          items.map((item, index) => (
+            <Link
+              href={`/${locale}/discover?id=${item.id}`}
+              prefetch={false}
+              key={item.id}
+              className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
+            >
+              {/* 3D rotation and scale container */}
+              <div className={`
+                w-full h-full transition-all duration-500 origin-center
+                transform group-hover:-translate-y-2 group-hover:scale-[1.03]
+                ${index % 2 === 0 ? "rotate-2 group-hover:-rotate-1" : "-rotate-2 group-hover:rotate-1"}
+              `}>
+                <ItemCard item={item} />
+              </div>
+            </Link>
+          ))
+        ) : null}
 
         {/* 11th item: "Go to Entdecken" card */}
         <Link
           href={`/${locale}/discover`}
-          className="shrink-0 snap-center group relative block"
+          className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
         >
-          <div className="w-44 h-64 md:w-56 md:h-80 rounded-[20px] overflow-hidden bg-s-coral/10 dark:bg-s-coral/5 border-2 border-dashed border-s-coral/30 shadow-warm-sm group-hover:shadow-warm-md group-hover:-translate-y-2 group-hover:border-s-coral transition-all duration-300 flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-full h-full rounded-[16px] overflow-hidden bg-s-coral/10 dark:bg-s-coral/5 border-2 border-dashed border-s-coral/30 shadow-warm-sm group-hover:shadow-warm-md group-hover:-translate-y-2 group-hover:border-s-coral transition-all duration-300 flex flex-col items-center justify-center p-6 text-center">
             <div className="w-12 h-12 rounded-full bg-s-coral text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </div>

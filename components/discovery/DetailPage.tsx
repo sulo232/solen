@@ -91,7 +91,7 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         {isVideo && videoId ? (
           <div className="relative w-full aspect-[9/16] max-h-[80vh] bg-s-ink">
             <iframe
-              src={`https://www.tiktok.com/player/v1/${videoId}?music_info=0&description=0&rel=0&autoplay=1&loop=1`}
+              src={`https://www.tiktok.com/embed/v2/${videoId}?lang=${locale}`}
               className="absolute inset-0 w-full h-full border-0"
               allow="autoplay; encrypted-media"
               allowFullScreen
