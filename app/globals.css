@@ -26,6 +26,15 @@
     --card: 0 0% 100%;
     --card-foreground: 28 30% 7%;
     --radius: 12px;
+
+    /* Glass CSS custom properties */
+    --glass-bg: rgba(250,246,239,.82);
+    --glass-bg-strong: rgba(255,255,255,.92);
+    --glass-bg-card: rgba(255,255,255,.80);
+    --glass-bg-subtle: rgba(255,255,255,.62);
+    --glass-border: rgba(255,255,255,.70);
+    --glass-border-subtle: rgba(255,255,255,.55);
+    --glass-shadow-inset: inset 0 1px 0 rgba(255,255,255,.70);
   }
 
   .dark {
@@ -47,6 +56,15 @@
     --popover-foreground: 34 30% 93%;
     --card: 28 25% 10%;
     --card-foreground: 34 30% 93%;
+
+    /* Glass CSS custom properties (dark mode) */
+    --glass-bg: rgba(30,23,16,.85);
+    --glass-bg-strong: rgba(30,23,16,.92);
+    --glass-bg-card: rgba(30,23,16,.80);
+    --glass-bg-subtle: rgba(30,23,16,.62);
+    --glass-border: rgba(245,238,228,.08);
+    --glass-border-subtle: rgba(245,238,228,.06);
+    --glass-shadow-inset: inset 0 1px 0 rgba(245,238,228,.05);
   }
 
   * {
