@@ -118,6 +118,8 @@ solen/
 - **Radii**: card 12px, pill 9999px, button 8px, blob-a/b/c/d/e organic % (see UI_RULES.md §10)
 - **Blob physics**: `.blob-interactive` for 500ms spring border-radius morphing on hover
 - **Filter System**: `<FilterBar>` from `FilterBar.tsx` — universal zone-aware filter pill row with sub-filters. Requires `zone` prop (1-4). Desktop: inline dropdown + overflow drawer (max 5 visible pills). Mobile: bottom sheet. Active filter chips with remove buttons. Uses `useTranslations('filters')` for i18n. Companion components: `<FilterBottomSheet>` (mobile), `<FilterDrawer>` (desktop inline/drawer). **Search pages** (last-minute, behandlungen, category pages) use `getSearchFilterPills()` from `lib/search-filter-pills.ts` for grouped filter configuration (location, availability, rating, online_payment, off_peak, sort). **Always** pair with `<SearchAutocomplete>` above the FilterBar in a sticky container.
+- **Profile Page**: Overhauled into 6 subcomponents (`components/profile/`). Uses `customer_preferences` JSONB column for beauty profile data. Zone 3 (functional, no glass animations). Avatar with gradient ring, 5-row beauty profile card with categorized pills, salon highlights circles, 4-tab system (Looks, Termine, Favoriten, Stempel).
+- **Beauty Icons**: Custom SVG icon library in `components/ui/beauty-icons.tsx` — 20+ hand-crafted icons for hair/nail/skin/style selections. NOT lucide (these don't exist in lucide). Per-row semantic colors (not V3 tokens): HAAR `#F5E6E0`/`#8B4A35`, NÄGEL `#E4EBF7`/`#3A5280`, HAUT `#E8F3E8`/`#3A6040`, STYLIST `#F5EEE0`/`#7A5A2A`, STYLE `#EEE8F5`/`#5A3A7A`.
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
