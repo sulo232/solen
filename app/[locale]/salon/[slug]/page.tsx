@@ -684,8 +684,11 @@ export default function SalonProfilePage() {
                       const isToday = key === dayKey;
                       const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
                       return (
-                        <div key={key} className={`flex justify-between text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
-                          <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
+                        <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
+                          <div className="flex items-center gap-2">
+                            <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
+                            {isToday && isOpen && <span className="w-1.5 h-1.5 rounded-full bg-s-success" />}
+                          </div>
                           <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
                             {h ? `${h.open}–${h.close}` : "Geschlossen"}
                           </span>
@@ -1203,9 +1206,14 @@ export default function SalonProfilePage() {
 
         {/* Mobile sticky CTA */}
         <button onClick={() => setMobileSheetOpen(true)}
-          className="fixed bottom-5 left-4 right-4 lg:hidden py-4 rounded-btn text-white font-heading font-bold text-sm uppercase tracking-[.04em] z-40"
+          className="fixed bottom-5 left-4 right-4 lg:hidden py-4 rounded-btn text-white font-heading font-bold text-sm uppercase tracking-[.04em] z-40 flex items-center justify-center gap-2"
           style={{ background: "#E8624A", boxShadow: "0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22)" }}>
           Jetzt buchen
+          {salon.services.length > 0 && (
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-[10px] tabular-nums">
+              {salon.services.length}
+            </span>
+          )}
         </button>
 
         {/* Mobile bottom sheet */}
