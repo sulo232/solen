@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
+    const city = searchParams.get("city");
     const quartier = searchParams.get("quartier");
     const min_price = searchParams.get("min_price");
     const max_price = searchParams.get("max_price");
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
       .eq("is_active", true);
 
     if (category) query = query.contains("categories", [category]);
+    if (city) query = query.eq("city", city);
     if (quartier) query = query.eq("quartier", quartier);
     if (min_rating) query = query.gte("average_rating", parseFloat(min_rating));
     if (accepts_payment === "true") query = query.eq("accepts_online_payment", true);
@@ -193,12 +195,22 @@ export async function POST(request: NextRequest) {
 
     for (let attempt = 0; attempt < 3; attempt++) {
       slug = baseSlug + "-" + crypto.randomUUID().slice(0, 8);
+      
+      // Auto-detect city from address
+      let city = "basel";
+      if (address.toLowerCase().includes("zürich") || address.toLowerCase().includes("zurich")) {
+        city = "zuerich";
+      } else if (address.toLowerCase().includes("bern")) {
+        city = "bern";
+      }
+
       const { data, error: insertErr } = await admin
         .from("salons")
         .insert({
           owner_id: user.id,
           name,
           slug,
+          city,
           categories,
           quartier,
           address,

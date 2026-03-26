@@ -4,38 +4,36 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 
+import { CITY_SLUGS, CITIES } from "@/lib/cities";
+
 export async function GET(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
   if (rateLimited) return rateLimited;
 
   const supabase = await createServerSupabaseClient();
 
-  // Get distinct cities from salon addresses (extract city from address)
-  // In Basel area, quartier serves as the location identifier
   const { data: salons } = await supabase
     .from("salons")
-    .select("quartier, categories")
+    .select("city, categories")
     .eq("is_active", true);
 
-  if (!salons || salons.length === 0) {
-    return NextResponse.json({ items: [] });
-  }
-
-  // Build city-category matrix
-  const cityMap = new Map<string, Set<string>>();
-  for (const s of salons) {
-    const city = "basel"; // All salons are in Basel area
-    if (!cityMap.has(city)) cityMap.set(city, new Set());
-    for (const cat of s.categories) {
-      cityMap.get(city)!.add(cat);
+  const items = CITY_SLUGS.map((slug) => {
+    const c = CITIES[slug];
+    const citySalons = salons?.filter((s) => s.city === slug) || [];
+    const categories = new Set<string>();
+    for (const s of citySalons) {
+      if (Array.isArray(s.categories)) {
+        s.categories.forEach((cat: string) => categories.add(cat));
+      }
     }
-  }
 
-  const items = Array.from(cityMap.entries()).map(([city, categories]) => ({
-    city,
-    categories: Array.from(categories),
-    salon_count: salons.length,
-  }));
+    return {
+      city: slug,
+      name: c.name_de,
+      categories: Array.from(categories),
+      salon_count: citySalons.length,
+    };
+  });
 
   return NextResponse.json({ items });
 }
