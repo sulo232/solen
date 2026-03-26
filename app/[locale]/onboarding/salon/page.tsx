@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Phone, Sparkles, AlertCircle } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
@@ -35,11 +35,10 @@ const QUARTIERE = [
   { value: "breite",     label: "Breite" },
 ];
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 2;
 
 const STEP_META = [
   { icon: Building2, label: "basics" },
-  { icon: Phone, label: "verification" },
   { icon: Sparkles, label: "quickwin" },
 ];
 
@@ -191,156 +190,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
   );
 }
 
-// ─────────────────────────────────────────
-// Step 2 — Phone Verification (OTP)
-// ─────────────────────────────────────────
-
-function Step2({ phone, phoneVerified, onPhoneChange, onVerified, errors, t }: {
-  phone: string;
-  phoneVerified: boolean;
-  onPhoneChange: (phone: string) => void;
-  onVerified: () => void;
-  errors: Record<string, string>;
-  t: TFunc;
-}) {
-  const [sending, setSending] = useState(false);
-  const [showOtp, setShowOtp] = useState(false);
-  const [code, setCode] = useState("");
-  const [verifying, setVerifying] = useState(false);
-  const [verifyError, setVerifyError] = useState("");
-
-  const sendOtp = async () => {
-    if (!phone || phone.length < 9) return;
-    setSending(true);
-    setVerifyError("");
-    try {
-      const res = await fetch("/api/auth/verify-phone/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-      if (res.ok) {
-        setShowOtp(true);
-      } else {
-        const d = await res.json();
-        setVerifyError(d.message || "Fehler beim Senden");
-      }
-    } catch {
-      setVerifyError("Netzwerkfehler");
-    } finally {
-      setSending(false);
-    }
-  };
-
-  const verifyOtp = async () => {
-    if (code.length < 4) return;
-    setVerifying(true);
-    setVerifyError("");
-    try {
-      const res = await fetch("/api/auth/verify-phone/check", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, code }),
-      });
-      if (res.ok) {
-        onVerified();
-        setShowOtp(false);
-      } else {
-        const d = await res.json();
-        setVerifyError(d.message || "Falscher Code");
-      }
-    } catch {
-      setVerifyError("Netzwerkfehler");
-    } finally {
-      setVerifying(false);
-    }
-  };
-
-  return (
-    <StepContainer title={t("step2Otp.title")} subtitle={t("step2Otp.subtitle")}>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.phone")}</label>
-          <div className="flex gap-2">
-            <input
-              value={phone}
-              onChange={(e) => {
-                onPhoneChange(e.target.value);
-                setShowOtp(false);
-              }}
-              disabled={phoneVerified}
-              className={`flex-1 px-4 py-3 rounded-input border text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised transition-all shadow-warm-sm ${phoneVerified ? "border-s-sage/50 text-s-sage-text dark:text-s-sage" : errors.phone_verified || errors.phone ? "border-s-coral text-s-ink dark:text-s-dm-text" : "border-s-ink/5 dark:border-white/5 text-s-ink dark:text-s-dm-text"}`}
-              placeholder="+41 61 000 00 00"
-            />
-            {phoneVerified ? (
-              <div className="flex items-center gap-1.5 px-4 py-3 rounded-[10px] text-[10px] font-heading font-bold uppercase tracking-[.10em]"
-                style={{ background: "rgba(76,175,111,.10)", color: "#2e7d32" }}>
-                <Check size={13} className="shrink-0" /> Verifiziert
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={sendOtp}
-                disabled={sending || !phone || phone.length < 9}
-                className="px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-heading font-semibold uppercase tracking-wider disabled:opacity-40 disabled:pointer-events-none hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-all shadow-coral-glow"
-              >
-                {sending ? <Spinner size="sm" invert /> : "Verifizieren"}
-              </button>
-            )}
-          </div>
-          {(errors.phone || errors.phone_verified) && <p className="text-xs text-s-coral mt-1">{errors.phone || errors.phone_verified}</p>}
-
-          {showOtp && !phoneVerified && (
-            <div className="mt-3 p-4 rounded-[12px] border border-s-coral/20"
-              style={{ background: "rgba(232,98,74,.04)" }}>
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-2.5">
-                SMS-Code eingeben
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                  placeholder="000000"
-                  className="w-28 px-3 py-3 text-center font-mono text-lg tracking-[.25em] rounded-[10px] border border-s-coral/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 bg-white dark:bg-s-dm-raised transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={verifyOtp}
-                  disabled={verifying || code.length < 4}
-                  className="flex-1 px-4 py-3 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] disabled:opacity-50 transition-all active:scale-[0.98]"
-                  style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}
-                >
-                  {verifying ? <Spinner size="sm" invert /> : "Code prüfen"}
-                </button>
-              </div>
-              {verifyError && <p className="text-[10px] font-body text-s-coral mt-2">{verifyError}</p>}
-            </div>
-          )}
-        </div>
-
-        {phoneVerified && (
-          <div className="flex items-start gap-3 rounded-[12px] border border-[#4CAF6F]/20 p-4"
-            style={{ background: "rgba(76,175,111,.06)" }}>
-            <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
-              style={{ background: "rgba(76,175,111,.15)" }}>
-              <Check size={15} className="text-[#4CAF6F]" />
-            </div>
-            <div>
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-[#2e7d32] mb-0.5">
-                Verifiziert
-              </p>
-              <p className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55">
-                Telefonnummer verifiziert. Weiter zum nächsten Schritt.
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    </StepContainer>
-  );
-}
+// Step 2 is now Quick Win (phone verification removed)
 
 // ─────────────────────────────────────────
 // Step 3 — Quick Win (AI-suggested first service)
@@ -484,8 +334,7 @@ export default function SalonOnboardingPage() {
     phone: "", tos_accepted: false, latitude: null, longitude: null, google_place_id: "",
   });
 
-  // Step 2 state (phone verification)
-  const [phoneVerified, setPhoneVerified] = useState(false);
+
 
   // Step 3 state (quick win service)
   const [quickWin, setQuickWin] = useState<QuickWinData>({
@@ -497,7 +346,6 @@ export default function SalonOnboardingPage() {
   useEffect(() => {
     const restoreFromObj = (data: Record<string, unknown>) => {
       if (data.basics) setBasics(data.basics as BasicsData);
-      if (data.phoneVerified) setPhoneVerified(data.phoneVerified as boolean);
       if (data.quickWin) setQuickWin(data.quickWin as QuickWinData);
     };
 
@@ -532,7 +380,7 @@ export default function SalonOnboardingPage() {
   // Save wizard state to sessionStorage + DB (debounced)
   useEffect(() => {
     if (!hydrated) return;
-    const stateObj = { basics, phoneVerified, quickWin, step };
+    const stateObj = { basics, quickWin, step };
     try {
       sessionStorage.setItem("solen_wizard", JSON.stringify(stateObj));
     } catch { /* storage full */ }
@@ -542,13 +390,13 @@ export default function SalonOnboardingPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          draft_data: { basics, phoneVerified, quickWin },
+          draft_data: { basics, quickWin },
           current_step: step,
         }),
       }).catch(() => {}); // fire-and-forget
     }, 2000);
     return () => clearTimeout(timer);
-  }, [hydrated, basics, phoneVerified, quickWin, step]);
+  }, [hydrated, basics, quickWin, step]);
 
   // Auth guard — redirect to register if no session
   const [authChecked, setAuthChecked] = useState(false);
@@ -578,9 +426,6 @@ export default function SalonOnboardingPage() {
       if (!basics.tos_accepted) errors.tos_accepted = "Bitte akzeptiere die AGB und Datenschutzerklärung";
     }
     if (step === 2) {
-      if (!phoneVerified) errors.phone_verified = "Bitte verifiziere deine Telefonnummer";
-    }
-    if (step === 3) {
       if (!quickWin.service_name || quickWin.service_name.length < 2) errors.service_name = "Service-Name erforderlich";
     }
     return errors;
@@ -618,7 +463,6 @@ export default function SalonOnboardingPage() {
           quartier: basics.quartier,
           address: basics.address,
           phone: basics.phone,
-          phone_verified: phoneVerified,
           latitude: basics.latitude,
           longitude: basics.longitude,
           google_place_id: basics.google_place_id,
@@ -785,16 +629,6 @@ export default function SalonOnboardingPage() {
           >
             {step === 1 && <Step1 data={basics} onChange={setBasics} errors={stepErrors} t={t} locale={locale} />}
             {step === 2 && (
-              <Step2
-                phone={basics.phone}
-                phoneVerified={phoneVerified}
-                onPhoneChange={(phone) => { setBasics((prev) => ({ ...prev, phone })); setPhoneVerified(false); }}
-                onVerified={() => setPhoneVerified(true)}
-                errors={stepErrors}
-                t={t}
-              />
-            )}
-            {step === 3 && (
               <Step3
                 data={quickWin}
                 onChange={setQuickWin}
