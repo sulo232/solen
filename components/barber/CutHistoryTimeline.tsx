@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Scissors, Calendar, RefreshCw } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -31,6 +32,7 @@ interface CutHistoryTimelineProps {
 export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutHistoryTimelineProps) {
   const [cuts, setCuts] = useState<CutEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations("barber");
 
   useEffect(() => {
     const fetchCuts = async () => {
@@ -72,8 +74,8 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
     return (
       <EmptyState
         icon={Scissors}
-        title="Noch keine Schnitte erfasst"
-        message="Schnitte werden nach dem ersten Termin angezeigt."
+        title={t("cut_no_entries")}
+        message={t("cut_no_entries")}
         className="py-6"
       />
     );
@@ -83,11 +85,11 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
     <div className="space-y-4">
       {cuts.map((cut) => {
         const specs = [
-          cut.fade_type && `Fade: ${cut.fade_type}`,
-          cut.top_style && `Top: ${cut.top_style}`,
-          cut.length_setting && `Guard: #${cut.length_setting}`,
-          cut.beard_style && `Bart: ${cut.beard_style}`,
-          cut.lineup && "Lineup ✓",
+          cut.fade_type && `${t("cut_fade")}: ${cut.fade_type}`,
+          cut.top_style && `${t("cut_top")}: ${cut.top_style}`,
+          cut.length_setting && `${t("cut_guard")}: #${cut.length_setting}`,
+          cut.beard_style && `${t("cut_beard")}: ${cut.beard_style}`,
+          cut.lineup && `${t("cut_lineup")} ✓`,
         ].filter(Boolean);
 
         return (
@@ -106,7 +108,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
                   })}
                 </div>
                 <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">
-                  {cut.service_name} · bei {cut.staff_name}
+                  {cut.service_name} · {t("service_at")} {cut.staff_name}
                 </p>
               </div>
               {onRepeat && (
@@ -115,7 +117,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
                   className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors"
                 >
                   <RefreshCw size={12} />
-                  Wiederholen
+                  {t("cut_repeat")}
                 </button>
               )}
             </div>
@@ -139,7 +141,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
               <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-2">
                 {cut.photos.map((url, i) => (
                   <div key={i} className="relative w-20 h-20 rounded-btn overflow-hidden shrink-0">
-                    <Image src={url} alt="Cut photo" fill className="object-cover" sizes="80px" />
+                    <Image src={url} alt={t("cut_photo_alt")} fill className="object-cover" sizes="80px" />
                   </div>
                 ))}
               </div>

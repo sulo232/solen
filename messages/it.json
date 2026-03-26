@@ -1095,7 +1095,24 @@
     "filter_design": "Hair Design",
     "filter_classic": "Taglio classico",
     "save": "Salva",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "sections": {
+      "walkin_teaser": "Nessun appuntamento? Entra direttamente.",
+      "walkin_desc": "Barbershop con coda — vedi i tempi di attesa in tempo reale",
+      "walkin_cta": "Walk-in",
+      "filter_fade_type": "Tipo di Fade",
+      "filter_hair_type": "Tipo di capelli",
+      "filter_style": "Stile",
+      "roster_subtitle": "Professionisti per ogni stile a Basilea",
+      "roster_all": "Tutti i barbieri"
+    },
+    "errors": {
+      "network": "Errore di rete",
+      "booking_failed": "Prenotazione fallita",
+      "unknown": "Si è verificato un errore"
+    },
+    "cut_photo_alt": "Foto taglio",
+    "service_at": "da"
   },
   "Profile": {
     "myProfile": "Il mio profilo",
@@ -1625,6 +1642,39 @@
     "for_you": "✦ Per te",
     "why": "Perché?",
     "refresh": "Aggiorna raccomandazioni ↻"
+  },
+  "admin": {
+    "disputes": {
+      "title": "Controversie di prenotazione (Clienti)",
+      "customer": "Cliente",
+      "salon": "Salone",
+      "unknown": "Sconosciuto",
+      "type": "Tipo",
+      "booking": "Prenotazione",
+      "description": "Descrizione del problema (Cliente)",
+      "salonResponse": "Dichiarazione (Salone)",
+      "mediationRunning": "Mediazione in corso. Scadenza",
+      "resolutionNote": "Nota di risoluzione (facoltativo)",
+      "dismiss": "Respingi",
+      "warnSalon": "Avvisa il salone",
+      "warnCustomer": "Avvisa il cliente",
+      "escalate": "Escalare (30 giorni)",
+      "refund": "Rimborsa",
+      "refundPlaceholder": "CHF Rimborso",
+      "resolution": "Risoluzione",
+      "actionError": "Errore durante l'azione",
+      "vs": "vs"
+    }
+  },
+  "auth": {
+    "tos": {
+      "title": "Termini di servizio aggiornati",
+      "description": "Abbiamo aggiornato i nostri Termini di servizio e la Politica sulla privacy. Accetta i nuovi termini per continuare a utilizzare solen.ch.",
+      "termsLink": "Termini e condizioni generali",
+      "privacyLink": "Politica sulla privacy",
+      "readCta": "Leggi",
+      "acceptButton": "Accetto i nuovi termini"
+    }
   },
   "ui": {
     "error": {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { motion, AnimatePresence } from "framer-motion";
 import Spinner from "@/components/ui/Spinner";
@@ -17,6 +17,7 @@ export default function TosPrompt() {
   const [saving, setSaving] = useState(false);
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations("auth.tos");
 
   useEffect(() => {
     // Don't interrupt auth callback or legal pages
@@ -79,22 +80,21 @@ export default function TosPrompt() {
           <div className="w-12 h-12 rounded-full bg-s-coral/10 mx-auto flex items-center justify-center mb-4">
             <FileText size={24} className="text-s-coral" />
           </div>
-          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">Aktualisierte Nutzungsbedingungen</h2>
+          <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">{t("title")}</h2>
           <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 font-body">
-            Wir haben unsere Allgemeinen Geschäftsbedingungen (AGB) und die Datenschutzerklärung aktualisiert. 
-            Bitte akzeptiere die neuen Bedingungen, um solen.ch weiterhin nutzen zu können.
+            {t("description")}
           </p>
         </div>
-        
+
         <div className="p-6 bg-s-bg-sunken dark:bg-s-dm-bg">
           <div className="flex flex-col gap-3">
             <a href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
-              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">Allgemeine Geschäftsbedingungen</span>
-              <span className="text-xs text-s-coral group-hover:underline">Lesen</span>
+              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("termsLink")}</span>
+              <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
             </a>
             <a href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
-              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">Datenschutzerklärung</span>
-              <span className="text-xs text-s-coral group-hover:underline">Lesen</span>
+              <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("privacyLink")}</span>
+              <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
             </a>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function TosPrompt() {
             className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-all flex items-center justify-center gap-2"
           >
             {saving ? <Spinner size="sm" invert /> : <Check size={18} />}
-            Ich akzeptiere die neuen Bedingungen
+            {t("acceptButton")}
           </button>
         </div>
       </motion.div>

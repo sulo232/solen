@@ -1095,7 +1095,24 @@
     "filter_design": "Hair Design",
     "filter_classic": "Classic Cut",
     "save": "Speichern",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "sections": {
+      "walkin_teaser": "Kein Termin? Einfach reingehen.",
+      "walkin_desc": "Barbershops mit Walk-in Queue — sieh Wartezeiten in Echtzeit",
+      "walkin_cta": "Walk-ins",
+      "filter_fade_type": "Fade-Typ",
+      "filter_hair_type": "Haartyp",
+      "filter_style": "Stil",
+      "roster_subtitle": "Profis für jeden Stil in Basel",
+      "roster_all": "Alle Barber"
+    },
+    "errors": {
+      "network": "Netzwerkfehler",
+      "booking_failed": "Buchung fehlgeschlagen",
+      "unknown": "Fehler aufgetreten"
+    },
+    "cut_photo_alt": "Cut photo",
+    "service_at": "bei"
   },
   "Profile": {
     "myProfile": "Mein Profil",
@@ -1625,6 +1642,39 @@
     "for_you": "✦ Für dich",
     "why": "Warum?",
     "refresh": "Neue Empfehlungen laden ↻"
+  },
+  "admin": {
+    "disputes": {
+      "title": "Buchungsbeschwerden (Kunden)",
+      "customer": "Kunde",
+      "salon": "Salon",
+      "unknown": "Unbekannt",
+      "type": "Art",
+      "booking": "Buchung",
+      "description": "Problembeschreibung (Kunde)",
+      "salonResponse": "Stellungnahme (Salon)",
+      "mediationRunning": "Mediation läuft. Frist",
+      "resolutionNote": "Notiz für Lösung (optional)",
+      "dismiss": "Abweisen",
+      "warnSalon": "Salon verwarnen",
+      "warnCustomer": "Kunde verwarnen",
+      "escalate": "Eskalieren (30 Tage)",
+      "refund": "Rückerstatten",
+      "refundPlaceholder": "CHF Refund",
+      "resolution": "Lösung",
+      "actionError": "Fehler bei der Aktion",
+      "vs": "vs"
+    }
+  },
+  "auth": {
+    "tos": {
+      "title": "Aktualisierte Nutzungsbedingungen",
+      "description": "Wir haben unsere Allgemeinen Geschäftsbedingungen (AGB) und die Datenschutzerklärung aktualisiert. Bitte akzeptiere die neuen Bedingungen, um solen.ch weiterhin nutzen zu können.",
+      "termsLink": "Allgemeine Geschäftsbedingungen",
+      "privacyLink": "Datenschutzerklärung",
+      "readCta": "Lesen",
+      "acceptButton": "Ich akzeptiere die neuen Bedingungen"
+    }
   },
   "ui": {
     "error": {

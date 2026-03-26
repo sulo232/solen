@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Scissors, CalendarCheck, AlertCircle, RefreshCw } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
+import { useTranslations } from "next-intl";
 
 interface ExpressRebookProps {
   salonId: string;
@@ -36,6 +37,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
   const [step, setStep] = useState<"idle" | "searching" | "confirm" | "booking" | "done" | "error">("idle");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const t = useTranslations("barber");
 
   useEffect(() => {
     if (!customerId) { setLoading(false); return; }

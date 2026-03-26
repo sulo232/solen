@@ -1095,7 +1095,24 @@
     "filter_design": "Hair Design",
     "filter_classic": "Classic Cut",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "sections": {
+      "walkin_teaser": "No appointment? Just walk in.",
+      "walkin_desc": "Barbershops with walk-in queue — see real-time wait times",
+      "walkin_cta": "Walk-ins",
+      "filter_fade_type": "Fade Type",
+      "filter_hair_type": "Hair Type",
+      "filter_style": "Style",
+      "roster_subtitle": "Pros for every style in Basel",
+      "roster_all": "All Barbers"
+    },
+    "errors": {
+      "network": "Network error",
+      "booking_failed": "Booking failed",
+      "unknown": "An error occurred"
+    },
+    "cut_photo_alt": "Cut photo",
+    "service_at": "at"
   },
   "Profile": {
     "myProfile": "My Profile",
@@ -1625,6 +1642,39 @@
     "for_you": "✦ For You",
     "why": "Why?",
     "refresh": "Refresh Recommendations ↻"
+  },
+  "admin": {
+    "disputes": {
+      "title": "Booking Disputes (Customers)",
+      "customer": "Customer",
+      "salon": "Salon",
+      "unknown": "Unknown",
+      "type": "Type",
+      "booking": "Booking",
+      "description": "Issue Description (Customer)",
+      "salonResponse": "Statement (Salon)",
+      "mediationRunning": "Mediation in progress. Deadline",
+      "resolutionNote": "Resolution note (optional)",
+      "dismiss": "Dismiss",
+      "warnSalon": "Warn salon",
+      "warnCustomer": "Warn customer",
+      "escalate": "Escalate (30 days)",
+      "refund": "Issue refund",
+      "refundPlaceholder": "CHF Refund",
+      "resolution": "Resolution",
+      "actionError": "Action failed",
+      "vs": "vs"
+    }
+  },
+  "auth": {
+    "tos": {
+      "title": "Updated Terms of Service",
+      "description": "We have updated our Terms of Service and Privacy Policy. Please accept the new terms to continue using solen.ch.",
+      "termsLink": "Terms of Service",
+      "privacyLink": "Privacy Policy",
+      "readCta": "Read",
+      "acceptButton": "I accept the new terms"
+    }
   },
   "ui": {
     "error": {
