@@ -33,7 +33,7 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
             className="absolute bottom-0 inset-x-0 rounded-t-[28px] overflow-hidden overscroll-contain max-h-[90vh] overflow-y-auto"
             style={{ background: "rgba(250,246,239,.96)", backdropFilter: "blur(28px) saturate(1.3)",
                      WebkitBackdropFilter: "blur(28px) saturate(1.3)",
-                     boxShadow: "0 -8px 32px rgba(26,18,9,.12), inset 0 1px 0 rgba(255,255,255,.80)" }}
+                     boxShadow: "0 -8px 32px rgba(26,18,9,.12), var(--glass-shadow-inset)" }}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}

@@ -766,3 +766,126 @@ grep -rn "hover:bg-s-coral/90\|hover:scale-\[1\.\|hover:opacity-\|hover:-transla
    ```
 5. Before starting a NEW roadmap for a feature, **ALWAYS check `_tasks/INCOMPLETE_FEATURES.md` first** to avoid rebuilding what already exists.
 6. When a feature becomes complete (all 8 layers from Rule 40 done), remove it from this file and add a `[x] Completed` note.
+
+### Rule 46: NEW COMPONENT / SUB-SITE CREATION STANDARD (MANDATORY)
+
+> **INCIDENT**: On 2026-03-26, a scan found ~145 components without `useTranslations()`, 45+ hardcoded white `rgba(255,255,255,...)` glass backgrounds that broke dark mode, and inconsistent hover/interaction patterns. This rule ensures every new component or page is born compliant.
+
+**EVERY new `.tsx` component file MUST satisfy ALL of these requirements before committing. No exceptions.**
+
+#### A. Internationalization (i18n) — ALL 4 LANGUAGES
+```tsx
+// 1. Import and use translations — NEVER hardcode text
+import { useTranslations } from 'next-intl'; // Client Components
+import { getTranslations } from 'next-intl/server'; // Server Components
+
+const t = useTranslations('myNamespace');
+
+// 2. Every visible string MUST be a translation call:
+<h2>{t('sectionTitle')}</h2>           // ✅
+<button aria-label={t('book')}>{t('bookNow')}</button>  // ✅
+<h2>Beliebte in Basel</h2>             // ❌ BANNED
+
+// 3. Add keys to ALL 4 locale files:
+// messages/de.json, messages/en.json, messages/fr.json, messages/it.json
+// Provide ACTUAL translations — not empty strings or German copies.
+```
+
+#### B. Dark Mode Support — USE CSS VARS FOR GLASS
+```tsx
+// ✅ DO — works in both light and dark mode:
+style={{ background: "var(--glass-bg)", backdropFilter: "blur(24px)",
+         border: "1px solid var(--glass-border)" }}
+
+// ❌ DON'T — white glass breaks dark mode:
+style={{ background: "rgba(255,255,255,.82)" }}
+
+// Text colors — use design tokens with dark: variants:
+className="text-s-ink dark:text-s-dm-text"         // ✅
+className="bg-[--raised] dark:bg-s-dm-surface"     // ✅
+className="text-black"                              // ❌ BANNED
+className="bg-white"                                // ❌ use bg-[--raised] or bg-[--base]
+```
+
+#### C. Zone Compliance — DECLARE AND ENFORCE
+```tsx
+// Every component that renders visible UI must know its zone:
+interface MyComponentProps {
+  zone: 1 | 2 | 3 | 4;  // Receive from parent page
+}
+
+// Zone 1 (Hero/Discovery): Glass allowed, warm gradients, rich animations
+// Zone 2 (Category sections): Subtle glass, reduced animations
+// Zone 3 (Booking/Functional): NO glass, NO animations, clean and fast
+// Zone 4 (Dashboard): Minimal, data-first
+
+// Animation tokens per zone:
+const motionClass = (zone <= 2)
+  ? 'transition-all duration-[220ms] ease-[cubic-bezier(.4,0,.2,1)]'
+  : 'transition-none';
+```
+
+#### D. UI Rules Compliance — READ BEFORE WRITING
+1. **Read `_rules/UI_RULES.md`** before writing ANY styling
+2. Colors: ONLY use `s-coral`, `s-amber`, `s-blue`, `s-ink`, `s-plum`, `s-sage`, `s-sand`, `s-yellow` — NEVER raw hex or Tailwind defaults
+3. Fonts: `font-display` (Bebas Neue ≥40px), `font-heading` (Syne), `font-body` (DM Sans)
+4. Radii: `rounded-card` (12px), `rounded-pill` (9999px), `rounded-btn` (8px)
+5. Shadows: `shadow-warm-md`, or inline `style={{ boxShadow: '0 4px 12px rgba(26,18,9,0.08)' }}`
+6. Glass: Use `var(--glass-bg)` variables — NEVER hardcoded `rgba(255,255,255,...)`
+7. Icons: `lucide-react` ONLY — no emoji icons, no heroicons, no fontawesome
+
+#### E. Interaction Standard — COPY EXACTLY
+```tsx
+// Cards:
+className="hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms]"
+
+// CTA Buttons:
+className="bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] transition-all"
+
+// BANNED interactions:
+// hover:bg-s-coral/90, hover:scale-[1.03], hover:opacity-80, hover:-translate-y-1, shadow-md
+```
+
+#### F. Accessibility
+```tsx
+// Every interactive element needs:
+<button aria-label={t('bookNow')} />
+<input aria-label={t('searchPlaceholder')} />
+
+// Focus visible rings (already global — don't override)
+// Semantic HTML: use <nav>, <main>, <section>, <article>, <aside>
+```
+
+#### G. Pre-Commit Checklist
+
+Before committing ANY new component, verify ALL of these:
+
+```
+□ Uses useTranslations() — ZERO hardcoded strings
+□ Keys added to de.json, en.json, fr.json, it.json (all 4)
+□ Translations are ACTUAL (not empty strings or German copies)
+□ Has zone prop or inherits zone from parent
+□ No rgba(255,255,255,...) inline styles — uses var(--glass-*) tokens
+□ text-s-ink dark:text-s-dm-text on text elements
+□ bg-[--raised] or bg-[--base] — never raw bg-white
+□ Hover states follow Rule 43 exactly
+□ Only lucide-react icons — no emoji, no other icon libraries
+□ interactive elements have aria-label={t('...')}
+□ No banned tokens (see UI_RULES.md §20)
+□ npm run build passes
+□ Component is actually imported + rendered by a page (Rule 41)
+```
+
+**If you cannot satisfy all items** (e.g., page isn't ready yet), move the component to `components/_staging/` and log it in `_tasks/INCOMPLETE_FEATURES.md`.
+
+```bash
+# Quick verification script after creating a new component:
+FILE="components/MyNewComponent.tsx"
+echo "=== Checking $FILE ==="
+grep -c "useTranslations\|getTranslations" "$FILE"     # Must be ≥ 1
+grep -c "rgba(255,255,255" "$FILE"                      # Must be 0
+grep -c "text-black\|bg-white[^/]" "$FILE"              # Must be 0
+grep -c "hover:bg-s-coral/90\|hover:scale-\[" "$FILE"   # Must be 0
+grep -c "aria-label" "$FILE"                             # Must be ≥ 1
+echo "=== Done ==="
+```

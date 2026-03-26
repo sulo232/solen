@@ -102,13 +102,13 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       variants={cardPopIn}
       initial="hidden"
       animate="visible"
-      whileHover={{ y: -5, boxShadow: "0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08), inset 0 1px 0 rgba(255,255,255,.80)" }}
+      whileHover={{ y: -5, boxShadow: "0 8px 16px rgba(26,18,9,.10), 0 20px 60px rgba(26,18,9,.08), var(--glass-shadow-inset)" }}
       transition={{ type: "spring", stiffness: 320, damping: 28 }}
       className={`relative rounded-[20px] overflow-hidden cursor-pointer will-change-transform ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
-      style={{ background: "rgba(255,255,255,.80)", backdropFilter: "blur(16px) saturate(1.2)",
+      style={{ background: "var(--glass-bg-card)", backdropFilter: "blur(16px) saturate(1.2)",
                WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-               border: "1px solid rgba(255,255,255,.55)",
-               boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}
+               border: "1px solid var(--glass-border-subtle)",
+               boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), var(--glass-shadow-inset)" }}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
       {/* Date-based availability overlay */}

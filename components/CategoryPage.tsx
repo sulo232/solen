@@ -62,7 +62,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
       variants={itemVariants}
       className="rounded-[20px] overflow-hidden hover:-translate-y-[3px] transition-all duration-[250ms]"
       style={{ border: "1.5px dashed rgba(26,18,9,.12)",
-               background: "rgba(255,255,255,.55)",
+               background: "var(--glass-bg-subtle)",
                boxShadow: "0 1px 3px rgba(26,18,9,.06)" }}
     >
       {/* Photo */}
@@ -255,7 +255,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-2">
           <div className="flex items-center justify-between px-4 py-3 rounded-[16px]"
             style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)",
-                     boxShadow: "0 1px 2px rgba(26,18,9,.06), inset 0 1px 0 rgba(255,255,255,.50)" }}>
+                     boxShadow: "0 1px 2px rgba(26,18,9,.06), var(--glass-shadow-inset)" }}>
             <span className="text-xs font-heading font-bold text-s-coral">
               📍 {topQuartierBanner} — dein meistbesuchtes Quartier
             </span>
@@ -293,7 +293,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             }}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all"
             style={{ border: "1px solid rgba(26,18,9,.10)",
-                     background: isMapView ? "#E8624A" : "rgba(255,255,255,.80)",
+                     background: isMapView ? "#E8624A" : "var(--glass-bg-card)",
                      color: isMapView ? "#fff" : "rgba(26,18,9,.65)",
                      boxShadow: isMapView
                        ? "0 2px 4px rgba(232,98,74,.25)"
@@ -378,7 +378,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
                   <button onClick={handleLoadMore} disabled={loadingMore}
                     className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all disabled:opacity-50"
                     style={{ border: "1px solid rgba(26,18,9,.10)",
-                             background: "rgba(255,255,255,.70)", backdropFilter: "blur(8px)",
+                             background: "var(--glass-bg-card)", backdropFilter: "blur(8px)",
                              WebkitBackdropFilter: "blur(8px)",
                              color: "rgba(26,18,9,.70)",
                              boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
@@ -396,7 +396,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
                   <button onClick={handleDirLoadMore} disabled={dirLoadingMore}
                     className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all disabled:opacity-50"
                     style={{ border: "1px solid rgba(26,18,9,.10)",
-                             background: "rgba(255,255,255,.70)", backdropFilter: "blur(8px)",
+                             background: "var(--glass-bg-card)", backdropFilter: "blur(8px)",
                              WebkitBackdropFilter: "blur(8px)",
                              color: "rgba(26,18,9,.70)",
                              boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>

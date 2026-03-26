@@ -1,21 +1,28 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useLocale } from "next-intl";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Scissors, Sparkles, Droplets, Palette, Zap, X, Clock } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import SearchFilterBar from "@/components/SearchFilterBar";
+import FilterBar from "@/components/ui/FilterBar";
+import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
+import { getSearchFilterPills } from "@/lib/search-filter-pills";
 import LastMinuteCard from "@/components/LastMinuteCard";
 import Spinner from "@/components/ui/Spinner";
 import EmptyState from "@/components/ui/EmptyState";
-import type { LastMinuteSlot } from "@/lib/types";
+import type { LastMinuteSlot, ActiveFilter } from "@/lib/types";
 
 const PAGE_SIZE = 20;
 
 export default function LastMinutePage() {
   const locale = useLocale();
+  const t = useTranslations('filters');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [slots, setSlots] = useState<LastMinuteSlot[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -23,7 +30,10 @@ export default function LastMinutePage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
+
+  const pills = getSearchFilterPills(t);
 
   const FILTER_CATEGORIES = [
     { key: "coiffeur", label: "Coiffeur", Icon: Scissors },
@@ -107,6 +117,40 @@ export default function LastMinutePage() {
 
   const hasMore = slots.length < total;
 
+  const handleFilterChange = useCallback((filters: ActiveFilter[]) => {
+    setActiveFilters(filters);
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Clear previous filter params
+    params.delete('quartier');
+    params.delete('date');
+    params.delete('rating');
+    params.delete('sort');
+    params.delete('online_payment');
+    params.delete('off_peak');
+
+    // Apply new filters to URL params
+    filters.forEach((filter) => {
+      if (filter.pillId === 'location') {
+        params.set('quartier', filter.subId);
+      } else if (filter.pillId === 'availability') {
+        if (filter.subId !== 'custom_date') {
+          params.set('date', filter.subId);
+        }
+      } else if (filter.pillId === 'rating') {
+        params.set('rating', filter.subId);
+      } else if (filter.pillId === 'sort') {
+        params.set('sort', filter.subId);
+      } else if (filter.pillId === 'online_payment') {
+        params.set('online_payment', 'true');
+      } else if (filter.pillId === 'off_peak') {
+        params.set('off_peak', 'true');
+      }
+    });
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [pathname, router, searchParams]);
+
   return (
     <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg">
       {/* Hero */}
@@ -130,7 +174,20 @@ export default function LastMinutePage() {
         </div>
       </div>
 
-      <SearchFilterBar />
+      {/* Search + Filters */}
+      <div className="sticky top-[57px] z-40 isolate">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+          <div className="mb-3">
+            <SearchAutocomplete />
+          </div>
+          <FilterBar
+            pills={pills}
+            activeFilters={activeFilters}
+            onFilterChange={handleFilterChange}
+            zone={3}
+          />
+        </div>
+      </div>
 
       {/* Category chips + price filter */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">

@@ -95,11 +95,11 @@ export default function ReviewCarousel() {
               transition={{ duration: 0.35, delay: i * 0.1 }}
               className="snap-start shrink-0 w-[280px] md:w-auto rounded-[20px] p-5 hover:-translate-y-[3px] transition-transform duration-[250ms]"
               style={{
-                background: "rgba(255,255,255,.62)",
+                background: "var(--glass-bg-subtle)",
                 backdropFilter: "blur(16px) saturate(1.2)",
                 WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                border: "1px solid rgba(255,255,255,.55)",
-                boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)",
+                border: "1px solid var(--glass-border-subtle)",
+                boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), var(--glass-shadow-inset)",
               }}
             >
               <div className="flex items-center gap-3 mb-3">

@@ -30,7 +30,7 @@ export default function HeroVisualCard() {
 
         {/* Heart button */}
         <button className="absolute top-4 right-4 w-[36px] h-[36px] rounded-full flex items-center justify-center transition-transform hover:scale-110"
-          style={{ background: "rgba(255,255,255,.75)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,.50)" }}>
+          style={{ background: "var(--glass-bg-card)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid var(--glass-border-subtle)" }}>
           <Heart size={16} className="text-s-coral fill-s-coral" />
         </button>
 
@@ -42,10 +42,10 @@ export default function HeroVisualCard() {
 
         {/* Glass overlay info card */}
         <div className="absolute bottom-0 left-0 right-0 rounded-b-[20px] p-5"
-          style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
+          style={{ background: "var(--glass-bg-subtle)", backdropFilter: "blur(16px) saturate(1.2)",
                    WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                   borderTop: "1px solid rgba(255,255,255,.55)",
-                   boxShadow: "inset 0 1px 0 rgba(255,255,255,.70)" }}>
+                   borderTop: "1px solid var(--glass-border-subtle)",
+                   boxShadow: "var(--glass-shadow-inset)" }}>
           <p className="font-heading font-bold text-s-ink text-[16px] mb-0.5">Salon Amara</p>
           <p className="text-xs text-s-ink/60 mb-3 font-body">Kleinbasel · ★ 4.9 · 28 Bewertungen</p>
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-s-sage-text mb-3 px-3 py-1 rounded-pill"
@@ -68,10 +68,10 @@ export default function HeroVisualCard() {
       {/* ── Floating stat card ── */}
       <motion.div
         className="absolute top-0 left-0 rounded-[20px] p-5 min-w-[140px]"
-        style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
+        style={{ background: "var(--glass-bg-subtle)", backdropFilter: "blur(16px) saturate(1.2)",
                  WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                 border: "1px solid rgba(255,255,255,.55)",
-                 boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), inset 0 1px 0 rgba(255,255,255,.70)" }}
+                 border: "1px solid var(--glass-border-subtle)",
+                 boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), var(--glass-shadow-inset)" }}
         animate={reduced ? {} : { y: [0, -10, 0], rotate: [-0.5, 0.5, -0.5] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}>
         <div className="font-display text-[44px] leading-none text-s-coral">~250</div>

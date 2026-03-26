@@ -132,10 +132,10 @@ export default function HomeSearchBar() {
 
       {/* ── Main segmented bar ── */}
       <div className="rounded-search overflow-x-hidden sm:overflow-hidden"
-        style={{ background: "rgba(255,255,255,.92)", backdropFilter: "blur(24px) saturate(1.3)",
+        style={{ background: "var(--glass-bg-strong)", backdropFilter: "blur(24px) saturate(1.3)",
                  WebkitBackdropFilter: "blur(24px) saturate(1.3)",
-                 border: "1px solid rgba(255,255,255,.80)",
-                 boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), inset 0 1px 0 rgba(255,255,255,.90)" }}>
+                 border: "1px solid var(--glass-bg-card)",
+                 boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), var(--glass-shadow-inset)" }}>
 
         {/* Row: dates + categories side by side on lg, stacked on sm */}
         <div className="flex flex-col lg:flex-row">

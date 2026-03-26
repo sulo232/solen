@@ -85,7 +85,7 @@ export function BarbershopAboveGrid() {
   return (
     <div className="flex flex-col gap-4">
       {/* Walk-in teaser — tier-2 glassmorphism (Zone 2) with pulsing sage dot */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[.62] dark:bg-[rgba(38,32,26,.70)] backdrop-blur-[16px] saturate-[1.2] dark:backdrop-saturate-100 border border-white/55 dark:border-white/10 rounded-[20px] shadow-warm-md" style={{ boxShadow: "var(--sh-md), inset 0 1px 0 rgba(255,255,255,.70)" }}>
+      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[.62] dark:bg-[rgba(38,32,26,.70)] backdrop-blur-[16px] saturate-[1.2] dark:backdrop-saturate-100 border border-white/55 dark:border-white/10 rounded-[20px] shadow-warm-md" style={{ boxShadow: "var(--sh-md), var(--glass-shadow-inset)" }}>
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-8 h-8 rounded-pill bg-s-amber/15 flex items-center justify-center shrink-0">
             <Users size={16} className="text-s-amber" />

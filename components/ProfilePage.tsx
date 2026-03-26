@@ -801,7 +801,7 @@ export default function ProfilePage() {
 
         {/* ── Hero ── */}
         <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 mb-6"
-          style={{ background: "rgba(255,255,255,.90)", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
+          style={{ background: "var(--glass-bg-strong)", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30 mb-4">
             Mein Profil
           </p>

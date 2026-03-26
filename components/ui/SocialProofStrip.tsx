@@ -39,12 +39,12 @@ function useCountUp(target: number, isVisible: boolean, duration = 1200): number
 }
 
 const glassCard: React.CSSProperties = {
-  background: "rgba(255,255,255,.62)",
+  background: "var(--glass-bg-subtle)",
   backdropFilter: "blur(16px) saturate(1.2)",
   WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-  border: "1px solid rgba(255,255,255,.55)",
+  border: "1px solid var(--glass-border-subtle)",
   boxShadow:
-    "inset 0 1px 0 rgba(255,255,255,.70), 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
+    "var(--glass-shadow-inset), 0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
 };
 
 function StatCounter({ item, isVisible }: { item: StatItem; isVisible: boolean }) {
