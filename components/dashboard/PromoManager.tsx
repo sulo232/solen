@@ -164,18 +164,18 @@ export default function PromoManager() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{pl.maxUses}</label>
+              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("maxUses")}</label>
               <input
                 type="number"
                 value={form.max_uses}
                 onChange={(e) => setForm({ ...form, max_uses: e.target.value })}
-                placeholder={pl.unlimited}
+                placeholder={t("unlimited")}
                 min={1}
                 className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{pl.minAmount}</label>
+              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("minAmount")}</label>
               <input
                 type="number"
                 value={form.min_booking_amount}
@@ -185,7 +185,7 @@ export default function PromoManager() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{pl.validUntil}</label>
+              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("validUntil")}</label>
               <input
                 type="date"
                 value={form.valid_until}
@@ -201,14 +201,14 @@ export default function PromoManager() {
               className="px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-60 flex items-center gap-1.5"
             >
               {creating ? <Spinner size="sm" /> : <Plus className="w-3.5 h-3.5" />}
-              {pl.create}
+              {t("create")}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
               className="px-4 py-2 rounded-btn bg-s-bg-sunken dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-sm hover:bg-s-sand dark:hover:bg-white/15 transition-colors"
             >
-              {pl.cancel}
+              {t("cancel")}
             </button>
           </div>
         </form>
@@ -218,7 +218,7 @@ export default function PromoManager() {
       {codes.length === 0 ? (
         <div className="text-center py-12 text-s-ink/40 dark:text-s-dm-text/40 text-sm">
           <Tag className="w-8 h-8 mx-auto mb-2 opacity-40" />
-          {pl.empty}
+          {t("empty")}
         </div>
       ) : (
         <div className="space-y-2">
@@ -236,21 +236,21 @@ export default function PromoManager() {
                     <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{promo.code}</span>
                     <button
                       onClick={() => copyCode(promo.code, promo.id)}
-                      aria-label={`${pl.code} ${promo.code} kopieren`}
+                      aria-label={t("copyAriaLabel", { code: promo.code })}
                       className="p-0.5 hover:bg-s-bg-sunken dark:hover:bg-white/10 rounded transition-colors"
                     >
                       {copiedId === promo.id ? <Check className="w-3 h-3 text-s-coral" /> : <Copy className="w-3 h-3 text-s-ink/30" />}
                     </button>
                   </div>
                   <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                    {promo.discount_type === "percent" ? `${promo.discount_value}%` : `${formatCurrency(promo.discount_value, locale)}`} {pl.discount}
-                    {promo.max_uses ? ` · ${promo.current_uses}/${promo.max_uses} ${pl.used}` : ` · ${promo.current_uses}x ${pl.used}`}
-                    {promo.valid_until && ` · ${pl.until} ${new Date(promo.valid_until).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}`}
+                    {promo.discount_type === "percent" ? `${promo.discount_value}%` : `${formatCurrency(promo.discount_value, locale)}`} {t("discount")}
+                    {promo.max_uses ? ` · ${promo.current_uses}/${promo.max_uses} ${t("used")}` : ` · ${promo.current_uses}x ${t("used")}`}
+                    {promo.valid_until && ` · ${t("until")} ${new Date(promo.valid_until).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH")}`}
                   </p>
                 </div>
               </div>
               <span className={`text-xs px-2 py-1 rounded-full ${promo.is_active ? "bg-s-coral/10 text-s-coral" : "bg-s-bg-sunken text-s-ink/40"}`}>
-                {promo.is_active ? pl.active : pl.inactive}
+                {promo.is_active ? t("active") : t("inactive")}
               </span>
             </div>
           ))}

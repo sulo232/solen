@@ -711,6 +711,24 @@
       "active": "Attivo",
       "inactive": "Inattivo",
       "copyAriaLabel": "Copia codice {code}"
+    },
+    "packages": {
+      "title": "Pacchetti servizi",
+      "newPkg": "Nuovo pacchetto",
+      "namePlaceholder": "Nome pacchetto (es. 'Carta 5 tagli')",
+      "selectService": "Scegli servizio...",
+      "sessions": "Sessioni",
+      "bonus": "Bonus",
+      "price": "Prezzo (CHF)",
+      "cancel": "Annulla",
+      "saving": "Salvataggio...",
+      "create": "Crea",
+      "empty": "Nessun pacchetto creato",
+      "sold": "venduto/i",
+      "recentPurchases": "Acquisti recenti",
+      "toggleActiveAriaLabel": "{status} pacchetto",
+      "activate": "Attiva",
+      "deactivate": "Disattiva"
     }
   },
   "errors": {

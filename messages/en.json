@@ -711,6 +711,24 @@
       "active": "Active",
       "inactive": "Inactive",
       "copyAriaLabel": "Copy code {code}"
+    },
+    "packages": {
+      "title": "Service Packages",
+      "newPkg": "New Package",
+      "namePlaceholder": "Package name (e.g. '5-pack Haircut')",
+      "selectService": "Select service...",
+      "sessions": "Sessions",
+      "bonus": "Bonus",
+      "price": "Price (CHF)",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "create": "Create",
+      "empty": "No packages created yet",
+      "sold": "sold",
+      "recentPurchases": "Recent Purchases",
+      "toggleActiveAriaLabel": "{status} package",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
     }
   },
   "errors": {

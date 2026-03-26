@@ -711,6 +711,24 @@
       "active": "Actif",
       "inactive": "Inactif",
       "copyAriaLabel": "Copier le code {code}"
+    },
+    "packages": {
+      "title": "Forfaits",
+      "newPkg": "Nouveau forfait",
+      "namePlaceholder": "Nom du forfait (p.ex. 'Carte 5 coupes')",
+      "selectService": "Choisir un service...",
+      "sessions": "Séances",
+      "bonus": "Bonus",
+      "price": "Prix (CHF)",
+      "cancel": "Annuler",
+      "saving": "Enregistrement...",
+      "create": "Créer",
+      "empty": "Aucun forfait créé",
+      "sold": "vendu(s)",
+      "recentPurchases": "Derniers achats",
+      "toggleActiveAriaLabel": "{status} forfait",
+      "activate": "Activer",
+      "deactivate": "Désactiver"
     }
   },
   "errors": {

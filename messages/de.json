@@ -711,6 +711,24 @@
       "active": "Aktiv",
       "inactive": "Inaktiv",
       "copyAriaLabel": "Code {code} kopieren"
+    },
+    "packages": {
+      "title": "Service-Pakete",
+      "newPkg": "Neues Paket",
+      "namePlaceholder": "Paketname (z.B. '5er Karte Haarschnitt')",
+      "selectService": "Service wählen...",
+      "sessions": "Sitzungen",
+      "bonus": "Bonus",
+      "price": "Preis (CHF)",
+      "cancel": "Abbrechen",
+      "saving": "Speichern...",
+      "create": "Erstellen",
+      "empty": "Noch keine Pakete erstellt",
+      "sold": "verkauft",
+      "recentPurchases": "Letzte Käufe",
+      "toggleActiveAriaLabel": "Paket {status}",
+      "activate": "Aktivieren",
+      "deactivate": "Deaktivieren"
     }
   },
   "errors": {
