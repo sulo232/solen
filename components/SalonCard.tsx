@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -64,6 +65,7 @@ const quartierLabels: Record<string, string> = {
 };
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
+  const t = useTranslations("salonCard");
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
@@ -89,7 +91,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           ) : (
             <div className="flex items-center gap-1 mt-0.5">
-              <span className="text-[10px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-1.5 py-0.5 rounded-pill">Neu</span>
+              <span className="text-[10px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-1.5 py-0.5 rounded-pill">{t("new")}</span>
             </div>
           )}
         </div>
@@ -116,14 +118,14 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         <div className="absolute inset-0 bg-white/60 dark:bg-s-dm-bg/60 rounded-[inherit] z-10 pointer-events-none flex items-end p-3">
           <span className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 pointer-events-auto">
             {availability.nextDate
-              ? `Nächster Termin: ${new Date(availability.nextDate).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" })}`
-              : "Derzeit keine Termine"}
+              ? t("nextAvailable", { date: new Date(availability.nextDate).toLocaleDateString(locale, { weekday: "short", day: "numeric", month: "short" }) })
+              : t("noAvailability")}
           </span>
         </div>
       )}
       {availability?.status === "available" && (
         <span className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-pill bg-s-sage/90 text-white text-[10px] font-medium font-body">
-          Verfügbar
+          {t("availableToday")}
         </span>
       )}
 
@@ -148,19 +150,19 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {/* Available today pill */}
           {availableToday != null && availableToday > 0 && (
             <div className="absolute top-2 left-2 bg-s-success text-white text-xs font-semibold px-2 py-0.5 rounded-pill shadow-warm-sm z-[1]">
-              {availableToday} {availableToday === 1 ? "Termin" : "Termine"} heute frei
+              {t("appointmentsToday", { count: availableToday })}
             </div>
           )}
           {/* Solen tier badge */}
           {solenTier === "gold" && (
             <div className="absolute top-2 right-2 bg-s-yellow-subtle text-s-yellow-text text-xs font-semibold px-2 py-0.5 rounded-pill z-[1]">
-              Top Salon
+              {t("topSalon")}
             </div>
           )}
           {/* Top Pick badge (dynamic from DB) */}
           {salon.is_top_pick && !solenTier && (
             <div className="absolute top-2 right-2 bg-s-yellow-subtle text-s-yellow-text px-2.5 py-1 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.08em] z-[1]">
-              Solen Top Pick
+              {t("solenTopPick")}
             </div>
           )}
           {/* Glass category pills on photo */}
@@ -197,7 +199,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
               className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-white/90"
-              aria-label={isFavorited ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
+              aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
             >
               <Heart
                 className={`w-4 h-4 transition-colors ${isFavorited ? "fill-s-coral text-s-coral" : "text-s-ink/50"}`}
@@ -216,7 +218,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {showAvailability && salon.next_available_slot && (
             <div className="absolute right-2" style={{ top: onFavoriteToggle ? (salon.last_minute_discount_percent > 0 ? "5rem" : "3rem") : (salon.last_minute_discount_percent > 0 ? "2rem" : "0.5rem") }}>
               <span className="px-2 py-0.5 rounded-pill bg-s-success text-white text-[10px] font-body font-medium">
-                Verfügbar heute
+                {t("availableToday")}
               </span>
             </div>
           )}
@@ -227,7 +229,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-base leading-tight">{salon.name}</h3>
           {(salon as any).group_name && (
             <span className="inline-flex items-center gap-1 text-[10px] text-s-coral font-medium mt-0.5">
-              Teil von {(salon as any).group_name}
+              {t("partOfBrand", { brand: (salon as any).group_name })}
             </span>
           )}
           {salon.badges && salon.badges.length > 0 && (
@@ -277,7 +279,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 <span className="text-xs text-s-ink/40 font-body">({salon.review_count})</span>
               </>
             ) : (
-              <span className="text-[11px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill shadow-warm-xs">Neu auf Solen</span>
+              <span className="text-[11px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill shadow-warm-xs">{t("newOnSolen")}</span>
             )}
 
             {salon.avg_price != null && salon.avg_price > 0 && (

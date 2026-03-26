@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Package, Check } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
@@ -24,28 +24,12 @@ export default function PackageRedeemBanner({
   serviceId,
   onRedeemed,
 }: PackageRedeemBannerProps) {
-  const locale = useLocale();
+  const t = useTranslations("booking.packageRedeemBanner");
   const [redeeming, setRedeeming] = useState(false);
   const [redeemed, setRedeemed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const remaining = totalSessions - sessionsUsed;
-
-  const labels = {
-    de: {
-      remaining: `Du hast noch ${remaining} von ${totalSessions} Terminen in deinem Paket «${packageName}»`,
-      redeem: "Jetzt einlösen",
-      redeemed: "Eingelöst!",
-      desc: "Kein zusätzlicher Betrag fällig.",
-    },
-    en: {
-      remaining: `You have ${remaining} of ${totalSessions} sessions left in your «${packageName}» package`,
-      redeem: "Redeem now",
-      redeemed: "Redeemed!",
-      desc: "No additional charge.",
-    },
-  };
-  const l = labels[locale as "de" | "en"] ?? labels.de;
 
   const handleRedeem = async () => {
     setRedeeming(true);
@@ -58,12 +42,12 @@ export default function PackageRedeemBanner({
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "Fehler");
+        throw new Error(data.error ?? t("error"));
       }
       setRedeemed(true);
       onRedeemed();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Einlösung fehlgeschlagen");
+      setError(e instanceof Error ? e.message : t("redemptionFailed"));
     } finally {
       setRedeeming(false);
     }
@@ -78,8 +62,8 @@ export default function PackageRedeemBanner({
           <Check size={15} className="text-[#4CAF6F]" />
         </div>
         <div>
-          <p className="text-xs font-heading font-bold text-[#4CAF6F]">{l.redeemed}</p>
-          <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{l.desc}</p>
+          <p className="text-xs font-heading font-bold text-[#4CAF6F]">{t("redeemed")}</p>
+          <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("noAdditionalCharge")}</p>
         </div>
       </div>
     );
@@ -95,7 +79,7 @@ export default function PackageRedeemBanner({
       <div className="flex-1 min-w-0">
         <p className="text-xs font-heading font-bold text-s-amber-text dark:text-s-amber truncate">{packageName}</p>
         <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
-          {sessionsUsed}/{totalSessions} Sessions genutzt
+          {t("sessionsUsed", { used: sessionsUsed, total: totalSessions })}
         </p>
         {/* Progress dots */}
         <div className="flex gap-1 mt-1.5">
@@ -115,7 +99,7 @@ export default function PackageRedeemBanner({
         style={{ background: "#D4870A", boxShadow: "0 2px 4px rgba(212,135,10,.22)" }}
       >
         {redeeming && <Spinner size="sm" invert />}
-        {l.redeem}
+        {t("redeemNow")}
       </button>
     </div>
   );

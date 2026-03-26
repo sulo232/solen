@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 
 interface QuickReplyChipsProps {
@@ -8,26 +9,27 @@ interface QuickReplyChipsProps {
   onSelectTemplate: (text: string) => void;
 }
 
-const DEFAULT_TEMPLATES = [
-  "Ja, das machen wir! ✓",
-  "Leider gerade ausgebucht 😔",
-  "Gerne, schick mir ein Foto!",
-  "Wir bestätigen deinen Termin!",
-  "Preis auf Anfrage — welche Behandlung?",
-];
-
 export default function QuickReplyChips({ salonId, onSelectTemplate }: QuickReplyChipsProps) {
+  const t = useTranslations("chat.quickReplyChips");
   const [templates, setTemplates] = useState<string[]>([]);
+
+  const defaultTemplates = [
+    t("defaults.0"),
+    t("defaults.1"),
+    t("defaults.2"),
+    t("defaults.3"),
+    t("defaults.4"),
+  ];
 
   useEffect(() => {
     fetch("/api/chat-templates")
       .then((r) => r.json())
       .then((d) => {
         const items = d.templates ?? [];
-        setTemplates(items.map((t: { text: string }) => t.text));
+        setTemplates(items.map((tmpl: { text: string }) => tmpl.text));
       })
-      .catch(() => setTemplates(DEFAULT_TEMPLATES));
-  }, [salonId]);
+      .catch(() => setTemplates(defaultTemplates));
+  }, [salonId, defaultTemplates]);
 
   if (templates.length === 0) return null;
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Calendar, X } from "lucide-react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface BookingBubbleProps {
   salonName: string;
@@ -14,6 +14,7 @@ interface BookingBubbleProps {
 
 export default function BookingBubble({ salonName, salonSlug, conversationId, messageCount }: BookingBubbleProps) {
   const locale = useLocale();
+  const t = useTranslations("chat.bookingBubble");
   const [dismissed, setDismissed] = useState(() => {
     if (typeof window === "undefined") return true;
     return localStorage.getItem(`booking_bubble_${conversationId}`) === "1";
@@ -31,18 +32,18 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
     <div className="mx-4 mb-2 p-3 rounded-card bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
       <Calendar size={18} className="text-s-coral shrink-0" />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Termin buchen bei {salonName}</p>
+        <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("title", { salonName })}</p>
       </div>
       <Link
         href={`/${locale}/salon/${salonSlug}`}
         className="shrink-0 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-all"
       >
-        Jetzt buchen
+        {t("bookNow")}
       </Link>
       <button
         onClick={handleDismiss}
         className="shrink-0 p-1 text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink/60 dark:hover:text-s-dm-text/60"
-        aria-label="Schliessen"
+        aria-label={t("close")}
       >
         <X size={14} />
       </button>

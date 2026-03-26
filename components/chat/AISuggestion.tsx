@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, Loader2 } from "lucide-react";
 
@@ -21,6 +22,7 @@ export default function AISuggestion({
   onAccept,
   visible,
 }: AISuggestionProps) {
+  const t = useTranslations("chat.aiSuggestion");
   const [suggestion, setSuggestion] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -78,12 +80,12 @@ export default function AISuggestion({
           {loading ? (
             <div className="flex items-center gap-2 text-s-blue dark:text-s-blue text-sm">
               <Loader2 size={14} className="animate-spin" />
-              <span>Antwort wird vorgeschlagen…</span>
+              <span>{t("loading")}</span>
             </div>
           ) : suggestion ? (
             <div>
               <p className="text-sm text-s-ink dark:text-s-dm-text mb-2">
-                <span className="font-medium">Vorgeschlagene Antwort: </span>
+                <span className="font-medium">{t("suggestedReply")} </span>
                 {suggestion}
               </p>
               <div className="flex gap-2">
@@ -91,13 +93,13 @@ export default function AISuggestion({
                   onClick={() => { onAccept(suggestion); setDismissed(true); }}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-blue/10 dark:bg-s-blue/20 text-s-blue dark:text-s-blue text-xs font-medium hover:bg-s-blue/20 dark:hover:bg-s-blue/30 transition-colors"
                 >
-                  <Check size={12} /> Übernehmen
+                  <Check size={12} /> {t("accept")}
                 </button>
                 <button
                   onClick={() => setDismissed(true)}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-btn bg-s-bg-sunken dark:bg-s-dm-raised text-s-ink/60 dark:text-s-ink/30 text-xs font-medium hover:bg-s-sand dark:hover:bg-s-ink/60 transition-colors"
                 >
-                  <X size={12} /> Verwerfen
+                  <X size={12} /> {t("dismiss")}
                 </button>
               </div>
             </div>
