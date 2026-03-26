@@ -1,60 +1,127 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, type ReactNode } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Brain, TrendingUp, ChevronRight } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import AiMatcherModal from "./AiMatcherModal";
+import ScrollableFilterRow, {
+  type PillOption,
+  type IconOption,
+} from "@/components/ui/ScrollableFilterRow";
 
-// ── Hair type filter pills ─────────────────────────────────────────────────
+// ── Hair type icons (simple SVG illustrations) ──────────────────────────
 
-const HAIR_TYPES = ["Lockig", "Wellig", "Glatt", "Fein", "Kräftig", "Gefärbt"] as const;
+function HairIcon({ d }: { d: string }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />
+    </svg>
+  );
+}
+
+// ── Filter options ────────────────────────────────────────────────────────
+
+const SERVICES: PillOption[] = [
+  { value: "schnitt", label: "Schnitt" },
+  { value: "farbe", label: "Farbe" },
+  { value: "straehnen", label: "Strähnen" },
+  { value: "behandlung", label: "Behandlung" },
+  { value: "styling", label: "Styling" },
+];
+
+const HAIR_TYPES: IconOption[] = [
+  {
+    value: "lockig",
+    label: "Lockig",
+    icon: <HairIcon d="M4 4c2 0 2 3 0 3s-2 3 0 3 2 3 0 3M10 4c2 0 2 3 0 3s-2 3 0 3 2 3 0 3M16 4c2 0 2 3 0 3s-2 3 0 3 2 3 0 3" />,
+  },
+  {
+    value: "wellig",
+    label: "Wellig",
+    icon: <HairIcon d="M3 6c3-3 5 3 7 0s5 3 7 0M3 10c3-3 5 3 7 0s5 3 7 0M3 14c3-3 5 3 7 0s5 3 7 0" />,
+  },
+  {
+    value: "glatt",
+    label: "Glatt",
+    icon: <HairIcon d="M4 4v12M8 4v12M12 4v12M16 4v12" />,
+  },
+  {
+    value: "fein",
+    label: "Fein",
+    icon: <HairIcon d="M7 4v12M10 4v12M13 4v12" />,
+  },
+  {
+    value: "kraeftig",
+    label: "Kräftig",
+    icon: <HairIcon d="M3 4v12M7 4v12M10 4v12M13 4v12M17 4v12" />,
+  },
+  {
+    value: "gefaerbt",
+    label: "Gefärbt",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10" cy="7" r="4" />
+        <path d="M10 11v5M7 18h6" />
+      </svg>
+    ),
+  },
+];
+
+const TARGET_GROUPS: PillOption[] = [
+  { value: "damen", label: "Damen" },
+  { value: "herren", label: "Herren" },
+  { value: "kinder", label: "Kinder" },
+];
+
+// ── Above-grid: Service + Hair type (icons) + Target group ──────────────
 
 export function CoiffeurAboveGrid() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activeType = searchParams.get("hairType");
 
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (key: string, value: string | null) => {
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
+      if (value === null) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
       return params.toString();
     },
     [searchParams]
   );
 
-  const handlePillClick = (type: string) => {
-    if (activeType === type) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("hairType");
-      router.push(`${pathname}?${params.toString()}`);
-    } else {
-      router.push(`${pathname}?${createQueryString("hairType", type)}`);
-    }
+  const handleSelect = (key: string) => (value: string | null) => {
+    const qs = createQueryString(key, value);
+    router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   };
 
   return (
-    <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[16px] px-4 py-3 flex items-center gap-3 flex-wrap">
-      <span className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold shrink-0">
-        Haartyp
-      </span>
-      {HAIR_TYPES.map((type) => (
-        <button
-          key={type}
-          onClick={() => handlePillClick(type)}
-          className={`px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all ${
-            activeType === type
-              ? "bg-s-coral text-white shadow-warm-sm"
-              : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border border-s-ink/10 dark:border-white/10 hover:border-s-coral"
-          }`}
-        >
-          {type}
-        </button>
-      ))}
+    <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[16px] px-4 py-3 flex flex-col gap-2.5">
+      <ScrollableFilterRow
+        label="Service"
+        options={SERVICES}
+        activeValue={searchParams.get("service")}
+        onSelect={handleSelect("service")}
+      />
+      <ScrollableFilterRow
+        variant="icon"
+        label="Haartyp"
+        options={HAIR_TYPES}
+        activeValue={searchParams.get("hairType")}
+        onSelect={handleSelect("hairType")}
+      />
+      <ScrollableFilterRow
+        label="Für wen"
+        options={TARGET_GROUPS}
+        activeValue={searchParams.get("target")}
+        onSelect={handleSelect("target")}
+      />
     </div>
   );
 }

@@ -5,45 +5,37 @@ import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Users, Zap, ChevronRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import ScrollableFilterRow, { type PillOption } from "@/components/ui/ScrollableFilterRow";
 
-// ── Discovery signal filter pills ─────────────────────────────────────────
+// ── Filter options ────────────────────────────────────────────────────────
 
-const FADE_TYPES = ["Skin Fade", "Low Fade", "Mid Fade", "High Fade"] as const;
-const HAIR_TEXTURES = ["Afro", "Lockig", "Wellig", "Glatt"] as const;
-const BARBER_STYLES = ["Klassisch", "Modern", "Urban"] as const;
+const FADE_TYPES: PillOption[] = [
+  { value: "Skin Fade", label: "Skin Fade" },
+  { value: "Low Fade", label: "Low Fade" },
+  { value: "Mid Fade", label: "Mid Fade" },
+  { value: "High Fade", label: "High Fade" },
+];
 
-function FilterPills({
-  label,
-  options,
-  activeIndex,
-  onSelect,
-  accentClass,
-}: {
-  label: string;
-  options: readonly string[];
-  activeIndex: number | null;
-  onSelect: (i: number | null) => void;
-  accentClass: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold shrink-0">{label}</span>
-      {options.map((opt, i) => (
-        <button
-          key={opt}
-          onClick={() => onSelect(activeIndex === i ? null : i)}
-          className={`px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all ${
-            activeIndex === i
-              ? `${accentClass} text-white shadow-warm-sm`
-              : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border border-s-ink/10 dark:border-white/10 hover:border-s-amber/40"
-          }`}
-        >
-          {opt}
-        </button>
-      ))}
-    </div>
-  );
-}
+const HAIR_TEXTURES: PillOption[] = [
+  { value: "Afro", label: "Afro" },
+  { value: "Lockig", label: "Lockig" },
+  { value: "Wellig", label: "Wellig" },
+  { value: "Glatt", label: "Glatt" },
+  { value: "Lang", label: "Lang" },
+  { value: "Mittellang", label: "Mittellang" },
+];
+
+const BARBER_STYLES: PillOption[] = [
+  { value: "Klassisch", label: "Klassisch" },
+  { value: "Modern", label: "Modern" },
+  { value: "Urban", label: "Urban" },
+];
+
+const BART_TYPES: PillOption[] = [
+  { value: "Bartschnitt", label: "Bartschnitt" },
+  { value: "Rasur", label: "Rasur" },
+  { value: "Konturierung", label: "Konturierung" },
+];
 
 // ── Above-grid: Walk-in teaser + filter pills ──────────────────────────────
 
@@ -53,15 +45,6 @@ export function BarbershopAboveGrid() {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("barber.sections");
-
-  // Read filter state from URL
-  const activeFade = searchParams.get("fade");
-  const activeTexture = searchParams.get("texture");
-  const activeStyle = searchParams.get("style");
-
-  const fadeIdx = activeFade !== null ? FADE_TYPES.indexOf(activeFade as typeof FADE_TYPES[number]) : null;
-  const textureIdx = activeTexture !== null ? HAIR_TEXTURES.indexOf(activeTexture as typeof HAIR_TEXTURES[number]) : null;
-  const styleIdx = activeStyle !== null ? BARBER_STYLES.indexOf(activeStyle as typeof BARBER_STYLES[number]) : null;
 
   // Stable helper that sets one param without wiping others
   const createQueryString = useCallback(
@@ -77,8 +60,7 @@ export function BarbershopAboveGrid() {
     [searchParams]
   );
 
-  const handleSelect = (key: string, options: readonly string[], idx: number | null, currentIdx: number | null) => {
-    const value = idx === currentIdx ? null : idx !== null ? options[idx] : null;
+  const handleSelect = (key: string) => (value: string | null) => {
     const qs = createQueryString(key, value);
     router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   };
@@ -114,27 +96,30 @@ export function BarbershopAboveGrid() {
       </div>
 
       {/* Discovery signal filter pills */}
-      <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-3">
-        <FilterPills
+      <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
+        <ScrollableFilterRow
           label={t("filter_fade_type")}
           options={FADE_TYPES}
-          activeIndex={fadeIdx !== null && fadeIdx >= 0 ? fadeIdx : null}
-          onSelect={(i) => handleSelect("fade", FADE_TYPES, i, fadeIdx)}
-          accentClass="bg-s-amber"
+          activeValue={searchParams.get("fade")}
+          onSelect={handleSelect("fade")}
         />
-        <FilterPills
+        <ScrollableFilterRow
           label={t("filter_hair_type")}
           options={HAIR_TEXTURES}
-          activeIndex={textureIdx !== null && textureIdx >= 0 ? textureIdx : null}
-          onSelect={(i) => handleSelect("texture", HAIR_TEXTURES, i, textureIdx)}
-          accentClass="bg-s-amber"
+          activeValue={searchParams.get("texture")}
+          onSelect={handleSelect("texture")}
         />
-        <FilterPills
+        <ScrollableFilterRow
           label={t("filter_style")}
           options={BARBER_STYLES}
-          activeIndex={styleIdx !== null && styleIdx >= 0 ? styleIdx : null}
-          onSelect={(i) => handleSelect("style", BARBER_STYLES, i, styleIdx)}
-          accentClass="bg-s-amber"
+          activeValue={searchParams.get("style")}
+          onSelect={handleSelect("style")}
+        />
+        <ScrollableFilterRow
+          label="Bart"
+          options={BART_TYPES}
+          activeValue={searchParams.get("bart")}
+          onSelect={handleSelect("bart")}
         />
       </div>
     </div>

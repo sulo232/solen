@@ -29,7 +29,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
   }, [activeTab]);
 
   return (
-    <div className="sticky top-[57px] z-10 w-full bg-[rgba(250,246,239,.82)] dark:bg-s-dm-bg/80 backdrop-blur-[28px] saturate-[1.3] border-b border-s-ink/5 dark:border-white/5 py-0 px-4 md:px-8 mb-8 overflow-hidden pointer-events-auto">
+    <div className="sticky top-[57px] z-40 w-full bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/8 dark:border-white/8 py-0 px-4 md:px-8 mb-8 overflow-hidden pointer-events-auto">
       <div 
         ref={scrollContainerRef}
         className="flex items-center gap-6 overflow-x-auto scrollbar-hide snap-x pt-2"
