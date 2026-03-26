@@ -29,7 +29,6 @@
     "hero": {
       "byline": "De Bâle, pour Bâle",
       "hello": "Bonjour",
-      "title": "BEAUTÉ<span class=\"text-s-coral\">.</span><br />BÂLE<span class=\"text-s-coral\">.</span>",
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre quartier.",
       "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
@@ -82,7 +81,6 @@
     },
     "quartiers": {
       "eyebrow": "Votre quartier",
-      "title": "DÉCOUVREZ<br /><span style=\"color: #E8624A\">BÂLE</span>",
       "subtitle": "Des salons directement dans votre quartier — de Kleinbasel à Bruderholz.",
       "salonSingular": "Salon",
       "salonPlural": "Salons",
@@ -679,6 +677,40 @@
       "visualEditor": "Éditeur visuel",
       "discovery": "Découverte",
       "homepage": "Page d'accueil"
+    },
+    "schedule": {
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche",
+      "alternating": "Alternance"
+    },
+    "promo": {
+      "title": "Codes promo",
+      "newCode": "Nouveau code",
+      "loadError": "Erreur de chargement",
+      "createError": "Erreur de création",
+      "code": "Code",
+      "discountType": "Type de remise",
+      "percent": "Pourcentage (%)",
+      "fixed": "Fixe (CHF)",
+      "discountValue": "Valeur de remise",
+      "maxUses": "Utilisations max.",
+      "unlimited": "Illimité",
+      "minAmount": "Montant min. (CHF)",
+      "validUntil": "Valide jusqu'au",
+      "create": "Créer",
+      "cancel": "Annuler",
+      "empty": "Aucun code promo créé",
+      "discount": "remise",
+      "used": "utilisé",
+      "until": "jusqu'au",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "copyAriaLabel": "Copier le code {code}"
     }
   },
   "errors": {

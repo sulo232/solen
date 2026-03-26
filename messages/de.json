@@ -677,6 +677,40 @@
       "visualEditor": "Visual Editor",
       "discovery": "Discovery",
       "homepage": "Homepage"
+    },
+    "schedule": {
+      "monday": "Montag",
+      "tuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag",
+      "alternating": "Alternierend"
+    },
+    "promo": {
+      "title": "Promo-Codes",
+      "newCode": "Neuer Code",
+      "loadError": "Fehler beim Laden der Codes",
+      "createError": "Fehler beim Erstellen",
+      "code": "Code",
+      "discountType": "Rabatttyp",
+      "percent": "Prozent (%)",
+      "fixed": "Fixbetrag (CHF)",
+      "discountValue": "Rabattwert",
+      "maxUses": "Max. Nutzungen",
+      "unlimited": "Unbegrenzt",
+      "minAmount": "Mindestbetrag (CHF)",
+      "validUntil": "Gültig bis",
+      "create": "Erstellen",
+      "cancel": "Abbrechen",
+      "empty": "Noch keine Promo-Codes erstellt",
+      "discount": "Rabatt",
+      "used": "genutzt",
+      "until": "bis",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "copyAriaLabel": "Code {code} kopieren"
     }
   },
   "errors": {

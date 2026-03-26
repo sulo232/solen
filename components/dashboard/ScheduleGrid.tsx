@@ -5,16 +5,6 @@ import { useEffect, useState } from "react";
 import { Save, Check } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
-const DAYS = [
-  { value: 1, label: "Montag" },
-  { value: 2, label: "Dienstag" },
-  { value: 3, label: "Mittwoch" },
-  { value: 4, label: "Donnerstag" },
-  { value: 5, label: "Freitag" },
-  { value: 6, label: "Samstag" },
-  { value: 0, label: "Sonntag" },
-];
-
 interface ScheduleEntry {
   day_of_week: number;
   start_time: string;
@@ -30,6 +20,18 @@ interface ScheduleGridProps {
 
 export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
   const tc = useTranslations("common");
+  const t = useTranslations("dashboard.schedule");
+
+  const DAYS = [
+    { value: 1, label: t("monday") },
+    { value: 2, label: t("tuesday") },
+    { value: 3, label: t("wednesday") },
+    { value: 4, label: t("thursday") },
+    { value: 5, label: t("friday") },
+    { value: 6, label: t("saturday") },
+    { value: 0, label: t("sunday") },
+  ];
+
   const [schedule, setSchedule] = useState<ScheduleEntry[]>(
     DAYS.map(d => ({ day_of_week: d.value, start_time: "09:00", end_time: "18:00", active: false }))
   );
@@ -121,7 +123,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
                 disabled={!entry.active}
                 className="w-3 h-3 rounded accent-s-coral"
               />
-              Alternierend
+              {t("alternating")}
             </label>
           </div>
         );

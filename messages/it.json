@@ -29,7 +29,6 @@
     "hero": {
       "byline": "Da Basilea, per Basilea",
       "hello": "Ciao",
-      "title": "BELLEZZA<span class=\"text-s-coral\">.</span><br />BASILEA<span class=\"text-s-coral\">.</span>",
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nel tuo quartiere.",
       "nextBooking": "Il tuo prossimo appuntamento: {date} presso {salon}",
@@ -82,7 +81,6 @@
     },
     "quartiers": {
       "eyebrow": "Il tuo quartiere",
-      "title": "SCOPRI<br /><span style=\"color: #E8624A\">BASILEA</span>",
       "subtitle": "Saloni direttamente nel tuo quartiere — da Kleinbasel a Bruderholz.",
       "salonSingular": "Salone",
       "salonPlural": "Saloni",
@@ -679,6 +677,40 @@
       "visualEditor": "Editor visuale",
       "discovery": "Scoperta",
       "homepage": "Homepage"
+    },
+    "schedule": {
+      "monday": "Lunedì",
+      "tuesday": "Martedì",
+      "wednesday": "Mercoledì",
+      "thursday": "Giovedì",
+      "friday": "Venerdì",
+      "saturday": "Sabato",
+      "sunday": "Domenica",
+      "alternating": "Alternanza"
+    },
+    "promo": {
+      "title": "Codici promo",
+      "newCode": "Nuovo codice",
+      "loadError": "Errore di caricamento",
+      "createError": "Errore di creazione",
+      "code": "Codice",
+      "discountType": "Tipo di sconto",
+      "percent": "Percentuale (%)",
+      "fixed": "Fisso (CHF)",
+      "discountValue": "Valore dello sconto",
+      "maxUses": "Utilizzi max.",
+      "unlimited": "Illimitato",
+      "minAmount": "Importo min. (CHF)",
+      "validUntil": "Valido fino al",
+      "create": "Crea",
+      "cancel": "Annulla",
+      "empty": "Nessun codice promo creato",
+      "discount": "sconto",
+      "used": "utilizzato",
+      "until": "fino al",
+      "active": "Attivo",
+      "inactive": "Inattivo",
+      "copyAriaLabel": "Copia codice {code}"
     }
   },
   "errors": {

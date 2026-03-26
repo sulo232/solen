@@ -1,17 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Plus, Trash2, Tag, Percent, Copy, Check } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
-
-const promoLabels = {
-  de: { title: "Promo-Codes", newCode: "Neuer Code", loadError: "Fehler beim Laden der Codes", createError: "Fehler beim Erstellen", code: "Code", discountType: "Rabatttyp", percent: "Prozent (%)", fixed: "Fixbetrag (CHF)", discountValue: "Rabattwert", maxUses: "Max. Nutzungen", unlimited: "Unbegrenzt", minAmount: "Mindestbetrag (CHF)", validUntil: "Gültig bis", create: "Erstellen", cancel: "Abbrechen", empty: "Noch keine Promo-Codes erstellt", discount: "Rabatt", used: "genutzt", until: "bis", active: "Aktiv", inactive: "Inaktiv" },
-  en: { title: "Promo Codes", newCode: "New Code", loadError: "Error loading codes", createError: "Error creating code", code: "Code", discountType: "Discount type", percent: "Percent (%)", fixed: "Fixed (CHF)", discountValue: "Discount value", maxUses: "Max uses", unlimited: "Unlimited", minAmount: "Min. amount (CHF)", validUntil: "Valid until", create: "Create", cancel: "Cancel", empty: "No promo codes created yet", discount: "discount", used: "used", until: "until", active: "Active", inactive: "Inactive" },
-  fr: { title: "Codes promo", newCode: "Nouveau code", loadError: "Erreur de chargement", createError: "Erreur de création", code: "Code", discountType: "Type de remise", percent: "Pourcentage (%)", fixed: "Fixe (CHF)", discountValue: "Valeur de remise", maxUses: "Utilisations max.", unlimited: "Illimité", minAmount: "Montant min. (CHF)", validUntil: "Valide jusqu'au", create: "Créer", cancel: "Annuler", empty: "Aucun code promo créé", discount: "remise", used: "utilisé", until: "jusqu'au", active: "Actif", inactive: "Inactif" },
-  it: { title: "Codici promo", newCode: "Nuovo codice", loadError: "Errore di caricamento", createError: "Errore di creazione", code: "Codice", discountType: "Tipo di sconto", percent: "Percentuale (%)", fixed: "Fisso (CHF)", discountValue: "Valore dello sconto", maxUses: "Utilizzi max.", unlimited: "Illimitato", minAmount: "Importo min. (CHF)", validUntil: "Valido fino al", create: "Crea", cancel: "Annulla", empty: "Nessun codice promo creato", discount: "sconto", used: "utilizzato", until: "fino al", active: "Attivo", inactive: "Inattivo" },
-};
 
 interface PromoCode {
   id: string;
@@ -29,7 +22,7 @@ interface PromoCode {
 
 export default function PromoManager() {
   const locale = useLocale();
-  const pl = promoLabels[locale as keyof typeof promoLabels] ?? promoLabels.de;
+  const t = useTranslations("dashboard.promo");
   const [codes, setCodes] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -57,7 +50,7 @@ export default function PromoManager() {
       const data = await res.json();
       setCodes(data.codes ?? []);
     } catch {
-      setError(pl.loadError);
+      setError(t("loadError"));
     } finally {
       setLoading(false);
     }
@@ -91,7 +84,7 @@ export default function PromoManager() {
       setForm({ code: "", discount_type: "percent", discount_value: 10, min_booking_amount: 0, max_uses: "", valid_until: "" });
       fetchCodes();
     } catch (e) {
-      setError(e instanceof Error ? e.message : pl.createError);
+      setError(e instanceof Error ? e.message : t("createError"));
     } finally {
       setCreating(false);
     }
@@ -114,13 +107,13 @@ export default function PromoManager() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{pl.title}</h2>
+        <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{t("title")}</h2>
         <button
           onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all"
         >
           <Plus className="w-4 h-4" />
-          {pl.newCode}
+          {t("newCode")}
         </button>
       </div>
 
@@ -135,7 +128,7 @@ export default function PromoManager() {
         <form onSubmit={handleCreate} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 shadow-card p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{pl.code}</label>
+              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("code")}</label>
               <input
                 type="text"
                 value={form.code}
@@ -146,19 +139,19 @@ export default function PromoManager() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{pl.discountType}</label>
+              <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("discountType")}</label>
               <select
                 value={form.discount_type}
                 onChange={(e) => setForm({ ...form, discount_type: e.target.value as "percent" | "fixed" })}
                 className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-s-ink dark:text-s-dm-text outline-none"
               >
-                <option value="percent">{pl.percent}</option>
-                <option value="fixed">{pl.fixed}</option>
+                <option value="percent">{t("percent")}</option>
+                <option value="fixed">{t("fixed")}</option>
               </select>
             </div>
             <div>
               <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">
-                {pl.discountValue} {form.discount_type === "percent" ? "(%)" : "(CHF)"}
+                {t("discountValue")} {form.discount_type === "percent" ? "(%)" : "(CHF)"}
               </label>
               <input
                 type="number"

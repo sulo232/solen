@@ -29,7 +29,6 @@
     "hero": {
       "byline": "From Basel, for Basel",
       "hello": "Hello",
-      "title": "BEAUTY<span class=\"text-s-coral\">.</span><br />BASEL<span class=\"text-s-coral\">.</span>",
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your neighbourhood.",
       "nextBooking": "Your next appointment: {date} at {salon}",
@@ -82,7 +81,6 @@
     },
     "quartiers": {
       "eyebrow": "Your neighbourhood",
-      "title": "DISCOVER<br /><span style=\"color: #E8624A\">BASEL</span>",
       "subtitle": "Salons right in your neighbourhood — from Kleinbasel to Bruderholz.",
       "salonSingular": "Salon",
       "salonPlural": "Salons",
@@ -679,6 +677,40 @@
       "visualEditor": "Visual Editor",
       "discovery": "Discovery",
       "homepage": "Homepage"
+    },
+    "schedule": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "alternating": "Alternating"
+    },
+    "promo": {
+      "title": "Promo Codes",
+      "newCode": "New Code",
+      "loadError": "Error loading codes",
+      "createError": "Error creating code",
+      "code": "Code",
+      "discountType": "Discount type",
+      "percent": "Percent (%)",
+      "fixed": "Fixed (CHF)",
+      "discountValue": "Discount value",
+      "maxUses": "Max uses",
+      "unlimited": "Unlimited",
+      "minAmount": "Min. amount (CHF)",
+      "validUntil": "Valid until",
+      "create": "Create",
+      "cancel": "Cancel",
+      "empty": "No promo codes created yet",
+      "discount": "discount",
+      "used": "used",
+      "until": "until",
+      "active": "Active",
+      "inactive": "Inactive",
+      "copyAriaLabel": "Copy code {code}"
     }
   },
   "errors": {
