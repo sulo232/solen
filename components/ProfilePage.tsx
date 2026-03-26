@@ -20,8 +20,14 @@ import StampCard from "@/components/loyalty/StampCard";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import ProfileDiscoverySections from "@/components/discovery/ProfileDiscoverySections";
 import { formatCurrency } from "@/lib/format-currency";
-import type { Profile, Booking, SalonCard } from "@/lib/types";
+import type { Profile, Booking, SalonCard, BeautyProfile } from "@/lib/types";
 import { ReportProblemButton } from "@/components/disputes/ReportProblemButton";
+import { ProfileHero } from "@/components/profile/ProfileHero";
+import { BeautyProfileCard } from "@/components/profile/BeautyProfileCard";
+import { BeautyProfileEditModal } from "@/components/profile/BeautyProfileEditModal";
+import { SalonHighlights } from "@/components/profile/SalonHighlights";
+import { ProfileTabs } from "@/components/profile/ProfileTabs";
+import { LooksGrid } from "@/components/profile/LooksGrid";
 
 interface LoyaltyCard {
   id: string;
@@ -642,6 +648,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [cancelTarget, setCancelTarget] = useState<BookingWithDetails | null>(null);
   const [pastOpen, setPastOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'looks' | 'termine' | 'favoriten' | 'stempel'>('termine');
+  const [beautyEditOpen, setBeautyEditOpen] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -742,6 +750,22 @@ export default function ProfilePage() {
     setFavorites((prev) => prev.filter((s) => s.id !== salonId));
   }, []);
 
+  const handleSaveBeautyProfile = useCallback(async (beautyProfile: BeautyProfile) => {
+    try {
+      const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+      const supabase = createBrowserSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const currentPrefs = (profile?.customer_preferences as any) || {};
+        const updatedPrefs = { ...currentPrefs, beauty: beautyProfile };
+        await supabase.from("profiles").update({ customer_preferences: updatedPrefs }).eq("id", session.user.id);
+        setProfile((prev) => prev ? { ...prev, customer_preferences: updatedPrefs } : prev);
+      }
+    } catch (err) {
+      console.error("[ProfilePage] Error saving beauty profile:", err);
+    }
+  }, [profile]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg py-8 px-4">
@@ -781,12 +805,14 @@ export default function ProfilePage() {
     (b) => b.status === "confirmed" && new Date(b.starts_at).getTime() > now
   );
   const past = bookings.filter(
-    (b) => b.status !== "confirmed" || new Date(b.starts_at).getTime() <= now
+    (b) => b.status === "completed" || (b.status === "confirmed" && new Date(b.starts_at).getTime() <= now) || b.status === "cancelled"
   );
 
+  const beautyProfile: BeautyProfile = (profile.customer_preferences as any)?.beauty || {};
+
   return (
-    <div className="min-h-screen bg-s-bg-surface dark:bg-s-dm-bg">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-24">
+    <div className="min-h-screen bg-[--base] dark:bg-s-dm-bg">
+      <div className="max-w-md mx-auto px-5 pt-6 pb-28">
         {/* Cancel modal */}
         {cancelTarget && (
           <CancelModal
@@ -799,298 +825,159 @@ export default function ProfilePage() {
           />
         )}
 
-        {/* ── Hero ── */}
-        <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 mb-6"
-          style={{ background: "var(--glass-bg-strong)", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 dark:text-s-dm-text/30 mb-4">
-            Mein Profil
-          </p>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg flex items-center justify-center relative shrink-0">
-              {profile.avatar_url ? (
-                <Image src={profile.avatar_url} alt={profile.display_name ?? ""} fill className="object-cover" />
-              ) : (
-                <span className="text-2xl font-heading font-bold text-s-ink/20 dark:text-s-dm-text/20">
-                  {(profile.display_name ?? "?")[0].toUpperCase()}
-                </span>
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text truncate">{profile.display_name}</p>
-                <SolenExclusiveBadge featureDescription={t("exclusiveMember") || "Exclusive Member"} />
-              </div>
-              <p className="text-xs font-body italic text-s-ink/45 dark:text-s-dm-text/45 mt-0.5 truncate">{profile.bio}</p>
-            </div>
-            <a href={`/${locale}/profile/settings`}
-              className="w-9 h-9 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] flex items-center justify-center hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors shrink-0">
-              <Settings size={15} className="text-s-ink/40 dark:text-s-dm-text/40" />
-            </a>
-          </div>
+        {/* Beauty Profile Edit Modal */}
+        <BeautyProfileEditModal
+          isOpen={beautyEditOpen}
+          onClose={() => setBeautyEditOpen(false)}
+          initialProfile={beautyProfile}
+          onSave={handleSaveBeautyProfile}
+        />
+
+        {/* Profile Hero */}
+        <ProfileHero profile={profile} locale={locale} />
+
+        {/* Beauty Profile Card */}
+        <div className="mb-4">
+          <BeautyProfileCard profile={profile} onEdit={() => setBeautyEditOpen(true)} />
         </div>
 
-        {/* ── Section 1: Upcoming Bookings ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.05 }}
-          className="mb-6"
-        >
-          <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-            <Calendar size={16} className="text-s-coral" />
-            {t("upcomingBookings")}
-          </h2>
-          <AnimatePresence mode="wait">
-          {upcoming.length === 0 ? (
-            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-              <EmptyState
-                icon={Calendar}
-                title={t("noBookingsYet")}
-                illustration="no-results"
-                action={
-                  <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                    {t("bookNow")} →
-                  </Link>
-                }
-              />
-            </motion.div>
-          ) : (
-            <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-              <div className="space-y-3">
-                {upcoming.map((b) => (
-                  <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
-                ))}
-              </div>
-            </motion.div>
-          )}
-          </AnimatePresence>
-        </motion.section>
+        {/* Salon Highlights */}
+        <SalonHighlights favorites={favorites} locale={locale} />
 
-        {/* ── Section 2: Past Bookings ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="mb-6"
-        >
-          <button
-            onClick={() => setPastOpen(!pastOpen)}
-            aria-expanded={pastOpen}
-            className="w-full flex items-center justify-between font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3"
-          >
-            <span className="flex items-center gap-2">
-              <Calendar size={16} className="text-s-ink/40 dark:text-s-dm-text/40" />
-              {t("pastBookings")} ({past.length})
-            </span>
-            {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          </button>
-          {pastOpen && (
-            <div className="space-y-3">
-              {past.length === 0 ? (
-                <EmptyState icon={Calendar} title={t("noPastBookings")} illustration="no-results" />
-              ) : (
-                past.map((b) => (
-                  <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
-                ))
-              )}
-            </div>
-          )}
-        </motion.section>
+        {/* Profile Tabs */}
+        <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab}>
+          {activeTab === 'looks' && <LooksGrid looks={[]} onAddLook={() => {/* TODO */}} />}
 
-        {/* ── Section 3: Favorites ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-          className="mb-6"
-        >
-          <ProfileSectionLabel icon={Heart}>{t("favorites")}</ProfileSectionLabel>
-          {favorites.length === 0 ? (
-            <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] border-dashed p-8 text-center">
-              <Heart size={24} className="mx-auto mb-2 text-s-ink/15 dark:text-s-dm-text/15" />
-              <p className="text-xs font-heading text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-[.10em]">{t("noFavorites")}</p>
-              <Link href={`/${locale}/coiffeur`}
-                className="inline-block mt-3 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:underline">
-                {t("discoverSalons")} →
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {favorites.map((salon) => (
-                <div key={salon.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] overflow-hidden flex gap-3 p-3 group relative">
-                  {salon.cover_photo_url && (
-                    <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken dark:bg-s-dm-bg">
-                      <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
+          {activeTab === 'termine' && (
+            <div className="space-y-4">
+              <AnimatePresence mode="wait">
+                {upcoming.length === 0 ? (
+                  <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                    <EmptyState
+                      icon={Calendar}
+                      title={t("noBookingsYet")}
+                      illustration="no-results"
+                      action={
+                        <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                          {t("bookNow")} →
+                        </Link>
+                      }
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                    <div className="space-y-3">
+                      {upcoming.map((b) => (
+                        <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {past.length > 0 && (
+                <div className="mt-6">
+                  <button
+                    onClick={() => setPastOpen(!pastOpen)}
+                    aria-expanded={pastOpen}
+                    className="w-full flex items-center justify-between text-[13px] font-body font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-3"
+                  >
+                    <span>{t("pastBookings")} ({past.length})</span>
+                    {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </button>
+                  {pastOpen && (
+                    <div className="space-y-3">
+                      {past.map((b) => (
+                        <BookingCard key={b.id} booking={b} locale={locale} onCancel={setCancelTarget} />
+                      ))}
                     </div>
                   )}
-                  <div className="flex-1 min-w-0">
-                    <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text hover:text-s-coral transition-colors truncate block">
-                      {salon.name}
-                    </Link>
-                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1 mt-0.5">
-                      <MapPin size={10} />{salon.quartier}
-                    </p>
-                    <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1 mt-0.5">
-                      <Star size={10} className="text-s-yellow fill-s-yellow" />
-                      {salon.average_rating?.toFixed(1) ?? "–"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => removeFav(salon.id)}
-                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-pill text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-                    title={t("removeFromFavorites")}
-                    aria-label={t("removeFromFavorites")}
-                  >
-                    <X size={12} />
-                  </button>
                 </div>
-              ))}
+              )}
             </div>
           )}
-        </motion.section>
 
-        {/* ── Section: Stamp Cards ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.17 }}
-          className="mb-6"
-        >
-          <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-            <Trophy size={16} className="text-s-amber" />
-            {t("stampCards")}
-            <SolenExclusiveBadge featureDescription={t("stampCardsFeature")} />
-          </h2>
-          {loyaltyCards.length === 0 ? (
-            <EmptyState
-              icon={Trophy}
-              title={t("noStamps")}
-              illustration="no-results"
-              action={
-                <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                  {t("bookAtSalon")}
-                </Link>
-              }
-            />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {loyaltyCards.map((card) => (
-                <StampCard
-                  key={card.id}
-                  salonName={card.salons.name}
-                  salonSlug={card.salons.slug}
-                  salonImageUrl={card.salons.cover_photo_url ?? undefined}
-                  stampsTotal={card.stamps_needed}
-                  stampsCollected={card.stamps_collected}
-                  rewardText={card.reward_text}
+          {activeTab === 'favoriten' && (
+            <div>
+              {favorites.length === 0 ? (
+                <EmptyState
+                  icon={Heart}
+                  title={t("noFavorites")}
+                  illustration="no-results"
+                  action={
+                    <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                      {t("discoverSalons")} →
+                    </Link>
+                  }
                 />
-              ))}
+              ) : (
+                <div className="grid grid-cols-1 gap-3">
+                  {favorites.map((salon) => (
+                    <div key={salon.id} className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] overflow-hidden flex gap-3 p-3 group relative">
+                      {salon.cover_photo_url && (
+                        <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken dark:bg-s-dm-bg">
+                          <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text hover:text-s-coral transition-colors truncate block">
+                          {salon.name}
+                        </Link>
+                        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1 mt-0.5">
+                          <MapPin size={10} />{salon.quartier}
+                        </p>
+                        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1 mt-0.5">
+                          <Star size={10} className="text-s-yellow fill-s-yellow" />
+                          {salon.average_rating?.toFixed(1) ?? "–"}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => removeFav(salon.id)}
+                        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-pill text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral hover:bg-s-coral/10 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                        title={t("removeFromFavorites")}
+                        aria-label={t("removeFromFavorites")}
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
-        </motion.section>
 
-      {/* ── Section: Discovery ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.16 }}
-        className="mb-6"
-      >
-        <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/10 p-5">
-          <ProfileDiscoverySections
-            userId={profile.id}
-            profile={{
-              disc_gender: (profile as any).disc_gender ?? null,
-              disc_hair_texture: (profile as any).disc_hair_texture ?? null,
-              disc_hair_length: (profile as any).disc_hair_length ?? null,
-              disc_face_shape: (profile as any).disc_face_shape ?? null,
-              disc_skin_tone: (profile as any).disc_skin_tone ?? null,
-              disc_preferred_categories: null,
-            }}
-          />
-        </div>
-      </motion.section>
-
-      {/* ── Section: Credit & Referral ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.15 }}
-      >
-        <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-          <Wallet size={16} className="text-s-coral" />
-          {t("creditAndReferral")}
-        </h2>
-        <ReferralSection locale={locale} />
-      </motion.section>
-
-      {/* ── Section: Packages, Gift Cards, Forms ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.18 }}
-      >
-        <div className="space-y-3">
-          <Link
-            href={`/${locale}/profile/packages`}
-            className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
-          >
-            <div className="flex items-center gap-3">
-              <Package size={18} className="text-s-blue" />
-              <div>
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myPackages")}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myPackagesDesc")}</p>
-              </div>
+          {activeTab === 'stempel' && (
+            <div>
+              {loyaltyCards.length === 0 ? (
+                <EmptyState
+                  icon={Trophy}
+                  title={t("noStamps")}
+                  illustration="no-results"
+                  action={
+                    <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
+                      {t("bookAtSalon")}
+                    </Link>
+                  }
+                />
+              ) : (
+                <div className="grid grid-cols-1 gap-3">
+                  {loyaltyCards.map((card) => (
+                    <StampCard
+                      key={card.id}
+                      salon={card.salons}
+                      stampsCollected={card.stamps_collected}
+                      stampsNeeded={card.stamps_needed}
+                      rewardText={card.reward_text}
+                      locale={locale}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-            <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-          </Link>
-          <Link
-            href={`/${locale}/profile/gift-cards`}
-            className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
-          >
-            <div className="flex items-center gap-3">
-              <Gift size={18} className="text-s-coral" />
-              <div>
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myGiftCards")}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myGiftCardsDesc")}</p>
-              </div>
-            </div>
-            <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-          </Link>
-          <Link
-            href={`/${locale}/profile/intake-forms`}
-            className="flex items-center justify-between p-4 bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 hover:border-s-coral/30 transition-colors group"
-          >
-            <div className="flex items-center gap-3">
-              <ClipboardList size={18} className="text-s-amber" />
-              <div>
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("myForms")}</p>
-                <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("myFormsDesc")}</p>
-              </div>
-            </div>
-            <ChevronRight size={16} className="text-s-ink/20 group-hover:text-s-coral transition-colors" />
-          </Link>
-        </div>
-      </motion.section>
-
-      {/* ── Section: Settings ── */}
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
-        <h2 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-          <Settings size={16} className="text-s-ink/60 dark:text-s-dm-text/60" />
-          {t("settings")}
-        </h2>
-        <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/10 p-5">
-          <SettingsSection profile={profile} onSave={handleSaveProfile} />
-        </div>
-      </motion.section>
-
-        {/* ── Recently Viewed ── */}
-        <RecentlyViewed />
+          )}
+        </ProfileTabs>
       </div>
     </div>
   );
 }
+

@@ -729,6 +729,33 @@
       "toggleActiveAriaLabel": "{status} package",
       "activate": "Activate",
       "deactivate": "Deactivate"
+    },
+    "pricing": {
+      "title": "Request Price Adjustment",
+      "currentPrice": "Current Price",
+      "newPrice": "New Price (CHF)",
+      "reason": "Reason for change",
+      "reasonPlaceholder": "e.g. Additional treatment performed...",
+      "submit": "Request Adjustment",
+      "pending": "Pending Adjustment",
+      "pendingDesc": "Waiting for customer confirmation",
+      "max": "Max 150% of original price",
+      "invalidAmount": "Enter a valid amount",
+      "enterReason": "Please enter a reason",
+      "genericError": "Error",
+      "close": "Close"
+    },
+    "goLive": {
+      "setup": "Setup",
+      "notLive": "Salon not yet live",
+      "minService": "At least 1 service",
+      "coverPhoto": "Cover photo uploaded",
+      "stripeConnected": "Stripe Connect linked",
+      "configure": "Configure →",
+      "goLiveNow": "Go live now",
+      "notReady": "Not ready yet",
+      "activationError": "Error activating",
+      "networkError": "Network error"
     }
   },
   "errors": {

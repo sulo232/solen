@@ -729,6 +729,33 @@
       "toggleActiveAriaLabel": "{status} forfait",
       "activate": "Activer",
       "deactivate": "Désactiver"
+    },
+    "pricing": {
+      "title": "Demander un ajustement de prix",
+      "currentPrice": "Prix actuel",
+      "newPrice": "Nouveau prix (CHF)",
+      "reason": "Raison du changement",
+      "reasonPlaceholder": "p.ex. Traitement supplémentaire effectué...",
+      "submit": "Demander l'ajustement",
+      "pending": "Ajustement en attente",
+      "pendingDesc": "En attente de confirmation du client",
+      "max": "Max. 150% du prix original",
+      "invalidAmount": "Entrez un montant valide",
+      "enterReason": "Veuillez indiquer une raison",
+      "genericError": "Erreur",
+      "close": "Fermer"
+    },
+    "goLive": {
+      "setup": "Configuration",
+      "notLive": "Salon pas encore en ligne",
+      "minService": "Au moins 1 service",
+      "coverPhoto": "Photo de couverture téléchargée",
+      "stripeConnected": "Stripe Connect lié",
+      "configure": "Configurer →",
+      "goLiveNow": "Mettre en ligne maintenant",
+      "notReady": "Pas encore prêt",
+      "activationError": "Erreur d'activation",
+      "networkError": "Erreur réseau"
     }
   },
   "errors": {

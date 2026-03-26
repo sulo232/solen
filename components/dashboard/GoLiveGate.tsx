@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Rocket, CheckCircle2, Image, CreditCard, Scissors } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Spinner from "@/components/ui/Spinner";
 
 interface GoLiveStatus {
@@ -15,6 +15,7 @@ interface GoLiveStatus {
 
 export default function GoLiveGate() {
   const locale = useLocale();
+  const t = useTranslations("dashboard.goLive");
   const [status, setStatus] = useState<GoLiveStatus | null>(null);
   const [activating, setActivating] = useState(false);
   const [error, setError] = useState("");
@@ -44,10 +45,10 @@ export default function GoLiveGate() {
         // Reload page to refresh dashboard data
         window.location.reload();
       } else {
-        setError(data.error ?? "Fehler beim Aktivieren");
+        setError(data.error ?? t("activationError"));
       }
     } catch {
-      setError("Netzwerkfehler");
+      setError(t("networkError"));
     } finally {
       setActivating(false);
     }
@@ -56,21 +57,21 @@ export default function GoLiveGate() {
   const requirements = [
     {
       key: "services",
-      label: "Mindestens 1 Service",
+      label: t("minService"),
       done: status.has_services,
       href: `/${locale}/dashboard/services`,
       Icon: Scissors,
     },
     {
       key: "photo",
-      label: "Titelbild hochgeladen",
+      label: t("coverPhoto"),
       done: status.has_cover_photo,
       href: `/${locale}/dashboard/settings?tab=profile`,
       Icon: Image,
     },
     {
       key: "stripe",
-      label: "Stripe Connect verknüpft",
+      label: t("stripeConnected"),
       done: status.has_stripe,
       href: `/${locale}/dashboard/settings?tab=payments`,
       Icon: CreditCard,
@@ -89,8 +90,8 @@ export default function GoLiveGate() {
               <Rocket size={18} className="text-s-coral" />
             </div>
             <div>
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-0.5">Einrichtung</p>
-              <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">Salon noch nicht live</p>
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-0.5">{t("setup")}</p>
+              <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("notLive")}</p>
             </div>
           </div>
           <p className="text-xs data-text font-medium text-s-ink/40">{doneCount}/{requirements.length}</p>
@@ -112,7 +113,7 @@ export default function GoLiveGate() {
             </div>
             {!done && (
               <a href={href} className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral shrink-0">
-                Einrichten →
+                {t("configure")}
               </a>
             )}
           </div>
@@ -133,7 +134,7 @@ export default function GoLiveGate() {
           ].join(" ")}
         >
           {activating ? <Spinner size="sm" invert={status.can_go_live} /> : <Rocket size={15} />}
-          {status.can_go_live ? "Salon jetzt live schalten" : "Noch nicht bereit"}
+          {status.can_go_live ? t("goLiveNow") : t("notReady")}
         </button>
       </div>
     </div>

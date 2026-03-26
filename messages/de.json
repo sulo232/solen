@@ -729,6 +729,33 @@
       "toggleActiveAriaLabel": "Paket {status}",
       "activate": "Aktivieren",
       "deactivate": "Deaktivieren"
+    },
+    "pricing": {
+      "title": "Preisänderung anfragen",
+      "currentPrice": "Aktueller Preis",
+      "newPrice": "Neuer Preis (CHF)",
+      "reason": "Grund für die Änderung",
+      "reasonPlaceholder": "z.B. Zusätzliche Behandlung durchgeführt...",
+      "submit": "Preisänderung anfragen",
+      "pending": "Ausstehende Preisänderung",
+      "pendingDesc": "Wartet auf Kundenbestätigung",
+      "max": "Max. 150% des Originalpreises",
+      "invalidAmount": "Gültigen Betrag eingeben",
+      "enterReason": "Bitte Grund angeben",
+      "genericError": "Fehler",
+      "close": "Schließen"
+    },
+    "goLive": {
+      "setup": "Einrichtung",
+      "notLive": "Salon noch nicht live",
+      "minService": "Mindestens 1 Service",
+      "coverPhoto": "Titelbild hochgeladen",
+      "stripeConnected": "Stripe Connect verknüpft",
+      "configure": "Einrichten →",
+      "goLiveNow": "Salon jetzt live schalten",
+      "notReady": "Noch nicht bereit",
+      "activationError": "Fehler beim Aktivieren",
+      "networkError": "Netzwerkfehler"
     }
   },
   "errors": {
