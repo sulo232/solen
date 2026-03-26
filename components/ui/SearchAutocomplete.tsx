@@ -18,9 +18,7 @@ interface SuggestService {
 
 interface SuggestSalon {
   id: string;
-  name: string;
   slug: string;
-  quartier: string;
   average_rating: number;
   cover_image: string | null;
 }
@@ -241,10 +239,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     <div className="min-w-0">
                       <p className="font-medium truncate">{salon.name}</p>
                       <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
-                        <span>{salon.quartier}</span>
                         {salon.average_rating > 0 && (
-                          <>
-                            <span>·</span>
                             <Star size={10} className="fill-s-amber text-s-amber" />
                             <span>{salon.average_rating.toFixed(1)}</span>
                           </>

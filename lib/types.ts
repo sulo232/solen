@@ -18,15 +18,6 @@ export type SalonCategory =
 
 export type CitySlug = "basel" | "zuerich" | "bern";
 
-export type Quartier =
-  | "grossbasel"
-  | "kleinbasel"
-  | "gundeli"
-  | "st_johann"
-  | "iselin"
-  | "bruderholz"
-  | "breite";
-
 export type BookingStatus = "pending" | "pending_approval" | "confirmed" | "cancelled" | "completed" | "no_show";
 
 export type RecurringFrequency = "weekly" | "biweekly" | "monthly" | "custom";
@@ -122,7 +113,6 @@ export interface Salon {
   description_it?: string | null;
   categories: SalonCategory[];
   city_id: string | null; // References cities.id
-  quartier: Quartier;
   address: string;
   latitude: number;
   longitude: number;
@@ -350,9 +340,7 @@ export interface AccountAction {
 
 export interface UserPreferences {
   user_id: string;
-  favorite_quartier_ids: string[];
   favorite_service_slugs: string[];
-  quartier_visit_counts: Record<string, number>;
   last_booked_service: string | null;
   booking_intervals: Record<string, number>;
   dismissed_nudges: Record<string, boolean>;
@@ -367,7 +355,7 @@ export interface UserPreferences {
 
 /** Availability slot enriched with salon + service data — used for Last-Minute page */
 export interface LastMinuteSlot extends AvailabilitySlot {
-  salon: Pick<Salon, "id" | "name" | "slug" | "cover_photo_url" | "quartier" | "average_rating">;
+  salon: Pick<Salon, "id" | "name" | "slug" | "cover_photo_url" | "average_rating">;
   service: Pick<Service, "id" | "name_de" | "name_en" | "category" | "duration_minutes">;
   staff_member: Pick<StaffMember, "id" | "name" | "avatar_url"> | null;
   discounted_price: number;

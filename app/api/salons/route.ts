@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
           name,
           slug,
           city_id,
-          quartier: "Unspecified", // [FIX] Bypassing legacy NOT NULL Postgres constraint
+          quartier: "grossbasel", // [FIX] Bypassing BOTH Not-Null and legacy CHECK constraint
           categories,
           address,
           phone: phone || null,
