@@ -14,12 +14,15 @@ export async function GET(request: NextRequest) {
 
   const { data: salons } = await supabase
     .from("salons")
-    .select("city, categories")
+    .select("city_id, categories")
     .eq("is_active", true);
+
+  const { data: citiesData } = await supabase.from("cities").select("id, slug");
 
   const items = CITY_SLUGS.map((slug) => {
     const c = CITIES[slug];
-    const citySalons = salons?.filter((s) => s.city === slug) || [];
+    const cId = citiesData?.find(cd => cd.slug === slug)?.id;
+    const citySalons = salons?.filter((s) => s.city_id === cId) || [];
     const categories = new Set<string>();
     for (const s of citySalons) {
       if (Array.isArray(s.categories)) {

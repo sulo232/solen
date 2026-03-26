@@ -37,7 +37,12 @@ export async function GET(request: NextRequest) {
       .eq("is_active", true);
 
     if (category) query = query.contains("categories", [category]);
-    if (city) query = query.eq("city", city);
+    
+    if (city) {
+      const { data: cData } = await supabase.from("cities").select("id").eq("slug", city).single();
+      if (cData?.id) query = query.eq("city_id", cData.id);
+    }
+
     if (quartier) query = query.eq("quartier", quartier);
     if (min_rating) query = query.gte("average_rating", parseFloat(min_rating));
     if (accepts_payment === "true") query = query.eq("accepts_online_payment", true);
@@ -204,13 +209,16 @@ export async function POST(request: NextRequest) {
         city = "bern";
       }
 
+      const { data: cData } = await admin.from("cities").select("id").eq("slug", city).single();
+      const city_id = cData?.id || null;
+
       const { data, error: insertErr } = await admin
         .from("salons")
         .insert({
           owner_id: user.id,
           name,
           slug,
-          city,
+          city_id,
           categories,
           quartier,
           address,

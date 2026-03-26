@@ -25,7 +25,10 @@ export async function GET(request: NextRequest) {
     .in("id", ids)
     .eq("is_active", true);
     
-  if (city) sQuery = sQuery.eq("city", city);
+  if (city) {
+    const { data: cData } = await supabase.from("cities").select("id").eq("slug", city).single();
+    if (cData?.id) sQuery = sQuery.eq("city_id", cData.id);
+  }
 
   const { data: salons, error: sErr } = await sQuery;
 

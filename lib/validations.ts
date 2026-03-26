@@ -154,9 +154,10 @@ const salonCategory = z.enum(["coiffeur", "barbershop", "nails", "spa", "makeup"
 export const createSalonSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
-  categories: z.array(salonCategory).min(1),
+  categories: z.array(z.string()).min(1),
+  city: z.string().min(1),
   quartier: z.string().min(1),
-  address: z.string().min(5),
+  address: z.string().min(5).max(200),
   phone: z.string().max(20).optional().or(z.literal("")),
   phone_verified: z.boolean().optional(),
   cover_photo_url: z.string().url().optional().or(z.literal("")),

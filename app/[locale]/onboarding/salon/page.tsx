@@ -72,6 +72,7 @@ interface BasicsData {
   name: string;
   email: string;
   categories: SalonCategory[];
+  city: string;
   quartier: string;
   address: string;
   phone: string;
@@ -140,19 +141,36 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
           {errors.categories && <p className="text-xs text-s-coral mt-1">{errors.categories}</p>}
         </div>
 
-        <div>
-          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.quartier")}</label>
-          <select
-            value={data.quartier}
-            onChange={(e) => onChange({ ...data, quartier: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all ${errors.quartier ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
-          >
-            <option value="">{t("step1.selectPlaceholder")}</option>
-            {QUARTIERE.map((q) => (
-              <option key={q.value} value={q.value}>{q.label}</option>
-            ))}
-          </select>
-          {errors.quartier && <p className="text-xs text-s-coral mt-0.5">{errors.quartier}</p>}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
+            <select
+              value={data.city}
+              onChange={(e) => onChange({ ...data, city: e.target.value })}
+              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all ${errors.city ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
+            >
+              <option value="">Stadt wählen</option>
+              <option value="zuerich">Zürich</option>
+              <option value="basel">Basel</option>
+              <option value="bern">Bern</option>
+            </select>
+            {errors.city && <p className="text-xs text-s-coral mt-0.5">{errors.city}</p>}
+          </div>
+
+          <div>
+            <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">{t("step1.quartier")}</label>
+            <select
+              value={data.quartier}
+              onChange={(e) => onChange({ ...data, quartier: e.target.value })}
+              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all ${errors.quartier ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
+            >
+              <option value="">{t("step1.selectPlaceholder")}</option>
+              {QUARTIERE.map((q) => (
+                <option key={q.value} value={q.value}>{q.label}</option>
+              ))}
+            </select>
+            {errors.quartier && <p className="text-xs text-s-coral mt-0.5">{errors.quartier}</p>}
+          </div>
         </div>
 
         <div>
@@ -330,7 +348,7 @@ export default function SalonOnboardingPage() {
 
   // Step 1 state
   const [basics, setBasics] = useState<BasicsData>({
-    name: "", email: "", categories: [], quartier: "", address: "",
+    name: "", email: "", categories: [], city: "", quartier: "", address: "",
     phone: "", tos_accepted: false, latitude: null, longitude: null, google_place_id: "",
   });
 
@@ -421,6 +439,7 @@ export default function SalonOnboardingPage() {
       if (!basics.name || basics.name.length < 2) errors.name = "Name muss mindestens 2 Zeichen haben";
       if (!basics.email || !basics.email.includes("@")) errors.email = "Ungültige E-Mail-Adresse";
       if (basics.categories.length === 0) errors.categories = "Wähle mindestens eine Kategorie";
+      if (!basics.city) errors.city = "Wähle eine Stadt";
       if (!basics.quartier) errors.quartier = "Wähle ein Quartier";
       if (!basics.address || basics.address.length < 5) errors.address = "Adresse ist zu kurz";
       if (!basics.tos_accepted) errors.tos_accepted = "Bitte akzeptiere die AGB und Datenschutzerklärung";
@@ -460,6 +479,7 @@ export default function SalonOnboardingPage() {
           name: basics.name,
           email: basics.email,
           categories: basics.categories,
+          city: basics.city,
           quartier: basics.quartier,
           address: basics.address,
           phone: basics.phone,

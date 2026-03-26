@@ -64,6 +64,7 @@ import { NailsIcon } from "@/components/icons/category/NailsIcon";
 import { SpaIcon } from "@/components/icons/category/SpaIcon";
 import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
 import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
+import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Category grid data
@@ -356,41 +357,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Discover Preview (Phase 3) ─────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 py-8 md:py-12">
-        <div className="relative rounded-[20px] p-8 md:p-12 overflow-hidden bg-s-bg-base/80 dark:bg-s-dm-surface border border-s-ink/10 shadow-warm-sm group cursor-pointer"
-             onClick={() => window.location.href = `/${locale}/discover`}>
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-s-coral/5 dark:bg-s-coral/10 blur-[60px] transform translate-x-1/3 -translate-y-1/3 pointer-events-none transition-transform duration-700 group-hover:scale-110" />
-          
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 justify-between">
-            <div className="max-w-md text-center md:text-left">
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">Entdecken</span>
-              <h2 className="font-display text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(32px, 5vw, 48px)", letterSpacing: "0.01em", lineHeight: "0.95" }}>
-                FINDE DEINE<br /><span className="text-s-coral">INSPIRATION</span>
-              </h2>
-              <p className="mt-4 font-body text-s-ink/60 dark:text-s-dm-text/60 italic leading-relaxed">
-                Nicht sicher, was du suchst? Entdecke tausende Styles und Trends aus deiner Stadt.
-              </p>
-              
-              <Link href={`/${locale}/discover`}
-                className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-btn border border-s-ink/20 text-s-ink font-heading font-bold text-xs uppercase tracking-[.04em] hover:bg-s-ink hover:text-white transition-all">
-                Alle entdecken →
-              </Link>
-            </div>
-
-            <div className="flex gap-4 items-center shrink-0 perspective-1000">
-              <div className="w-24 h-36 md:w-32 md:h-48 rounded-[16px] overflow-hidden bg-s-ink/10 transform -rotate-6 shadow-warm-md group-hover:-rotate-12 transition-transform duration-500 scale-90">
-                <img src="/assets/placeholder/discover-3.jpg" className="w-full h-full object-cover opacity-80" alt="" />
-              </div>
-              <div className="w-32 h-44 md:w-40 md:h-56 rounded-[16px] overflow-hidden bg-s-ink/10 shadow-warm-lg z-10 group-hover:-translate-y-2 transition-transform duration-500">
-                <img src="/assets/placeholder/discover-1.jpg" className="w-full h-full object-cover" alt="Inspiration" />
-              </div>
-              <div className="w-24 h-36 md:w-32 md:h-48 rounded-[16px] overflow-hidden bg-s-ink/10 transform rotate-6 shadow-warm-md group-hover:rotate-12 transition-transform duration-500 scale-90">
-                <img src="/assets/placeholder/discover-2.jpg" className="w-full h-full object-cover opacity-80" alt="" />
-              </div>
-            </div>
+      {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
+      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden bg-s-bg-base/80 dark:bg-s-dm-bg">
+        <div className="max-w-5xl mx-auto px-4 mb-2 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">Entdecken</span>
+            <h2 className="font-display text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(32px, 5vw, 48px)", letterSpacing: "0.01em", lineHeight: "0.95" }}>
+              FINDE DEINE<br /><span className="text-s-coral">INSPIRATION</span>
+            </h2>
           </div>
+          <Link href={`/${locale}/discover`}
+            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:bg-s-ink hover:text-white dark:hover:bg-white dark:hover:text-s-ink transition-all shrink-0">
+            Katalog öffnen →
+          </Link>
         </div>
+        
+        {/* The new horizontal swiper component replaces the static subset */}
+        <DiscoverCarousel locale={locale} />
       </section>
 
       {/* WeatherBanner removed — Phase 0.3 */}
