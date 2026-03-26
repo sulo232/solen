@@ -511,7 +511,15 @@
     "google_login": "Sign in with Google",
     "or": "or",
     "continue_with_email": "Continue with email",
-    "terms": "By signing in, you agree to our Terms of Service."
+    "terms": "By signing in, you agree to our Terms of Service.",
+    "tos": {
+      "title": "Updated Terms of Service",
+      "description": "We have updated our Terms of Service and Privacy Policy. Please accept the new terms to continue using solen.ch.",
+      "termsLink": "Terms of Service",
+      "privacyLink": "Privacy Policy",
+      "readCta": "Read",
+      "acceptButton": "I accept the new terms"
+    }
   },
   "account": {
     "profile": "Profile",
@@ -1692,16 +1700,6 @@
       "resolution": "Resolution",
       "actionError": "Action failed",
       "vs": "vs"
-    }
-  },
-  "auth": {
-    "tos": {
-      "title": "Updated Terms of Service",
-      "description": "We have updated our Terms of Service and Privacy Policy. Please accept the new terms to continue using solen.ch.",
-      "termsLink": "Terms of Service",
-      "privacyLink": "Privacy Policy",
-      "readCta": "Read",
-      "acceptButton": "I accept the new terms"
     }
   },
   "ui": {

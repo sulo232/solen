@@ -4,56 +4,56 @@ import { useState } from "react";
 import Link from "next/link";
 import { Sparkles, ChevronRight } from "lucide-react";
 import { useLocale } from "next-intl";
+import ScrollableFilterRow, { type PillOption } from "@/components/ui/ScrollableFilterRow";
 
-// ── Shape / material filter pills ─────────────────────────────────────────
+// ── Filter options ────────────────────────────────────────────────────────
 
-const SHAPES = ["Mandel", "Quadrat", "Coffin", "Stiletto", "Rund", "Oval"] as const;
-const MATERIALS = ["Gel", "Acryl", "BIAB", "Shellac", "Naturnagel"] as const;
-const STYLES = ["Minimalistisch", "Nail Art", "French", "Ombre"] as const;
+const SHAPES: PillOption[] = [
+  { value: "mandel", label: "Mandel" },
+  { value: "quadrat", label: "Quadrat" },
+  { value: "coffin", label: "Coffin" },
+  { value: "stiletto", label: "Stiletto" },
+  { value: "rund", label: "Rund" },
+  { value: "oval", label: "Oval" },
+];
 
-function PillGroup({
-  label,
-  options,
-  active,
-  onToggle,
-  activeClass,
-}: {
-  label: string;
-  options: readonly string[];
-  active: number | null;
-  onToggle: (i: number | null) => void;
-  activeClass: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-[11px] tracking-[0.2em] uppercase text-s-amber font-heading font-bold shrink-0 w-16">{label}</span>
-      {options.map((opt, i) => (
-        <button
-          key={opt}
-          onClick={() => onToggle(active === i ? null : i)}
-          className={`px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all ${
-            active === i
-              ? `${activeClass} text-white shadow-warm-sm`
-              : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 border border-s-ink/10 dark:border-white/10 hover:border-s-coral/40"
-          }`}
-        >
-          {opt}
-        </button>
-      ))}
-    </div>
-  );
-}
+const MATERIALS: PillOption[] = [
+  { value: "gel", label: "Gel" },
+  { value: "acryl", label: "Acryl" },
+  { value: "biab", label: "BIAB" },
+  { value: "shellac", label: "Shellac" },
+  { value: "naturnagel", label: "Naturnagel" },
+];
+
+const STYLES: PillOption[] = [
+  { value: "minimalistisch", label: "Minimalistisch" },
+  { value: "nail-art", label: "Nail Art" },
+  { value: "french", label: "French" },
+  { value: "ombre", label: "Ombre" },
+  { value: "glitzer", label: "Glitzer" },
+  { value: "chrome", label: "Chrome" },
+];
+
+const LENGTHS: PillOption[] = [
+  { value: "kurz", label: "Kurz" },
+  { value: "mittel", label: "Mittel" },
+  { value: "lang", label: "Lang" },
+];
+
+// ── Above-grid: Shape / material / style / length filter pills ────────────
 
 export function NailsAboveGrid() {
-  const [shapeIdx, setShapeIdx] = useState<number | null>(null);
-  const [matIdx, setMatIdx] = useState<number | null>(null);
-  const [styleIdx, setStyleIdx] = useState<number | null>(null);
+  const [shape, setShape] = useState<string | null>(null);
+  const [material, setMaterial] = useState<string | null>(null);
+  const [style, setStyle] = useState<string | null>(null);
+  const [length, setLength] = useState<string | null>(null);
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-3">
-      <PillGroup label="Form" options={SHAPES} active={shapeIdx} onToggle={setShapeIdx} activeClass="bg-s-coral" />
-      <PillGroup label="Material" options={MATERIALS} active={matIdx} onToggle={setMatIdx} activeClass="bg-s-coral" />
-      <PillGroup label="Stil" options={STYLES} active={styleIdx} onToggle={setStyleIdx} activeClass="bg-s-coral" />
+    <div className="bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
+      <ScrollableFilterRow label="Form" options={SHAPES} activeValue={shape} onSelect={setShape} />
+      <ScrollableFilterRow label="Material" options={MATERIALS} activeValue={material} onSelect={setMaterial} />
+      <ScrollableFilterRow label="Stil" options={STYLES} activeValue={style} onSelect={setStyle} />
+      <ScrollableFilterRow label="Länge" options={LENGTHS} activeValue={length} onSelect={setLength} />
     </div>
   );
 }

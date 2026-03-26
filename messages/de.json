@@ -522,7 +522,15 @@
     "google_login": "Mit Google anmelden",
     "or": "oder",
     "continue_with_email": "Mit E-Mail fortfahren",
-    "terms": "Mit der Anmeldung akzeptierst du unsere Nutzungsbedingungen."
+    "terms": "Mit der Anmeldung akzeptierst du unsere Nutzungsbedingungen.",
+    "tos": {
+      "title": "Aktualisierte Nutzungsbedingungen",
+      "description": "Wir haben unsere Allgemeinen Geschäftsbedingungen (AGB) und die Datenschutzerklärung aktualisiert. Bitte akzeptiere die neuen Bedingungen, um solen.ch weiterhin nutzen zu können.",
+      "termsLink": "Allgemeine Geschäftsbedingungen",
+      "privacyLink": "Datenschutzerklärung",
+      "readCta": "Lesen",
+      "acceptButton": "Ich akzeptiere die neuen Bedingungen"
+    }
   },
   "account": {
     "profile": "Profil",
@@ -1703,16 +1711,6 @@
       "resolution": "Lösung",
       "actionError": "Fehler bei der Aktion",
       "vs": "vs"
-    }
-  },
-  "auth": {
-    "tos": {
-      "title": "Aktualisierte Nutzungsbedingungen",
-      "description": "Wir haben unsere Allgemeinen Geschäftsbedingungen (AGB) und die Datenschutzerklärung aktualisiert. Bitte akzeptiere die neuen Bedingungen, um solen.ch weiterhin nutzen zu können.",
-      "termsLink": "Allgemeine Geschäftsbedingungen",
-      "privacyLink": "Datenschutzerklärung",
-      "readCta": "Lesen",
-      "acceptButton": "Ich akzeptiere die neuen Bedingungen"
     }
   },
   "ui": {

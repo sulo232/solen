@@ -511,7 +511,15 @@
     "google_login": "Accedi con Google",
     "or": "oppure",
     "continue_with_email": "Continua con e-mail",
-    "terms": "Accedendo, accetti le nostre condizioni d'uso."
+    "terms": "Accedendo, accetti le nostre condizioni d'uso.",
+    "tos": {
+      "title": "Termini di servizio aggiornati",
+      "description": "Abbiamo aggiornato i nostri Termini di servizio e la Politica sulla privacy. Accetta i nuovi termini per continuare a utilizzare solen.ch.",
+      "termsLink": "Termini e condizioni generali",
+      "privacyLink": "Politica sulla privacy",
+      "readCta": "Leggi",
+      "acceptButton": "Accetto i nuovi termini"
+    }
   },
   "account": {
     "profile": "Profilo",
@@ -1691,16 +1699,6 @@
       "resolution": "Risoluzione",
       "actionError": "Errore durante l'azione",
       "vs": "vs"
-    }
-  },
-  "auth": {
-    "tos": {
-      "title": "Termini di servizio aggiornati",
-      "description": "Abbiamo aggiornato i nostri Termini di servizio e la Politica sulla privacy. Accetta i nuovi termini per continuare a utilizzare solen.ch.",
-      "termsLink": "Termini e condizioni generali",
-      "privacyLink": "Politica sulla privacy",
-      "readCta": "Leggi",
-      "acceptButton": "Accetto i nuovi termini"
     }
   },
   "ui": {
