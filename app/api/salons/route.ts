@@ -204,7 +204,7 @@ export async function POST(request: NextRequest) {
           address,
           phone: phone || null,
           phone_verified: phone_verified || false,
-          email: email || user.email || null,
+          // email: email || user.email || null, // [FIX] Field not in public.salons schema
           cover_photo_url: cover_photo_url || null,
           gallery_urls: gallery_urls?.filter(Boolean) || [],
           description_de: description_de || null,
@@ -216,10 +216,10 @@ export async function POST(request: NextRequest) {
           is_active: false, // Pending approval
           last_minute_discount_percent: last_minute_discount_percent || 0,
           last_minute_window_hours: last_minute_window_hours || 0,
-          latitude: latitude || null,
-          longitude: longitude || null,
-          google_place_id: google_place_id || null,
-          cancellation_policy: cancellation_policy || null,
+          latitude: latitude || 47.5596,
+          longitude: longitude || 7.5886,
+          // google_place_id: google_place_id || null, // [FIX] Field not in public.salons schema
+          // cancellation_policy: cancellation_policy || null, // [FIX] Field not in public.salons schema
         })
         .select("id")
         .single();
@@ -230,7 +230,7 @@ export async function POST(request: NextRequest) {
       }
       if (insertErr && !insertErr.message?.includes("duplicate") && !insertErr.message?.includes("unique")) {
         console.error("[api/salons POST] salon insert:", insertErr.message);
-        return NextResponse.json({ error: "Failed to create salon" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create salon", message: insertErr.message }, { status: 500 });
       }
     }
 
