@@ -402,6 +402,9 @@ export default function SalonOnboardingPage() {
       if (session.user?.email && !basics.email) {
         setBasics((prev) => ({ ...prev, email: session.user!.email! }));
       }
+      if (session.user?.user_metadata?.salon_name && !basics.name) {
+        setBasics((prev) => ({ ...prev, name: session.user!.user_metadata!.salon_name }));
+      }
       setAuthChecked(true);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -603,7 +606,7 @@ export default function SalonOnboardingPage() {
             ))}
           </div>
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35 mt-2 text-center">
-            {t(`progress.${STEP_META[step - 1]?.label}`)}
+            {t(`progress.${STEP_META[step - 1]?.label}` as any)}
           </p>
         </div>
       </div>
@@ -619,13 +622,13 @@ export default function SalonOnboardingPage() {
             animate="animate"
             exit="exit"
           >
-            {step === 1 && <Step1 data={basics} onChange={setBasics} errors={stepErrors} t={t} locale={locale} />}
+            {step === 1 && <Step1 data={basics} onChange={setBasics} errors={stepErrors} t={t as any} locale={locale} />}
             {step === 2 && (
               <Step3
                 data={quickWin}
                 onChange={setQuickWin}
                 category={basics.categories[0] || "coiffeur"}
-                t={t}
+                t={t as any}
               />
             )}
           </motion.div>

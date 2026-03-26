@@ -14,6 +14,12 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import CitySelector from "@/components/ui/CitySelector";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
+import { BarberIcon } from "@/components/icons/category/BarberIcon";
+import { NailsIcon } from "@/components/icons/category/NailsIcon";
+import { SpaIcon } from "@/components/icons/category/SpaIcon";
+import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
+import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
 
 interface HeaderProps {
   locale: string;
@@ -21,14 +27,14 @@ interface HeaderProps {
 }
 
 const NAV_LINKS = [
-  { key: "discover", href: "/discover" },
-  { key: "coiffeur", href: "/coiffeur" },
-  { key: "barbershop", href: "/barbershop" },
-  { key: "nails", href: "/nails" },
-  { key: "spa", href: "/spa" },
-  { key: "makeup", href: "/makeup" },
-  { key: "waxing", href: "/waxing" },
-  { key: "last_minute", href: "/last-minute" },
+  { key: "discover", href: "/discover", Icon: Compass },
+  { key: "coiffeur", href: "/coiffeur", Icon: CoiffeurIcon },
+  { key: "barbershop", href: "/barbershop", Icon: BarberIcon },
+  { key: "nails", href: "/nails", Icon: NailsIcon },
+  { key: "spa", href: "/spa", Icon: SpaIcon },
+  { key: "makeup", href: "/makeup", Icon: MakeupIcon },
+  { key: "waxing", href: "/waxing", Icon: WaxingIcon },
+  { key: "last_minute", href: "/last-minute", Icon: CalendarDays },
 ];
 
 // Category icons for sub-site indicator
@@ -170,24 +176,25 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           {/* Desktop nav */}
           <nav className={cn(
             "hidden md:flex items-center",
-            scrolled ? "gap-1" : "gap-4"
+            scrolled ? "gap-1" : "gap-3"
           )} aria-label="Hauptnavigation">
-            {NAV_LINKS.map(({ key, href }) => {
+            {NAV_LINKS.map(({ key, href, Icon }) => {
               const isActive = pathname.includes(href);
               return (
                 <Link
                   key={key}
                   href={`/${locale}${href}`}
                   aria-current={isActive ? "page" : undefined}
+                  title={t(key as any)}
                   className={cn(
-                    "text-sm font-medium transition-all duration-200 rounded-full",
-                    scrolled ? "px-2 py-1 text-xs" : "px-3 py-1.5",
+                    "flex flex-col items-center justify-center transition-all duration-200 rounded-full",
+                    scrolled ? "p-2" : "p-2.5",
                     isActive
-                      ? "text-s-coral bg-s-coral/8"
-                      : "text-s-ink/70 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/70 dark:hover:bg-white/5"
+                      ? "text-s-coral bg-s-coral/10"
+                      : "text-s-ink/60 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/5"
                   )}
                 >
-                  {t(key)}
+                  <Icon size={20} className={isActive ? "text-s-coral" : "text-current"} />
                 </Link>
               );
             })}
@@ -340,7 +347,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                     )}
                   >
                     <Icon size={18} className="shrink-0" strokeWidth={active ? 2.2 : 1.8} />
-                    {t(key)}
+                    {t(key as any)}
                   </Link>
                 );
               })}
