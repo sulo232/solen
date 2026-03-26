@@ -61,6 +61,7 @@ export const updateProfileSchema = z.object({
   disc_hair_length: z.string().max(30).nullable().optional(),
   disc_face_shape: z.string().max(30).nullable().optional(),
   disc_profile_set: z.boolean().optional(),
+  customer_preferences: z.any().optional(),
 }).strict();
 
 export const createConversationSchema = z.object({
