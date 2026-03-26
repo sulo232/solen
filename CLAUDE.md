@@ -86,6 +86,7 @@ solen/
 │       ├── loyalty-qr.ts       # HMAC-signed QR token generation/verification
 │       └── visit-cycle.ts      # Smart visit-cycle reminder calculator
 ├── components/         # (continued)
+│   ├── profile/        # Profile page subcomponents (ProfileHero, BeautyProfileCard, SalonHighlights, ProfileTabs, LooksGrid, BeautyProfileEditModal)
 │   ├── barber/         # Barber category UI components (queue, rebook, loyalty, profiles)
 │   └── dashboard/barber/ # Barber dashboard components (leaderboard, chairs, reminders, analytics)
 ├── public/             # Static assets

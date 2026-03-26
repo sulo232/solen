@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { AlertTriangle, Send } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
@@ -11,6 +12,7 @@ export default function DisputeNotification({
   dispute: any;
   onResponded: (bookingId: string) => void;
 }) {
+  const t = useTranslations("dashboard.disputes");
   const [showReply, setShowReply] = useState(false);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ export default function DisputeNotification({
 
   const handleSubmit = async () => {
     if (response.length < 10) {
-      setError("Die Antwort muss mindestens 10 Zeichen lang sein.");
+      setError(t("minLengthError"));
       return;
     }
     setLoading(true);
@@ -30,7 +32,7 @@ export default function DisputeNotification({
         body: JSON.stringify({ salon_response: response }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Fehler beim Senden");
+      if (!res.ok) throw new Error(data.error || t("sendError"));
       onResponded(dispute.booking_id);
     } catch (err: any) {
       setError(err.message);
@@ -44,7 +46,7 @@ export default function DisputeNotification({
       <div className="flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm text-s-ink">Ein Kunde hat ein Problem gemeldet</p>
+          <p className="font-medium text-sm text-s-ink">{t("customerReported")}</p>
           <div className="flex items-center gap-2 mt-1">
             <span className="px-2 py-0.5 rounded-pill bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text text-[11px] font-medium border border-s-ink/5 dark:border-white/5">
               {dispute.issue_type}
@@ -53,20 +55,20 @@ export default function DisputeNotification({
           <p className="text-xs text-s-ink/60 mt-2 italic border-l-2 border-s-coral/30 pl-2">
             "{dispute.description.length > 100 ? dispute.description.slice(0, 100) + "..." : dispute.description}"
           </p>
-          
+
           {!showReply ? (
             <button
               onClick={() => setShowReply(true)}
               className="mt-3 px-3 py-1.5 rounded-[8px] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-colors"
             >
-              Antworten
+              {t("reply")}
             </button>
           ) : (
             <div className="mt-3 space-y-2">
               <textarea
                 value={response}
                 onChange={(e) => setResponse(e.target.value)}
-                placeholder="Ihre Stellungnahme zum Vorfall..."
+                placeholder={t("responsePlaceholder")}
                 className="w-full min-h-[80px] rounded-input p-3 text-xs border border-s-ink/10 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
               />
               {error && <p className="text-xs text-s-coral">{error}</p>}
@@ -75,7 +77,7 @@ export default function DisputeNotification({
                   onClick={() => setShowReply(false)}
                   className="px-3 py-1.5 text-xs text-s-ink/50 hover:text-s-ink"
                 >
-                  Abbrechen
+                  {t("cancel")}
                 </button>
                 <button
                   onClick={handleSubmit}
@@ -83,7 +85,7 @@ export default function DisputeNotification({
                   className="px-4 py-1.5 rounded-[8px] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] disabled:opacity-50 flex items-center gap-1.5 transition-colors"
                 >
                   {loading && <Spinner size="xs" invert />}
-                  Senden <Send size={12} />
+                  {t("send")} <Send size={12} />
                 </button>
               </div>
             </div>
