@@ -756,6 +756,15 @@
       "notReady": "Pas encore prêt",
       "activationError": "Erreur d'activation",
       "networkError": "Erreur réseau"
+    },
+    "disputes": {
+      "customerReported": "Un client a signalé un problème",
+      "reply": "Répondre",
+      "responsePlaceholder": "Votre réponse à l'incident...",
+      "cancel": "Annuler",
+      "send": "Envoyer",
+      "minLengthError": "La réponse doit contenir au moins 10 caractères.",
+      "sendError": "Erreur d'envoi"
     }
   },
   "errors": {

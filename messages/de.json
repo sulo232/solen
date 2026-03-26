@@ -756,6 +756,15 @@
       "notReady": "Noch nicht bereit",
       "activationError": "Fehler beim Aktivieren",
       "networkError": "Netzwerkfehler"
+    },
+    "disputes": {
+      "customerReported": "Ein Kunde hat ein Problem gemeldet",
+      "reply": "Antworten",
+      "responsePlaceholder": "Ihre Stellungnahme zum Vorfall...",
+      "cancel": "Abbrechen",
+      "send": "Senden",
+      "minLengthError": "Die Antwort muss mindestens 10 Zeichen lang sein.",
+      "sendError": "Fehler beim Senden"
     }
   },
   "errors": {

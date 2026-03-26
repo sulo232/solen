@@ -756,6 +756,15 @@
       "notReady": "Not ready yet",
       "activationError": "Error activating",
       "networkError": "Network error"
+    },
+    "disputes": {
+      "customerReported": "A customer has reported an issue",
+      "reply": "Reply",
+      "responsePlaceholder": "Your response to the incident...",
+      "cancel": "Cancel",
+      "send": "Send",
+      "minLengthError": "Response must be at least 10 characters long.",
+      "sendError": "Error sending"
     }
   },
   "errors": {

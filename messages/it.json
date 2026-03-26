@@ -756,6 +756,15 @@
       "notReady": "Non ancora pronto",
       "activationError": "Errore di attivazione",
       "networkError": "Errore di rete"
+    },
+    "disputes": {
+      "customerReported": "Un cliente ha segnalato un problema",
+      "reply": "Rispondi",
+      "responsePlaceholder": "La tua risposta all'incidente...",
+      "cancel": "Annulla",
+      "send": "Invia",
+      "minLengthError": "La risposta deve contenere almeno 10 caratteri.",
+      "sendError": "Errore di invio"
     }
   },
   "errors": {

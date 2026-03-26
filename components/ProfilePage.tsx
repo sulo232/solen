@@ -768,31 +768,51 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg py-8 px-4">
-        <div className="max-w-2xl mx-auto space-y-4">
-          {/* Hero skeleton */}
-          <div className="rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 bg-white dark:bg-s-dm-surface animate-pulse">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg shrink-0" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 w-32 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
-                <div className="h-3 w-48 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
-              </div>
+      <div className="min-h-screen bg-[--base] dark:bg-s-dm-bg py-8 px-5">
+        <div className="max-w-md mx-auto space-y-4">
+          {/* Avatar ring skeleton */}
+          <div className="flex flex-col items-center gap-4 py-6 animate-pulse">
+            <div className="w-[90px] h-[90px] rounded-full bg-s-ink/10 dark:bg-white/10" />
+            <div className="space-y-2 flex flex-col items-center">
+              <div className="h-6 w-32 bg-s-ink/10 dark:bg-white/10 rounded" />
+              <div className="h-4 w-24 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
+            </div>
+            <div className="flex gap-2">
+              <div className="h-9 w-32 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
+              <div className="h-9 w-9 bg-s-ink/10 dark:bg-white/10 rounded-full" />
+              <div className="h-9 w-9 bg-s-ink/10 dark:bg-white/10 rounded-full" />
             </div>
           </div>
-          {/* Booking row skeletons */}
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
-              <div className="flex gap-4">
-                <div className="flex-1 space-y-2">
-                  <div className="h-3.5 w-36 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
-                  <div className="h-2.5 w-24 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
-                  <div className="h-2.5 w-28 bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
+
+          {/* Beauty card skeleton */}
+          <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] p-4 animate-pulse">
+            <div className="h-4 w-28 bg-s-ink/10 dark:bg-white/10 rounded mb-3" />
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="py-3 border-b border-s-ink/[0.06] dark:border-white/[0.06] last:border-0">
+                <div className="h-2 w-12 bg-s-ink/10 dark:bg-white/10 rounded mb-2" />
+                <div className="flex gap-2">
+                  <div className="h-6 w-20 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
+                  <div className="h-6 w-16 bg-s-ink/10 dark:bg-white/10 rounded-pill" />
                 </div>
-                <div className="w-14 h-5 bg-s-bg-sunken dark:bg-s-dm-bg rounded-[6px]" />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Tab bar skeleton */}
+          <div className="flex border-b border-s-ink/10 dark:border-white/10 pt-2 animate-pulse">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex-1 h-10 flex items-center justify-center">
+                <div className="h-3 w-12 bg-s-ink/10 dark:bg-white/10 rounded" />
+              </div>
+            ))}
+          </div>
+
+          {/* Grid skeleton */}
+          <div className="grid grid-cols-3 gap-2.5 animate-pulse">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="aspect-square rounded-[10px] bg-s-ink/10 dark:bg-white/10" />
+            ))}
+          </div>
         </div>
       </div>
     );
