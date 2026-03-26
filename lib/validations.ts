@@ -156,7 +156,6 @@ export const createSalonSchema = z.object({
   email: z.string().email(),
   categories: z.array(z.string()).min(1),
   city: z.string().min(1),
-  quartier: z.string().min(1),
   address: z.string().min(5).max(200),
   phone: z.string().max(20).optional().or(z.literal("")),
   phone_verified: z.boolean().optional(),

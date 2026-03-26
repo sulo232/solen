@@ -8,9 +8,10 @@ const getSupabase = () => createClient(
 
 export async function POST(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const sessionToken = req.headers.get("Authorization")?.split("Bearer ")[1];
@@ -29,7 +30,7 @@ export async function POST(
     const { data: salon, error: salonError } = await getSupabase()
       .from("salons")
       .select("owner_id, gallery_urls")
-      .eq("id", params.slug)
+      .eq("id", slug)
       .single();
 
     if (salonError || !salon || salon.owner_id !== user.id) {
@@ -66,8 +67,8 @@ export async function POST(
     }
 
     const fileExt = file.name.split(".").pop();
-    const fileName = `${params.slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    const filePath = `${params.slug}/${fileName}`;
+    const fileName = `${slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `${slug}/${fileName}`;
 
     // Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await getSupabase().storage
@@ -93,7 +94,7 @@ export async function POST(
     const { error: updateError } = await getSupabase()
       .from("salons")
       .update({ gallery_urls: updatedGallery })
-      .eq("id", params.slug);
+      .eq("id", slug);
 
     if (updateError) {
       console.error("DB update error:", updateError);
@@ -112,9 +113,10 @@ export async function POST(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     const { url } = await req.json();
     const sessionToken = req.headers.get("Authorization")?.split("Bearer ")[1];
 
@@ -131,7 +133,7 @@ export async function DELETE(
     const { data: salon, error: salonError } = await getSupabase()
       .from("salons")
       .select("owner_id, gallery_urls")
-      .eq("id", params.slug)
+      .eq("id", slug)
       .single();
 
     if (salonError || !salon || salon.owner_id !== user.id) {
@@ -166,7 +168,7 @@ export async function DELETE(
     const { error: updateError } = await getSupabase()
       .from("salons")
       .update({ gallery_urls: updatedGallery })
-      .eq("id", params.slug);
+      .eq("id", slug);
 
     if (updateError) {
       return NextResponse.json({ error: "Failed to update DB" }, { status: 500 });
@@ -181,9 +183,10 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     const { urls } = await req.json();
     const sessionToken = req.headers.get("Authorization")?.split("Bearer ")[1];
 
@@ -200,7 +203,7 @@ export async function PATCH(
     const { data: salon, error: salonError } = await getSupabase()
       .from("salons")
       .select("owner_id")
-      .eq("id", params.slug)
+      .eq("id", slug)
       .single();
 
     if (salonError || !salon || salon.owner_id !== user.id) {
@@ -214,7 +217,7 @@ export async function PATCH(
     const { error: updateError } = await getSupabase()
       .from("salons")
       .update({ gallery_urls: urls })
-      .eq("id", params.slug);
+      .eq("id", slug);
 
     if (updateError) {
       return NextResponse.json({ error: "Failed to update order" }, { status: 500 });

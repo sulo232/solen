@@ -16,7 +16,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
     const city = searchParams.get("city");
-    const quartier = searchParams.get("quartier");
     const min_price = searchParams.get("min_price");
     const max_price = searchParams.get("max_price");
     const min_rating = searchParams.get("min_rating");
@@ -43,7 +42,6 @@ export async function GET(request: NextRequest) {
       if (cData?.id) query = query.eq("city_id", cData.id);
     }
 
-    if (quartier) query = query.eq("quartier", quartier);
     if (min_rating) query = query.gte("average_rating", parseFloat(min_rating));
     if (accepts_payment === "true") query = query.eq("accepts_online_payment", true);
 
@@ -183,7 +181,7 @@ export async function POST(request: NextRequest) {
     }
 
     const {
-      name, email, categories, quartier, address, phone,
+      name, email, categories, city, address, phone,
       cover_photo_url, gallery_urls, description_de, description_en, instagram_url, opening_hours,
       services, staff, availability_template,
       last_minute_discount_percent, last_minute_window_hours,
@@ -198,19 +196,12 @@ export async function POST(request: NextRequest) {
     let salon: { id: string } | null = null;
     let slug = "";
 
+    // The frontend sends the specific "city" string (e.g. "zuerich", "basel")
+    const { data: cData } = await admin.from("cities").select("id").eq("slug", city).single();
+    const city_id = cData?.id || null;
+
     for (let attempt = 0; attempt < 3; attempt++) {
       slug = baseSlug + "-" + crypto.randomUUID().slice(0, 8);
-      
-      // Auto-detect city from address
-      let city = "basel";
-      if (address.toLowerCase().includes("zürich") || address.toLowerCase().includes("zurich")) {
-        city = "zuerich";
-      } else if (address.toLowerCase().includes("bern")) {
-        city = "bern";
-      }
-
-      const { data: cData } = await admin.from("cities").select("id").eq("slug", city).single();
-      const city_id = cData?.id || null;
 
       const { data, error: insertErr } = await admin
         .from("salons")
@@ -220,7 +211,6 @@ export async function POST(request: NextRequest) {
           slug,
           city_id,
           categories,
-          quartier,
           address,
           phone: phone || null,
           // phone_verified: phone_verified || false, // [FIX] Bypassing schema cache error (defaults to false in DB)

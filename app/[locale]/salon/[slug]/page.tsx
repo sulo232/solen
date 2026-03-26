@@ -56,6 +56,10 @@ interface SalonDetail extends Salon {
   services: Service[];
   staff: StaffMember[];
   reviews: (Review & { profiles?: { display_name: string; avatar_url: string | null }; review_photos?: ReviewPhoto[]; review_replies?: ReviewReply[] })[];
+  about_text_de?: string;
+  about_text_en?: string;
+  about_text_fr?: string;
+  about_text_it?: string;
 }
 
 // ─────────────────────────────────────────────────
