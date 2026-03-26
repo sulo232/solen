@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut, Building2,
-  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles,
+  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles, Bookmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -333,6 +333,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 // Migrated from BottomNav:
                 { key: "bookings", href: `/${locale}/bookings`, icon: CalendarDays },
                 { key: "favorites", href: `/${locale}/favorites`, icon: Heart },
+                { key: "saved", href: `/${locale}/account/saved`, icon: Bookmark },
                 { key: "messages", href: `/${locale}/account/messages`, icon: MessageCircle },
               ].map(({ key, href, icon: Icon }) => {
                 const active = pathname === href || pathname.startsWith(href + "/");
