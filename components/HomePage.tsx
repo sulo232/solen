@@ -268,7 +268,7 @@ export default function HomePage() {
                 {userName ? (
                   <>{t("hero.hello")}{" "}<span className="text-s-coral">{userName}</span></>
                 ) : (
-                  <>{t("hero.title")}</>
+                  <>BEAUTY<span className="text-s-coral">.</span><br />BASEL<span className="text-s-coral">.</span></>
                 )}
               </motion.h1>
               <motion.p variants={fadeUp}
@@ -603,7 +603,7 @@ export default function HomePage() {
             style={{ color: "#F2C144" }}>{t("quartiers.eyebrow")}</span>
           <h2 className="font-display text-white mb-2"
             style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
-            {t("quartiers.title")}
+            ENTDECKE<br /><span style={{ color: "#E8624A" }}>BASEL</span>
           </h2>
           <p className="font-body italic mb-10 max-w-sm text-[15px] leading-[1.82]"
             style={{ color: "rgba(245,238,228,.45)" }}>

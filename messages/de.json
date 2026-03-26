@@ -29,7 +29,6 @@
     "hero": {
       "byline": "Von Basel, für Basel",
       "hello": "Hallo",
-      "title": "BEAUTY<span class=\"text-s-coral\">.</span><br />BASEL<span class=\"text-s-coral\">.</span>",
       "welcome": "Willkommen {name}",
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier.",
       "nextBooking": "Dein nächster Termin: {date} bei {salon}",
@@ -82,7 +81,6 @@
     },
     "quartiers": {
       "eyebrow": "Dein Quartier",
-      "title": "ENTDECKE<br /><span style=\"color: #E8624A\">BASEL</span>",
       "subtitle": "Salons direkt in deinem Quartier — von Kleinbasel bis Bruderholz.",
       "salonSingular": "Salon",
       "salonPlural": "Salons",
