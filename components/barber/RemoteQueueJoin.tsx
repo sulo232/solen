@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Users, CheckCircle, AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface RemoteQueueJoinProps {
   salonId: string;
@@ -18,6 +19,7 @@ interface RemoteQueueResult {
 }
 
 export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueueJoinProps) {
+  const t = useTranslations("barber.queue");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [preferredBarberId, setPreferredBarberId] = useState("");
@@ -51,10 +53,10 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           tracking_token: data.tracking_token,
         });
       } else {
-        setResult({ success: false, error: data.error ?? "Fehler aufgetreten" });
+        setResult({ success: false, error: data.error ?? t("error") });
       }
     } catch {
-      setResult({ success: false, error: "Netzwerkfehler" });
+      setResult({ success: false, error: t("networkError") });
     } finally {
       setSubmitting(false);
     }
@@ -65,14 +67,14 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       <div className="rounded-[16px] bg-s-sage/10 dark:bg-s-sage/20 border border-s-sage/20 p-5 text-center">
         <CheckCircle size={32} className="text-s-sage mx-auto mb-3" />
         <h4 className="font-heading text-base font-bold text-s-ink dark:text-s-dm-text mb-1">
-          Du bist angestellt!
+          {t("joinedSuccess")}
         </h4>
         <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 mb-3">
-          Position <strong>{result.position}</strong> · Geschätzte Wartezeit:{" "}
-          <strong>~{result.estimated_wait_minutes} Min.</strong>
+          {t("position")} <strong>{result.position}</strong> · {t("estimatedWait")}{" "}
+          <strong>~{result.estimated_wait_minutes} {t("minutes")}</strong>
         </p>
         <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-          Tracking-Code: <code className="font-mono">{result.tracking_token}</code>
+          {t("trackingCode")}: <code className="font-mono">{result.tracking_token}</code>
         </p>
       </div>
     );
@@ -89,7 +91,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
 
       <div>
         <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-          Name *
+          {t("nameLabel")} *
         </label>
         <input
           type="text"
@@ -98,13 +100,14 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           required
           maxLength={100}
           className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
-          placeholder="Dein Name"
+          placeholder={t("namePlaceholder")}
+          aria-label={t("nameLabel")}
         />
       </div>
 
       <div>
         <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-          Telefon (optional)
+          {t("phoneLabel")}
         </label>
         <input
           type="tel"
@@ -112,21 +115,23 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           onChange={(e) => setPhone(e.target.value)}
           maxLength={20}
           className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
-          placeholder="+41 79 ..."
+          placeholder={t("phonePlaceholder")}
+          aria-label={t("phoneLabel")}
         />
       </div>
 
       {staff && staff.length > 0 && (
         <div>
           <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-            Bevorzugter Barber (optional)
+            {t("preferredBarberLabel")}
           </label>
           <select
             value={preferredBarberId}
             onChange={(e) => setPreferredBarberId(e.target.value)}
             className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            aria-label={t("preferredBarberLabel")}
           >
-            <option value="">Kein Favorit</option>
+            <option value="">{t("noFavorite")}</option>
             {staff.map((s) => (
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
@@ -137,14 +142,15 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       {services && services.length > 0 && (
         <div>
           <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-            Service (optional)
+            {t("serviceLabel")}
           </label>
           <select
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
             className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            aria-label={t("serviceLabel")}
           >
-            <option value="">Bitte wählen</option>
+            <option value="">{t("pleaseSelect")}</option>
             {services.map((s) => (
               <option key={s.id} value={s.id}>{s.name_de}</option>
             ))}
@@ -156,9 +162,10 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
         type="submit"
         disabled={!name.trim() || submitting}
         className="w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        aria-label={t("joinNow")}
       >
         <Users size={16} />
-        {submitting ? "Wird angemeldet..." : "Jetzt anstellen"}
+        {submitting ? t("joining") : t("joinNow")}
       </button>
     </form>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { Clock, UserCheck, UserX, XCircle, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { BarberWalkinQueue } from "@/lib/types";
 
 interface WalkinQueueProps {
@@ -10,6 +11,7 @@ interface WalkinQueueProps {
 }
 
 export default function WalkinQueue({ salonId }: WalkinQueueProps) {
+  const t = useTranslations("barber.queue");
   const [queue, setQueue] = useState<BarberWalkinQueue[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createBrowserSupabaseClient();
@@ -65,7 +67,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
     return (
       <div className="p-4 text-center text-s-ink/50 dark:text-s-dm-text/50">
         <Clock size={20} className="mx-auto animate-spin mb-2" />
-        Warteschlange laden...
+        {t("loadingQueue")}
       </div>
     );
   }
@@ -74,17 +76,17 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
     <div className="space-y-3">
       <div className="flex items-center justify-between px-1">
         <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">
-          Warteschlange
+          {t("queueTitle")}
         </h3>
         <span className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1">
           <Users size={14} />
-          {activeQueue.length} wartend
+          {t("waiting", { count: activeQueue.length })}
         </span>
       </div>
 
       {activeQueue.length === 0 ? (
         <div className="text-center py-6 text-s-ink/40 dark:text-s-dm-text/40 text-sm">
-          Keine Kunden in der Warteschlange
+          {t("noCustomers")}
         </div>
       ) : (
         <div className="space-y-2">
@@ -107,8 +109,8 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                       {entry.customer_name}
                     </p>
                     <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-                      {entry.status === "in_chair" ? "Im Stuhl" : <span className="data-text">~{entry.estimated_wait_minutes ?? "?"} Min.</span>}
-                      {entry.join_method === "remote" && " · Remote"}
+                      {entry.status === "in_chair" ? t("inChair") : <span className="data-text">~{entry.estimated_wait_minutes ?? "?"} {t("minutes")}</span>}
+                      {entry.join_method === "remote" && ` · ${t("remote")}`}
                     </p>
                   </div>
                 </div>
@@ -118,7 +120,8 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                     <button
                       onClick={() => updateStatus(entry.id, "in_chair")}
                       className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
-                      title="Nächster"
+                      title={t("next")}
+                      aria-label={t("next")}
                     >
                       <UserCheck size={16} />
                     </button>
@@ -127,7 +130,8 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                     <button
                       onClick={() => updateStatus(entry.id, "completed")}
                       className="p-1.5 rounded-btn bg-s-sage/20 text-s-sage hover:bg-s-sage/30 transition-colors"
-                      title="Fertig"
+                      title={t("done")}
+                      aria-label={t("done")}
                     >
                       <UserCheck size={16} />
                     </button>
@@ -135,14 +139,16 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   <button
                     onClick={() => updateStatus(entry.id, "no_show")}
                     className="p-1.5 rounded-btn bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
-                    title="Nicht erschienen"
+                    title={t("noShow")}
+                    aria-label={t("noShow")}
                   >
                     <UserX size={16} />
                   </button>
                   <button
                     onClick={() => updateStatus(entry.id, "cancelled")}
                     className="p-1.5 rounded-btn bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
-                    title="Abbrechen"
+                    title={t("cancel")}
+                    aria-label={t("cancel")}
                   >
                     <XCircle size={16} />
                   </button>

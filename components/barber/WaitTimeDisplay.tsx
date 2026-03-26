@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Clock, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface WaitTimeDisplayProps {
   salonId: string;
 }
 
 export default function WaitTimeDisplay({ salonId }: WaitTimeDisplayProps) {
+  const t = useTranslations("barber.queue");
   const [waitData, setWaitData] = useState<{
     queue_length: number;
     estimated_wait_minutes: number;
@@ -49,11 +51,11 @@ export default function WaitTimeDisplay({ salonId }: WaitTimeDisplayProps) {
       <Clock size={18} className="text-s-coral shrink-0" />
       <div className="text-sm text-s-ink dark:text-s-dm-text">
         <span className="font-medium">
-          Aktuelle Wartezeit: ~{waitData.estimated_wait_minutes} Min.
+          {t("currentWaitTime", { minutes: waitData.estimated_wait_minutes })}
         </span>
         <span className="text-s-ink/50 dark:text-s-dm-text/50 ml-2 inline-flex items-center gap-1">
           <Users size={14} />
-          {waitData.queue_length} {waitData.queue_length === 1 ? "Person" : "Personen"} wartend
+          {t("peopleWaiting", { count: waitData.queue_length })}
         </span>
       </div>
     </div>

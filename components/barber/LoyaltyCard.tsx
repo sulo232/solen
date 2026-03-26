@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Circle, Gift, QrCode, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface LoyaltyCardProps {
   card: {
@@ -20,6 +21,7 @@ interface LoyaltyCardProps {
 }
 
 export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
+  const t = useTranslations("barber.loyalty");
   const [showQR, setShowQR] = useState(false);
   const [qrSvg, setQrSvg] = useState<string | null>(null);
   const [loadingQR, setLoadingQR] = useState(false);
@@ -31,10 +33,10 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
   const isRedeemed = card.status === "redeemed";
 
   const rewardText = program?.reward_type === "free_service"
-    ? "Gratis Schnitt"
+    ? t("rewardFreeService")
     : program?.reward_type === "chf_discount"
-    ? `CHF ${program.reward_value} Rabatt`
-    : `${program?.reward_value}% Rabatt`;
+    ? t("rewardChfDiscount", { value: program.reward_value })
+    : t("rewardPercentDiscount", { value: program?.reward_value });
 
   const handleShowQR = async () => {
     if (qrSvg) {
@@ -69,7 +71,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
-              {program?.name ?? "Treuekarte"}
+              {program?.name ?? t("loyaltyCard")}
             </p>
             {salonName && (
               <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{salonName}</p>
@@ -78,11 +80,11 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
           {isComplete && !isRedeemed && (
             <span className="flex items-center gap-1 text-xs font-medium text-s-coral bg-s-coral/10 rounded-pill px-2 py-1">
               <Gift size={12} />
-              {rewardText} verfügbar!
+              {t("rewardAvailable", { reward: rewardText })}
             </span>
           )}
           {isRedeemed && (
-            <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">Eingelöst</span>
+            <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{t("redeemed")}</span>
           )}
         </div>
 
@@ -103,16 +105,17 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
 
         <div className="flex items-center justify-between">
           <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
-            {card.stamps_collected}/{stampsRequired} Stempel
+            {t("stamps", { collected: card.stamps_collected, required: stampsRequired })}
           </p>
           {!isRedeemed && (
             <button
               onClick={handleShowQR}
               disabled={loadingQR}
               className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors"
+              aria-label={t("showQr")}
             >
               <QrCode size={14} />
-              {loadingQR ? "..." : "QR zeigen"}
+              {loadingQR ? "..." : t("showQr")}
             </button>
           )}
         </div>
@@ -128,11 +131,12 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
             <button
               onClick={() => setShowQR(false)}
               className="absolute top-3 right-3 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
+              aria-label={t("close")}
             >
               <X size={20} />
             </button>
             <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-4">
-              Zeige diesen QR-Code deinem Barber
+              {t("showQrToBarber")}
             </p>
             {/* QR SVG from our own qrcode server library — safe to render */}
             <div
@@ -140,7 +144,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
               dangerouslySetInnerHTML={{ __html: qrSvg }}
             />
             <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-4">
-              {card.stamps_collected}/{stampsRequired} Stempel · {program?.name}
+              {t("stamps", { collected: card.stamps_collected, required: stampsRequired })} · {program?.name}
             </p>
           </div>
         </div>
