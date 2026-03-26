@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Star, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { StaffMember } from "@/lib/types";
 
 interface StaffPickerProps {
@@ -11,12 +12,14 @@ interface StaffPickerProps {
 }
 
 export default function StaffPicker({ staffList, selectedStaff, onSelect }: StaffPickerProps) {
+  const t = useTranslations("staffPicker");
+
   if (staffList.length === 0) return null;
 
   return (
     <div className="px-4 pt-4">
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">
-        Mitarbeiter wählen
+        {t("title")}
       </p>
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
         {/* "Egal" option */}
@@ -32,7 +35,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           <div className="w-12 h-12 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg flex items-center justify-center">
             <Users size={20} className="text-s-ink/30 dark:text-s-dm-text/30" />
           </div>
-          <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Egal</span>
+          <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("any")}</span>
         </button>
 
         {/* Staff cards */}

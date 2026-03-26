@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Clock, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/format-currency";
 import type { LastMinuteSlot } from "@/lib/types";
@@ -13,9 +14,9 @@ interface LastMinuteCardProps {
   locale?: string;
 }
 
-function getTimeLeft(startsAt: string): { label: string; minutesLeft: number } {
+function getTimeLeft(startsAt: string, nowLabel: string): { label: string; minutesLeft: number } {
   const diff = new Date(startsAt).getTime() - Date.now();
-  if (diff <= 0) return { label: "Jetzt", minutesLeft: 0 };
+  if (diff <= 0) return { label: nowLabel, minutesLeft: 0 };
   const h = Math.floor(diff / 3_600_000);
   const m = Math.floor((diff % 3_600_000) / 60_000);
   return {
@@ -25,14 +26,15 @@ function getTimeLeft(startsAt: string): { label: string; minutesLeft: number } {
 }
 
 export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardProps) {
-  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(slot.starts_at));
+  const t = useTranslations("lastMinuteCard");
+  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(slot.starts_at, t("now")));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft(slot.starts_at));
+      setTimeLeft(getTimeLeft(slot.starts_at, t("now")));
     }, 60_000);
     return () => clearInterval(interval);
-  }, [slot.starts_at]);
+  }, [slot.starts_at, t]);
 
   const timeStr = new Date(slot.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-CH", {
     hour: "2-digit",
@@ -82,7 +84,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
           <div className="flex items-center gap-1 mt-1 text-s-ink/40 dark:text-s-dm-text/40">
             <Clock className="w-3 h-3" />
             <span className={cn("text-xs font-body", isUrgent && "text-s-coral font-semibold")}>
-              in {timeLeft.label}
+              {t("in")} {timeLeft.label}
             </span>
           </div>
         </div>

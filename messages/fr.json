@@ -1728,6 +1728,146 @@
     "modal": {
       "booking": "Réservation",
       "close": "Fermer"
-    }
+    },
+    "salonCard": {
+      "new": "Nouveau",
+      "newOnSolen": "Nouveau sur Solen",
+      "topSalon": "Top Salon",
+      "solenTopPick": "Choix Solen",
+      "availableToday": "Disponible",
+      "nextAvailable": "Prochaine date: {date}",
+      "noAvailability": "Aucun rendez-vous actuellement",
+      "appointmentsToday": "{count, plural, =1 {1 rendez-vous} other {# rendez-vous}} disponible aujourd'hui",
+      "partOfBrand": "Fait partie de {brand}",
+      "addToFavorites": "Ajouter aux favoris",
+      "removeFromFavorites": "Retirer des favoris"
+    },
+    "lastMinuteCard": {
+      "now": "Maintenant",
+      "in": "dans"
+    },
+    "bookingSuccess": {
+      "title": "Rendez-vous réservé!",
+      "subtitle": "Votre rendez-vous a été confirmé avec succès.",
+      "payment": "Paiement",
+      "cancellationPolicy": "Annulation gratuite jusqu'à {hours}h avant le rendez-vous.",
+      "referralTitle": "Inviter des amis",
+      "referralDesc": "Partagez votre code et recevez {amount} de crédit par parrainage.",
+      "addToCalendar": "Ajouter au calendrier",
+      "shareWithFriend": "Partager avec un(e) ami(e)",
+      "bookAgain": "Réserver à nouveau",
+      "shareTitle": "Rendez-vous chez {salon}",
+      "shareText": "J'ai réservé un rendez-vous pour {service} chez {salon} le {date} à {time}!",
+      "bookedVia": "Réservé via solen.ch"
+    },
+    "guestBookingForm": {
+      "title": "Réservation invité",
+      "subtitle": "Vos coordonnées",
+      "nameLabel": "Nom",
+      "phoneLabel": "Téléphone",
+      "emailLabel": "Email (optionnel)",
+      "namePlaceholder": "Prénom et nom",
+      "phonePlaceholder": "+41791234567",
+      "emailPlaceholder": "votre@email.ch",
+      "nameError": "Le nom est requis (min. 2 caractères)",
+      "phoneError": "Numéro suisse valide (+41XXXXXXXXX)",
+      "emailError": "Email invalide",
+      "disclaimer": "* La disponibilité affichée peut ne pas être en temps réel. Le salon confirmera votre demande.",
+      "submit": "Continuer vers le paiement →"
+    },
+    "staffPicker": {
+      "title": "Choisir un membre du personnel",
+      "any": "Peu importe"
+    },
+    "packageRedeemBanner": {
+      "remaining": "Il vous reste {remaining} sur {total} séances dans votre forfait «{name}»",
+      "redeem": "Utiliser maintenant",
+      "redeemed": "Utilisé!",
+      "noCharge": "Aucun frais supplémentaire.",
+      "sessionsUsed": "{used}/{total} séances utilisées"
+    },
+    "nearbySalons": {
+      "label": "Près de vous",
+      "title": "Salons similaires"
+    },
+    "categoryHero": {
+      "coiffeur": {
+        "label": "Coiffeur",
+        "subtitle": "Les meilleurs coiffeurs à Bâle",
+        "titleSuffix": "à Bâle"
+      },
+      "barbershop": {
+        "label": "Barbershop",
+        "subtitle": "Barbershops classiques à Bâle",
+        "titleSuffix": "à Bâle"
+      },
+      "nails": {
+        "label": "Ongles",
+        "subtitle": "Salons d'ongles et manucure à Bâle",
+        "titleSuffix": "à Bâle"
+      },
+      "spa": {
+        "label": "Spa & Massage",
+        "subtitle": "Bien-être et détente à Bâle",
+        "titleSuffix": "à Bâle"
+      },
+      "makeup": {
+        "label": "Maquillage",
+        "subtitle": "Maquillage professionnel à Bâle",
+        "titleSuffix": "à Bâle"
+      },
+      "waxing": {
+        "label": "Épilation",
+        "subtitle": "Studios d'épilation à Bâle",
+        "titleSuffix": "à Bâle"
+      },
+      "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} disponible"
+    },
+    "recentlyViewed": {
+      "title": "Récemment consulté"
+    },
+    "chat": {
+      "tab": "Chat",
+      "photosTab": "Photos",
+      "messagesLabel": "Messages",
+      "noMessages": "Pas encore de messages",
+      "startConversation": "Commencez la conversation!",
+      "sendingOptimistic": "Envoi...",
+      "translated": "Traduit",
+      "translateButton": "Traduire",
+      "createOffer": "Créer une offre",
+      "attachFile": "Joindre un fichier",
+      "sendImageUrl": "Envoyer l'URL de l'image",
+      "imageUrlPlaceholder": "Entrez l'URL de l'image...",
+      "messagePlaceholder": "Écrire un message…",
+      "send": "Envoyer",
+      "imageAlt": "Image"
+    },
+    "aiSuggestion": {
+      "generating": "Génération de suggestion de réponse…",
+      "suggestedReply": "Réponse suggérée:",
+      "accept": "Accepter",
+      "dismiss": "Ignorer"
+    },
+    "bookingBubble": {
+      "title": "Réserver un rendez-vous chez {salon}",
+      "cta": "Réserver maintenant",
+      "close": "Fermer"
+    },
+    "clientTags": {
+      "addTag": "Étiquette",
+      "allergyWarning": "Attention: Le client a des allergies/intolérances",
+      "customPlaceholder": "Étiquette personnalisée…",
+      "cancel": "Annuler",
+      "colors": {
+        "gray": "Gris",
+        "red": "Rouge",
+        "orange": "Orange",
+        "coral": "Corail",
+        "blue": "Bleu",
+        "purple": "Violet"
+      }
+    },
+    "quickReplyChips": {}
   }
 }

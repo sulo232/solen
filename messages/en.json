@@ -1728,6 +1728,146 @@
     "modal": {
       "booking": "Booking",
       "close": "Close"
-    }
+    },
+    "salonCard": {
+      "new": "New",
+      "newOnSolen": "New on Solen",
+      "topSalon": "Top Salon",
+      "solenTopPick": "Solen Top Pick",
+      "availableToday": "Available",
+      "nextAvailable": "Next available: {date}",
+      "noAvailability": "Currently no appointments",
+      "appointmentsToday": "{count, plural, =1 {1 appointment} other {# appointments}} available today",
+      "partOfBrand": "Part of {brand}",
+      "addToFavorites": "Add to favorites",
+      "removeFromFavorites": "Remove from favorites"
+    },
+    "lastMinuteCard": {
+      "now": "Now",
+      "in": "in"
+    },
+    "bookingSuccess": {
+      "title": "Booking confirmed!",
+      "subtitle": "Your appointment has been successfully confirmed.",
+      "payment": "Payment",
+      "cancellationPolicy": "Free cancellation up to {hours}h before appointment.",
+      "referralTitle": "Invite friends",
+      "referralDesc": "Share your code and get {amount} credit per referral.",
+      "addToCalendar": "Add to calendar",
+      "shareWithFriend": "Share with a friend",
+      "bookAgain": "Book again",
+      "shareTitle": "Appointment at {salon}",
+      "shareText": "I booked an appointment for {service} at {salon} on {date} at {time}!",
+      "bookedVia": "Booked via solen.ch"
+    },
+    "guestBookingForm": {
+      "title": "Guest booking",
+      "subtitle": "Your contact details",
+      "nameLabel": "Name",
+      "phoneLabel": "Phone",
+      "emailLabel": "Email (optional)",
+      "namePlaceholder": "First and last name",
+      "phonePlaceholder": "+41791234567",
+      "emailPlaceholder": "your@email.ch",
+      "nameError": "Name is required (min. 2 characters)",
+      "phoneError": "Valid Swiss number (+41XXXXXXXXX)",
+      "emailError": "Invalid email",
+      "disclaimer": "* Displayed availability may not be real-time. The salon will confirm your appointment request.",
+      "submit": "Continue to payment →"
+    },
+    "staffPicker": {
+      "title": "Choose staff member",
+      "any": "Any"
+    },
+    "packageRedeemBanner": {
+      "remaining": "You have {remaining} of {total} sessions left in your «{name}» package",
+      "redeem": "Redeem now",
+      "redeemed": "Redeemed!",
+      "noCharge": "No additional charge.",
+      "sessionsUsed": "{used}/{total} sessions used"
+    },
+    "nearbySalons": {
+      "label": "Near you",
+      "title": "Similar salons"
+    },
+    "categoryHero": {
+      "coiffeur": {
+        "label": "Hair Salon",
+        "subtitle": "The best hair salons in Basel",
+        "titleSuffix": "in Basel"
+      },
+      "barbershop": {
+        "label": "Barbershop",
+        "subtitle": "Classic barbershops in Basel",
+        "titleSuffix": "in Basel"
+      },
+      "nails": {
+        "label": "Nails",
+        "subtitle": "Nail salons and manicure in Basel",
+        "titleSuffix": "in Basel"
+      },
+      "spa": {
+        "label": "Spa & Massage",
+        "subtitle": "Wellness and relaxation in Basel",
+        "titleSuffix": "in Basel"
+      },
+      "makeup": {
+        "label": "Makeup",
+        "subtitle": "Professional makeup in Basel",
+        "titleSuffix": "in Basel"
+      },
+      "waxing": {
+        "label": "Waxing",
+        "subtitle": "Waxing studios in Basel",
+        "titleSuffix": "in Basel"
+      },
+      "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} available"
+    },
+    "recentlyViewed": {
+      "title": "Recently viewed"
+    },
+    "chat": {
+      "tab": "Chat",
+      "photosTab": "Photos",
+      "messagesLabel": "Messages",
+      "noMessages": "No messages yet",
+      "startConversation": "Start the conversation!",
+      "sendingOptimistic": "Sending...",
+      "translated": "Translated",
+      "translateButton": "Translate",
+      "createOffer": "Create offer",
+      "attachFile": "Attach file",
+      "sendImageUrl": "Send image URL",
+      "imageUrlPlaceholder": "Enter image URL...",
+      "messagePlaceholder": "Write a message…",
+      "send": "Send",
+      "imageAlt": "Image"
+    },
+    "aiSuggestion": {
+      "generating": "Generating reply suggestion…",
+      "suggestedReply": "Suggested reply:",
+      "accept": "Accept",
+      "dismiss": "Dismiss"
+    },
+    "bookingBubble": {
+      "title": "Book appointment at {salon}",
+      "cta": "Book now",
+      "close": "Close"
+    },
+    "clientTags": {
+      "addTag": "Tag",
+      "allergyWarning": "Warning: Client has allergies/intolerances",
+      "customPlaceholder": "Custom tag…",
+      "cancel": "Cancel",
+      "colors": {
+        "gray": "Gray",
+        "red": "Red",
+        "orange": "Orange",
+        "coral": "Coral",
+        "blue": "Blue",
+        "purple": "Purple"
+      }
+    },
+    "quickReplyChips": {}
   }
 }

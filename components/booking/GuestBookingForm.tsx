@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { User, Phone, Mail } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
+import { useTranslations } from "next-intl";
 
 export interface GuestInfo {
   name: string;
@@ -16,6 +17,7 @@ interface GuestBookingFormProps {
 }
 
 export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingFormProps) {
+  const t = useTranslations("guestBookingForm");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+41");
   const [email, setEmail] = useState("");
@@ -24,9 +26,9 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!name.trim() || name.trim().length < 2) e.name = "Name ist erforderlich (min. 2 Zeichen)";
-    if (!/^\+41[0-9]{9}$/.test(phone.replace(/\s/g, ""))) e.phone = "Gültige Schweizer Nummer (+41XXXXXXXXX)";
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Ungültige E-Mail";
+    if (!name.trim() || name.trim().length < 2) e.name = t("nameError");
+    if (!/^\+41[0-9]{9}$/.test(phone.replace(/\s/g, ""))) e.phone = t("phoneError");
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = t("emailError");
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -42,20 +44,20 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
       <div>
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">
-          Gastbuchung
+          {t("title")}
         </p>
-        <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mt-0.5">Deine Kontaktdaten</p>
+        <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mt-0.5">{t("subtitle")}</p>
       </div>
 
       <div>
         <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
-          <User size={10} className="inline mr-1" /> Name *
+          <User size={10} className="inline mr-1" /> {t("nameLabel")} *
         </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Vor- und Nachname"
+          placeholder={t("namePlaceholder")}
           aria-invalid={!!errors.name}
           aria-describedby={errors.name ? "guest-name-error" : undefined}
           className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
@@ -65,13 +67,13 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
 
       <div>
         <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
-          <Phone size={10} className="inline mr-1" /> Telefon *
+          <Phone size={10} className="inline mr-1" /> {t("phoneLabel")} *
         </label>
         <input
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="+41791234567"
+          placeholder={t("phonePlaceholder")}
           aria-invalid={!!errors.phone}
           aria-describedby={errors.phone ? "guest-phone-error" : undefined}
           className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
@@ -81,13 +83,13 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
 
       <div>
         <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
-          <Mail size={10} className="inline mr-1" /> E-Mail (optional)
+          <Mail size={10} className="inline mr-1" /> {t("emailLabel")}
         </label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="deine@email.ch"
+          placeholder={t("emailPlaceholder")}
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "guest-email-error" : undefined}
           className="w-full px-3.5 py-3 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
@@ -96,7 +98,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       </div>
 
       <p className="text-[10px] text-s-ink/60 dark:text-s-dm-text/60 text-center px-2 mt-4 mb-2">
-        * Die angezeigte Verfügbarkeit ist möglicherweise nicht in Echtzeit auf dem neuesten Stand. Der Salon bestätigt deinen Termin nach der Anfrage.
+        {t("disclaimer")}
       </p>
 
       <button
@@ -105,7 +107,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
         className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-50"
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 6px 20px rgba(232,98,74,.15)" }}
       >
-        Weiter zur Zahlung →
+        {t("submit")}
       </button>
     </div>
   );

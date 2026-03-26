@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Clock, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -51,6 +51,7 @@ export function trackSalonView(salon: {
 
 export default function RecentlyViewed() {
   const locale = useLocale();
+  const t = useTranslations("recentlyViewed");
   const [salons, setSalons] = useState<RecentSalon[]>([]);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function RecentlyViewed() {
       <div className="flex items-center gap-2 mb-4">
         <Clock size={18} className="text-s-coral" />
         <h2 className="font-heading font-semibold text-lg text-s-ink dark:text-s-dm-text">
-          Zuletzt angesehen
+          {t("title")}
         </h2>
       </div>
 

@@ -1728,6 +1728,146 @@
     "modal": {
       "booking": "Prenotazione",
       "close": "Chiudi"
-    }
+    },
+    "salonCard": {
+      "new": "Nuovo",
+      "newOnSolen": "Nuovo su Solen",
+      "topSalon": "Top Salon",
+      "solenTopPick": "Scelta Solen",
+      "availableToday": "Disponibile",
+      "nextAvailable": "Prossima data: {date}",
+      "noAvailability": "Nessun appuntamento al momento",
+      "appointmentsToday": "{count, plural, =1 {1 appuntamento} other {# appuntamenti}} disponibile oggi",
+      "partOfBrand": "Parte di {brand}",
+      "addToFavorites": "Aggiungi ai preferiti",
+      "removeFromFavorites": "Rimuovi dai preferiti"
+    },
+    "lastMinuteCard": {
+      "now": "Ora",
+      "in": "tra"
+    },
+    "bookingSuccess": {
+      "title": "Appuntamento prenotato!",
+      "subtitle": "Il tuo appuntamento è stato confermato con successo.",
+      "payment": "Pagamento",
+      "cancellationPolicy": "Cancellazione gratuita fino a {hours}h prima dell'appuntamento.",
+      "referralTitle": "Invita amici",
+      "referralDesc": "Condividi il tuo codice e ricevi {amount} di credito per ogni segnalazione.",
+      "addToCalendar": "Aggiungi al calendario",
+      "shareWithFriend": "Condividi con un amico",
+      "bookAgain": "Prenota di nuovo",
+      "shareTitle": "Appuntamento da {salon}",
+      "shareText": "Ho prenotato un appuntamento per {service} da {salon} il {date} alle {time}!",
+      "bookedVia": "Prenotato tramite solen.ch"
+    },
+    "guestBookingForm": {
+      "title": "Prenotazione ospite",
+      "subtitle": "I tuoi dati di contatto",
+      "nameLabel": "Nome",
+      "phoneLabel": "Telefono",
+      "emailLabel": "Email (opzionale)",
+      "namePlaceholder": "Nome e cognome",
+      "phonePlaceholder": "+41791234567",
+      "emailPlaceholder": "tua@email.ch",
+      "nameError": "Il nome è richiesto (min. 2 caratteri)",
+      "phoneError": "Numero svizzero valido (+41XXXXXXXXX)",
+      "emailError": "Email non valida",
+      "disclaimer": "* La disponibilità mostrata potrebbe non essere in tempo reale. Il salone confermerà la tua richiesta.",
+      "submit": "Continua al pagamento →"
+    },
+    "staffPicker": {
+      "title": "Scegli membro dello staff",
+      "any": "Qualsiasi"
+    },
+    "packageRedeemBanner": {
+      "remaining": "Ti rimangono {remaining} di {total} sessioni nel tuo pacchetto «{name}»",
+      "redeem": "Usa ora",
+      "redeemed": "Usato!",
+      "noCharge": "Nessun costo aggiuntivo.",
+      "sessionsUsed": "{used}/{total} sessioni utilizzate"
+    },
+    "nearbySalons": {
+      "label": "Vicino a te",
+      "title": "Saloni simili"
+    },
+    "categoryHero": {
+      "coiffeur": {
+        "label": "Parrucchiere",
+        "subtitle": "I migliori parrucchieri a Basilea",
+        "titleSuffix": "a Basilea"
+      },
+      "barbershop": {
+        "label": "Barbershop",
+        "subtitle": "Barbershop classici a Basilea",
+        "titleSuffix": "a Basilea"
+      },
+      "nails": {
+        "label": "Unghie",
+        "subtitle": "Saloni per unghie e manicure a Basilea",
+        "titleSuffix": "a Basilea"
+      },
+      "spa": {
+        "label": "Spa & Massaggi",
+        "subtitle": "Benessere e relax a Basilea",
+        "titleSuffix": "a Basilea"
+      },
+      "makeup": {
+        "label": "Trucco",
+        "subtitle": "Trucco professionale a Basilea",
+        "titleSuffix": "a Basilea"
+      },
+      "waxing": {
+        "label": "Ceretta",
+        "subtitle": "Studi di ceretta a Basilea",
+        "titleSuffix": "a Basilea"
+      },
+      "salonsAvailable": "{count, plural, =1 {1 salone} other {# saloni}} disponibile"
+    },
+    "recentlyViewed": {
+      "title": "Visti di recente"
+    },
+    "chat": {
+      "tab": "Chat",
+      "photosTab": "Foto",
+      "messagesLabel": "Messaggi",
+      "noMessages": "Nessun messaggio ancora",
+      "startConversation": "Inizia la conversazione!",
+      "sendingOptimistic": "Invio...",
+      "translated": "Tradotto",
+      "translateButton": "Traduci",
+      "createOffer": "Crea offerta",
+      "attachFile": "Allega file",
+      "sendImageUrl": "Invia URL immagine",
+      "imageUrlPlaceholder": "Inserisci URL immagine...",
+      "messagePlaceholder": "Scrivi un messaggio…",
+      "send": "Invia",
+      "imageAlt": "Immagine"
+    },
+    "aiSuggestion": {
+      "generating": "Generazione suggerimento risposta…",
+      "suggestedReply": "Risposta suggerita:",
+      "accept": "Accetta",
+      "dismiss": "Ignora"
+    },
+    "bookingBubble": {
+      "title": "Prenota appuntamento da {salon}",
+      "cta": "Prenota ora",
+      "close": "Chiudi"
+    },
+    "clientTags": {
+      "addTag": "Tag",
+      "allergyWarning": "Attenzione: Il cliente ha allergie/intolleranze",
+      "customPlaceholder": "Tag personalizzato…",
+      "cancel": "Annulla",
+      "colors": {
+        "gray": "Grigio",
+        "red": "Rosso",
+        "orange": "Arancione",
+        "coral": "Corallo",
+        "blue": "Blu",
+        "purple": "Viola"
+      }
+    },
+    "quickReplyChips": {}
   }
 }

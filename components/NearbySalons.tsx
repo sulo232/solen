@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
 
@@ -28,6 +28,7 @@ interface NearbySalonsProps {
 
 export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
   const locale = useLocale();
+  const t = useTranslations("nearbySalons");
   const [salons, setSalons] = useState<NearbySalon[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,11 +57,11 @@ export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
   return (
     <div>
       <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-        In deiner Nähe
+        {t("label")}
       </span>
       <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text mb-6"
         style={{ fontSize: "clamp(22px, 3vw, 32px)", letterSpacing: "-0.02em" }}>
-        Ähnliche Salons
+        {t("title")}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {salons.map((salon) => (
