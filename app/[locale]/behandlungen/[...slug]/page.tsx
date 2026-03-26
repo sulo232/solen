@@ -2,14 +2,17 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import SalonCard from "@/components/SalonCard";
 import CategoryTree from "@/components/ui/CategoryTree";
 import QuickPreviewSheet from "@/components/ui/QuickPreviewSheet";
-import SearchFilterBar from "@/components/SearchFilterBar";
+import FilterBar from "@/components/ui/FilterBar";
+import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
+import { getSearchFilterPills } from "@/lib/search-filter-pills";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { Search } from "lucide-react";
+import type { ActiveFilter } from "@/lib/types";
 
 interface TreatmentSalon {
   id: string;
@@ -35,6 +38,7 @@ export default function TreatmentResultsPage() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
+  const t = useTranslations('filters');
 
   const slugParts = params.slug ?? [];
   const categorySlug = slugParts[slugParts.length - 1] ?? "";
@@ -44,6 +48,9 @@ export default function TreatmentResultsPage() {
   const [total, setTotal] = useState(0);
   const [previewSalon, setPreviewSalon] = useState<TreatmentSalon | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+
+  const pills = getSearchFilterPills(t);
 
   const sort = searchParams.get("sort") ?? "rating_desc";
   const minRating = searchParams.get("rating");
@@ -81,10 +88,56 @@ export default function TreatmentResultsPage() {
     setPreviewOpen(true);
   };
 
+  const handleFilterChange = useCallback((filters: ActiveFilter[]) => {
+    setActiveFilters(filters);
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Clear previous filter params
+    params.delete('quartier');
+    params.delete('date');
+    params.delete('rating');
+    params.delete('sort');
+    params.delete('online_payment');
+    params.delete('off_peak');
+
+    // Apply new filters to URL params
+    filters.forEach((filter) => {
+      if (filter.pillId === 'location') {
+        params.set('quartier', filter.subId);
+      } else if (filter.pillId === 'availability') {
+        if (filter.subId !== 'custom_date') {
+          params.set('date', filter.subId);
+        }
+      } else if (filter.pillId === 'rating') {
+        params.set('rating', filter.subId);
+      } else if (filter.pillId === 'sort') {
+        params.set('sort', filter.subId);
+      } else if (filter.pillId === 'online_payment') {
+        params.set('online_payment', 'true');
+      } else if (filter.pillId === 'off_peak') {
+        params.set('off_peak', 'true');
+      }
+    });
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [pathname, router, searchParams]);
+
   return (
     <div className="min-h-screen bg-white dark:bg-s-dm-bg">
-      {/* SearchFilterBar */}
-      <SearchFilterBar />
+      {/* Search + Filters */}
+      <div className="sticky top-[57px] z-40 isolate">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-white dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+          <div className="mb-3">
+            <SearchAutocomplete />
+          </div>
+          <FilterBar
+            pills={pills}
+            activeFilters={activeFilters}
+            onFilterChange={handleFilterChange}
+            zone={3}
+          />
+        </div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
   Scissors,
@@ -88,6 +88,7 @@ const QUARTIERS = [
 
 export default function HomePage() {
   const locale = useLocale();
+  const t = useTranslations("home");
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
@@ -258,26 +259,26 @@ export default function HomePage() {
               {!userName && (
                 <motion.span variants={fadeUp}
                   className="font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber block mb-3">
-                  Von Basel, für Basel
+                  {t("hero.byline")}
                 </motion.span>
               )}
               <motion.h1 variants={fadeUp}
                 className="font-display uppercase text-s-ink dark:text-s-dm-text"
                 style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em", lineHeight: "0.87" }}>
                 {userName ? (
-                  <>Hallo{" "}<span className="text-s-coral">{userName}</span></>
+                  <>{t("hero.hello")}{" "}<span className="text-s-coral">{userName}</span></>
                 ) : (
-                  <>BEAUTY<span className="text-s-coral">.</span><br />BASEL<span className="text-s-coral">.</span></>
+                  <>{t("hero.title")}</>
                 )}
               </motion.h1>
               <motion.p variants={fadeUp}
                 className="mt-5 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.82] max-w-md"
                 style={{ fontSize: "17px" }}>
                 {userName && nextBooking
-                  ? `Dein nächster Termin: ${nextBooking.date} bei ${nextBooking.salon}`
+                  ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
                   : userName
-                    ? "Willkommen zurück — was darf's heute sein?"
-                    : "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier."}
+                    ? t("hero.welcomeBack")
+                    : t("hero.subtitle")}
               </motion.p>
 
               {/* Hero CTAs — two pill buttons */}
