@@ -43,7 +43,7 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const pills = getSearchFilterPills(t);
+  const pills = getSearchFilterPills(t as any);
 
   // Map interaction state
   const [selectedSalonId, setSelectedSalonId] = useState<string | undefined>();
@@ -59,14 +59,12 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
       const date = searchParams.get("date");
       const priceMin = searchParams.get("priceMin");
       const priceMax = searchParams.get("priceMax");
-      const quartier = searchParams.get("quartier");
       const sort = searchParams.get("sort");
       const minRating = searchParams.get("min_rating");
       const lat = searchParams.get("lat");
       const lng = searchParams.get("lng");
 
       if (category) params.set("category", category);
-      if (quartier) params.set("quartier", quartier);
       if (date) params.set("date", date);
       if (priceMin) params.set("min_price", priceMin);
       if (priceMax) params.set("max_price", priceMax);
@@ -150,7 +148,6 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
     const params = new URLSearchParams(searchParams.toString());
 
     // Clear previous filter params
-    params.delete('quartier');
     params.delete('date');
     params.delete('rating');
     params.delete('sort');
@@ -159,9 +156,7 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
 
     // Apply new filters to URL params
     filters.forEach((filter) => {
-      if (filter.pillId === 'location') {
-        params.set('quartier', filter.subId);
-      } else if (filter.pillId === 'availability') {
+      if (filter.pillId === 'availability') {
         if (filter.subId !== 'custom_date') {
           params.set('date', filter.subId);
         }
@@ -239,10 +234,9 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
           cover_photo_url: previewSalon.cover_photo_url,
           average_rating: previewSalon.average_rating,
           review_count: previewSalon.review_count,
-          quartier: previewSalon.quartier,
           opening_hours: previewSalon.opening_hours,
           services: (previewSalon.services ?? []).map((s) => ({
-            name_de: (s as any).name_de ?? s.name ?? "",
+            name_de: (s as any).name_de ?? "",
             name_en: (s as any).name_en ?? "",
             price: (s as any).price ?? 0,
             duration_minutes: (s as any).duration_minutes ?? 0,

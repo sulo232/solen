@@ -811,6 +811,24 @@
       "totalMinutes": "{count} Minutes",
       "inclVat": "incl. VAT",
       "payAndBook": "Pay & Book"
+    },
+    "preferences": {
+      "title": "Customer Preferences",
+      "subtitle": "Your details help us personalise the service for you.",
+      "allergies_label": "Allergies & Intolerances",
+      "allergies_placeholder": "e.g. Nut allergy, sensitive skin...",
+      "skin_type_label": "Skin & Hair Type",
+      "skin_type_placeholder": "e.g. Dry skin, fine hair...",
+      "stylist_gender_label": "Preferred Professional Gender",
+      "stylist_gender_female": "Female",
+      "stylist_gender_male": "Male",
+      "stylist_gender_no-preference": "No preference",
+      "accessibility_label": "Accessibility",
+      "accessibility_placeholder": "e.g. Wheelchair accessible...",
+      "language_label": "Preferred Language",
+      "language_placeholder": "e.g. German, English...",
+      "notes_label": "Other Notes",
+      "notes_placeholder": "Additional information..."
     }
   },
   "errors": {

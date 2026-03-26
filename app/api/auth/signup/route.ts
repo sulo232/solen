@@ -20,9 +20,15 @@ const signupSchema = z.object({
     .min(8, "Mindestens 8 Zeichen")
     .regex(/[A-Z]/, "Mindestens ein Grossbuchstabe")
     .regex(/[0-9]/, "Mindestens eine Zahl"),
-  birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD").refine((val) => calcAge(val) >= 16, {
-    message: "Du musst mindestens 16 Jahre alt sein.",
-  }),
+  birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD").optional(),
+  salon_name: z.string().min(2, "Name muss mindestens 2 Zeichen haben").optional(),
+}).refine(data => data.birthday || data.salon_name, {
+  message: "Entweder Geburtsdatum oder Salon-Name erforderlich",
+}).refine(data => {
+  if (data.birthday) return calcAge(data.birthday) >= 16;
+  return true;
+}, {
+  message: "Du musst mindestens 16 Jahre alt sein.",
 });
 
 export async function POST(request: NextRequest) {
@@ -36,7 +42,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: firstError }, { status: 400 });
   }
 
-  const { email, password, birthday } = parsed.data;
+  const { email, password, birthday, salon_name } = parsed.data;
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;
 
@@ -44,7 +50,7 @@ export async function POST(request: NextRequest) {
     email,
     password,
     options: {
-      data: { birthday },
+      data: { birthday, salon_name },
       emailRedirectTo: `${origin}/api/auth/callback`,
     },
   });

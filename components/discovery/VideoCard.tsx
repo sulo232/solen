@@ -11,7 +11,15 @@ interface VideoCardProps {
   onClick?: () => void;
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
+  isExpanded?: boolean;
 }
+
+// ── Extract TikTok Video ID ────────────────────────────
+const extractTiktokId = (url: string | null) => {
+  if (!url) return null;
+  const match = url.match(/\/video\/(\d+)/);
+  return match ? match[1] : null;
+};
 
 // ── Color-coded category badges ────────────────────────────────────
 const CATEGORY_COLORS: Record<string, string> = {
@@ -32,11 +40,13 @@ export default memo(function VideoCard({
   onClick,
   isAuthenticated = false,
   onAuthRequired,
+  isExpanded = false,
 }: VideoCardProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
     item.tiktok_thumbnail_url || item.image_url || null
   );
   const [imgError, setImgError] = useState(false);
+  const videoId = extractTiktokId(item.tiktok_url);
 
   // If no stored thumbnail, or stored one fails, try oEmbed for fresh one
   useEffect(() => {
@@ -63,7 +73,7 @@ export default memo(function VideoCard({
     >
       {/* Full-bleed image */}
       <div className="absolute inset-0 bg-s-ink overflow-hidden">
-        {thumbnailUrl && !imgError ? (
+        {thumbnailUrl && !imgError && (!isExpanded || !videoId) ? (
           <img
             src={thumbnailUrl}
             alt={item.alt_text || item.style_name || ""}
@@ -73,12 +83,24 @@ export default memo(function VideoCard({
           />
         ) : null}
 
-        {/* Play button overlay — always visible */}
-        <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-          <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <Play size={16} className="text-white ml-0.5" fill="white" />
+        {/* Lazy load TikTok iframe when hovered / centered */}
+        {isExpanded && videoId && (
+          <iframe
+            src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
+            className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%] object-cover pointer-events-none"
+            allow="autoplay; encrypted-media"
+            style={{ border: "none", overflow: "hidden" }}
+          />
+        )}
+
+        {/* Play button overlay — hidden when playing */}
+        {!isExpanded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
+            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <Play size={16} className="text-white ml-0.5" fill="white" />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Fallback when image fails — TikTok logo + play */}
         {(!thumbnailUrl || imgError) && (

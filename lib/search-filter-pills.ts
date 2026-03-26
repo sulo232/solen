@@ -11,19 +11,7 @@ import type { FilterPill } from '@/lib/types';
  */
 export function getSearchFilterPills(t: (key: string) => string): FilterPill[] {
   return [
-    {
-      id: 'location',
-      label: t('location'),
-      subFilters: [
-        { id: 'grossbasel', label: 'Grossbasel' },
-        { id: 'kleinbasel', label: 'Kleinbasel' },
-        { id: 'gundeli', label: 'Gundeli' },
-        { id: 'st_johann', label: 'St. Johann' },
-        { id: 'iselin', label: 'Iselin' },
-        { id: 'bruderholz', label: 'Bruderholz' },
-        { id: 'breite', label: 'Breite' },
-      ],
-    },
+
     {
       id: 'availability',
       label: t('availability'),

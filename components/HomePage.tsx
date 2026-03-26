@@ -79,19 +79,6 @@ const CATEGORIES = [
   { key: "waxing",     label: "WAXING",     count: "15",  Icon: WaxingIcon,   color: "text-[#4A1E3C]", bg: "rgba(74,30,60,.05)" },
 ] as const;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Quartier section data
-// ─────────────────────────────────────────────────────────────────────────────
-
-const QUARTIERS = [
-  { slug: "grossbasel",  name: "Grossbasel"  },
-  { slug: "kleinbasel",  name: "Kleinbasel"  },
-  { slug: "gundeli",     name: "Gundeli"     },
-  { slug: "st_johann",   name: "St. Johann"  },
-  { slug: "iselin",      name: "Iselin"      },
-  { slug: "bruderholz",  name: "Bruderholz"  },
-  { slug: "breite",      name: "Breite"      },
-] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component
@@ -118,9 +105,8 @@ export default function HomePage() {
   }, []);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
-  const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
   const [sections, setSections] = useState<Record<string, boolean>>({
-    quartier: true, trending: true, nearby: true, new_salons: true,
+    trending: true, nearby: true, new_salons: true,
     rebook: true, reviews: true, last_minute: true, featured: true,
     social_proof: true, partner_cta: true,
   });
@@ -223,13 +209,7 @@ export default function HomePage() {
       .then((data) => setTrendingSalons(data.items ?? []))
       .catch(() => setTrendingSalons([]));
 
-    // Fetch quartier counts
-    fetch("/api/salons/quartier-counts")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.counts) setQuartierCounts(data.counts);
-      })
-      .catch(() => {});
+
 
     // Try to passively fetch nearby if permission already granted
     if (navigator.permissions) {
@@ -689,41 +669,7 @@ export default function HomePage() {
 
       {/* Last-Minute section moved to after Beliebte Salons — Phase 0.3 */}
 
-      {/* ── Quartier Section (Dark) ─────────────────────────────────────── */}
-      {sections.quartier && Object.values(quartierCounts).some(c => c > 0) && (
-      <section className="py-16 md:py-24 overflow-hidden relative" style={{ background: "#1A1209" }}>
-        <div className="absolute w-[400px] h-[400px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
-          style={{ background: "rgba(232,98,74,.08)" }} />
-        <div className="max-w-5xl mx-auto px-4 relative z-10">
-          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-3"
-            style={{ color: "#F2C144" }}>{t("quartiers.eyebrow")}</span>
-          <h2 className="font-display text-white mb-2"
-            style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
-            ENTDECKE<br /><span style={{ color: "#E8624A" }}>BASEL</span>
-          </h2>
-          <p className="font-body italic mb-10 max-w-sm text-[15px] leading-[1.82]"
-            style={{ color: "rgba(245,238,228,.45)" }}>
-            {t("quartiers.subtitle")}
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {QUARTIERS.filter(q => (quartierCounts[q.slug] ?? 0) > 0).map(({ slug, name }, i) => (
-              <Link key={slug} href={`/${locale}/coiffeur?quartier=${slug}`}
-                className="relative rounded-[20px] p-5 overflow-hidden hover:-translate-y-[3px] hover:opacity-90 transition-all duration-[250ms] group"
-                style={{ border: "1px solid rgba(255,255,255,.10)", background: "rgba(255,255,255,.06)" }}>
-                <p className="font-heading font-bold text-white text-[15px] mb-0.5">{name}</p>
-                <p className="text-xs" style={{ color: "rgba(245,238,228,.45)" }}>
-                  {quartierCounts[slug]} {quartierCounts[slug] === 1 ? t("quartiers.salonSingular") : t("quartiers.salonPlural")}
-                </p>
-                <span className="font-display text-[72px] absolute right-[-8px] bottom-[-20px] leading-none select-none pointer-events-none"
-                  style={{ color: "rgba(255,255,255,.05)" }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-      )}
+
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
       {sections.partner_cta && (

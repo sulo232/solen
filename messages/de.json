@@ -322,7 +322,18 @@
     "no_reviews": "Noch keine Bewertungen",
     "write_review": "Bewertung schreiben",
     "instagram": "Instagram ansehen",
-    "similarSalons": "Ähnliche Salons"
+    "similarSalons": "Ähnliche Salons",
+    "new": "Neu",
+    "nextAvailable": "Nächster Termin",
+    "noAvailability": "Keine Termine verfügbar",
+    "availableToday": "Heute verfügbar",
+    "appointmentsToday": "Heute gebucht",
+    "topSalon": "Top Salon",
+    "solenTopPick": "Solen Empfehlung",
+    "removeFromFavorites": "Von Favoriten entfernen",
+    "addToFavorites": "Zu Favoriten hinzufügen",
+    "partOfBrand": "Teil von",
+    "newOnSolen": "Neu auf Solen"
   },
   "booking": {
     "select_service": "Leistung wählen",
@@ -811,6 +822,24 @@
       "totalMinutes": "{count} Minuten",
       "inclVat": "inkl. MwSt.",
       "payAndBook": "Bezahlen & Buchen"
+    },
+    "preferences": {
+      "title": "Kundenpräferenzen",
+      "subtitle": "Deine Angaben helfen uns, den Service zu personalisieren.",
+      "allergies_label": "Allergien & Unverträglichkeiten",
+      "allergies_placeholder": "z.B. Nussallergie...",
+      "skin_type_label": "Haut- & Haartyp",
+      "skin_type_placeholder": "z.B. Trockene Haut, feines Haar...",
+      "stylist_gender_label": "Bevorzugtes Geschlecht",
+      "stylist_gender_female": "Weiblich",
+      "stylist_gender_male": "Männlich",
+      "stylist_gender_no-preference": "Keine Präferenz",
+      "accessibility_label": "Barrierefreiheit",
+      "accessibility_placeholder": "z.B. Rollstuhlgerecht...",
+      "language_label": "Bevorzugte Sprache",
+      "language_placeholder": "z.B. Deutsch, Englisch...",
+      "notes_label": "Weitere Notizen",
+      "notes_placeholder": "Zusätzliche Informationen..."
     }
   },
   "errors": {

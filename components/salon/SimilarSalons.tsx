@@ -8,12 +8,11 @@ import type { SalonCard as SalonCardType } from "@/lib/types";
 
 interface SimilarSalonsProps {
   currentSalonId: string;
-  quartier: string;
   category: string;
   locale: string;
 }
 
-export default function SimilarSalons({ currentSalonId, quartier, category, locale }: SimilarSalonsProps) {
+export default function SimilarSalons({ currentSalonId, category, locale }: SimilarSalonsProps) {
   const t = useTranslations("salon");
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +21,7 @@ export default function SimilarSalons({ currentSalonId, quartier, category, loca
     const fetchSimilar = async () => {
       try {
         const res = await fetch(
-          `/api/salons/similar?current_id=${currentSalonId}&quartier=${quartier}&category=${category}&limit=3`
+          `/api/salons/similar?current_id=${currentSalonId}&category=${category}&limit=3`
         );
         if (res.ok) {
           const data = await res.json();
@@ -36,7 +35,7 @@ export default function SimilarSalons({ currentSalonId, quartier, category, loca
     };
 
     fetchSimilar();
-  }, [currentSalonId, quartier, category]);
+  }, [currentSalonId, category]);
 
   if (loading) {
     return (

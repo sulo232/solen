@@ -25,7 +25,8 @@ interface SaveButtonProps {
   onAuthPrompt?: () => void;
 }
 
-export default function SaveButton({ itemId, initialSaved, isAuthenticated, onAuthPrompt }: SaveButtonProps) {
+export default function SaveButton(props: Record<string, any>) {
+  const { itemId, initialSaved, isAuthenticated, onAuthPrompt } = props;
   const [saved, setSaved] = useState(initialSaved);
   const [isPending, startTransition] = useTransition();
 

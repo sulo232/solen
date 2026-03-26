@@ -13,6 +13,7 @@ interface ItemCardProps {
   onClick?: () => void;
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
+  isExpanded?: boolean;
 }
 
 // ── Color-coded category badges ────────────────────────────────────
@@ -36,6 +37,7 @@ export default memo(function ItemCard({
   onClick,
   isAuthenticated = false,
   onAuthRequired,
+  isExpanded = false,
 }: ItemCardProps) {
   const displayImage = item.image_url || item.tiktok_thumbnail_url;
   const isTikTok =

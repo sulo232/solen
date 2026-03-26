@@ -22,6 +22,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
   const [items, setItems] = useState<DiscoveryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     // Scroll listener to find the item strictly in the center
@@ -91,27 +92,32 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
             </div>
           ))
         ) : items.length > 0 ? (
-          items.map((item, index) => (
-            <Link
-              href={`/${locale}/discover?id=${item.id}`}
-              prefetch={false}
-              key={item.id}
-              className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
-            >
-              {/* Dynamic Scaling based on Center position */}
-              <div 
-                className={`w-full h-full transition-all duration-300 origin-center transform 
-                  ${activeIndex === index ? "scale-105 z-10 opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
-                `}
+          items.map((item, index) => {
+            const isExpanded = hoveredIndex !== null ? hoveredIndex === index : activeIndex === index;
+            return (
+              <Link
+                href={`/${locale}/discover?id=${item.id}`}
+                prefetch={false}
+                key={item.id}
+                className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
-                {item.media_type === "tiktok" || item.tiktok_url ? (
-                  <VideoCard item={item} />
-                ) : (
-                  <ItemCard item={item} />
-                )}
-              </div>
-            </Link>
-          ))
+                {/* Dynamic Scaling based on Center or Hover position */}
+                <div 
+                  className={`w-full h-full transition-all duration-300 origin-center transform 
+                    ${isExpanded ? "scale-[1.03] z-10 opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
+                  `}
+                >
+                  {item.media_type === "tiktok" || item.tiktok_url ? (
+                    <VideoCard item={item} isExpanded={isExpanded} />
+                  ) : (
+                    <ItemCard item={item} isExpanded={isExpanded} />
+                  )}
+                </div>
+              </Link>
+            );
+          })
         ) : null}
 
         {/* 11th item: "Go to Entdecken" card */}

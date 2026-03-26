@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, MapPin, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
@@ -14,7 +14,6 @@ interface PreviewSalon {
   cover_photo_url: string | null;
   average_rating: number;
   review_count: number;
-  quartier: string;
   opening_hours?: Record<string, { open: string; close: string } | null>;
   services?: { name_de: string; name_en: string; price: number; duration_minutes: number }[];
 }
@@ -145,11 +144,6 @@ function SheetContent({
           <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
           <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">({salon.review_count})</span>
         </div>
-        <span className="text-s-ink/20 dark:text-s-dm-text/20">·</span>
-        <span className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50">
-          <MapPin className="w-3 h-3" />
-          <span className="capitalize">{salon.quartier.replace("_", " ")}</span>
-        </span>
       </div>
 
       {/* Today's hours */}

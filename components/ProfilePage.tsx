@@ -691,7 +691,7 @@ export default function ProfilePage() {
             }))),
           supabase
             .from("favorites")
-            .select("salon_id, salons!inner(id, name, slug, quartier, average_rating, cover_photo_url)")
+            .select("salon_id, salons!inner(id, name, slug, address, average_rating, cover_photo_url)")
             .eq("user_id", userId)
             .then(({ data }) => (data ?? []).map((f: any) => f.salons)),
           supabase
@@ -862,7 +862,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Salon Highlights */}
-        <SalonHighlights favorites={favorites} locale={locale} />
+        <SalonHighlights favorites={favorites as any} locale={locale} />
 
         {/* Profile Tabs */}
         <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab}>
@@ -943,8 +943,8 @@ export default function ProfilePage() {
                         <Link href={`/${locale}/salon/${salon.slug}`} className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text hover:text-s-coral transition-colors truncate block">
                           {salon.name}
                         </Link>
-                        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1 mt-0.5">
-                          <MapPin size={10} />{salon.quartier}
+                        <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 flex items-center gap-1 mt-0.5 truncate">
+                          <MapPin size={10} />{salon.address}
                         </p>
                         <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1 mt-0.5">
                           <Star size={10} className="text-s-yellow fill-s-yellow" />
@@ -984,11 +984,12 @@ export default function ProfilePage() {
                   {loyaltyCards.map((card) => (
                     <StampCard
                       key={card.id}
-                      salon={card.salons}
+                      salonName={card.salons.name}
+                      salonSlug={card.salons.slug}
+                      salonImageUrl={card.salons.cover_photo_url ?? undefined}
+                      stampsTotal={card.stamps_needed}
                       stampsCollected={card.stamps_collected}
-                      stampsNeeded={card.stamps_needed}
                       rewardText={card.reward_text}
-                      locale={locale}
                     />
                   ))}
                 </div>

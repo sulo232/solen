@@ -178,7 +178,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
         const popup = new mapboxgl.Popup({ offset: isGold ? 18 : 10, closeButton: false, maxWidth: "220px" }).setHTML(
           `<div style="padding:8px">
              <p style="font-weight:600;font-size:13px;color:#1A1209;margin:0 0 2px">${salon.name}</p>
-             <p style="font-size:11px;color:#888;margin:0 0 4px">${tierLabel}${salon.quartier}</p>
+             <p style="font-size:11px;color:#888;margin:0 0 4px">${tierLabel}${salon.address}</p>
              <p style="font-size:11px;color:#333;margin:0">★ ${salon.average_rating.toFixed(1)}${minPrice ? ` · ab ${formatCurrency(minPrice)}` : ""}</p>
            </div>`
         );

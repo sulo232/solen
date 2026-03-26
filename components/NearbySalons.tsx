@@ -11,7 +11,6 @@ interface NearbySalon {
   slug: string;
   cover_photo_url: string | null;
   categories: string[];
-  quartier: string;
   average_rating: number;
   review_count: number;
   latitude: number;
@@ -28,7 +27,7 @@ interface NearbySalonsProps {
 
 export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
   const locale = useLocale();
-  const t = useTranslations("nearbySalons");
+  const t = useTranslations("home.nearby");
   const [salons, setSalons] = useState<NearbySalon[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,7 +56,7 @@ export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
   return (
     <div>
       <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-        {t("label")}
+        {t("eyebrow")}
       </span>
       <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text mb-6"
         style={{ fontSize: "clamp(22px, 3vw, 32px)", letterSpacing: "-0.02em" }}>
@@ -71,7 +70,6 @@ export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
             locale={locale}
             variant="compact"
             showDistance
-            minPrice={salon.min_price ?? undefined}
           />
         ))}
       </div>

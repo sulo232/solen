@@ -48,19 +48,17 @@ interface CategoryPageProps {
   belowGrid?: React.ReactNode;
 }
 
-interface DirectoryEntry {
+interface SalonDirectoryEntry {
   id: string;
   name: string;
-  address: string | null;
   phone: string | null;
   website: string | null;
   google_rating: number | null;
   google_review_count: number | null;
   photo_url: string | null;
-  quartier: string | null;
 }
 
-function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
+function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
@@ -87,7 +85,6 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
 
       <div className="p-4">
         <h3 className="font-heading font-semibold text-s-ink text-sm leading-tight mb-1">{entry.name}</h3>
-        {entry.address && <p className="text-xs text-s-ink/50 truncate font-body mb-2">{entry.address}</p>}
         {entry.google_rating != null && (
           <div className="flex items-center gap-1 mb-3">
             <Star className="w-3 h-3 fill-s-amber text-s-amber" />
@@ -134,16 +131,14 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const [loadingMore, setLoadingMore] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
 
-  const pills = getSearchFilterPills(t);
+  const pills = getSearchFilterPills(t as any);
 
-  const [dirEntries, setDirEntries] = useState<DirectoryEntry[]>([]);
+  const [dirEntries, setDirEntries] = useState<SalonDirectoryEntry[]>([]);
   const [dirTotal, setDirTotal] = useState(0);
   const [dirPage, setDirPage] = useState(1);
   const [dirLoading, setDirLoading] = useState(false);
   const [dirLoadingMore, setDirLoadingMore] = useState(false);
 
-  const [topQuartierBanner, setTopQuartierBanner] = useState<string | null>(null);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
   // Fetch favorites
@@ -194,8 +189,6 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       if (city) params.set("city", city);
       params.set("page", String(p));
       params.set("limit", String(PAGE_SIZE));
-      const quartier = searchParams.get("quartier");
-      if (quartier) params.set("quartier", quartier);
       const search = searchParams.get("search");
       if (search) params.set("search", search);
       return `/api/directory?${params.toString()}`;
@@ -256,7 +249,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     const params = new URLSearchParams(searchParams.toString());
 
     // Clear previous filter params
-    params.delete('quartier');
+    params.delete('page');
     params.delete('date');
     params.delete('rating');
     params.delete('sort');
@@ -265,9 +258,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
     // Apply new filters to URL params
     filters.forEach((filter) => {
-      if (filter.pillId === 'location') {
-        params.set('quartier', filter.subId);
-      } else if (filter.pillId === 'availability') {
+      if (filter.pillId === 'availability') {
         if (filter.subId !== 'custom_date') {
           params.set('date', filter.subId);
         }
@@ -330,23 +321,6 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           )}
         </div>
       </div>
-
-      {/* Quartier banner */}
-      {topQuartierBanner && !bannerDismissed && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-2">
-          <div className="flex items-center justify-between px-4 py-3 rounded-[16px]"
-            style={{ background: "rgba(232,98,74,.08)", border: "1px solid rgba(232,98,74,.18)",
-                     boxShadow: "0 1px 2px rgba(26,18,9,.06), var(--glass-shadow-inset)" }}>
-            <span className="text-xs font-heading font-bold text-s-coral">
-              📍 {topQuartierBanner} — dein meistbesuchtes Quartier
-            </span>
-            <button onClick={() => setBannerDismissed(true)}
-              className="text-s-coral/60 hover:text-s-coral ml-4 text-[10px] font-heading uppercase tracking-[.08em]">
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">

@@ -4,14 +4,13 @@ import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { usePostHog } from "posthog-js/react";
 import { SalonCard } from "@/components";
-import { Skeleton } from "@/components/ui/Skeleton";
+import Skeleton from "@/components/ui/Skeleton";
 import { RefreshCw } from "lucide-react";
 
 interface RecommendedSalon {
   id: string;
   name: string;
   slug: string;
-  quartier: string;
   cover_photo_url: string | null;
   average_rating: number;
   review_count: number;
@@ -157,7 +156,7 @@ export function KISection({ zone = 1, className = "" }: KISectionProps) {
                 }}
               >
                 <SalonCard
-                  salon={salon}
+                  salon={salon as any}
                   aiReason={salon.ai_reason}
                 />
               </div>

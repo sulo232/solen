@@ -18,16 +18,31 @@ export async function GET(req: NextRequest) {
   }
 
   const category = req.nextUrl.searchParams.get("category") || null;
+  const citySlug = req.nextUrl.searchParams.get("city");
 
   try {
     // 1. Generate embedding for query
     const embedding = await generateEmbedding(q);
 
-    // 2. Search via pgvector RPC
     const supabase = createAdminSupabaseClient();
+    
+    let cityId: string | undefined;
+    if (citySlug) {
+      const { data: cityRecord } = await supabase
+        .from("cities")
+        .select("id")
+        .eq("slug", citySlug)
+        .single();
+      if (cityRecord) {
+        cityId = cityRecord.id;
+      }
+    }
+
+    // 2. Search via pgvector RPC
     const { data: matches, error } = await supabase.rpc("match_search_embeddings", {
       query_embedding: JSON.stringify(embedding),
       match_category: category,
+      match_city_id: cityId || null,
       match_threshold: 0.5,
       match_count: 10,
     });

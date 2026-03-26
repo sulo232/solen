@@ -222,7 +222,7 @@ export async function POST(request: NextRequest) {
           description_en: description_en || null,
           instagram_url: instagram_url || null,
           website_url: website_url || null,
-          tiktok_url: tiktok_url || null,
+          // tiktok_url: tiktok_url || null, // [FIX] Field missing from cache or db schema
           opening_hours: opening_hours || {},
           is_active: false, // Pending approval
           last_minute_discount_percent: last_minute_discount_percent || 0,

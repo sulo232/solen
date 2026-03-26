@@ -810,6 +810,24 @@
       "totalMinutes": "{count} Minuti",
       "inclVat": "IVA incl.",
       "payAndBook": "Paga & Prenota"
+    },
+    "preferences": {
+      "title": "Preferenze del Cliente",
+      "subtitle": "Questi dettagli ci aiutano a personalizzare il tuo servizio.",
+      "allergies_label": "Allergie e Intolleranze",
+      "allergies_placeholder": "es. Pelle sensibile...",
+      "skin_type_label": "Tipo di Pelle e Capelli",
+      "skin_type_placeholder": "es. Pelle secca, capelli fini...",
+      "stylist_gender_label": "Genere del Professionista Preferito",
+      "stylist_gender_female": "Donna",
+      "stylist_gender_male": "Uomo",
+      "stylist_gender_no-preference": "Nessuna preferenza",
+      "accessibility_label": "Accessibilità",
+      "accessibility_placeholder": "es. Accessibile in sedia a rotelle...",
+      "language_label": "Lingua Preferita",
+      "language_placeholder": "es. Tedesco, Inglese...",
+      "notes_label": "Altre Note",
+      "notes_placeholder": "Informazioni aggiuntive..."
     }
   },
   "errors": {

@@ -54,18 +54,9 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
   waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
 };
 
-const quartierLabels: Record<string, string> = {
-  grossbasel: "Grossbasel",
-  kleinbasel: "Kleinbasel",
-  gundeli: "Gundeli",
-  st_johann: "St. Johann",
-  iselin: "Iselin",
-  bruderholz: "Bruderholz",
-  breite: "Breite",
-};
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
-  const t = useTranslations("salonCard");
+  const t = useTranslations("salon");
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
@@ -83,7 +74,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
         <div className="min-w-0">
           <p className="font-heading font-medium text-sm text-s-ink truncate">{salon.name}</p>
-          <p className="text-xs text-s-ink/50 font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</p>
+          <p className="text-xs text-s-ink/50 font-body truncate">{salon.address}</p>
           {salon.review_count >= 5 ? (
             <div className="flex items-center gap-1 mt-0.5">
               <Star className="w-3 h-3 fill-s-coral text-s-coral" />
@@ -256,7 +247,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
           <div className="flex items-center gap-1 mt-1 text-s-ink/50">
             <MapPin className="w-3.5 h-3.5 shrink-0" />
-            <span className="text-xs font-body">{quartierLabels[salon.quartier] ?? salon.quartier}</span>
+            <span className="text-xs font-body truncate">{salon.address}</span>
             {showDistance && salon.distance_km != null && (
               <span className="text-xs text-s-ink/50 font-body">{salon.distance_km.toFixed(1)} km</span>
             )}

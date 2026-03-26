@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { Search, X, Star, Sparkles } from "lucide-react";
@@ -18,6 +18,7 @@ interface SuggestService {
 
 interface SuggestSalon {
   id: string;
+  name: string;
   slug: string;
   average_rating: number;
   cover_image: string | null;
@@ -49,6 +50,8 @@ interface SearchAutocompleteProps {
 export default function SearchAutocomplete({ category, onServiceSelect }: SearchAutocompleteProps) {
   const locale = useLocale();
   const router = useRouter();
+  const params = useParams();
+  const rawCity = params?.city as string | undefined;
   const t = useTranslations("ui.search");
   const [query, setQuery] = useState("");
   const [services, setServices] = useState<SuggestService[]>([]);
@@ -58,8 +61,8 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const smartDebounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const smartDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const totalItems = services.length + salons.length + smartResults.length;
@@ -75,7 +78,8 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
     }
     try {
       const categoryParam = category ? `&category=${category}` : "";
-      const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(q)}${categoryParam}`);
+      const cityParam = rawCity ? `&city=${rawCity}` : "";
+      const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(q)}${categoryParam}${cityParam}`);
       const data = await res.json();
       setServices(data.services ?? []);
       setSalons(data.salons ?? []);
@@ -93,7 +97,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
         smartDebounceRef.current = setTimeout(async () => {
           try {
             const smartRes = await fetch(
-              `/api/search/smart?q=${encodeURIComponent(q)}${categoryParam}`,
+              `/api/search/smart?q=${encodeURIComponent(q)}${categoryParam}${cityParam}`,
               { signal: controller.signal }
             );
             const smartData = await smartRes.json();
@@ -240,6 +244,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                       <p className="font-medium truncate">{salon.name}</p>
                       <div className="flex items-center gap-1.5 text-xs text-s-ink/40">
                         {salon.average_rating > 0 && (
+                          <>
                             <Star size={10} className="fill-s-amber text-s-amber" />
                             <span>{salon.average_rating.toFixed(1)}</span>
                           </>

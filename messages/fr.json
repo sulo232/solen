@@ -810,6 +810,24 @@
       "totalMinutes": "{count} Minutes",
       "inclVat": "TTC",
       "payAndBook": "Payer & Réserver"
+    },
+    "preferences": {
+      "title": "Préférences du Client",
+      "subtitle": "Ces détails nous aident à personnaliser votre service.",
+      "allergies_label": "Allergies & Intolérances",
+      "allergies_placeholder": "ex: Peau sensible...",
+      "skin_type_label": "Type de peau et de cheveux",
+      "skin_type_placeholder": "ex: Peau sèche, cheveux fins...",
+      "stylist_gender_label": "Genre du Professionnel",
+      "stylist_gender_female": "Femme",
+      "stylist_gender_male": "Homme",
+      "stylist_gender_no-preference": "Aucune préférence",
+      "accessibility_label": "Accessibilité",
+      "accessibility_placeholder": "ex: Accessible en fauteuil roulant...",
+      "language_label": "Langue Souhaitée",
+      "language_placeholder": "ex: Allemand, Français...",
+      "notes_label": "Autres Notes",
+      "notes_placeholder": "Informations complémentaires..."
     }
   },
   "errors": {

@@ -79,10 +79,11 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 // ─────────────────────────────────────────
 // Step 0.5 — Register Email/Pass/DOB (NEW)
 // ─────────────────────────────────────────
-function StepRegister({ onNext }: { onNext: () => void }) {
+function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boolean }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [salonName, setSalonName] = useState("");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const toast = useToast();
@@ -98,17 +99,21 @@ function StepRegister({ onNext }: { onNext: () => void }) {
     e.preventDefault();
     setSaving(true);
     
-    if (calcAge(birthday) < 16) {
+    if (!isSalon && calcAge(birthday) < 16) {
       toast("Du musst mindestens 16 Jahre alt sein.", "error");
       setSaving(false);
       return;
     }
 
     try {
+      const payload = isSalon 
+        ? { email, password, salon_name: salonName } 
+        : { email, password, birthday };
+
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, birthday }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
 
@@ -173,22 +178,39 @@ function StepRegister({ onNext }: { onNext: () => void }) {
         onChange={(e) => setPassword(e.target.value)}
         className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
       />
-      <div>
-        <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
-          Geburtsdatum <span className="text-s-ink/25 dark:text-s-dm-text/25">(mind. 16 Jahre)</span>
-        </label>
-        <input
-          type="date"
-          required
-          value={birthday}
-          onChange={(e) => setBirthday(e.target.value)}
-          className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
-        />
-      </div>
+      
+      {isSalon ? (
+        <div>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+            Name des Salons
+          </label>
+          <input
+            type="text"
+            required
+            placeholder="z.B. Studio 54"
+            value={salonName}
+            onChange={(e) => setSalonName(e.target.value)}
+            className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          />
+        </div>
+      ) : (
+        <div>
+          <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-1.5">
+            Geburtsdatum <span className="text-s-ink/25 dark:text-s-dm-text/25">(mind. 16 Jahre)</span>
+          </label>
+          <input
+            type="date"
+            required
+            value={birthday}
+            onChange={(e) => setBirthday(e.target.value)}
+            className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          />
+        </div>
+      )}
 
       <button
         type="submit"
-        disabled={!email || !password || !birthday || saving}
+        disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
         className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
         {saving && <Spinner size="sm" invert />}
@@ -645,7 +667,7 @@ export default function RegisterPage() {
                 exit="exit"
               >
                 {step === -1 && <StepRole onCustomer={() => goTo(0)} onSalon={handleSalonChoice} />}
-                {step === 0 && <StepRegister onNext={() => {
+                {step === 0 && <StepRegister isSalon={salonIntent} onNext={() => {
                   if (salonIntent) {
                     router.push(`/${locale}/onboarding/salon`);
                   } else {
