@@ -194,7 +194,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       : "text-s-ink/60 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/5"
                   )}
                 >
-                  <Icon size={20} className={isActive ? "text-s-coral" : "text-current"} />
+                  <Icon width={20} height={20} className={cn("w-5 h-5 shrink-0", isActive ? "text-s-coral" : "text-current")} />
                 </Link>
               );
             })}
