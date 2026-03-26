@@ -122,10 +122,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             : "mt-3 max-w-5xl min-h-[64px] py-3 px-5 sm:px-8 bg-s-bg-base/50 dark:bg-s-dm-bg/50"
         )}
         style={scrolled ? {
-          background: "rgba(255,255,255,.82)",
+          background: "var(--glass-bg)",
           backdropFilter: "blur(16px) saturate(1.3)",
           WebkitBackdropFilter: "blur(16px) saturate(1.3)",
-          border: "1px solid rgba(255,255,255,.70)",
+          border: "1px solid var(--glass-border)",
           boxShadow: "0 2px 6px rgba(26,18,9,.08), 0 8px 24px rgba(26,18,9,.06)"
         } : {
           backdropFilter: "blur(10px)",
@@ -242,10 +242,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 <div
                   className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-input z-[60] overflow-hidden"
                   style={{
-                    background: "rgba(255,255,255,.96)",
+                    background: "var(--glass-bg-strong)",
                     backdropFilter: "blur(16px) saturate(1.2)",
                     WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                    border: "1px solid rgba(255,255,255,.70)",
+                    border: "1px solid var(--glass-border)",
                     boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
                   }}
                 >
@@ -304,10 +304,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
             className="md:hidden mt-2 rounded-[16px] p-4 dark:border-white/[0.06] overflow-hidden"
             style={{
-              background: "rgba(255,255,255,.92)",
+              background: "var(--glass-bg-strong)",
               backdropFilter: "blur(20px) saturate(1.3)",
               WebkitBackdropFilter: "blur(20px) saturate(1.3)",
-              border: "1px solid rgba(255,255,255,.75)",
+              border: "1px solid var(--glass-border-subtle)",
               boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
             }}
           >

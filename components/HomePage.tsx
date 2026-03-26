@@ -341,10 +341,10 @@ export default function HomePage() {
         <section className="max-w-5xl mx-auto px-4 pt-6">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
             className="flex items-center gap-4 p-4 rounded-[20px]"
-            style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
+            style={{ background: "var(--glass-bg-subtle)", backdropFilter: "blur(16px) saturate(1.2)",
                      WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                     border: "1px solid rgba(255,255,255,.55)",
-                     boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}>
+                     border: "1px solid var(--glass-border-subtle)",
+                     boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), var(--glass-shadow-inset)" }}>
             <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
               style={{ background: "rgba(232,98,74,.12)" }}>
               <RefreshCw size={18} className="text-s-coral" />
