@@ -116,7 +116,7 @@ solen/
 - **Background blobs**: `<BlobBackground>` from `BlobBackground.tsx` — accepts `zone={1}` (maximalist) or `zone={2}` (soft/subtle). Decorative gradient blobs for hero/section backgrounds.
 - **Radii**: card 12px, pill 9999px, button 8px, blob-a/b/c/d/e organic % (see UI_RULES.md §10)
 - **Blob physics**: `.blob-interactive` for 500ms spring border-radius morphing on hover
-- **Filter System**: `<FilterBar>` from `FilterBar.tsx` — universal zone-aware filter pill row with sub-filters. Requires `zone` prop (1-4). Desktop: inline dropdown + overflow drawer (max 5 visible pills). Mobile: bottom sheet. Active filter chips with remove buttons. Uses `useTranslations('filters')` for i18n. Companion components: `<FilterBottomSheet>` (mobile), `<FilterDrawer>` (desktop inline/drawer).
+- **Filter System**: `<FilterBar>` from `FilterBar.tsx` — universal zone-aware filter pill row with sub-filters. Requires `zone` prop (1-4). Desktop: inline dropdown + overflow drawer (max 5 visible pills). Mobile: bottom sheet. Active filter chips with remove buttons. Uses `useTranslations('filters')` for i18n. Companion components: `<FilterBottomSheet>` (mobile), `<FilterDrawer>` (desktop inline/drawer). **Search pages** (last-minute, behandlungen, category pages) use `getSearchFilterPills()` from `lib/search-filter-pills.ts` for grouped filter configuration (location, availability, rating, online_payment, off_peak, sort). **Always** pair with `<SearchAutocomplete>` above the FilterBar in a sticky container.
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 

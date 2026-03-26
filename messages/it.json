@@ -27,9 +27,78 @@
     "last_minute_subtitle": "Appuntamenti scontati disponibili oggi",
     "no_results": "Nessun salone trovato",
     "hero": {
-      "title": "Bellezza. Basilea.",
+      "byline": "Da Basilea, per Basilea",
+      "hello": "Ciao",
+      "title": "BELLEZZA<span class=\"text-s-coral\">.</span><br />BASILEA<span class=\"text-s-coral\">.</span>",
       "welcome": "Benvenuto {name}",
-      "subtitle": "Parrucchiere, barbiere, unghie, spa e altro — prenota ora nel tuo quartiere."
+      "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nel tuo quartiere.",
+      "nextBooking": "Il tuo prossimo appuntamento: {date} presso {salon}",
+      "welcomeBack": "Bentornato — cosa stai cercando oggi?"
+    },
+    "cta": {
+      "findSalon": "Trova salone",
+      "lastMinute": "Last Minute"
+    },
+    "categories": {
+      "label": "CATEGORIE",
+      "title": "Cosa stai cercando?",
+      "salonsCount": "Saloni"
+    },
+    "rebook": {
+      "title": "Prenotare di nuovo?",
+      "lastVisit": "La tua ultima visita: {name}",
+      "cta": "Prenota"
+    },
+    "featured": {
+      "eyebrow": "Popolare a Basilea",
+      "title": "Saloni popolari",
+      "subtitle": "I saloni più votati a Basilea",
+      "viewAll": "Vedi tutto",
+      "emptyTitle": "In crescita",
+      "emptyMessage": "Presto più saloni vicino a te"
+    },
+    "lastMinute": {
+      "eyebrow": "Last Minute",
+      "title": "Risparmia fino al 50%",
+      "viewAll": "Vedi tutto",
+      "emptyMessage": "Nessuna offerta last minute al momento — ricontrolla presto!",
+      "viewOffers": "Vedi offerte"
+    },
+    "trending": {
+      "eyebrow": "Tendenza",
+      "title": "Tendenza a Basilea",
+      "subtitle": "I saloni più popolari al momento"
+    },
+    "nearby": {
+      "eyebrow": "Posizione",
+      "title": "Vicino a te",
+      "subtitle": "Scopri saloni vicini a te",
+      "viewAll": "Vedi tutto"
+    },
+    "newSalons": {
+      "eyebrow": "Nuovo",
+      "title": "Nuovi saloni",
+      "subtitle": "Nuovo su Solen — scopri i più nuovi saloni a Basilea"
+    },
+    "quartiers": {
+      "eyebrow": "Il tuo quartiere",
+      "title": "SCOPRI<br /><span style=\"color: #E8624A\">BASILEA</span>",
+      "subtitle": "Saloni direttamente nel tuo quartiere — da Kleinbasel a Bruderholz.",
+      "salonSingular": "Salone",
+      "salonPlural": "Saloni",
+      "soon": "Presto qui"
+    },
+    "partner": {
+      "title": "Hai un salone?",
+      "subtitle": "Porta la tua attività al livello successivo — raggiungi migliaia di clienti a Basilea.",
+      "cta": "Diventa partner"
+    },
+    "trust": {
+      "securePayment": "Pagamento sicuro — crittografato Stripe",
+      "swissMade": "Swiss Made — Sviluppato a Basilea",
+      "gdprCompliant": "Conforme alla legge svizzera sulla protezione dei dati",
+      "freeCancellation": "Cancellazione gratuita fino a 24h",
+      "paymentMethods": "TWINT · Carta di credito · Contanti"
     },
     "sections": {
       "categories": "Esplora",
@@ -47,9 +116,6 @@
       "quartiers": "Scopri il tuo quartiere",
       "quartiers_label": "IL TUO QUARTIERE",
       "quartiers_all": "Vedi tutto →"
-    },
-    "quartiers": {
-      "soon": "Presto qui"
     },
     "search": {
       "placeholder": "Cerca un salone a Basilea..."

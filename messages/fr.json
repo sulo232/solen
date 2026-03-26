@@ -27,9 +27,78 @@
     "last_minute_subtitle": "Rendez-vous à prix réduit disponibles aujourd'hui",
     "no_results": "Aucun salon trouvé",
     "hero": {
-      "title": "Beauté. Bâle.",
+      "byline": "De Bâle, pour Bâle",
+      "hello": "Bonjour",
+      "title": "BEAUTÉ<span class=\"text-s-coral\">.</span><br />BÂLE<span class=\"text-s-coral\">.</span>",
       "welcome": "Bienvenue {name}",
-      "subtitle": "Coiffeur, barbier, ongles, spa & plus — réservez maintenant dans votre quartier."
+      "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre quartier.",
+      "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
+      "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?"
+    },
+    "cta": {
+      "findSalon": "Trouver un salon",
+      "lastMinute": "Dernière Minute"
+    },
+    "categories": {
+      "label": "CATÉGORIES",
+      "title": "Que recherchez-vous?",
+      "salonsCount": "Salons"
+    },
+    "rebook": {
+      "title": "Réserver à nouveau?",
+      "lastVisit": "Votre dernière visite: {name}",
+      "cta": "Réserver"
+    },
+    "featured": {
+      "eyebrow": "Populaire à Bâle",
+      "title": "Salons populaires",
+      "subtitle": "Les salons les mieux notés à Bâle",
+      "viewAll": "Voir tout",
+      "emptyTitle": "En croissance",
+      "emptyMessage": "Bientôt plus de salons près de chez vous"
+    },
+    "lastMinute": {
+      "eyebrow": "Dernière Minute",
+      "title": "Économisez jusqu'à 50%",
+      "viewAll": "Voir tout",
+      "emptyMessage": "Aucune offre de dernière minute pour le moment — revenez bientôt!",
+      "viewOffers": "Voir les offres"
+    },
+    "trending": {
+      "eyebrow": "Tendance",
+      "title": "Tendance à Bâle",
+      "subtitle": "Les salons les plus en vogue actuellement"
+    },
+    "nearby": {
+      "eyebrow": "Emplacement",
+      "title": "Près de vous",
+      "subtitle": "Découvrez des salons tout près de vous",
+      "viewAll": "Voir tout"
+    },
+    "newSalons": {
+      "eyebrow": "Nouveau",
+      "title": "Nouveaux salons",
+      "subtitle": "Nouveau sur Solen — découvrez les derniers salons à Bâle"
+    },
+    "quartiers": {
+      "eyebrow": "Votre quartier",
+      "title": "DÉCOUVREZ<br /><span style=\"color: #E8624A\">BÂLE</span>",
+      "subtitle": "Des salons directement dans votre quartier — de Kleinbasel à Bruderholz.",
+      "salonSingular": "Salon",
+      "salonPlural": "Salons",
+      "soon": "Bientôt ici"
+    },
+    "partner": {
+      "title": "Vous avez un salon?",
+      "subtitle": "Faites passer votre entreprise au niveau supérieur — touchez des milliers de clients à Bâle.",
+      "cta": "Devenir partenaire"
+    },
+    "trust": {
+      "securePayment": "Paiement sécurisé — chiffrement Stripe",
+      "swissMade": "Swiss Made — Développé à Bâle",
+      "gdprCompliant": "Conforme à la loi suisse sur la protection des données",
+      "freeCancellation": "Annulation gratuite jusqu'à 24h",
+      "paymentMethods": "TWINT · Carte de crédit · Espèces"
     },
     "sections": {
       "categories": "Explorer",
@@ -47,9 +116,6 @@
       "quartiers": "Découvrez votre quartier",
       "quartiers_label": "VOTRE QUARTIER",
       "quartiers_all": "Voir tout →"
-    },
-    "quartiers": {
-      "soon": "Bientôt ici"
     },
     "search": {
       "placeholder": "Rechercher un salon à Bâle..."
