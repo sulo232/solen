@@ -17,6 +17,7 @@ import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import BlobBackground from "@/components/ui/BlobBackground";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
+import { type CitySlug, getCityName } from "@/lib/cities";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -42,6 +43,7 @@ const categoryGradients: Record<SalonCategory, string> = {
 
 interface CategoryPageProps {
   category: SalonCategory;
+  city?: CitySlug;
   aboveGrid?: React.ReactNode;
   belowGrid?: React.ReactNode;
 }
@@ -115,7 +117,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
   );
 }
 
-export default function CategoryPage({ category, aboveGrid, belowGrid }: CategoryPageProps) {
+export default function CategoryPage({ category, city, aboveGrid, belowGrid }: CategoryPageProps) {
   const locale = useLocale();
   const tc = useTranslations("common");
   const t = useTranslations('filters');
@@ -142,22 +144,54 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
 
   const [topQuartierBanner, setTopQuartierBanner] = useState<string | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+
+  // Fetch favorites
+  useEffect(() => {
+    fetch("/api/profile/favorites")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const favs = data?.favorites ?? [];
+        setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleFavoriteToggle = useCallback((salonId: string) => {
+    setFavoriteIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(salonId)) {
+        next.delete(salonId);
+        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch(() => {});
+      } else {
+        next.add(salonId);
+        fetch("/api/profile/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ salon_id: salonId }),
+        }).catch(() => {});
+      }
+      return next;
+    });
+  }, []);
 
   const buildUrl = useCallback(
     (p: number) => {
       const params = new URLSearchParams(searchParams.toString());
       params.set("category", category);
+      if (city) params.set("city", city);
       params.set("limit", String(PAGE_SIZE));
       params.set("offset", String((p - 1) * PAGE_SIZE));
       return `/api/salons?${params.toString()}`;
     },
-    [searchParams, category]
+    [searchParams, category, city]
   );
 
   const buildDirUrl = useCallback(
     (p: number) => {
       const params = new URLSearchParams();
       params.set("category", category);
+      if (city) params.set("city", city);
       params.set("page", String(p));
       params.set("limit", String(PAGE_SIZE));
       const quartier = searchParams.get("quartier");
@@ -166,7 +200,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
       if (search) params.set("search", search);
       return `/api/directory?${params.toString()}`;
     },
-    [searchParams, category]
+    [searchParams, category, city]
   );
 
   useEffect(() => {
@@ -215,6 +249,7 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
   const hasDirMore = dirEntries.length < dirTotal;
   const categoryLabel = categoryLabels[category];
   const gradient = categoryGradients[category];
+  const cityName = city ? getCityName(city, locale) : "Basel";
 
   const handleFilterChange = useCallback((filters: ActiveFilter[]) => {
     setActiveFilters(filters);
@@ -264,27 +299,33 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
             <ol className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.12em]">
               <li><span className="text-s-ink/30">{locale === "de" ? "Startseite" : "Home"}</span></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
+              {city && (
+                <>
+                  <li><span className="text-s-ink/30">{cityName}</span></li>
+                  <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
+                </>
+              )}
               <li className="text-s-ink/60" aria-current="page">{categoryLabel}</li>
             </ol>
           </nav>
 
           {/* Amber eyebrow */}
           <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-3">
-            Basel · {categoryLabel}
+            {cityName} · {categoryLabel}
           </span>
 
           {/* Hero H1 — Bebas Neue at display size */}
           <h1 className="font-display text-s-ink dark:text-s-dm-text"
             style={{ fontSize: "clamp(48px, 8vw, 96px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
             {categoryLabel.toUpperCase()} IN{" "}
-            <span className="text-s-coral">BASEL</span>
+            <span className="text-s-coral">{cityName.toUpperCase()}</span>
           </h1>
 
           {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
             <p className="font-body italic text-s-ink/50 mt-3 text-[15px] leading-[1.82]">
               {total} {total === 1 ? "Salon" : "Salons"} auf Solen
-              {dirTotal > 0 && ` · ${dirTotal} weitere in Basel`}
+              {dirTotal > 0 && ` · ${dirTotal} weitere in ${cityName}`}
             </p>
           )}
         </div>
@@ -405,6 +446,8 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
                   key={salon.id}
                   salon={salon}
                   locale={locale}
+                  isFavorited={favoriteIds.has(salon.id)}
+                  onFavoriteToggle={handleFavoriteToggle}
                   {...(selectedDate
                     ? {
                         availability: {

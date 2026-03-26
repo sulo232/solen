@@ -1,7 +1,18 @@
 import { notFound } from "next/navigation";
 import { isValidCitySlug, getCityName, type CitySlug } from "@/lib/cities";
 import type { SalonCategory } from "@/lib/types";
-import CityPage from "@/components/CityPage";
+import CategoryPage from "@/components/CategoryPage";
+import { Suspense } from "react";
+
+// Category specific sections
+import { CoiffeurAboveGrid, CoiffeurBelowGrid } from "@/components/coiffeur/CoiffeurSections";
+import { BarbershopAboveGrid, BarbershopBelowGrid } from "@/components/barber/BarbershopSections";
+import { NailsAboveGrid, NailsBelowGrid } from "@/components/nail/NailsSections";
+import { SpaBelowGrid } from "@/components/spa/SpaSections";
+import { MakeupAboveGrid, MakeupBelowGrid } from "@/components/makeup/MakeupSections";
+import { WaxingAboveGrid, WaxingBelowGrid } from "@/components/waxing/WaxingSections";
+import { createAdminSupabaseClient } from "@/lib/supabase";
+import { generateCategoryListSchema } from "@/lib/seo";
 
 const VALID_CATEGORIES: SalonCategory[] = ["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"];
 
@@ -9,16 +20,71 @@ interface Props {
   params: { locale: string; city: string; category: string };
 }
 
-export default function CityCategoryRoute({ params }: Props) {
-  if (!isValidCitySlug(params.city)) notFound();
-  if (!VALID_CATEGORIES.includes(params.category as SalonCategory)) notFound();
+export default async function CityCategoryRoute({ params }: Props) {
+  const { city, category, locale } = await params;
+  if (!isValidCitySlug(city)) notFound();
+  if (!VALID_CATEGORIES.includes(category as SalonCategory)) notFound();
+
+  let aboveGrid = null;
+  let belowGrid = null;
+
+  switch (category as SalonCategory) {
+    case "coiffeur":
+      aboveGrid = <CoiffeurAboveGrid />;
+      belowGrid = <CoiffeurBelowGrid />;
+      break;
+    case "barbershop":
+      aboveGrid = <BarbershopAboveGrid />;
+      belowGrid = <BarbershopBelowGrid />;
+      break;
+    case "nails":
+      aboveGrid = <NailsAboveGrid />;
+      belowGrid = <NailsBelowGrid />;
+      break;
+    case "spa":
+      belowGrid = <SpaBelowGrid />;
+      break;
+    case "makeup":
+      aboveGrid = <MakeupAboveGrid />;
+      belowGrid = <MakeupBelowGrid />;
+      break;
+    case "waxing":
+      aboveGrid = <WaxingAboveGrid />;
+      belowGrid = <WaxingBelowGrid />;
+      break;
+  }
+
+  let jsonLd = null;
+  try {
+    const supabase = createAdminSupabaseClient();
+    const { data: salons } = await supabase
+      .from("salons")
+      .select("name, slug, cover_photo_url, average_rating, review_count")
+      .contains("categories", [category])
+      .eq("city", city)
+      .eq("is_active", true)
+      .order("average_rating", { ascending: false })
+      .limit(20);
+    if (salons?.length) {
+      jsonLd = generateCategoryListSchema(category as SalonCategory, salons, locale);
+    }
+  } catch { /* graceful degradation */ }
 
   return (
-    <CityPage
-      city={params.city as CitySlug}
-      locale={params.locale}
-      initialCategory={params.category as SalonCategory}
-    />
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <CategoryPage
+        category={category as SalonCategory}
+        city={city as CitySlug}
+        aboveGrid={<Suspense fallback={null}>{aboveGrid}</Suspense>}
+        belowGrid={belowGrid}
+      />
+    </>
   );
 }
 
