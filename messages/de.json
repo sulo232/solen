@@ -765,6 +765,42 @@
       "send": "Senden",
       "minLengthError": "Die Antwort muss mindestens 10 Zeichen lang sein.",
       "sendError": "Fehler beim Senden"
+    },
+    "giftCards": {
+      "title": "Geschenkkarten",
+      "sold": "Verkauft",
+      "revenue": "Umsatz",
+      "active": "Aktiv",
+      "open": "Offen",
+      "empty": "Keine Geschenkkarten verkauft",
+      "redeemed": "Eingelöst",
+      "pending": "Ausstehend",
+      "activeStatus": "Aktiv"
+    },
+    "offPeak": {
+      "activeRules": "Aktive Regeln",
+      "newRule": "Neue Rabattzeit",
+      "day": "Tag",
+      "from": "Von",
+      "to": "Bis",
+      "discount": "Rabatt",
+      "add": "Hinzufügen",
+      "empty": "Keine Rabattzeiten eingerichtet.",
+      "saveError": "Fehler beim Speichern",
+      "networkError": "Netzwerkfehler"
+    }
+  },
+  "booking": {
+    "cart": {
+      "title": "Warenkorb",
+      "minutes": "Min",
+      "discountCodes": "Rabatt-Codes",
+      "giftCardPlaceholder": "Gutschein-Code",
+      "referralPlaceholder": "Empfehlungs-Code",
+      "total": "Gesamt",
+      "totalMinutes": "{count} Minuten",
+      "inclVat": "inkl. MwSt.",
+      "payAndBook": "Bezahlen & Buchen"
     }
   },
   "errors": {
@@ -835,7 +871,32 @@
       "approve": "Genehmigen",
       "reject": "Ablehnen",
       "remove": "Entfernen",
-      "auto_import": "Auto-Import"
+      "auto_import": "Auto-Import",
+      "importButton": "Content importieren",
+      "smartSearch": "Smart Search",
+      "tiktokUrls": "TikTok URLs",
+      "quickImport": "Schnellimport",
+      "describeLabel": "Beschreiben Sie, was Sie importieren möchten",
+      "descriptionPlaceholder": "z.B. strukturierte French Crops für Männer, Balayage auf dunklem Haar...",
+      "searchingGemini": "Gemini sucht...",
+      "smartSearchButton": "Smart Search",
+      "queries": "Abfragen:",
+      "resultsSelected": "{count} Ergebnisse — {selected} ausgewählt",
+      "deselectAll": "Alle abwählen",
+      "selectAll": "Alle auswählen",
+      "import": "Importieren {count}",
+      "importedResult": "{imported} von {total} Fotos importiert",
+      "searchFailed": "Suche fehlgeschlagen. Versuchen Sie es erneut.",
+      "importFailed": "Import fehlgeschlagen. Versuchen Sie es erneut.",
+      "tiktokLabel": "TikTok URLs einfügen (eine pro Zeile)",
+      "importing": "Importiere + KI analysiert...",
+      "importTiktoks": "TikToks importieren",
+      "imported": "importiert",
+      "alreadyExists": "bereits vorhanden",
+      "requestFailed": "Anfrage fehlgeschlagen",
+      "quickImportDesc": "Schnellimport von Stockfotos nach Kategorie von Unsplash.",
+      "importedPhotos": "{count} {category} Fotos importiert",
+      "importFailedCategory": "Import von {category} fehlgeschlagen"
     },
     "moderation": {
       "flagged": "Gemeldet",

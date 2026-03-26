@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ShoppingBag, Plus, Gift, Tag } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
@@ -31,6 +31,7 @@ interface ServiceCartProps {
 
 export default function ServiceCart({ services, staffName, salonId, onCheckout, checking }: ServiceCartProps) {
   const locale = useLocale();
+  const t = useTranslations("booking.cart");
   const [addons, setAddons] = useState<Record<string, Addon[]>>({});
   const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set());
   const [giftCardCode, setGiftCardCode] = useState("");
@@ -67,7 +68,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       style={{ boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
       {/* P6 — Header eyebrow */}
       <div className="flex items-center justify-between mb-1">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">Warenkorb</p>
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">{t("title")}</p>
         <ShoppingBag size={13} className="text-s-ink/25 dark:text-s-dm-text/25" />
       </div>
 
@@ -79,7 +80,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
               <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">
                 {locale === "en" ? svc.name_en : svc.name_de}
               </p>
-              <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">{svc.duration_minutes} Min</p>
+              <p className="text-[9px] font-heading uppercase tracking-[.10em] text-s-ink/35 dark:text-s-dm-text/35">{svc.duration_minutes} {t("minutes")}</p>
             </div>
             <span className="data-text font-bold text-base text-s-ink dark:text-s-dm-text">
               {formatCurrency(svc.price, locale)}
@@ -106,7 +107,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
               <input type="checkbox" checked={selectedAddons.has(addon.id)} onChange={() => toggleAddon(addon.id)} className="sr-only" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{addon.name}</p>
-                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/35 dark:text-s-dm-text/35">{addon.duration_minutes} Min</p>
+                <p className="text-[9px] font-heading uppercase tracking-[.08em] text-s-ink/35 dark:text-s-dm-text/35">{addon.duration_minutes} {t("minutes")}</p>
               </div>
               <span className="text-xs font-heading font-bold text-s-ink/70 dark:text-s-dm-text/70">+{formatCurrency(addon.price, locale)}</span>
             </label>
@@ -123,14 +124,14 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
 
       {/* P8 — Gift card & referral code inputs */}
       <div className="space-y-2 pt-3 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
-        <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35">Rabatt-Codes</p>
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35">{t("discountCodes")}</p>
         <div className="relative">
           <Gift size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
           <input
             type="text"
             value={giftCardCode}
             onChange={e => setGiftCardCode(e.target.value.toUpperCase())}
-            placeholder="Gutschein-Code"
+            placeholder={t("giftCardPlaceholder")}
             className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-xs font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
@@ -140,7 +141,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             type="text"
             value={referralCode}
             onChange={e => setReferralCode(e.target.value.toUpperCase())}
-            placeholder="Empfehlungs-Code"
+            placeholder={t("referralPlaceholder")}
             className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-xs font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
@@ -149,12 +150,12 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       {/* P9 — Total row */}
       <div className="flex justify-between items-center pt-3 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
         <div>
-          <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35 dark:text-s-dm-text/35">Gesamt</p>
-          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{totalDuration} Minuten</p>
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35 dark:text-s-dm-text/35">{t("total")}</p>
+          <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("totalMinutes", { count: totalDuration })}</p>
         </div>
         <div className="text-right">
           <span className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text">{formatCurrency(totalPrice, locale)}</span>
-          <p className="text-[9px] text-s-ink/35 dark:text-s-dm-text/35 mt-0.5">inkl. MwSt.</p>
+          <p className="text-[9px] text-s-ink/35 dark:text-s-dm-text/35 mt-0.5">{t("inclVat")}</p>
         </div>
       </div>
 
@@ -166,7 +167,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
       >
         {checking && <Spinner size="sm" invert />}
-        Bezahlen & Buchen
+        {t("payAndBook")}
       </button>
     </div>
   );

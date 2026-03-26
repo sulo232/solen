@@ -765,6 +765,42 @@
       "send": "Envoyer",
       "minLengthError": "La réponse doit contenir au moins 10 caractères.",
       "sendError": "Erreur d'envoi"
+    },
+    "giftCards": {
+      "title": "Cartes cadeaux",
+      "sold": "Vendues",
+      "revenue": "Chiffre d'affaires",
+      "active": "Actives",
+      "open": "Ouvert",
+      "empty": "Aucune carte cadeau vendue",
+      "redeemed": "Échangée",
+      "pending": "En attente",
+      "activeStatus": "Active"
+    },
+    "offPeak": {
+      "activeRules": "Règles actives",
+      "newRule": "Nouveau créneau réduit",
+      "day": "Jour",
+      "from": "De",
+      "to": "À",
+      "discount": "Réduction",
+      "add": "Ajouter",
+      "empty": "Aucun créneau réduit configuré.",
+      "saveError": "Erreur d'enregistrement",
+      "networkError": "Erreur réseau"
+    }
+  },
+  "booking": {
+    "cart": {
+      "title": "Panier",
+      "minutes": "Min",
+      "discountCodes": "Codes de réduction",
+      "giftCardPlaceholder": "Code carte cadeau",
+      "referralPlaceholder": "Code parrainage",
+      "total": "Total",
+      "totalMinutes": "{count} Minutes",
+      "inclVat": "TTC",
+      "payAndBook": "Payer & Réserver"
     }
   },
   "errors": {
@@ -835,7 +871,32 @@
       "approve": "Approuver",
       "reject": "Rejeter",
       "remove": "Supprimer",
-      "auto_import": "Auto-Import"
+      "auto_import": "Auto-Import",
+      "importButton": "Importer du contenu",
+      "smartSearch": "Recherche intelligente",
+      "tiktokUrls": "URLs TikTok",
+      "quickImport": "Import rapide",
+      "describeLabel": "Décrivez ce que vous voulez importer",
+      "descriptionPlaceholder": "ex. coupes French crop texturées pour hommes, balayage sur cheveux foncés...",
+      "searchingGemini": "Gemini recherche...",
+      "smartSearchButton": "Recherche intelligente",
+      "queries": "Requêtes:",
+      "resultsSelected": "{count} résultats — {selected} sélectionnés",
+      "deselectAll": "Tout désélectionner",
+      "selectAll": "Tout sélectionner",
+      "import": "Importer {count}",
+      "importedResult": "{imported} photos importées sur {total}",
+      "searchFailed": "Recherche échouée. Réessayez.",
+      "importFailed": "Import échoué. Réessayez.",
+      "tiktokLabel": "Collez les URLs TikTok (une par ligne)",
+      "importing": "Import + analyse IA...",
+      "importTiktoks": "Importer TikToks",
+      "imported": "importé",
+      "alreadyExists": "existe déjà",
+      "requestFailed": "Requête échouée",
+      "quickImportDesc": "Importation rapide de photos d'archives par catégorie depuis Unsplash.",
+      "importedPhotos": "{count} photos {category} importées",
+      "importFailedCategory": "Échec de l'import {category}"
     },
     "moderation": {
       "flagged": "Signalé",

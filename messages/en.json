@@ -765,6 +765,42 @@
       "send": "Send",
       "minLengthError": "Response must be at least 10 characters long.",
       "sendError": "Error sending"
+    },
+    "giftCards": {
+      "title": "Gift Cards",
+      "sold": "Sold",
+      "revenue": "Revenue",
+      "active": "Active",
+      "open": "Open",
+      "empty": "No gift cards sold yet",
+      "redeemed": "Redeemed",
+      "pending": "Pending",
+      "activeStatus": "Active"
+    },
+    "offPeak": {
+      "activeRules": "Active Rules",
+      "newRule": "New Discount Time",
+      "day": "Day",
+      "from": "From",
+      "to": "To",
+      "discount": "Discount",
+      "add": "Add",
+      "empty": "No discount times configured.",
+      "saveError": "Error saving",
+      "networkError": "Network error"
+    }
+  },
+  "booking": {
+    "cart": {
+      "title": "Shopping Cart",
+      "minutes": "Min",
+      "discountCodes": "Discount Codes",
+      "giftCardPlaceholder": "Gift Card Code",
+      "referralPlaceholder": "Referral Code",
+      "total": "Total",
+      "totalMinutes": "{count} Minutes",
+      "inclVat": "incl. VAT",
+      "payAndBook": "Pay & Book"
     }
   },
   "errors": {
@@ -835,7 +871,32 @@
       "approve": "Approve",
       "reject": "Reject",
       "remove": "Remove",
-      "auto_import": "Auto-Import"
+      "auto_import": "Auto-Import",
+      "importButton": "Import Content",
+      "smartSearch": "Smart Search",
+      "tiktokUrls": "TikTok URLs",
+      "quickImport": "Quick Import",
+      "describeLabel": "Describe what you want to import",
+      "descriptionPlaceholder": "e.g. textured French crops for men, balayage on dark hair...",
+      "searchingGemini": "Gemini is searching...",
+      "smartSearchButton": "Smart Search",
+      "queries": "Queries:",
+      "resultsSelected": "{count} results — {selected} selected",
+      "deselectAll": "Deselect all",
+      "selectAll": "Select all",
+      "import": "Import {count}",
+      "importedResult": "Imported {imported} of {total} photos",
+      "searchFailed": "Search failed. Try again.",
+      "importFailed": "Import failed. Try again.",
+      "tiktokLabel": "Paste TikTok URLs (one per line)",
+      "importing": "Importing + AI analyzing...",
+      "importTiktoks": "Import TikToks",
+      "imported": "imported",
+      "alreadyExists": "already_exists",
+      "requestFailed": "Request failed",
+      "quickImportDesc": "Quick-import stock photos by category from Unsplash.",
+      "importedPhotos": "Imported {count} {category} photos",
+      "importFailedCategory": "Failed to import {category}"
     },
     "moderation": {
       "flagged": "Flagged",

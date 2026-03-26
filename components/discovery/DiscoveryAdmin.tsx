@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Search, Link2, Sparkles, Download, Check, X, Loader2, Play, Image as ImageIcon, ChevronDown } from "lucide-react";
 
 interface StockPhoto {
@@ -18,6 +19,7 @@ type Tab = "tiktok" | "smart" | "category";
 const CATEGORIES = ["hair", "beard", "nails", "makeup", "waxing"] as const;
 
 export default function DiscoveryAdmin() {
+  const t = useTranslations("discovery.admin");
   const [tab, setTab] = useState<Tab>("smart");
   const [open, setOpen] = useState(false);
 
@@ -28,7 +30,7 @@ export default function DiscoveryAdmin() {
         className="mb-4 flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
       >
         <Download size={16} />
-        Import Content
+        {t("importButton")}
       </button>
     );
   }
@@ -39,7 +41,7 @@ export default function DiscoveryAdmin() {
       <div className="flex items-center justify-between px-4 py-3 bg-s-coral/5 dark:bg-s-coral/10 border-b border-s-coral/10">
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-s-coral" />
-          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">Content Import</span>
+          <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("title")}</span>
         </div>
         <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink dark:text-s-dm-text/40 dark:hover:text-s-dm-text">
           <X size={16} />
@@ -49,21 +51,21 @@ export default function DiscoveryAdmin() {
       {/* Tabs */}
       <div className="flex border-b border-s-ink/5 dark:border-white/5">
         {([
-          { id: "smart" as Tab, label: "Smart Search", icon: Search },
-          { id: "tiktok" as Tab, label: "TikTok URLs", icon: Play },
-          { id: "category" as Tab, label: "Quick Import", icon: Download },
-        ]).map((t) => (
+          { id: "smart" as Tab, label: t("smartSearch"), icon: Search },
+          { id: "tiktok" as Tab, label: t("tiktokUrls"), icon: Play },
+          { id: "category" as Tab, label: t("quickImport"), icon: Download },
+        ]).map((tb) => (
           <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
+            key={tb.id}
+            onClick={() => setTab(tb.id)}
             className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors ${
-              tab === t.id
+              tab === tb.id
                 ? "text-s-coral border-b-2 border-s-coral"
                 : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"
             }`}
           >
-            <t.icon size={14} />
-            {t.label}
+            <tb.icon size={14} />
+            {tb.label}
           </button>
         ))}
       </div>
@@ -80,6 +82,7 @@ export default function DiscoveryAdmin() {
 
 // ═══ Smart Search Tab ═══
 function SmartSearchTab() {
+  const t = useTranslations("discovery.admin");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>("hair");
   const [searching, setSearching] = useState(false);
@@ -107,11 +110,11 @@ function SmartSearchTab() {
       setResults(data.results ?? []);
       setQueries(data.queries ?? []);
     } catch {
-      setImportResult("Search failed. Try again.");
+      setImportResult(t("searchFailed"));
     } finally {
       setSearching(false);
     }
-  }, [description, category]);
+  }, [description, category, t]);
 
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
@@ -142,23 +145,23 @@ function SmartSearchTab() {
         body: JSON.stringify({ action: "import", photos, category }),
       });
       const data = await res.json();
-      setImportResult(`Imported ${data.imported} of ${data.total} photos`);
+      setImportResult(t("importedResult", { imported: data.imported, total: data.total }));
       // Remove imported from results
       setResults((prev) => prev.filter((r) => !selected.has(r.id)));
       setSelected(new Set());
     } catch {
-      setImportResult("Import failed. Try again.");
+      setImportResult(t("importFailed"));
     } finally {
       setImporting(false);
     }
-  }, [selected, results, category]);
+  }, [selected, results, category, t]);
 
   return (
     <div className="space-y-4">
       {/* Description input */}
       <div className="space-y-2">
         <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">
-          Describe what you want to import
+          {t("describeLabel")}
         </label>
         <div className="flex gap-2">
           <input
@@ -166,7 +169,7 @@ function SmartSearchTab() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="e.g. textured French crops for men, balayage on dark hair..."
+            placeholder={t("descriptionPlaceholder")}
             className="flex-1 px-3 py-2 text-sm rounded-[16px] border border-s-ink/10 dark:border-white/10 bg-s-bg-base dark:bg-s-dm-bg text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           />
           <select
@@ -185,14 +188,14 @@ function SmartSearchTab() {
           className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {searching ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-          {searching ? "Gemini is searching..." : "Smart Search"}
+          {searching ? t("searchingGemini") : t("smartSearchButton")}
         </button>
       </div>
 
       {/* Generated queries */}
       {queries.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mr-1">Queries:</span>
+          <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mr-1">{t("queries")}</span>
           {queries.map((q, i) => (
             <span key={i} className="text-[10px] px-2 py-0.5 rounded-pill bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60">
               {q}
@@ -206,11 +209,11 @@ function SmartSearchTab() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
-              {results.length} results — {selected.size} selected
+              {t("resultsSelected", { count: results.length, selected: selected.size })}
             </span>
             <div className="flex items-center gap-2">
               <button onClick={selectAll} className="text-[10px] text-s-coral hover:underline">
-                {selected.size === results.length ? "Deselect all" : "Select all"}
+                {selected.size === results.length ? t("deselectAll") : t("selectAll")}
               </button>
               {selected.size > 0 && (
                 <button
@@ -219,7 +222,7 @@ function SmartSearchTab() {
                   className="flex items-center gap-1 px-3 py-1 rounded-[16px] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] disabled:opacity-50"
                 >
                   {importing ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
-                  Import {selected.size}
+                  {t("import", { count: selected.size })}
                 </button>
               )}
             </div>
@@ -268,6 +271,7 @@ function SmartSearchTab() {
 
 // ═══ TikTok Import Tab ═══
 function TikTokImportTab() {
+  const t = useTranslations("discovery.admin");
   const [urls, setUrls] = useState("");
   const [importing, setImporting] = useState(false);
   const [results, setResults] = useState<Array<{ url: string; status: string; style_name?: string }>>([]);
@@ -291,17 +295,17 @@ function TikTokImportTab() {
       const data = await res.json();
       setResults(data.results ?? []);
     } catch {
-      setResults([{ url: "all", status: "Request failed" }]);
+      setResults([{ url: "all", status: t("requestFailed") }]);
     } finally {
       setImporting(false);
     }
-  }, [urls]);
+  }, [urls, t]);
 
   return (
     <div className="space-y-3">
       <div className="space-y-1">
         <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">
-          Paste TikTok URLs (one per line)
+          {t("tiktokLabel")}
         </label>
         <textarea
           value={urls}
@@ -318,7 +322,7 @@ function TikTokImportTab() {
         className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {importing ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
-        {importing ? "Importing + AI analyzing..." : "Import TikToks"}
+        {importing ? t("importing") : t("importTiktoks")}
       </button>
 
       {/* Results */}
@@ -339,7 +343,7 @@ function TikTokImportTab() {
               <div className="min-w-0">
                 <p className="truncate font-mono">{r.url}</p>
                 <p className="text-[10px] opacity-70">
-                  {r.status === "imported" && r.style_name ? `✓ ${r.style_name}` : r.status}
+                  {r.status === "imported" && r.style_name ? `✓ ${r.style_name}` : r.status === "imported" ? t("imported") : r.status === "already_exists" ? t("alreadyExists") : r.status}
                 </p>
               </div>
             </div>
@@ -352,6 +356,7 @@ function TikTokImportTab() {
 
 // ═══ Category Quick-Import Tab ═══
 function CategoryImportTab() {
+  const t = useTranslations("discovery.admin");
   const [importing, setImporting] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
 
@@ -366,18 +371,18 @@ function CategoryImportTab() {
         body: JSON.stringify({ category }),
       });
       const data = await res.json();
-      setResult(`Imported ${data.imported} ${category} photos`);
+      setResult(t("importedPhotos", { count: data.imported, category }));
     } catch {
-      setResult(`Failed to import ${category}`);
+      setResult(t("importFailedCategory", { category }));
     } finally {
       setImporting(null);
     }
-  }, []);
+  }, [t]);
 
   return (
     <div className="space-y-3">
       <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
-        Quick-import stock photos by category from Unsplash.
+        {t("quickImportDesc")}
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">

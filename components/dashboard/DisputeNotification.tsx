@@ -84,7 +84,7 @@ export default function DisputeNotification({
                   disabled={loading}
                   className="px-4 py-1.5 rounded-[8px] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] disabled:opacity-50 flex items-center gap-1.5 transition-colors"
                 >
-                  {loading && <Spinner size="xs" invert />}
+                  {loading && <Spinner size="sm" invert />}
                   {t("send")} <Send size={12} />
                 </button>
               </div>

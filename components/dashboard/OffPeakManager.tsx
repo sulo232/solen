@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Trash2, Plus, Clock } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
-const DAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 const HOURS = Array.from({ length: 15 }, (_, i) => i + 7);
 
 type OffPeakRule = {
@@ -20,6 +20,11 @@ function timeToHour(t: string) {
 }
 
 export default function OffPeakManager({ salonId }: { salonId: string }) {
+  const t = useTranslations("dashboard.offPeak");
+  const tSchedule = useTranslations("dashboard.schedule");
+
+  const DAYS = (["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const).map(d => tSchedule(d).slice(0, 2));
+
   const [rules, setRules] = useState<OffPeakRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -54,13 +59,13 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
       });
       if (!res.ok) {
         const d = await res.json();
-        setError(d.error ?? "Fehler beim Speichern");
+        setError(d.error ?? t("saveError"));
         return;
       }
       const created = await res.json();
       setRules((prev) => [...prev, created]);
     } catch {
-      setError("Netzwerkfehler");
+      setError(t("networkError"));
     } finally {
       setSaving(false);
     }
@@ -126,7 +131,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
       {rules.length > 0 && (
         <div className="space-y-1.5">
-          <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">Aktive Regeln</p>
+          <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{t("activeRules")}</p>
           {rules.map((r) => (
             <div key={r.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 dark:bg-s-dm-raised rounded-btn border border-s-ink/5 dark:border-white/5">
               <div className="flex items-center gap-2">
@@ -148,28 +153,28 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
       <div className="border-t border-s-ink/5 dark:border-white/5 pt-4 space-y-3">
         <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 flex items-center gap-1.5">
-          <Plus size={12} /> Neue Rabattzeit
+          <Plus size={12} /> {t("newRule")}
         </p>
         <div className="flex flex-wrap gap-2 items-end">
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Tag</label>
+            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("day")}</label>
             <select value={addDay} onChange={(e) => setAddDay(+e.target.value)}
               className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
               {DAYS.map((d, i) => (<option key={i} value={i}>{d}</option>))}
             </select>
           </div>
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Von</label>
+            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("from")}</label>
             <input type="time" value={addStart} onChange={(e) => setAddStart(e.target.value)}
               className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
           </div>
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Bis</label>
+            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("to")}</label>
             <input type="time" value={addEnd} onChange={(e) => setAddEnd(e.target.value)}
               className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
           </div>
           <div>
-            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">Rabatt</label>
+            <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("discount")}</label>
             <div className="flex items-center gap-1">
               <input type="number" min={5} max={50} step={5} value={addDiscount}
                 onChange={(e) => setAddDiscount(Math.min(50, Math.max(5, +e.target.value)))}
@@ -180,7 +185,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
           <button onClick={handleAdd} disabled={saving}
             className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1.5 transition-all">
             {saving && <Spinner size="sm" invert />}
-            Hinzufugen
+            {t("add")}
           </button>
         </div>
         {error && <p className="text-xs text-s-coral">{error}</p>}
@@ -188,7 +193,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
       {rules.length === 0 && (
         <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-2">
-          Keine Rabattzeiten eingerichtet.
+          {t("empty")}
         </p>
       )}
     </div>

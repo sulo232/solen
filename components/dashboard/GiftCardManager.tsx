@@ -1,17 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Gift } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
-
-const labels = {
-  de: { title: "Geschenkkarten", sold: "Verkauft", revenue: "Umsatz", active: "Aktiv", open: "Offen", empty: "Keine Geschenkkarten verkauft", redeemed: "Eingelöst", pending: "Ausstehend", activeStatus: "Aktiv" },
-  en: { title: "Gift Cards", sold: "Sold", revenue: "Revenue", active: "Active", open: "Open", empty: "No gift cards sold yet", redeemed: "Redeemed", pending: "Pending", activeStatus: "Active" },
-  fr: { title: "Cartes cadeaux", sold: "Vendues", revenue: "Chiffre d'affaires", active: "Actives", open: "Ouvert", empty: "Aucune carte cadeau vendue", redeemed: "Échangée", pending: "En attente", activeStatus: "Active" },
-  it: { title: "Carte regalo", sold: "Vendute", revenue: "Fatturato", active: "Attive", open: "Aperto", empty: "Nessuna carta regalo venduta", redeemed: "Riscattata", pending: "In attesa", activeStatus: "Attiva" },
-};
 
 interface GiftCard {
   id: string;
@@ -32,7 +25,7 @@ interface GiftCardManagerProps {
 
 export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
   const locale = useLocale();
-  const l = labels[locale as keyof typeof labels] ?? labels.de;
+  const t = useTranslations("dashboard.giftCards");
   const [cards, setCards] = useState<GiftCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total_sold: 0, total_revenue: 0, active_cards: 0, unredeemed_balance: 0 });
@@ -57,16 +50,16 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
   return (
     <div>
       <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2 mb-4">
-        <Gift size={14} className="text-s-coral" /> {l.title}
+        <Gift size={14} className="text-s-coral" /> {t("title")}
       </h3>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
         {[
-          { label: l.sold, value: stats.total_sold },
-          { label: l.revenue, value: formatCurrency(stats.total_revenue / 100, locale) },
-          { label: l.active, value: stats.active_cards },
-          { label: l.open, value: formatCurrency(stats.unredeemed_balance / 100, locale) },
+          { label: t("sold"), value: stats.total_sold },
+          { label: t("revenue"), value: formatCurrency(stats.total_revenue / 100, locale) },
+          { label: t("active"), value: stats.active_cards },
+          { label: t("open"), value: formatCurrency(stats.unredeemed_balance / 100, locale) },
         ].map((s) => (
           <div key={s.label} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3 text-center">
             <p className="data-text font-bold text-lg text-s-ink dark:text-s-dm-text">{s.value}</p>
@@ -77,7 +70,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
 
       {/* Card list */}
       {cards.length === 0 ? (
-        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">{l.empty}</p>
+        <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">{t("empty")}</p>
       ) : (
         <div className="space-y-2">
           {cards.map((c) => (
@@ -94,7 +87,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
                   <span className="text-s-ink/30 dark:text-s-dm-text/30 font-normal"> / {(c.original_amount / 100).toFixed(0)}</span>
                 </p>
                 <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${c.is_active ? (c.remaining_amount > 0 ? "bg-s-sage/10 text-s-sage dark:bg-s-sage/20 dark:text-s-sage" : "bg-s-ink/5 text-s-ink/40 dark:bg-white/5 dark:text-s-dm-text/40") : "bg-s-ink/5 text-s-ink/30 dark:bg-white/5 dark:text-s-dm-text/30"}`}>
-                  {c.is_active ? (c.remaining_amount > 0 ? l.activeStatus : l.redeemed) : l.pending}
+                  {c.is_active ? (c.remaining_amount > 0 ? t("activeStatus") : t("redeemed")) : t("pending")}
                 </span>
               </div>
             </div>
