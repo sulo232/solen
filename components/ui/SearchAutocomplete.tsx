@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { Search, X, Star, Sparkles } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
@@ -51,6 +51,7 @@ interface SearchAutocompleteProps {
 export default function SearchAutocomplete({ category, onServiceSelect }: SearchAutocompleteProps) {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("ui.search");
   const [query, setQuery] = useState("");
   const [services, setServices] = useState<SuggestService[]>([]);
   const [salons, setSalons] = useState<SuggestSalon[]>([]);
@@ -179,7 +180,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
-          placeholder="Service oder Salon suchen…"
+          placeholder={t("placeholder")}
           className="w-full pl-9 pr-8 py-2.5 rounded-btn bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
         />
         {query && (
@@ -197,7 +198,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
-                Behandlungen
+                {t("treatments")}
               </p>
               {services.map((service, i) => (
                 <button
@@ -220,7 +221,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
             <div>
               {services.length > 0 && <div className="border-t border-s-ink/5" />}
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
-                Salons
+                {t("salons")}
               </p>
               {salons.map((salon, i) => {
                 const idx = services.length + i;
@@ -262,7 +263,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
               {(services.length > 0 || salons.length > 0) && <div className="border-t border-s-ink/5" />}
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1 flex items-center gap-1">
                 <Sparkles size={10} className="text-s-coral" />
-                KI-Vorschläge
+                {t("aiSuggestions")}
               </p>
               {smartResults.map((result, i) => {
                 const idx = services.length + salons.length + i;
@@ -300,14 +301,14 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
             <div className="px-3 py-2.5 flex items-center gap-2 bg-s-coral/5 border-t border-s-ink/5">
               <Search size={14} className="text-s-coral shrink-0" />
               <span className="text-xs text-s-ink/60 dark:text-s-dm-text/60 font-body">
-                Meintest du <strong>{categoryLabels[suggestedCategory]}</strong>?
+                {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?
               </span>
               <Link
                 href={`/${locale}/${suggestedCategory}?q=${encodeURIComponent(query)}`}
                 className="ml-auto px-3 py-1 rounded-pill bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-colors shrink-0"
                 onClick={() => setOpen(false)}
               >
-                Wechseln
+                {t("switch")}
               </Link>
             </div>
           )}

@@ -29,6 +29,7 @@ const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreviewSheetProps) {
   const locale = useLocale();
+  const t = useTranslations("ui.preview");
 
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
@@ -77,7 +78,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               <div className="flex justify-center pt-3 pb-2 sticky top-0 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-sm z-10">
                 <div className="w-10 h-1 rounded-full bg-s-sand dark:bg-white/20" />
               </div>
-              <SheetContent salon={salon} locale={locale} topServices={topServices} todayHours={todayHours} onClose={onClose} />
+              <SheetContent salon={salon} locale={locale} topServices={topServices} todayHours={todayHours} onClose={onClose} t={t} />
             </motion.div>
           </div>
 
@@ -103,7 +104,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               >
                 <X className="w-4 h-4" />
               </button>
-              <SheetContent salon={salon} locale={locale} topServices={topServices} todayHours={todayHours} onClose={onClose} />
+              <SheetContent salon={salon} locale={locale} topServices={topServices} todayHours={todayHours} onClose={onClose} t={t} />
             </motion.div>
           </div>
         </>
@@ -118,12 +119,14 @@ function SheetContent({
   topServices,
   todayHours,
   onClose,
+  t,
 }: {
   salon: PreviewSalon;
   locale: string;
   topServices: { name_de: string; name_en: string; price: number; duration_minutes: number }[];
   todayHours: { open: string; close: string } | null | undefined;
   onClose: () => void;
+  t: any;
 }) {
   return (
     <div className="px-5 pb-8">
@@ -153,14 +156,14 @@ function SheetContent({
       {todayHours && (
         <div className="flex items-center gap-1.5 mt-2 text-xs text-s-ink/50 dark:text-s-dm-text/50">
           <Clock className="w-3 h-3" />
-          <span>Heute: {todayHours.open}–{todayHours.close}</span>
+          <span>{t("today")}: {todayHours.open}–{todayHours.close}</span>
         </div>
       )}
 
       {/* Top services */}
       {topServices.length > 0 && (
         <div className="mt-4">
-          <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">Top Leistungen</p>
+          <p className="text-xs font-medium text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-wide mb-2">{t("topServices")}</p>
           <div className="divide-y divide-s-ink/5 dark:divide-white/5">
             {topServices.map((svc, i) => (
               <div key={i} className="flex items-center justify-between py-2.5">
@@ -168,7 +171,7 @@ function SheetContent({
                   <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
                     {locale === "de" ? svc.name_de : svc.name_en}
                   </p>
-                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{svc.duration_minutes} Min.</p>
+                  <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{svc.duration_minutes} {t("minutes")}</p>
                 </div>
                 <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{formatCurrency(svc.price, locale)}</span>
               </div>
@@ -184,14 +187,14 @@ function SheetContent({
           onClick={onClose}
           className="flex-1 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink dark:text-s-dm-text text-center hover:border-s-coral/50 transition-colors"
         >
-          Mehr anzeigen
+          {t("showMore")}
         </Link>
         <Link
           href={`/${locale}/salon/${salon.slug}?book=true`}
           onClick={onClose}
           className="flex-1 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium text-center shadow-warm-md hover:brightness-[1.06] transition-all"
         >
-          Buchen
+          {t("book")}
         </Link>
       </div>
     </div>

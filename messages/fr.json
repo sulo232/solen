@@ -1625,5 +1625,59 @@
     "for_you": "✦ Pour vous",
     "why": "Pourquoi?",
     "refresh": "Actualiser les recommandations ↻"
+  },
+  "ui": {
+    "error": {
+      "title": "Une erreur s'est produite",
+      "defaultMessage": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "retry": "Réessayer",
+      "errorId": "ID d'erreur"
+    },
+    "preview": {
+      "today": "Aujourd'hui",
+      "topServices": "Prestations principales",
+      "minutes": "min.",
+      "showMore": "Afficher plus",
+      "book": "Réserver"
+    },
+    "priceOffer": {
+      "title": "Créer une offre de prix",
+      "description": "Description",
+      "descPlaceholder": "p.ex. Balayage avec soin",
+      "price": "Prix (CHF)",
+      "cancel": "Annuler",
+      "send": "Envoyer l'offre",
+      "errDesc": "Veuillez entrer une description.",
+      "errPrice": "Veuillez entrer un prix valide."
+    },
+    "search": {
+      "placeholder": "Rechercher un service ou salon…",
+      "treatments": "Prestations",
+      "salons": "Salons",
+      "aiSuggestions": "Suggestions IA",
+      "didYouMean": "Vouliez-vous dire",
+      "switch": "Changer"
+    },
+    "priceSlider": {
+      "minPrice": "Prix minimum",
+      "maxPrice": "Prix maximum"
+    },
+    "button": {
+      "loading": "Chargement…"
+    },
+    "deviceFrame": {
+      "previewTitle": "Aperçu du site"
+    },
+    "viewToggle": {
+      "mapView": "Vue carte",
+      "gridView": "Vue liste"
+    },
+    "progress": {
+      "step": "Étape"
+    },
+    "modal": {
+      "booking": "Réservation",
+      "close": "Fermer"
+    }
   }
 }

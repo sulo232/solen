@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { modalVariants } from "@/lib/animations";
@@ -73,6 +74,7 @@ export default function GlassModal({
   children,
   className,
 }: GlassModalProps) {
+  const t = useTranslations("ui.modal");
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(panelRef, open);
 
@@ -136,13 +138,13 @@ export default function GlassModal({
             {title && (
               <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-s-ink/[0.06]">
                 <div>
-                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-1">Buchung</p>
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-1">{t("booking")}</p>
                   <h2 className="font-heading font-bold text-s-ink text-lg">{title}</h2>
                 </div>
                 <button
                   onClick={onClose}
                   className="p-1.5 rounded-[8px] text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors"
-                  aria-label="Schliessen"
+                  aria-label={t("close")}
                 >
                   <X size={18} />
                 </button>

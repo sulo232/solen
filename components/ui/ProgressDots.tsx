@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface ProgressDotsProps {
   total: number;
   current: number;
@@ -7,6 +9,7 @@ interface ProgressDotsProps {
 }
 
 export default function ProgressDots({ total, current, onDotClick }: ProgressDotsProps) {
+  const t = useTranslations("ui.progress");
   return (
     <div className="flex items-center justify-center gap-2 py-3">
       {Array.from({ length: total }, (_, i) => {
@@ -24,7 +27,7 @@ export default function ProgressDots({ total, current, onDotClick }: ProgressDot
                 ? "bg-s-coral/50 cursor-pointer hover:bg-s-coral/70"
                 : "bg-s-sand"
             }`}
-            aria-label={`Step ${i + 1}`}
+            aria-label={`${t("step")} ${i + 1}`}
           />
         );
       })}

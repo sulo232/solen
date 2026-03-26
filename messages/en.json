@@ -1625,5 +1625,59 @@
     "for_you": "✦ For You",
     "why": "Why?",
     "refresh": "Refresh Recommendations ↻"
+  },
+  "ui": {
+    "error": {
+      "title": "Something went wrong",
+      "defaultMessage": "An unexpected error occurred. Please try again.",
+      "retry": "Try again",
+      "errorId": "Error ID"
+    },
+    "preview": {
+      "today": "Today",
+      "topServices": "Top Services",
+      "minutes": "min.",
+      "showMore": "Show more",
+      "book": "Book"
+    },
+    "priceOffer": {
+      "title": "Create Price Offer",
+      "description": "Description",
+      "descPlaceholder": "e.g. Balayage with treatment",
+      "price": "Price (CHF)",
+      "cancel": "Cancel",
+      "send": "Send Offer",
+      "errDesc": "Please enter a description.",
+      "errPrice": "Please enter a valid price."
+    },
+    "search": {
+      "placeholder": "Search for service or salon…",
+      "treatments": "Treatments",
+      "salons": "Salons",
+      "aiSuggestions": "AI Suggestions",
+      "didYouMean": "Did you mean",
+      "switch": "Switch"
+    },
+    "priceSlider": {
+      "minPrice": "Minimum price",
+      "maxPrice": "Maximum price"
+    },
+    "button": {
+      "loading": "Loading…"
+    },
+    "deviceFrame": {
+      "previewTitle": "Site Preview"
+    },
+    "viewToggle": {
+      "mapView": "Map view",
+      "gridView": "List view"
+    },
+    "progress": {
+      "step": "Step"
+    },
+    "modal": {
+      "booking": "Booking",
+      "close": "Close"
+    }
   }
 }

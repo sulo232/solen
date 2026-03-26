@@ -1,6 +1,7 @@
 "use client";
 
 import { Map, LayoutGrid } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface MobileViewToggleProps {
   view: "grid" | "map";
@@ -8,11 +9,12 @@ interface MobileViewToggleProps {
 }
 
 export default function MobileViewToggle({ view, onToggle }: MobileViewToggleProps) {
+  const t = useTranslations("ui.viewToggle");
   return (
     <button
       onClick={() => onToggle(view === "grid" ? "map" : "grid")}
       className="fixed bottom-24 right-4 z-40 md:hidden bg-s-coral text-white p-4 rounded-pill shadow-coral-glow hover:shadow-warm-md transition-all"
-      aria-label={view === "grid" ? "Kartenansicht" : "Listenansicht"}
+      aria-label={view === "grid" ? t("mapView") : t("gridView")}
     >
       {view === "grid" ? <Map size={20} /> : <LayoutGrid size={20} />}
     </button>

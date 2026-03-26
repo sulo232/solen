@@ -1625,5 +1625,59 @@
     "for_you": "✦ Für dich",
     "why": "Warum?",
     "refresh": "Neue Empfehlungen laden ↻"
+  },
+  "ui": {
+    "error": {
+      "title": "Etwas ist schiefgelaufen",
+      "defaultMessage": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+      "retry": "Nochmal versuchen",
+      "errorId": "Error ID"
+    },
+    "preview": {
+      "today": "Heute",
+      "topServices": "Top Leistungen",
+      "minutes": "Min.",
+      "showMore": "Mehr anzeigen",
+      "book": "Buchen"
+    },
+    "priceOffer": {
+      "title": "Preisangebot erstellen",
+      "description": "Beschreibung",
+      "descPlaceholder": "z.B. Balayage mit Pflege",
+      "price": "Preis (CHF)",
+      "cancel": "Abbrechen",
+      "send": "Angebot senden",
+      "errDesc": "Bitte Beschreibung eingeben.",
+      "errPrice": "Bitte gültigen Preis eingeben."
+    },
+    "search": {
+      "placeholder": "Service oder Salon suchen…",
+      "treatments": "Behandlungen",
+      "salons": "Salons",
+      "aiSuggestions": "KI-Vorschläge",
+      "didYouMean": "Meintest du",
+      "switch": "Wechseln"
+    },
+    "priceSlider": {
+      "minPrice": "Mindestpreis",
+      "maxPrice": "Maximalpreis"
+    },
+    "button": {
+      "loading": "Lädt…"
+    },
+    "deviceFrame": {
+      "previewTitle": "Site Preview"
+    },
+    "viewToggle": {
+      "mapView": "Kartenansicht",
+      "gridView": "Listenansicht"
+    },
+    "progress": {
+      "step": "Step"
+    },
+    "modal": {
+      "booking": "Buchung",
+      "close": "Schliessen"
+    }
   }
 }

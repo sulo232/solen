@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 export type DevicePreset = "desktop" | "tablet" | "mobile";
 
@@ -46,6 +47,7 @@ export default function DeviceFrame({
   onElementHovered,
   iframeRef,
 }: DeviceFrameProps) {
+  const t = useTranslations("ui.deviceFrame");
   const bridgeReady = useRef(false);
 
   const handleMessage = useCallback(
@@ -119,7 +121,7 @@ export default function DeviceFrame({
           src={url}
           className="w-full h-full border-0"
           style={device === "mobile" ? { borderRadius: "24px" } : {}}
-          title="Site Preview"
+          title={t("previewTitle")}
           onLoad={handleIframeLoad}
         />
       </div>

@@ -1625,5 +1625,59 @@
     "for_you": "✦ Per te",
     "why": "Perché?",
     "refresh": "Aggiorna raccomandazioni ↻"
+  },
+  "ui": {
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "defaultMessage": "Si è verificato un errore imprevisto. Riprova.",
+      "retry": "Riprova",
+      "errorId": "ID errore"
+    },
+    "preview": {
+      "today": "Oggi",
+      "topServices": "Servizi principali",
+      "minutes": "min.",
+      "showMore": "Mostra di più",
+      "book": "Prenota"
+    },
+    "priceOffer": {
+      "title": "Crea offerta di prezzo",
+      "description": "Descrizione",
+      "descPlaceholder": "es. Balayage con trattamento",
+      "price": "Prezzo (CHF)",
+      "cancel": "Annulla",
+      "send": "Invia offerta",
+      "errDesc": "Inserisci una descrizione.",
+      "errPrice": "Inserisci un prezzo valido."
+    },
+    "search": {
+      "placeholder": "Cerca servizio o salone…",
+      "treatments": "Trattamenti",
+      "salons": "Saloni",
+      "aiSuggestions": "Suggerimenti IA",
+      "didYouMean": "Intendevi",
+      "switch": "Cambia"
+    },
+    "priceSlider": {
+      "minPrice": "Prezzo minimo",
+      "maxPrice": "Prezzo massimo"
+    },
+    "button": {
+      "loading": "Caricamento…"
+    },
+    "deviceFrame": {
+      "previewTitle": "Anteprima sito"
+    },
+    "viewToggle": {
+      "mapView": "Vista mappa",
+      "gridView": "Vista lista"
+    },
+    "progress": {
+      "step": "Passo"
+    },
+    "modal": {
+      "booking": "Prenotazione",
+      "close": "Chiudi"
+    }
   }
 }
