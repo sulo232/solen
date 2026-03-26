@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import Image from "next/image";
@@ -31,6 +31,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
 import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory, OpeningHours } from "@/lib/types";
 import { generateSalonSchema } from "@/lib/seo";
+import { useSectionObserver } from "@/hooks/useSectionObserver";
+import SalonTabBar from "@/components/salon/SalonTabBar";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -247,6 +249,16 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
 // Page
 // ─────────────────────────────────────────────────
 
+const TABS = [
+  { key: "angebot", label: "Angebot" },
+  { key: "bewertungen", label: "Bewertungen" },
+  { key: "team", label: "Team" },
+  { key: "fotos", label: "Fotos" },
+  { key: "portfolio", label: "Portfolio" },
+  { key: "standort", label: "Standort" },
+  { key: "info", label: "Info" },
+];
+
 export default function SalonProfilePage() {
   const { slug } = useParams<{ slug: string }>();
   const locale = useLocale();
@@ -273,6 +285,14 @@ export default function SalonProfilePage() {
   const [flagReason, setFlagReason] = useState("");
   const [flagLoading, setFlagLoading] = useState(false);
   const [flagSuccess, setFlagSuccess] = useState(false);
+
+  const sectionIds = useMemo(() => TABS.map(t => `section-${t.key}`), []);
+  const activeSection = useSectionObserver(sectionIds);
+
+  const handleTabClick = (key: string) => {
+    setActiveTab(key);
+    document.getElementById(`section-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -594,23 +614,24 @@ export default function SalonProfilePage() {
               {/* Off-peak countdown */}
               <OffPeakCountdown salonId={salon.id} />
 
-              {/* Desktop tab bar */}
-              <div className="hidden md:flex items-center gap-0 border-b border-s-ink/[0.06] dark:border-white/[0.06] sticky top-[57px] z-10 isolate"
-                style={{ background: "rgba(250,246,239,.82)", backdropFilter: "blur(28px) saturate(1.3)",
-                         WebkitBackdropFilter: "blur(28px) saturate(1.3)",
-                         boxShadow: "inset 0 -1px 0 rgba(26,18,9,.06)" }}
-                role="tablist">
-                {TABS.map(({ key, label }) => (
-                  <button key={key} role="tab" aria-selected={activeTab === key} aria-controls={`section-${key}`}
-                    onClick={() => { setActiveTab(key); document.getElementById(`section-${key}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                    className={`px-5 py-3.5 text-[11px] font-heading font-bold uppercase tracking-[.12em] transition-colors border-b-2 -mb-px ${
-                      activeTab === key
-                        ? "border-s-coral text-s-coral"
-                        : "border-transparent text-s-ink/45 hover:text-s-ink dark:text-s-dm-text/45 dark:hover:text-s-dm-text"
-                    }`}>
-                    {label}
-                  </button>
-                ))}
+              <div id="section-info" className="scroll-mt-[180px]">
+                {((salon as any).about_text_de || (salon as any).about_text_en || (salon as any).about_text_fr || (salon as any).about_text_it) && (
+                  <div className="mb-8 p-6 rounded-[20px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 shadow-sm">
+                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">
+                      Über uns
+                    </h2>
+                    <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed whitespace-pre-wrap">
+                      {(salon as any)[`about_text_${locale}`] || (salon as any).about_text_en || (salon as any).about_text_de}
+                    </p>
+                  </div>
+                )}
+                
+                {/* Scroll-aware sticky tab bar (mobile + desktop) */}
+                <SalonTabBar
+                  activeTab={activeSection}
+                  onTabClick={handleTabClick}
+                  tabs={TABS as any}
+                />
               </div>
 
               {/* Opening hours — mobile: collapsed with today preview */}
@@ -1126,23 +1147,6 @@ export default function SalonProfilePage() {
                 )}
                 </div>
               </div>
-
-              {/* Standort / Mini Map */}
-              {salon.latitude && salon.longitude && (
-                <div id="section-standort">
-                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-s-coral" />Standort
-                  </h2>
-                  <div className="h-48 rounded-[16px] overflow-hidden">
-                    <MapView salons={[mapSalon]} />
-                  </div>
-                  <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-2 text-sm text-s-coral hover:underline">
-                    Route anzeigen <ChevronRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              )}
 
               {/* Similar Salons */}
               {salon.categories.length > 0 && (

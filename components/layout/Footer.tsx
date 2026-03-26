@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Instagram } from "lucide-react";
 import TrustBadges from "@/components/ui/TrustBadges";
+import { CITY_SLUGS, getCityName } from "@/lib/cities";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 const CATEGORIES = [
   { key: "coiffeur",   label: "Coiffeur"     },
@@ -51,6 +53,25 @@ export default function Footer() {
                     className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                   >
                     {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Cities column */}
+          <div>
+            <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
+              {t("cities")}
+            </h3>
+            <ul className="space-y-2">
+              {CITY_SLUGS.map((slug) => (
+                <li key={slug}>
+                  <Link
+                    href={`/${locale}/${slug}`}
+                    className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                  >
+                    {getCityName(slug, locale)}
                   </Link>
                 </li>
               ))}
@@ -136,6 +157,12 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Language switcher — footer */}
+        <div className="mt-8 mb-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-white/40 font-body">Sprache ändern</p>
+          <LanguageSwitcher locale={locale} variant="footer" />
         </div>
 
         {/* Trust Badges */}

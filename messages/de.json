@@ -1,4 +1,12 @@
 {
+  "cities": {
+    "label": "Stadt",
+    "select": "Stadt wählen",
+    "all": "Alle Städte",
+    "zuerich": "Zürich",
+    "basel": "Basel",
+    "bern": "Bern"
+  },
   "navigation": {
     "home": "Startseite",
     "discover": "Entdecken",
@@ -27,7 +35,7 @@
     "last_minute_subtitle": "Günstige Termine, die heute noch frei sind",
     "no_results": "Keine Salons gefunden",
     "hero": {
-      "byline": "Von Basel, für Basel",
+      "byline": "Deine Schweizer Salon-Plattform",
       "hello": "Hallo",
       "welcome": "Willkommen {name}",
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier.",
@@ -181,6 +189,7 @@
     "cold": "Kalt draussen? Wärm dich auf mit Wellness."
   },
   "footer": {
+    "cities": "Städte",
     "categories": "Kategorien",
     "company": "Unternehmen",
     "for_salons": "Für Salons",
@@ -652,6 +661,7 @@
       "marketing": "Marketing",
       "analytics": "Statistiken",
       "reviews": "Bewertungen",
+      "gallery": "Fotos",
       "posts": "Meine Posts",
       "nailClients": "Nail Kunden",
       "barberClients": "Barber Kunden",

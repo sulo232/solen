@@ -1,4 +1,12 @@
 {
+  "cities": {
+    "label": "Ville",
+    "select": "Choisir une ville",
+    "all": "Toutes les villes",
+    "zuerich": "Zurich",
+    "basel": "Bâle",
+    "bern": "Berne"
+  },
   "navigation": {
     "home": "Accueil",
     "discover": "Découvrir",
@@ -27,7 +35,7 @@
     "last_minute_subtitle": "Rendez-vous à prix réduit disponibles aujourd'hui",
     "no_results": "Aucun salon trouvé",
     "hero": {
-      "byline": "De Bâle, pour Bâle",
+      "byline": "Ta plateforme suisse de salons",
       "hello": "Bonjour",
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre quartier.",
@@ -181,6 +189,7 @@
     "cold": "Froid dehors? Réchauffez-vous avec du bien-être."
   },
   "footer": {
+    "cities": "Villes",
     "categories": "Catégories",
     "company": "Entreprise",
     "for_salons": "Pour les salons",

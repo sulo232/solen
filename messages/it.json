@@ -1,4 +1,12 @@
 {
+  "cities": {
+    "label": "Città",
+    "select": "Seleziona città",
+    "all": "Tutte le città",
+    "zuerich": "Zurigo",
+    "basel": "Basilea",
+    "bern": "Berna"
+  },
   "navigation": {
     "home": "Home",
     "discover": "Scopri",
@@ -27,7 +35,7 @@
     "last_minute_subtitle": "Appuntamenti scontati disponibili oggi",
     "no_results": "Nessun salone trovato",
     "hero": {
-      "byline": "Da Basilea, per Basilea",
+      "byline": "La tua piattaforma svizzera di saloni",
       "hello": "Ciao",
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nel tuo quartiere.",
@@ -181,6 +189,7 @@
     "cold": "Freddo fuori? Riscaldati con il benessere."
   },
   "footer": {
+    "cities": "Città",
     "categories": "Categorie",
     "company": "Azienda",
     "for_salons": "Per i saloni",

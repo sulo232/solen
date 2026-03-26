@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import CitySelector from "@/components/ui/CitySelector";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 interface HeaderProps {
@@ -42,6 +43,7 @@ const CATEGORY_ICONS: Record<string, { icon: typeof Scissors; label: string }> =
 
 export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const t = useTranslations("navigation");
+  const tCities = useTranslations("cities");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -193,7 +195,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
-            <LanguageSwitcher locale={locale} />
+            {/* City selector — desktop only */}
+            <div className="hidden lg:flex items-center">
+              <CitySelector variant="header" />
+            </div>
+
             <ThemeToggle />
 
             {/* Notifications Bell */}
@@ -342,6 +348,14 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               {/* Divider */}
               <div className="border-t border-s-ink/[0.06] my-2" />
 
+              {/* City selector — mobile menu */}
+              <div className="px-4 py-2">
+                <p className="text-[10px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+                  {tCities("label")}
+                </p>
+                <CitySelector variant="menu" />
+              </div>
+
               {/* Logged in: profile shortcut */}
               {isLoggedIn && (
                 <Link
@@ -365,6 +379,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   <Building2 size={16} />
                   {t("registerSalon")}
                 </Link>
+              </div>
+
+              {/* Language switcher — mobile menu */}
+              <div className="mt-2 flex justify-center pb-2">
+                <LanguageSwitcher locale={locale} variant="menu" />
               </div>
             </nav>
           </motion.div>

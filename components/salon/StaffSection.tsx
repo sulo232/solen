@@ -26,12 +26,13 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
       <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
         {staff.map((m) => (
-          <div
+          <Link
             key={m.id}
-            className="shrink-0 w-[180px] rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-4 hover:-translate-y-[5px] hover:shadow-warm-md transition-all duration-250"
+            href={`/${locale}/salon/${salonSlug}/staff/${m.id}`}
+            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-4 hover:-translate-y-[2px] transition-all duration-250 shadow-sm hover:shadow-md"
           >
             {/* Avatar */}
-            <Link href={`/${locale}/salon/${salonSlug}/staff/${m.id}`} className="block">
+            <div className="block">
               <div className="w-16 h-16 mx-auto rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden flex items-center justify-center mb-3">
                 {m.avatar_url ? (
                   <Image
@@ -54,30 +55,51 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                 {m.name}
               </p>
 
+              {/* Languages */}
+              {(m as any).languages?.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-1 mt-1">
+                  {(m as any).languages.map((lang: string) => (
+                    <span key={lang} className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-sm bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60">
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              )}
+
               {/* Specialties */}
               {m.specialties?.length > 0 && (
-                <p className="text-[11px] text-s-ink/50 dark:text-s-dm-text/50 text-center truncate mt-0.5">
+                <p className="text-[11px] text-s-ink/50 dark:text-s-dm-text/50 text-center truncate mt-1">
                   {m.specialties.slice(0, 2).join(", ")}
                 </p>
               )}
+            </div>
 
-              {/* Rating */}
-              {m.average_rating != null && m.average_rating > 0 && (
-                <p className="flex items-center justify-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-1">
-                  <Star size={10} className="fill-s-coral text-s-coral" />
-                  <span className="data-text">{m.average_rating.toFixed(1)}</span>
-                </p>
+            {/* Rating */}
+            <div className="flex items-center justify-between mt-auto pt-3 border-t border-s-ink/5 dark:border-white/5">
+              {m.average_rating != null && m.average_rating > 0 ? (
+                <div className="flex items-center gap-1">
+                  <Star size={12} className="fill-s-coral text-s-coral" />
+                  <span className="text-xs font-medium text-s-ink dark:text-s-dm-text">{m.average_rating.toFixed(1)}</span>
+                </div>
+              ) : (
+                <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">Neu</span>
               )}
-            </Link>
+
+              {/* Next slot mock - in prod this would fetch from an API */}
+              <div className="text-right">
+                <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40">Nächster Termin</p>
+                <p className="text-xs font-medium text-s-green">Morgen, 10:00</p>
+              </div>
+            </div>
 
             {/* Book button */}
             <button
-              onClick={() => onBook?.(m.id)}
-              className="w-full mt-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-all shadow-warm-sm"
+              onClick={(e) => { e.preventDefault(); onBook?.(m.id); }}
+              className="w-full mt-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral/10 text-s-coral hover:bg-s-coral hover:text-white text-xs font-semibold uppercase tracking-[.06em] transition-all"
             >
-              Buchen
+              Wählen
             </button>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

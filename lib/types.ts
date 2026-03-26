@@ -16,6 +16,8 @@ export type SalonCategory =
   | "makeup"
   | "waxing";
 
+export type CitySlug = "basel" | "zuerich" | "bern";
+
 export type Quartier =
   | "grossbasel"
   | "kleinbasel"
@@ -101,6 +103,7 @@ export interface Profile {
   staff_salon_id?: string | null;
   birthday?: string | null;
   customer_preferences?: CustomerPreferences;
+  preferred_city?: CitySlug | null;
 }
 
 export interface OpeningHours {
@@ -118,6 +121,7 @@ export interface Salon {
   description_fr?: string | null;
   description_it?: string | null;
   categories: SalonCategory[];
+  city_id: string | null; // References cities.id
   quartier: Quartier;
   address: string;
   latitude: number;
@@ -378,6 +382,8 @@ export interface SalonBadge {
 
 /** Salon card — enriched with services count for list views */
 export interface SalonCard extends Salon {
+  city_slug?: CitySlug;
+  city_name?: string;
   services?: Service[];
   staff?: StaffMember[];
   reviews?: Review[];

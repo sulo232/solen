@@ -21,11 +21,14 @@ import BlobBackground from "@/components/ui/BlobBackground";
 import HeroVisualCard from "@/components/ui/HeroVisualCard";
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
 import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { CLIENT_FEATURE_FLAGS } from "@/lib/feature-flags";
+import { getPersistedCity } from "@/lib/city-cookie";
+import { type CitySlug } from "@/lib/cities";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -87,6 +90,8 @@ const QUARTIERS = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  useCityDetection();
+  
   const locale = useLocale();
   const t = useTranslations("home");
   const [salons, setSalons] = useState<SalonCardType[]>([]);
@@ -98,6 +103,11 @@ export default function HomePage() {
   const [trendingSalons, setTrendingSalons] = useState<SalonCardType[]>([]);
   const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
   const [locationError, setLocationError] = useState(false);
+  const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
+
+  useEffect(() => {
+    setPersistedCity(getPersistedCity());
+  }, []);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [quartierCounts, setQuartierCounts] = useState<Record<string, number>>({});
@@ -268,7 +278,7 @@ export default function HomePage() {
                 {userName ? (
                   <>{t("hero.hello")}{" "}<span className="text-s-coral">{userName}</span></>
                 ) : (
-                  <>BEAUTY<span className="text-s-coral">.</span><br />BASEL<span className="text-s-coral">.</span></>
+                  <>BEAUTY<span className="text-s-coral">.</span><br />BUCHEN<span className="text-s-coral">.</span></>
                 )}
               </motion.h1>
               <motion.p variants={fadeUp}
@@ -322,7 +332,7 @@ export default function HomePage() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, grad }) => (
-            <Link key={key} href={`/${locale}/${key}`}
+            <Link key={key} href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
               className="relative aspect-square rounded-[20px] overflow-hidden group hover:-translate-y-[5px] transition-all duration-[250ms]"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
               <div className="absolute inset-0"

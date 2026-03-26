@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
           quartier,
           address,
           phone: phone || null,
-          phone_verified: phone_verified || false,
+          // phone_verified: phone_verified || false, // [FIX] Bypassing schema cache error (defaults to false in DB)
           // email: email || user.email || null, // [FIX] Field not in public.salons schema
           cover_photo_url: cover_photo_url || null,
           gallery_urls: gallery_urls?.filter(Boolean) || [],

@@ -1,4 +1,12 @@
 {
+  "cities": {
+    "label": "City",
+    "select": "Select city",
+    "all": "All cities",
+    "zuerich": "Zurich",
+    "basel": "Basel",
+    "bern": "Berne"
+  },
   "navigation": {
     "home": "Home",
     "discover": "Discover",
@@ -27,7 +35,7 @@
     "last_minute_subtitle": "Discounted appointments available today",
     "no_results": "No salons found",
     "hero": {
-      "byline": "From Basel, for Basel",
+      "byline": "Your Swiss Salon Platform",
       "hello": "Hello",
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your neighbourhood.",
@@ -181,6 +189,7 @@
     "cold": "Cold outside? Warm up with wellness."
   },
   "footer": {
+    "cities": "Cities",
     "categories": "Categories",
     "company": "Company",
     "for_salons": "For Salons",
@@ -652,6 +661,7 @@
       "marketing": "Marketing",
       "analytics": "Analytics",
       "reviews": "Reviews",
+      "gallery": "Gallery",
       "posts": "My Posts",
       "nailClients": "Nail Clients",
       "barberClients": "Barber Clients",

@@ -11,7 +11,7 @@ const LOCALE_LABELS: Record<string, string> = {
   it: "IT",
 };
 
-export default function LanguageSwitcher({ locale }: { locale: string }) {
+export default function LanguageSwitcher({ locale, variant = "header" }: { locale: string; variant?: "header" | "footer" | "menu" }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -47,6 +47,26 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
     router.refresh();
     setOpen(false);
   };
+
+  if (variant === "footer") {
+    return (
+      <div className="flex gap-2 flex-wrap">
+        {Object.entries(LOCALE_LABELS).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => switchLocale(key)}
+            className={`px-3 py-1.5 rounded-pill text-xs font-heading font-bold transition-colors ${
+              key === locale
+                ? "bg-white/10 text-white"
+                : "bg-transparent text-white/50 hover:text-white/90 hover:bg-white/5"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="relative">

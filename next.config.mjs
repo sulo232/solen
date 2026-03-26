@@ -10,6 +10,28 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_MAPBOX_TOKEN: process.env.MAPBOX_API,
   },
+  async redirects() {
+    return [
+      {
+        source: "/:locale/coiffeur",
+        has: [{ type: "query", key: "quartier" }],
+        destination: "/:locale/basel/coiffeur",
+        permanent: true,
+      },
+      {
+        source: "/:locale/barbershop",
+        has: [{ type: "query", key: "quartier" }],
+        destination: "/:locale/basel/barbershop",
+        permanent: true,
+      },
+      {
+        source: "/:locale/nails",
+        has: [{ type: "query", key: "quartier" }],
+        destination: "/:locale/basel/nails",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
