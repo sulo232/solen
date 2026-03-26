@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import ItemCard from "@/components/discovery/ItemCard";
+import VideoCard from "@/components/discovery/VideoCard";
 import Skeleton from "@/components/ui/Skeleton";
 import type { DiscoveryItem } from "@/lib/types";
 
@@ -30,7 +31,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         if (json.items && json.items.length > 0) {
           // Shuffle them so it's not the same ones every time
           const shuffled = shuffleArray(json.items as DiscoveryItem[]);
-          setItems(shuffled.slice(0, 10)); // Take top 10 for the carousel
+          setItems(shuffled.slice(0, 5)); // Take top 5 for the carousel
         }
       } catch (err) {
         console.error("Failed to fetch discover carousel items:", err);
@@ -63,13 +64,13 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
               key={item.id}
               className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
             >
-              {/* 3D rotation and scale container */}
-              <div className={`
-                w-full h-full transition-all duration-500 origin-center
-                transform group-hover:-translate-y-2 group-hover:scale-[1.03]
-                ${index % 2 === 0 ? "rotate-2 group-hover:-rotate-1" : "-rotate-2 group-hover:rotate-1"}
-              `}>
-                <ItemCard item={item} />
+              {/* Scale container (removed tilt as requested) */}
+              <div className="w-full h-full transition-all duration-300 origin-center transform group-hover:-translate-y-2 group-hover:scale-[1.03]">
+                {item.media_type === "tiktok" || item.tiktok_url ? (
+                  <VideoCard item={item} />
+                ) : (
+                  <ItemCard item={item} />
+                )}
               </div>
             </Link>
           ))
