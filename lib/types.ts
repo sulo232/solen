@@ -47,6 +47,29 @@ export type PreferredDay = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun"
 // Core Entities
 // ---------------------------------------------------------------------------
 
+export interface BeautyProfile {
+  hair?: {
+    texture?: 'straight' | 'wavy' | 'curly';
+    thickness?: 'fine' | 'thick';
+    length?: 'short' | 'long';
+    condition?: 'dry' | 'normal';
+  };
+  nails?: {
+    shape?: 'almond' | 'square' | 'coffin' | 'stiletto' | 'round';
+    type?: 'gel' | 'natural' | 'acrylic';
+    length?: 'short' | 'medium' | 'long';
+  };
+  skin?: {
+    type?: 'normal' | 'dry' | 'oily' | 'sensitive' | 'mixed';
+  };
+  stylist?: {
+    gender?: 'female' | 'male' | 'no-preference';
+  };
+  style?: {
+    vibes?: ('minimal' | 'natural' | 'bold' | 'edgy')[];
+  };
+}
+
 export interface CustomerPreferences {
   allergies?: string;
   skinType?: string;
@@ -54,6 +77,7 @@ export interface CustomerPreferences {
   accessibilityNeeds?: string;
   language?: string;
   notes?: string;
+  beauty?: BeautyProfile;
 }
 
 export interface Profile {

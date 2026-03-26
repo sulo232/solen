@@ -27,9 +27,78 @@
     "last_minute_subtitle": "Discounted appointments available today",
     "no_results": "No salons found",
     "hero": {
-      "title": "Beauty. Basel.",
+      "byline": "From Basel, for Basel",
+      "hello": "Hello",
+      "title": "BEAUTY<span class=\"text-s-coral\">.</span><br />BASEL<span class=\"text-s-coral\">.</span>",
       "welcome": "Welcome {name}",
-      "subtitle": "Coiffeur, barbershop, nails, spa & more — book now in your neighbourhood."
+      "subtitle": "Hair, Barber, Nails & Spa — book now in your neighbourhood.",
+      "nextBooking": "Your next appointment: {date} at {salon}",
+      "welcomeBack": "Welcome back — what are you looking for today?"
+    },
+    "cta": {
+      "findSalon": "Find salon",
+      "lastMinute": "Last Minute"
+    },
+    "categories": {
+      "label": "CATEGORIES",
+      "title": "What are you looking for?",
+      "salonsCount": "Salons"
+    },
+    "rebook": {
+      "title": "Book again?",
+      "lastVisit": "Your last visit: {name}",
+      "cta": "Book again"
+    },
+    "featured": {
+      "eyebrow": "Popular in Basel",
+      "title": "Popular Salons",
+      "subtitle": "Top-rated salons in Basel",
+      "viewAll": "View all",
+      "emptyTitle": "Growing quickly",
+      "emptyMessage": "More salons coming soon"
+    },
+    "lastMinute": {
+      "eyebrow": "Last Minute",
+      "title": "Save up to 50%",
+      "viewAll": "View all",
+      "emptyMessage": "No last-minute deals right now — check back soon!",
+      "viewOffers": "View offers"
+    },
+    "trending": {
+      "eyebrow": "Trending",
+      "title": "Trending in Basel",
+      "subtitle": "The hottest salons right now"
+    },
+    "nearby": {
+      "eyebrow": "Location",
+      "title": "Near you",
+      "subtitle": "Discover salons close to you",
+      "viewAll": "View all"
+    },
+    "newSalons": {
+      "eyebrow": "New",
+      "title": "New Salons",
+      "subtitle": "Fresh on Solen — discover the newest salons in Basel"
+    },
+    "quartiers": {
+      "eyebrow": "Your neighbourhood",
+      "title": "DISCOVER<br /><span style=\"color: #E8624A\">BASEL</span>",
+      "subtitle": "Salons right in your neighbourhood — from Kleinbasel to Bruderholz.",
+      "salonSingular": "Salon",
+      "salonPlural": "Salons",
+      "soon": "Coming soon"
+    },
+    "partner": {
+      "title": "Own a salon?",
+      "subtitle": "Take your business to the next level — reach thousands of customers in Basel.",
+      "cta": "Become a partner"
+    },
+    "trust": {
+      "securePayment": "Secure payment — Stripe encrypted",
+      "swissMade": "Swiss Made — Developed in Basel",
+      "gdprCompliant": "Swiss data protection compliant",
+      "freeCancellation": "Free cancellation up to 24h",
+      "paymentMethods": "TWINT · Credit card · Cash"
     },
     "sections": {
       "categories": "Explore",
@@ -47,9 +116,6 @@
       "quartiers": "Discover your neighbourhood",
       "quartiers_label": "YOUR NEIGHBOURHOOD",
       "quartiers_all": "View all →"
-    },
-    "quartiers": {
-      "soon": "Coming soon"
     },
     "search": {
       "placeholder": "Search salons in Basel..."

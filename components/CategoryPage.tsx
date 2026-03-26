@@ -6,7 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List } from "lucide-react";
 import dynamic from "next/dynamic";
-import SearchFilterBar from "@/components/SearchFilterBar";
+import FilterBar from "@/components/ui/FilterBar";
+import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
+import { getSearchFilterPills } from "@/lib/search-filter-pills";
 import SalonCard from "@/components/SalonCard";
 import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
@@ -14,7 +16,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import BlobBackground from "@/components/ui/BlobBackground";
 import { containerVariants, itemVariants } from "@/lib/animations";
-import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
+import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -116,6 +118,7 @@ function DirectoryCard({ entry }: { entry: DirectoryEntry }) {
 export default function CategoryPage({ category, aboveGrid, belowGrid }: CategoryPageProps) {
   const locale = useLocale();
   const tc = useTranslations("common");
+  const t = useTranslations('filters');
   const searchParams = useSearchParams();
   const routerNav = useRouter();
   const currentPathname = usePathname();
@@ -127,6 +130,9 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+
+  const pills = getSearchFilterPills(t);
 
   const [dirEntries, setDirEntries] = useState<DirectoryEntry[]>([]);
   const [dirTotal, setDirTotal] = useState(0);
@@ -210,6 +216,40 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
   const categoryLabel = categoryLabels[category];
   const gradient = categoryGradients[category];
 
+  const handleFilterChange = useCallback((filters: ActiveFilter[]) => {
+    setActiveFilters(filters);
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Clear previous filter params
+    params.delete('quartier');
+    params.delete('date');
+    params.delete('rating');
+    params.delete('sort');
+    params.delete('online_payment');
+    params.delete('off_peak');
+
+    // Apply new filters to URL params
+    filters.forEach((filter) => {
+      if (filter.pillId === 'location') {
+        params.set('quartier', filter.subId);
+      } else if (filter.pillId === 'availability') {
+        if (filter.subId !== 'custom_date') {
+          params.set('date', filter.subId);
+        }
+      } else if (filter.pillId === 'rating') {
+        params.set('rating', filter.subId);
+      } else if (filter.pillId === 'sort') {
+        params.set('sort', filter.subId);
+      } else if (filter.pillId === 'online_payment') {
+        params.set('online_payment', 'true');
+      } else if (filter.pillId === 'off_peak') {
+        params.set('off_peak', 'true');
+      }
+    });
+
+    routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
+  }, [currentPathname, routerNav, searchParams]);
+
   return (
     <div className="min-h-screen bg-s-bg-base relative overflow-x-hidden">
       <BlobBackground zone={2} />
@@ -267,7 +307,20 @@ export default function CategoryPage({ category, aboveGrid, belowGrid }: Categor
         </div>
       )}
 
-      <SearchFilterBar category={category} />
+      {/* Search + Filters */}
+      <div className="sticky top-[57px] z-40 isolate">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+          <div className="mb-3">
+            <SearchAutocomplete category={category} />
+          </div>
+          <FilterBar
+            pills={pills}
+            activeFilters={activeFilters}
+            onFilterChange={handleFilterChange}
+            zone={3}
+          />
+        </div>
+      </div>
 
       {/* Map/List toggle */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-between gap-3">

@@ -27,7 +27,6 @@ export { default as BottomNav } from "@/components/layout/BottomNav";
 export { default as SalonCard } from "@/components/SalonCard";
 export { default as ServiceTile } from "@/components/ServiceTile";
 export { default as LastMinuteCard } from "@/components/LastMinuteCard";
-export { default as SearchFilterBar } from "@/components/SearchFilterBar";
 export { default as FilterBar } from "@/components/ui/FilterBar";
 export { default as FilterBottomSheet } from "@/components/ui/FilterBottomSheet";
 export { default as FilterDrawer } from "@/components/ui/FilterDrawer";

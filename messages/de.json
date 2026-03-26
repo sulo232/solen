@@ -27,9 +27,78 @@
     "last_minute_subtitle": "Günstige Termine, die heute noch frei sind",
     "no_results": "Keine Salons gefunden",
     "hero": {
-      "title": "Beauty. Basel.",
+      "byline": "Von Basel, für Basel",
+      "hello": "Hallo",
+      "title": "BEAUTY<span class=\"text-s-coral\">.</span><br />BASEL<span class=\"text-s-coral\">.</span>",
       "welcome": "Willkommen {name}",
-      "subtitle": "Coiffeur, Barbershop, Nails, Spa & mehr — buche jetzt in deinem Quartier."
+      "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier.",
+      "nextBooking": "Dein nächster Termin: {date} bei {salon}",
+      "welcomeBack": "Willkommen zurück — was darf's heute sein?"
+    },
+    "cta": {
+      "findSalon": "Salon finden",
+      "lastMinute": "Last Minute"
+    },
+    "categories": {
+      "label": "KATEGORIEN",
+      "title": "Was suchst du?",
+      "salonsCount": "Salons"
+    },
+    "rebook": {
+      "title": "Wieder buchen?",
+      "lastVisit": "Dein letzter Besuch: {name}",
+      "cta": "Nochmal"
+    },
+    "featured": {
+      "eyebrow": "Beliebt in Basel",
+      "title": "Beliebte Salons",
+      "subtitle": "Die bestbewerteten Salons in Basel",
+      "viewAll": "Alle ansehen",
+      "emptyTitle": "Wir wachsen gerade",
+      "emptyMessage": "Bald mehr Salons in deiner Nähe"
+    },
+    "lastMinute": {
+      "eyebrow": "Last Minute",
+      "title": "Spare bis zu 50%",
+      "viewAll": "Alle ansehen",
+      "emptyMessage": "Aktuell keine Last-Minute Angebote — schau bald wieder vorbei!",
+      "viewOffers": "Angebote ansehen"
+    },
+    "trending": {
+      "eyebrow": "Trending",
+      "title": "Trending in Basel",
+      "subtitle": "Die aktuell angesagtesten Salons"
+    },
+    "nearby": {
+      "eyebrow": "Standort",
+      "title": "In deiner Nähe",
+      "subtitle": "Salons ganz in deiner Nähe entdecken",
+      "viewAll": "Alle ansehen"
+    },
+    "newSalons": {
+      "eyebrow": "Neu dabei",
+      "title": "Neue Salons",
+      "subtitle": "Frisch auf Solen — entdecke die neuesten Salons in Basel"
+    },
+    "quartiers": {
+      "eyebrow": "Dein Quartier",
+      "title": "ENTDECKE<br /><span style=\"color: #E8624A\">BASEL</span>",
+      "subtitle": "Salons direkt in deinem Quartier — von Kleinbasel bis Bruderholz.",
+      "salonSingular": "Salon",
+      "salonPlural": "Salons",
+      "soon": "Bald hier"
+    },
+    "partner": {
+      "title": "Hast du einen Salon?",
+      "subtitle": "Bring dein Business auf das nächste Level — erreiche tausende Kund:innen in Basel.",
+      "cta": "Partner werden"
+    },
+    "trust": {
+      "securePayment": "Sichere Zahlung — Stripe verschlüsselt",
+      "swissMade": "Swiss Made — Entwickelt in Basel",
+      "gdprCompliant": "nDSG konform",
+      "freeCancellation": "Kostenlose Stornierung bis 24h",
+      "paymentMethods": "TWINT · Kreditkarte · Bar"
     },
     "sections": {
       "categories": "Entdecken",
@@ -47,9 +116,6 @@
       "quartiers": "Entdecke dein Quartier",
       "quartiers_label": "DEIN QUARTIER",
       "quartiers_all": "Alle ansehen →"
-    },
-    "quartiers": {
-      "soon": "Bald hier"
     },
     "search": {
       "placeholder": "Suche Salon in Basel..."
@@ -452,7 +518,52 @@
     "saved": "Gespeichert",
     "bookings": "Meine Buchungen",
     "messages": "Nachrichten",
-    "preferences": "Einstellungen"
+    "preferences": "Einstellungen",
+    "beauty": {
+      "sectionTitle": "Beauty-Profil",
+      "edit": "Bearbeiten",
+      "hair": "HAAR",
+      "nails": "NÄGEL",
+      "skin": "HAUT",
+      "stylist": "STYLIST",
+      "style": "STYLE",
+      "curly": "Lockig",
+      "wavy": "Wellig",
+      "straight": "Glatt",
+      "fine": "Fein",
+      "thick": "Dick",
+      "long": "Lang",
+      "short": "Kurz",
+      "dry": "Trocken",
+      "normal": "Normal",
+      "almond": "Mandel",
+      "square": "Eckig",
+      "coffin": "Coffin",
+      "stiletto": "Stiletto",
+      "round": "Rund",
+      "gel": "Gel",
+      "natural": "Natural",
+      "acrylic": "Acryl",
+      "medium": "Mittel",
+      "sensitive": "Empfindlich",
+      "mixed": "Mischhaut",
+      "oily": "Fettig",
+      "female": "Weiblich",
+      "male": "Männlich",
+      "neutral": "Egal",
+      "no-preference": "Egal",
+      "minimal": "Minimalistisch",
+      "bold": "Bold",
+      "edgy": "Edgy",
+      "addMore": "Hinzufügen",
+      "tabs": {
+        "looks": "Looks",
+        "termine": "Termine",
+        "favoriten": "Favoriten",
+        "stempel": "Stempel"
+      },
+      "exclusiveBadge": "✦ Nur bei Solen"
+    }
   },
   "dashboard": {
     "overview": "Übersicht",

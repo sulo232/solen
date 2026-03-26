@@ -284,12 +284,14 @@ export default function HomePage() {
               {/* Hero CTAs — two pill buttons */}
               <motion.div variants={fadeUp} className="mt-8 flex gap-3 flex-wrap">
                 <Link href={`/${locale}/search`}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150">
-                  <Search size={15} aria-hidden="true" /> Salon finden
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150"
+                  aria-label={t("cta.findSalon")}>
+                  <Search size={15} aria-hidden="true" /> {t("cta.findSalon")}
                 </Link>
                 <Link href={`/${locale}/last-minute`}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill border-[1.5px] border-s-ink/20 dark:border-white/20 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-white hover:shadow-warm-md hover:-translate-y-px transition-all duration-150">
-                  Last Minute →
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill border-[1.5px] border-s-ink/20 dark:border-white/20 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-white hover:shadow-warm-md hover:-translate-y-px transition-all duration-150"
+                  aria-label={t("cta.lastMinute")}>
+                  {t("cta.lastMinute")} →
                 </Link>
               </motion.div>
             </motion.div>
@@ -312,10 +314,10 @@ export default function HomePage() {
       <section id="tour-services" className="max-w-5xl mx-auto px-4 py-16 md:py-24">
         <div className="mb-6 text-center">
           <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber block mb-1">
-            KATEGORIEN
+            {t("categories.label")}
           </span>
           <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-            Was suchst du?
+            {t("categories.title")}
           </h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
@@ -328,7 +330,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-s-ink/60 to-transparent" />
               <div className="absolute bottom-0 inset-x-0 p-3">
                 <div className="font-display text-[22px] text-white leading-none">{label}</div>
-                <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-white/55 mt-0.5">{count} Salons</div>
+                <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-white/55 mt-0.5">{count} {t("categories.salonsCount")}</div>
               </div>
             </Link>
           ))}
@@ -351,13 +353,14 @@ export default function HomePage() {
               <RefreshCw size={18} className="text-s-coral" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-heading font-bold text-s-ink dark:text-s-dm-text text-sm">Wieder buchen?</p>
-              <p className="text-xs text-s-ink/50 font-body truncate">Dein letzter Besuch: {lastBookedSalon.name}</p>
+              <p className="font-heading font-bold text-s-ink dark:text-s-dm-text text-sm">{t("rebook.title")}</p>
+              <p className="text-xs text-s-ink/50 font-body truncate">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
             </div>
             <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
               className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em]"
-              style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
-              Nochmal
+              style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}
+              aria-label={t("rebook.cta")}>
+              {t("rebook.cta")}
             </Link>
           </motion.div>
         </section>
@@ -373,21 +376,21 @@ export default function HomePage() {
           <div className="mb-6 flex items-center justify-between">
             <div>
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                Beliebt in Basel
+                {t("featured.eyebrow")}
               </span>
               <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                Beliebte Salons
+                {t("featured.title")}
               </h2>
               <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
-                Die bestbewerteten Salons in Basel
+                {t("featured.subtitle")}
               </p>
             </div>
             <Link
               href={`/${locale}/coiffeur`}
               className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4"
-            >
-              Alle ansehen →
+              aria-label={t("featured.viewAll")}>
+              {t("featured.viewAll")} →
             </Link>
           </div>
 
@@ -399,8 +402,8 @@ export default function HomePage() {
             <EmptyState
               icon={Scissors}
               illustration="coming-soon"
-              title="Wir wachsen gerade"
-              message="Bald mehr Salons in deiner Nähe"
+              title={t("featured.emptyTitle")}
+              message={t("featured.emptyMessage")}
             />
           ) : (
             <div
@@ -441,15 +444,16 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
             <div>
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2"
-                style={{ color: "#F2C144" }}>Last Minute</span>
+                style={{ color: "#F2C144" }}>{t("lastMinute.eyebrow")}</span>
               <h2 className="font-heading font-extrabold text-white"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                Spare bis zu 50%
+                {t("lastMinute.title")}
               </h2>
             </div>
             <Link href={`/${locale}/last-minute`}
-              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-all">
-              Alle ansehen →
+              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-all"
+              aria-label={t("lastMinute.viewAll")}>
+              {t("lastMinute.viewAll")} →
             </Link>
           </div>
 
@@ -469,12 +473,12 @@ export default function HomePage() {
             >
               <div className="flex-1">
                 <p className="text-sm text-white/60 font-body">
-                  Aktuell keine Last-Minute Angebote — schau bald wieder vorbei!
+                  {t("lastMinute.emptyMessage")}
                 </p>
               </div>
               <Link href={`/${locale}/last-minute`} className="shrink-0">
                 <InteractiveHoverButton
-                  text="Angebote ansehen"
+                  text={t("lastMinute.viewOffers")}
                   className="w-44 border-white/20"
                 />
               </Link>
@@ -490,14 +494,14 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                Trending
+                {t("trending.eyebrow")}
               </span>
               <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                Trending in Basel
+                {t("trending.title")}
               </h2>
               <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
-                Die aktuell angesagtesten Salons
+                {t("trending.subtitle")}
               </p>
             </div>
 
@@ -522,19 +526,19 @@ export default function HomePage() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                  Standort
+                  {t("nearby.eyebrow")}
                 </span>
                 <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
                   style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                  In deiner Nähe
+                  {t("nearby.title")}
                 </h2>
                 <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
-                  Salons ganz in deiner Nähe entdecken
+                  {t("nearby.subtitle")}
                 </p>
               </div>
               {nearbySalons.length > 0 && (
-                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4">
-                  Alle ansehen →
+                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4" aria-label={t("nearby.viewAll")}>
+                  {t("nearby.viewAll")} →
                 </Link>
               )}
             </div>
@@ -562,14 +566,14 @@ export default function HomePage() {
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-6">
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                Neu dabei
+                {t("newSalons.eyebrow")}
               </span>
               <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                Neue Salons
+                {t("newSalons.title")}
               </h2>
               <p className="text-sm text-s-ink/50 mt-1 font-body">
-                Frisch auf Solen — entdecke die neuesten Salons in Basel
+                {t("newSalons.subtitle")}
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -596,14 +600,14 @@ export default function HomePage() {
           style={{ background: "rgba(232,98,74,.08)" }} />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-3"
-            style={{ color: "#F2C144" }}>Dein Quartier</span>
+            style={{ color: "#F2C144" }}>{t("quartiers.eyebrow")}</span>
           <h2 className="font-display text-white mb-2"
             style={{ fontSize: "clamp(36px, 5vw, 64px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
-            ENTDECKE<br /><span style={{ color: "#E8624A" }}>BASEL</span>
+            {t("quartiers.title")}
           </h2>
           <p className="font-body italic mb-10 max-w-sm text-[15px] leading-[1.82]"
             style={{ color: "rgba(245,238,228,.45)" }}>
-            Salons direkt in deinem Quartier — von Kleinbasel bis Bruderholz.
+            {t("quartiers.subtitle")}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {QUARTIERS.filter(q => (quartierCounts[q.slug] ?? 0) > 0).map(({ slug, name }, i) => (
@@ -612,7 +616,7 @@ export default function HomePage() {
                 style={{ border: "1px solid rgba(255,255,255,.10)", background: "rgba(255,255,255,.06)" }}>
                 <p className="font-heading font-bold text-white text-[15px] mb-0.5">{name}</p>
                 <p className="text-xs" style={{ color: "rgba(245,238,228,.45)" }}>
-                  {quartierCounts[slug]} {quartierCounts[slug] === 1 ? "Salon" : "Salons"}
+                  {quartierCounts[slug]} {quartierCounts[slug] === 1 ? t("quartiers.salonSingular") : t("quartiers.salonPlural")}
                 </p>
                 <span className="font-display text-[72px] absolute right-[-8px] bottom-[-20px] leading-none select-none pointer-events-none"
                   style={{ color: "rgba(255,255,255,.05)" }}>
@@ -641,17 +645,18 @@ export default function HomePage() {
               <div className="max-w-xl text-center md:text-left">
                 <h2 className="font-heading font-bold text-white mb-4 leading-tight"
                   style={{ fontSize: "clamp(26px, 4vw, 52px)", letterSpacing: "-0.02em" }}>
-                  Hast du einen Salon?
+                  {t("partner.title")}
                 </h2>
                 <p className="font-body italic text-white/70 text-lg leading-[1.82]">
-                  Bring dein Business auf das nächste Level — erreiche tausende Kund:innen in Basel.
+                  {t("partner.subtitle")}
                 </p>
               </div>
               <div className="shrink-0">
                 <Link href={`/${locale}/partner`}
                   className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white text-s-ink font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base hover:-translate-y-px transition-all duration-150"
-                  style={{ boxShadow: "0 2px 4px rgba(26,18,9,.12), 0 4px 16px rgba(26,18,9,.10)" }}>
-                  Partner werden →
+                  style={{ boxShadow: "0 2px 4px rgba(26,18,9,.12), 0 4px 16px rgba(26,18,9,.10)" }}
+                  aria-label={t("partner.cta")}>
+                  {t("partner.cta")} →
                 </Link>
               </div>
             </div>
@@ -665,11 +670,11 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto">
           <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-[16px] bg-s-bg-base/50 dark:bg-s-dm-surface/50 backdrop-blur-[8px] border border-white/25 dark:border-white/10 shadow-warm-xs">
             {[
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, label: "Sichere Zahlung — Stripe verschlüsselt" },
-              { icon: <span className="text-sm font-bold">CH</span>, label: "Swiss Made — Entwickelt in Basel" },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>, label: "nDSG konform" },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>, label: "Kostenlose Stornierung bis 24h" },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>, label: "TWINT · Kreditkarte · Bar" },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, label: t("trust.securePayment") },
+              { icon: <span className="text-sm font-bold">CH</span>, label: t("trust.swissMade") },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>, label: t("trust.gdprCompliant") },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>, label: t("trust.freeCancellation") },
+              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>, label: t("trust.paymentMethods") },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-xs text-s-ink/70 dark:text-s-dm-text/70">
                 <div className="w-7 h-7 rounded-[8px] bg-white dark:bg-s-dm-surface border border-s-ink/08 dark:border-white/08 flex items-center justify-center text-s-ink/60 dark:text-s-dm-text/60 shadow-warm-xs shrink-0">{icon}</div>
