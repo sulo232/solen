@@ -274,7 +274,30 @@ Post in `.agent-comms.md` before starting AND after finishing work. Include: wha
 
 ---
 
-## 5. Workflow Rules
+## 5. Terminal Command Autonomy (MANDATORY)
+
+**Execute all standard development commands immediately without asking for permission.**
+
+### Commands to Execute Immediately:
+- `npm` / `npx` commands (install, build, test, lint, run)
+- `git` operations (status, add, commit, push, diff, log, checkout, branch)
+- File system operations (via Read/Write/Edit tools, or ls/cd/mkdir via Bash)
+- TypeScript checks (`tsc --noEmit`)
+- Build verification (`npm run build`)
+- Vercel deployment checks
+
+### Only Ask Before:
+- Destructive git operations (`push --force`, `reset --hard`, `rebase -i`)
+- Deleting production database data
+- Force-pushing to `main` or `master` branch
+- Modifying `.env.local` or other secret files
+- Installing packages that significantly increase bundle size (>5MB)
+
+**Default Behavior**: Execute → Show what you did → Report results. **NEVER** ask "Should I run...?" or "May I execute...?" — just do it.
+
+---
+
+## 6. Workflow Rules
 
 1. **Plan First**: Generate an Implementation Plan artifact before writing code.
 2. **Verify**: Never mark done without checking logs. Run `npm run build` if touching Next.js files.
