@@ -30,7 +30,7 @@
   "home": {
     "hero_title": "Dein Salon in Basel",
     "hero_subtitle": "Finde und buche die besten Salons in deiner Nähe",
-    "search_placeholder": "Salon, Service oder Quartier suchen...",
+    "search_placeholder": "Salon, Service oder Stadt suchen...",
     "services_heading": "Unsere Kategorien",
     "last_minute_heading": "Last-Minute Angebote",
     "last_minute_subtitle": "Günstige Termine, die heute noch frei sind",
@@ -39,7 +39,7 @@
       "byline": "Deine Schweizer Salon-Plattform",
       "hello": "Hallo",
       "welcome": "Willkommen {name}",
-      "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deinem Quartier.",
+      "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deiner Stadt.",
       "nextBooking": "Dein nächster Termin: {date} bei {salon}",
       "welcomeBack": "Willkommen zurück — was darf's heute sein?"
     },
@@ -89,8 +89,8 @@
       "subtitle": "Frisch auf Solen — entdecke die neuesten Salons in Basel"
     },
     "quartiers": {
-      "eyebrow": "Dein Quartier",
-      "subtitle": "Salons direkt in deinem Quartier — von Kleinbasel bis Bruderholz.",
+      "eyebrow": "Deine Stadt",
+      "subtitle": "Salons direkt in deiner Umgebung — von Kleinbasel bis Bruderholz.",
       "salonSingular": "Salon",
       "salonPlural": "Salons",
       "soon": "Bald hier"
@@ -1479,7 +1479,7 @@
     "prev": "← Zurück",
     "done": "Los geht's!",
     "step1Title": "Suche",
-    "step1Desc": "Suche nach Salons, Services oder Quartieren — alles auf einen Blick.",
+    "step1Desc": "Suche nach Salons, Services oder Stadtteilen — alles auf einen Blick.",
     "step2Title": "Kategorien",
     "step2Desc": "Chat mit deinem Salon, Preise auf der Karte, Stempelkarten & Last-Minute Deals — nur bei Solen.",
     "step3Title": "Buche",
