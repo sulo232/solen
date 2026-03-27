@@ -99,6 +99,7 @@ export default function DashboardPage() {
   const [unread, setUnread] = useState(0);
   const [loading, setLoading] = useState(true);
   const [salonName, setSalonName] = useState<string | undefined>();
+  const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
   const [showCelebration, setShowCelebration] = useState(params.get("onboarded") === "1");
 
   useEffect(() => {
@@ -114,6 +115,7 @@ export default function DashboardPage() {
       .then((r) => r.json())
       .then((profile) => {
         setSalonName(profile?.salon_name);
+        setSalonCategories(profile?.salon_categories);
         const salonId = profile?.salon_id;
         const todayBookings = fetch(`/api/bookings?date=${today}&limit=20`).then((r) => r.json());
         const analytics = salonId
@@ -136,7 +138,7 @@ export default function DashboardPage() {
   const today = new Date().toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <DashboardLayout salonName={salonName} unreadCount={unread}>
+    <DashboardLayout salonName={salonName} salonCategories={salonCategories} unreadCount={unread}>
       <AnimatePresence>
         {showCelebration && (
           <motion.div

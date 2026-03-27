@@ -17,10 +17,19 @@ import {
 import Skeleton from "@/components/ui/Skeleton";
 import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
+import { useMemo } from "react";
 
 // ─────────────────────────────────────────
 // Nav config
 // ─────────────────────────────────────────
+
+// Category-to-nav mapping: which nav items require which category
+const CATEGORY_NAV_MAP: Record<string, string> = {
+  nailClients: "nails",
+  barberClients: "barbershop",
+  barberOps: "barbershop",
+  // Future: coiffeurCrm: "coiffeur", spaAdmin: "spa", etc.
+};
 
 const ADMIN_NAV = [
   { key: "approvals",       href: "/dashboard/approvals",           icon: ShieldCheck },
@@ -129,6 +138,7 @@ interface DashboardLayoutProps {
   salonName?: string;
   salonAvatar?: string | null;
   unreadCount?: number;
+  salonCategories?: string[];
 }
 
 export default function DashboardLayout({
@@ -136,6 +146,7 @@ export default function DashboardLayout({
   salonName,
   salonAvatar,
   unreadCount = 0,
+  salonCategories,
 }: DashboardLayoutProps) {
   const locale = useLocale();
   const pathname = usePathname();
@@ -146,6 +157,37 @@ export default function DashboardLayout({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const [isStaff, setIsStaff] = useState(false);
+
+  // Filter nav groups by salon categories (desktop)
+  const filteredOwnerNavGroups = useMemo(() => {
+    return OWNER_NAV_GROUPS.map(group => {
+      if (group.label !== "Spezial") return group;
+
+      // If no categories provided, show all (safe fallback)
+      if (!salonCategories || salonCategories.length === 0) return group;
+
+      const filtered = group.items.filter(item => {
+        const requiredCategory = CATEGORY_NAV_MAP["key" in item ? item.key : ""];
+        // If no mapping exists, always show (generic items)
+        if (!requiredCategory) return true;
+        return salonCategories.includes(requiredCategory);
+      });
+
+      // Hide group entirely if no items match
+      if (filtered.length === 0) return null;
+      return { ...group, items: filtered };
+    }).filter(Boolean);
+  }, [salonCategories]);
+
+  // Filter flat nav for mobile sidebar
+  const filteredOwnerNav = useMemo(() => {
+    if (!salonCategories || salonCategories.length === 0) return OWNER_NAV;
+    return OWNER_NAV.filter(item => {
+      const requiredCategory = CATEGORY_NAV_MAP["key" in item ? item.key : ""];
+      if (!requiredCategory) return true;
+      return salonCategories.includes(requiredCategory);
+    });
+  }, [salonCategories]);
 
   // Auth guard — role must be salon_owner, admin, or linked staff
   useEffect(() => {
@@ -239,7 +281,7 @@ export default function DashboardLayout({
                 );
               })
             ) : (
-              OWNER_NAV_GROUPS.map((group) => (
+              filteredOwnerNavGroups.map((group) => (
                 <div key={group.label} className="px-3 pt-4 pb-1">
                   <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
                   {group.items.map((item) => {
@@ -329,7 +371,7 @@ export default function DashboardLayout({
                 <button onClick={() => setMobileSidebarOpen(false)}><X size={20} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>
               </div>
               <nav className="py-3 px-1 overflow-y-auto">
-                {(isStaff ? STAFF_NAV : OWNER_NAV).map((item) => {
+                {(isStaff ? STAFF_NAV : filteredOwnerNav).map((item) => {
                   const { href, icon: Icon } = item;
                   const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
                   const active = isActive(href);

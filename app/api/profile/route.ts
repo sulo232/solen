@@ -15,18 +15,20 @@ export async function GET(_request: NextRequest) {
   // Also look up owned salon (for DashboardLayout auth guard)
   let salon_id: string | null = null;
   let salon_name: string | null = null;
+  let salon_categories: string[] = [];
   const { data: ownedSalon } = await supabase
     .from("salons")
-    .select("id, name")
+    .select("id, name, categories")
     .eq("owner_id", user.id)
     .limit(1)
     .single();
   if (ownedSalon) {
     salon_id = ownedSalon.id;
     salon_name = ownedSalon.name;
+    salon_categories = ownedSalon.categories || [];
   }
 
-  return NextResponse.json({ ...data, salon_id, salon_name });
+  return NextResponse.json({ ...data, salon_id, salon_name, salon_categories });
 }
 
 export async function PATCH(request: NextRequest) {
