@@ -39,6 +39,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
   const [canEditSchedule, setCanEditSchedule] = useState(true);
   const [canViewOwnBookings, setCanViewOwnBookings] = useState(true);
   const [canManagePortfolio, setCanManagePortfolio] = useState(true);
+  const [commissionRate, setCommissionRate] = useState(initial?.commission_rate ?? 0);
 
   // Load existing service assignments when editing
   useEffect(() => {
@@ -85,6 +86,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
         avatar_url: avatar || null,
         specialties,
         is_active: active,
+        commission_rate: commissionRate,
         permissions: {
           can_edit_schedule: canEditSchedule,
           can_view_own_bookings: canViewOwnBookings,
@@ -206,6 +208,15 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
                 <span className="text-sm text-s-ink/70 dark:text-s-dm-text/70">Portfolio verwalten</span>
               </label>
             </div>
+          </div>
+
+          {/* Commission rate */}
+          <div>
+            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">Provision (%)</label>
+            <input type="number" min="0" max="100" value={commissionRate}
+              onChange={(e) => setCommissionRate(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
+              className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
+            <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-1">Anteil des Mitarbeiters am Umsatz (0–100%)</p>
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer">

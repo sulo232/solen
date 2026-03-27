@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { DollarSign, Wallet, FileText, Calendar, Clock } from "lucide-react";
+import { DollarSign, Wallet, FileText, Calendar, Clock, Users } from "lucide-react";
 import { useLocale } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
@@ -23,6 +23,16 @@ interface EarningsData {
   total_earnings: number;
   pending_balance: number;
   payouts: Payout[];
+}
+
+interface StaffEarning {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  commission_rate: number;
+  gross: number;
+  staff_share: number;
+  house_share: number;
 }
 
 const containerVariants = {
@@ -48,16 +58,33 @@ export default function SalonEarningsPage() {
   const locale = useLocale();
   const [data, setData] = useState<EarningsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [staffEarnings, setStaffEarnings] = useState<StaffEarning[]>([]);
+  const [staffLoading, setStaffLoading] = useState(true);
+  const [salonId, setSalonId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/salon/earnings")
-      .then(res => res.json())
+    fetch("/api/profile")
+      .then(r => r.json())
+      .then(p => {
+        const sid = p?.salon_id ?? null;
+        setSalonId(sid);
+        return fetch("/api/salon/earnings").then(res => res.json());
+      })
       .then(d => {
         if (!d.error) setData(d);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!salonId) return;
+    fetch(`/api/earnings/staff?salon_id=${salonId}`)
+      .then(r => r.json())
+      .then(d => setStaffEarnings(d.staff ?? []))
+      .catch(() => {})
+      .finally(() => setStaffLoading(false));
+  }, [salonId]);
 
   return (
     <DashboardLayout>
@@ -140,7 +167,7 @@ export default function SalonEarningsPage() {
                             href={`/api/salon/invoices/${p.id}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center p-2 rounded-full hover:bg-s-coral/10 text-s-correo text-s-coral transition-colors"
+                            className="inline-flex items-center justify-center p-2 rounded-full hover:bg-s-coral/10 text-s-coral transition-colors"
                             title="Abrechnung drucken"
                           >
                             <FileText size={16} />
@@ -155,6 +182,53 @@ export default function SalonEarningsPage() {
               <div className="p-8 text-center text-s-ink/40">
                 <Clock size={32} className="mx-auto mb-3 opacity-20" />
                 <p>Bisher keine Transaktionen vorhanden.</p>
+              </div>
+            )}
+          </motion.div>
+
+          {/* Staff Payout Table */}
+          <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card overflow-hidden">
+            <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5 flex items-center gap-2">
+              <Users size={16} className="text-s-coral" />
+              <h2 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">Mitarbeiter-Abrechnung</h2>
+            </div>
+            {staffLoading ? (
+              <div className="flex justify-center py-8"><Spinner size="md" /></div>
+            ) : staffEarnings.length === 0 ? (
+              <div className="p-8 text-center text-s-ink/40 text-sm">
+                Keine Mitarbeiter mit Provision konfiguriert.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-s-bg-surface/80 dark:bg-s-dm-bg/50">
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Mitarbeiter</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Provision</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Brutto</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">MA-Anteil</th>
+                      <th className="text-right px-5 py-3 text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40">Salon-Anteil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {staffEarnings.map((s) => (
+                      <tr key={s.id} className="border-t border-s-ink/5 dark:border-white/5 hover:bg-s-bg-surface/60 transition-colors">
+                        <td className="px-5 py-4 text-s-ink dark:text-s-dm-text">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-s-coral/10 flex items-center justify-center text-[10px] font-bold text-s-coral shrink-0 overflow-hidden">
+                              {s.avatar_url ? <img src={s.avatar_url} alt="" className="w-full h-full object-cover" /> : s.name[0]}
+                            </div>
+                            <span className="font-medium">{s.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-4 text-right data-text text-s-ink/60 dark:text-s-dm-text/60">{s.commission_rate}%</td>
+                        <td className="px-5 py-4 text-right data-text text-s-ink dark:text-s-dm-text">{formatCurrency(s.gross, locale)}</td>
+                        <td className="px-5 py-4 text-right data-text font-medium text-s-coral">{formatCurrency(s.staff_share, locale)}</td>
+                        <td className="px-5 py-4 text-right data-text font-semibold text-s-ink dark:text-s-dm-text">{formatCurrency(s.house_share, locale)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </motion.div>

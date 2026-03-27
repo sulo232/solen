@@ -162,6 +162,7 @@ export interface StaffMember {
   languages?: string[];
   instagram_url?: string | null;
   years_experience?: number | null;
+  commission_rate?: number;
 }
 
 export interface Service {
