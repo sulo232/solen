@@ -34,7 +34,7 @@ const NAV_LINKS = [
   { key: "spa", href: "/spa", Icon: SpaIcon },
   { key: "makeup", href: "/makeup", Icon: MakeupIcon },
   { key: "waxing", href: "/waxing", Icon: WaxingIcon },
-  { key: "last_minute", href: "/last-minute", Icon: CalendarDays },
+  { key: "last_minute", href: "/angebote", Icon: CalendarDays },
 ];
 
 // Category icons for sub-site indicator

@@ -287,7 +287,7 @@ export default function HomePage() {
                   aria-label={t("cta.findSalon")}>
                   <Search size={15} aria-hidden="true" /> {t("cta.findSalon")}
                 </Link>
-                <Link href={`/${locale}/last-minute`}
+                <Link href={`/${locale}/angebote`}
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-pill border-[1.5px] border-s-ink/20 dark:border-white/20 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-white hover:shadow-warm-md hover:-translate-y-px transition-all duration-150"
                   aria-label={t("cta.lastMinute")}>
                   {t("cta.lastMinute")} →
