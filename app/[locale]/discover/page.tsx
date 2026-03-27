@@ -17,6 +17,7 @@ import FilterDrawer from "@/components/discovery/FilterDrawer";
 import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
 import PostFromDiscover from "@/components/discovery/PostFromDiscover";
 import ForYouSection from "@/components/discovery/ForYouSection";
+import AISuggestionPills from "@/components/discovery/AISuggestionPills";
 import DiscoveryAdmin from "@/components/discovery/DiscoveryAdmin";
 import FilterBar from "@/components/ui/FilterBar";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilters, FilterPill, ActiveFilter } from "@/lib/types";
@@ -278,6 +279,11 @@ function DiscoverPageContent() {
             className="mb-4"
           />
           <DiscoverySearchBar value={search} onChange={setSearch} />
+        </div>
+
+        {/* AI Suggestion Pills */}
+        <div className="mb-5">
+          <AISuggestionPills category={category} onSelect={setSearch} />
         </div>
 
         {/* Inline preferences setup (shown when profile not configured) */}
