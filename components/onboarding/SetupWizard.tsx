@@ -26,6 +26,12 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
   const [direction, setDirection] = useState(1);
   const t = useTranslations("onboarding");
 
+  // Sync when parent re-fetches progress (e.g. after onSaved callbacks)
+  useEffect(() => {
+    if (initialSteps.length > 0) setSteps(initialSteps);
+  }, [initialSteps]);
+
+
   const isDE = locale === "de" || locale === "fr";
   const totalSteps = children.length;
   const isLast = currentStep === totalSteps - 1;

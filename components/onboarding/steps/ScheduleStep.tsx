@@ -1,6 +1,7 @@
 "use client";
 
-import { Calendar, Check, Lightbulb } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Calendar, Check, Lightbulb, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface ScheduleStepProps {
@@ -9,6 +10,48 @@ interface ScheduleStepProps {
 
 export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
   const t = useTranslations("onboarding");
+  const [applied, setApplied] = useState(false);
+  const [applying, setApplying] = useState(false);
+
+  // Auto-apply default schedules on mount
+  useEffect(() => {
+    fetch("/api/salons/mine")
+      .then(r => r.json())
+      .then(d => {
+        const salonId = d?.salon?.id;
+        if (!salonId) return;
+        // Check if schedules already exist
+        return fetch(`/api/staff/my-schedule?salon_id=${salonId}`)
+          .then(r => r.json())
+          .then(schedData => {
+            if ((schedData?.schedules ?? []).length > 0) {
+              setApplied(true);
+              onSaved();
+            }
+          });
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleApply = async () => {
+    setApplying(true);
+    try {
+      const res = await fetch("/api/salons/mine").then(r => r.json());
+      const salonId = res?.salon?.id;
+      if (!salonId) return;
+
+      // Create default schedule from opening hours for all staff
+      await fetch("/api/staff/schedule/auto-apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId }),
+      });
+      setApplied(true);
+      onSaved();
+    } catch { /* ignore */ } finally {
+      setApplying(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -31,17 +74,28 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           {t("schedule.description")}
         </p>
 
-        <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-2">
-          <Check size={14} className="text-s-coral shrink-0" />
-          <div>
-            <p className="text-xs text-s-coral font-medium">
-              {t("schedule.autoConfigured")}
-            </p>
-            <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
-              {t("schedule.autoConfiguredDesc")}
-            </p>
+        {applied ? (
+          <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-2">
+            <Check size={14} className="text-s-coral shrink-0" />
+            <div>
+              <p className="text-xs text-s-coral font-medium">
+                {t("schedule.autoConfigured")}
+              </p>
+              <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">
+                {t("schedule.autoConfiguredDesc")}
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <button
+            onClick={handleApply}
+            disabled={applying}
+            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
+          >
+            {applying && <Loader2 size={14} className="animate-spin" />}
+            Arbeitszeiten übernehmen
+          </button>
+        )}
 
         <div className="bg-s-bg-surface dark:bg-s-dm-raised rounded-card px-4 py-3 flex items-start gap-2">
           <Lightbulb size={14} className="text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 shrink-0" />
