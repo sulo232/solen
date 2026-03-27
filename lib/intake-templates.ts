@@ -61,9 +61,15 @@ export const INTAKE_TEMPLATES: Record<string, IntakeQuestion[]> = {
   ],
   spa_consultation: [
     { question_key: "health_conditions", question_de: "Gesundheitliche Einschränkungen?", question_en: "Health conditions?", type: "text" },
-    { question_key: "pressure_preference", question_de: "Druckpräferenz", question_en: "Pressure preference", type: "select", options: ["light", "medium", "firm", "deep"] },
-    { question_key: "focus_areas", question_de: "Problembereiche?", question_en: "Focus areas?", type: "text" },
+    { question_key: "contraindications", question_de: "Kontraindikationen (Herzprobleme, Epilepsie, etc.)?", question_en: "Contraindications (heart issues, epilepsy, etc.)?", type: "text" },
     { question_key: "pregnant", question_de: "Schwangerschaft?", question_en: "Pregnancy?", type: "boolean" },
+    { question_key: "blood_pressure", question_de: "Blutdruckprobleme?", question_en: "Blood pressure issues?", type: "select", options: ["normal", "low", "high", "medicated"] },
     { question_key: "recent_surgery", question_de: "Kürzliche Operationen?", question_en: "Recent surgery?", type: "text" },
+    { question_key: "allergies", question_de: "Allergien (Öle, Duftstoffe, Latex)?", question_en: "Allergies (oils, fragrances, latex)?", type: "text" },
+    { question_key: "skin_conditions", question_de: "Hautzustand (Ekzeme, Psoriasis, etc.)?", question_en: "Skin conditions (eczema, psoriasis, etc.)?", type: "text" },
+    { question_key: "pressure_preference", question_de: "Druckpräferenz", question_en: "Pressure preference", type: "select", options: ["light", "medium", "firm", "deep"] },
+    { question_key: "areas_to_avoid", question_de: "Bereiche, die gemieden werden sollen?", question_en: "Areas to avoid?", type: "text" },
+    { question_key: "focus_areas", question_de: "Problembereiche / Fokus?", question_en: "Focus areas?", type: "text" },
+    { question_key: "medications", question_de: "Aktuelle Medikamente?", question_en: "Current medications?", type: "text" },
   ],
 };
