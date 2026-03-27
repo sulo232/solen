@@ -42,10 +42,12 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
         // ── Solen V3 Design System ──
-        card: "12px",      // Zone 2 cards, salon profiles
+        card: "20px",      // Salon cards, glass stat cards, Last Minute card, category tiles, modals
+        panel: "16px",     // Inner panels within a card, review cards, section content blocks
+        search: "18px",    // Search bar outer container
         pill: "9999px",    // availability pills, tags
         btn:  "99px",      // CTA buttons, action buttons (V3 standard)
-        input: "12px",     // form inputs
+        input: "12px",     // form inputs, dashboard cards (Zone 4)
         // NOTE: rounded-button (8px) REMOVED — use rounded-btn (99px)
         // NOTE: rounded-blob REMOVED — NEVER rule #6
       },

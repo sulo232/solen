@@ -46,12 +46,15 @@ export async function POST(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;
 
+  const isSalon = !!salon_name;
+  const redirectPath = isSalon ? `/de/onboarding/salon` : `/de`;
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: { birthday, salon_name },
-      emailRedirectTo: `${origin}/api/auth/callback`,
+      emailRedirectTo: `${origin}/api/auth/callback?redirect=${encodeURIComponent(redirectPath)}`,
     },
   });
 

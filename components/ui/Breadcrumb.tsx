@@ -12,7 +12,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   spa: "Spa",
   makeup: "Makeup",
   waxing: "Waxing",
-  "last-minute": "Last Minute",
+  "last-minute": "Angebote",
   salon: "Salon",
   termine: "Termine",
   profile: "Profil",

@@ -323,7 +323,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       </div>
 
       {/* Search + Filters */}
-      <div className="sticky top-[57px] z-40 isolate">
+      <div className="sticky top-[60px] z-40 isolate">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete category={category} />
@@ -397,7 +397,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <EmptyState
             icon={Scissors}
             title={tc("noSalonsFound")}
-            message="Versuche andere Filteroptionen oder wähle ein anderes Quartier."
+            message="Versuche andere Filteroptionen oder eine andere Stadt."
           />
         ) : (
           <div>

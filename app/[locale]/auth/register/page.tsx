@@ -47,7 +47,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 
       {/* Customer choice */}
       <button onClick={onCustomer}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left">
+        className="group flex items-center gap-4 p-4 rounded-card border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(232,98,74,.10)" }}>
           <User size={20} className="text-s-coral" />
@@ -61,7 +61,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 
       {/* Salon choice */}
       <button onClick={onSalon}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left">
+        className="group flex items-center gap-4 p-4 rounded-card border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(212,135,10,.10)" }}>
           <Building2 size={20} className="text-s-amber" />
@@ -168,7 +168,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
       />
       <input
         type="password"
@@ -176,7 +176,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+        className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
       />
       
       {isSalon ? (
@@ -190,7 +190,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
             placeholder="z.B. Studio 54"
             value={salonName}
             onChange={(e) => setSalonName(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
       ) : (

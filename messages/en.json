@@ -16,7 +16,7 @@
     "spa": "Spa",
     "makeup": "Makeup",
     "waxing": "Waxing",
-    "last_minute": "Last Minute",
+    "last_minute": "Offers",
     "account": "Profile",
     "bookings": "Bookings",
     "favorites": "Favorites",
@@ -45,7 +45,7 @@
     },
     "cta": {
       "findSalon": "Find salon",
-      "lastMinute": "Last Minute"
+      "lastMinute": "Offers"
     },
     "categories": {
       "label": "CATEGORIES",
@@ -66,7 +66,7 @@
       "emptyMessage": "More salons coming soon"
     },
     "lastMinute": {
-      "eyebrow": "Last Minute",
+      "eyebrow": "Offers",
       "title": "Save up to 50%",
       "viewAll": "View all",
       "emptyMessage": "No last-minute deals right now — check back soon!",
@@ -576,7 +576,8 @@
         "looks": "Looks",
         "termine": "Appointments",
         "favoriten": "Favorites",
-        "stempel": "Stamps"
+        "stempel": "Stamps",
+        "einstellungen": "Account"
       },
       "exclusiveBadge": "✦ Only on Solen"
     }

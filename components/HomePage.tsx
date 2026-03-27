@@ -15,7 +15,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
-import StickyMobileCTA from "@/components/ui/StickyMobileCTA";
+// StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
 import LastMinuteCard from "@/components/LastMinuteCard";
 import BlobBackground from "@/components/ui/BlobBackground";
 import HeroVisualCard from "@/components/ui/HeroVisualCard";
@@ -111,6 +111,7 @@ export default function HomePage() {
     social_proof: true, partner_cta: true,
   });
   const [showNearby, setShowNearby] = useState(false);
+  const [expandedPin, setExpandedPin] = useState<string | null>(null);
 
   const fetchNearby = useCallback(() => {
     if (!navigator.geolocation) {
@@ -463,10 +464,10 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
             <div>
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2"
-                style={{ color: "#F2C144" }}>Deals</span>
+                style={{ color: "#F2C144" }}>Angebote</span>
               <h2 className="font-heading font-extrabold text-white"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                Aktuelle Deals
+                Aktuelle Angebote
               </h2>
             </div>
             <Link href={`/${locale}/deals`}
@@ -576,62 +577,143 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ── Map Preview Section (Phase 3) ──────────────────────────────────── */}
-      <section className="py-16 md:py-24">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                In deiner Nähe
-              </span>
-              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                SALONS AUF DER KARTE
-              </h2>
+      {/* ── Map Preview Section (Phase 4 — Interactive Dots) ──────────────── */}
+      {(() => {
+        // Use first 5 salons (or fewer if less available) for map dots
+        const mapSalons = salons.slice(0, 5);
+        const PIN_POSITIONS = [
+          { top: "25%", left: "25%" },
+          { top: "33%", right: "25%" },
+          { bottom: "33%", left: "33%" },
+          { top: "20%", left: "55%" },
+          { bottom: "25%", right: "35%" },
+        ];
+
+        return (
+          <section className="py-16 md:py-24">
+            <div className="max-w-5xl mx-auto px-4">
+              <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                    In deiner Nähe
+                  </span>
+                  <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                    style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                    SALONS AUF DER KARTE
+                  </h2>
+                </div>
+                <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
+                  className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:bg-s-ink hover:text-white dark:hover:bg-white dark:hover:text-s-ink transition-all shrink-0">
+                  Karte öffnen →
+                </Link>
+              </div>
+
+              <div className="relative w-full h-[300px] md:h-[400px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm cursor-pointer"
+                   onClick={(e) => {
+                     // Only navigate if clicking the background, not a pin
+                     if ((e.target as HTMLElement).closest('[data-map-pin]')) return;
+                     setExpandedPin(null);
+                   }}>
+                {/* Map abstract background */}
+                <div className="absolute inset-0 opacity-40 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-background/80" />
+
+                {/* Interactive map pins */}
+                {mapSalons.map((salon, i) => {
+                  const pos = PIN_POSITIONS[i] || PIN_POSITIONS[0];
+                  const isExpanded = expandedPin === salon.id;
+                  const isPrimary = i === 0;
+                  return (
+                    <div
+                      key={salon.id}
+                      data-map-pin
+                      className="absolute z-10"
+                      style={{ ...pos, transform: "translate(-50%, -50%)" }}
+                    >
+                      {/* Pin dot */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedPin(isExpanded ? null : salon.id);
+                        }}
+                        className={`relative flex items-center justify-center rounded-full transition-all duration-200 ease-out ${
+                          isPrimary
+                            ? "w-10 h-10 bg-white shadow-warm-md border-2 border-s-coral text-s-coral"
+                            : "w-8 h-8 bg-s-coral shadow-coral-glow text-white"
+                        } ${isExpanded ? "scale-[1.3] ring-4 ring-s-coral/20" : "hover:scale-[1.2]"}`}
+                        aria-label={`Pin: ${salon.name}`}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width={isPrimary ? 20 : 16} height={isPrimary ? 20 : 16} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" fill="white" />
+                        </svg>
+                      </button>
+
+                      {/* Expanded salon info popup */}
+                      {isExpanded && (
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 bg-white dark:bg-s-dm-raised rounded-card shadow-warm-lg border border-s-ink/10 dark:border-white/10 p-3 z-20 animate-fade-in">
+                          <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text truncate">
+                            {salon.name}
+                          </p>
+                          {salon.average_rating > 0 && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <span className="text-s-amber text-xs">★</span>
+                              <span className="text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70">{salon.average_rating.toFixed(1)}</span>
+                              {salon.review_count > 0 && <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">({salon.review_count})</span>}
+                            </div>
+                          )}
+                          {salon.categories?.[0] && (
+                            <span className="inline-block mt-1.5 text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-coral bg-s-coral/10 px-2 py-0.5 rounded-pill">
+                              {salon.categories[0]}
+                            </span>
+                          )}
+                          <Link
+                            href={`/${locale}/salon/${salon.slug}`}
+                            className="mt-2.5 block w-full text-center py-2 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Buchen
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* Fallback pins if no salons loaded */}
+                {mapSalons.length === 0 && (
+                  <>
+                    <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-coral text-s-coral hover:scale-[1.2] transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
+                      </div>
+                    </div>
+                    <div className="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="w-8 h-8 rounded-full bg-s-coral shadow-coral-glow flex items-center justify-center text-white hover:scale-[1.2] transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-ink text-s-ink hover:scale-[1.2] transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Overlay CTA */}
+                <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none">
+                  <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
+                    className="pointer-events-auto px-6 py-3 rounded-full bg-white/90 backdrop-blur-sm border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 hover:scale-105 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Karte erkunden
+                  </Link>
+                </div>
+              </div>
             </div>
-            <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-              className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:bg-s-ink hover:text-white dark:hover:bg-white dark:hover:text-s-ink transition-all shrink-0">
-              Karte öffnen →
-            </Link>
-          </div>
-
-          <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`} className="block group">
-            <div className="relative w-full h-[300px] md:h-[400px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm group-hover:shadow-warm-md transition-shadow">
-              {/* Map abstract background */}
-              <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
-              
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-background/80" />
-              
-              {/* Floating map pins */}
-              <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 group-hover:-translate-y-2">
-                <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-coral text-s-coral">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
-                </div>
-              </div>
-
-              <div className="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 delay-75 group-hover:-translate-y-2">
-                <div className="w-8 h-8 rounded-full bg-s-coral shadow-coral-glow flex items-center justify-center text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
-                </div>
-              </div>
-
-              <div className="absolute bottom-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 delay-150 group-hover:-translate-y-2">
-                <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-ink text-s-ink">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
-                </div>
-              </div>
-              
-              {/* Overlay CTA */}
-              <div className="absolute bottom-6 inset-x-0 flex justify-center">
-                <div className="px-6 py-3 rounded-full bg-white/90 backdrop-blur-sm border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 group-hover:scale-105 transition-transform">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  Karte erkunden
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </section>
+          </section>
+        );
+      })()}
 
       {/* ── Review Carousel ──────────────────────────────────────────────── */}
       {sections.reviews && <ReviewCarousel />}
@@ -728,7 +810,7 @@ export default function HomePage() {
       </div>
 
       {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}
-      <StickyMobileCTA />
+      {/* StickyMobileCTA removed — Phase 2 */}
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <Footer />

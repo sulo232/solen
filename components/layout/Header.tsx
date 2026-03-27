@@ -325,12 +325,62 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             }}
           >
             <nav className="flex flex-col gap-2">
-              {/* Mobile nav items — complete set including migrated BottomNav items */}
+              {/* Mobile nav items — complete set including category subsites */}
               {[
                 // Core navigation:
                 { key: "discover", href: `/${locale}/discover`, icon: Compass },
-                { key: "last_minute", href: `/${locale}/last-minute`, icon: Compass },
-                // Migrated from BottomNav:
+              ].map(({ key, href, icon: Icon }) => {
+                const active = pathname === href || pathname.startsWith(href + "/");
+                return (
+                  <Link
+                    key={key}
+                    href={href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 py-3 px-3 text-sm font-heading font-semibold transition-colors rounded-[10px] min-h-[44px]",
+                      active ? "text-s-coral bg-s-coral/[0.05]" : "text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                    )}
+                  >
+                    <Icon size={18} className="shrink-0" strokeWidth={active ? 2.2 : 1.8} />
+                    {t(key as any)}
+                  </Link>
+                );
+              })}
+
+              {/* Category subsites */}
+              <p className="text-[10px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 px-3 pt-2">
+                Kategorien
+              </p>
+              {[
+                { key: "coiffeur", href: `/${locale}/coiffeur`, icon: CoiffeurIcon },
+                { key: "barbershop", href: `/${locale}/barbershop`, icon: BarberIcon },
+                { key: "nails", href: `/${locale}/nails`, icon: NailsIcon },
+                { key: "spa", href: `/${locale}/spa`, icon: SpaIcon },
+                { key: "makeup", href: `/${locale}/makeup`, icon: MakeupIcon },
+                { key: "waxing", href: `/${locale}/waxing`, icon: WaxingIcon },
+              ].map(({ key, href, icon: Icon }) => {
+                const active = pathname === href || pathname.startsWith(href + "/");
+                return (
+                  <Link
+                    key={key}
+                    href={href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 py-2.5 px-3 text-sm font-heading font-medium transition-colors rounded-[10px] min-h-[40px]",
+                      active ? "text-s-coral bg-s-coral/[0.05]" : "text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                    )}
+                  >
+                    <Icon width={16} height={16} className="shrink-0" />
+                    {t(key as any)}
+                  </Link>
+                );
+              })}
+
+              <div className="border-t border-s-ink/[0.06] my-1" />
+
+              {/* Angebote + Account links */}
+              {[
+                { key: "last_minute", href: `/${locale}/last-minute`, icon: CalendarDays },
                 { key: "bookings", href: `/${locale}/bookings`, icon: CalendarDays },
                 { key: "favorites", href: `/${locale}/favorites`, icon: Heart },
                 { key: "saved", href: `/${locale}/account/saved`, icon: Bookmark },

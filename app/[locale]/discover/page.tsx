@@ -11,6 +11,7 @@ import DiscoverySearchBar from "@/components/discovery/SearchBar";
 import DiscoveryGridSkeleton from "@/components/discovery/DiscoveryGridSkeleton";
 import DiscoveryEmptyState from "@/components/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components/discovery/ProfileSetupModal";
+import InlinePrefsPanel from "@/components/discovery/InlinePrefsPanel";
 import FeaturedBoards from "@/components/discovery/FeaturedBoards";
 import FilterDrawer from "@/components/discovery/FilterDrawer";
 import DiscoveryErrorState from "@/components/discovery/DiscoveryErrorState";
@@ -278,6 +279,16 @@ function DiscoverPageContent() {
           />
           <DiscoverySearchBar value={search} onChange={setSearch} />
         </div>
+
+        {/* Inline preferences setup (shown when profile not configured) */}
+        {profileChecked && showProfileSetup && (
+          <div className="mb-6">
+            <InlinePrefsPanel
+              onSave={handleProfileSave}
+              onDismiss={() => setShowProfileSetup(false)}
+            />
+          </div>
+        )}
 
         {/* Admin panel (admin-only) */}
         {isAdmin && <DiscoveryAdmin />}

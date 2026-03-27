@@ -71,7 +71,7 @@ export default function BottomNav() {
 
   const routes: (string | null)[] = [
     `/${locale}`,
-    `/${locale}/coiffeur`,
+    `/${locale}/discover`,
     `/${locale}/discover`,
     null, // separator
     `/${locale}/termine`,
@@ -93,7 +93,7 @@ export default function BottomNav() {
         window.scrollTo({ top: 0, behavior: "smooth" });
         setTimeout(() => document.getElementById("tour-search")?.focus(), 400);
       } else {
-        router.push(`/${locale}/coiffeur`);
+        router.push(`/${locale}/discover`);
       }
       return;
     }

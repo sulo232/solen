@@ -648,7 +648,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [cancelTarget, setCancelTarget] = useState<BookingWithDetails | null>(null);
   const [pastOpen, setPastOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'looks' | 'termine' | 'favoriten' | 'stempel'>('termine');
+  const [activeTab, setActiveTab] = useState<'looks' | 'termine' | 'favoriten' | 'stempel' | 'einstellungen'>('termine');
   const [beautyEditOpen, setBeautyEditOpen] = useState(false);
 
   useEffect(() => {
@@ -854,7 +854,7 @@ export default function ProfilePage() {
         />
 
         {/* Profile Hero */}
-        <ProfileHero profile={profile} locale={locale} />
+        <ProfileHero profile={profile} locale={locale} onEditProfile={() => setActiveTab('einstellungen')} />
 
         {/* Beauty Profile Card */}
         <div className="mb-4">
@@ -966,6 +966,74 @@ export default function ProfilePage() {
             </div>
           )}
 
+          {activeTab === 'einstellungen' && (
+            <div className="space-y-6">
+              <SettingsSection profile={profile} onSave={handleSaveProfile} />
+
+              {/* Email & Password */}
+              <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-4">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30">Sicherheit</p>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+                    const supabase = createBrowserSupabaseClient();
+                    const email = prompt("Neue E-Mail-Adresse:");
+                    if (email) {
+                      const { error } = await supabase.auth.updateUser({ email });
+                      if (error) alert(`Fehler: ${error.message}`);
+                      else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
+                    }
+                  }}
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                >
+                  <div className="text-left">
+                    <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">E-Mail ändern</p>
+                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Neue Adresse mit Bestätigungslink</p>
+                  </div>
+                  <span className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors">→</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+                    const supabase = createBrowserSupabaseClient();
+                    const password = prompt("Neues Passwort (mind. 8 Zeichen):");
+                    if (password && password.length >= 8) {
+                      const { error } = await supabase.auth.updateUser({ password });
+                      if (error) alert(`Fehler: ${error.message}`);
+                      else alert("Passwort erfolgreich geändert.");
+                    } else if (password) {
+                      alert("Passwort muss mindestens 8 Zeichen lang sein.");
+                    }
+                  }}
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                >
+                  <div className="text-left">
+                    <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">Passwort ändern</p>
+                    <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Neues Passwort festlegen</p>
+                  </div>
+                  <span className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors">→</span>
+                </button>
+
+                {/* Logout */}
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+                    const supabase = createBrowserSupabaseClient();
+                    await supabase.auth.signOut();
+                    window.location.href = `/${locale}`;
+                  }}
+                  className="w-full py-3 rounded-btn border border-red-200 dark:border-red-800/30 text-red-500 text-sm font-heading font-medium hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+                >
+                  Abmelden
+                </button>
+              </div>
+            </div>
+          )}
           {activeTab === 'stempel' && (
             <div>
               {loyaltyCards.length === 0 ? (

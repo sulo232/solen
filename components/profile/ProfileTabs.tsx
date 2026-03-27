@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Grid3x3, Calendar, Heart, Star } from 'lucide-react';
+import { Grid3x3, Calendar, Heart, Star, Settings } from 'lucide-react';
 
-type TabKey = 'looks' | 'termine' | 'favoriten' | 'stempel';
+type TabKey = 'looks' | 'termine' | 'favoriten' | 'stempel' | 'einstellungen';
 
 interface ProfileTabsProps {
   activeTab: TabKey;
@@ -20,6 +20,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({ activeTab, onTabChange
     { key: 'termine', label: t('termine'), icon: Calendar },
     { key: 'favoriten', label: t('favoriten'), icon: Heart },
     { key: 'stempel', label: t('stempel'), icon: Star },
+    { key: 'einstellungen', label: t('einstellungen'), icon: Settings },
   ];
 
   return (

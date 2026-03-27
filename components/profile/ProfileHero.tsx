@@ -8,9 +8,10 @@ import type { Profile } from '@/lib/types';
 interface ProfileHeroProps {
   profile: Profile;
   locale: string;
+  onEditProfile?: () => void;
 }
 
-export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale }) => {
+export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEditProfile }) => {
   const t = useTranslations('account.beauty');
 
   const getInitial = () => {
@@ -71,6 +72,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale }) => 
         <button
           className="px-4 py-2 rounded-pill bg-s-ink/[0.05] dark:bg-white/[0.08] text-s-ink dark:text-s-dm-text text-[13px] font-body font-medium hover:bg-s-ink/[0.09] dark:hover:bg-white/[0.12] active:scale-[0.98] transition-all"
           aria-label="Edit profile"
+          onClick={onEditProfile}
         >
           Profil bearbeiten
         </button>

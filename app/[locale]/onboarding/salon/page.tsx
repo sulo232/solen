@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle } from "lucide-react";
@@ -479,7 +480,7 @@ export default function SalonOnboardingPage() {
       sessionStorage.removeItem("solen_wizard");
       fetch("/api/salon-draft", { method: "DELETE" }).catch(() => {});
       setDone(true);
-      setTimeout(() => router.push(`/${locale}/dashboard?onboarded=1`), 2200);
+      setTimeout(() => router.push(`/${locale}/dashboard?onboarded=1`), 1500);
     } catch {
       setSubmitError("Netzwerkfehler — bitte prüfe deine Verbindung und versuche es erneut.");
     } finally {
@@ -564,6 +565,11 @@ export default function SalonOnboardingPage() {
                 <p className="text-[10px] font-heading uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mt-3">
                   {t("done.dashboardHint")}
                 </p>
+                <Link href={`/${locale}/dashboard?onboarded=1`}
+                  className="mt-4 px-6 py-3 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all"
+                  style={{ boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
+                  Zum Dashboard →
+                </Link>
               </div>
 
               {/* Opacity-only pulse dots — NO scale */}

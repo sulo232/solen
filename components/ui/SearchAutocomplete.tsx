@@ -68,7 +68,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
   const totalItems = services.length + salons.length + smartResults.length;
 
   const fetchSuggestions = useCallback(async (q: string) => {
-    if (q.length < 2) {
+    if (q.length < 1) {
       setServices([]);
       setSalons([]);
       setSmartResults([]);
@@ -312,6 +312,12 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
               </Link>
             </div>
           )}
+        </div>
+      )}
+
+      {open && totalItems === 0 && query.length >= 1 && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-lg rounded-card shadow-surface border border-s-ink/5 dark:border-white/10 z-50 px-4 py-5 text-center">
+          <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">Keine Ergebnisse für „{query}“</p>
         </div>
       )}
     </div>

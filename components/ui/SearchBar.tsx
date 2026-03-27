@@ -34,7 +34,7 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Suche Salon in Basel..."
-          aria-label="Salon, Service oder Quartier suchen"
+          aria-label="Salon oder Service suchen"
           id="tour-search"
           className="w-full rounded-card bg-white dark:bg-s-dm-surface shadow-card py-4 pl-12 pr-4 text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 border border-s-ink/5 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-s-coral/30 focus:shadow-warm-sm focus:border-s-coral transition-shadow duration-200"
         />
