@@ -75,7 +75,7 @@ export default function SocialProofStrip() {
 
   // Fetch real stats
   useEffect(() => {
-    fetch("/api/analytics/platform")
+    fetch("/api/metrics/global")
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.customers || data?.salons || data?.bookings_this_week || data?.avg_rating) {
@@ -86,7 +86,9 @@ export default function SocialProofStrip() {
           ]);
         }
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.error("Failed to fetch global metrics, falling back to defaults", error);
+      });
   }, []);
 
   // Intersection Observer

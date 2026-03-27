@@ -283,6 +283,68 @@ html {
   --driver-theme-color: #E8624A;
 }
 
+.solen-tour-popover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(24px) saturate(1.3) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.3) !important;
+  border: 1px solid rgba(26, 18, 9, 0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(26,18,9,0.08), 0 24px 72px rgba(26,18,9,0.12) !important;
+  font-family: "DM Sans", sans-serif !important;
+  padding: 24px !important;
+  color: #1A1209 !important;
+}
+
+.dark .solen-tour-popover {
+  background: rgba(30, 23, 16, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #F5EEE4 !important;
+}
+
+.solen-tour-popover .driver-popover-title {
+  font-family: "Syne", sans-serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+}
+
+.solen-tour-popover .driver-popover-description {
+  color: rgba(26, 18, 9, 0.7) !important;
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+}
+
+.dark .solen-tour-popover .driver-popover-description {
+  color: rgba(245, 238, 228, 0.7) !important;
+}
+
+.solen-tour-popover .driver-popover-footer button {
+  border-radius: 99px !important;
+  font-weight: 600 !important;
+  padding: 6px 14px !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.solen-tour-popover .driver-popover-next-btn {
+  background-color: #E8624A !important;
+  color: white !important;
+  border: none !important;
+  text-shadow: none !important;
+}
+
+.solen-tour-popover .driver-popover-prev-btn {
+  background-color: transparent !important;
+  color: #1A1209 !important;
+  border: 1px solid rgba(26, 18, 9, 0.1) !important;
+}
+
+.dark .solen-tour-popover .driver-popover-prev-btn {
+  color: #F5EEE4 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
 /* ── Scrollbar hide utility ───────────────────────────────────────── */
 .scrollbar-hide {
   -ms-overflow-style: none;

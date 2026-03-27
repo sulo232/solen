@@ -1778,6 +1778,8 @@
       "title": "Booking confirmed!",
       "subtitle": "Your appointment has been successfully confirmed.",
       "payment": "Payment",
+      "time": "{time}",
+      "duration": "{minutes} min.",
       "cancellationPolicy": "Free cancellation up to {hours}h before appointment.",
       "referralTitle": "Invite friends",
       "referralDesc": "Share your code and get {amount} credit per referral.",

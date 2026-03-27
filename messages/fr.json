@@ -1777,6 +1777,8 @@
       "title": "Rendez-vous réservé!",
       "subtitle": "Votre rendez-vous a été confirmé avec succès.",
       "payment": "Paiement",
+      "time": "{time}",
+      "duration": "{minutes} min.",
       "cancellationPolicy": "Annulation gratuite jusqu'à {hours}h avant le rendez-vous.",
       "referralTitle": "Inviter des amis",
       "referralDesc": "Partagez votre code et recevez {amount} de crédit par parrainage.",

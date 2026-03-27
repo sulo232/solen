@@ -1777,6 +1777,8 @@
       "title": "Appuntamento prenotato!",
       "subtitle": "Il tuo appuntamento è stato confermato con successo.",
       "payment": "Pagamento",
+      "time": "alle {time}",
+      "duration": "{minutes} min.",
       "cancellationPolicy": "Cancellazione gratuita fino a {hours}h prima dell'appuntamento.",
       "referralTitle": "Invita amici",
       "referralDesc": "Condividi il tuo codice e ricevi {amount} di credito per ogni segnalazione.",

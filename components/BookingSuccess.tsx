@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Calendar, Share2, RotateCcw, CreditCard, ShieldCheck, Gift } from "lucide-react";
@@ -44,13 +44,26 @@ function generateICS(props: BookingSuccessProps): string {
 
 export default function BookingSuccess(props: BookingSuccessProps) {
   const locale = useLocale();
-  const t = useTranslations("bookingSuccess");
+  const t = useTranslations("ui.bookingSuccess");
   const router = useRouter();
   const confettiRef = useRef(false);
 
   // Mark first booking for PWA install prompt
   useEffect(() => {
     markFirstBooking();
+  }, []);
+
+  const [rewardAmount, setRewardAmount] = useState<number>(10);
+
+  useEffect(() => {
+    fetch("/api/referral")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.reward_amount) {
+          setRewardAmount(data.reward_amount / 100);
+        }
+      })
+      .catch((err) => console.log("Failed to fetch referral reward amount", err));
   }, []);
 
   // Simple CSS confetti on mount
@@ -175,9 +188,9 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <div className="bg-s-coral/5 rounded-card p-4 mb-4 text-left border border-s-coral/10">
         <div className="flex items-center gap-2 mb-1">
           <Gift size={14} className="text-s-coral" />
-          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("referral.title")}</p>
+          <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("referralTitle")}</p>
         </div>
-        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("referral.description", { amount: formatCurrency(10, locale) })}</p>
+        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">{t("referralDesc", { amount: formatCurrency(rewardAmount, locale) })}</p>
       </div>
 
       <div className="flex flex-col gap-2">

@@ -44,7 +44,7 @@ module.exports = {
         // ── Solen V3 Design System ──
         card: "20px",      // Salon cards, glass stat cards, Last Minute card, category tiles, modals
         panel: "16px",     // Inner panels within a card, review cards, section content blocks
-        search: "18px",    // Search bar outer container
+        search: "99px",    // Search bar outer container fully rounded
         pill: "9999px",    // availability pills, tags
         btn:  "99px",      // CTA buttons, action buttons (V3 standard)
         input: "12px",     // form inputs, dashboard cards (Zone 4)

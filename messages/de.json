@@ -1789,6 +1789,8 @@
       "title": "Termin gebucht!",
       "subtitle": "Dein Termin wurde erfolgreich bestätigt.",
       "payment": "Zahlung",
+      "time": "{time} Uhr",
+      "duration": "{minutes} Min.",
       "cancellationPolicy": "Kostenlose Stornierung bis {hours}h vor dem Termin möglich.",
       "referralTitle": "Freunde einladen",
       "referralDesc": "Teile deinen Code und erhalte {amount} Guthaben pro Empfehlung.",
