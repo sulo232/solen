@@ -575,7 +575,21 @@
       "segments": "Segments",
       "visualEditor": "Visual Editor",
       "discovery": "Discovery",
-      "homepage": "Homepage"
+      "homepage": "Homepage",
+      "barber_tools": "Barber Tools",
+      "barber_ops": "Barber Operations",
+      "barber_clients": "Barber Clients",
+      "nail_tools": "Nail Tools",
+      "nail_admin": "Nail Management",
+      "nail_clients": "Nail Clients",
+      "coiffeur_tools": "Coiffeur Tools",
+      "coiffeur_crm": "Coiffeur CRM",
+      "spa_tools": "Spa Tools",
+      "spa_admin": "Spa Management",
+      "makeup_tools": "Makeup Tools",
+      "makeup_admin": "Makeup Studio",
+      "waxing_tools": "Waxing Tools",
+      "waxing_admin": "Waxing Studio"
     },
     "schedule": {
       "monday": "Monday",
@@ -726,6 +740,26 @@
       "create": "Create & SMS",
       "error": "Error"
     }
+  },
+  "dashboardCoiffeur": {
+    "eyebrow": "Coiffeur",
+    "title": "Coiffeur CRM",
+    "coming_soon": "Coming soon"
+  },
+  "dashboardSpa": {
+    "eyebrow": "Spa & Wellness",
+    "title": "Spa Management",
+    "coming_soon": "Coming soon"
+  },
+  "dashboardMakeup": {
+    "eyebrow": "Makeup",
+    "title": "Makeup Studio",
+    "coming_soon": "Coming soon"
+  },
+  "dashboardWaxing": {
+    "eyebrow": "Waxing",
+    "title": "Waxing Studio",
+    "coming_soon": "Coming soon"
   },
   "errors": {
     "not_found": "Page not found",

@@ -574,7 +574,21 @@
       "segments": "Segmenti",
       "visualEditor": "Editor visuale",
       "discovery": "Scoperta",
-      "homepage": "Homepage"
+      "homepage": "Homepage",
+      "barber_tools": "Strumenti barbiere",
+      "barber_ops": "Operazioni barbiere",
+      "barber_clients": "Clienti barbiere",
+      "nail_tools": "Strumenti unghie",
+      "nail_admin": "Gestione unghie",
+      "nail_clients": "Clienti unghie",
+      "coiffeur_tools": "Strumenti parrucchiere",
+      "coiffeur_crm": "CRM parrucchiere",
+      "spa_tools": "Strumenti spa",
+      "spa_admin": "Gestione spa",
+      "makeup_tools": "Strumenti trucco",
+      "makeup_admin": "Studio trucco",
+      "waxing_tools": "Strumenti ceretta",
+      "waxing_admin": "Studio ceretta"
     },
     "schedule": {
       "monday": "Lunedì",
@@ -725,6 +739,26 @@
       "create": "Crea & SMS",
       "error": "Errore"
     }
+  },
+  "dashboardCoiffeur": {
+    "eyebrow": "Parrucchiere",
+    "title": "CRM Parrucchiere",
+    "coming_soon": "Prossimamente"
+  },
+  "dashboardSpa": {
+    "eyebrow": "Spa & Benessere",
+    "title": "Gestione Spa",
+    "coming_soon": "Prossimamente"
+  },
+  "dashboardMakeup": {
+    "eyebrow": "Trucco",
+    "title": "Studio Trucco",
+    "coming_soon": "Prossimamente"
+  },
+  "dashboardWaxing": {
+    "eyebrow": "Ceretta",
+    "title": "Studio Ceretta",
+    "coming_soon": "Prossimamente"
   },
   "errors": {
     "not_found": "Pagina non trovata",

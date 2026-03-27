@@ -18,6 +18,7 @@ import Skeleton from "@/components/ui/Skeleton";
 import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
 import { useMemo } from "react";
+import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
 
 // ─────────────────────────────────────────
 // Nav config
@@ -189,6 +190,12 @@ export default function DashboardLayout({
     });
   }, [salonCategories]);
 
+  // Get category-specific nav groups
+  const categoryNavGroups = useMemo(() => {
+    if (!salonCategories || salonCategories.length === 0) return [];
+    return getCategoryNavGroups(salonCategories as any[]);
+  }, [salonCategories]);
+
   // Auth guard — role must be salon_owner, admin, or linked staff
   useEffect(() => {
     fetch("/api/profile")
@@ -281,34 +288,56 @@ export default function DashboardLayout({
                 );
               })
             ) : (
-              filteredOwnerNavGroups.map((group) => (
-                <div key={group.label} className="px-3 pt-4 pb-1">
-                  <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
-                  {group.items.map((item) => {
-                    const { href, icon: Icon } = item;
-                    const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
-                    const active = isActive(href);
-                    const isMessages = href === "/dashboard/messages";
-                    return (
-                      <Link key={href} href={`/${locale}${href}`}
-                        aria-current={active ? "page" : undefined}
+              <>
+                {filteredOwnerNavGroups.map((group) => (
+                  <div key={group.label} className="px-3 pt-4 pb-1">
+                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
+                    {group.items.map((item) => {
+                      const { href, icon: Icon } = item;
+                      const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
+                      const active = isActive(href);
+                      const isMessages = href === "/dashboard/messages";
+                      return (
+                        <Link key={href} href={`/${locale}${href}`}
+                          aria-current={active ? "page" : undefined}
+                          className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                            active
+                              ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                              : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                          }`}>
+                          <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
+                          <span className="flex-1 overflow-hidden whitespace-nowrap">{label}</span>
+                          {isMessages && unreadCount > 0 && (
+                            <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
+                              {unreadCount > 9 ? "9+" : unreadCount}
+                            </span>
+                          )}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ))}
+                {/* Category-specific nav groups */}
+                {categoryNavGroups.map(group => (
+                  <div key={group.category} className="px-3 pt-4 pb-1">
+                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">
+                      {t(group.labelKey as any)}
+                    </p>
+                    {group.items.map(item => (
+                      <Link key={item.key} href={`/${locale}${item.href}`}
+                        aria-current={isActive(item.href) ? "page" : undefined}
                         className={`flex items-center gap-3 px-1 py-2 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
-                          active
+                          isActive(item.href)
                             ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                             : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
                         }`}>
-                        <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
-                        <span className="flex-1 overflow-hidden whitespace-nowrap">{label}</span>
-                        {isMessages && unreadCount > 0 && (
-                          <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
-                            {unreadCount > 9 ? "9+" : unreadCount}
-                          </span>
-                        )}
+                        <item.icon size={15} className={isActive(item.href) ? "text-s-coral" : "text-s-ink/35"} />
+                        <span className="flex-1 overflow-hidden whitespace-nowrap">{t(item.labelKey as any)}</span>
                       </Link>
-                    );
-                  })}
-                </div>
-              ))
+                    ))}
+                  </div>
+                ))}
+              </>
             )}
           </nav>
 
@@ -397,6 +426,30 @@ export default function DashboardLayout({
                     </Link>
                   );
                 })}
+                {/* Category-specific nav items (mobile) */}
+                {!isStaff && categoryNavGroups.map(group => (
+                  <div key={`mobile-${group.category}`}>
+                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">
+                      {t(group.labelKey as any)}
+                    </p>
+                    {group.items.map(item => (
+                      <Link
+                        key={item.key}
+                        href={`/${locale}${item.href}`}
+                        onClick={() => setMobileSidebarOpen(false)}
+                        aria-current={isActive(item.href) ? "page" : undefined}
+                        className={`flex items-center gap-3 px-4 py-2.5 text-[12px] font-heading font-semibold transition-colors duration-150 border-l-2 ${
+                          isActive(item.href)
+                            ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                            : "border-transparent text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
+                        }`}
+                      >
+                        <item.icon size={15} className={isActive(item.href) ? "text-s-coral" : "text-s-ink/35"} />
+                        <span className="flex-1">{t(item.labelKey as any)}</span>
+                      </Link>
+                    ))}
+                  </div>
+                ))}
                 {role === "admin" && (
                   <>
                     <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1 px-4 mt-4">Admin</p>

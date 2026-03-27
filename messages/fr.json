@@ -555,7 +555,21 @@
       "segments": "Segments",
       "visualEditor": "Éditeur visuel",
       "discovery": "Découverte",
-      "homepage": "Page d'accueil"
+      "homepage": "Page d'accueil",
+      "barber_tools": "Outils barbier",
+      "barber_ops": "Opérations barbier",
+      "barber_clients": "Clients barbier",
+      "nail_tools": "Outils ongles",
+      "nail_admin": "Gestion ongles",
+      "nail_clients": "Clients ongles",
+      "coiffeur_tools": "Outils coiffeur",
+      "coiffeur_crm": "CRM coiffeur",
+      "spa_tools": "Outils spa",
+      "spa_admin": "Gestion spa",
+      "makeup_tools": "Outils maquillage",
+      "makeup_admin": "Studio maquillage",
+      "waxing_tools": "Outils épilation",
+      "waxing_admin": "Studio épilation"
     },
     "schedule": {
       "monday": "Lundi",
@@ -725,6 +739,26 @@
       "create": "Créer & SMS",
       "error": "Erreur"
     }
+  },
+  "dashboardCoiffeur": {
+    "eyebrow": "Coiffeur",
+    "title": "CRM Coiffeur",
+    "coming_soon": "Bientôt disponible"
+  },
+  "dashboardSpa": {
+    "eyebrow": "Spa & Bien-être",
+    "title": "Gestion Spa",
+    "coming_soon": "Bientôt disponible"
+  },
+  "dashboardMakeup": {
+    "eyebrow": "Maquillage",
+    "title": "Studio Maquillage",
+    "coming_soon": "Bientôt disponible"
+  },
+  "dashboardWaxing": {
+    "eyebrow": "Épilation",
+    "title": "Studio Épilation",
+    "coming_soon": "Bientôt disponible"
   },
   "errors": {
     "not_found": "Page introuvable",
