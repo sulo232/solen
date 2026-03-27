@@ -75,14 +75,14 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
       </div>
 
       {status === "success" && (
-        <div className="flex items-center gap-2 bg-s-green/10 text-s-green p-3 rounded-[12px] text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-2">
+        <div className="flex items-center gap-2 bg-s-green/10 text-s-green p-3 rounded-card text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-2">
           <CheckCircle2 size={16} />
           Erfolgreich gespeichert.
         </div>
       )}
 
       {status === "error" && (
-        <div className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm font-medium mb-4">
+        <div className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-card text-sm font-medium mb-4">
           <AlertCircle size={16} />
           {errorMsg}
         </div>
@@ -117,7 +117,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
           placeholder="Willkommen in unserem Salon! Wir spezialisieren uns auf..."
-          className="w-full h-32 p-4 rounded-[12px] border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/20 focus:border-s-coral/40 resize-none transition-all placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
+          className="w-full h-32 p-4 rounded-card border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/20 focus:border-s-coral/40 resize-none transition-all placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
         />
         <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30 dark:text-s-dm-text/30">
           {texts[activeLang]?.length || 0} / {maxLength}

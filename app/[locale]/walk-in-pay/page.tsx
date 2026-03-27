@@ -201,7 +201,7 @@ export default function WalkInPayPage() {
               </div>
             </div>
 
-            <div className="rounded-[12px] p-4 mb-6 space-y-3" style={{ background: "rgba(26,18,9,.03)" }}>
+            <div className="rounded-card p-4 mb-6 space-y-3" style={{ background: "rgba(26,18,9,.03)" }}>
               {/* Salon row */}
               <div className="flex justify-between items-center">
                 <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30">{l.salon}</span>

@@ -133,7 +133,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Neues Passwort"
                   required
-                  className="w-full px-4 py-3.5 pr-10 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                  className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
                 />
                 <button
                   type="button"
@@ -160,7 +160,7 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="Passwort bestätigen"
                 required
-                className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+                className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
               />
 
               {confirm.length > 0 && !passwordsMatch && (

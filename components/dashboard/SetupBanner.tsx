@@ -41,7 +41,7 @@ export default function SetupBanner() {
   const incompleteSteps = data.steps.filter((s) => !s.complete);
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-card border border-s-ink/[0.06] p-4 mb-6 bg-white dark:bg-s-dm-surface">
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-1">Einrichtung</p>
       <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text mb-3">
         {isDE ? "Salon-Setup" : "Salon Setup"} — {data.completed}/{data.total} {isDE ? "erledigt" : "done"}

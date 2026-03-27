@@ -5,7 +5,7 @@ export default function FrozenSalonBanner({ salon }: { salon: Salon & { frozen_a
   if (!salon.frozen_at) return null;
 
   return (
-    <div className="rounded-[12px] px-4 py-4 mb-4 flex items-center gap-4"
+    <div className="rounded-card px-4 py-4 mb-4 flex items-center gap-4"
       style={{ background: "rgba(26,18,9,.94)", border: "1px solid rgba(26,18,9,.20)" }}>
       <AlertTriangle size={18} className="text-white/70 shrink-0" />
       <div className="flex-1 min-w-0">

@@ -120,7 +120,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">Zahlung</p>
 
       {/* Stripe sandbox — wrapper only */}
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
+      <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
         style={{ background: "#FFFFFF", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
@@ -708,7 +708,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
-                            "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-all duration-150 border",
+                            "px-4 py-2.5 rounded-card text-xs font-heading font-bold transition-all duration-150 border",
                             isSelected
                               ? "bg-s-coral text-white border-s-coral shadow-[0_2px_4px_rgba(232,98,74,.20)]"
                               : offPeakPct

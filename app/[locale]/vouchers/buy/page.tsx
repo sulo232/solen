@@ -65,7 +65,7 @@ function CheckoutForm({ clientSecret, voucherCode }: CheckoutFormProps) {
       <PaymentElement />
 
       {errorMessage && (
-        <div className="rounded-[12px] bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800">
+        <div className="rounded-card bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800">
           {errorMessage}
         </div>
       )}
@@ -195,7 +195,7 @@ export default function VoucherBuyPage() {
                 <button
                   type="button"
                   onClick={() => setDiscountType("fixed")}
-                  className={`rounded-[12px] px-6 py-4 border-2 transition-all ${
+                  className={`rounded-card px-6 py-4 border-2 transition-all ${
                     discountType === "fixed"
                       ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-[0_2px_4px_rgba(232,98,74,.28),0_4px_12px_rgba(232,98,74,.16)]"
                       : "border-s-ink/[0.08] dark:border-white/10 hover:border-s-ink/20"
@@ -213,7 +213,7 @@ export default function VoucherBuyPage() {
                 <button
                   type="button"
                   onClick={() => setDiscountType("percent")}
-                  className={`rounded-[12px] px-6 py-4 border-2 transition-all ${
+                  className={`rounded-card px-6 py-4 border-2 transition-all ${
                     discountType === "percent"
                       ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-[0_2px_4px_rgba(232,98,74,.28),0_4px_12px_rgba(232,98,74,.16)]"
                       : "border-s-ink/[0.08] dark:border-white/10 hover:border-s-ink/20"
@@ -293,7 +293,7 @@ export default function VoucherBuyPage() {
 
             {/* Error */}
             {error && (
-              <div className="mb-6 rounded-[12px] bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800">
+              <div className="mb-6 rounded-card bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800">
                 {error}
               </div>
             )}

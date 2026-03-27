@@ -138,7 +138,7 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       {previewImages.length > 0 && (
         <div className="grid grid-cols-3 gap-1.5 mb-3">
           {previewImages.map((img) => (
-            <div key={img.id} className="aspect-square rounded-[12px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
+            <div key={img.id} className="aspect-square rounded-card overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg">
               <Image src={img.image_url} alt="" width={120} height={120} className="object-cover w-full h-full" />
             </div>
           ))}
@@ -921,7 +921,7 @@ export default function SalonProfilePage() {
                                 setSelectedService(svc.id); 
                                 setCalendarOpen(true); 
                               }}
-                              className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[12px] text-left transition-all duration-[200ms] ${
+                              className={`w-full flex items-center justify-between py-3.5 px-3 rounded-card text-left transition-all duration-[200ms] ${
                                 selectedService === svc.id
                                   ? "bg-s-coral/[0.08] border border-s-coral/20"
                                   : "hover:bg-s-bg-surface dark:hover:bg-s-dm-surface border border-transparent"
@@ -1066,7 +1066,7 @@ export default function SalonProfilePage() {
                           {/* Flag Review — inline form (no window.prompt) */}
                           <div className="mt-2 flex justify-end">
                             {flaggingReviewId === rev.id ? (
-                              <div className="w-full rounded-[12px] p-3 mt-1"
+                              <div className="w-full rounded-card p-3 mt-1"
                                 style={{ background: "rgba(255,255,255,.70)", backdropFilter: "blur(12px)", border: "1px solid rgba(232,98,74,.15)" }}>
                                 {flagSuccess ? (
                                   <p className="text-xs text-s-success font-heading font-semibold py-1">✓ Bewertung gemeldet. Danke!</p>

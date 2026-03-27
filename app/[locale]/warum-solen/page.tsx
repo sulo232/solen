@@ -249,13 +249,13 @@ export default function WarumSolenPage() {
             <div className="flex flex-col items-center gap-4 order-2 md:order-1">
               <div className="relative">
                 {/* Photo frame */}
-                <div className="animate-photo-upload w-48 h-48 rounded-[12px] border-2 border-dashed border-s-amber/30 dark:border-s-amber/20 flex flex-col items-center justify-center gap-2"
+                <div className="animate-photo-upload w-48 h-48 rounded-card border-2 border-dashed border-s-amber/30 dark:border-s-amber/20 flex flex-col items-center justify-center gap-2"
                   style={{ background: "linear-gradient(135deg, rgba(212,135,10,.08) 0%, rgba(212,135,10,.04) 100%)" }}>
                   <Camera className="w-8 h-8 text-s-amber" />
                   <p className="text-xs font-heading font-semibold text-s-amber">Foto hochgeladen</p>
                 </div>
                 {/* Price offer card */}
-                <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.08] px-4 py-3 w-44"
+                <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] px-4 py-3 w-44"
                   style={{ boxShadow: "0 2px 4px rgba(26,18,9,.08), 0 4px 16px rgba(26,18,9,.06)" }}>
                   <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35">Preisangebot</p>
                   <p className="data-text font-bold text-xl text-s-ink dark:text-s-dm-text">CHF 120</p>

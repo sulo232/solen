@@ -49,7 +49,7 @@ function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, spar
   const display = isRating ? (count / 10).toFixed(1) : count;
   return (
     <motion.div variants={itemVariants}
-      className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+      className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
       <div className="flex items-start justify-between mb-4">
         <div className={`w-8 h-8 rounded-[10px] ${bg} flex items-center justify-center`}>
           <Icon size={15} className={color} />
@@ -144,7 +144,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="mb-6 rounded-[12px] px-4 py-4 flex items-center gap-3"
+            className="mb-6 rounded-card px-4 py-4 flex items-center gap-3"
             style={{ background: "#E8624A" }}
           >
             <PartyPopper size={20} className="shrink-0 text-white/80" />
@@ -172,7 +172,7 @@ export default function DashboardPage() {
           {/* Stat card skeletons */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
+              <div key={i} className="rounded-card border border-s-ink/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
                 <div className="w-8 h-8 rounded-[10px] bg-s-bg-sunken dark:bg-s-dm-raised mb-4" />
                 <div className="h-7 w-16 bg-s-bg-sunken dark:bg-s-dm-raised rounded mb-2" />
                 <div className="h-2.5 w-24 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
@@ -182,7 +182,7 @@ export default function DashboardPage() {
           {/* Booking row skeletons */}
           <div className="space-y-2">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface animate-pulse">
+              <div key={i} className="rounded-card border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface animate-pulse">
                 <div className="w-10 h-10 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[8px] shrink-0" />
                 <div className="w-px h-8 bg-s-ink/[0.05] shrink-0" />
                 <div className="flex-1 space-y-2">
@@ -219,7 +219,7 @@ export default function DashboardPage() {
             <div className="space-y-2">
               <SectionLabel amber>Handlungsbedarf</SectionLabel>
               {stats.verification_overdue && (
-                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
+                <div className="rounded-card px-4 py-3.5 flex items-center gap-3"
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -233,7 +233,7 @@ export default function DashboardPage() {
                 </div>
               )}
               {stats.low_slots_warning && (
-                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
+                <div className="rounded-card px-4 py-3.5 flex items-center gap-3"
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -247,7 +247,7 @@ export default function DashboardPage() {
                 </div>
               )}
               {stats.pending_cancellations > 0 && (
-                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
+                <div className="rounded-card px-4 py-3.5 flex items-center gap-3"
                   style={{ background: "rgba(212,135,10,.06)", border: "1px solid rgba(212,135,10,.20)" }}>
                   <AlertTriangle size={16} className="text-s-amber shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -265,7 +265,7 @@ export default function DashboardPage() {
           {/* Unread messages */}
           {unread > 0 && (
             <a href={`/${locale}/dashboard/messages`}
-              className="block rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 transition-colors">
+              className="block rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center">
                   <MessageCircle size={18} className="text-s-coral" />
@@ -285,7 +285,7 @@ export default function DashboardPage() {
               <a href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral">Alle →</a>
             </div>
             {bookings.length === 0 ? (
-              <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-8 text-center bg-white dark:bg-s-dm-surface">
+              <div className="rounded-card border border-s-ink/[0.06] border-dashed p-8 text-center bg-white dark:bg-s-dm-surface">
                 <Calendar size={24} className="mx-auto mb-2 text-s-ink/20" />
                 <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">Keine Termine heute</p>
               </div>
@@ -293,7 +293,7 @@ export default function DashboardPage() {
               <div className="space-y-2">
                 {bookings.map((b) => (
                   <div key={b.id}
-                    className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface">
+                    className="rounded-card border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface">
                     {/* Time column */}
                     <div className="shrink-0 text-center w-10">
                       <p className="data-text font-bold text-base text-s-coral leading-none">
@@ -336,7 +336,7 @@ export default function DashboardPage() {
                 { label: "Nachrichten", href: `/${locale}/dashboard/messages`, Icon: MessageCircle },
               ].map(({ label, href, Icon }) => (
                 <a key={href} href={href}
-                  className="rounded-[12px] border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
+                  className="rounded-card border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
                   <div className="w-9 h-9 rounded-[10px] flex items-center justify-center"
                     style={{ background: "rgba(232,98,74,.08)" }}>
                     <Icon size={17} className="text-s-coral" />

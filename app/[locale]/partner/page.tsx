@@ -75,7 +75,7 @@ export default function PartnerPage() {
                 alt={t("alt_dashboard")}
                 width={600}
                 height={400}
-                className="rounded-[12px]"
+                className="rounded-card"
                 style={{ boxShadow: "0 4px 8px rgba(26,18,9,.08), 0 16px 48px rgba(26,18,9,.12)" }}
                 priority
               />
@@ -86,19 +86,19 @@ export default function PartnerPage() {
                   alt={t("alt_profile")}
                   width={180}
                   height={360}
-                  className="rounded-[12px] border-4 border-white dark:border-s-dm-surface"
+                  className="rounded-card border-4 border-white dark:border-s-dm-surface"
                   style={{ boxShadow: "0 4px 8px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.14)" }}
                 />
               </div>
             </div>
 
             {/* Floating value badges — desktop only */}
-            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
+            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-card px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
               style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
               <TrendingUp className="w-4 h-4 text-s-sage" />
               <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_bookings")}</span>
             </div>
-            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
+            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-card px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
               style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
               <Star className="w-4 h-4 text-s-yellow" />
               <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_rating")}</span>
@@ -412,7 +412,7 @@ export default function PartnerPage() {
               </div>
 
               {/* Savings callout */}
-              <div className="mt-8 p-4 rounded-[12px] border border-s-sage/20"
+              <div className="mt-8 p-4 rounded-card border border-s-sage/20"
                 style={{ background: "rgba(107,166,120,.08)" }}>
                 <p className="text-sm font-body text-s-sage-text dark:text-s-sage">
                   <span className="font-heading font-bold">{t("compare_savings_bold")}</span>{" "}

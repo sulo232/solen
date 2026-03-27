@@ -53,7 +53,7 @@ export default function ForYouSection() {
         <div className="h-4 bg-s-ink/5 dark:bg-white/5 rounded-pill w-48 animate-pulse" />
         <div className="flex gap-3 overflow-hidden">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="flex-shrink-0 w-40 aspect-[3/4] rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-40 aspect-[3/4] rounded-card bg-s-bg-sunken dark:bg-s-dm-surface animate-pulse" />
           ))}
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function ForYouSection() {
               <div
                 key={sim.id}
                 onClick={() => router.push(`/${locale}/discover/${sim.id}`)}
-                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
+                className="w-32 shrink-0 snap-start rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250"
               >
                 <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
                   {(sim.image_url || sim.tiktok_thumbnail_url) && (

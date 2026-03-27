@@ -240,7 +240,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-s-bg-base py-12 px-4">
         <div className="max-w-lg mx-auto space-y-4 animate-pulse">
           {/* Summary card skeleton */}
-          <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
+          <div className="bg-white rounded-card border border-s-ink/[0.06] p-5">
             <div className="h-2.5 w-20 bg-s-bg-sunken rounded mb-3" />
             <div className="h-4 w-36 bg-s-bg-sunken rounded mb-5" />
             <div className="space-y-3">
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           {/* Payment card skeleton */}
-          <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
+          <div className="bg-white rounded-card border border-s-ink/[0.06] p-5">
             <div className="h-3 w-28 bg-s-bg-sunken rounded mb-4" />
             <div className="h-10 w-full bg-s-bg-sunken rounded-[10px] mb-3" />
             <div className="h-10 w-full bg-s-bg-sunken rounded-[10px] mb-3" />
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
         <div className="w-full max-w-sm rounded-[14px] border border-s-coral/20 p-8 text-center"
           style={{ background: "rgba(232,98,74,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
-          <div className="w-12 h-12 rounded-[12px] flex items-center justify-center mx-auto mb-4"
+          <div className="w-12 h-12 rounded-card flex items-center justify-center mx-auto mb-4"
             style={{ background: "rgba(232,98,74,.12)" }}>
             <AlertCircle size={22} className="text-s-coral" />
           </div>
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* P2 — Booking summary card */}
-        <div className="bg-white rounded-[12px] border border-s-ink/[0.07]"
+        <div className="bg-white rounded-card border border-s-ink/[0.07]"
           style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
           <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
@@ -420,7 +420,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* P5 — Promo code + credits */}
-        <div className="bg-white rounded-[12px] border border-s-ink/[0.07] p-5 space-y-3"
+        <div className="bg-white rounded-card border border-s-ink/[0.07] p-5 space-y-3"
           style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
           <div className="flex items-center gap-2">
             <Tag className="w-3.5 h-3.5 text-s-coral" />
@@ -494,7 +494,7 @@ export default function CheckoutPage() {
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
           // P8 — At-salon confirm card
-          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] p-5"
+          <div className="bg-white rounded-card border border-s-ink/[0.07] p-5"
             style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
             <div className="flex items-start gap-3 mb-4">
               <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
@@ -528,7 +528,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           // P10 — Payment card (Stripe Elements) — header only, DO NOT touch Elements/appearance
-          <div className="bg-white rounded-[12px] border border-s-ink/[0.07] overflow-hidden"
+          <div className="bg-white rounded-card border border-s-ink/[0.07] overflow-hidden"
             style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
             <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
               <Lock size={13} className="text-s-ink/35 shrink-0" />

@@ -56,7 +56,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
 }
 
 // ─────────────────────────────────────────
-// Step 1 — Basics (Name, Email, Category, Quartier, Address, TOS)
+// Step 1 — Basics (Name, Email, Category, City, Address, TOS)
 // ─────────────────────────────────────────
 
 interface BasicsData {
@@ -289,7 +289,7 @@ function Step3({ data, onChange, category, t }: {
           </div>
         </div>
 
-        <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
+        <div className="rounded-card border border-s-coral/[0.12] p-4"
           style={{ background: "rgba(232,98,74,.04)" }}>
           <div className="flex items-center gap-1.5 mb-1.5">
             <Sparkles size={12} className="text-s-coral shrink-0" />
@@ -510,11 +510,11 @@ export default function SalonOnboardingPage() {
             <div className="space-y-5">
               <div>
                 <div className="h-2 w-16 bg-s-bg-sunken rounded mb-2" />
-                <div className="h-12 w-full bg-s-bg-sunken rounded-[12px]" />
+                <div className="h-12 w-full bg-s-bg-sunken rounded-card" />
               </div>
               <div>
                 <div className="h-2 w-16 bg-s-bg-sunken rounded mb-2" />
-                <div className="h-12 w-full bg-s-bg-sunken rounded-[12px]" />
+                <div className="h-12 w-full bg-s-bg-sunken rounded-card" />
               </div>
             </div>
           </div>
@@ -644,7 +644,7 @@ export default function SalonOnboardingPage() {
       {/* Submit error banner */}
       {submitError && step === TOTAL_STEPS && (
         <div className="max-w-xl mx-auto px-4 mb-4">
-          <div className="flex items-start gap-3 rounded-[12px] border border-s-coral/20 p-4"
+          <div className="flex items-start gap-3 rounded-card border border-s-coral/20 p-4"
             style={{ background: "rgba(232,98,74,.05)" }}>
             <AlertCircle size={15} className="text-s-coral shrink-0 mt-0.5" />
             <p className="text-xs font-body text-s-coral">{submitError}</p>

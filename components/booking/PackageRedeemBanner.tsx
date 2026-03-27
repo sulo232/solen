@@ -55,7 +55,7 @@ export default function PackageRedeemBanner({
 
   if (redeemed) {
     return (
-      <div className="flex items-center gap-3 px-4 py-3 rounded-[12px]"
+      <div className="flex items-center gap-3 px-4 py-3 rounded-card"
         style={{ background: "rgba(212,135,10,.08)", border: "1px solid rgba(212,135,10,.20)" }}>
         <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(76,175,111,.14)" }}>
@@ -70,7 +70,7 @@ export default function PackageRedeemBanner({
   }
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-[12px]"
+    <div className="flex items-center gap-3 px-4 py-3 rounded-card"
       style={{ background: "rgba(212,135,10,.08)", border: "1px solid rgba(212,135,10,.20)" }}>
       <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0"
         style={{ background: "rgba(212,135,10,.14)" }}>

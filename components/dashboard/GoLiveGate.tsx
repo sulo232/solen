@@ -81,7 +81,7 @@ export default function GoLiveGate() {
   const doneCount = requirements.filter((r) => r.done).length;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] mb-6 bg-white dark:bg-s-dm-surface overflow-hidden">
+    <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] mb-6 bg-white dark:bg-s-dm-surface overflow-hidden">
       {/* Header */}
       <div className="px-4 py-4 border-b border-s-ink/[0.04]">
         <div className="flex items-center justify-between">

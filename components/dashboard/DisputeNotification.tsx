@@ -41,7 +41,7 @@ export default function DisputeNotification({
   };
 
   return (
-    <div className="rounded-[12px] p-4 mt-3"
+    <div className="rounded-card p-4 mt-3"
       style={{ background: "rgba(212,135,10,.08)", border: "1px solid rgba(212,135,10,.22)" }}>
       <div className="flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />

@@ -158,10 +158,10 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
     window.open(`sms:?body=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (loading) return <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5"><Spinner size="sm" /></div>;
+  if (loading) return <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5"><Spinner size="sm" /></div>;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4">
+    <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4">
       {/* Eyebrow header */}
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35">
         Freunde einladen
@@ -287,7 +287,7 @@ const BookingCard = memo(function BookingCard({
   const localeFmt = locale === "de" ? "de-CH" : locale;
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface">
       <div className="flex justify-between items-start gap-4">
         <div>
           <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>

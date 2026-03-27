@@ -203,7 +203,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
             required
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-[12px] border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
       )}
@@ -487,7 +487,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
               key={o.value}
               type="button"
               onClick={() => toggle(o.value)}
-              className={`relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-[12px] border transition-all duration-150 ${
+              className={`relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-input border transition-all duration-150 ${
                 active
                   ? "border-s-coral bg-s-coral/[0.08]"
                   : "border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40"
