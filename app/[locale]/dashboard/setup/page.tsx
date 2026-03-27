@@ -103,7 +103,7 @@ export default function SetupPage() {
       {/* Step 6: Payments */}
       <PaymentsStep salonId={salonId} onSaved={refreshProgress} />
       {/* Step 7: Go Live */}
-      <GoLiveStep onGoLive={handleComplete} />
+      {({ steps, goTo }: any) => <GoLiveStep onGoLive={handleComplete} steps={steps} goTo={goTo} />}
     </SetupWizard>
   );
 }

@@ -25,6 +25,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [newService, setNewService] = useState<SimpleService>({ name_de: "", duration_minutes: 60, price: 80 });
+  const [suggestions, setSuggestions] = useState<SimpleService[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -32,27 +33,42 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
       .then((r) => r.json())
       .then((d) => {
         const id = d?.salon?.id;
+        const categories = d?.salon?.categories?.join(",") || "hair";
         setSalonId(id);
-        if (id) return fetch(`/api/services?salon_id=${id}`).then((r) => r.json());
-      })
-      .then((d) => setServices(d?.services ?? []))
-      .finally(() => setLoading(false));
+        if (id) {
+          // Fetch existing services
+          fetch(`/api/services?salon_id=${id}`)
+            .then((r) => r.json())
+            .then((res) => setServices(res?.services ?? []))
+            .finally(() => setLoading(false));
+
+          // Fetch AI suggestions in parallel
+          fetch(`/api/services/suggest?categories=${categories}`)
+            .then((r) => r.json())
+            .then((res) => setSuggestions(res?.suggestions ?? []));
+        } else {
+          setLoading(false);
+        }
+      });
   }, []);
 
-  const addService = async () => {
-    if (!newService.name_de || !salonId) return;
+  const addService = async (svc: SimpleService = newService) => {
+    if (!svc.name_de || !salonId) return;
     setSaving(true);
     try {
       const res = await fetch("/api/services", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newService, salon_id: salonId }),
+        body: JSON.stringify({ ...svc, salon_id: salonId }),
       });
       if (res.ok) {
         const d = await res.json();
-        setServices((prev) => [...prev, { ...newService, id: d?.service?.id ?? d?.id }]);
-        setNewService({ name_de: "", duration_minutes: 60, price: 80 });
-        setShowAdd(false);
+        setServices((prev) => [...prev, { ...svc, id: d?.service?.id ?? d?.id }]);
+        if (svc === newService) {
+          setNewService({ name_de: "", duration_minutes: 60, price: 80 });
+          setShowAdd(false);
+        }
+        setSuggestions((prev) => prev.filter((s) => s.name_de !== svc.name_de));
         onSaved();
       }
     } catch { /* ignore */ } finally {
@@ -106,7 +122,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           )}
 
           {showAdd ? (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-coral/20 p-5 space-y-3">
+            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-coral/20 p-5 space-y-3 shadow-warm-sm">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("services.new")}</p>
                 <button onClick={() => setShowAdd(false)} className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink dark:hover:text-s-dm-text">
@@ -143,7 +159,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                 </div>
               </div>
               <button
-                onClick={addService}
+                onClick={() => addService()}
                 disabled={!newService.name_de || saving}
                 className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm transition-all"
               >
@@ -159,6 +175,29 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
               <Plus size={16} />
               {t("services.add")}
             </button>
+          )}
+
+          {suggestions.length > 0 && (
+            <div className="pt-2">
+              <p className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-3 px-1">✨ KI-Vorschläge</p>
+              <div className="grid gap-2">
+                {suggestions.map((s, i) => (
+                  <div key={i} className="flex justify-between items-center bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/10 rounded-card px-4 py-3">
+                    <div>
+                      <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{s.name_de}</p>
+                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
+                    </div>
+                    <button 
+                      onClick={() => addService(s)}
+                      disabled={saving}
+                      className="px-3 py-1.5 text-xs font-medium rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 text-s-ink/80 hover:text-s-coral transition-all disabled:opacity-50"
+                    >
+                      Hinzufügen
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {services.length > 0 && (

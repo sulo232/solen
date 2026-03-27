@@ -7,6 +7,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createSalonSchema } from "@/lib/validations";
 import { sendEmail } from "@/lib/email";
 import { onboardingWelcome } from "@/lib/email-templates/salon-onboarding";
+import { autoTranslateDescription } from "@/lib/ai/translate";
 
 export async function GET(request: NextRequest) {
   try {
@@ -196,7 +197,11 @@ export async function POST(request: NextRequest) {
     let salon: { id: string } | null = null;
     let slug = "";
 
-    // The frontend sends the specific "city" string (e.g. "zuerich", "basel")
+    let finalDescEn = description_en;
+    if (description_de && !finalDescEn) {
+      finalDescEn = await autoTranslateDescription(description_de);
+    }
+
     const { data: cData } = await admin.from("cities").select("id").eq("slug", city).single();
     const city_id = cData?.id || null;
 
@@ -219,7 +224,7 @@ export async function POST(request: NextRequest) {
           cover_photo_url: cover_photo_url || null,
           gallery_urls: gallery_urls?.filter(Boolean) || [],
           description_de: description_de || null,
-          description_en: description_en || null,
+          description_en: finalDescEn || null,
           instagram_url: instagram_url || null,
           website_url: website_url || null,
           // tiktok_url: tiktok_url || null, // [FIX] Field missing from cache or db schema

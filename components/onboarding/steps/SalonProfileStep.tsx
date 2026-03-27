@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Store, Camera, Phone } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { useTranslations } from "next-intl";
 
 interface SalonProfileStepProps {
@@ -97,46 +98,29 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
           />
           <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
-
         <div>
           <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-            {t("profile.descriptionEn")}
+            <Phone size={12} className="inline mr-1" />
+            {t("profile.phone")}
           </label>
-          <textarea
-            value={form.description_en}
-            onChange={(e) => setForm({ ...form, description_en: e.target.value })}
-            rows={2}
-            maxLength={500}
-            placeholder="English description (optional)"
-            className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none transition-colors"
+          <input
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            placeholder="+41 61 ..."
+            className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-              <Phone size={12} className="inline mr-1" />
-              {t("profile.phone")}
-            </label>
-            <input
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              placeholder="+41 61 ..."
-              className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-              <Camera size={12} className="inline mr-1" />
-              {t("profile.coverUrl")}
-            </label>
-            <input
-              value={form.cover_photo_url}
-              onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
-              placeholder="https://..."
-              className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
-            />
-          </div>
+        <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
+            <Camera size={12} className="inline mr-1" />
+            {t("profile.coverUrl")}
+          </label>
+          <ImageUploader
+            bucket="salons"
+            currentImageUrl={form.cover_photo_url}
+            onUpload={(url) => setForm({ ...form, cover_photo_url: url })}
+          />
         </div>
       </div>
 

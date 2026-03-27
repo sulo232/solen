@@ -14,7 +14,7 @@ type PaymentMode = "at_salon" | "deposit" | "prepay";
 export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
   const t = useTranslations("onboarding");
   const tc = useTranslations("common");
-  const [paymentMode, setPaymentMode] = useState<PaymentMode>("at_salon");
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>("prepay");
   const [connectStatus, setConnectStatus] = useState<"loading" | "not_connected" | "pending" | "connected">("loading");
   const [connectLoading, setConnectLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -51,10 +51,8 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
     }
   };
 
-  const modeOptions: { id: PaymentMode; labelKey: string; descKey: string }[] = [
-    { id: "at_salon", labelKey: "payments.atSalonLabel", descKey: "payments.atSalonDesc" },
-    { id: "deposit", labelKey: "payments.depositLabel", descKey: "payments.depositDesc" },
-    { id: "prepay", labelKey: "payments.prepayLabel", descKey: "payments.prepayDesc" },
+  const modeOptions = [
+    { id: "prepay" as PaymentMode, labelKey: "payments.prepayLabel" as const, descKey: "payments.prepayDesc" as const },
   ];
 
   return (
@@ -105,8 +103,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
         ))}
       </div>
 
-      {/* Stripe Connect — only for deposit/prepay */}
-      {paymentMode !== "at_salon" && (
+      {/* Stripe Connect */}
         <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -135,7 +132,6 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             </button>
           )}
         </div>
-      )}
 
       <button
         onClick={handleSave}

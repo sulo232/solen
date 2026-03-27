@@ -11,7 +11,7 @@ export async function GET() {
 
   const { data: salon } = await supabase
     .from("salons")
-    .select("id, name, slug")
+    .select("id, name, slug, categories")
     .eq("owner_id", user.id)
     .single();
 

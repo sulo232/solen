@@ -17,8 +17,8 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
   const t = useTranslations("onboarding");
   const tc = useTranslations("common");
   const dayLabels = DAY_KEYS.map((k) => t(`hours.days.${k}`));
-  const [hours, setHours] = useState<Record<string, { open: string; close: string } | null>>(() => {
-    const h: Record<string, { open: string; close: string } | null> = {};
+  const [hours, setHours] = useState<Record<string, { open: string; close: string; break_start?: string; break_end?: string } | null>>(() => {
+    const h: Record<string, { open: string; close: string; break_start?: string; break_end?: string } | null> = {};
     DAY_KEYS.forEach((k, i) => {
       h[k] = i < 5 ? { open: "09:00", close: "18:00" } : (i === 5 ? { open: "09:00", close: "16:00" } : null);
     });
@@ -43,11 +43,23 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
     setHours((h) => ({ ...h, [key]: h[key] ? null : { open: "09:00", close: "18:00" } }));
   };
 
-  const update = (key: string, field: "open" | "close", val: string) => {
+  const update = (key: string, field: "open" | "close" | "break_start" | "break_end", val: string) => {
     setHours((h) => {
       const curr = h[key];
       if (!curr) return h;
       return { ...h, [key]: { ...curr, [field]: val } };
+    });
+  };
+
+  const toggleBreak = (key: string) => {
+    setHours((h) => {
+      const curr = h[key];
+      if (!curr) return h;
+      if (curr.break_start) {
+        const { break_start, break_end, ...rest } = curr as any;
+        return { ...h, [key]: rest };
+      }
+      return { ...h, [key]: { ...curr, break_start: "12:00", break_end: "13:00" } };
     });
   };
 
@@ -99,20 +111,48 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
               </button>
               <span className="text-sm text-s-ink/60 dark:text-s-dm-text/60 w-24 hidden sm:block">{dayLabels[i]}</span>
               {h ? (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="time"
-                    value={h.open}
-                    onChange={(e) => update(key, "open", e.target.value)}
-                    className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
-                  />
-                  <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
-                  <input
-                    type="time"
-                    value={h.close}
-                    onChange={(e) => update(key, "close", e.target.value)}
-                    className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
-                  />
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="time"
+                      value={h.open}
+                      onChange={(e) => update(key, "open", e.target.value)}
+                      className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                    />
+                    <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
+                    <input
+                      type="time"
+                      value={h.close}
+                      onChange={(e) => update(key, "close", e.target.value)}
+                      className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                    />
+                    {!h.break_start && (
+                      <button onClick={() => toggleBreak(key)} className="ml-2 text-xs font-medium text-s-coral hover:text-s-coral/80">
+                        + Pause
+                      </button>
+                    )}
+                  </div>
+                  {h.break_start && (
+                    <div className="flex items-center gap-2 pl-[112px] sm:pl-0">
+                      <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40 w-12 hidden sm:inline-block">Pause</span>
+                      <input
+                        type="time"
+                        value={h.break_start}
+                        onChange={(e) => update(key, "break_start", e.target.value)}
+                        className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                      />
+                      <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
+                      <input
+                        type="time"
+                        value={h.break_end}
+                        onChange={(e) => update(key, "break_end", e.target.value)}
+                        className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                      />
+                      <button onClick={() => toggleBreak(key)} className="ml-2 text-xs text-s-ink/30 hover:text-s-coral">
+                        Entfernen
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <span className="text-sm text-s-ink/20 dark:text-s-dm-text/20 italic">

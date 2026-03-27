@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { autoTranslateDescription } from "@/lib/ai/translate";
 
 export async function GET(
   _request: NextRequest,
@@ -9,15 +10,24 @@ export async function GET(
 ) {
   const { slug } = await params;
   const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
-  const { data: salon, error } = await supabase
+  let query = supabase
     .from("salons")
     .select("*")
-    .eq("slug", slug)
-    .eq("is_active", true)
-    .single();
+    .eq("slug", slug);
+
+  const { data: salon, error } = await query.single();
 
   if (error || !salon) {
+    return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
+  }
+
+  // Regular users can only see active salons. Owner/Admin can see pending ones.
+  const isOwner = user?.id === salon.owner_id;
+  if (!isOwner && !salon.is_active) {
+    // If we want to allow admins, we'd check profile role, but owner check is enough for onboarding flow.
     return NextResponse.json({ message: "Salon not found", code: "NOT_FOUND" }, { status: 404 });
   }
 
@@ -87,6 +97,12 @@ export async function PATCH(
   const updates: Record<string, unknown> = {};
   for (const key of allowed) {
     if (body[key] !== undefined) updates[key] = body[key];
+  }
+
+  // Auto-translate description if German was provided but English was not
+  if (updates.description_de && !updates.description_en) {
+    const translated = await autoTranslateDescription(updates.description_de as string);
+    if (translated) updates.description_en = translated;
   }
 
   if (Object.keys(updates).length === 0) {

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, ChevronLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-interface Step {
+export interface Step {
   key: string;
   label: string;
   label_en: string;
@@ -15,7 +15,7 @@ interface Step {
 interface SetupWizardProps {
   salonId: string;
   initialSteps: Step[];
-  children: React.ReactNode[];
+  children: (React.ReactNode | Function)[];
   locale: string;
   onComplete: () => void;
 }
@@ -127,7 +127,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             {typeof children[currentStep] === "function"
-              ? (children[currentStep] as Function)({ goNext, markComplete, salonId })
+              ? (children[currentStep] as Function)({ goNext, markComplete, goTo, steps, salonId })
               : children[currentStep]}
           </motion.div>
         </AnimatePresence>

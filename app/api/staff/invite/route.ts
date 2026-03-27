@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     .from("salons")
     .select("id, name")
     .eq("owner_id", user.id)
-    .eq("is_active", true)
+    // Removed .eq("is_active", true) to allow invites during setup
     .single();
 
   if (!salon) return NextResponse.json({ error: "No salon found for this owner" }, { status: 403 });

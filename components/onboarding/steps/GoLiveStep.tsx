@@ -15,23 +15,16 @@ interface Step {
 
 interface GoLiveStepProps {
   onGoLive: () => void;
+  steps: Step[];
+  goTo: (index: number) => void;
 }
 
-export default function GoLiveStep({ onGoLive }: GoLiveStepProps) {
+export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   const t = useTranslations("onboarding");
   const locale = useLocale();
   const isDE = locale === "de" || locale === "fr";
-  const [steps, setSteps] = useState<Step[]>([]);
-  const [loading, setLoading] = useState(true);
   const [going, setGoing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/salon/setup-progress")
-      .then((r) => r.json())
-      .then((d) => setSteps(d.steps ?? []))
-      .finally(() => setLoading(false));
-  }, []);
 
   const completedCount = steps.filter((s) => s.complete).length;
   const isCoreReady = steps.filter((s) => ["profile", "hours", "services"].includes(s.key)).every((s) => s.complete);
@@ -43,9 +36,6 @@ export default function GoLiveStep({ onGoLive }: GoLiveStepProps) {
     onGoLive();
   };
 
-  if (loading) {
-    return <div className="flex justify-center py-12"><Spinner size="lg" /></div>;
-  }
 
   return (
     <div className="space-y-6">
@@ -68,20 +58,27 @@ export default function GoLiveStep({ onGoLive }: GoLiveStepProps) {
         <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
           {t("goLive.checklist")} — {completedCount}/{steps.length}
         </p>
-        {steps.map((step) => (
-          <div key={step.key} className="flex items-center gap-3">
-            <div className={[
-              "w-6 h-6 rounded-full flex items-center justify-center",
-              step.complete ? "bg-s-coral/10 dark:bg-s-coral/20" : "bg-s-bg-sunken dark:bg-s-dm-raised",
-            ].join(" ")}>
-              {step.complete
-                ? <Check size={12} className="text-s-coral" strokeWidth={3} />
-                : <X size={12} className="text-s-ink/20 dark:text-s-dm-text/20" />}
+        {steps.map((step, i) => (
+          <button 
+            key={step.key} 
+            onClick={() => goTo(i)}
+            disabled={step.key === "go_live"}
+            className="w-full flex items-center justify-between group hover:bg-s-bg-sunken dark:hover:bg-s-dm-raised p-2 -mx-2 rounded-lg transition-colors cursor-pointer disabled:cursor-default disabled:hover:bg-transparent"
+          >
+            <div className="flex items-center gap-3">
+              <div className={[
+                "w-6 h-6 rounded-full flex items-center justify-center transition-colors",
+                step.complete ? "bg-s-coral/10 dark:bg-s-coral/20" : "bg-s-bg-sunken dark:bg-s-dm-raised group-hover:bg-s-ink/5",
+              ].join(" ")}>
+                {step.complete
+                  ? <Check size={12} className="text-s-coral" strokeWidth={3} />
+                  : <X size={12} className="text-s-ink/20 dark:text-s-dm-text/20" />}
+              </div>
+              <p className={["text-sm", step.complete ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"].join(" ")}>
+                {isDE ? step.label : step.label_en}
+              </p>
             </div>
-            <p className={["text-sm", step.complete ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/30 dark:text-s-dm-text/30"].join(" ")}>
-              {isDE ? step.label : step.label_en}
-            </p>
-          </div>
+          </button>
         ))}
       </div>
 
