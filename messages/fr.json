@@ -443,25 +443,6 @@
     }
   },
   "dashboard": {
-    "barber_leaderboard": {
-      "title": "Classement Barbiers",
-      "barber": "Barbier",
-      "value": "Valeur",
-      "view_chart": "Graphique",
-      "view_table": "Tableau",
-      "show_names": "Afficher les noms",
-      "anonymize": "Anonymiser",
-      "week": "Semaine",
-      "month": "Mois",
-      "loading": "Chargement...",
-      "no_data": "Pas de données",
-      "bookings": "Réservations",
-      "revenue": "Revenus",
-      "retention": "Rétention",
-      "avg_tip": "Pourboire",
-      "walkin_conv": "Conv. Sans RDV",
-      "chair_utilization": "Utilisation"
-    },
     "overview": "Vue d'ensemble",
     "bookings": "Réservations",
     "messages": "Messages",
@@ -1872,5 +1853,29 @@
     "week": "Semaine",
     "month": "Mois",
     "no_data": "Aucune donnée"
+  },
+  "aiArtGenerator": {
+    "title": "Générateur AI Nail Art",
+    "this_month": "Ce mois-ci",
+    "shape": "Forme",
+    "style": "Style",
+    "color": "Couleur",
+    "skin_tone": "Teint",
+    "shot_type": "Prise de vue",
+    "shot_hero": "Main entière",
+    "shot_macro": "Macro",
+    "shot_lifestyle": "Lifestyle",
+    "generating": "Génération...",
+    "generate": "Générer",
+    "network_error": "Erreur réseau",
+    "staging_message": "Dans le pipeline — prêt pour la modération",
+    "shapes": {
+      "round": "Rond",
+      "square": "Carré",
+      "oval": "Ovale",
+      "almond": "Amande",
+      "coffin": "Cercueil",
+      "stiletto": "Stiletto"
+    }
   }
 }

@@ -1865,5 +1865,29 @@
     "week": "Woche",
     "month": "Monat",
     "no_data": "Keine Daten"
+  },
+  "aiArtGenerator": {
+    "title": "AI Nail Art Generator",
+    "this_month": "Diesen Monat",
+    "shape": "Form",
+    "style": "Stil",
+    "color": "Farbe",
+    "skin_tone": "Hautton",
+    "shot_type": "Aufnahme",
+    "shot_hero": "Volle Hand",
+    "shot_macro": "Makro",
+    "shot_lifestyle": "Lifestyle",
+    "generating": "Generiere...",
+    "generate": "Generieren",
+    "network_error": "Netzwerkfehler",
+    "staging_message": "In Staging-Pipeline — zur Moderation bereit",
+    "shapes": {
+      "round": "Rund",
+      "square": "Square",
+      "oval": "Oval",
+      "almond": "Mandel",
+      "coffin": "Coffin",
+      "stiletto": "Stiletto"
+    }
   }
 }
