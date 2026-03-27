@@ -154,7 +154,12 @@ export default function DashboardLayout({
       .then((p: Profile) => {
         if (!p?.id) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
-        } else if (p.role === "customer" && !(p as any).staff_salon_id) {
+        } else if (
+          p.role === "customer" &&
+          !(p as any).staff_salon_id &&
+          !(p as any).salon_id
+        ) {
+          // Only redirect if user is truly a customer (no salon, no staff link)
           router.push(`/${locale}/profile`);
         } else {
           setRole(p.role);

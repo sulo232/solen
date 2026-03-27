@@ -12,7 +12,21 @@ export async function GET(_request: NextRequest) {
   const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
   if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
 
-  return NextResponse.json(data);
+  // Also look up owned salon (for DashboardLayout auth guard)
+  let salon_id: string | null = null;
+  let salon_name: string | null = null;
+  const { data: ownedSalon } = await supabase
+    .from("salons")
+    .select("id, name")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .single();
+  if (ownedSalon) {
+    salon_id = ownedSalon.id;
+    salon_name = ownedSalon.name;
+  }
+
+  return NextResponse.json({ ...data, salon_id, salon_name });
 }
 
 export async function PATCH(request: NextRequest) {

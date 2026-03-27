@@ -144,7 +144,27 @@ export async function middleware(request: NextRequest) {
         .eq("id", user.id)
         .single();
 
-      const role = profile?.role;
+      let role = profile?.role;
+
+      // If role is not salon_owner/admin, check if user owns a salon anyway
+      // (role update may have failed during onboarding)
+      if (role !== "salon_owner" && role !== "admin") {
+        const { data: ownedSalon } = await supabase
+          .from("salons")
+          .select("id")
+          .eq("owner_id", user.id)
+          .limit(1)
+          .single();
+
+        if (ownedSalon) {
+          // User owns a salon — auto-fix the stale role
+          role = "salon_owner";
+          await supabase
+            .from("profiles")
+            .update({ role: "salon_owner" })
+            .eq("id", user.id);
+        }
+      }
 
       if (role !== "salon_owner" && role !== "admin") {
         const url = request.nextUrl.clone();
