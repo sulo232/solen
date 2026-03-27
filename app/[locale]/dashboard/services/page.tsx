@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useLocale } from "next-intl";
-import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload } from "lucide-react";
+import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload, GripVertical, FileUp } from "lucide-react";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
@@ -329,6 +330,7 @@ export default function ServicesPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Service | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
 
   const loadServices = () => {
     fetch("/api/profile").then((r) => r.json()).then((p) => {
@@ -355,6 +357,23 @@ export default function ServicesPage() {
     } catch { /* ignore */ } finally { setDeleteLoading(false); }
   };
 
+  const onDragEnd = useCallback(async (result: DropResult) => {
+    if (!result.destination || result.destination.index === result.source.index) return;
+    const reordered = [...services];
+    const [moved] = reordered.splice(result.source.index, 1);
+    reordered.splice(result.destination.index, 0, moved);
+    setServices(reordered);
+    // Persist sort order
+    const order = reordered.map((s, i) => ({ id: s.id, sort_order: i }));
+    try {
+      await fetch("/api/services/reorder", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ salon_id: salonId, order }),
+      });
+    } catch { /* revert on error */ loadServices(); }
+  }, [services, salonId]);
+
   return (
     <DashboardLayout>
       {(addOpen || editTarget) && salonId && (
@@ -379,10 +398,16 @@ export default function ServicesPage() {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-heading font-bold text-2xl text-s-ink">Services</h1>
-        <button onClick={() => setAddOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
-          <Plus size={14} /> Hinzufügen
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setImportOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/50 text-sm font-medium hover:border-s-coral hover:text-s-coral transition-colors">
+            <FileUp size={14} /> CSV Import
+          </button>
+          <button onClick={() => setAddOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-coral text-white text-sm font-medium">
+            <Plus size={14} /> Hinzufügen
+          </button>
+        </div>
       </div>
 
       {/* Template quick-add section */}
@@ -401,54 +426,99 @@ export default function ServicesPage() {
       ) : services.length === 0 ? (
         <div className="text-center py-12 text-s-ink/30"><p className="text-sm">Noch keine Services</p></div>
       ) : (
+        <DragDropContext onDragEnd={onDragEnd}>
         <div className="bg-white rounded-card border border-s-ink/5 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-s-bg-surface border-b border-s-ink/5">
               <tr>
-                {["Name", "Kategorie", "Dauer", "Preis", "Aktiv", ""].map((h) => (
+                {["", "Name", "Kategorie", "Dauer", "Preis", "Aktiv", ""].map((h) => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-medium text-s-ink/40">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
-              {services.map((s) => (
-                <tr key={s.id} className="hover:bg-s-bg-surface transition-colors">
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-s-ink">{s.name_de}</p>
-                    {s.name_en && <p className="text-xs text-s-ink/30">{s.name_en}</p>}
-                  </td>
-                  <td className="px-4 py-3 text-s-ink/60">{CATEGORY_LABELS[s.category]}</td>
-                  <td className="px-4 py-3 data-text text-s-ink/60">{s.duration_minutes} min</td>
-                  <td className="px-4 py-3 data-text text-s-ink">{formatCurrency(Number(s.price), locale)}</td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
-                      {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"><Pencil size={14} /></button>
-                      <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"><Trash2 size={14} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            <Droppable droppableId="services-list">
+              {(provided) => (
+              <tbody ref={provided.innerRef} {...provided.droppableProps} className="divide-y divide-gray-50">
+                {services.map((s, index) => (
+                  <Draggable key={s.id} draggableId={s.id} index={index}>
+                    {(provided, snapshot) => (
+                    <tr ref={provided.innerRef} {...provided.draggableProps}
+                      className={`transition-colors ${snapshot.isDragging ? "bg-s-coral/5 shadow-warm-md" : "hover:bg-s-bg-surface"}`}>
+                      <td className="px-2 py-3 w-8">
+                        <span {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing text-s-ink/20 hover:text-s-ink/50 transition-colors">
+                          <GripVertical size={16} />
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <p className="font-medium text-s-ink">{s.name_de}</p>
+                        {s.name_en && <p className="text-xs text-s-ink/30">{s.name_en}</p>}
+                      </td>
+                      <td className="px-4 py-3 text-s-ink/60">{CATEGORY_LABELS[s.category]}</td>
+                      <td className="px-4 py-3 data-text text-s-ink/60">{s.duration_minutes} min</td>
+                      <td className="px-4 py-3 data-text text-s-ink">{formatCurrency(Number(s.price), locale)}</td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => toggleActive(s.id, s.is_active)} className={s.is_active ? "text-s-coral" : "text-s-ink/20"}>
+                          {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => setEditTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"><Pencil size={14} /></button>
+                          <button onClick={() => setDeleteTarget(s)} className="p-1.5 text-s-ink/30 hover:text-s-coral transition-colors"><Trash2 size={14} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </tbody>
+              )}
+            </Droppable>
           </table>
         </div>
+        </DragDropContext>
       )}
 
-      {/* Competitor import — subtle secondary link */}
-      <div className="mt-6 text-center">
-        <button
-          onClick={() => window.open("mailto:support@solen.ch?subject=CSV-Import%20Anfrage&body=Hallo%20Solen-Team%2C%20ich%20m%C3%B6chte%20meine%20Services%20aus%20Treatwell%2FFresha%20importieren.", "_blank")}
-          className="text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral hover:underline cursor-pointer transition-colors"
-        >
-          <Upload size={10} className="inline mr-1" />
-          Treatwell / Fresha CSV importieren?
-        </button>
-        <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-1">Coming soon — kontaktiere uns für Concierge-Import</p>
-      </div>
+      {/* CSV Import Modal */}
+      {importOpen && salonId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-card shadow-warm-lg w-full max-w-md p-6">
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="font-heading font-bold text-base">CSV Import</h3>
+              <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>
+            </div>
+            <p className="text-sm text-s-ink/60 mb-4">
+              Lade eine CSV-Datei hoch (Treatwell, Fresha, oder eigenes Format). Die Spalten müssen mindestens &quot;Name&quot; (oder &quot;Behandlung&quot;) enthalten. Optional: &quot;Preis&quot;, &quot;Dauer&quot;, &quot;Kategorie&quot;.
+            </p>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const fileInput = form.querySelector('input[type="file"]') as HTMLInputElement;
+              const file = fileInput?.files?.[0];
+              if (!file) return;
+              const fd = new FormData();
+              fd.append('file', file);
+              fd.append('salon_id', salonId);
+              const res = await fetch('/api/services/import', { method: 'POST', body: fd });
+              const data = await res.json();
+              if (data.success) {
+                setImportOpen(false);
+                loadServices();
+              } else {
+                alert(data.error || 'Import fehlgeschlagen');
+              }
+            }}>
+              <input type="file" accept=".csv,.txt" required
+                className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-coral/10 file:text-s-coral file:font-medium file:text-xs file:cursor-pointer" />
+              <button type="submit"
+                className="w-full py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center justify-center gap-2">
+                <Upload size={14} /> Importieren
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
