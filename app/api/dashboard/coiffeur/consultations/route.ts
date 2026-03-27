@@ -2,66 +2,63 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { validateBody, formulaSchema } from "@/lib/validations";
+import { consultationNoteSchema } from "@/lib/validations";
 
-// GET /api/clients/[id]/formulas — Get client formulas (salon owner only)
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id: customerId } = await params;
+// GET /api/dashboard/coiffeur/consultations?client_id=xxx
+export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const clientId = req.nextUrl.searchParams.get("client_id");
+  if (!clientId) return NextResponse.json({ error: "client_id required" }, { status: 400 });
+
   const { data: salon } = await supabase.from("salons").select("id").eq("owner_id", user.id).single();
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { data, error } = await supabase
-    .from("client_formulas")
+    .from("consultation_notes")
     .select("*")
     .eq("salon_id", salon.id)
-    .eq("customer_id", customerId)
+    .eq("client_id", clientId)
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ items: data ?? [] });
+  return NextResponse.json({ data: data ?? [] });
 }
 
-// POST /api/clients/[id]/formulas — Add a formula
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id: customerId } = await params;
+// POST /api/dashboard/coiffeur/consultations
+export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { data: validated, error: valError } = validateBody(formulaSchema, body);
-  if (valError) return NextResponse.json({ error: valError.message }, { status: 400 });
+  const parsed = consultationNoteSchema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.message }, { status: 400 });
 
   const { data: salon } = await supabase.from("salons").select("id").eq("owner_id", user.id).single();
   if (!salon) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { data: formula, error } = await supabase
-    .from("client_formulas")
+  const validated = parsed.data;
+  const { data, error } = await supabase
+    .from("consultation_notes")
     .insert({
       salon_id: salon.id,
-      customer_id: customerId,
+      client_id: validated.client_id,
       booking_id: validated.booking_id ?? null,
-      brand: validated.brand ?? null,
-      product_line: validated.product_line ?? null,
-      mix_formula: validated.mix_formula,
-      developer_volume: validated.developer_volume ?? null,
-      processing_minutes: validated.processing_minutes ?? null,
+      hair_condition: validated.hair_condition ?? null,
+      scalp_condition: validated.scalp_condition ?? null,
+      current_dislikes: validated.current_dislikes ?? null,
+      desired_outcome: validated.desired_outcome ?? null,
+      allergies: validated.allergies ?? null,
       notes: validated.notes ?? null,
-      shade_code: validated.shade_code ?? null,
-      root_formula: validated.root_formula ?? {},
-      mid_lengths_formula: validated.mid_lengths_formula ?? {},
-      ends_formula: validated.ends_formula ?? {},
-      staff_member_id: validated.staff_member_id ?? null,
     })
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ data: formula }, { status: 201 });
+  return NextResponse.json({ data }, { status: 201 });
 }

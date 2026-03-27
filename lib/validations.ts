@@ -288,6 +288,22 @@ export const formulaSchema = z.object({
   processing_minutes: z.number().int().min(1).max(120).optional(),
   notes: z.string().max(1000).optional(),
   booking_id: z.string().uuid().optional(),
+  shade_code: z.string().max(50).optional(),
+  root_formula: z.record(z.string(), z.unknown()).optional(),
+  mid_lengths_formula: z.record(z.string(), z.unknown()).optional(),
+  ends_formula: z.record(z.string(), z.unknown()).optional(),
+  staff_member_id: z.string().uuid().optional(),
+});
+
+export const consultationNoteSchema = z.object({
+  client_id: z.string().uuid(),
+  booking_id: z.string().uuid().optional(),
+  hair_condition: z.string().max(500).optional(),
+  scalp_condition: z.string().max(500).optional(),
+  current_dislikes: z.string().max(1000).optional(),
+  desired_outcome: z.string().max(1000).optional(),
+  allergies: z.string().max(500).optional(),
+  notes: z.string().max(2000).optional(),
 });
 
 export const closureSchema = z.object({
