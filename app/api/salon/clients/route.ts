@@ -68,8 +68,22 @@ export async function GET(req: NextRequest) {
     tagMap.set(t.customer_id, list);
   }
 
+  // Fetch RFM segments (may not exist yet if migration hasn't run)
+  let rfmMap = new Map<string, { segment_tag: string; total_spent: number }>();
+  try {
+    const { data: rfm } = await supabase
+      .from("client_rfm_segments")
+      .select("client_id, segment_tag, total_spent")
+      .eq("salon_id", salonId)
+      .in("client_id", clientIds);
+    if (rfm) {
+      rfmMap = new Map(rfm.map((r: { client_id: string; segment_tag: string; total_spent: number }) => [r.client_id, { segment_tag: r.segment_tag, total_spent: r.total_spent }]));
+    }
+  } catch { /* view may not exist yet */ }
+
   const clients = Array.from(clientMap.values()).map((c) => {
     const p = profileMap.get(c.user_id);
+    const rfm = rfmMap.get(c.user_id);
     return {
       user_id: c.user_id,
       display_name: p?.display_name ?? "Unbekannt",
@@ -77,6 +91,8 @@ export async function GET(req: NextRequest) {
       last_visit: c.last_visit,
       total_bookings: c.total_bookings,
       tags: tagMap.get(c.user_id) ?? [],
+      segment_tag: rfm?.segment_tag ?? "Regulär",
+      total_spent: rfm?.total_spent ?? 0,
     };
   });
 

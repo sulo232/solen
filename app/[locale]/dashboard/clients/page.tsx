@@ -19,6 +19,8 @@ interface Client {
   last_visit: string | null;
   total_bookings: number;
   tags: { tag: string; color: string }[];
+  segment_tag?: string;
+  total_spent?: number;
 }
 
 interface Booking {
@@ -48,6 +50,15 @@ export default function ClientsPage() {
   const [search, setSearch] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [salonId, setSalonId] = useState<string | null>(null);
+  const [segmentFilter, setSegmentFilter] = useState<string>("Alle");
+
+  const SEGMENTS = [
+    { key: "Alle", label: "Alle", color: "bg-s-ink/5 text-s-ink/60" },
+    { key: "VIP", label: "VIP", color: "bg-s-yellow/15 text-s-yellow-text" },
+    { key: "Gefährdet", label: "Gefährdet", color: "bg-s-error/10 text-s-error" },
+    { key: "Neu", label: "Neu", color: "bg-s-success/10 text-s-success" },
+    { key: "Regulär", label: "Regulär", color: "bg-s-ink/5 text-s-ink/60" },
+  ];
 
   useEffect(() => {
     fetch("/api/profile")
@@ -65,12 +76,16 @@ export default function ClientsPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return clients;
-    const q = search.toLowerCase();
-    return clients.filter((c) =>
-      c.display_name?.toLowerCase().includes(q)
-    );
-  }, [clients, search]);
+    let list = clients;
+    if (segmentFilter !== "Alle") {
+      list = list.filter((c) => c.segment_tag === segmentFilter);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter((c) => c.display_name?.toLowerCase().includes(q));
+    }
+    return list;
+  }, [clients, search, segmentFilter]);
 
   if (selectedClient && salonId) {
     return (
@@ -85,6 +100,22 @@ export default function ClientsPage() {
       <div className="mb-5">
         <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Kunden</h2>
         <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Kundenkartei & CRM</p>
+      </div>
+
+      {/* Segment filter tabs */}
+      <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1">
+        {SEGMENTS.map((s) => {
+          const count = s.key === "Alle" ? clients.length : clients.filter((c) => c.segment_tag === s.key).length;
+          return (
+            <button key={s.key} onClick={() => setSegmentFilter(s.key)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-xs font-medium whitespace-nowrap transition-colors ${
+                segmentFilter === s.key ? "bg-s-coral text-white" : s.color + " hover:opacity-80"
+              }`}>
+              {s.label}
+              <span className={`data-text text-[10px] ${segmentFilter === s.key ? "text-white/70" : "opacity-50"}`}>{count}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Search */}
@@ -126,6 +157,14 @@ export default function ClientsPage() {
                   {c.last_visit && <span>· Letzter: {new Date(c.last_visit).toLocaleDateString("de-CH")}</span>}
                 </div>
               </div>
+              {c.segment_tag && c.segment_tag !== "Regulär" && (
+                <span className={`px-1.5 py-0.5 rounded-pill text-[9px] font-medium shrink-0 ${
+                  c.segment_tag === "VIP" ? "bg-s-yellow/15 text-s-yellow-text" :
+                  c.segment_tag === "Gefährdet" ? "bg-s-error/10 text-s-error" :
+                  c.segment_tag === "Neu" ? "bg-s-success/10 text-s-success" :
+                  "bg-s-ink/5 text-s-ink/60"
+                }`}>{c.segment_tag}</span>
+              )}
               {c.tags?.length > 0 && (
                 <div className="flex gap-1 shrink-0">
                   {c.tags.slice(0, 3).map((t) => (
