@@ -684,6 +684,35 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
   return (
     <div className="py-4 max-w-md space-y-6">
+      {/* Stripe Connect — always visible */}
+      <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-s-ink/40" />
+            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">Bankkonto verknüpfen</p>
+          </div>
+          {statusPill}
+        </div>
+        <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
+          Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
+        </p>
+        {connectStatus !== "connected" && (
+          <button
+            onClick={handleConnect}
+            disabled={connectLoading || connectStatus === "loading"}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50"
+          >
+            {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
+            {connectStatus === "pending" ? "Verifizierung fortsetzen" : "Jetzt verknüpfen"}
+          </button>
+        )}
+        {connectStatus === "connected" && (
+          <p className="text-xs text-[#4CAF6F] font-medium flex items-center gap-1">
+            ✓ Dein Bankkonto ist verknüpft — Auszahlungen erfolgen automatisch.
+          </p>
+        )}
+      </div>
+
       {/* Marketing card */}
       <div className="rounded-card bg-s-coral/5 border border-s-coral/20 p-4">
         <p className="text-sm font-semibold text-s-coral mb-1">Zahlungsmodus wählen</p>
@@ -775,32 +804,6 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               Wird automatisch bei Stornierung innerhalb der Frist belastet.
             </p>
           </div>
-        </div>
-      )}
-
-      {/* Stripe Connect */}
-      {paymentMode !== "at_salon" && (
-        <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-s-ink/40" />
-              <p className="text-sm font-medium text-s-ink">Bankkonto verknüpfen</p>
-            </div>
-            {statusPill}
-          </div>
-          <p className="text-xs text-s-ink/50">
-            Stripe Connect überweist Zahlungen direkt auf dein Konto. Benötigt einmalige Verifizierung.
-          </p>
-          {connectStatus !== "connected" && (
-            <button
-              onClick={handleConnect}
-              disabled={connectLoading || connectStatus === "loading"}
-              className="flex items-center gap-2 px-4 py-2 rounded-btn border border-s-ink/10 text-sm text-s-ink hover:border-s-coral transition-colors disabled:opacity-50"
-            >
-              {connectLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
-              Bankkonto verknüpfen
-            </button>
-          )}
         </div>
       )}
 
