@@ -380,7 +380,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
               {/* Angebote + Account links */}
               {[
-                { key: "last_minute", href: `/${locale}/last-minute`, icon: CalendarDays },
+                { key: "angebote", href: `/${locale}/angebote`, icon: CalendarDays },
                 { key: "bookings", href: `/${locale}/bookings`, icon: CalendarDays },
                 { key: "favorites", href: `/${locale}/favorites`, icon: Heart },
                 { key: "saved", href: `/${locale}/account/saved`, icon: Bookmark },

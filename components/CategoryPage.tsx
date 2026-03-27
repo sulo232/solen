@@ -280,14 +280,14 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     <div className="min-h-screen bg-s-bg-base relative overflow-x-hidden">
       <BlobBackground zone={2} />
       {/* Hero — category gradient + Bebas Neue H1 */}
-      <div className="pt-24 pb-12 relative z-10 overflow-hidden">
+      <div className="pt-20 pb-8 md:pt-24 md:pb-12 relative z-10 overflow-hidden">
         {/* Category gradient overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} pointer-events-none`} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center gap-1.5 text-[11px] font-heading font-bold uppercase tracking-[.12em]">
+            <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[.12em] flex-wrap">
               <li><span className="text-s-ink/30">{locale === "de" ? "Startseite" : "Home"}</span></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {city && (
@@ -307,7 +307,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
           {/* Hero H1 — Bebas Neue at display size */}
           <h1 className="font-display text-s-ink dark:text-s-dm-text"
-            style={{ fontSize: "clamp(48px, 8vw, 96px)", lineHeight: "0.87", letterSpacing: "0.01em" }}>
+            style={{ fontSize: "clamp(32px, 8vw, 96px)", lineHeight: "0.90", letterSpacing: "0.01em" }}>
             {categoryLabel.toUpperCase()} IN{" "}
             <span className="text-s-coral">{cityName.toUpperCase()}</span>
           </h1>
@@ -323,8 +323,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       </div>
 
       {/* Search + Filters */}
-      <div className="sticky top-[60px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+      <div className="sticky top-[56px] sm:top-[60px] z-40 isolate">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>
@@ -338,7 +338,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       </div>
 
       {/* Map/List toggle */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 flex items-center justify-between gap-2 sm:gap-3">
         {/* Results count — left */}
         {!loading && salons.length > 0 && (
           <p className="text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40">
@@ -347,7 +347,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         )}
 
         <div className="flex items-center gap-2 ml-auto">
-          <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
+          <span className="hidden sm:inline-flex">
+            <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
+          </span>
           {/* Toggle pill */}
           <button
             onClick={() => {
@@ -378,7 +380,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       )}
 
       {/* Grid / Map */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
         {isMapView && !loading && salons.length > 0 ? (
           <div className="h-[500px] rounded-card overflow-hidden">
             <MapView
