@@ -671,8 +671,8 @@ export default function SalonProfilePage() {
                           return (
                             <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
                               <div className="flex items-center gap-2">
+                                <span className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-success" : "bg-s-ink/15 dark:bg-s-dm-text/15"} ${isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""}`} />
                                 <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
-                                {isToday && <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30 dark:bg-s-dm-text/30"}`} />}
                               </div>
                               <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
                                 {h ? `${h.open}–${h.close}` : "Geschlossen"}
@@ -692,8 +692,8 @@ export default function SalonProfilePage() {
                       return (
                         <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
                           <div className="flex items-center gap-2">
+                            <span className={`w-1.5 h-1.5 rounded-full ${h ? "bg-s-success" : "bg-s-ink/15 dark:bg-s-dm-text/15"} ${isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""}`} />
                             <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
-                            {isToday && <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30 dark:bg-s-dm-text/30"}`} />}
                           </div>
                           <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
                             {h ? `${h.open}–${h.close}` : "Geschlossen"}
