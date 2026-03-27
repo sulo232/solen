@@ -30,7 +30,7 @@
   "home": {
     "hero_title": "Your salon in Basel",
     "hero_subtitle": "Find and book the best salons near you",
-    "search_placeholder": "Search salon, service or neighbourhood...",
+    "search_placeholder": "Search salon, service or city...",
     "services_heading": "Our categories",
     "last_minute_heading": "Last-minute deals",
     "last_minute_subtitle": "Discounted appointments available today",
@@ -39,7 +39,7 @@
       "byline": "Your Swiss Salon Platform",
       "hello": "Hello",
       "welcome": "Welcome {name}",
-      "subtitle": "Hair, Barber, Nails & Spa — book now in your neighbourhood.",
+      "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
       "nextBooking": "Your next appointment: {date} at {salon}",
       "welcomeBack": "Welcome back — what are you looking for today?"
     },
@@ -89,8 +89,8 @@
       "subtitle": "Fresh on Solen — discover the newest salons in Basel"
     },
     "quartiers": {
-      "eyebrow": "Your neighbourhood",
-      "subtitle": "Salons right in your neighbourhood — from Kleinbasel to Bruderholz.",
+      "eyebrow": "Your city",
+      "subtitle": "Salons right in your area — from Kleinbasel to Bruderholz.",
       "salonSingular": "Salon",
       "salonPlural": "Salons",
       "soon": "Coming soon"
@@ -120,8 +120,8 @@
       "rebook": "Book again?",
       "rebook_last": "Your last visit: {name}",
       "rebook_cta": "Book again",
-      "quartiers": "Discover your neighbourhood",
-      "quartiers_label": "YOUR NEIGHBOURHOOD",
+      "quartiers": "Discover your city",
+      "quartiers_label": "YOUR CITY",
       "quartiers_all": "View all →"
     },
     "search": {

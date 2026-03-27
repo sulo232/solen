@@ -30,7 +30,7 @@
   "home": {
     "hero_title": "Il tuo salone a Basilea",
     "hero_subtitle": "Trova e prenota i migliori saloni vicino a te",
-    "search_placeholder": "Cerca salone, servizio o quartiere...",
+    "search_placeholder": "Cerca salone, servizio o città...",
     "services_heading": "Le nostre categorie",
     "last_minute_heading": "Offerte last minute",
     "last_minute_subtitle": "Appuntamenti scontati disponibili oggi",
@@ -39,7 +39,7 @@
       "byline": "La tua piattaforma svizzera di saloni",
       "hello": "Ciao",
       "welcome": "Benvenuto {name}",
-      "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nel tuo quartiere.",
+      "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nella tua città.",
       "nextBooking": "Il tuo prossimo appuntamento: {date} presso {salon}",
       "welcomeBack": "Bentornato — cosa stai cercando oggi?"
     },
@@ -89,8 +89,8 @@
       "subtitle": "Nuovo su Solen — scopri i più nuovi saloni a Basilea"
     },
     "quartiers": {
-      "eyebrow": "Il tuo quartiere",
-      "subtitle": "Saloni direttamente nel tuo quartiere — da Kleinbasel a Bruderholz.",
+      "eyebrow": "La tua città",
+      "subtitle": "Saloni direttamente nella tua zona — da Kleinbasel a Bruderholz.",
       "salonSingular": "Salone",
       "salonPlural": "Saloni",
       "soon": "Presto qui"
@@ -120,8 +120,8 @@
       "rebook": "Prenotare di nuovo?",
       "rebook_last": "La tua ultima visita: {name}",
       "rebook_cta": "Prenota di nuovo",
-      "quartiers": "Scopri il tuo quartiere",
-      "quartiers_label": "IL TUO QUARTIERE",
+      "quartiers": "Scopri la tua città",
+      "quartiers_label": "LA TUA CITTÀ",
       "quartiers_all": "Vedi tutto →"
     },
     "search": {

@@ -30,7 +30,7 @@
   "home": {
     "hero_title": "Votre salon à Bâle",
     "hero_subtitle": "Trouvez et réservez les meilleurs salons près de chez vous",
-    "search_placeholder": "Chercher salon, service ou quartier...",
+    "search_placeholder": "Chercher salon, service ou ville...",
     "services_heading": "Nos catégories",
     "last_minute_heading": "Offres de dernière minute",
     "last_minute_subtitle": "Rendez-vous à prix réduit disponibles aujourd'hui",
@@ -39,7 +39,7 @@
       "byline": "Ta plateforme suisse de salons",
       "hello": "Bonjour",
       "welcome": "Bienvenue {name}",
-      "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre quartier.",
+      "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
       "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
       "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?"
     },
@@ -89,8 +89,8 @@
       "subtitle": "Nouveau sur Solen — découvrez les derniers salons à Bâle"
     },
     "quartiers": {
-      "eyebrow": "Votre quartier",
-      "subtitle": "Des salons directement dans votre quartier — de Kleinbasel à Bruderholz.",
+      "eyebrow": "Votre ville",
+      "subtitle": "Des salons directement dans votre région — de Kleinbasel à Bruderholz.",
       "salonSingular": "Salon",
       "salonPlural": "Salons",
       "soon": "Bientôt ici"
@@ -120,8 +120,8 @@
       "rebook": "Réserver à nouveau?",
       "rebook_last": "Votre dernière visite: {name}",
       "rebook_cta": "Réserver à nouveau",
-      "quartiers": "Découvrez votre quartier",
-      "quartiers_label": "VOTRE QUARTIER",
+      "quartiers": "Découvrez votre ville",
+      "quartiers_label": "VOTRE VILLE",
       "quartiers_all": "Voir tout →"
     },
     "search": {
