@@ -33,20 +33,31 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
           >
             {/* Avatar */}
             <div className="block">
-              <div className="w-16 h-16 mx-auto rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden flex items-center justify-center mb-3">
-                {m.avatar_url ? (
-                  <Image
-                    src={m.avatar_url}
-                    alt={m.name}
-                    width={64}
-                    height={64}
-                    sizes="64px"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-xl font-bold text-s-ink/20 dark:text-s-dm-text/20">
-                    {m.name[0]}
-                  </span>
+              <div className="relative w-16 h-16 mx-auto mb-3">
+                <div className="w-16 h-16 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden flex items-center justify-center">
+                  {m.avatar_url ? (
+                    <Image
+                      src={m.avatar_url}
+                      alt={m.name}
+                      width={64}
+                      height={64}
+                      sizes="64px"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-xl font-bold text-s-ink/20 dark:text-s-dm-text/20">
+                      {m.name[0]}
+                    </span>
+                  )}
+                </div>
+                {/* Rating badge overlay */}
+                {m.average_rating != null && m.average_rating > 0 && (
+                  <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-white dark:bg-s-dm-surface px-1.5 py-0.5 rounded-pill shadow-warm-xs border border-s-ink/5 dark:border-white/5">
+                    <Star size={8} className="fill-s-coral text-s-coral" />
+                    <span className="text-[9px] data-text font-semibold text-s-ink dark:text-s-dm-text">
+                      {m.average_rating.toFixed(1)}
+                    </span>
+                  </div>
                 )}
               </div>
 

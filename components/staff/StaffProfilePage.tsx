@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Star, ArrowLeft, Clock, Instagram, ChevronLeft, ChevronRight, X } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import StaffAvailability from "@/components/staff/StaffAvailability";
 import { formatCurrency } from "@/lib/format-currency";
 
 interface StaffProfile {
@@ -225,6 +226,9 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
           </div>
         </section>
       )}
+
+      {/* Availability */}
+      <StaffAvailability staffId={staffId} locale={locale} />
 
       {/* Services */}
       {services.length > 0 && (
