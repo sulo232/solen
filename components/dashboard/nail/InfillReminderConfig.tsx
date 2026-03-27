@@ -32,6 +32,14 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
+
+    // Fetch due clients
+    fetch(`/api/dashboard/nail/infill-due?salon_id=${salonId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.due_clients) setDueClients(d.due_clients);
+      })
+      .catch(() => {});
   }, [salonId]);
 
   const updateCycle = async (serviceId: string, days: number | null) => {

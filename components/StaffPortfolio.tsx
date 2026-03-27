@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Star, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { StaffMember } from "@/lib/types";
 
@@ -21,6 +21,7 @@ interface StaffPortfolioProps {
 
 export default function StaffPortfolio({ member, images = [], salonSlug, onBook }: StaffPortfolioProps) {
   const locale = useLocale();
+  const t = useTranslations("staffPortfolio");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sortedImages = [...images].sort((a, b) => a.sort_order - b.sort_order);
 
@@ -85,7 +86,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
         onClick={() => onBook?.(member.id)}
         className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all shadow-warm-sm"
       >
-        Bei {member.name} buchen
+        {t("book_with", { name: member.name })}
       </button>
 
       {/* Lightbox with navigation */}

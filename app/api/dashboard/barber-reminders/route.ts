@@ -73,12 +73,28 @@ export async function GET(req: NextRequest) {
       const lastVisitDate = lastBooking?.starts_at ?? note.created_at;
       const daysAgo = Math.floor((Date.now() - new Date(lastVisitDate).getTime()) / (1000 * 60 * 60 * 24));
 
+      const { data: recentSentNote } = await admin
+        .from("client_notes")
+        .select("created_at")
+        .eq("salon_id", salon.id)
+        .eq("customer_id", note.customer_id)
+        .eq("note_type", "system")
+        .eq("note", "Erinnerung manuell gesendet")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const isOnCooldown = recentSentNote 
+        ? (Date.now() - new Date(recentSentNote.created_at).getTime()) < 7 * 24 * 60 * 60 * 1000
+        : false;
+
       return {
         id: note.customer_id,
         display_name: profile?.display_name ?? "Unbekannt",
         days_overdue: Math.max(0, daysAgo - 21), // Assume 3-week cycle as baseline
         preferred_barber: (lastBooking?.staff_members as any)?.name ?? null,
         last_visit_date: lastVisitDate,
+        cooldown: isOnCooldown,
       };
     })
   );

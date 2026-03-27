@@ -10,6 +10,7 @@ interface ChairManagerProps {
 
 export default function ChairManager({ salonId }: ChairManagerProps) {
   const tc = useTranslations("common");
+  const t = useTranslations("chairManager");
   const [chairCount, setChairCount] = useState(1);
   const [bufferMinutes, setBufferMinutes] = useState(5);
   const [occupiedChairs, setOccupiedChairs] = useState(0);
@@ -66,20 +67,20 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
   const utilization = chairCount > 0 ? Math.round((occupiedChairs / chairCount) * 100) : 0;
 
   if (loading) {
-    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>;
+    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{tc("loading")}</div>;
   }
 
   return (
     <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center gap-2 mb-4">
         <Armchair size={18} className="text-s-coral" />
-        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Stuhl-Verwaltung</h3>
+        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
       </div>
 
       {/* Utilization bar */}
       <div className="mb-4">
         <div className="flex justify-between text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1">
-          <span>{occupiedChairs} von {chairCount} Stühlen belegt</span>
+          <span>{t("utilization_status", { occupied: occupiedChairs, total: chairCount })}</span>
           <span>{utilization}%</span>
         </div>
         <div className="h-2 rounded-pill bg-s-sand-subtle dark:bg-s-dm-bg overflow-hidden">
@@ -96,7 +97,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
       <div className="space-y-3">
         <div>
           <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-            Anzahl Stühle
+            {t("chair_count")}
           </label>
           <input
             type="number"
@@ -109,7 +110,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-            Puffer zwischen Terminen (Min.)
+            {t("buffer_minutes")}
           </label>
           <input
             type="number"

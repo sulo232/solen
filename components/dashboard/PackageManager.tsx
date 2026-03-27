@@ -46,7 +46,7 @@ export default function PackageManager({ salonId }: PackageManagerProps) {
   useEffect(() => {
     Promise.all([
       fetch(`/api/packages?salon_id=${salonId}`).then((r) => r.json()),
-      fetch(`/api/packages/purchases?salon_id=${salonId}`).then((r) => r.json()),
+      fetch(`/api/packages/purchase?salon_id=${salonId}`).then((r) => r.json()),
       fetch(`/api/salon/services?salon_id=${salonId}`).then((r) => r.json()),
     ])
       .then(([pkgData, purchaseData, svcData]) => {

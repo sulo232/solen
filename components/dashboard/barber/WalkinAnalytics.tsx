@@ -24,7 +24,11 @@ interface WalkinAnalyticsProps {
   salonId: string;
 }
 
+import { useTranslations } from "next-intl";
+
 export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
+  const tc = useTranslations("common");
+  const t = useTranslations("walkinAnalytics");
   const [stats, setStats] = useState<WalkinStats | null>(null);
   const [trends, setTrends] = useState<Trends | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,35 +54,35 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
 
   const metrics = stats ? [
     {
-      label: "Walk-in Rate",
+      label: t("walkin_rate"),
       value: `${stats.total_walkins}/${stats.total_appointments}`,
       icon: Users,
       color: "#E8624A",
       trend: trends?.walkins,
     },
     {
-      label: "Ø Wartezeit",
-      value: `${stats.avg_wait_minutes} Min.`,
+      label: t("avg_wait"),
+      value: t("minutes", { minutes: stats.avg_wait_minutes }),
       icon: Clock,
       color: "#6BA3C8",
       trend: trends?.waits,
     },
     {
-      label: "Conversion Rate",
+      label: t("conversion_rate"),
       value: `${stats.conversion_rate}%`,
       icon: TrendingUp,
       color: "#7BA688",
       trend: trends?.conversions,
     },
     {
-      label: "Abbruchrate",
+      label: t("abandonment_rate"),
       value: `${stats.abandonment_rate}%`,
       icon: BarChart3,
       color: "#D4870A",
       trend: trends?.abandonments,
     },
     {
-      label: "Stuhl-Auslastung",
+      label: t("chair_utilization"),
       value: `${stats.chair_utilization}%`,
       icon: Armchair,
       color: "#4A1E3C",
@@ -89,7 +93,7 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
   return (
     <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Walk-in Statistiken</h3>
+        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
         <div className="flex rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden">
           {(["week", "month"] as const).map((p) => (
             <button
@@ -101,16 +105,16 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
                   : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
               }`}
             >
-              {p === "week" ? "Woche" : "Monat"}
+              {p === "week" ? t("week") : t("month")}
             </button>
           ))}
         </div>
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>
+        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{tc("loading")}</div>
       ) : !stats ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Keine Daten</div>
+        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("no_data")}</div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {metrics.map((m) => (

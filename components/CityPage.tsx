@@ -11,13 +11,13 @@ import { getCityName, type CitySlug } from "@/lib/cities";
 import type { SalonCard as SalonCardType, SalonCategory } from "@/lib/types";
 import Link from "next/link";
 
-const CATEGORIES: { key: SalonCategory; label: string }[] = [
-  { key: "coiffeur", label: "Coiffeur" },
-  { key: "barbershop", label: "Barber" },
-  { key: "nails", label: "Nails" },
-  { key: "spa", label: "Spa" },
-  { key: "makeup", label: "Makeup" },
-  { key: "waxing", label: "Waxing" },
+const CATEGORIES: SalonCategory[] = [
+  "coiffeur",
+  "barbershop",
+  "nails",
+  "spa",
+  "makeup",
+  "waxing",
 ];
 
 interface CityPageProps {
@@ -27,8 +27,9 @@ interface CityPageProps {
 }
 
 export default function CityPage({ city, locale, initialCategory = undefined }: CityPageProps) {
-  const t = useTranslations("home.featured"); // Reusing translations from home for empty states
-  const tCityPage = useTranslations("home.sections");
+  const t = useTranslations("home.featured");
+  const tCityPage = useTranslations("cityPage");
+  const tNav = useTranslations("navigation");
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<SalonCategory | null>(initialCategory || null);
@@ -91,10 +92,10 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
         </div>
         <h1 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
           style={{ fontSize: "clamp(26px, 4vw, 48px)", letterSpacing: "-0.02em" }}>
-          Salons in {cityName}
+          {tCityPage("title", { cityName })}
         </h1>
         <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
-          Finde und buche die besten Salons in deiner Nähe.
+          {tCityPage("subtitle")}
         </p>
       </section>
 
@@ -109,9 +110,9 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
                 : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20"
             }`}
           >
-            Alle Kategorien
+            {tCityPage("all_categories")}
           </Link>
-          {CATEGORIES.map(({ key, label }) => (
+          {CATEGORIES.map((key) => (
             <Link
               key={key}
               href={`/${locale}/${city}/${key}`}
@@ -121,7 +122,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
                   : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20"
               }`}
             >
-              {label}
+              {tNav(key)}
             </Link>
           ))}
         </div>

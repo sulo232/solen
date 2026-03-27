@@ -11,35 +11,13 @@ interface ReminderClient {
   cycle_days?: number;
   preferred_barber: string | null;
   last_visit_date: string;
+  cooldown?: boolean;
 }
 
 interface SmartReminderConfigProps {
   salonId: string;
 }
 
-const COOLDOWN_KEY = "solen_reminder_sent";
-const COOLDOWN_DAYS = 7;
-
-function getCooldownMap(): Record<string, number> {
-  try {
-    return JSON.parse(localStorage.getItem(COOLDOWN_KEY) ?? "{}");
-  } catch {
-    return {};
-  }
-}
-
-function isOnCooldown(clientId: string): boolean {
-  const map = getCooldownMap();
-  const sentAt = map[clientId];
-  if (!sentAt) return false;
-  return Date.now() - sentAt < COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
-}
-
-function markSent(clientId: string): void {
-  const map = getCooldownMap();
-  map[clientId] = Date.now();
-  localStorage.setItem(COOLDOWN_KEY, JSON.stringify(map));
-}
 
 export default function SmartReminderConfig({ salonId }: SmartReminderConfigProps) {
   const [dueClients, setDueClients] = useState<ReminderClient[]>([]);
@@ -74,7 +52,6 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
         body: JSON.stringify({ client_id: client.id, salon_id: salonId }),
       });
       if (res.ok) {
-        markSent(client.id);
         setSentIds((prev) => new Set(prev).add(client.id));
       }
     } catch {
@@ -116,7 +93,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
               <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{barber}</p>
               <div className="space-y-2">
                 {clients.map((client) => {
-                  const cooldown = isOnCooldown(client.id);
+                  const cooldown = client.cooldown || false;
                   const justSent = sentIds.has(client.id);
 
                   return (

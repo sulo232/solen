@@ -13,13 +13,19 @@ interface StationConfig {
 export default function StationManager({ salonId }: { salonId: string }) {
   const t = useTranslations("nail_dashboard");
   const [config, setConfig] = useState<StationConfig>({ total_stations: 1, uv_lamp_count: 1, sterilization_buffer_minutes: 15 });
+  const [activeBookings, setActiveBookings] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/salon/stations?salon_id=${salonId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.station) setConfig(d.station); })
+    Promise.all([
+      fetch(`/api/salon/stations?salon_id=${salonId}`).then((r) => (r.ok ? r.json() : null)),
+      fetch(`/api/dashboard/nail/stations/utilization?salon_id=${salonId}`).then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([configData, utilData]) => {
+        if (configData?.station) setConfig(configData.station);
+        if (typeof utilData?.active_bookings === "number") setActiveBookings(utilData.active_bookings);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [salonId]);
@@ -88,20 +94,23 @@ export default function StationManager({ salonId }: { salonId: string }) {
       <div className="p-3 rounded-[16px] bg-s-bg-surface dark:bg-s-dm-bg space-y-2">
         <div className="flex items-center justify-between text-xs text-s-ink/60 dark:text-s-dm-text/60">
           <span>{t("stations_utilization")}</span>
-          <span>{t("stations_used_of", { used: 0, total: config.total_stations })}</span>
+          <span>{t("stations_used_of", { used: activeBookings, total: config.total_stations })}</span>
         </div>
-        {Array.from({ length: config.total_stations }, (_, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 w-8 shrink-0">#{i + 1}</span>
-            <div className="flex-1 h-3 rounded-pill bg-s-ink/10 dark:bg-s-dm-text/10 overflow-hidden flex">
-              {/* Booked portion — placeholder 0% until real booking data */}
-              <div className="h-full bg-s-coral" style={{ width: "0%" }} />
-              {/* Buffer portion */}
-              <div className="h-full bg-s-ink/10 dark:bg-s-dm-text/10" style={{ width: "0%" }} />
+        {Array.from({ length: config.total_stations }, (_, i) => {
+          const isBooked = i < activeBookings;
+          return (
+            <div key={i} className="flex items-center gap-2">
+              <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 w-8 shrink-0">#{i + 1}</span>
+              <div className="flex-1 h-3 rounded-pill bg-s-ink/10 dark:bg-s-dm-text/10 overflow-hidden flex">
+                <div className="h-full bg-s-coral transition-all duration-500" style={{ width: isBooked ? "100%" : "0%" }} />
+                {/* Buffer portion calculation skipped for simple boolean state */}
+              </div>
+              <span className="text-[9px] data-text text-s-ink/30 dark:text-s-dm-text/30 w-8 text-right">
+                {isBooked ? "100%" : "0%"}
+              </span>
             </div>
-            <span className="text-[9px] data-text text-s-ink/30 dark:text-s-dm-text/30 w-8 text-right">0%</span>
-          </div>
-        ))}
+          );
+        })}
         {/* Legend */}
         <div className="flex items-center gap-3 mt-1">
           <div className="flex items-center gap-1"><div className="w-3 h-2 rounded-sm bg-s-coral" /><span className="text-[8px] text-s-ink/40 dark:text-s-dm-text/40">{t("stations_booked")}</span></div>

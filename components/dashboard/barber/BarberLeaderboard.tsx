@@ -5,6 +5,7 @@ import { Trophy, Medal, ArrowUpDown, Eye, EyeOff, BarChart2, Table2 } from "luci
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 interface BarberStats {
   staff_id: string;
@@ -28,6 +29,7 @@ type ViewMode = "table" | "chart";
 const CORAL = "#E8624A";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
+  const t = useTranslations("dashboard.barber_leaderboard");
   const [stats, setStats] = useState<BarberStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortKey>("bookings_count");
@@ -55,12 +57,12 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const sorted = [...stats].sort((a, b) => (b[sortBy] as number) - (a[sortBy] as number));
 
   const columns: { key: SortKey; label: string; format: (v: number) => string }[] = [
-    { key: "bookings_count", label: "Buchungen", format: (v) => `${v}` },
-    { key: "revenue", label: "Umsatz", format: (v) => `CHF ${v.toFixed(0)}` },
-    { key: "retention_pct", label: "Retention", format: (v) => `${v}%` },
-    { key: "avg_tip", label: "Ø Trinkgeld", format: (v) => `CHF ${v.toFixed(1)}` },
-    { key: "walkin_conversion_pct", label: "Walk-in Conv.", format: (v) => `${v}%` },
-    { key: "chair_utilization_pct", label: "Stuhl-Ausl.", format: (v) => `${v}%` },
+    { key: "bookings_count", label: t("bookings"), format: (v) => `${v}` },
+    { key: "revenue", label: t("revenue"), format: (v) => `CHF ${v.toFixed(0)}` },
+    { key: "retention_pct", label: t("retention"), format: (v) => `${v}%` },
+    { key: "avg_tip", label: t("avg_tip"), format: (v) => `CHF ${v.toFixed(1)}` },
+    { key: "walkin_conversion_pct", label: t("walkin_conv"), format: (v) => `${v}%` },
+    { key: "chair_utilization_pct", label: t("chair_utilization"), format: (v) => `${v}%` },
   ];
 
   const getRankIcon = (rank: number) => {
@@ -71,11 +73,11 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   };
 
   const getDisplayName = (barber: BarberStats, index: number) =>
-    anonymized ? `Barber ${String.fromCharCode(65 + index)}` : barber.staff_name;
+    anonymized ? `${t("barber")} ${String.fromCharCode(65 + index)}` : barber.staff_name;
 
   const chartData = sorted.map((b, i) => ({
     name: getDisplayName(b, i),
-    [columns.find((c) => c.key === sortBy)?.label ?? "Wert"]: b[sortBy],
+    [columns.find((c) => c.key === sortBy)?.label ?? t("value")]: b[sortBy],
   }));
 
   return (
@@ -83,14 +85,14 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Trophy size={18} className="text-s-amber" />
-          <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Barber Leaderboard</h3>
+          <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
         </div>
         <div className="flex items-center gap-2">
           {/* View mode toggle */}
           <button
             onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
             className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
-            title={viewMode === "table" ? "Diagramm anzeigen" : "Tabelle anzeigen"}
+            title={viewMode === "table" ? t("view_chart") : t("view_table")}
           >
             {viewMode === "table" ? <BarChart2 size={14} /> : <Table2 size={14} />}
           </button>
@@ -98,7 +100,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <button
             onClick={() => setAnonymized(!anonymized)}
             className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
-            title={anonymized ? "Namen zeigen" : "Anonymisieren"}
+            title={anonymized ? t("show_names") : t("anonymize")}
           >
             {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
@@ -114,7 +116,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
                     : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
                 }`}
               >
-                {p === "week" ? "Woche" : "Monat"}
+                {p === "week" ? t("week") : t("month")}
               </button>
             ))}
           </div>
@@ -122,9 +124,9 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>
+        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("loading")}</div>
       ) : stats.length === 0 ? (
-        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Keine Daten</div>
+        <div className="py-8 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("no_data")}</div>
       ) : viewMode === "chart" ? (
         /* ═══ CHART VIEW ═══ */
         <div>
@@ -151,7 +153,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
               <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
               <Bar
-                dataKey={columns.find((c) => c.key === sortBy)?.label ?? "Wert"}
+                dataKey={columns.find((c) => c.key === sortBy)?.label ?? t("value")}
                 fill={CORAL}
                 radius={[4, 4, 0, 0]}
               />
@@ -165,7 +167,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             <thead>
               <tr className="border-b border-s-ink/5 dark:border-s-dm-text/5">
                 <th className="text-left py-2 text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 pr-4">#</th>
-                <th className="text-left py-2 text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 pr-4">Barber</th>
+                <th className="text-left py-2 text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 pr-4">{t("barber")}</th>
                 {columns.map((col) => (
                   <th
                     key={col.key}

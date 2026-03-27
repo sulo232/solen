@@ -99,6 +99,7 @@ export default function HomePage() {
   const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
   const [locationError, setLocationError] = useState(false);
   const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     setPersistedCity(getPersistedCity());
@@ -210,7 +211,11 @@ export default function HomePage() {
       .then((data) => setTrendingSalons(data.items ?? []))
       .catch(() => setTrendingSalons([]));
 
-
+    // Fetch category counts
+    fetch("/api/analytics/platform")
+      .then((r) => r.json())
+      .then((data) => setCategoryCounts(data.categories ?? {}))
+      .catch(() => setCategoryCounts({}));
 
     // Try to passively fetch nearby if permission already granted
     if (navigator.permissions) {
@@ -331,7 +336,7 @@ export default function HomePage() {
                 {label}
               </div>
               <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1">
-                {count} {t("categories.salonsCount")}
+                {categoryCounts[key] ?? count} {t("categories.salonsCount")}
               </div>
             </Link>
           ))}

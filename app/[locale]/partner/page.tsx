@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
+import PartnerSignupForm from "@/components/partner/PartnerSignupForm";
 
 const FEATURES = [
   { icon: Calendar, title: "feat_bookings_title", desc: "feat_bookings_desc" },
@@ -55,12 +56,7 @@ export default function PartnerPage() {
             <p className="text-lg font-body text-s-ink/60 dark:text-s-dm-text/60 max-w-lg mb-8">
               {t("hero_subtitle")}
             </p>
-            <Link href={`/${locale}/onboarding/salon?utm_source=partner_page&utm_content=hero`}>
-              <InteractiveHoverButton
-                text={t("hero_cta")}
-                className="w-auto px-8 py-4"
-              />
-            </Link>
+            <PartnerSignupForm />
             <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35 mt-3">
               {t("hero_subtext")}
             </p>

@@ -64,9 +64,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         const res = await fetch("/api/discovery/feed?limit=30");
         const json = await res.json();
         if (json.items && json.items.length > 0) {
-          // Shuffle them so it's not the same ones every time
-          const shuffled = shuffleArray(json.items as DiscoveryItem[]);
-          setItems(shuffled.slice(0, 5)); // Take top 5 for the carousel
+          setItems((json.items as DiscoveryItem[]).slice(0, 5)); // Take top 5 for the carousel
         }
       } catch (err) {
         console.error("Failed to fetch discover carousel items:", err);

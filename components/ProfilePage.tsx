@@ -476,7 +476,10 @@ const SettingsSection = memo(function SettingsSection({
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifDeals")}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifDeals")}</p>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-[9px] font-heading font-bold uppercase tracking-[.1em]">{t("comingSoon")}</span>
+            </div>
             <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifDealsDesc")}</p>
           </div>
           <button type="button" disabled role="switch" aria-checked={false} aria-label={t("notifDeals")}
@@ -486,7 +489,10 @@ const SettingsSection = memo(function SettingsSection({
         </div>
         <div className="flex items-center justify-between opacity-60">
           <div>
-            <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifNewSalons")}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("notifNewSalons")}</p>
+              <span className="px-1.5 py-0.5 rounded-[4px] bg-s-ink/10 dark:bg-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-[9px] font-heading font-bold uppercase tracking-[.1em]">{t("comingSoon")}</span>
+            </div>
             <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("notifNewSalonsDesc")}</p>
           </div>
           <button type="button" disabled role="switch" aria-checked={false} aria-label={t("notifNewSalons")}

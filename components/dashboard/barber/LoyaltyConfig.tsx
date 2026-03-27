@@ -19,8 +19,9 @@ interface LoyaltyConfigProps {
 
 export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
   const tc = useTranslations("common");
+  const t = useTranslations("loyaltyConfig");
   const [program, setProgram] = useState<LoyaltyProgram>({
-    name: "Treuekarte",
+    name: t("default_name"),
     stamps_required: 10,
     reward_type: "free_service",
     reward_value: 0,
@@ -65,7 +66,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
   };
 
   if (loading) {
-    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>;
+    return <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{tc("loading")}</div>;
   }
 
   // Preview stamp card
@@ -76,12 +77,12 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
     <div className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
       <div className="flex items-center gap-2 mb-4">
         <Award size={18} className="text-s-coral" />
-        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Treueprogramm</h3>
+        <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("title")}</h3>
       </div>
 
       <div className="space-y-3">
         <div>
-          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">Name</label>
+          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">{t("name_label")}</label>
           <input
             type="text"
             value={program.name}
@@ -93,7 +94,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
 
         <div>
           <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-            Stempel benötigt
+            {t("stamps_required")}
           </label>
           <input
             type="number"
@@ -106,22 +107,22 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">Belohnung</label>
+          <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">{t("reward_label")}</label>
           <select
             value={program.reward_type}
             onChange={(e) => setProgram({ ...program, reward_type: e.target.value as LoyaltyProgram["reward_type"] })}
             className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-bg px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
           >
-            <option value="free_service">Gratis Service</option>
-            <option value="chf_discount">CHF Rabatt</option>
-            <option value="percentage_discount">% Rabatt</option>
+            <option value="free_service">{t("reward_free_service")}</option>
+            <option value="chf_discount">{t("reward_chf_discount")}</option>
+            <option value="percentage_discount">{t("reward_percentage_discount")}</option>
           </select>
         </div>
 
         {program.reward_type !== "free_service" && (
           <div>
             <label className="block text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70 mb-1">
-              {program.reward_type === "chf_discount" ? "Rabatt (CHF)" : "Rabatt (%)"}
+              {program.reward_type === "chf_discount" ? t("discount_chf") : t("discount_percentage")}
             </label>
             <input
               type="number"
@@ -135,7 +136,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
 
         {/* Active toggle */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-s-ink dark:text-s-dm-text">Aktiv</span>
+          <span className="text-sm text-s-ink dark:text-s-dm-text">{t("active")}</span>
           <button
             onClick={() => setProgram({ ...program, is_active: !program.is_active })}
             className={`w-10 h-6 rounded-full transition-colors ${
@@ -151,7 +152,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
 
       {/* Preview */}
       <div className="mt-4 p-3 rounded-btn bg-s-bg-surface dark:bg-s-dm-bg border border-s-ink/5 dark:border-s-dm-text/5">
-        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Vorschau</p>
+        <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">{t("preview")}</p>
         <p className="text-sm font-medium text-s-ink dark:text-s-dm-text mb-2">{program.name}</p>
         <div className="flex flex-wrap gap-1.5">
           {previewStamps.map((i) => (
@@ -163,7 +164,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
           ))}
         </div>
         <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-2">
-          {previewFilled}/{program.stamps_required} Stempel
+          {t("stamps_count", { filled: previewFilled, total: program.stamps_required })}
         </p>
       </div>
 

@@ -61,6 +61,11 @@ solen/
 │   ├── roadmap-dev3-salon-dashboard.md
 │   └── completed/      # Archive of finished tasks
 ├── app/                # Next.js App Router pages
+│   └── api/            # API Routes
+│       ├── analytics/referrals/route.ts # Referral statistics for dashboard
+│       ├── metrics/global/route.ts # Global platform metrics (cached 24h)
+│       ├── partner/leads/route.ts  # B2B Partner lead capture endpoint
+│       └── salon/services/route.ts      # Salon services API
 ├── components/         # Shared React components (Dev 2 owns, Dev 3 imports)
 │   ├── index.ts        # Barrel exports — Dev 3 depends on this
 │   ├── dashboard/      # Dev 3's dashboard-specific components

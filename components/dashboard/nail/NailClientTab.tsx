@@ -82,16 +82,190 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
           <InspoGallery customerId={client.id} />
         )}
         {activeTab === "notes" && (
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">
-            {t("notes_hint")}
-          </p>
+          <ClientNotes customerId={client.id} salonId={salonId} />
         )}
         {activeTab === "tags" && (
-          <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">
-            {t("tags_hint")}
-          </p>
+          <ClientTags customerId={client.id} salonId={salonId} />
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── Client Notes ────
+
+function ClientNotes({ customerId, salonId }: { customerId: string; salonId?: string | null }) {
+  const t = useTranslations("nail_dashboard");
+  const [notes, setNotes] = useState<any[]>([]);
+  const [newNote, setNewNote] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!salonId) return;
+    fetch(`/api/dashboard/clients/${customerId}/notes?salon_id=${salonId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.notes) setNotes(d.notes); })
+      .finally(() => setLoading(false));
+  }, [customerId, salonId]);
+
+  const addNote = async () => {
+    if (!newNote.trim() || !salonId) return;
+    const res = await fetch(`/api/dashboard/clients/${customerId}/notes`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ salon_id: salonId, note: newNote.trim(), note_type: "permanent" }),
+    });
+    if (res.ok) {
+      const { note } = await res.json();
+      setNotes((prev) => [note, ...prev]);
+      setNewNote("");
+    }
+  };
+
+  const deleteNote = async (id: string) => {
+    const res = await fetch(`/api/dashboard/clients/${customerId}/notes?note_id=${id}&salon_id=${salonId}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setNotes((prev) => prev.filter((n) => n.id !== id));
+    }
+  };
+
+  if (!salonId) return null;
+  if (loading) return <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("loading")}</p>;
+
+  return (
+    <div className="space-y-4 py-2">
+      <div className="flex gap-2">
+        <input 
+          type="text" 
+          value={newNote} 
+          onChange={(e) => setNewNote(e.target.value)} 
+          placeholder={t("new_note_placeholder")}
+          className="flex-1 bg-s-bg-sunken dark:bg-s-dm-bg px-3 py-2 border border-s-ink/10 dark:border-s-dm-text/10 rounded-btn text-sm text-s-ink dark:text-s-dm-text"
+          onKeyDown={(e) => { if (e.key === "Enter") addNote(); }}
+        />
+        <button onClick={addNote} className="bg-s-coral text-white px-4 py-2 rounded-btn font-medium hover:brightness-[1.06] transition-all text-sm">
+          {t("add")}
+        </button>
+      </div>
+      {notes.length === 0 ? (
+        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("notes_hint")}</p>
+      ) : (
+        <div className="space-y-2">
+          {notes.map(n => (
+            <div key={n.id} className="p-3 bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 rounded-[12px] flex justify-between items-start gap-3">
+              <p className="text-sm text-s-ink dark:text-s-dm-text">{n.note}</p>
+              <button title="Löschen" onClick={() => deleteNote(n.id)} className="text-s-ink/30 hover:text-red-500 transition-colors shrink-0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Client Tags ────
+
+function ClientTags({ customerId, salonId }: { customerId: string; salonId?: string | null }) {
+  const t = useTranslations("nail_dashboard");
+  const [tags, setTags] = useState<any[]>([]);
+  const [newTag, setNewTag] = useState("");
+  const [selectedColor, setSelectedColor] = useState("gray");
+  const [loading, setLoading] = useState(true);
+
+  const colors = ["gray", "red", "orange", "yellow", "green", "teal", "blue", "purple", "pink"];
+
+  useEffect(() => {
+    if (!salonId) return;
+    fetch(`/api/dashboard/clients/${customerId}/tags?salon_id=${salonId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.tags) setTags(d.tags); })
+      .finally(() => setLoading(false));
+  }, [customerId, salonId]);
+
+  const addTag = async () => {
+    if (!newTag.trim() || !salonId) return;
+    const res = await fetch(`/api/dashboard/clients/${customerId}/tags`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ salon_id: salonId, tag: newTag.trim(), color: selectedColor }),
+    });
+    if (res.ok) {
+      const { tag } = await res.json();
+      setTags((prev) => [tag, ...prev]);
+      setNewTag("");
+    }
+  };
+
+  const deleteTag = async (id: string) => {
+    const res = await fetch(`/api/dashboard/clients/${customerId}/tags?tag_id=${id}&salon_id=${salonId}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setTags((prev) => prev.filter((t) => t.id !== id));
+    }
+  };
+
+  if (!salonId) return null;
+  if (loading) return <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("loading")}</p>;
+
+  // Basic color mapping for UI
+  const colorMap: Record<string, string> = {
+    gray: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+    red: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+    yellow: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+    green: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    teal: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+    blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+    purple: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+    pink: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400",
+  };
+
+  return (
+    <div className="space-y-4 py-2">
+      <div className="flex flex-col gap-3 p-3 bg-s-bg-sunken dark:bg-s-dm-bg rounded-[12px] border border-s-ink/5 dark:border-s-dm-text/10">
+        <div className="flex gap-2">
+          <input 
+            type="text" 
+            value={newTag} 
+            onChange={(e) => setNewTag(e.target.value)} 
+            placeholder={t("new_tag_placeholder")}
+            className="flex-1 bg-white dark:bg-s-dm-surface px-3 py-2 border border-s-ink/10 dark:border-s-dm-text/10 rounded-btn text-sm text-s-ink dark:text-s-dm-text"
+            onKeyDown={(e) => { if (e.key === "Enter") addTag(); }}
+          />
+          <button onClick={addTag} className="bg-s-coral text-white px-4 py-2 rounded-btn font-medium hover:brightness-[1.06] transition-all text-sm">
+            {t("add")}
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {colors.map(c => (
+            <button 
+              key={c}
+              onClick={() => setSelectedColor(c)}
+              className={`w-5 h-5 rounded-full ${colorMap[c].split(' ')[0]} ${selectedColor === c ? 'ring-2 ring-offset-1 ring-s-ink dark:ring-s-dm-text' : 'opacity-70'} transition-all`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {tags.length === 0 ? (
+        <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40 py-4">{t("tags_hint")}</p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {tags.map(tag => (
+            <div key={tag.id} className={`flex items-center gap-1.5 px-3 py-1 rounded-pill text-xs font-medium ${colorMap[tag.color] || colorMap.gray}`}>
+              <span>{tag.tag}</span>
+              <button onClick={() => deleteTag(tag.id)} className="opacity-50 hover:opacity-100 focus:outline-none shrink-0 border-l border-current pl-1.5 ml-0.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
