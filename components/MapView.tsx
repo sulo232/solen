@@ -57,7 +57,11 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       style: "mapbox://styles/mapbox/light-v11",
       center: BASEL_CENTER,
       zoom: 13,
+      cooperativeGestures: true, // Require Ctrl+scroll / two-finger on mobile
     });
+
+    // Disable scroll zoom to prevent accidental zoom on mobile
+    map.scrollZoom.disable();
 
     map.on('error', (e) => {
       console.warn("Mapbox error:", e);
@@ -231,7 +235,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   }, [onAreaSearch]);
 
   return (
-    <div className="relative w-full h-full min-h-[400px]">
+    <div className="relative w-full h-full min-h-[200px]">
       {/* Category filter chips */}
       {enhanced && !mapError && (
         <div className="absolute top-3 left-3 right-12 z-10 flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">

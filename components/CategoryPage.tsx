@@ -379,12 +379,41 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">{aboveGrid}</div>
       )}
 
+      {/* Mobile inline mini-map (always visible on mobile, hidden on desktop) */}
+      {!isMapView && !loading && salons.length > 0 && (
+        <div className="md:hidden max-w-7xl mx-auto px-3 pt-4">
+          <button
+            onClick={() => {
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("view", "map");
+              routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
+            }}
+            className="relative w-full h-[200px] rounded-card overflow-hidden border border-s-ink/10 dark:border-white/10"
+          >
+            <MapView
+              salons={salons.slice(0, 20)}
+              onSelect={(id) => {
+                const salon = salons.find((s) => s.id === id);
+                if (salon) routerNav.push(`/${locale}/salon/${salon.slug ?? id}`);
+              }}
+            />
+            {/* Overlay tap prompt */}
+            <div className="absolute inset-0 bg-gradient-to-t from-s-ink/40 to-transparent pointer-events-none" />
+            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-pill bg-white/95 text-s-ink text-xs font-heading font-bold uppercase tracking-[.06em] shadow-warm-md pointer-events-none flex items-center gap-1.5">
+              <MapIcon size={13} className="text-s-coral" />
+              Karte vergrössern
+            </span>
+          </button>
+        </div>
+      )}
+
       {/* Grid / Map */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
         {isMapView && !loading && salons.length > 0 ? (
-          <div className="h-[500px] rounded-card overflow-hidden">
+          <div className="h-[350px] sm:h-[500px] rounded-card overflow-hidden">
             <MapView
               salons={salons}
+              enhanced
               onSelect={(id) => {
                 const salon = salons.find((s) => s.id === id);
                 if (salon) routerNav.push(`/${locale}/salon/${salon.slug ?? id}`);
