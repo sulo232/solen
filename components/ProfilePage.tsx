@@ -28,6 +28,7 @@ import { BeautyProfileEditModal } from "@/components/profile/BeautyProfileEditMo
 import { SalonHighlights } from "@/components/profile/SalonHighlights";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { LooksGrid } from "@/components/profile/LooksGrid";
+import { PaymentMethodsSection } from "@/components/profile/PaymentMethodsSection";
 
 interface LoyaltyCard {
   id: string;
@@ -971,35 +972,7 @@ export default function ProfilePage() {
               <SettingsSection profile={profile} onSave={handleSaveProfile} />
 
               {/* Payment Methods */}
-              <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-3">
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30">Zahlungsmethoden</p>
-                {[
-                  { label: "Kreditkarte", sub: "Visa, Mastercard", icon: "💳", ready: false },
-                  { label: "TWINT", sub: "Direkte Zahlung", icon: "🟢", ready: false },
-                  { label: "Apple Pay", sub: "iOS & Safari", icon: "🍎", ready: false },
-                  { label: "Google Pay", sub: "Android & Chrome", icon: "🔵", ready: false },
-                ].map(({ label, sub, icon, ready }) => (
-                  <div
-                    key={label}
-                    className="flex items-center gap-3 px-4 py-3 rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface"
-                  >
-                    <span className="text-lg">{icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{label}</p>
-                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{sub}</p>
-                    </div>
-                    {ready ? (
-                      <button className="text-xs font-heading font-bold text-s-coral uppercase tracking-[.04em]">
-                        Verwalten
-                      </button>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading font-bold uppercase tracking-[.06em] bg-s-amber-subtle/30 text-s-amber">
-                        Bald
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
+              <PaymentMethodsSection />
 
               {/* Email & Password */}
               <div className="pt-4 border-t border-s-ink/5 dark:border-white/10 space-y-4">
