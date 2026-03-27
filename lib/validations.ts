@@ -139,7 +139,7 @@ export const discoveryPostSchema = z.object({
   tags: z.array(z.string().max(30)).max(10).default([]),
   description: z.string().max(1000).optional(),
   texture: z.string().optional(),
-  tos_accepted: z.literal(true, { errorMap: () => ({ message: "You must accept the Terms of Service" }) }),
+  tos_accepted: z.boolean().refine((val) => val === true, { message: "You must accept the Terms of Service" }),
 });
 
 export const discoveryCommentSchema = z.object({
@@ -166,7 +166,7 @@ export const createSalonSchema = z.object({
   instagram_url: z.string().url().optional().or(z.literal("")),
   website_url: z.string().url().optional().or(z.literal("")),
   tiktok_url: z.string().url().optional().or(z.literal("")),
-  opening_hours: z.record(z.unknown()).optional(),
+  opening_hours: z.record(z.string(), z.unknown()).optional(),
   services: z.array(z.object({
     name_de: z.string().min(1),
     name_en: z.string().optional().or(z.literal("")),
@@ -183,7 +183,7 @@ export const createSalonSchema = z.object({
     role: z.string().optional().or(z.literal("")),
     specialties: z.array(z.string()).optional(),
   })).optional(),
-  availability_template: z.record(z.union([
+  availability_template: z.record(z.string(), z.union([
     z.object({
       start: z.string(),
       end: z.string(),
@@ -599,33 +599,37 @@ export const adminDiscoveryModerationSchema = z.object({
 });
 
 export const adminDiscoveryBulkImportSchema = z.object({
-  items: z.array(z.object({
-    image_url: z.string().url(),
-    category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
-    gender: z.enum(["female", "male", "unisex"]).optional(),
-    source: z.string().max(50).optional(),
-  })).min(1).max(50),
+  category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]),
 });
 
 export const adminDiscoverySmartImportSchema = z.object({
-  query: z.string().min(1).max(200),
+  description: z.string().min(1).max(500),
   source: z.enum(["unsplash", "pexels", "pixabay", "all"]).default("all"),
   count: z.number().int().min(1).max(50).default(10),
   category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]).optional(),
+  limit: z.number().int().min(1).max(50).optional(),
 });
 
 export const adminDiscoveryAnalyzeSchema = z.object({
   item_id: z.string().uuid(),
+  image_url: z.string().url(),
 });
 
 export const adminDiscoveryBackfillSchema = z.object({
-  ids: z.array(z.string().uuid()).min(1).max(100),
+  ids: z.array(z.string().uuid()).min(1).max(100).optional(),
+  limit: z.number().int().min(1).max(100).optional(),
+  force: z.boolean().optional(),
 });
 
 export const adminNailGenerateSchema = z.object({
   style: z.string().max(100).optional(),
   shape: z.string().max(50).optional(),
   color: z.string().max(50).optional(),
+  colors: z.array(z.string()).max(5).optional(),
+  length: z.enum(["short", "medium", "long", "extra_long"]).optional(),
+  material: z.enum(["gel", "acrylic", "natural", "polygel"]).optional(),
+  skinTone: z.string().max(50).optional(),
+  shotType: z.enum(["hero", "top_down", "macro", "lifestyle"]).optional(),
   skin_tone: z.string().max(50).optional(),
   prompt: z.string().max(500).optional(),
 });
@@ -665,12 +669,13 @@ export const expressRebookConfirmSchema = z.object({
 });
 
 export const recurringBookingSchema = z.object({
+  salon_id: z.string().uuid(),
   service_id: z.string().uuid(),
   staff_member_id: z.string().uuid().optional(),
-  day_of_week: z.number().int().min(0).max(6),
-  start_time: z.string().regex(/^\d{2}:\d{2}$/),
-  recurrence_type: z.enum(["weekly", "biweekly", "monthly"]),
-  count: z.number().int().min(2).max(26).default(4),
+  frequency: z.enum(["weekly", "biweekly", "monthly"]),
+  custom_interval_days: z.number().int().min(1).max(90).optional(),
+  preferred_day: z.number().int().min(0).max(6).optional(),
+  preferred_time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -702,6 +707,7 @@ export const staffServicesSchema = z.object({
 });
 
 export const serviceCreateSchema = z.object({
+  salon_id: z.string().uuid(),
   name_de: z.string().min(1).max(200),
   name_en: z.string().max(200).optional(),
   name_fr: z.string().max(200).optional(),
@@ -709,7 +715,14 @@ export const serviceCreateSchema = z.object({
   category: z.string().max(50),
   duration_minutes: z.number().int().min(5).max(480),
   price: z.number().int().min(0).max(100000),
-  description: z.string().max(1000).optional(),
+  description_de: z.string().max(1000).optional(),
+  buffer_minutes: z.number().int().min(0).max(120).optional(),
+  processing_minutes: z.number().int().min(0).max(120).optional(),
+  finishing_minutes: z.number().int().min(0).max(120).optional(),
+  suitable_for: z.array(z.string().max(50)).optional(),
+  suitable_gender: z.array(z.enum(["male", "female", "unisex"])).optional(),
+  is_active: z.boolean().optional(),
+  photos: z.array(z.string().url()).max(10).optional(),
 });
 
 export const serviceUpdateSchema = z.object({
@@ -728,9 +741,11 @@ export const availabilityManageSchema = z.object({
   staff_member_id: z.string().uuid().optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   slots: z.array(z.object({
-    start_time: z.string().regex(/^\d{2}:\d{2}$/),
-    end_time: z.string().regex(/^\d{2}:\d{2}$/),
+    starts_at: z.string(),
+    ends_at: z.string(),
     service_id: z.string().uuid().optional(),
+    staff_member_id: z.string().uuid().optional(),
+    status: z.string().optional(),
   })).min(1).max(50),
 });
 
@@ -788,8 +803,8 @@ export const nailInspoBoardSchema = z.object({
 });
 
 export const retailPurchaseSchema = z.object({
-  product_id: z.string().uuid(),
-  quantity: z.number().int().min(1).max(100).default(1),
+  product_ids: z.array(z.string().uuid()).min(1),
+  salon_id: z.string().uuid(),
 });
 
 export const translateSchema = z.object({
@@ -832,7 +847,7 @@ export const saveCardSchema = z.object({
 
 export const loyaltyAwardSchema = z.object({
   customer_id: z.string().uuid(),
-  card_id: z.string().uuid(),
+  salon_id: z.string().uuid(),
 });
 
 export const loyaltyRedeemSchema = z.object({

@@ -33,6 +33,7 @@ import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory, Ope
 import { generateSalonSchema } from "@/lib/seo";
 import { useSectionObserver } from "@/hooks/useSectionObserver";
 import SalonTabBar from "@/components/salon/SalonTabBar";
+import ServiceCategoryFilter from "@/components/salon/ServiceCategoryFilter";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -278,7 +279,7 @@ export default function SalonProfilePage() {
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("angebot");
-  const [openAccordion, setOpenAccordion] = useState<string | null>("angebot");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
   const [hoursExpanded, setHoursExpanded] = useState(false);
   const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
@@ -420,13 +421,20 @@ export default function SalonProfilePage() {
 
   const scrollToReviews = () => {
     setActiveTab("bewertungen");
-    setOpenAccordion("bewertungen");
     document.getElementById("section-bewertungen")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const servicesByCategory = salon.services.reduce<Record<string, Service[]>>((acc, s) => {
     (acc[s.category] = acc[s.category] ?? []).push(s);
     return acc;
   }, {});
+  
+  const filterCategories = useMemo(() => {
+    return Object.entries(servicesByCategory).map(([key, svcs]) => ({ key, count: svcs.length }));
+  }, [servicesByCategory]);
+  
+  const filteredServicesByCategory = activeCategory 
+    ? { [activeCategory]: servicesByCategory[activeCategory] } 
+    : servicesByCategory;
   const ratingBreakdown = [5, 4, 3, 2, 1].map((r) => ({
     r, count: salon.reviews.filter((rev) => Math.round(rev.rating) === r).length,
   }));
@@ -444,12 +452,7 @@ export default function SalonProfilePage() {
     return currentTime >= todayHours.open && currentTime <= todayHours.close;
   })();
 
-  const TABS = [
-    { key: "angebot", label: "Angebot" },
-    { key: "bewertungen", label: "Bewertungen" },
-    { key: "team", label: "Team" },
-    { key: "standort", label: "Standort" },
-  ] as const;
+  // Use global TABS array
 
   return (
     <>
@@ -477,9 +480,8 @@ export default function SalonProfilePage() {
         </nav>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-24 lg:pb-16">
-          {/* Photo gallery — Framer Motion crossfade */}
           {/* Photo gallery */}
-          <div className="relative w-full aspect-[16/7] rounded-[20px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg mb-8 select-none">
+          <div id="section-fotos" className="scroll-mt-[100px] relative w-full aspect-[16/7] rounded-[20px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg mb-8 select-none">
             <AnimatePresence mode="wait" initial={false}>
               {photos[photoIndex] && (
                 <motion.div key={photoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -568,7 +570,7 @@ export default function SalonProfilePage() {
                   </div>
                   <span className="flex items-center gap-1 text-s-ink/50 dark:text-s-dm-text/50 text-sm">
                     <MapPin className="w-3.5 h-3.5" />
-                    <span className="capitalize">{salon.quartier.replace("_", " ")}</span>
+                    <span className="capitalize">{(salon as any).quartier?.replace("_", " ")}</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-3 mt-3">
@@ -618,24 +620,24 @@ export default function SalonProfilePage() {
               {/* Off-peak countdown */}
               <OffPeakCountdown salonId={salon.id} />
 
+              {/* Scroll-aware sticky tab bar (mobile + desktop) */}
+              <SalonTabBar
+                activeTab={activeSection}
+                onTabClick={handleTabClick}
+                tabs={TABS as any}
+              />
+
               <div id="section-info" className="scroll-mt-[180px]">
-                {((salon as any).about_text_de || (salon as any).about_text_en || (salon as any).about_text_fr || (salon as any).about_text_it) && (
+                {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
                   <div className="mb-8 p-6 rounded-[20px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 shadow-sm">
                     <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">
                       Über uns
                     </h2>
                     <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed whitespace-pre-wrap">
-                      {(salon as any)[`about_text_${locale}`] || (salon as any).about_text_en || (salon as any).about_text_de}
+                      {(salon as any)[`about_text_${locale}`] || salon.about_text_en || salon.about_text_de}
                     </p>
                   </div>
                 )}
-                
-                {/* Scroll-aware sticky tab bar (mobile + desktop) */}
-                <SalonTabBar
-                  activeTab={activeSection}
-                  onTabClick={handleTabClick}
-                  tabs={TABS as any}
-                />
               </div>
 
               {/* Opening hours — mobile: collapsed with today preview */}
@@ -654,7 +656,8 @@ export default function SalonProfilePage() {
                       onClick={() => setHoursExpanded(!hoursExpanded)}
                       className="w-full flex items-center justify-between py-2 text-sm"
                     >
-                      <span className="text-s-ink/70 dark:text-s-dm-text/70">
+                      <span className="flex items-center gap-2 text-s-ink/70 dark:text-s-dm-text/70">
+                        <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30 dark:bg-s-dm-text/30"}`} />
                         Heute: {todayHours ? `${todayHours.open}–${todayHours.close}` : "Geschlossen"}
                       </span>
                       <ChevronDown className={`w-4 h-4 text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`} />
@@ -666,8 +669,11 @@ export default function SalonProfilePage() {
                           const isToday = key === dayKey;
                           const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
                           return (
-                            <div key={key} className={`flex justify-between text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
-                              <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
+                            <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
+                              <div className="flex items-center gap-2">
+                                <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
+                                {isToday && <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30 dark:bg-s-dm-text/30"}`} />}
+                              </div>
                               <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
                                 {h ? `${h.open}–${h.close}` : "Geschlossen"}
                               </span>
@@ -687,7 +693,7 @@ export default function SalonProfilePage() {
                         <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
                           <div className="flex items-center gap-2">
                             <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
-                            {isToday && isOpen && <span className="w-1.5 h-1.5 rounded-full bg-s-success" />}
+                            {isToday && <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30 dark:bg-s-dm-text/30"}`} />}
                           </div>
                           <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
                             {h ? `${h.open}–${h.close}` : "Geschlossen"}
@@ -776,17 +782,10 @@ export default function SalonProfilePage() {
 
               {/* Staff / Team */}
               {salon.staff.length > 0 && (
-                <div id="section-team">
-                  {/* Mobile accordion header */}
-                  <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
-                    onClick={() => setOpenAccordion(openAccordion === "team" ? null : "team")}
-                  >
-                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Team</h2>
-                    <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "team" ? "rotate-180" : ""}`} />
-                  </button>
+                <div id="section-team" className="scroll-mt-[180px]">
+                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Team</h2>
 
-                  <div className={`${openAccordion === "team" ? "" : "hidden md:block"} mt-3 md:mt-0`}>
+                  <div className="mt-3 md:mt-0">
                     <StaffSection
                       staff={salon.staff}
                       salonSlug={slug}
@@ -799,17 +798,10 @@ export default function SalonProfilePage() {
 
               {/* Nail Artists — only for nail salons */}
               {salon.categories?.includes("nails") && salon.staff.length > 0 && (
-                <div id="section-nail-artists">
-                  <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
-                    onClick={() => setOpenAccordion(openAccordion === "nail-artists" ? null : "nail-artists")}
-                  >
-                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Unsere Nail Artists</h2>
-                    <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "nail-artists" ? "rotate-180" : ""}`} />
-                  </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Unsere Nail Artists</h2>
+                <div id="section-nail-artists" className="scroll-mt-[180px]">
+                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Unsere Nail Artists</h2>
 
-                  <div className={`${openAccordion === "nail-artists" ? "" : "hidden md:block"}`}>
+                  <div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <NailArtistPreviewCard
@@ -826,17 +818,10 @@ export default function SalonProfilePage() {
 
               {/* Barber Roster — only for barbershops */}
               {salon.categories?.includes("barbershop") && salon.staff.length > 0 && (
-                <div id="section-barbers">
-                  <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
-                    onClick={() => setOpenAccordion(openAccordion === "barbers" ? null : "barbers")}
-                  >
-                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Unsere Barber</h2>
-                    <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "barbers" ? "rotate-180" : ""}`} />
-                  </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Unsere Barber</h2>
+                <div id="section-barbers" className="scroll-mt-[180px]">
+                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Unsere Barber</h2>
 
-                  <div className={`${openAccordion === "barbers" ? "" : "hidden md:block"}`}>
+                  <div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <Link
@@ -870,17 +855,10 @@ export default function SalonProfilePage() {
 
               {/* Walk-in Queue — only for barbershops */}
               {salon.categories?.includes("barbershop") && (
-                <div id="section-walkin">
-                  <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
-                    onClick={() => setOpenAccordion(openAccordion === "walkin" ? null : "walkin")}
-                  >
-                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Walk-in Warteschlange</h2>
-                    <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "walkin" ? "rotate-180" : ""}`} />
-                  </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Walk-in Warteschlange</h2>
+                <div id="section-walkin" className="scroll-mt-[180px]">
+                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Walk-in Warteschlange</h2>
 
-                  <div className={`${openAccordion === "walkin" ? "" : "hidden md:block"} space-y-4 mt-3 md:mt-0`}>
+                  <div className="space-y-4 mt-3 md:mt-0">
                     <WaitTimeDisplay salonId={salon.id} />
                     <RemoteQueueJoin
                       salonId={salon.id}
@@ -894,19 +872,17 @@ export default function SalonProfilePage() {
 
               {/* Services / Angebot */}
               {salon.services.length > 0 && (
-                <div id="section-angebot">
-                  {/* Mobile accordion header */}
-                  <button
-                    className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
-                    onClick={() => setOpenAccordion(openAccordion === "angebot" ? null : "angebot")}
-                  >
-                    <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Angebot</h2>
-                    <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "angebot" ? "rotate-180" : ""}`} />
-                  </button>
-                  <h2 className="hidden md:block font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Leistungen</h2>
+                <div id="section-angebot" className="scroll-mt-[180px]">
+                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Leistungen</h2>
+                  <ServiceCategoryFilter
+                    categories={filterCategories}
+                    activeCategory={activeCategory}
+                    onCategoryChange={setActiveCategory}
+                    lang={locale}
+                  />
 
-                  <div className={`${openAccordion === "angebot" ? "" : "hidden md:block"}`}>
-                    {Object.entries(servicesByCategory).map(([cat, svcs]) => (
+                  <div>
+                    {Object.entries(filteredServicesByCategory).map(([cat, svcs]) => (
                       <div key={cat} className="mb-4 mt-3 md:mt-0">
                         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3 mt-1">{cat}</p>
                         <div className="divide-y divide-s-ink/5 dark:divide-white/5">
@@ -941,7 +917,7 @@ export default function SalonProfilePage() {
                               </div>
                               <div className="flex items-center gap-3 shrink-0 ml-4">
                                 <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{formatCurrency(svc.price, locale)}</span>
-                                <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-btn"
+                                <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-input"
                                   style={{ background: "rgba(232,98,74,.10)" }}>
                                   Buchen
                                 </span>
@@ -980,16 +956,8 @@ export default function SalonProfilePage() {
               </div>
 
               {/* Reviews / Bewertungen */}
-              <div id="section-bewertungen">
-                {/* Mobile accordion header */}
-                <button
-                  className="md:hidden w-full flex items-center justify-between py-3 border-b border-s-ink/5"
-                  onClick={() => setOpenAccordion(openAccordion === "bewertungen" ? null : "bewertungen")}
-                >
-                  <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text">Bewertungen</h2>
-                  <ChevronDown size={18} className={`text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${openAccordion === "bewertungen" ? "rotate-180" : ""}`} />
-                </button>
-                <div className="hidden md:block mb-4">
+              <div id="section-bewertungen" className="scroll-mt-[180px]">
+                <div className="mb-4">
                   <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
                     Bewertungen
                   </span>
@@ -998,7 +966,7 @@ export default function SalonProfilePage() {
                     Was Kund:innen sagen
                   </h2>
                 </div>
-                <div className={`${openAccordion === "bewertungen" ? "" : "hidden md:block"} mt-3 md:mt-0`}>
+                <div className="mt-3 md:mt-0">
                 {salon.reviews.length === 0 ? (
                   <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">Noch keine Bewertungen.</p>
                 ) : (
@@ -1156,10 +1124,9 @@ export default function SalonProfilePage() {
               </div>
 
               {/* Similar Salons */}
-              {salon.categories.length > 0 && (
+              {salon.categories?.length > 0 && (
                 <SimilarSalons
                   currentSalonId={salon.id}
-                  quartier={salon.quartier}
                   category={salon.categories[0]}
                   locale={locale}
                 />
@@ -1210,8 +1177,8 @@ export default function SalonProfilePage() {
           style={{ background: "#E8624A", boxShadow: "0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22)" }}>
           Jetzt buchen
           {salon.services.length > 0 && (
-            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-[10px] tabular-nums">
-              {salon.services.length}
+            <span className="flex items-center justify-center px-1.5 min-w-[20px] h-5 rounded-full bg-white/20 text-[10px] tabular-nums">
+              {activeCategory ? (filteredServicesByCategory[activeCategory]?.length || 0) : salon.services.length}
             </span>
           )}
         </button>

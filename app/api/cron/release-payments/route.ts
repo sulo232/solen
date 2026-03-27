@@ -5,7 +5,7 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import Stripe from "stripe";
 
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
 }
 
 // Cron: Release (capture) payments 24h after booking completion. Every hour.

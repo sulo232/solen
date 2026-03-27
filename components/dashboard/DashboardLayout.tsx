@@ -174,10 +174,10 @@ export default function DashboardLayout({
     return (
       <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex">
         {/* Sidebar skeleton */}
-        <div className="hidden md:flex flex-col w-[60px] border-r border-s-ink/[0.06] dark:border-white/[0.06] p-3 gap-4">
-          <Skeleton className="h-8 w-8 rounded-[8px]" />
+        <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] dark:border-white/[0.06] p-3 gap-4">
+          <Skeleton className="h-8 w-8 rounded-input" />
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-8 rounded-[8px]" />
+            <Skeleton key={i} className="h-8 w-8 rounded-input" />
           ))}
         </div>
         {/* Content skeleton */}
@@ -208,10 +208,10 @@ export default function DashboardLayout({
           <div className="px-4 py-4 border-b border-s-ink/[0.05]">
             {salonAvatar && (
               <Image src={salonAvatar} alt={salonName ?? ""} width={32} height={32}
-                className="rounded-[8px] mb-3" />
+                className="rounded-input mb-3" />
             )}
             {!salonAvatar && salonName && (
-              <div className="w-8 h-8 rounded-[8px] bg-s-coral/10 flex items-center justify-center mb-3">
+              <div className="w-8 h-8 rounded-input bg-s-coral/10 flex items-center justify-center mb-3">
                 <span className="text-xs font-bold text-s-coral">{salonName[0]}</span>
               </div>
             )}
@@ -244,7 +244,7 @@ export default function DashboardLayout({
                   <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-1">{group.label}</p>
                   {group.items.map((item) => {
                     const { href, icon: Icon } = item;
-                    const label = "key" in item ? t(item.key as string) : (item as any).label;
+                    const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
                     const active = isActive(href);
                     const isMessages = href === "/dashboard/messages";
                     return (
@@ -258,7 +258,7 @@ export default function DashboardLayout({
                         <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
                         <span className="flex-1 overflow-hidden whitespace-nowrap">{label}</span>
                         {isMessages && unreadCount > 0 && (
-                          <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-[6px] bg-s-coral text-white">
+                          <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
                             {unreadCount > 9 ? "9+" : unreadCount}
                           </span>
                         )}
@@ -331,7 +331,7 @@ export default function DashboardLayout({
               <nav className="py-3 px-1 overflow-y-auto">
                 {(isStaff ? STAFF_NAV : OWNER_NAV).map((item) => {
                   const { href, icon: Icon } = item;
-                  const label = "key" in item ? t(item.key) : (item as any).label;
+                  const label = "key" in item ? t(item.key as Parameters<typeof t>[0]) : ("label" in item ? item.label : "");
                   const active = isActive(href);
                   return (
                     <Link
@@ -348,7 +348,7 @@ export default function DashboardLayout({
                       <Icon size={15} className={active ? "text-s-coral" : "text-s-ink/35"} />
                       <span className="flex-1">{label}</span>
                       {href === "/dashboard/messages" && unreadCount > 0 && (
-                        <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-[6px] bg-s-coral text-white">
+                        <span className="ml-auto text-[10px] font-heading font-bold px-1.5 py-0.5 rounded-pill bg-s-coral text-white">
                           {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
                       )}
@@ -386,7 +386,7 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* ── Main content ── */}
-      <div className="flex-1 md:ml-[60px] flex flex-col min-h-screen">
+      <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] dark:border-white/[0.06] px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60">
@@ -418,7 +418,7 @@ export default function DashboardLayout({
                 <div className="relative">
                   <Icon size={20} />
                   {isMessages && unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-s-coral" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-pill bg-s-coral" />
                   )}
                 </div>
                 <span className="text-[8px] font-heading font-semibold uppercase tracking-[.08em]">

@@ -10,7 +10,7 @@ import { nanoid } from "nanoid";
 import Stripe from "stripe";
 
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
 }
 
 // POST /api/gift-cards/purchase — Buy a gift card + email delivery

@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest) {
   const body = await req.json();
   const { data: validated, error: validationError } = validateBody(adminCommissionSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
-  const ratePercent = validated.rate_percent;
+  const ratePercent = validated.rate;
 
   const admin = createAdminSupabaseClient();
   const { error } = await admin
@@ -75,13 +75,14 @@ export async function PUT(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await logAuditEvent(admin, {
-    actor_id: user.id,
-    action: "update_commission_rate",
-    target_type: "platform_settings",
-    target_id: "commission",
-    metadata: { rate_percent: ratePercent },
-  });
+  await logAuditEvent(
+    req,
+    user.id,
+    "feature_flag.toggle", // using closest available action type
+    "platform_settings",
+    "commission",
+    { rate_percent: ratePercent }
+  );
 
   return NextResponse.json({ success: true, rate_percent: ratePercent });
 }

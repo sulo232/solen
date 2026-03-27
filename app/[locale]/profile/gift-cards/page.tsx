@@ -77,10 +77,10 @@ export default function MyGiftCardsPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {cards.map((card) => {
-              const isUsedUp = card.balance <= 0 && card.status !== "active";
+              const isUsedUp = card.remaining_amount <= 0 && !card.is_active;
               const isExpired = card.expires_at && new Date(card.expires_at).getTime() < Date.now();
               const localeFmt = locale === "de" ? "de-CH" : locale;
-              const isInactive = isUsedUp || isExpired || card.status !== "active";
+              const isInactive = isUsedUp || isExpired || !card.is_active;
 
               return (
                 <div key={card.id} className={`bg-white dark:bg-s-dm-surface rounded-card border ${isInactive ? "border-s-ink/5 dark:border-white/5 opacity-60" : "border-s-coral/30 shadow-warm-sm bg-gradient-to-br from-white to-s-coral/5 dark:from-s-dm-surface dark:to-s-coral/5"} p-5 relative overflow-hidden`}>
@@ -93,7 +93,7 @@ export default function MyGiftCardsPage() {
                     <div>
                       <p className="text-xs font-semibold text-s-ink/40 dark:text-s-dm-text/40 uppercase tracking-widest mb-1">GIFT CARD</p>
                       <h3 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text data-text">
-                        {formatCurrency(card.balance, locale)}
+                        {formatCurrency(card.remaining_amount, locale)}
                       </h3>
                     </div>
                     {isInactive ? (

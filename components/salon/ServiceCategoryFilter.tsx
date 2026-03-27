@@ -4,16 +4,16 @@ import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface ServiceCategoryFilterProps {
-  categories: string[];
+  categories: { key: string; count: number }[];
   activeCategory: string | null;
-  onSelectCategory: (category: string | null) => void;
+  onCategoryChange: (cat: string | null) => void;
   lang: string;
 }
 
 export default function ServiceCategoryFilter({
   categories,
   activeCategory,
-  onSelectCategory,
+  onCategoryChange,
   lang,
 }: ServiceCategoryFilterProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -32,26 +32,26 @@ export default function ServiceCategoryFilter({
         style={{ scrollBehavior: "smooth" }}
       >
         <button
-          onClick={() => onSelectCategory(null)}
-          className={`shrink-0 px-4 py-2 rounded-full text-xs font-heading font-semibold uppercase tracking-[.06em] transition-all duration-200 shadow-sm ${
+          onClick={() => onCategoryChange(null)}
+          className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-all duration-200 ${
             activeCategory === null
-              ? "bg-s-ink text-white dark:bg-white dark:text-s-dm-bg scale-105"
-              : "bg-white text-s-ink/60 border border-s-ink/10 hover:border-s-ink/20 dark:bg-s-dm-surface dark:text-s-dm-text/60 dark:border-white/10 dark:hover:border-white/20"
+              ? "bg-s-coral text-white scale-105"
+              : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20 dark:bg-s-dm-surface dark:text-s-dm-text/60 dark:border-white/10 dark:hover:border-white/20"
           }`}
         >
           {lang === "de" ? "Alle" : "All"}
         </button>
         {categories.map((cat) => (
           <button
-            key={cat}
-            onClick={() => onSelectCategory(cat)}
-            className={`shrink-0 px-4 py-2 rounded-full text-xs font-heading font-semibold uppercase tracking-[.06em] transition-all duration-200 shadow-sm ${
-              activeCategory === cat
-                ? "bg-s-ink text-white dark:bg-white dark:text-s-dm-bg scale-105"
-                : "bg-white text-s-ink/60 border border-s-ink/10 hover:border-s-ink/20 dark:bg-s-dm-surface dark:text-s-dm-text/60 dark:border-white/10 dark:hover:border-white/20"
+            key={cat.key}
+            onClick={() => onCategoryChange(cat.key)}
+            className={`shrink-0 px-3 py-1.5 rounded-pill text-xs font-heading font-bold uppercase tracking-[.06em] transition-all duration-200 ${
+              activeCategory === cat.key
+                ? "bg-s-coral text-white scale-105"
+                : "bg-s-bg-raised text-s-ink/60 border border-s-ink/[0.08] hover:border-s-ink/20 dark:bg-s-dm-surface dark:text-s-dm-text/60 dark:border-white/10 dark:hover:border-white/20"
             }`}
           >
-            {cat}
+            {cat.key} ({cat.count})
           </button>
         ))}
       </div>

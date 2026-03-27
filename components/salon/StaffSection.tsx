@@ -56,9 +56,9 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               </p>
 
               {/* Languages */}
-              {(m as any).languages?.length > 0 && (
+              {m.languages && m.languages.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-1 mt-1">
-                  {(m as any).languages.map((lang: string) => (
+                  {m.languages.map((lang: string) => (
                     <span key={lang} className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-sm bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60">
                       {lang}
                     </span>

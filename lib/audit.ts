@@ -7,6 +7,9 @@ type AuditAction =
   | "user.ban" | "user.unban"
   | "feature_flag.toggle"
   | "account.delete"
+  | "account.delete_requested"
+  | "account.data_export"
+  | "account.tos_accepted"
   | "review.delete"
   | "payment.refund";
 

@@ -8,8 +8,9 @@ const tagSchema = z.object({
   color: z.enum(["gray", "red", "orange", "yellow", "green", "teal", "blue", "purple", "pink"]).default("gray"),
 });
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const customerId = params.id;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const customerId = id;
   const salonId = req.nextUrl.searchParams.get("salon_id");
   if (!salonId) return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
 
@@ -29,8 +30,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({ tags: tags || [] });
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const customerId = params.id;
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const customerId = id;
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -71,8 +73,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const customerId = params.id;
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const customerId = id;
   const tagId = req.nextUrl.searchParams.get("tag_id");
   const salonId = req.nextUrl.searchParams.get("salon_id");
   

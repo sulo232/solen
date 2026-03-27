@@ -8,8 +8,9 @@ const noteSchema = z.object({
   note_type: z.enum(["permanent", "booking"]).default("permanent"),
 });
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const customerId = params.id;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const customerId = id;
   const salonId = req.nextUrl.searchParams.get("salon_id");
   if (!salonId) return NextResponse.json({ error: "salon_id is required" }, { status: 400 });
 
@@ -29,8 +30,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({ notes: notes || [] });
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const customerId = params.id;
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const customerId = id;
   const supabase = await createServerSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -72,8 +74,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const customerId = params.id;
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const customerId = id;
   const noteId = req.nextUrl.searchParams.get("note_id");
   const salonId = req.nextUrl.searchParams.get("salon_id");
   

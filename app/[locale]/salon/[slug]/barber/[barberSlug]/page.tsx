@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Scissors, Star, ArrowLeft, Share2, MapPin } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/format-currency";
+import StaffAvailability from "@/components/staff/StaffAvailability";
 
 interface BarberProfile {
   id: string;
@@ -167,6 +168,8 @@ export default function BarberProfilePage() {
             </div>
           )}
         </div>
+
+        <StaffAvailability staffId={barber.id} locale={locale} />
 
         {/* Book CTA */}
         <Link

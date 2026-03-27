@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocale } from "next-intl";
 import { ChevronLeft, ChevronRight, Plus, X, Lock, ArrowRight, Clock, UserPlus } from "lucide-react";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
 import WalkInModal from "@/components/dashboard/WalkInModal";
@@ -446,6 +447,55 @@ export default function CalendarPage() {
   const nextWeek = () => setWeekStart((w) => addDays(w, 7));
   const goToday = () => setWeekStart(startOfWeek(new Date()));
 
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const slotId = result.draggableId;
+    const destId = result.destination.droppableId; // format: "YYYY-MM-DD:08:staffId"
+    
+    // Parse the dropzone ID
+    const parts = destId.split(":");
+    if (parts.length < 2) return;
+    const dateStr = parts[0];
+    const hourStr = parts[1];
+    const newStaffId = parts[2];
+    
+    const newDate = new Date(`${dateStr}T${hourStr}:00:00`);
+    const slotToMove = slots.find(s => s.id === slotId);
+    if (!slotToMove) return;
+
+    const startObj = new Date(slotToMove.starts_at);
+    const endObj = new Date(slotToMove.ends_at);
+    const durationMs = endObj.getTime() - startObj.getTime();
+    
+    const targetStart = newDate;
+    const targetEnd = new Date(targetStart.getTime() + durationMs);
+    const assignedStaff = newStaffId === "unassigned" ? null : (newStaffId || slotToMove.staff_member_id);
+
+    // Optimistic UI update
+    setSlots(prev => prev.map(s => {
+      if (s.id === slotId) {
+        return {
+          ...s,
+          starts_at: targetStart.toISOString(),
+          ends_at: targetEnd.toISOString(),
+          staff_member_id: assignedStaff,
+        };
+      }
+      return s;
+    }));
+
+    // Trigger API execution
+    fetch(`/api/slots/${slotId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        starts_at: targetStart.toISOString(), 
+        ends_at: targetEnd.toISOString(), 
+        staff_member_id: assignedStaff 
+      }),
+    }).catch(() => loadSlots());
+  };
+
   const slotBg = (s: AvailabilitySlot) => {
     // Service category left border
     const catBorder = s.service_id && serviceCategoryMap.has(s.service_id)
@@ -464,6 +514,7 @@ export default function CalendarPage() {
 
   return (
     <DashboardLayout>
+      <DragDropContext onDragEnd={onDragEnd}>
       {createModal && salonId && (
         <SlotCreateModal
           date={createModal.date}
@@ -595,27 +646,44 @@ export default function CalendarPage() {
                     </div>
                     {weekDays.map((d, dayIdx) => {
                       const dateStr = d.toISOString().split("T")[0];
+                      const dropId = `${dateStr}:${String(hour).padStart(2, "0")}:unassigned`;
                       const cellSlots = slotForCell(dateStr, hour);
                       return (
-                        <div key={dayIdx}
-                          className="border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer hover:bg-s-coral/5 transition-colors group"
-                          onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
-                          {cellSlots.map((s) => {
-                            const staffMember = staff.find((st) => st.id === s.staff_member_id);
-                            return (
-                              <div key={s.id} onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                                className={`relative rounded text-[9px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot ${slotBg(s)}`}
-                                title={staffMember ? staffMember.name : undefined}>
-                                {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
-                                <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                  className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
-                              </div>
-                            );
-                          })}
-                          {cellSlots.length === 0 && (
-                            <div className="opacity-0 group-hover:opacity-100 text-[9px] text-s-coral flex items-center justify-center h-full"><Plus size={10} /></div>
+                        <Droppable key={dayIdx} droppableId={dropId}>
+                          {(provided, snapshot) => (
+                            <div 
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className={`border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                              onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
+                              {cellSlots.map((s, idx) => {
+                                const staffMember = staff.find((st) => st.id === s.staff_member_id);
+                                return (
+                                  <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
+                                    {(dragProvided, dragSnapshot) => (
+                                      <div
+                                        ref={dragProvided.innerRef}
+                                        {...dragProvided.draggableProps}
+                                        {...dragProvided.dragHandleProps}
+                                        onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
+                                        className={`relative rounded text-[9px] px-1 py-0.5 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
+                                        style={{ ...dragProvided.draggableProps.style }}
+                                        title={staffMember ? staffMember.name : undefined}>
+                                        {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
+                                        <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
+                                          className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                              {provided.placeholder}
+                              {cellSlots.length === 0 && !snapshot.isDraggingOver && (
+                                <div className="opacity-0 group-hover:opacity-100 text-[9px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                              )}
+                            </div>
                           )}
-                        </div>
+                        </Droppable>
                       );
                     })}
                   </div>
@@ -660,36 +728,70 @@ export default function CalendarPage() {
                       new Date(s.starts_at).getHours() === hour &&
                       s.staff_member_id === staffMember.id
                     );
+                    const dropId = `${dateStr}:${String(hour).padStart(2, "0")}:${staffMember.id}`;
                     return (
-                      <div key={staffMember.id}
-                        className="border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer hover:bg-s-coral/5 transition-colors group"
-                        onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
-                        {cellSlots.map((s) => (
-                          <div key={s.id} onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                            className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)}`}>
-                            {s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
-                            <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                              className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
+                      <Droppable key={staffMember.id} droppableId={dropId}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={`border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                            onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
+                            {cellSlots.map((s, idx) => (
+                              <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
+                                {(dragProvided, dragSnapshot) => (
+                                  <div
+                                    ref={dragProvided.innerRef}
+                                    {...dragProvided.draggableProps}
+                                    {...dragProvided.dragHandleProps}
+                                    onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
+                                    className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
+                                    style={{ ...dragProvided.draggableProps.style }}>
+                                    {s.status === "booked" ? "Gebucht" : s.status === "blocked" ? "Blockiert" : "Frei"}
+                                    <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
+                                      className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current"><X size={8} /></button>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                            {cellSlots.length === 0 && !snapshot.isDraggingOver && (
+                              <div className="opacity-0 group-hover:opacity-100 text-[9px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                            )}
                           </div>
-                        ))}
-                        {cellSlots.length === 0 && (
-                          <div className="opacity-0 group-hover:opacity-100 text-[9px] text-s-coral flex items-center justify-center h-full"><Plus size={10} /></div>
                         )}
-                      </div>
+                      </Droppable>
                     );
                   }) : (
-                    <div className="border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer hover:bg-s-coral/5 transition-colors group"
-                      onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
-                      {slotForCell(dateStr, hour).map((s) => {
-                        const sm = staff.find((st) => st.id === s.staff_member_id);
-                        return (
-                          <div key={s.id} onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
-                            className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)}`}>
-                            {sm ? sm.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : "Frei"}
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <Droppable droppableId={`${dateStr}:${String(hour).padStart(2, "0")}:unassigned`}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className={`border-l border-s-ink/5 dark:border-white/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                          onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
+                          {slotForCell(dateStr, hour).map((s, idx) => {
+                            const sm = staff.find((st) => st.id === s.staff_member_id);
+                            return (
+                              <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
+                                {(dragProvided, dragSnapshot) => (
+                                  <div
+                                    ref={dragProvided.innerRef}
+                                    {...dragProvided.draggableProps}
+                                    {...dragProvided.dragHandleProps}
+                                    onClick={(e) => { e.stopPropagation(); setDetailSlot(s); }}
+                                    className={`relative rounded text-[10px] px-1.5 py-1 mb-0.5 cursor-pointer group/slot ${slotBg(s)} ${dragSnapshot.isDragging ? "shadow-2xl z-50 scale-105" : ""}`}
+                                    style={{ ...dragProvided.draggableProps.style }}>
+                                    {sm ? sm.name.split(" ")[0] : s.status === "booked" ? "Gebucht" : "Frei"}
+                                  </div>
+                                )}
+                              </Draggable>
+                            );
+                          })}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
                   )}
                 </div>
               );
@@ -764,6 +866,7 @@ export default function CalendarPage() {
           </>
         )}
       </div>
+      </DragDropContext>
     </DashboardLayout>
   );
 }

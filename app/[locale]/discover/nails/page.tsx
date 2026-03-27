@@ -1,9 +1,10 @@
 import { permanentRedirect } from "next/navigation";
 
 interface Props {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function NailsDiscoverRedirect({ params }: Props) {
-  permanentRedirect(`/${params.locale}/discover?category=nails`);
+export default async function NailsDiscoverRedirect({ params }: Props) {
+  const { locale } = await params;
+  permanentRedirect(`/${locale}/discover?category=nails`);
 }

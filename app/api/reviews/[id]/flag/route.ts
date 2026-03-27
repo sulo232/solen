@@ -6,7 +6,8 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 // POST /api/reviews/[id]/flag
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const disabled = await checkFeatureEnabled("reviews");
   if (disabled) return disabled;
 
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const { data: review, error: reviewErr } = await supabase
     .from("reviews")
     .select("id, salon_id")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (reviewErr || !review) {
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       flag_reason: reason,
       moderation_status: 'under_review'
     })
-    .eq("id", params.id)
+    .eq("id", id)
     .select()
     .single();
 

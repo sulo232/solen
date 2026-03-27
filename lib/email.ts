@@ -51,15 +51,17 @@ export function bookingConfirmation(
   vars: { service: string; salon: string; date: string; time: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Buchungsbestätigung: ${vars.service} bei ${vars.salon}`,
     en: `Booking confirmed: ${vars.service} at ${vars.salon}`,
     fr: `Réservation confirmée: ${vars.service} chez ${vars.salon}`,
+    it: `Prenotazione confermata: ${vars.service} presso ${vars.salon}`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Hallo,</p><p><strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p><p>solen.ch</p>`,
     en: `<p>Hello,</p><p><strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p><p>solen.ch</p>`,
     fr: `<p>Bonjour,</p><p><strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p><p>solen.ch</p>`,
+    it: `<p>Ciao,</p><p><strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p><p>solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -69,15 +71,37 @@ export function bookingCancellation(
   vars: { service: string; salon: string; date: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Buchung storniert: ${vars.service} bei ${vars.salon}`,
     en: `Booking cancelled: ${vars.service} at ${vars.salon}`,
     fr: `Réservation annulée: ${vars.service} chez ${vars.salon}`,
+    it: `Prenotazione cancellata: ${vars.service} presso ${vars.salon}`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>${vars.service} bei ${vars.salon} am ${vars.date} wurde storniert.</p>`,
     en: `<p>${vars.service} at ${vars.salon} on ${vars.date} has been cancelled.</p>`,
     fr: `<p>${vars.service} chez ${vars.salon} le ${vars.date} a été annulé.</p>`,
+    it: `<p>${vars.service} presso ${vars.salon} il ${vars.date} è stata cancellata.</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
+export function bookingReschedule(
+  to: string,
+  vars: { service: string; salon: string; oldDate: string; newDate: string },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Buchung verschoben: ${vars.service} bei ${vars.salon}`,
+    en: `Booking rescheduled: ${vars.service} at ${vars.salon}`,
+    fr: `Réservation reprogrammée: ${vars.service} chez ${vars.salon}`,
+    it: `Prenotazione riprogrammata: ${vars.service} presso ${vars.salon}`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Ihre Buchung für ${vars.service} bei ${vars.salon} wurde von ${new Date(vars.oldDate).toLocaleString("de-CH")} auf den ${new Date(vars.newDate).toLocaleString("de-CH")} verschoben.</p>`,
+    en: `<p>Your booking for ${vars.service} at ${vars.salon} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-US")} to ${new Date(vars.newDate).toLocaleString("en-US")}.</p>`,
+    fr: `<p>Votre réservation pour ${vars.service} chez ${vars.salon} a été reprogrammée du ${new Date(vars.oldDate).toLocaleString("fr-CH")} au ${new Date(vars.newDate).toLocaleString("fr-CH")}.</p>`,
+    it: `<p>La tua prenotazione per ${vars.service} presso ${vars.salon} è stata riprogrammata dal ${new Date(vars.oldDate).toLocaleString("it-CH")} al ${new Date(vars.newDate).toLocaleString("it-CH")}.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -87,15 +111,17 @@ export function bookingReminder(
   vars: { service: string; salon: string; time: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Erinnerung: ${vars.service} morgen um ${vars.time}`,
     en: `Reminder: ${vars.service} tomorrow at ${vars.time}`,
     fr: `Rappel: ${vars.service} demain à ${vars.time}`,
+    it: `Promemoria: ${vars.service} domani alle ${vars.time}`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>${vars.service} bei ${vars.salon} ist morgen um ${vars.time} Uhr. Wir freuen uns auf Sie!</p>`,
     en: `<p>${vars.service} at ${vars.salon} is tomorrow at ${vars.time}. See you there!</p>`,
     fr: `<p>${vars.service} chez ${vars.salon} est demain à ${vars.time}. À bientôt!</p>`,
+    it: `<p>${vars.service} presso ${vars.salon} è domani alle ${vars.time}. A presto!</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -105,15 +131,17 @@ export function recurringConfirmation(
   vars: { frequency: string; service: string; salon: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Serienbuchung eingerichtet: ${vars.service} bei ${vars.salon}`,
     en: `Recurring booking set up: ${vars.service} at ${vars.salon}`,
     fr: `Abonnement configuré: ${vars.service} chez ${vars.salon}`,
+    it: `Prenotazione ricorrente impostata: ${vars.service} presso ${vars.salon}`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Ihre ${vars.frequency} Serienbuchung für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> ist eingerichtet.</p>`,
     en: `<p>Your ${vars.frequency} recurring booking for <strong>${vars.service}</strong> at <strong>${vars.salon}</strong> has been set up.</p>`,
     fr: `<p>Votre abonnement ${vars.frequency} pour <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> a été configuré.</p>`,
+    it: `<p>La tua prenotazione ricorrente ${vars.frequency} per <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> è stata impostata.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -123,15 +151,17 @@ export function recurringFailed(
   vars: { service: string; salon: string; date: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Serienbuchung fehlgeschlagen: ${vars.service} am ${vars.date}`,
     en: `Recurring booking failed: ${vars.service} on ${vars.date}`,
     fr: `Abonnement échoué: ${vars.service} le ${vars.date}`,
+    it: `Prenotazione ricorrente fallita: ${vars.service} il ${vars.date}`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Wir konnten <strong>${vars.service}</strong> bei ${vars.salon} für ${vars.date} nicht automatisch buchen. Der Zeitslot ist nicht verfügbar. Bitte buchen Sie manuell auf <a href="https://solen.ch">solen.ch</a>.</p>`,
     en: `<p>We couldn't auto-book <strong>${vars.service}</strong> at ${vars.salon} for ${vars.date}. The time slot is not available. Please rebook manually at <a href="https://solen.ch">solen.ch</a>.</p>`,
     fr: `<p>Nous n'avons pas pu réserver automatiquement <strong>${vars.service}</strong> chez ${vars.salon} pour le ${vars.date}. Le créneau n'est pas disponible. Veuillez réserver manuellement sur <a href="https://solen.ch">solen.ch</a>.</p>`,
+    it: `<p>Non è stato possibile prenotare automaticamente <strong>${vars.service}</strong> presso ${vars.salon} per il ${vars.date}. Lo slot non è disponibile. Si prega di prenotare manualmente su <a href="https://solen.ch">solen.ch</a>.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -141,15 +171,17 @@ export function salonVerificationRequest(
   vars: { salon: string; confirmUrl: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Ist Ihr Salon noch aktiv? Bitte bestätigen`,
     en: `Is your salon still active? Please confirm`,
     fr: `Votre salon est-il toujours actif? Veuillez confirmer`,
+    it: `Il tuo salone è ancora attivo? Conferma`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Hallo,</p><p>Ist <strong>${vars.salon}</strong> noch aktiv auf solen.ch? Bitte klicken Sie auf den Link, um zu bestätigen:</p><p><a href="${vars.confirmUrl}">Salon bestätigen</a></p>`,
     en: `<p>Hello,</p><p>Is <strong>${vars.salon}</strong> still active on solen.ch? Please click the link to confirm:</p><p><a href="${vars.confirmUrl}">Confirm salon</a></p>`,
     fr: `<p>Bonjour,</p><p><strong>${vars.salon}</strong> est-il toujours actif sur solen.ch? Veuillez cliquer sur le lien pour confirmer:</p><p><a href="${vars.confirmUrl}">Confirmer le salon</a></p>`,
+    it: `<p>Ciao,</p><p><strong>${vars.salon}</strong> è ancora attivo su solen.ch? Clicca il link per confermare:</p><p><a href="${vars.confirmUrl}">Conferma salone</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -159,15 +191,17 @@ export function salonVerificationWarning(
   vars: { salon: string; confirmUrl: string; warningNum: number },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Warnung ${vars.warningNum}/3: Bitte bestätigen Sie Ihren Salon`,
     en: `Warning ${vars.warningNum}/3: Please confirm your salon`,
     fr: `Avertissement ${vars.warningNum}/3: Veuillez confirmer votre salon`,
+    it: `Avviso ${vars.warningNum}/3: Conferma il tuo salone`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Warnung ${vars.warningNum} von 3: <strong>${vars.salon}</strong> wurde noch nicht bestätigt. Bitte bestätigen Sie jetzt, sonst wird Ihr Salon eingefroren: <a href="${vars.confirmUrl}">Jetzt bestätigen</a></p>`,
     en: `<p>Warning ${vars.warningNum} of 3: <strong>${vars.salon}</strong> has not been confirmed. Please confirm now or your salon will be frozen: <a href="${vars.confirmUrl}">Confirm now</a></p>`,
     fr: `<p>Avertissement ${vars.warningNum} sur 3: <strong>${vars.salon}</strong> n'a pas été confirmé. Veuillez confirmer maintenant ou votre salon sera suspendu: <a href="${vars.confirmUrl}">Confirmer maintenant</a></p>`,
+    it: `<p>Avviso ${vars.warningNum} di 3: <strong>${vars.salon}</strong> non è stato confermato. Conferma ora o il tuo salone verrà sospeso: <a href="${vars.confirmUrl}">Conferma ora</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -177,15 +211,17 @@ export function salonFrozen(
   vars: { salon: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Ihr Salon wurde aufgrund von Inaktivität gesperrt`,
     en: `Your salon has been frozen due to inactivity`,
     fr: `Votre salon a été suspendu pour inactivité`,
+    it: `Il tuo salone è stato sospeso per inattività`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p><strong>${vars.salon}</strong> wurde auf solen.ch wegen Inaktivität gesperrt. Um Ihren Salon wieder zu aktivieren, kontaktieren Sie uns unter support@solen.ch.</p>`,
     en: `<p><strong>${vars.salon}</strong> has been frozen on solen.ch due to inactivity. To reactivate, contact us at support@solen.ch.</p>`,
     fr: `<p><strong>${vars.salon}</strong> a été suspendu sur solen.ch pour inactivité. Pour réactiver, contactez-nous à support@solen.ch.</p>`,
+    it: `<p><strong>${vars.salon}</strong> è stato sospeso su solen.ch per inattività. Per riattivare, contattaci a support@solen.ch.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -195,15 +231,17 @@ export function customerBookingSuspended(
   vars: { salon: string; service: string; date: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Ihre Buchung bei ${vars.salon} wurde storniert`,
     en: `Your booking at ${vars.salon} has been suspended`,
     fr: `Votre réservation chez ${vars.salon} a été annulée`,
+    it: `La tua prenotazione presso ${vars.salon} è stata cancellata`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Ihre Buchung für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} wurde storniert, da der Salon nicht mehr aktiv ist. Es tut uns leid für die Unannehmlichkeiten.</p>`,
     en: `<p>Your booking for <strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} has been cancelled because the salon is no longer active. We apologise for the inconvenience.</p>`,
     fr: `<p>Votre réservation pour <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} a été annulée car le salon n'est plus actif. Nous nous excusons pour la gêne occasionnée.</p>`,
+    it: `<p>La tua prenotazione per <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} è stata cancellata perché il salone non è più attivo. Ci scusiamo per l'inconveniente.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -213,15 +251,17 @@ export function salonApproved(
   vars: { salon: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `🎉 Dein Salon ist jetzt live auf solen.ch!`,
     en: `🎉 Your salon is now live on solen.ch!`,
     fr: `🎉 Votre salon est maintenant en ligne sur solen.ch !`,
+    it: `🎉 Il tuo salone è ora live su solen.ch!`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Hallo,</p><p>Gute Neuigkeiten! <strong>${vars.salon}</strong> wurde genehmigt und ist ab sofort auf <a href="https://solen.ch">solen.ch</a> für Buchungen verfügbar.</p><p>Kunden können dich jetzt finden und buchen. Viel Erfolg!</p><p>Das solen.ch Team</p>`,
     en: `<p>Hello,</p><p>Great news! <strong>${vars.salon}</strong> has been approved and is now live on <a href="https://solen.ch">solen.ch</a> for bookings.</p><p>Customers can now find and book you. Good luck!</p><p>The solen.ch team</p>`,
     fr: `<p>Bonjour,</p><p>Bonne nouvelle ! <strong>${vars.salon}</strong> a été approuvé et est désormais disponible sur <a href="https://solen.ch">solen.ch</a> pour les réservations.</p><p>Les clients peuvent maintenant vous trouver et vous réserver. Bonne chance !</p><p>L'équipe solen.ch</p>`,
+    it: `<p>Ciao,</p><p>Ottime notizie! <strong>${vars.salon}</strong> è stato approvato ed è ora disponibile su <a href="https://solen.ch">solen.ch</a> per le prenotazioni.</p><p>I clienti possono ora trovarti e prenotare. In bocca al lupo!</p><p>Il team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -231,15 +271,17 @@ export function salonRejected(
   vars: { salon: string; reason: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Dein Salon wurde leider nicht genehmigt`,
     en: `Your salon application was not approved`,
     fr: `Votre demande de salon n'a pas été approuvée`,
+    it: `La tua richiesta di salone non è stata approvata`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Hallo,</p><p>Leider konnten wir <strong>${vars.salon}</strong> aktuell nicht genehmigen.</p><p><strong>Grund:</strong> ${vars.reason}</p><p>Bei Fragen wende dich an <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>Das solen.ch Team</p>`,
     en: `<p>Hello,</p><p>Unfortunately we were unable to approve <strong>${vars.salon}</strong> at this time.</p><p><strong>Reason:</strong> ${vars.reason}</p><p>If you have questions, contact <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>The solen.ch team</p>`,
     fr: `<p>Bonjour,</p><p>Malheureusement, nous n'avons pas pu approuver <strong>${vars.salon}</strong> pour le moment.</p><p><strong>Raison :</strong> ${vars.reason}</p><p>Pour toute question, contactez <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>L'équipe solen.ch</p>`,
+    it: `<p>Ciao,</p><p>Purtroppo non è stato possibile approvare <strong>${vars.salon}</strong> al momento.</p><p><strong>Motivo:</strong> ${vars.reason}</p><p>Per domande, contatta <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>Il team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -292,15 +334,17 @@ export function newMessageNotification(
   const name = vars.senderName ?? vars.sender ?? "Jemand";
   const link = vars.conversationUrl ?? "https://solen.ch";
   const previewLine = vars.preview ? `<p style="color:#555;font-style:italic">"${vars.preview}"</p>` : "";
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Neue Nachricht von ${name}`,
     en: `New message from ${name}`,
     fr: `Nouveau message de ${name}`,
+    it: `Nuovo messaggio da ${name}`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p><strong>${name}</strong> hat Ihnen eine Nachricht auf solen.ch gesendet.</p>${previewLine}<p><a href="${link}">Nachricht lesen →</a></p>`,
     en: `<p><strong>${name}</strong> sent you a message on solen.ch.</p>${previewLine}<p><a href="${link}">Read message →</a></p>`,
     fr: `<p><strong>${name}</strong> vous a envoyé un message sur solen.ch.</p>${previewLine}<p><a href="${link}">Lire le message →</a></p>`,
+    it: `<p><strong>${name}</strong> ti ha inviato un messaggio su solen.ch.</p>${previewLine}<p><a href="${link}">Leggi messaggio →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -314,15 +358,17 @@ export function rebookingNudge(
   vars: { service: string; salon: string; daysSince: number },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Zeit für einen neuen Termin bei ${vars.salon}?`,
     en: `Time for a new appointment at ${vars.salon}?`,
     fr: `Prêt(e) pour un nouveau rendez-vous chez ${vars.salon} ?`,
+    it: `È ora di un nuovo appuntamento da ${vars.salon}?`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Dein letzter <strong>${vars.service}</strong>-Termin bei <strong>${vars.salon}</strong> war vor ${vars.daysSince} Tagen.</p><p><a href="https://solen.ch">Neuen Termin buchen →</a></p>`,
     en: `<p>Your last <strong>${vars.service}</strong> appointment at <strong>${vars.salon}</strong> was ${vars.daysSince} days ago.</p><p><a href="https://solen.ch">Book a new appointment →</a></p>`,
     fr: `<p>Votre dernier rendez-vous <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> remonte à ${vars.daysSince} jours.</p><p><a href="https://solen.ch">Réserver un nouveau rendez-vous →</a></p>`,
+    it: `<p>Il tuo ultimo appuntamento <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> risale a ${vars.daysSince} giorni fa.</p><p><a href="https://solen.ch">Prenota un nuovo appuntamento →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -336,15 +382,17 @@ export function reviewPrompt(
   vars: { service: string; salon: string; reviewUrl: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const subjects = {
+  const subjects: Record<EmailLocale, string> = {
     de: `Wie war dein Besuch bei ${vars.salon}?`,
     en: `How was your visit at ${vars.salon}?`,
     fr: `Comment était votre visite chez ${vars.salon} ?`,
+    it: `Com'è stata la tua visita da ${vars.salon}?`,
   };
-  const bodies = {
+  const bodies: Record<EmailLocale, string> = {
     de: `<p>Vielen Dank für deinen <strong>${vars.service}</strong>-Termin bei <strong>${vars.salon}</strong>!</p><p>Hilf anderen Kunden und teile deine Erfahrung.</p><p><a href="${vars.reviewUrl}">Bewertung schreiben →</a></p>`,
     en: `<p>Thanks for your <strong>${vars.service}</strong> appointment at <strong>${vars.salon}</strong>!</p><p>Help other customers by sharing your experience.</p><p><a href="${vars.reviewUrl}">Write a review →</a></p>`,
     fr: `<p>Merci pour votre rendez-vous <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> !</p><p>Aidez les autres clients en partageant votre expérience.</p><p><a href="${vars.reviewUrl}">Écrire un avis →</a></p>`,
+    it: `<p>Grazie per il tuo appuntamento <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong>!</p><p>Aiuta gli altri clienti condividendo la tua esperienza.</p><p><a href="${vars.reviewUrl}">Scrivi una recensione →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -359,7 +407,7 @@ export function welcomeEmail(
   locale: EmailLocale = "de",
   step: 1 | 2 | 3 = 1
 ): EmailPayload {
-  const steps = {
+  const steps: Record<EmailLocale, { subject: string; html: string }[]> = {
     de: [
       { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/explore">Entdecke Salons in deiner Nähe →</a></p>` },
       { subject: `Entdecke Last-Minute-Angebote, ${vars.name}`, html: `<p>Wusstest du, dass viele Salons Last-Minute-Rabatte anbieten? Spare bis zu 50 % auf freie Termine.</p><p><a href="https://solen.ch/de/explore?filter=lastminute">Last-Minute-Angebote ansehen →</a></p>` },
@@ -374,6 +422,11 @@ export function welcomeEmail(
       { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/explore">Découvrir les salons →</a></p>` },
       { subject: `Offres de dernière minute, ${vars.name}`, html: `<p>Saviez-vous que de nombreux salons proposent des réductions de dernière minute ? Économisez jusqu'à 50 %.</p><p><a href="https://solen.ch/fr/explore?filter=lastminute">Voir les offres →</a></p>` },
       { subject: `Complétez votre profil`, html: `<p>Complétez votre profil pour des recommandations personnalisées.</p><p><a href="https://solen.ch/fr/account">Modifier le profil →</a></p>` },
+    ],
+    it: [
+      { subject: `Benvenuto su solen.ch, ${vars.name}!`, html: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p><a href="https://solen.ch/it/explore">Scopri i saloni vicini →</a></p>` },
+      { subject: `Offerte last-minute, ${vars.name}`, html: `<p>Sapevi che molti saloni offrono sconti last-minute? Risparmia fino al 50%.</p><p><a href="https://solen.ch/it/explore?filter=lastminute">Vedi le offerte →</a></p>` },
+      { subject: `Completa il tuo profilo`, html: `<p>Completa il tuo profilo per raccomandazioni personalizzate.</p><p><a href="https://solen.ch/it/account">Modifica profilo →</a></p>` },
     ],
   };
   const s = steps[locale]?.[step - 1] ?? steps.de[step - 1];

@@ -7,8 +7,9 @@ import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 // GET /api/help/[slug]?locale=de — Single help article
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
@@ -18,7 +19,7 @@ export async function GET(
   const { data, error } = await supabase
     .from("help_articles")
     .select("*")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .eq("locale", locale)
     .eq("published", true)
     .single();

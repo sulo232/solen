@@ -111,6 +111,10 @@ export interface Salon {
   description_en: string | null;
   description_fr?: string | null;
   description_it?: string | null;
+  about_text_de?: string | null;
+  about_text_en?: string | null;
+  about_text_fr?: string | null;
+  about_text_it?: string | null;
   categories: SalonCategory[];
   city_id: string | null; // References cities.id
   address: string;
@@ -155,6 +159,7 @@ export interface StaffMember {
   average_rating?: number;
   review_count?: number;
   bio?: string | null;
+  languages?: string[];
   instagram_url?: string | null;
   years_experience?: number | null;
 }

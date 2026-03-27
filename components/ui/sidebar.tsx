@@ -51,13 +51,9 @@ export function SidebarBody({ children, className }: SidebarBodyProps) {
   return (
     <motion.aside
       className={cn(
-        "hidden md:flex flex-col fixed left-0 top-0 h-full bg-s-bg-raised border-r border-s-ink/[0.06] z-30 overflow-hidden",
+        "hidden md:flex flex-col fixed left-0 top-0 h-full w-[240px] bg-s-bg-raised border-r border-s-ink/[0.06] z-30 overflow-hidden",
         className
       )}
-      animate={{ width: animate ? (open ? 240 : 60) : 240 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
     >
       {children}
     </motion.aside>
@@ -87,7 +83,7 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
       onClick={onClick}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 px-3 py-2.5 rounded-btn text-sm font-medium transition-colors mb-0.5 relative group",
+        "flex items-center gap-3 px-3 py-2.5 rounded-input text-sm font-medium transition-colors mb-0.5 relative group",
         active ? "text-s-coral" : "text-s-ink/60 hover:bg-s-bg-surface hover:text-s-ink",
         className
       )}
@@ -95,25 +91,19 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
       {active && (
         <motion.div
           layoutId="sidebar-indicator"
-          className="absolute inset-0 rounded-btn bg-s-coral/10"
+          className="absolute inset-0 rounded-input bg-s-coral/10"
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
         />
       )}
       <span className="relative z-10 shrink-0">{link.icon}</span>
       <AnimatePresence>
-        {(open || !animate) && (
-          <motion.span
-            initial={{ opacity: 0, width: 0 }}
-            animate={{ opacity: 1, width: "auto" }}
-            exit={{ opacity: 0, width: 0 }}
-            transition={{ duration: 0.2 }}
-            className="relative z-10 flex-1 overflow-hidden whitespace-nowrap"
-          >
-            {link.label}
-          </motion.span>
-        )}
+        <motion.span
+          className="relative z-10 flex-1 overflow-hidden whitespace-nowrap"
+        >
+          {link.label}
+        </motion.span>
       </AnimatePresence>
-      {badge && open && <span className="relative z-10 ml-auto">{badge}</span>}
+      {badge && <span className="relative z-10 ml-auto">{badge}</span>}
     </Link>
   );
 }

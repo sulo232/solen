@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
     if (booking.stripe_payment_intent_id) {
       try {
         const Stripe = (await import("stripe")).default;
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
         const pi = await stripe.paymentIntents.retrieve(booking.stripe_payment_intent_id);
         if (pi.status === "requires_capture") {
           await stripe.paymentIntents.capture(booking.stripe_payment_intent_id);

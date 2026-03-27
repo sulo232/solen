@@ -17,7 +17,7 @@ import { generateCategoryListSchema } from "@/lib/seo";
 const VALID_CATEGORIES: SalonCategory[] = ["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"];
 
 interface Props {
-  params: { locale: string; city: string; category: string };
+  params: Promise<{ locale: string; city: string; category: string }>;
 }
 
 export default async function CityCategoryRoute({ params }: Props) {
@@ -96,10 +96,11 @@ export function generateStaticParams() {
   );
 }
 
-export function generateMetadata({ params }: Props) {
-  if (!isValidCitySlug(params.city)) return {};
-  const cityName = getCityName(params.city as CitySlug, params.locale);
-  const categoryName = params.category.charAt(0).toUpperCase() + params.category.slice(1);
+export async function generateMetadata({ params }: Props) {
+  const { city, locale, category } = await params;
+  if (!isValidCitySlug(city)) return {};
+  const cityName = getCityName(city as CitySlug, locale);
+  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
   return {
     title: `${categoryName} in ${cityName} | Solen`,
     description: `Die besten ${categoryName}-Salons in ${cityName}. Jetzt buchen auf Solen.`,

@@ -20,9 +20,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 403 });
   }
 
-  const toInsert = slots.map((slot: { service_id: string; staff_member_id?: string; starts_at: string; ends_at: string; status?: string }) => ({
+  const toInsert = slots.map((slot: { service_id?: string; staff_member_id?: string; starts_at: string; ends_at: string; status?: string }) => ({
     salon_id,
-    service_id: slot.service_id,
+    service_id: slot.service_id ?? null,
     staff_member_id: slot.staff_member_id ?? null,
     starts_at: slot.starts_at,
     ends_at: slot.ends_at,
@@ -30,7 +30,12 @@ export async function POST(request: NextRequest) {
   }));
 
   const { data, error } = await supabase.from("availability_slots").insert(toInsert).select();
-  if (error) return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+  if (error) {
+    if (error.code === '23P01') {
+      return NextResponse.json({ message: "Fehler: Mitarbeiter ist in diesem Zeitraum bereits gebucht.", code: "CONFLICT" }, { status: 409 });
+    }
+    return NextResponse.json({ message: error.message, code: "DB_ERROR" }, { status: 500 });
+  }
 
   return NextResponse.json({ data }, { status: 201 });
 }

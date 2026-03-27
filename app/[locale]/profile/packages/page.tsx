@@ -32,7 +32,7 @@ export default function MyPackagesPage() {
           .from("package_purchases")
           .select("*, service_packages(*)")
           .eq("user_id", session.user.id)
-          .order("created_at", { ascending: false });
+          .order("purchased_at", { ascending: false });
 
         if (data) setPurchases(data as any);
       } catch (err) {
@@ -84,7 +84,7 @@ export default function MyPackagesPage() {
             {purchases.map((p) => {
               const pkg = p.service_packages;
               const used = p.sessions_used;
-              const total = pkg.session_count;
+              const total = pkg.total_sessions + pkg.bonus_sessions;
               const remaining = total - used;
               const isUsedUp = remaining <= 0;
               const localeFmt = locale === "de" ? "de-CH" : locale;
@@ -98,10 +98,10 @@ export default function MyPackagesPage() {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">
-                        {locale === "de" ? pkg.name_de : pkg.name_en}
+                        {pkg.name}
                       </h3>
                       <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-1">
-                        Gekauft am {new Date(p.created_at).toLocaleDateString(localeFmt)}
+                        Gekauft am {new Date(p.purchased_at).toLocaleDateString(localeFmt)}
                       </p>
                     </div>
                     {(isUsedUp || isExpired) ? (

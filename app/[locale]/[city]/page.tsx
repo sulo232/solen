@@ -3,15 +3,16 @@ import { isValidCitySlug, getCityName, type CitySlug } from "@/lib/cities";
 import CityPage from "@/components/CityPage";
 
 interface Props {
-  params: { locale: string; city: string };
+  params: Promise<{ locale: string; city: string }>;
 }
 
-export default function CityRoute({ params }: Props) {
-  if (!isValidCitySlug(params.city)) {
+export default async function CityRoute({ params }: Props) {
+  const { city, locale } = await params;
+  if (!isValidCitySlug(city)) {
     notFound();
   }
 
-  return <CityPage city={params.city as CitySlug} locale={params.locale} />;
+  return <CityPage city={city as CitySlug} locale={locale} />;
 }
 
 export function generateStaticParams() {
@@ -19,10 +20,11 @@ export function generateStaticParams() {
   return cities.map((city) => ({ city }));
 }
 
-export function generateMetadata({ params }: Props) {
-  if (!isValidCitySlug(params.city)) return {};
+export async function generateMetadata({ params }: Props) {
+  const { city, locale } = await params;
+  if (!isValidCitySlug(city)) return {};
 
-  const cityName = getCityName(params.city as CitySlug, params.locale);
+  const cityName = getCityName(city as CitySlug, locale);
   return {
     title: `Salons in ${cityName} | Solen`,
     description: `Finde die besten Salons in ${cityName}. Coiffeur, Barber, Nails & mehr — jetzt buchen auf Solen.`,

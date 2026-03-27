@@ -6,7 +6,8 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 
 // POST /api/reviews/[id]/photos
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const disabled = await checkFeatureEnabled("reviews");
   if (disabled) return disabled;
 
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const { data: review, error: reviewErr } = await supabase
     .from("reviews")
     .select("user_id")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   if (reviewErr || !review) return NextResponse.json({ error: "Review not found" }, { status: 404 });
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     const ext = file.type.split('/')[1];
-    const path = `${params.id}/${crypto.randomUUID()}.${ext}`;
+    const path = `${id}/${crypto.randomUUID()}.${ext}`;
 
     const { error: uploadErr } = await supabase.storage
       .from("review-photos")
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     // save to review_photos table
     const { data: record, error: dbErr } = await supabase.from("review_photos").insert({
-      review_id: params.id,
+      review_id: id,
       photo_url: publicUrlData.publicUrl,
       sort_order: i
     }).select().single();
