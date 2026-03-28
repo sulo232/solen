@@ -25,6 +25,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
         {/* "Egal" option */}
         <button
           onClick={() => onSelect("any")}
+          aria-label={t("any")}
           className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
             selectedStaff === "any"
               ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"

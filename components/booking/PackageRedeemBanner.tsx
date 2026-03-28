@@ -39,8 +39,9 @@ export default function PackageRedeemBanner({
         body: JSON.stringify({ purchase_id: packageId, booking_id: slotId }),
       });
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error ?? t("error"));
+        let msg = t("error");
+        try { const data = await res.json(); msg = data.error ?? msg; } catch { /* non-JSON */ }
+        throw new Error(msg);
       }
       setRedeemed(true);
       onRedeemed();

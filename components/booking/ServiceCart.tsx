@@ -42,7 +42,11 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
     let cancelled = false;
     const fetches = services.map(svc =>
       fetch(`/api/services/${svc.id}/addons`)
-        .then(r => { if (!r.ok || cancelled) return; return r.json(); })
+        .then(r => {
+          if (cancelled) return;
+          if (!r.ok) return;
+          return r.json();
+        })
         .then(d => { if (!cancelled && d?.items) setAddons(prev => ({ ...prev, [svc.id]: d.items })); })
         .catch(() => {})
     );
@@ -90,7 +94,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
           {/* P7 — Addon checkboxes (custom coral checkbox) */}
           {addons[svc.id]?.map(addon => (
             <label key={addon.id}
-              className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-s-bg-base dark:hover:bg-s-dm-bg transition-colors"
+              className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-s-bg-base dark:hover:bg-s-dm-bg transition-colors duration-150"
               style={{ border: selectedAddons.has(addon.id) ? "1px solid rgba(232,98,74,.25)" : "1px solid rgba(26,18,9,.06)" }}>
               {/* Custom checkbox */}
               <div className={`w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0 transition-[background-color,border-color] duration-150 ${
@@ -163,8 +167,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
-        style={{ background: "#E8624A" }}
+        className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
       >
         {checking && <Spinner size="sm" invert />}
         {t("payAndBook")}

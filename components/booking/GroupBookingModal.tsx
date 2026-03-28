@@ -98,8 +98,9 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         }),
       });
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message ?? data.error ?? tg("error_generic"));
+        let msg = tg("error_generic");
+        try { const data = await res.json(); msg = data.message ?? data.error ?? msg; } catch { /* non-JSON error */ }
+        throw new Error(msg);
       }
       onSuccess();
     } catch (e) {
@@ -140,7 +141,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
           <select
             value={eventType}
             onChange={e => setEventType(e.target.value)}
-            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-[--raised] dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           >
             {EVENT_TYPES.map(t => (
               <option key={t.value} value={t.value}>{locale === "en" ? t.label_en : t.label_de}</option>

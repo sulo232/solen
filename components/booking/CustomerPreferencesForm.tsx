@@ -89,7 +89,7 @@ export default function CustomerPreferencesForm({
             value={allergies}
             onChange={(e) => setAllergies(e.target.value)}
             placeholder={t("allergies_placeholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors duration-150"
           />
         </div>
 
@@ -103,7 +103,7 @@ export default function CustomerPreferencesForm({
             value={skinType}
             onChange={(e) => setSkinType(e.target.value)}
             placeholder={t("skin_type_placeholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors duration-150"
           />
         </div>
 
@@ -117,6 +117,7 @@ export default function CustomerPreferencesForm({
               <button
                 key={option}
                 type="button"
+                aria-pressed={stylistGender === option}
                 onClick={() => setStylistGender(option)}
                 className={`flex-1 px-4 py-3 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[border-color,background-color,box-shadow,color] duration-150 ${
                   stylistGender === option
@@ -168,7 +169,7 @@ export default function CustomerPreferencesForm({
             onChange={(e) => setNotes(e.target.value)}
             placeholder={t("notes_placeholder")}
             rows={3}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors duration-150 resize-none"
           />
         </div>
 
