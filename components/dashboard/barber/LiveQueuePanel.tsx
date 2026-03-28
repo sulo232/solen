@@ -35,13 +35,55 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "barber_walkin_queue",
           filter: `salon_id=eq.${salonId}`,
         },
-        () => {
-          fetchQueue();
+        (payload) => {
+          // Optimistic: prepend new row immediately, skip round-trip
+          if (payload.new && typeof payload.new === "object") {
+            setQueue((prev) => {
+              const newRow = payload.new as BarberWalkinQueue;
+              if (prev.some((r) => r.id === newRow.id)) return prev;
+              return [newRow, ...prev];
+            });
+          } else {
+            fetchQueue();
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "barber_walkin_queue",
+          filter: `salon_id=eq.${salonId}`,
+        },
+        (payload) => {
+          if (payload.new && typeof payload.new === "object") {
+            const updated = payload.new as BarberWalkinQueue;
+            setQueue((prev) => prev.map((r) => r.id === updated.id ? updated : r));
+          } else {
+            fetchQueue();
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "barber_walkin_queue",
+          filter: `salon_id=eq.${salonId}`,
+        },
+        (payload) => {
+          if (payload.old && typeof payload.old === "object" && "id" in payload.old) {
+            setQueue((prev) => prev.filter((r) => r.id !== (payload.old as { id: string }).id));
+          } else {
+            fetchQueue();
+          }
         }
       )
       .subscribe();
@@ -52,12 +94,18 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
   }, [salonId, supabase, fetchQueue]);
 
   const updateStatus = async (id: string, status: string) => {
-    await fetch(`/api/walkin/queue/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    fetchQueue();
+    // Optimistic update — apply immediately, revert on failure
+    const prev = queue;
+    setQueue((q) => q.map((r) => r.id === id ? { ...r, status: status as BarberWalkinQueue["status"] } : r));
+    try {
+      await fetch(`/api/walkin/queue/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+    } catch {
+      setQueue(prev);
+    }
   };
 
   const waitingCount = queue.filter((q) => q.status === "waiting").length;

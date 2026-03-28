@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Package, Plus, Minus, AlertTriangle } from "lucide-react";
+import { Package, Plus, Minus, AlertTriangle, ShoppingCart, ChevronDown, X } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 
 const KIT_CATEGORIES = ["foundation", "eyes", "lips", "cheeks", "brushes", "other"] as const;
@@ -17,6 +17,13 @@ interface KitItem {
   expiry_date: string | null;
   cost_per_unit: number | null;
   is_active: boolean;
+}
+
+interface UsageLog {
+  id: string;
+  quantity_used: number;
+  used_at: string;
+  notes: string | null;
 }
 
 // UTC-normalised day difference to avoid timezone-related off-by-one errors
@@ -35,6 +42,12 @@ export default function KitInventory({ salonId }: { salonId: string }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [checkoutItem, setCheckoutItem] = useState<KitItem | null>(null);
+  const [checkoutQty, setCheckoutQty] = useState("1");
+  const [checkoutNotes, setCheckoutNotes] = useState("");
+  const [checkoutSaving, setCheckoutSaving] = useState(false);
+  const [expandedLogs, setExpandedLogs] = useState<string | null>(null);
+  const [usageLogs, setUsageLogs] = useState<Record<string, UsageLog[]>>({});
   const [formData, setFormData] = useState({
     brand: "",
     product_name: "",
@@ -90,7 +103,6 @@ export default function KitInventory({ salonId }: { salonId: string }) {
     const item = items.find((i) => i.id === itemId);
     if (!item) return;
     const newQty = Math.max(0, item.quantity + delta);
-    // Optimistic update
     setItems((prev) => prev.map((i) => i.id === itemId ? { ...i, quantity: newQty } : i));
     try {
       await fetch("/api/dashboard/makeup/kit", {
@@ -99,8 +111,61 @@ export default function KitInventory({ salonId }: { salonId: string }) {
         body: JSON.stringify({ id: itemId, quantity: newQty }),
       });
     } catch {
-      // Revert on failure
       setItems((prev) => prev.map((i) => i.id === itemId ? { ...i, quantity: item.quantity } : i));
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (!checkoutItem) return;
+    setCheckoutSaving(true);
+    try {
+      const res = await fetch("/api/dashboard/makeup/kit-usage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salon_id: salonId,
+          item_id: checkoutItem.id,
+          quantity_used: parseInt(checkoutQty) || 1,
+          notes: checkoutNotes || undefined,
+        }),
+      });
+      if (res.ok) {
+        const d = await res.json();
+        if (d.log) {
+          setUsageLogs((prev) => ({
+            ...prev,
+            [checkoutItem.id]: [d.log, ...(prev[checkoutItem.id] ?? [])],
+          }));
+        }
+        // Deduct from stock optimistically
+        const qty = parseInt(checkoutQty) || 1;
+        setItems((prev) =>
+          prev.map((i) => i.id === checkoutItem.id ? { ...i, quantity: Math.max(0, i.quantity - qty) } : i)
+        );
+        setCheckoutItem(null);
+        setCheckoutQty("1");
+        setCheckoutNotes("");
+      }
+    } finally {
+      setCheckoutSaving(false);
+    }
+  };
+
+  const loadUsageLogs = async (itemId: string) => {
+    if (usageLogs[itemId]) return; // already loaded
+    const res = await fetch(`/api/dashboard/makeup/kit-usage?salon_id=${salonId}&item_id=${itemId}`);
+    if (res.ok) {
+      const d = await res.json();
+      setUsageLogs((prev) => ({ ...prev, [itemId]: d.logs ?? [] }));
+    }
+  };
+
+  const toggleLogs = (itemId: string) => {
+    if (expandedLogs === itemId) {
+      setExpandedLogs(null);
+    } else {
+      setExpandedLogs(itemId);
+      loadUsageLogs(itemId);
     }
   };
 
@@ -151,7 +216,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
         </div>
       )}
 
-      {/* Category filter tabs — overflow-x-auto on mobile */}
+      {/* Category filter tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveCategory(null)}
@@ -254,68 +319,112 @@ export default function KitInventory({ salonId }: { salonId: string }) {
         </div>
       )}
 
-      {/* Item list — grid-cols-1 on mobile (list view) */}
+      {/* Item list */}
       <div className="grid grid-cols-1 gap-2">
         {filtered.map((item) => {
           const isExpiringSoon = item.expiry_date && daysDiff(item.expiry_date) <= 30 && daysDiff(item.expiry_date) >= 0;
           const isExpired = item.expiry_date && daysDiff(item.expiry_date) < 0;
           const isLowStock = item.quantity <= 2;
+          const logsOpen = expandedLogs === item.id;
+          const logs = usageLogs[item.id] ?? [];
 
           return (
             <div
               key={item.id}
-              className={`flex items-center gap-3 p-3 rounded-[12px] border bg-white dark:bg-s-dm-surface ${
+              className={`rounded-[12px] border bg-white dark:bg-s-dm-surface ${
                 isExpired ? "border-s-error/30" : isExpiringSoon ? "border-s-warning/30" : "border-s-ink/[0.04] dark:border-s-dm-text/[0.04]"
               }`}
             >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
-                  {item.brand} — {item.product_name}
-                </p>
-                <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
-                  {item.shade && (
-                    <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{item.shade}</span>
-                  )}
-                  {item.category && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50">
-                      {t(`kit_cat.${item.category}` as any)}
-                    </span>
+              <div className="flex items-center gap-3 p-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">
+                    {item.brand} — {item.product_name}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                    {item.shade && (
+                      <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">{item.shade}</span>
+                    )}
+                    {item.category && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50">
+                        {t(`kit_cat.${item.category}` as any)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Stock adjustment */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => adjustQuantity(item.id, -1)}
+                    disabled={item.quantity <= 0}
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150 disabled:opacity-30"
+                    aria-label={t("kit_minus")}
+                  >
+                    <Minus size={10} />
+                  </button>
+                  <span className={`text-xs data-text w-6 text-center font-bold ${isLowStock ? "text-s-amber" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => adjustQuantity(item.id, 1)}
+                    className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150"
+                    aria-label={t("kit_plus")}
+                  >
+                    <Plus size={10} />
+                  </button>
+                </div>
+
+                {/* Checkout button */}
+                <button
+                  onClick={() => { setCheckoutItem(item); setCheckoutQty("1"); setCheckoutNotes(""); }}
+                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-coral/[0.08] text-s-coral hover:bg-s-coral/[0.14] transition-colors duration-150"
+                  aria-label={t("kit_checkout")}
+                >
+                  <ShoppingCart size={11} />
+                </button>
+
+                {/* Usage log toggle */}
+                <button
+                  onClick={() => toggleLogs(item.id)}
+                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150"
+                  aria-label={t("kit_history")}
+                >
+                  <ChevronDown size={11} className={`transition-transform duration-200 ${logsOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {/* Expiry badge */}
+                {isExpired && (
+                  <span className="text-[9px] font-heading font-bold uppercase px-1.5 py-0.5 rounded-[4px] bg-s-error/10 text-s-error shrink-0">
+                    {t("kit_expired")}
+                  </span>
+                )}
+                {isExpiringSoon && !isExpired && (
+                  <span className="text-[9px] font-heading font-bold uppercase px-1.5 py-0.5 rounded-[4px] bg-s-warning/10 text-s-warning shrink-0">
+                    {t("kit_expiring")}
+                  </span>
+                )}
+              </div>
+
+              {/* Usage log accordion */}
+              {logsOpen && (
+                <div className="border-t border-s-ink/[0.04] dark:border-s-dm-text/[0.04] px-3 pb-3 pt-2">
+                  <p className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+                    {t("kit_history")}
+                  </p>
+                  {logs.length === 0 ? (
+                    <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("kit_history_empty")}</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {logs.slice(0, 8).map((log) => (
+                        <div key={log.id} className="flex items-center gap-2 text-[11px]">
+                          <span className="text-s-ink/30 dark:text-s-dm-text/30 tabular-nums shrink-0">{log.used_at}</span>
+                          <span className="text-s-coral font-semibold shrink-0">−{log.quantity_used}</span>
+                          {log.notes && <span className="text-s-ink/50 dark:text-s-dm-text/50 truncate">{log.notes}</span>}
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
-              </div>
-
-              {/* Stock adjustment */}
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => adjustQuantity(item.id, -1)}
-                  disabled={item.quantity <= 0}
-                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150 disabled:opacity-30"
-                  aria-label={t("kit_minus")}
-                >
-                  <Minus size={10} />
-                </button>
-                <span className={`text-xs data-text w-6 text-center font-bold ${isLowStock ? "text-s-amber" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
-                  {item.quantity}
-                </span>
-                <button
-                  onClick={() => adjustQuantity(item.id, 1)}
-                  className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-ink/[0.08] dark:hover:bg-s-dm-text/[0.08] transition-colors duration-150"
-                  aria-label={t("kit_plus")}
-                >
-                  <Plus size={10} />
-                </button>
-              </div>
-
-              {/* Expiry badge */}
-              {isExpired && (
-                <span className="text-[9px] font-heading font-bold uppercase px-1.5 py-0.5 rounded-[4px] bg-s-error/10 text-s-error shrink-0">
-                  {t("kit_expired")}
-                </span>
-              )}
-              {isExpiringSoon && !isExpired && (
-                <span className="text-[9px] font-heading font-bold uppercase px-1.5 py-0.5 rounded-[4px] bg-s-warning/10 text-s-warning shrink-0">
-                  {t("kit_expiring")}
-                </span>
               )}
             </div>
           );
@@ -326,6 +435,67 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           </p>
         )}
       </div>
+
+      {/* Checkout modal */}
+      {checkoutItem && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-s-ink/40">
+          <div className="w-full max-w-sm rounded-[16px] bg-white dark:bg-s-dm-surface p-5 space-y-4 shadow-[0_8px_32px_rgba(26,18,9,0.18)]">
+            <div className="flex items-center justify-between">
+              <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+                {t("kit_checkout_title")}
+              </p>
+              <button
+                onClick={() => setCheckoutItem(null)}
+                className="w-7 h-7 rounded-[8px] flex items-center justify-center bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/50 dark:text-s-dm-text/50"
+                aria-label={t("cancel")}
+              >
+                <X size={12} />
+              </button>
+            </div>
+            <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60">
+              {checkoutItem.brand} — {checkoutItem.product_name}
+            </p>
+            <div className="space-y-2">
+              <label className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/35 dark:text-s-dm-text/35">
+                {t("kit_qty_used")}
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={checkoutQty}
+                onChange={(e) => setCheckoutQty(e.target.value)}
+                className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-sm text-s-ink dark:text-s-dm-text"
+                aria-label={t("kit_qty_used")}
+              />
+              <textarea
+                value={checkoutNotes}
+                onChange={(e) => setCheckoutNotes(e.target.value)}
+                rows={2}
+                placeholder={t("kit_checkout_notes_placeholder")}
+                className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text resize-none"
+                aria-label={t("kit_checkout_notes_placeholder")}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleCheckout}
+                disabled={checkoutSaving}
+                className="flex-1 py-2.5 min-h-[44px] rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-40"
+                aria-label={checkoutSaving ? t("saving") : t("kit_checkout_confirm")}
+              >
+                {checkoutSaving ? t("saving") : t("kit_checkout_confirm")}
+              </button>
+              <button
+                onClick={() => setCheckoutItem(null)}
+                className="px-4 py-2 rounded-[8px] text-xs text-s-ink/50 dark:text-s-dm-text/50"
+                aria-label={t("cancel")}
+              >
+                {t("cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

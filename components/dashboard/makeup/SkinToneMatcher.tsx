@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Droplets, Save } from "lucide-react";
+import { Droplets, Save, BarChart3 } from "lucide-react";
 
 // Clinical swatch colours — decorative hints, not diagnostic
 const UNDERTONES = [
@@ -21,17 +21,33 @@ const FITZPATRICK = [
   { value: "VI", label: "VI", descKey: "fitz.VI" },
 ] as const;
 
+interface SkinToneAnalytics {
+  undertones: { key: string; count: number }[];
+  fitzpatrick: { scale: string; count: number }[];
+  total: number;
+}
+
 interface SkinToneMatcherProps {
   clientId: string | null;
+  salonId?: string;
   onSave?: (data: { undertone: string; fitzpatrick: string; foundation_notes: string }) => void;
 }
 
-export default function SkinToneMatcher({ clientId, onSave }: SkinToneMatcherProps) {
+export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneMatcherProps) {
   const t = useTranslations("dashboardMakeup") as any;
   const [undertone, setUndertone] = useState<string>("");
   const [fitzpatrick, setFitzpatrick] = useState<string>("");
   const [foundationNotes, setFoundationNotes] = useState("");
   const [saved, setSaved] = useState(false);
+  const [analytics, setAnalytics] = useState<SkinToneAnalytics | null>(null);
+
+  useEffect(() => {
+    if (!salonId) return;
+    fetch(`/api/dashboard/makeup/skin-tone-analytics?salon_id=${salonId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d) setAnalytics(d); })
+      .catch(() => {});
+  }, [salonId]);
 
   const handleSave = () => {
     if (!undertone || !fitzpatrick) return;
@@ -142,6 +158,63 @@ export default function SkinToneMatcher({ clientId, onSave }: SkinToneMatcherPro
         <Save size={12} />
         {saved ? t("saved") : t("save")}
       </button>
+
+      {/* Salon-wide distribution panel */}
+      {analytics && analytics.total > 0 && (
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
+          <div className="flex items-center gap-2">
+            <BarChart3 size={13} className="text-s-coral" />
+            <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/50 dark:text-s-dm-text/50">
+              {t("skin_tone_analytics_title")} — {analytics.total} {t("skin_tone_analytics_clients")}
+            </p>
+          </div>
+
+          {/* Undertone distribution */}
+          <div>
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              {t("undertone_label")}
+            </p>
+            <div className="space-y-1.5">
+              {analytics.undertones.map(({ key, count }) => {
+                const swatch = UNDERTONES.find((u) => u.key === key)?.swatch ?? "#ccc";
+                const pct = Math.round((count / analytics.total) * 100);
+                return (
+                  <div key={key} className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full border border-s-ink/10 shrink-0" style={{ backgroundColor: swatch }} />
+                    <div className="flex-1 h-1.5 rounded-full bg-s-ink/[0.06] dark:bg-s-dm-text/[0.06] overflow-hidden">
+                      <div className="h-full rounded-full bg-s-coral" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="text-[10px] tabular-nums text-s-ink/40 dark:text-s-dm-text/40 w-8 text-right">{pct}%</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Fitzpatrick distribution */}
+          <div>
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
+              {t("fitzpatrick_label")}
+            </p>
+            <div className="flex items-end gap-1.5 h-12">
+              {analytics.fitzpatrick.map(({ scale, count }) => {
+                const max = Math.max(...analytics.fitzpatrick.map((f) => f.count), 1);
+                const heightPct = Math.round((count / max) * 100);
+                return (
+                  <div key={scale} className="flex-1 flex flex-col items-center gap-0.5">
+                    <span className="text-[8px] tabular-nums text-s-ink/30 dark:text-s-dm-text/30">{count}</span>
+                    <div
+                      className="w-full rounded-t-[3px] bg-s-amber/70 transition-all duration-300"
+                      style={{ height: `${Math.max(heightPct, 4)}%` }}
+                    />
+                    <span className="text-[9px] font-heading font-bold text-s-ink/40 dark:text-s-dm-text/40">{scale}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
