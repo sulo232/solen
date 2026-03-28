@@ -149,13 +149,13 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
       <div className="flex gap-2">
         <Link
           href={`/${locale}/nail-tech/${member.id}`}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors duration-150"
         >
           Alle Designs ansehen
         </Link>
         <button
           onClick={() => onBook(member.id)}
-          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:brightness-[1.06] transition-colors"
+          className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:brightness-[1.06] transition-colors duration-150"
         >
           Buchen
         </button>
@@ -302,15 +302,15 @@ export default function SalonProfilePage() {
   useEffect(() => {
     if (!slug) return;
     fetch(`/api/salons/${slug}`)
-      .then((r) => r.json())
-      .then((d) => { setSalon(d); setLoading(false); })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setSalon(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, [slug]);
 
   useEffect(() => {
     if (!salon?.id) return;
     fetch(`/api/reviews/my-booking?salon_id=${salon.id}`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (d?.booking?.id) {
           setUnreviewedBookingId(d.booking.id);
@@ -320,7 +320,7 @@ export default function SalonProfilePage() {
 
     // Check if the current user is the owner
     fetch("/api/salons/mine")
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (d?.salon?.id === salon.id) setIsOwner(true);
       })
@@ -411,7 +411,7 @@ export default function SalonProfilePage() {
       if (!res.ok) throw new Error("Fehler");
       setFlagSuccess(true);
       setTimeout(() => { setFlaggingReviewId(null); setFlagSuccess(false); }, 2000);
-      fetch(`/api/salons/${slug}`).then((r) => r.json()).then(setSalon).catch(() => {});
+      fetch(`/api/salons/${slug}`).then((r) => r.ok ? r.json() : null).then((d) => { if (d) setSalon(d); }).catch(() => {});
     } catch {
       // keep form open on error
     } finally {
@@ -466,12 +466,12 @@ export default function SalonProfilePage() {
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-3">
           <ol className="flex items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-[.12em]">
-            <li><Link href={`/${locale}`} className="text-s-ink/35 hover:text-s-coral transition-colors">Home</Link></li>
+            <li><Link href={`/${locale}`} className="text-s-ink/35 hover:text-s-coral transition-colors duration-150">Home</Link></li>
             <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
             {salon.categories[0] && (
               <>
                 <li><Link href={`/${locale}/${salon.categories[0]}`}
-                  className="text-s-ink/35 hover:text-s-coral capitalize transition-colors">{salon.categories[0]}</Link></li>
+                  className="text-s-ink/35 hover:text-s-coral capitalize transition-colors duration-150">{salon.categories[0]}</Link></li>
                 <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               </>
             )}
@@ -566,7 +566,7 @@ export default function SalonProfilePage() {
                   <div className="flex items-center gap-1.5">
                     <Stars rating={salon.average_rating} />
                     <span className="data-text font-semibold text-s-ink dark:text-s-dm-text text-sm">{salon.average_rating.toFixed(1)}</span>
-                    <button onClick={scrollToReviews} className="text-s-ink/40 dark:text-s-dm-text/40 text-xs hover:text-s-coral transition-colors">({salon.review_count})</button>
+                    <button onClick={scrollToReviews} className="text-s-ink/40 dark:text-s-dm-text/40 text-xs hover:text-s-coral transition-colors duration-150">({salon.review_count})</button>
                   </div>
                   <span className="flex items-center gap-1 text-s-ink/50 dark:text-s-dm-text/50 text-sm">
                     <MapPin className="w-3.5 h-3.5" />
@@ -577,37 +577,37 @@ export default function SalonProfilePage() {
                   {salon.address && (
                     <a href={`https://maps.google.com/?q=${encodeURIComponent(salon.address + " Basel")}`}
                       target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
                       <MapPin className="w-4 h-4" />{salon.address}
                     </a>
                   )}
                   {salon.phone && (
-                    <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                    <a href={`tel:${salon.phone}`} className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
                       <Phone className="w-4 h-4" />{salon.phone}
                     </a>
                   )}
                   {salon.instagram_url && (
                     <a href={salon.instagram_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
                       <Instagram className="w-4 h-4" />Instagram
                     </a>
                   )}
                   {(salon as any).facebook_url && (
                     <a href={(salon as any).facebook_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
                       <Facebook className="w-4 h-4" />Facebook
                     </a>
                   )}
                   {(salon as any).tiktok_url && (
                     <a href={(salon as any).tiktok_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.88-2.88 2.89 2.89 0 012.88-2.88c.28 0 .56.04.82.11v-3.5a6.37 6.37 0 00-.82-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.78a8.18 8.18 0 003.76.92V6.25a4.82 4.82 0 01-.01.44z"/></svg>
                       TikTok
                     </a>
                   )}
                   {(salon as any).website_url && (
                     <a href={(salon as any).website_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
+                      className="flex items-center gap-1.5 text-sm text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-coral transition-colors duration-150 px-2 py-1 rounded-[8px] hover:bg-s-coral/[0.06]">
                       <Globe className="w-4 h-4" />Website
                     </a>
                   )}
@@ -935,7 +935,7 @@ export default function SalonProfilePage() {
               <div className="flex gap-3 my-4">
                 <Link
                   href={`/${locale}/salon/${slug}/gift-card`}
-                  className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors"
+                  className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-coral/15 bg-s-coral/5 hover:bg-s-coral/10 transition-colors duration-150"
                 >
                   <Gift size={18} className="text-s-coral shrink-0" />
                   <div>
@@ -945,7 +945,7 @@ export default function SalonProfilePage() {
                 </Link>
                 <Link
                   href={`/${locale}/salon/${slug}/packages`}
-                  className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:bg-s-bg-surface dark:hover:bg-s-dm-raised transition-colors"
+                  className="flex-1 flex items-center gap-3 p-3 rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:bg-s-bg-surface dark:hover:bg-s-dm-raised transition-colors duration-150"
                 >
                   <Package size={18} className="text-s-blue shrink-0" />
                   <div>
@@ -985,7 +985,7 @@ export default function SalonProfilePage() {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => setShowReviewForm(true)}
-                          className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-coral text-white font-medium text-sm transition-colors shadow-warm-sm"
+                          className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-coral text-white font-medium text-sm transition-colors duration-150 shadow-warm-sm"
                         >
                           Bewertung schreiben
                         </motion.button>
@@ -1046,12 +1046,12 @@ export default function SalonProfilePage() {
                                       onChange={(e) => setFlagReason(e.target.value)}
                                       placeholder="Bitte beschreibe deinen Grund (min. 5 Zeichen)…"
                                       rows={2}
-                                      className="w-full text-xs font-body text-s-ink dark:text-s-dm-text bg-transparent border border-s-ink/10 dark:border-white/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-s-ink/30 transition-colors"
+                                      className="w-full text-xs font-body text-s-ink dark:text-s-dm-text bg-transparent border border-s-ink/10 dark:border-white/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-s-ink/30 transition-colors duration-150"
                                     />
                                     <div className="flex gap-2 mt-2 justify-end">
                                       <button
                                         onClick={() => setFlaggingReviewId(null)}
-                                        className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors"
+                                        className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
                                       >
                                         Abbrechen
                                       </button>
@@ -1069,7 +1069,7 @@ export default function SalonProfilePage() {
                             ) : (
                               <button
                                 onClick={() => handleFlagReview(rev.id)}
-                                className="text-xs text-s-ink/30 hover:text-s-coral transition-colors font-heading font-semibold uppercase tracking-[.08em]"
+                                className="text-xs text-s-ink/30 hover:text-s-coral transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
                               >
                                 Melden
                               </button>
@@ -1083,7 +1083,7 @@ export default function SalonProfilePage() {
                                 <button
                                   key={photo.id}
                                   onClick={() => setLightboxPhoto(photo.photo_url)}
-                                  className="relative w-16 h-16 rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-80 transition-opacity"
+                                  className="relative w-16 h-16 rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-80 transition-opacity duration-150"
                                   aria-label="Foto vergrössern"
                                 >
                                   <Image src={photo.photo_url} alt="Review Foto" fill className="object-cover" sizes="64px" />
@@ -1114,7 +1114,7 @@ export default function SalonProfilePage() {
                     </div>
                     {salon.reviews.length > reviewsVisible.length && (
                       <button onClick={() => setReviewPage((p) => p + 1)}
-                        className="mt-4 w-full py-2.5 border border-s-ink/10 dark:border-white/10 rounded-btn text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors">
+                        className="mt-4 w-full py-2.5 border border-s-ink/10 dark:border-white/10 rounded-btn text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors duration-150">
                         Mehr Bewertungen
                       </button>
                     )}
@@ -1153,7 +1153,7 @@ export default function SalonProfilePage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setCalendarOpen(true)}
-                        className="w-full py-4 rounded-[16px] bg-s-coral text-white font-body font-semibold text-base hover:brightness-[1.06] transition-colors shadow-warm-md"
+                        className="w-full py-4 rounded-[16px] bg-s-coral text-white font-body font-semibold text-base hover:brightness-[1.06] transition-colors duration-150 shadow-warm-md"
                       >
                         Jetzt buchen
                       </motion.button>
@@ -1204,7 +1204,7 @@ export default function SalonProfilePage() {
             >
               <button
                 onClick={() => setLightboxPhoto(null)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors duration-150"
                 aria-label="Foto schliessen"
               >
                 <X size={20} />
@@ -1237,8 +1237,8 @@ export default function SalonProfilePage() {
               setUnreviewedBookingId(null);
               // Reload salon data to see the new review immediately
               fetch(`/api/salons/${slug}`)
-                .then((r) => r.json())
-                .then(setSalon)
+                .then((r) => r.ok ? r.json() : null)
+                .then((d) => { if (d) setSalon(d); })
                 .catch(() => {});
             }}
             onClose={() => setShowReviewForm(false)}

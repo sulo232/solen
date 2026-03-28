@@ -29,8 +29,9 @@ export default function SalonPackagesPage() {
   useEffect(() => {
     // First get salon ID from slug
     fetch(`/api/salons?slug=${slug}`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
+        if (!d) return null;
         const salon = d.data ?? d;
         if (salon?.id) {
           setSalonId(salon.id);
@@ -39,7 +40,7 @@ export default function SalonPackagesPage() {
         }
         return null;
       })
-      .then((r) => r?.json())
+      .then((r) => (r?.ok ? r.json() : null))
       .then((d) => {
         if (d?.items) setPackages(d.items);
       })

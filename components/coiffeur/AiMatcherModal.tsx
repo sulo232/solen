@@ -66,7 +66,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
     }
   }, [open]);
 
-  // Prevent body scroll while open
+  // Prevent body scroll + handle Escape key while open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -77,6 +77,13 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -135,7 +142,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"
             aria-label={t("close")}
           >
             <X size={18} className="text-s-ink/50 dark:text-s-dm-text/50" />
@@ -169,6 +176,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                 {currentStep.options.map((opt) => (
                   <button
                     key={opt.key}
+                    aria-pressed={selected === opt.value}
                     onClick={() => setSelected(opt.value === selected ? null : opt.value)}
                     aria-label={opt.value}
                     className={`px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,border-color,color,box-shadow] duration-150 ${

@@ -26,8 +26,8 @@ export default function GiftCardPage() {
 
   useEffect(() => {
     fetch(`/api/salons/by-slug/${slug}`)
-      .then((r) => r.json())
-      .then((d) => setSalon(d.salon ?? d))
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setSalon(d.salon ?? d); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [slug]);
