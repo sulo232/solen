@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { MessageCircle, Send, ChevronDown } from "lucide-react";
 import ReportButton from "./ReportButton";
+import { useTranslations } from "next-intl";
 
 interface Comment {
   id: string;
@@ -19,6 +20,7 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ itemId, isAuthenticated, onAuthRequired }: CommentSectionProps) {
+  const t = useTranslations("discover.comments") as any;
   const [comments, setComments] = useState<Comment[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -88,7 +90,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
         className="flex items-center gap-1.5 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
       >
         <MessageCircle size={14} />
-        <span>{total > 0 ? `${total} comments` : "Comments"}</span>
+        <span>{total > 0 ? t("count", { count: total }) : t("label")}</span>
       </button>
 
       {expanded && (
@@ -99,7 +101,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
               type="text"
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, 500))}
-              placeholder={isAuthenticated ? "Add a comment..." : "Log in to comment"}
+              placeholder={isAuthenticated ? t("placeholder") : t("loginPrompt")}
               className="flex-1 text-xs px-3 py-2 rounded-pill bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30"
               onKeyDown={(e) => e.key === "Enter" && handlePost()}
               disabled={!isAuthenticated}
@@ -120,7 +122,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
               <div key={c.id} className="flex gap-2 text-xs">
                 <div className="w-6 h-6 rounded-full bg-s-ink/10 dark:bg-white/10 flex items-center justify-center text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50 shrink-0">
                   {c.user.avatar_url ? (
-                    <img src={c.user.avatar_url} alt="" className="w-6 h-6 rounded-full object-cover" />
+                    <img src={c.user.avatar_url} alt={c.user.display_name} className="w-6 h-6 rounded-full object-cover" />
                   ) : (
                     c.user.display_name.charAt(0).toUpperCase()
                   )}
@@ -137,7 +139,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
                 </div>
               </div>
             ))}
-            {loading && <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">Loading...</p>}
+            {loading && <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("loading") ?? "..."}</p>}
           </div>
 
           {hasMore && !loading && (
@@ -145,7 +147,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
               onClick={loadMore}
               className="flex items-center gap-1 text-xs text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink/70 mx-auto"
             >
-              <ChevronDown size={12} /> Load more
+              <ChevronDown size={12} /> {t("loadMore")}
             </button>
           )}
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Flag } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ReportButtonProps {
   type: "item" | "comment";
@@ -9,28 +10,26 @@ interface ReportButtonProps {
 }
 
 export default function ReportButton({ type, targetId }: ReportButtonProps) {
+  const t = useTranslations("discover") as any;
   const [reported, setReported] = useState(false);
 
   const handleReport = async () => {
     if (reported) return;
 
-    const reason = prompt(type === "item" ? "Why are you reporting this content?" : "Why are you reporting this comment?");
+    const reason = prompt(type === "item" ? t("report") : t("report"));
     if (!reason) return;
 
     try {
-      // For items: flag in discovery_items; for comments: flag in discovery_comments
       const endpoint = type === "item"
-        ? `/api/discovery/comments?report=true`
-        : `/api/discovery/comments?report=true`;
+        ? `/api/discovery/items/${targetId}/report`
+        : `/api/discovery/comments/${targetId}/report`;
 
-      await fetch("/api/discovery/comments", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          item_id: targetId,
-          text: `[REPORT] ${reason}`,
-        }),
+        body: JSON.stringify({ reason }),
       });
+      if (!res.ok) return;
       setReported(true);
     } catch {
       // Silent
@@ -38,15 +37,15 @@ export default function ReportButton({ type, targetId }: ReportButtonProps) {
   };
 
   if (reported) {
-    return <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">Reported</span>;
+    return <span className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30">{t("reported")}</span>;
   }
 
   return (
     <button
       onClick={handleReport}
       className="text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors ml-auto"
-      aria-label="Report"
-      title="Report"
+      aria-label={t("report")}
+      title={t("report")}
     >
       <Flag size={10} />
     </button>

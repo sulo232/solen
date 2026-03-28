@@ -37,6 +37,7 @@
     "no_results": "Keine Salons gefunden",
     "hero": {
       "byline": "Deine Schweizer Salon-Plattform",
+      "headline": "BEAUTY. BUCHEN.",
       "hello": "Hallo",
       "welcome": "Willkommen {name}",
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deiner Stadt.",
@@ -46,7 +47,8 @@
     },
     "cta": {
       "findSalon": "Salon finden",
-      "lastMinute": "Angebote"
+      "lastMinute": "Angebote",
+      "partner": "Partner"
     },
     "categories": {
       "label": "KATEGORIEN",
@@ -126,10 +128,18 @@
       "quartiers_all": "Alle ansehen →"
     },
     "search": {
-      "placeholder": "Suche Salon in Basel..."
+      "placeholder": "Suche Salon in Basel...",
+      "servicePlaceholder": "Welchen Service suchst du?",
+      "allSwitzerland": "Ganze Schweiz",
+      "searching": "Suche...",
+      "search": "Suchen",
+      "categoryHint": "Bitte gib einen Service ein",
+      "formLabel": "Salon suchen",
+      "cityLabel": "Stadt wählen"
     },
     "discover": {
       "eyebrow": "Entdecken",
+      "title": "FINDE DEINE INSPIRATION",
       "catalogCta": "Katalog öffnen"
     },
     "map": {
@@ -137,6 +147,11 @@
       "title": "SALONS AUF DER KARTE",
       "bookCta": "Buchen",
       "openCta": "Öffnen"
+    },
+    "socialProof": {
+      "bookingsThisWeek": "Buchungen diese Woche",
+      "partnerSalons": "Partner Salons",
+      "avgRating": "Ø Bewertung"
     }
   },
   "common": {
@@ -2387,7 +2402,31 @@
       "nails": "Nails",
       "lashes": "Lashes",
       "brows": "Brows",
-      "makeup": "Makeup"
+      "makeup": "Makeup",
+      "waxing": "Waxing"
+    },
+    "tablist": "Kategorien",
+    "gender": {
+      "label": "Geschlecht",
+      "all": "Alle",
+      "women": "Frauen",
+      "men": "Männer",
+      "unisex": "Unisex"
+    },
+    "texture": "Textur",
+    "trending": "Trending",
+    "myLooks": "Meine Looks",
+    "preferences": "Discovery Einstellungen",
+    "notSet": "Noch nicht eingestellt – bearbeiten um deinen Feed zu personalisieren",
+    "reported": "Gemeldet",
+    "report": "Melden",
+    "clearSearch": "Suche löschen",
+    "comments": {
+      "label": "Kommentare",
+      "count": "{count} Kommentare",
+      "placeholder": "Kommentar hinzufügen...",
+      "loginPrompt": "Anmelden um zu kommentieren",
+      "loadMore": "Mehr laden"
     }
   },
   "recommendations": {

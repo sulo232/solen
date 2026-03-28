@@ -29,22 +29,24 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       try {
         const res = await fetch(`/api/salons/${salonId}/staff/${staff.id}/portfolio`);
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
-          setImages(data.images ?? []);
+          if (!cancelled) setImages(data.images ?? []);
         }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     load();
+    return () => { cancelled = true; };
   }, [salonId, staff.id]);
 
   return (
-    <div className="p-4 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+    <div className="p-4 rounded-[16px] bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
       {/* Header */}
       <div className="flex items-center gap-3 mb-3">
         <div className="w-12 h-12 rounded-full bg-s-ink/5 dark:bg-white/5 overflow-hidden shrink-0">

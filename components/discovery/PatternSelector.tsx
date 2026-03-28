@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import type { DiscoveryCategory } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 const HAIR_TEXTURES = [
   { value: null, label: "All" },
@@ -28,6 +29,7 @@ interface PatternSelectorProps {
 }
 
 export default function PatternSelector({ category, selected, onSelect }: PatternSelectorProps) {
+  const t = useTranslations("discover") as any;
   const options = category === "beard" ? BEARD_TYPES : HAIR_TEXTURES;
   // Only show for hair and beard categories
   if (category && !["hair", "beard"].includes(category)) return null;
@@ -35,7 +37,7 @@ export default function PatternSelector({ category, selected, onSelect }: Patter
   return (
     <div>
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-        Textur
+        {t("texture")}
       </p>
       <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
         {options.map((opt) => (

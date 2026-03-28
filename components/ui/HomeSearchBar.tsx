@@ -2,7 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Search,
   Scissors,
@@ -71,6 +71,7 @@ function tomorrowValue() {
 export default function HomeSearchBar() {
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("home.search");
 
   const [selectedDate, setSelectedDate] = useState<DateValue>(todayValue);
   const [selectedCategory, setSelectedCategory] = useState<SalonCategory | null>(null);
@@ -128,7 +129,7 @@ export default function HomeSearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto" role="search" aria-label="Salon suchen">
+    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto" role="search" aria-label={t("formLabel")}>
       <div className="rounded-card overflow-hidden"
         style={{ background: "var(--glass-bg-strong)", backdropFilter: "blur(24px) saturate(1.3)",
                  WebkitBackdropFilter: "blur(24px) saturate(1.3)",
@@ -141,7 +142,7 @@ export default function HomeSearchBar() {
           <div className="relative flex-1 min-w-0 border-b md:border-b-0 md:border-r border-s-ink/[0.06] flex items-center bg-transparent transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus-within:bg-black/5 dark:focus-within:bg-white/5">
             <Search size={18} className="absolute left-5 text-s-ink/40" aria-hidden="true" />
             <input type="text" value={query} onChange={(e) => { setQuery(e.target.value); setSelectedCategory(null); }}
-              placeholder="Welchen Service suchst du?" aria-label="Service suchen"
+              placeholder={t("servicePlaceholder")} aria-label={t("servicePlaceholder")}
               className={`w-full py-5 md:py-6 pl-12 pr-4 text-sm md:text-[15px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "ring-2 ring-s-coral/30 ring-inset" : ""}`} />
             
             {/* If they type something that maps exactly, show pill? For now just keep input */}
@@ -156,7 +157,7 @@ export default function HomeSearchBar() {
               className="w-full h-full py-5 md:py-6 pl-12 pr-8 text-sm md:text-[15px] font-body font-medium text-s-ink dark:text-s-dm-text bg-transparent appearance-none focus:outline-none cursor-pointer"
               aria-label="Stadt wählen"
             >
-              <option value="" className="text-black">Ganze Schweiz</option>
+              <option value="" className="text-black">{t("allSwitzerland")}</option>
               {CITY_SLUGS.map((slug: string) => (
                 <option key={slug} value={slug} className="text-black">
                   {slug.charAt(0).toUpperCase() + slug.slice(1)}
@@ -186,7 +187,7 @@ export default function HomeSearchBar() {
             <button type="submit" disabled={detecting}
               className="shrink-0 ml-2 px-6 md:px-8 rounded-pill bg-s-coral text-white font-body font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-[transform,filter] duration-150 disabled:opacity-60 min-w-[120px] md:min-w-[140px] h-[44px] md:h-[48px]">
               {detecting ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} aria-hidden="true" />}
-              <span className="hidden sm:inline whitespace-nowrap">{detecting ? "Suche..." : "Suchen"}</span>
+              <span className="hidden sm:inline whitespace-nowrap">{detecting ? t("searching") : t("search")}</span>
             </button>
           </div>
 
@@ -196,7 +197,7 @@ export default function HomeSearchBar() {
       {/* Category hint text */}
       {categoryHint && (
         <p className="text-xs text-s-coral font-body font-medium mt-3 text-center animate-pulse">
-          Bitte gib einen Service ein
+          {t("categoryHint")}
         </p>
       )}
     </form>

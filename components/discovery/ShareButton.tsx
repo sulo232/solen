@@ -51,6 +51,7 @@ export default function ShareButton({ item }: ShareButtonProps) {
     if (!imgUrl) return;
     try {
       const res = await fetch(imgUrl);
+      if (!res.ok) return;
       const blob = await res.blob();
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -75,7 +76,7 @@ export default function ShareButton({ item }: ShareButtonProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 rounded-[16px] shadow-warm-md py-1 min-w-[180px]">
+          <div className="absolute right-0 top-full mt-1 z-50 bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 rounded-[16px] shadow-warm-md py-1 min-w-[180px]">
             <button onClick={copyLink} className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-s-ink dark:text-s-dm-text hover:bg-s-ink/5 dark:hover:bg-white/5">
               {copied ? <Check size={14} className="text-s-success" /> : <Link2 size={14} />}
               {copied ? t.copied : t.copyLink}

@@ -37,6 +37,7 @@
     "no_results": "Nessun salone trovato",
     "hero": {
       "byline": "La tua piattaforma svizzera di saloni",
+      "headline": "BELLEZZA. PRENOTA.",
       "hello": "Ciao",
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nella tua città.",
@@ -46,7 +47,8 @@
     },
     "cta": {
       "findSalon": "Trova salone",
-      "lastMinute": "Offerte"
+      "lastMinute": "Offerte",
+      "partner": "Partner"
     },
     "categories": {
       "label": "CATEGORIE",
@@ -126,10 +128,18 @@
       "quartiers_all": "Vedi tutto →"
     },
     "search": {
-      "placeholder": "Cerca un salone a Basilea..."
+      "placeholder": "Cerca un salone a Basilea...",
+      "servicePlaceholder": "Quale servizio cerchi?",
+      "allSwitzerland": "Tutta la Svizzera",
+      "searching": "Ricerca...",
+      "search": "Cerca",
+      "categoryHint": "Inserisci un servizio",
+      "formLabel": "Cerca saloni",
+      "cityLabel": "Seleziona città"
     },
     "discover": {
       "eyebrow": "Esplora",
+      "title": "TROVA LA TUA ISPIRAZIONE",
       "catalogCta": "Apri il catalogo"
     },
     "map": {
@@ -137,6 +147,11 @@
       "title": "SALONI SULLA MAPPA",
       "bookCta": "Prenota",
       "openCta": "Apri"
+    },
+    "socialProof": {
+      "bookingsThisWeek": "Prenotazioni questa settimana",
+      "partnerSalons": "Saloni partner",
+      "avgRating": "Valutazione media"
     }
   },
   "common": {
@@ -2353,7 +2368,31 @@
       "nails": "Unghie",
       "lashes": "Ciglia",
       "brows": "Sopracciglia",
-      "makeup": "Trucco"
+      "makeup": "Trucco",
+      "waxing": "Ceretta"
+    },
+    "tablist": "Categorie",
+    "gender": {
+      "label": "Genere",
+      "all": "Tutto",
+      "women": "Donne",
+      "men": "Uomini",
+      "unisex": "Unisex"
+    },
+    "texture": "Texture",
+    "trending": "In tendenza",
+    "myLooks": "I miei look",
+    "preferences": "Preferenze Discovery",
+    "notSet": "Non impostato — modifica per personalizzare il feed",
+    "reported": "Segnalato",
+    "report": "Segnala",
+    "clearSearch": "Cancella ricerca",
+    "comments": {
+      "label": "Commenti",
+      "count": "{count} commenti",
+      "placeholder": "Aggiungi un commento...",
+      "loginPrompt": "Accedi per commentare",
+      "loadMore": "Carica altri"
     }
   },
   "recommendations": {

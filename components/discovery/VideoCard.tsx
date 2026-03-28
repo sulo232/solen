@@ -96,7 +96,7 @@ export default memo(function VideoCard({
         {/* Play button overlay — hidden when playing */}
         {!isExpanded && (
           <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-[6px] flex items-center justify-center">
               <Play size={16} className="text-white ml-0.5" fill="white" />
             </div>
           </div>
@@ -121,7 +121,7 @@ export default memo(function VideoCard({
       {/* ── Top-left: Category badge ── */}
       <div className="absolute top-2 left-2 z-10">
         <span
-          className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-md font-medium text-white ${categoryBg}`}
+          className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium text-white ${categoryBg}`}
         >
           <span className="capitalize">{item.category}</span>
           <span className="opacity-60">·</span>
@@ -134,7 +134,7 @@ export default memo(function VideoCard({
         className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-1.5 py-1">
+        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
           <LikeButton
             itemId={item.id}
             initialLiked={false}
@@ -154,7 +154,7 @@ export default memo(function VideoCard({
       {/* ── Bottom: Glassmorphism info pill ── */}
       {item.style_name && (
         <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-2.5 py-1.5 max-w-[70%]">
+          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {item.style_name}
             </p>

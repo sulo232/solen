@@ -24,6 +24,7 @@ interface CategoryTabBarProps {
 
 export default function CategoryTabBar({ activeCategory, onChange }: CategoryTabBarProps) {
   const t = useTranslations("discover.tabs") as any;
+  const td = useTranslations("discover") as any;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -31,7 +32,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
       ref={scrollRef}
       className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none"
       role="tablist"
-      aria-label="Kategorien"
+      aria-label={td("tablist")}
     >
       {DISCOVERY_CATEGORIES.map((tab) => {
         const isActive = activeCategory === tab.key;

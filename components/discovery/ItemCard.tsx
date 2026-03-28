@@ -95,7 +95,7 @@ export default memo(function ItemCard({
 
       <div className="absolute top-2 left-2 z-10">
         <span
-          className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-md font-medium text-white ${categoryBg}`}
+          className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium text-white ${categoryBg}`}
         >
           <span className="capitalize">{item.category}</span>
           {contentLabel && (
@@ -112,7 +112,7 @@ export default memo(function ItemCard({
         className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-1.5 py-1">
+        <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-1.5 py-1">
           <LikeButton
             itemId={item.id}
             initialLiked={false}
@@ -132,7 +132,7 @@ export default memo(function ItemCard({
       {/* ── Bottom: Glassmorphism info pill ── */}
       {item.style_name && (
         <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-2.5 py-1.5 max-w-[70%]">
+          <div className="bg-white/30 dark:bg-black/30 backdrop-blur-[6px] rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {item.style_name}
             </p>

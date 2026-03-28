@@ -37,6 +37,7 @@
     "no_results": "No salons found",
     "hero": {
       "byline": "Your Swiss Salon Platform",
+      "headline": "BEAUTY. BOOK.",
       "hello": "Hello",
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
@@ -46,7 +47,8 @@
     },
     "cta": {
       "findSalon": "Find salon",
-      "lastMinute": "Offers"
+      "lastMinute": "Offers",
+      "partner": "Partner"
     },
     "categories": {
       "label": "CATEGORIES",
@@ -126,10 +128,18 @@
       "quartiers_all": "View all →"
     },
     "search": {
-      "placeholder": "Search salons in Basel..."
+      "placeholder": "Search salons in Basel...",
+      "servicePlaceholder": "What service are you looking for?",
+      "allSwitzerland": "All Switzerland",
+      "searching": "Searching...",
+      "search": "Search",
+      "categoryHint": "Please enter a service",
+      "formLabel": "Search salons",
+      "cityLabel": "Select city"
     },
     "discover": {
       "eyebrow": "Explore",
+      "title": "FIND YOUR INSPIRATION",
       "catalogCta": "Open catalogue"
     },
     "map": {
@@ -137,6 +147,11 @@
       "title": "SALONS ON THE MAP",
       "bookCta": "Book",
       "openCta": "Open"
+    },
+    "socialProof": {
+      "bookingsThisWeek": "Bookings this week",
+      "partnerSalons": "Partner Salons",
+      "avgRating": "Avg Rating"
     }
   },
   "common": {
@@ -2376,7 +2391,31 @@
       "nails": "Nails",
       "lashes": "Lashes",
       "brows": "Brows",
-      "makeup": "Makeup"
+      "makeup": "Makeup",
+      "waxing": "Waxing"
+    },
+    "tablist": "Categories",
+    "gender": {
+      "label": "Gender",
+      "all": "All",
+      "women": "Women",
+      "men": "Men",
+      "unisex": "Unisex"
+    },
+    "texture": "Texture",
+    "trending": "Trending",
+    "myLooks": "My Looks",
+    "preferences": "Discovery Preferences",
+    "notSet": "Not set — edit to personalize your feed",
+    "reported": "Reported",
+    "report": "Report",
+    "clearSearch": "Clear search",
+    "comments": {
+      "label": "Comments",
+      "count": "{count} comments",
+      "placeholder": "Add a comment...",
+      "loginPrompt": "Log in to comment",
+      "loadMore": "Load more"
     }
   },
   "recommendations": {

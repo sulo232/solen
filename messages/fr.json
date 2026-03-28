@@ -37,6 +37,7 @@
     "no_results": "Aucun salon trouvé",
     "hero": {
       "byline": "Ta plateforme suisse de salons",
+      "headline": "BEAUTÉ. RÉSERVER.",
       "hello": "Bonjour",
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
@@ -46,7 +47,8 @@
     },
     "cta": {
       "findSalon": "Trouver un salon",
-      "lastMinute": "Offres"
+      "lastMinute": "Offres",
+      "partner": "Partenaire"
     },
     "categories": {
       "label": "CATÉGORIES",
@@ -126,10 +128,18 @@
       "quartiers_all": "Voir tout →"
     },
     "search": {
-      "placeholder": "Rechercher un salon à Bâle..."
+      "placeholder": "Rechercher un salon à Bâle...",
+      "servicePlaceholder": "Quel service cherchez-vous?",
+      "allSwitzerland": "Toute la Suisse",
+      "searching": "Recherche...",
+      "search": "Rechercher",
+      "categoryHint": "Veuillez saisir un service",
+      "formLabel": "Rechercher des salons",
+      "cityLabel": "Choisir une ville"
     },
     "discover": {
       "eyebrow": "Explorer",
+      "title": "TROUVEZ VOTRE INSPIRATION",
       "catalogCta": "Ouvrir le catalogue"
     },
     "map": {
@@ -137,6 +147,11 @@
       "title": "SALONS SUR LA CARTE",
       "bookCta": "Réserver",
       "openCta": "Ouvrir"
+    },
+    "socialProof": {
+      "bookingsThisWeek": "Réservations cette semaine",
+      "partnerSalons": "Salons partenaires",
+      "avgRating": "Note moyenne"
     }
   },
   "common": {
@@ -2353,7 +2368,31 @@
       "nails": "Ongles",
       "lashes": "Cils",
       "brows": "Sourcils",
-      "makeup": "Maquillage"
+      "makeup": "Maquillage",
+      "waxing": "Épilation"
+    },
+    "tablist": "Catégories",
+    "gender": {
+      "label": "Genre",
+      "all": "Tout",
+      "women": "Femmes",
+      "men": "Hommes",
+      "unisex": "Unisexe"
+    },
+    "texture": "Texture",
+    "trending": "Tendance",
+    "myLooks": "Mes looks",
+    "preferences": "Préférences Discovery",
+    "notSet": "Non défini — modifier pour personnaliser votre fil",
+    "reported": "Signalé",
+    "report": "Signaler",
+    "clearSearch": "Effacer la recherche",
+    "comments": {
+      "label": "Commentaires",
+      "count": "{count} commentaires",
+      "placeholder": "Ajouter un commentaire...",
+      "loginPrompt": "Se connecter pour commenter",
+      "loadMore": "Charger plus"
     }
   },
   "recommendations": {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * AI Suggestion Pills – quick-tap trending style/service suggestions.
@@ -76,6 +77,7 @@ const SUGGESTIONS: Record<string, { label: string; emoji: string }[]> = {
 };
 
 export default function AISuggestionPills({ category, onSelect }: AISuggestionPillsProps) {
+  const t = useTranslations("discover") as any;
   const [selected, setSelected] = useState<string | null>(null);
   const pills = SUGGESTIONS[category] ?? SUGGESTIONS.all;
 
@@ -83,7 +85,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
     <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
       <span className="shrink-0 flex items-center gap-1 text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral/70">
         <Sparkles size={11} />
-        Trending
+        {t("trending")}
       </span>
       {pills.map(({ label, emoji }) => (
         <button

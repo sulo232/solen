@@ -25,7 +25,7 @@ interface SaveButtonProps {
   onAuthPrompt?: () => void;
 }
 
-export default function SaveButton(props: Record<string, any>) {
+export default function SaveButton(props: SaveButtonProps) {
   const { itemId, initialSaved, isAuthenticated, onAuthPrompt } = props;
   const [saved, setSaved] = useState(initialSaved);
   const [isPending, startTransition] = useTransition();
@@ -95,12 +95,12 @@ export async function syncGuestSaves() {
   if (guest.length === 0) return;
 
   try {
-    await fetch("/api/discovery/save/sync", {
+    const res = await fetch("/api/discovery/save/sync", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ item_ids: guest }),
     });
-    localStorage.removeItem(GUEST_SAVES_KEY);
+    if (res.ok) localStorage.removeItem(GUEST_SAVES_KEY);
   } catch {
     // Silent fail — will retry on next login
   }

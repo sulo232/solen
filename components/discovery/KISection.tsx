@@ -64,6 +64,10 @@ export function KISection({ zone = 1, className = "" }: KISectionProps) {
       });
 
       const response = await fetch(`/api/recommendations?${params}`);
+      if (!response.ok) {
+        setError(t("error") ?? "Could not load recommendations");
+        return;
+      }
       const data = await response.json();
 
       if (data.fallback) {

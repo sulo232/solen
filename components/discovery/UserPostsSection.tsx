@@ -14,18 +14,20 @@ export default function UserPostsSection({ userId }: UserPostsSectionProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       try {
         const res = await fetch(`/api/discovery/feed?creator=${userId}&limit=50`);
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
-          setPosts(data.items ?? []);
+          if (!cancelled) setPosts(data.items ?? []);
         }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     load();
+    return () => { cancelled = true; };
   }, [userId]);
 
   if (loading) {

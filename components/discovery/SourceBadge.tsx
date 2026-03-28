@@ -39,7 +39,7 @@ export default function SourceBadge({ contentType, className = "" }: SourceBadge
   const config = BADGE_CONFIG[contentType] ?? BADGE_CONFIG.curated;
 
   return (
-    <span className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-sm font-medium ${config.bg} ${className}`}>
+    <span className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-[6px] font-medium ${config.bg} ${className}`}>
       {config.icon}
       {config.label}
     </span>

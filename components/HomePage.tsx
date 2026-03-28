@@ -288,11 +288,11 @@ export default function HomePage({ initialData }: HomePageProps) {
             </Link>
             <Link href={`/${locale}/account/bookings`}
               className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors">
-              {t("hero.bookings") ?? "Buchungen"} →
+              {t("hero.bookings")} →
             </Link>
             <Link href={`/${locale}/partner`}
               className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors">
-              Partner →
+              {t("cta.partner")} →
             </Link>
           </motion.div>
         </div>
@@ -335,7 +335,7 @@ export default function HomePage({ initialData }: HomePageProps) {
           <div>
             <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
             <h2 className="font-display text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(32px, 5vw, 48px)", letterSpacing: "0.01em", lineHeight: "0.95" }}>
-              FINDE DEINE<br /><span className="text-s-coral">INSPIRATION</span>
+              {t("discover.title")}
             </h2>
           </div>
           <Link href={`/${locale}/discover`}
@@ -597,7 +597,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                    }}>
                 {/* Map abstract background */}
                 <div className="absolute inset-0 opacity-40 dark:invert dark:opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-background/80" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-bg/80" />
 
                 {/* Interactive map pins */}
                 {mapSalons.map((salon, i) => {

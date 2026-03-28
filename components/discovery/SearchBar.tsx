@@ -34,7 +34,7 @@ export default function DiscoverySearchBar({ value, onChange, placeholder = "Sea
         className="w-full pl-9 pr-8 py-3 rounded-pill bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.06] text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 dark:focus:border-s-coral transition-colors"
       />
       {local && (
-        <button onClick={() => handleChange("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink/60">
+        <button onClick={() => handleChange("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink/60 transition-colors duration-150">
           <X size={14} />
         </button>
       )}
