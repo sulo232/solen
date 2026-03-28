@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import EmptyState from "@/components/ui/EmptyState";
 
 export function SpaBelowGrid() {
-  const t = useTranslations("common");
+  const t = useTranslations("common") as any;
 
   return (
     <section className="py-16 px-4">

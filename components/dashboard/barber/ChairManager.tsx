@@ -10,7 +10,7 @@ interface ChairManagerProps {
 
 export default function ChairManager({ salonId }: ChairManagerProps) {
   const tc = useTranslations("common");
-  const t = useTranslations("chairManager");
+  const t = useTranslations("chairManager") as any;
   const [chairCount, setChairCount] = useState(1);
   const [bufferMinutes, setBufferMinutes] = useState(5);
   const [occupiedChairs, setOccupiedChairs] = useState(0);

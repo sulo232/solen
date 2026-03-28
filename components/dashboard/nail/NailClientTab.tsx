@@ -2,18 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Palette, Heart, FolderOpen, StickyNote, Tags } from "lucide-react";
+import { Palette, Heart, FolderOpen, StickyNote, Tags, Hand } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import DesignHistoryTimeline from "@/components/nail/DesignHistoryTimeline";
 import NailPreferencesForm from "./NailPreferencesForm";
+import HandChart from "@/components/nail/HandChart";
 
 interface NailClientTabProps {
   client: { id: string; display_name: string; avatar_url: string | null };
   salonId?: string | null;
 }
 
-const TAB_KEYS = ["designs", "preferences", "inspo", "notes", "tags"] as const;
+const TAB_KEYS = ["designs", "preferences", "inspo", "notes", "tags", "hand_chart"] as const;
 type TabKey = (typeof TAB_KEYS)[number];
 
 const TAB_ICONS = {
@@ -22,10 +23,11 @@ const TAB_ICONS = {
   inspo: FolderOpen,
   notes: StickyNote,
   tags: Tags,
+  hand_chart: Hand,
 } as const;
 
 export default function NailClientTab({ client, salonId }: NailClientTabProps) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [activeTab, setActiveTab] = useState<TabKey>("designs");
 
   return (
@@ -87,6 +89,9 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
         {activeTab === "tags" && (
           <ClientTags customerId={client.id} salonId={salonId} />
         )}
+        {activeTab === "hand_chart" && (
+          <HandChart customerId={client.id} />
+        )}
       </div>
     </div>
   );
@@ -95,7 +100,7 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
 // ─── Client Notes ────
 
 function ClientNotes({ customerId, salonId }: { customerId: string; salonId?: string | null }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [notes, setNotes] = useState<any[]>([]);
   const [newNote, setNewNote] = useState("");
   const [loading, setLoading] = useState(true);
@@ -170,7 +175,7 @@ function ClientNotes({ customerId, salonId }: { customerId: string; salonId?: st
 // ─── Client Tags ────
 
 function ClientTags({ customerId, salonId }: { customerId: string; salonId?: string | null }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [tags, setTags] = useState<any[]>([]);
   const [newTag, setNewTag] = useState("");
   const [selectedColor, setSelectedColor] = useState("gray");
@@ -273,7 +278,7 @@ function ClientTags({ customerId, salonId }: { customerId: string; salonId?: str
 // ─── Inspo Gallery (read-only salon view) ────
 
 function InspoGallery({ customerId }: { customerId: string }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [images, setImages] = useState<{ id: string; image_url: string }[]>([]);
   const [loading, setLoading] = useState(true);
 

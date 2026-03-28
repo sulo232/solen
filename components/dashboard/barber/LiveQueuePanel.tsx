@@ -11,7 +11,7 @@ interface LiveQueuePanelProps {
 }
 
 export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
-  const t = useTranslations("dashboardBarber");
+  const t = useTranslations("dashboardBarber") as any;
   const [queue, setQueue] = useState<BarberWalkinQueue[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createBrowserSupabaseClient();

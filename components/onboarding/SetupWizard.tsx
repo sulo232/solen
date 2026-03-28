@@ -22,7 +22,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
   const [currentStep, setCurrentStep] = useState(0);
   const [steps, setSteps] = useState(initialSteps);
   const [direction, setDirection] = useState(1);
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
 
   // Sync when parent re-fetches progress (e.g. after onSaved callbacks)
   useEffect(() => {

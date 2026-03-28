@@ -67,7 +67,7 @@ export default function ReferralPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* Hero card */}
-        <div className="bg-gradient-to-br from-s-coral/10 to-s-coral/5 dark:from-s-coral/20 dark:to-s-coral/5 rounded-card border border-s-coral/20 p-6 text-center">
+        <div className="bg-gradient-to-br from-s-coral/10 to-s-coral/5 dark:from-s-coral/20 dark:to-s-coral/5 rounded-[12px] border border-s-coral/20 p-6 text-center">
           <div className="w-14 h-14 rounded-full bg-s-coral/15 flex items-center justify-center mx-auto mb-3">
             <Gift className="w-7 h-7 text-s-coral" />
           </div>
@@ -78,7 +78,7 @@ export default function ReferralPage() {
         </div>
 
         {/* Referral code card */}
-        <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5">
+        <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-[12px] border border-s-ink/5 dark:border-white/10 shadow-warm-md p-5">
           <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Dein Empfehlungscode</p>
           <div className="flex items-center gap-2">
             <div className="flex-1 bg-s-bg-surface dark:bg-white/5 border border-s-ink/10 dark:border-white/10 rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink dark:text-s-dm-text tracking-wider text-center">
@@ -112,7 +112,7 @@ export default function ReferralPage() {
         </div>
 
         {/* Stats */}
-        <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5">
+        <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-[12px] border border-s-ink/5 dark:border-white/10 shadow-warm-md p-5">
           <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Deine Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-s-bg-surface dark:bg-white/5 rounded-btn">
@@ -129,7 +129,7 @@ export default function ReferralPage() {
         </div>
 
         {/* How it works */}
-        <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-card border border-s-ink/5 dark:border-white/10 shadow-card p-5">
+        <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-[12px] border border-s-ink/5 dark:border-white/10 shadow-warm-md p-5">
           <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">So funktioniert&apos;s</h2>
           <div className="space-y-3">
             {[

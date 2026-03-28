@@ -88,7 +88,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         transition={{ duration: 0.4, delay: 0.3 }}
         className="overflow-hidden"
       >
-        <div className="rounded-card border border-[#4CAF6F]/20 p-4 flex items-center gap-3"
+        <div className="rounded-[12px] border border-[#4CAF6F]/20 p-4 flex items-center gap-3"
           style={{ background: "rgba(76,175,111,.06)" }}>
           <Check size={16} className="text-[#4CAF6F]" />
           <p className="text-sm font-heading font-semibold text-[#4CAF6F]">Gespeichert!</p>
@@ -98,7 +98,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
   }
 
   return (
-    <div className="rounded-card border border-s-coral/15 overflow-hidden"
+    <div className="rounded-[12px] border border-s-coral/15 overflow-hidden"
       style={{ background: "rgba(232,98,74,.03)" }}>
       {/* Collapsed banner */}
       <button

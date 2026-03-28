@@ -32,7 +32,7 @@ interface CutHistoryTimelineProps {
 export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutHistoryTimelineProps) {
   const [cuts, setCuts] = useState<CutEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const t = useTranslations("barber");
+  const t = useTranslations("barber") as any;
 
   useEffect(() => {
     const fetchCuts = async () => {

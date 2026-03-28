@@ -56,7 +56,7 @@ export default function MarketingPage() {
       </div>
 
       {/* Tab content */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card p-5">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 shadow-warm-md p-5">
         {tab === "pakete" && salonId && <PackageManager salonId={salonId} />}
         {tab === "geschenkkarten" && salonId && <GiftCardManager salonId={salonId} />}
         {tab === "empfehlungen" && salonId && <ReferralDashboard salonId={salonId} />}

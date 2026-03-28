@@ -28,10 +28,10 @@ export async function createServerSupabaseClient() {
             return [];
           }
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: any[]) {
           if (!cookieStore) return;
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
+            cookiesToSet.forEach(({ name, value, options }: any) =>
               cookieStore!.set(name, value, options)
             );
           } catch {
@@ -65,7 +65,7 @@ export function createAdminSupabaseClient() {
     {
       cookies: {
         getAll() { return []; },
-        setAll() {},
+        setAll(cookiesToSet: any[]) {},
       },
       auth: {
         autoRefreshToken: false,

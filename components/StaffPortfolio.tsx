@@ -21,12 +21,12 @@ interface StaffPortfolioProps {
 
 export default function StaffPortfolio({ member, images = [], salonSlug, onBook }: StaffPortfolioProps) {
   const locale = useLocale();
-  const t = useTranslations("staffPortfolio");
+  const t = useTranslations("staffPortfolio") as any;
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const sortedImages = [...images].sort((a, b) => a.sort_order - b.sort_order);
 
   return (
-    <div className="rounded-card border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface">
       {/* Header */}
       <div className="flex items-center gap-3 mb-3">
         <div className="w-12 h-12 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
@@ -62,7 +62,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
 
       {/* Instagram-style photo grid */}
       {sortedImages.length > 0 && (
-        <div className="grid grid-cols-3 gap-1.5 mb-3 rounded-card overflow-hidden">
+        <div className="grid grid-cols-3 gap-1.5 mb-3 rounded-[12px] overflow-hidden">
           {sortedImages.map((img, i) => (
             <button
               key={img.id}
@@ -122,7 +122,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
             alt=""
             width={800}
             height={800}
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded-card"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-[12px]"
             onClick={(e) => e.stopPropagation()}
           />
         </div>

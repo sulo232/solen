@@ -173,7 +173,7 @@ function StockImportTab() {
 
       {importing && <ImportProgressBar current={importProgress.current} total={importProgress.total} label="Importing to staging..." />}
       {bulkResult && (
-        <div className="flex items-center gap-2 p-3 rounded-card bg-s-success-bg dark:bg-s-success/10 border border-s-success/20">
+        <div className="flex items-center gap-2 p-3 rounded-[12px] bg-s-success-bg dark:bg-s-success/10 border border-s-success/20">
           <CheckCircle size={16} className="text-s-success" />
           <span className="text-sm text-s-success">{bulkResult}</span>
           <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink/60 dark:text-s-dm-text/30" aria-label="Dismiss">
@@ -198,7 +198,7 @@ function StockImportTab() {
             onClick={() => toggleSelect(photo.id)}
             onKeyDown={(e) => e.key === "Enter" && toggleSelect(photo.id)}
             className={[
-              "relative aspect-[3/4] rounded-card overflow-hidden cursor-pointer border-2 transition-all",
+              "relative aspect-[3/4] rounded-[12px] overflow-hidden cursor-pointer border-2 transition-all",
               selected.has(photo.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent",
             ].join(" ")}
           >
@@ -265,7 +265,7 @@ function TikTokImportTab() {
         rows={8}
         aria-label="TikTok video URLs"
         placeholder={"https://www.tiktok.com/@user/video/123...\nhttps://www.tiktok.com/@user/video/456..."}
-        className="w-full px-4 py-3 rounded-card bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 font-mono"
+        className="w-full px-4 py-3 rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 font-mono"
       />
       {loading && <AIProcessingIndicator text="Fetching TikTok data & running AI analysis..." />}
       <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
@@ -330,7 +330,7 @@ function ManualUploadTab() {
 
       <div
         onClick={() => fileRef.current?.click()}
-        className="border-2 border-dashed border-s-ink/10 dark:border-white/10 rounded-card p-8 text-center cursor-pointer hover:border-s-coral/30 transition-colors"
+        className="border-2 border-dashed border-s-ink/10 dark:border-white/10 rounded-[12px] p-8 text-center cursor-pointer hover:border-s-coral/30 transition-colors"
       >
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} className="hidden" />
         {uploading ? (
@@ -346,7 +346,7 @@ function ManualUploadTab() {
       {analyzing && <AIProcessingIndicator />}
 
       {uploadedItem && !analyzing && (
-        <div className="flex items-center gap-3 p-3 rounded-card bg-s-success-bg dark:bg-s-success/10 border border-s-success/20">
+        <div className="flex items-center gap-3 p-3 rounded-[12px] bg-s-success-bg dark:bg-s-success/10 border border-s-success/20">
           <CheckCircle size={18} className="text-s-success" />
           <span className="text-sm text-s-success">Uploaded and published successfully</span>
         </div>
@@ -444,7 +444,7 @@ function StagingTab() {
             key={item.id}
             onClick={() => toggleSelect(item.id)}
             className={[
-              "relative rounded-card overflow-hidden cursor-pointer border-2 transition-all",
+              "relative rounded-[12px] overflow-hidden cursor-pointer border-2 transition-all",
               selected.has(item.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent bg-white dark:bg-s-dm-surface",
             ].join(" ")}
           >
@@ -497,7 +497,7 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative rounded-card overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+    <div ref={setNodeRef} style={style} className="relative rounded-[12px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
       <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
         {item.media_type === "photo" && item.image_url ? (
           <Image src={item.image_url} alt={item.alt_text || ""} fill className="object-cover" sizes="200px" />
@@ -656,7 +656,7 @@ function FlaggedTab() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map((item) => (
-          <div key={item.id} className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 overflow-hidden">
+          <div key={item.id} className="rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 overflow-hidden">
             <div className="aspect-video relative bg-s-ink/5 dark:bg-white/5">
               {item.image_url ? (
                 <Image src={item.image_url} alt="" fill className="object-cover" sizes="400px" />

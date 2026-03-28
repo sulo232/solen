@@ -24,7 +24,7 @@ export default function FilterDrawer({
   zone,
   mode,
 }: FilterDrawerProps) {
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
   const drawerRef = useRef<HTMLDivElement>(null);
 
   // Close on outside click
@@ -79,7 +79,7 @@ export default function FilterDrawer({
       aria-label={t('filter')}
       className={[
         mode === 'inline'
-          ? 'absolute z-[40] mt-2 min-w-[220px] rounded-card shadow-warm-md p-4'
+          ? 'absolute z-[40] mt-2 min-w-[220px] rounded-[12px] shadow-warm-md p-4'
           : 'w-full mt-2 rounded-panel shadow-warm-md p-4',
         surfaceClasses,
         animClass,

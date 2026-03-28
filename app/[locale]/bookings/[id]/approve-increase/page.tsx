@@ -69,7 +69,7 @@ export default function ApproveIncreasePage() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-card shadow-card max-w-md w-full p-6"
+        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-6"
       >
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
@@ -105,7 +105,7 @@ export default function ApproveIncreasePage() {
         ) : (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-card bg-s-amber-subtle flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[12px] bg-s-amber-subtle flex items-center justify-center">
                 <AlertTriangle size={18} className="text-s-amber" />
               </div>
               <div>
@@ -117,7 +117,7 @@ export default function ApproveIncreasePage() {
               </div>
             </div>
 
-            <div className="bg-s-bg-surface rounded-card p-4 mb-4 space-y-3">
+            <div className="bg-s-bg-surface rounded-[12px] p-4 mb-4 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-s-ink/50">Ursprünglicher Preis</span>
                 <span className="data-text font-bold text-s-ink">{formatCurrency(dispute.original_amount, locale)}</span>

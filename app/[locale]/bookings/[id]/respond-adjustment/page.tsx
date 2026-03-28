@@ -26,7 +26,7 @@ export default function RespondAdjustmentPage() {
   const { id: bookingId } = useParams<{ id: string }>();
   const locale = useLocale();
   const router = useRouter();
-  const t = useTranslations("common");
+  const t = useTranslations("common") as any;
   const [dispute, setDispute] = useState<DisputeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -115,7 +115,7 @@ export default function RespondAdjustmentPage() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-card shadow-card max-w-md w-full p-6"
+        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-6"
       >
         {loading ? (
           <div className="flex justify-center py-12"><Spinner size="lg" /></div>
@@ -170,7 +170,7 @@ export default function RespondAdjustmentPage() {
               </div>
             </div>
 
-            <div className="bg-s-bg-surface dark:bg-s-dm-bg rounded-card p-4 mb-4 space-y-3">
+            <div className="bg-s-bg-surface dark:bg-s-dm-bg rounded-[12px] p-4 mb-4 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-s-ink/50 dark:text-s-dm-text/50">{l.original}</span>
                 <span className="data-text font-bold text-s-ink dark:text-s-dm-text">{formatCurrency(dispute.original_amount, locale)}</span>

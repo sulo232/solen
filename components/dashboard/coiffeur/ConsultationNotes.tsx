@@ -22,7 +22,7 @@ interface ConsultationNotesProps {
 }
 
 export default function ConsultationNotes({ clientId, salonId }: ConsultationNotesProps) {
-  const t = useTranslations("dashboardCoiffeur");
+  const t = useTranslations("dashboardCoiffeur") as any;
   const [notesList, setNotesList] = useState<ConsultationNote[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAdd, setShowAdd] = useState(false);

@@ -17,7 +17,7 @@ export default function TosPrompt() {
   const [saving, setSaving] = useState(false);
   const pathname = usePathname();
   const locale = useLocale();
-  const t = useTranslations("auth.tos");
+  const t = useTranslations("auth.tos") as any;
 
   useEffect(() => {
     // Don't interrupt auth callback or legal pages
@@ -74,7 +74,7 @@ export default function TosPrompt() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="w-full max-w-md bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg overflow-hidden flex flex-col"
+        className="w-full max-w-md bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
       >
         <div className="p-6 text-center border-b border-s-ink/5 dark:border-white/5">
           <div className="w-12 h-12 rounded-full bg-s-coral/10 mx-auto flex items-center justify-center mb-4">

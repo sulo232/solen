@@ -12,7 +12,7 @@ interface StaffPickerProps {
 }
 
 export default function StaffPicker({ staffList, selectedStaff, onSelect }: StaffPickerProps) {
-  const t = useTranslations("staffPicker");
+  const t = useTranslations("staffPicker") as any;
 
   if (staffList.length === 0) return null;
 

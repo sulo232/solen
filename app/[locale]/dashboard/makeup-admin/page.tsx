@@ -57,12 +57,12 @@ export default function MakeupAdminPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card animate-pulse" />
+        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px] animate-pulse" />
       ) : (
         <div className="space-y-4">
           {/* Client ID picker for client-specific tabs */}
           {(activeTab === 1 || activeTab === 3) && (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] p-4">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
                 Kunden-ID
               </p>

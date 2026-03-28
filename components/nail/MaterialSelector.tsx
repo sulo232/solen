@@ -20,7 +20,7 @@ const MATERIALS: { value: NailMaterial; labelKey: string; descKey: string; icon:
 ];
 
 export default function MaterialSelector({ value, onChange }: MaterialSelectorProps) {
-  const t = useTranslations("booking");
+  const t = useTranslations("booking") as any;
 
   return (
     <div>

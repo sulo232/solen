@@ -85,7 +85,7 @@ export default function VerificationPage() {
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             <h2 className="text-sm font-bold text-s-ink mb-4">Neues Dokument</h2>
-            <div className="bg-white rounded-card shadow-card p-5 border border-s-ink/5 space-y-4">
+            <div className="bg-white rounded-[12px] shadow-warm-md p-5 border border-s-ink/5 space-y-4">
               {error && <p className="text-xs text-s-error bg-s-error-bg p-2 rounded-btn">{error}</p>}
               
               <div>
@@ -135,13 +135,13 @@ export default function VerificationPage() {
             {loading ? (
               <div className="flex justify-center p-8"><Spinner size="md" /></div>
             ) : documents.length === 0 ? (
-              <div className="bg-white border-dashed border-2 border-s-ink/10 rounded-card p-8 text-center text-s-ink/40 text-sm">
+              <div className="bg-white border-dashed border-2 border-s-ink/10 rounded-[12px] p-8 text-center text-s-ink/40 text-sm">
                 Noch keine Dokumente hochgeladen.
               </div>
             ) : (
               <div className="space-y-3">
                 {documents.map((doc) => (
-                  <div key={doc.id} className="bg-white rounded-card shadow-sm border border-s-ink/5 p-4 flex items-start gap-3">
+                  <div key={doc.id} className="bg-white rounded-[12px] shadow-sm border border-s-ink/5 p-4 flex items-start gap-3">
                     <div className="p-2 bg-s-bg-surface rounded-btn shrink-0 text-s-ink/40">
                       <File size={20} />
                     </div>

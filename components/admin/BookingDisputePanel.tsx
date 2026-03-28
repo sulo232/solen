@@ -31,7 +31,7 @@ interface BookingDispute {
 
 export default function BookingDisputePanel() {
   const locale = useLocale();
-  const t = useTranslations("admin.disputes");
+  const t = useTranslations("admin.disputes") as any;
   const [disputes, setDisputes] = useState<BookingDispute[]>([]);
   const [loading, setLoading] = useState(true);
   const [resolving, setResolving] = useState<string | null>(null);
@@ -91,7 +91,7 @@ export default function BookingDisputePanel() {
       <h2 className="font-heading font-bold text-xl text-s-ink mb-4">{t("title")}</h2>
       <div className="space-y-4">
         {disputes.map((d) => (
-          <div key={d.id} className="rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-5">
+          <div key={d.id} className="rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-5">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
                 <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text">

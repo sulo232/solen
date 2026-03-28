@@ -18,16 +18,16 @@ const CATEGORY_GRADIENTS: Record<SalonCategory, string> = {
 };
 
 export default function CategoryHero({ category, salonCount }: CategoryHeroProps) {
-  const t = useTranslations("categoryHero");
+  const t = useTranslations("categoryHero") as any;
   const gradient = CATEGORY_GRADIENTS[category];
 
   return (
     <div className={`bg-gradient-to-b ${gradient} pt-24 pb-8`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">
-          {t("title", { category: t(`categories.${category}`) })}
+          {t("title" as any, { category: t(`categories.${category}` as any) } as any)}
         </h1>
-        <p className="text-sm text-s-ink/50 mt-2 font-body">{t("subtitle", { category: t(`categories.${category}`) })}</p>
+        <p className="text-sm text-s-ink/50 mt-2 font-body">{t("subtitle" as any, { category: t(`categories.${category}` as any) } as any)}</p>
         {salonCount > 0 && (
           <p className="text-xs text-s-ink/40 mt-1 data-text">
             {t("salonCount", { count: salonCount })}

@@ -97,11 +97,11 @@ export default function AnalyticsPage() {
           {tab === "overview" && (<>
             {/* KPI cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card">
+              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Stornierungsrate</p>
                 <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{data.cancellation_rate.toFixed(1)}%</p>
               </div>
-              <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card">
+              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Bewertung</p>
                 <div className="flex items-center gap-2">
                   <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{data.average_rating.toFixed(1)}</p>
@@ -109,12 +109,12 @@ export default function AnalyticsPage() {
                   {data.rating_trend === "down" && <TrendingDown size={16} className="text-s-coral" />}
                 </div>
               </div>
-              <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card">
+              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Neue Kunden</p>
                 <p className="data-text font-bold text-2xl text-s-coral">{data.customer_breakdown.new_customers}</p>
               </div>
               {data.retention_rate != null && (
-                <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card">
+                <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md">
                   <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-1">Retention</p>
                   <p className="data-text font-bold text-2xl text-s-ink dark:text-s-dm-text">{data.retention_rate.toFixed(0)}%</p>
                 </div>
@@ -122,18 +122,18 @@ export default function AnalyticsPage() {
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 mb-3">
-              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-s-dm-surface rounded-card border border-indigo-100 dark:border-indigo-900/30 p-4 shadow-card">
+              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-s-dm-surface rounded-[12px] border border-indigo-100 dark:border-indigo-900/30 p-4 shadow-warm-md">
                 <p className="text-xs text-indigo-900/60 dark:text-indigo-200/60 mb-1">Profilaufrufe</p>
                 <p className="data-text font-bold text-2xl text-indigo-900 dark:text-indigo-100">{data.posthog_profile_views ?? 0}</p>
               </div>
-              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-s-dm-surface rounded-card border border-indigo-100 dark:border-indigo-900/30 p-4 shadow-card">
+              <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/20 dark:to-s-dm-surface rounded-[12px] border border-indigo-100 dark:border-indigo-900/30 p-4 shadow-warm-md">
                 <p className="text-xs text-indigo-900/60 dark:text-indigo-200/60 mb-1">Conversion Rate</p>
                 <p className="data-text font-bold text-2xl text-indigo-900 dark:text-indigo-100">{(data.posthog_conversion_rate ?? 0).toFixed(1)}%</p>
               </div>
             </div>
 
             {data.percentile_rank != null && (
-              <div className="bg-gradient-to-r from-s-coral/10 to-s-coral/5 rounded-card border border-s-coral/20 p-4 flex items-center gap-3">
+              <div className="bg-gradient-to-r from-s-coral/10 to-s-coral/5 rounded-[12px] border border-s-coral/20 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-s-coral/20 flex items-center justify-center shrink-0">
                   <TrendingUp size={20} className="text-s-coral" />
                 </div>
@@ -147,7 +147,7 @@ export default function AnalyticsPage() {
             )}
 
             {/* Revenue chart */}
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
               <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Umsatz CHF (wöchentlich)</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={data.revenue_by_week}>
@@ -164,7 +164,7 @@ export default function AnalyticsPage() {
 
           {/* ═══ BOOKINGS TAB ═══ */}
           {tab === "bookings" && (<>
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
               <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Termine (täglich)</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={data.bookings_by_day}>
@@ -179,14 +179,14 @@ export default function AnalyticsPage() {
 
             {/* Peak hours heatmap */}
             {data.peak_hours_heatmap && (
-              <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
                 <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Stosszeiten</h2>
                 <HeatmapChart data={data.peak_hours_heatmap} />
               </div>
             )}
 
             {/* Last-Minute */}
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
               <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Last-Minute Performance</h2>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={data.last_minute_performance}>
@@ -204,7 +204,7 @@ export default function AnalyticsPage() {
           {/* ═══ CUSTOMERS TAB ═══ */}
           {tab === "customers" && (<>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
                 <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Neu vs. Stammkunden</h2>
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
@@ -227,7 +227,7 @@ export default function AnalyticsPage() {
 
               {/* Acquisition sources */}
               {data.acquisition_sources && data.acquisition_sources.length > 0 && (
-                <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+                <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
                   <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Wie haben sie uns gefunden?</h2>
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart data={data.acquisition_sources}>
@@ -245,7 +245,7 @@ export default function AnalyticsPage() {
 
           {/* ═══ SERVICES TAB ═══ */}
           {tab === "services" && (<>
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
               <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-4">Top Services</h2>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={data.top_services} layout="vertical">
@@ -260,7 +260,7 @@ export default function AnalyticsPage() {
 
             {/* Popular services detail table */}
             {data.popular_services && data.popular_services.length > 0 && (
-              <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+              <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
                 <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">Service-Details</h2>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs">
@@ -288,7 +288,7 @@ export default function AnalyticsPage() {
 
           {/* ═══ TEAM TAB ═══ */}
           {tab === "team" && salonId && (<>
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md">
               <StaffComparison salonId={salonId} />
             </div>
             {isBarbershop && (

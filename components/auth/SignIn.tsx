@@ -9,7 +9,7 @@ import Spinner from "@/components/ui/Spinner";
 import { useToast } from "@/components/ui/Toast";
 
 export default function SignIn() {
-  const t = useTranslations("auth");
+  const t = useTranslations("auth") as any;
   const searchParams = useSearchParams();
   const router = useRouter();
   const redirect = searchParams.get("redirect") ?? "/";

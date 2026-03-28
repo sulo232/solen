@@ -240,7 +240,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen bg-s-bg-base py-12 px-4">
         <div className="max-w-lg mx-auto space-y-4 animate-pulse">
           {/* Summary card skeleton */}
-          <div className="bg-white rounded-card border border-s-ink/[0.06] p-5">
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
             <div className="h-2.5 w-20 bg-s-bg-sunken rounded mb-3" />
             <div className="h-4 w-36 bg-s-bg-sunken rounded mb-5" />
             <div className="space-y-3">
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           {/* Payment card skeleton */}
-          <div className="bg-white rounded-card border border-s-ink/[0.06] p-5">
+          <div className="bg-white rounded-[12px] border border-s-ink/[0.06] p-5">
             <div className="h-3 w-28 bg-s-bg-sunken rounded mb-4" />
             <div className="h-10 w-full bg-s-bg-sunken rounded-[10px] mb-3" />
             <div className="h-10 w-full bg-s-bg-sunken rounded-[10px] mb-3" />
@@ -265,9 +265,9 @@ export default function CheckoutPage() {
   if (error || !intent) {
     return (
       <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
-        <div className="w-full max-w-sm rounded-card border border-s-coral/20 p-8 text-center shadow-warm-lg"
+        <div className="w-full max-w-sm rounded-[12px] border border-s-coral/20 p-8 text-center shadow-warm-lg"
           style={{ background: "rgba(232,98,74,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
-          <div className="w-12 h-12 rounded-card flex items-center justify-center mx-auto mb-4"
+          <div className="w-12 h-12 rounded-[12px] flex items-center justify-center mx-auto mb-4"
             style={{ background: "rgba(232,98,74,.12)" }}>
             <AlertCircle size={22} className="text-s-coral" />
           </div>
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="rounded-card border border-s-success/20 p-8 flex flex-col items-center gap-4 shadow-warm-lg"
+          <div className="rounded-[12px] border border-s-success/20 p-8 flex flex-col items-center gap-4 shadow-warm-lg"
             style={{ background: "rgba(46,125,50,.06)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
             <div className="w-16 h-16 rounded-[18px] flex items-center justify-center"
               style={{ background: "rgba(46,125,50,.12)" }}>
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* P2 — Booking summary card */}
-        <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md">
+        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md">
           <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
               Deine Buchung
@@ -419,7 +419,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* P5 — Promo code + credits */}
-        <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5 space-y-3">
+        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5 space-y-3">
           <div className="flex items-center gap-2">
             <Tag className="w-3.5 h-3.5 text-s-coral" />
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
@@ -492,7 +492,7 @@ export default function CheckoutPage() {
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
           // P8 — At-salon confirm card
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5">
+          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
                 style={{ background: "rgba(76,175,111,.10)" }}>
@@ -525,7 +525,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           // P10 — Payment card (Stripe Elements) — header only, DO NOT touch Elements/appearance
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md overflow-hidden">
+          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md overflow-hidden">
             <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
               <Lock size={13} className="text-s-ink/35 shrink-0" />
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35">

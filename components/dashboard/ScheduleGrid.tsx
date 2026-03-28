@@ -20,7 +20,7 @@ interface ScheduleGridProps {
 
 export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
   const tc = useTranslations("common");
-  const t = useTranslations("dashboard.schedule");
+  const t = useTranslations("dashboard.schedule") as any;
 
   const DAYS = [
     { value: 1, label: t("monday") },

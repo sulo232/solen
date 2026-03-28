@@ -14,7 +14,7 @@ export default function Loading() {
       {/* Profile cards */}
       <div className="space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-s-dm-surface rounded-card p-5 space-y-3">
+          <div key={i} className="bg-white dark:bg-s-dm-surface rounded-[12px] p-5 space-y-3">
             <Skeleton className="h-4 w-1/3" />
             <Skeleton className="h-3 w-full" />
             <Skeleton className="h-3 w-2/3" />

@@ -131,7 +131,7 @@ export default function ImageUploader({
       />
 
       {preview ? (
-        <div className="relative rounded-card overflow-hidden border border-s-ink/10">
+        <div className="relative rounded-[12px] overflow-hidden border border-s-ink/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
@@ -162,7 +162,7 @@ export default function ImageUploader({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           disabled={uploading}
-          className="w-full h-48 rounded-card border-2 border-dashed border-s-ink/10 hover:border-s-coral transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          className="w-full h-48 rounded-[12px] border-2 border-dashed border-s-ink/10 hover:border-s-coral transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
           {uploading ? (
             <>

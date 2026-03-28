@@ -72,7 +72,7 @@ export default function SearchResultGrid({
             key={salon.id}
             variants={itemVariants}
             onClick={() => onSelect?.(salon.id)}
-            className={`cursor-pointer rounded-card transition-all ${
+            className={`cursor-pointer rounded-[12px] transition-all ${
               selectedId === salon.id
                 ? "ring-2 ring-s-coral ring-offset-2"
                 : ""

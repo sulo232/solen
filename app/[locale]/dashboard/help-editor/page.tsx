@@ -131,7 +131,7 @@ export default function HelpEditorPage() {
 
         {/* Form modal */}
         {showForm && (
-          <div className="bg-white border border-s-ink/10 rounded-card p-5 space-y-4 shadow-card">
+          <div className="bg-white border border-s-ink/10 rounded-[12px] p-5 space-y-4 shadow-warm-md">
             <h2 className="font-heading font-semibold text-base text-s-ink">
               {editing ? "Artikel bearbeiten" : "Neuer Artikel"}
             </h2>
@@ -213,7 +213,7 @@ export default function HelpEditorPage() {
             {articles.map((article) => (
               <div
                 key={article.id}
-                className="flex items-center justify-between px-4 py-3 rounded-card bg-s-bg-surface hover:bg-s-bg-sunken transition-colors"
+                className="flex items-center justify-between px-4 py-3 rounded-[12px] bg-s-bg-surface hover:bg-s-bg-sunken transition-colors"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">

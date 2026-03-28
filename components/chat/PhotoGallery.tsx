@@ -60,7 +60,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
           <button
             key={photo.id}
             onClick={() => setLightboxUrl(photo.image_url)}
-            className="aspect-square rounded-card overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-90 transition-opacity"
+            className="aspect-square rounded-[12px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface hover:opacity-90 transition-opacity"
           >
             <Image
               src={photo.image_url}
@@ -91,7 +91,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
               alt="Foto Vollbild"
               width={600}
               height={600}
-              className="rounded-card object-contain max-h-[80vh]"
+              className="rounded-[12px] object-contain max-h-[80vh]"
             />
             {isSalonOwner && onCreateOffer && (
               <button

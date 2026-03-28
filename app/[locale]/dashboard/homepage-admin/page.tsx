@@ -87,7 +87,7 @@ export default function HomepageAdminPage() {
           <Loader2 size={24} className="animate-spin text-s-coral" />
         </div>
       ) : (
-        <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-card p-6 max-w-xl space-y-1">
+        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md p-6 max-w-xl space-y-1">
           {SECTION_ORDER.map((key) => (
             <div
               key={key}

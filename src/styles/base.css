@@ -53,7 +53,7 @@ button,.btn-book,.btn-primary,.btn-secondary,.btn-sm,.btn-nav-ghost,.btn-nav-pri
 @media(min-width:769px){button,.btn-book,.btn-primary,.btn-secondary,.btn-sm{min-height:52px}}
 
 /* ── FORM INPUTS FOCUS ── */
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent) !important;box-shadow:0 0 0 3px rgba(155,29,48,.12) !important}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--c-accent) !important;box-shadow:0 0 0 3px rgba(232,98,74,.12) !important}
 
 /* ── DARK MODE BODY ── */
 [data-theme=dark] body{background:var(--c-bg,#0F0F0F);color:var(--c-text,#EFEFEF)}

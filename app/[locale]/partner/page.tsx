@@ -33,7 +33,7 @@ const FAQ_KEYS = [
 
 export default function PartnerPage() {
   const locale = useLocale();
-  const t = useTranslations("partner");
+  const t = useTranslations("partner") as any;
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   return (
@@ -71,7 +71,7 @@ export default function PartnerPage() {
                 alt={t("alt_dashboard")}
                 width={600}
                 height={400}
-                className="rounded-card"
+                className="rounded-[12px]"
                 style={{ boxShadow: "0 4px 8px rgba(26,18,9,.08), 0 16px 48px rgba(26,18,9,.12)" }}
                 priority
               />
@@ -82,19 +82,19 @@ export default function PartnerPage() {
                   alt={t("alt_profile")}
                   width={180}
                   height={360}
-                  className="rounded-card border-4 border-white dark:border-s-dm-surface"
+                  className="rounded-[12px] border-4 border-white dark:border-s-dm-surface"
                   style={{ boxShadow: "0 4px 8px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.14)" }}
                 />
               </div>
             </div>
 
             {/* Floating value badges — desktop only */}
-            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-card px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
+            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
               style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
               <TrendingUp className="w-4 h-4 text-s-sage" />
               <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_bookings")}</span>
             </div>
-            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-card px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
+            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
               style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
               <Star className="w-4 h-4 text-s-yellow" />
               <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_rating")}</span>
@@ -123,8 +123,8 @@ export default function PartnerPage() {
                 style={{ background: "rgba(232,98,74,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />
               </div>
-              <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(f.title)}</h3>
-              <p className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55 leading-relaxed">{t(f.desc)}</p>
+              <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(f.title as any)}</h3>
+              <p className="text-xs font-body text-s-ink/55 dark:text-s-dm-text/55 leading-relaxed">{t(f.desc as any)}</p>
             </div>
           ))}
         </div>
@@ -155,8 +155,8 @@ export default function PartnerPage() {
             ].map((cat) => (
               <div key={cat.key} className="p-5 rounded-[14px] bg-white dark:bg-s-dm-bg border border-s-ink/[0.05] dark:border-white/[0.06] hover:border-s-coral/20 hover:shadow-warm-sm transition-all duration-200">
                 <cat.icon className="w-6 h-6 text-s-coral mb-3" />
-                <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(`${cat.key}_title`)}</h3>
-                <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{t(`${cat.key}_desc`)}</p>
+                <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(`${cat.key}_title` as any)}</h3>
+                <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{t(`${cat.key}_desc` as any)}</p>
               </div>
             ))}
           </div>
@@ -273,7 +273,7 @@ export default function PartnerPage() {
             ].map((badge) => (
               <div key={badge.key} className="flex flex-col items-center text-center p-4 bg-s-bg-surface dark:bg-s-dm-surface rounded-[14px] border border-s-ink/[0.05] dark:border-white/[0.06]">
                 <badge.icon className="w-6 h-6 text-s-coral mb-2" />
-                <span className="text-xs font-heading font-bold text-s-ink dark:text-s-dm-text">{t(badge.key)}</span>
+                <span className="text-xs font-heading font-bold text-s-ink dark:text-s-dm-text">{t(badge.key as any)}</span>
               </div>
             ))}
           </div>
@@ -284,16 +284,16 @@ export default function PartnerPage() {
               <div key={key} className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[16px] p-6 border border-s-ink/[0.05] dark:border-white/[0.06]">
                 <Quote className="w-5 h-5 text-s-coral/30 mb-3" />
                 <p className="text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed mb-4 italic">
-                  &ldquo;{t(`${key}_quote`)}&rdquo;
+                  &ldquo;{t(`${key}_quote` as any)}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{ background: "rgba(232,98,74,.12)" }}>
-                    <span className="text-xs font-heading font-bold text-s-coral">{t(`${key}_initial`)}</span>
+                    <span className="text-xs font-heading font-bold text-s-coral">{t(`${key}_initial` as any)}</span>
                   </div>
                   <div>
-                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t(`${key}_name`)}</p>
-                    <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50">{t(`${key}_role`)}</p>
+                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t(`${key}_name` as any)}</p>
+                    <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50">{t(`${key}_role` as any)}</p>
                   </div>
                 </div>
               </div>
@@ -350,7 +350,7 @@ export default function PartnerPage() {
                 ].map((key) => (
                   <li key={key} className="flex items-start gap-3">
                     <Check className="w-4 h-4 text-s-sage mt-0.5 shrink-0" />
-                    <span className="text-sm text-s-ink/80 dark:text-s-dm-text/80">{t(key)}</span>
+                    <span className="text-sm text-s-ink/80 dark:text-s-dm-text/80">{t(key as any)}</span>
                   </li>
                 ))}
               </ul>
@@ -408,7 +408,7 @@ export default function PartnerPage() {
               </div>
 
               {/* Savings callout */}
-              <div className="mt-8 p-4 rounded-card border border-s-sage/20"
+              <div className="mt-8 p-4 rounded-[12px] border border-s-sage/20"
                 style={{ background: "rgba(107,166,120,.08)" }}>
                 <p className="text-sm font-body text-s-sage-text dark:text-s-sage">
                   <span className="font-heading font-bold">{t("compare_savings_bold")}</span>{" "}
@@ -450,7 +450,7 @@ export default function PartnerPage() {
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text leading-snug">
-                      {t(`${key}_q`)}
+                      {t(`${key}_q` as any)}
                     </h3>
                     <ChevronDown
                       className={`w-4 h-4 shrink-0 text-s-ink/30 dark:text-s-dm-text/30 transition-transform duration-300 ${
@@ -464,7 +464,7 @@ export default function PartnerPage() {
                     }`}
                   >
                     <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
-                      {t(`${key}_a`)}
+                      {t(`${key}_a` as any)}
                     </p>
                   </div>
                 </div>
@@ -483,10 +483,10 @@ export default function PartnerPage() {
             "@type": "FAQPage",
             mainEntity: FAQ_KEYS.map((key) => ({
               "@type": "Question",
-              name: t(`${key}_q`),
+              name: t(`${key}_q` as any),
               acceptedAnswer: {
                 "@type": "Answer",
-                text: t(`${key}_a`),
+                text: t(`${key}_a` as any),
               },
             })),
           }),

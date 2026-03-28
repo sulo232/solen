@@ -18,7 +18,7 @@ interface GoLiveStepProps {
 }
 
 export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
   const [going, setGoing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -36,7 +36,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-card bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
           <Rocket size={22} className="text-s-coral" />
         </div>
         <div>
@@ -50,7 +50,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       </div>
 
       {/* Checklist */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
         <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
           {t("goLive.checklist")} — {completedCount}/{steps.length}
         </p>
@@ -79,7 +79,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       </div>
 
       {!isCoreReady && (
-        <div className="bg-s-warning-bg dark:bg-s-warning-bg/20 border border-s-warning/30 rounded-card px-4 py-3 flex items-center gap-2">
+        <div className="bg-s-warning-bg dark:bg-s-warning-bg/20 border border-s-warning/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
           <AlertTriangle size={16} className="text-s-warning shrink-0" />
           <p className="text-sm text-s-warning">
             {t("goLive.warning")}

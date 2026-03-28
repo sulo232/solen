@@ -12,11 +12,12 @@ interface PaymentsStepProps {
 type PaymentMode = "at_salon" | "deposit" | "prepay";
 
 export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
   const tc = useTranslations("common");
   const [paymentMode, setPaymentMode] = useState<PaymentMode>("prepay");
   const [connectStatus, setConnectStatus] = useState<"loading" | "not_connected" | "pending" | "connected">("loading");
   const [connectLoading, setConnectLoading] = useState(false);
+  const [connectError, setConnectError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -28,10 +29,14 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
 
   const handleConnect = async () => {
     setConnectLoading(true);
+    setConnectError(null);
     try {
       const res = await fetch("/api/stripe/connect/create-account", { method: "POST" });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to connect to Stripe.");
       if (data.url) window.location.href = data.url;
+    } catch (err) {
+      setConnectError(err instanceof Error ? err.message : "Ein unerwarteter Fehler ist aufgetreten.");
     } finally {
       setConnectLoading(false);
     }
@@ -58,7 +63,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-card bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
           <CreditCard size={22} className="text-s-coral" />
         </div>
         <div>
@@ -72,7 +77,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       </div>
 
       {/* Payment mode selection */}
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
         <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
           {t("payments.mode")}
         </p>
@@ -81,7 +86,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             key={opt.id}
             onClick={() => setPaymentMode(opt.id)}
             className={[
-              "w-full rounded-card border p-4 text-left transition-all flex items-center gap-3",
+              "w-full rounded-[12px] border p-4 text-left transition-all flex items-center gap-3",
               paymentMode === opt.id
                 ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-warm-sm"
                 : "border-s-ink/10 dark:border-white/10 hover:border-s-ink/20 dark:hover:border-white/20",
@@ -104,7 +109,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       </div>
 
       {/* Stripe Connect */}
-        <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
+        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CreditCard size={16} className="text-s-ink/40 dark:text-s-dm-text/40" />
@@ -122,24 +127,31 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             {t("payments.stripeDesc")}
           </p>
           {connectStatus !== "connected" && (
-            <button
-              onClick={handleConnect}
-              disabled={connectLoading || connectStatus === "loading"}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
-            >
-              {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
-              {t("payments.connectBank")}
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={handleConnect}
+                disabled={connectLoading || connectStatus === "loading"}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-medium text-s-ink dark:text-s-dm-text hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
+              >
+                {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
+                {t("payments.connectBank")}
+              </button>
+              {connectError && (
+                <p className="text-xs text-s-coral font-medium mt-2 bg-s-coral/10 py-1.5 px-3 rounded-md">
+                  {connectError}
+                </p>
+              )}
+            </div>
           )}
         </div>
 
       <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
       >
-        {saving ? <Loader2 size={14} className="animate-spin" /> : null}
-        {tc("save")}
+        {saving && <Loader2 size={14} className="animate-spin" />}
+        {t("setup.saveAndContinue")}
       </button>
     </div>
   );

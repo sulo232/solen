@@ -17,7 +17,7 @@ interface ClosureManagerProps {
 }
 
 export default function ClosureManager({ salonId }: ClosureManagerProps) {
-  const t = useTranslations("dashboard.closure_manager");
+  const t = useTranslations("dashboard.closure_manager") as any;
   const locale = useLocale();
   const [closures, setClosures] = useState<Closure[]>([]);
   const [loading, setLoading] = useState(true);

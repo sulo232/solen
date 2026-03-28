@@ -122,7 +122,7 @@ export default function DisputesPage() {
         ) : (
           <div className="space-y-4">
             {disputes.map((d) => (
-              <div key={d.id} className="rounded-card border border-s-ink/5 bg-white p-5">
+              <div key={d.id} className="rounded-[12px] border border-s-ink/5 bg-white p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
                     <p className="font-heading font-semibold text-s-ink">

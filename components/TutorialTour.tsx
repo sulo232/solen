@@ -10,7 +10,7 @@ const TOUR_KEY = "tutorial_completed";
  * Shows once on first visit (checks localStorage).
  */
 export default function TutorialTour({ isLoggedIn }: { isLoggedIn: boolean }) {
-  const t = useTranslations("tour");
+  const t = useTranslations("tour") as any;
   const [started, setStarted] = useState(false);
 
   useEffect(() => {

@@ -37,7 +37,7 @@ interface HeadDiagramProps {
  * Zone 4: NO glass, NO animation beyond transition-opacity duration-150.
  */
 export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagramProps) {
-  const t = useTranslations("dashboardBarber");
+  const t = useTranslations("dashboardBarber") as any;
   const [svgSource, setSvgSource] = useState<string | null>(null);
   const [activeZone, setActiveZone] = useState<string | null>(null);
 

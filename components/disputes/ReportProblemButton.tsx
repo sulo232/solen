@@ -7,7 +7,7 @@ import ReportProblemModal from "./ReportProblemModal";
 import useSWR from "swr";
 
 export function ReportProblemButton({ bookingId }: { bookingId: string }) {
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const [modalOpen, setModalOpen] = useState(false);
 
   const { data, mutate } = useSWR(`/api/bookings/${bookingId}/report`, (url) =>

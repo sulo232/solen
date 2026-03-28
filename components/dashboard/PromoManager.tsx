@@ -22,7 +22,7 @@ interface PromoCode {
 
 export default function PromoManager() {
   const locale = useLocale();
-  const t = useTranslations("dashboard.promo");
+  const t = useTranslations("dashboard.promo") as any;
   const [codes, setCodes] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -125,7 +125,7 @@ export default function PromoManager() {
 
       {/* Create form */}
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 shadow-card p-5 space-y-4">
+        <form onSubmit={handleCreate} className="bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/10 shadow-warm-md p-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1 block">{t("code")}</label>

@@ -12,7 +12,7 @@ const BOOKING_KEY = "solen_has_booked";
  * Uses `beforeinstallprompt` on Chrome/Android, shows manual instructions on iOS.
  */
 export default function PWAInstallPrompt() {
-  const t = useTranslations("pwa");
+  const t = useTranslations("pwa") as any;
   const [show, setShow] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const deferredPrompt = useRef<any>(null);
@@ -63,10 +63,10 @@ export default function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-20 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-70 animate-in slide-in-from-bottom-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-4">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-card bg-s-coral/10 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[12px] bg-s-coral/10 flex items-center justify-center shrink-0">
               <Download className="w-5 h-5 text-s-coral" />
             </div>
             <div>

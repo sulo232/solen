@@ -132,7 +132,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
@@ -273,7 +273,7 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Mail size={16} className="text-s-coral" />
@@ -330,7 +330,7 @@ function DeleteModal({ member, onClose, onDeleted }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-3">Mitarbeiter löschen</h3>
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mb-2">Möchtest du <strong>{member.name}</strong> wirklich löschen?</p>
         {member.future_bookings && member.future_bookings > 0 ? (
@@ -384,7 +384,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
       </h2>
       <div className="space-y-2">
         {invites.map(inv => (
-          <div key={inv.id} className="bg-s-amber-subtle rounded-card border border-s-amber/10 p-3 flex items-center justify-between">
+          <div key={inv.id} className="bg-s-amber-subtle rounded-[12px] border border-s-amber/10 p-3 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{inv.name}</p>
               <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{inv.email}</p>
@@ -490,7 +490,7 @@ export default function StaffPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {staff.map((s) => (
-            <div key={s.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 flex items-start gap-3">
+            <div key={s.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 flex items-start gap-3">
               <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
                 {s.avatar_url ? (
                   <img src={s.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />

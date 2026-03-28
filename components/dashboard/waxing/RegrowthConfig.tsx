@@ -22,7 +22,7 @@ interface RegrowthConfigProps {
 }
 
 export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
-  const t = useTranslations("dashboardWaxing");
+  const t = useTranslations("dashboardWaxing") as any;
   const [services, setServices] = useState<WaxingService[]>([]);
   const [loading, setLoading] = useState(true);
 

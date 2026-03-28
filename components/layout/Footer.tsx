@@ -18,7 +18,7 @@ const CATEGORIES = [
 
 export default function Footer() {
   const locale = useLocale();
-  const t = useTranslations("footer");
+  const t = useTranslations("footer") as any;
 
   return (
     <footer className="bg-s-ink text-white">

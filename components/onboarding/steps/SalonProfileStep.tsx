@@ -15,7 +15,7 @@ interface SalonProfileStepProps {
 }
 
 export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepProps) {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
   const tc = useTranslations("common");
   const [form, setForm] = useState({
     name: "",
@@ -68,7 +68,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-card bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
           <Store size={22} className="text-s-coral" />
         </div>
         <div>
@@ -81,7 +81,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
         </div>
       </div>
 
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
         <div>
           <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
             {t("profile.name")} *
@@ -90,7 +90,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder={t("profile.namePlaceholder")}
-            className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
           />
         </div>
 
@@ -104,14 +104,14 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             rows={3}
             maxLength={500}
             placeholder={t("profile.descPlaceholder")}
-            className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none transition-colors"
           />
           <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
         <div>
           <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
-            Kategorien
-            <span className="ml-1 text-s-ink/30 font-normal">(mehrere wählbar)</span>
+            {t("profile.categories")}
+            <span className="ml-1 text-s-ink/30 font-normal">{t("profile.multipleChoice")}</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {CATEGORY_OPTIONS.map((opt) => {
@@ -124,10 +124,9 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
                   className={[
                     "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all active:scale-[0.98]",
                     active
-                      ? "bg-s-coral text-white border-s-coral"
+                      ? "bg-s-coral text-white border-s-coral shadow-coral-glow"
                       : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
                   ].join(" ")}
-                  style={active ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
                 >
                   <span className="text-[13px] leading-none">{opt.emoji}</span>
                   {opt.label}
@@ -137,7 +136,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             })}
           </div>
           {categories.length === 0 && (
-            <p className="text-xs text-s-coral mt-1">Mindestens eine Kategorie erforderlich.</p>
+            <p className="text-xs text-s-coral mt-1">{t("profile.atLeastOneCategory")}</p>
           )}
         </div>
         <div>
@@ -149,7 +148,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="+41 61 ..."
-            className="w-full px-4 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
           />
         </div>
 
@@ -169,7 +168,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       <button
         onClick={handleSave}
         disabled={!form.name || !form.description_de || saving || categories.length === 0}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}

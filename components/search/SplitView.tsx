@@ -15,7 +15,7 @@ import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/
 const MapView = dynamic(() => import("@/components/MapView"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[400px] rounded-card bg-s-bg-sunken dark:bg-s-dm-surface animate-pulse" />
+    <div className="w-full h-full min-h-[400px] rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface animate-pulse" />
   ),
 });
 
@@ -30,7 +30,7 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
 
   // Mobile view state: "grid" or "map"
   const [mobileView, setMobileView] = useState<"grid" | "map">("grid");

@@ -22,7 +22,7 @@ export default function AISuggestion({
   onAccept,
   visible,
 }: AISuggestionProps) {
-  const t = useTranslations("chat.aiSuggestion");
+  const t = useTranslations("chat.aiSuggestion") as any;
   const [suggestion, setSuggestion] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -75,7 +75,7 @@ export default function AISuggestion({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2 }}
-          className="mx-4 mb-2 bg-s-blue-subtle dark:bg-s-blue/10 border border-s-blue/20 dark:border-s-blue/30 rounded-card p-3"
+          className="mx-4 mb-2 bg-s-blue-subtle dark:bg-s-blue/10 border border-s-blue/20 dark:border-s-blue/30 rounded-[12px] p-3"
         >
           {loading ? (
             <div className="flex items-center gap-2 text-s-blue dark:text-s-blue text-sm">

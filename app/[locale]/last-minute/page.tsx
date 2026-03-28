@@ -19,7 +19,7 @@ const PAGE_SIZE = 20;
 
 export default function LastMinutePage() {
   const locale = useLocale();
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

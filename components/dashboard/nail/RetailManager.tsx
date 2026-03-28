@@ -19,7 +19,7 @@ interface RetailProduct {
 }
 
 export default function RetailManager({ salonId }: { salonId: string }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const locale = useLocale();
   const [products, setProducts] = useState<RetailProduct[]>([]);
   const [loading, setLoading] = useState(true);

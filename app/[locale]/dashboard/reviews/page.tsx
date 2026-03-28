@@ -104,7 +104,7 @@ export default function SalonReviewsPage() {
             <motion.div
               key={r.id}
               variants={itemVariants}
-              className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card p-4"
+              className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 shadow-warm-md p-4"
             >
               {/* Review header */}
               <div className="flex items-start justify-between mb-2">

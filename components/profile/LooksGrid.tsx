@@ -24,7 +24,7 @@ const CATEGORY_STYLES: Record<string, { bg: string; icon: string }> = {
 };
 
 export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) => {
-  const t = useTranslations('account.beauty');
+  const t = useTranslations('account.beauty') as any;
 
   return (
     <div className="grid grid-cols-3 gap-2.5 pb-6">
@@ -34,7 +34,7 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
         return (
           <div
             key={look.id}
-            className="aspect-square rounded-[10px] flex items-center justify-center shadow-card hover:-translate-y-[2px] hover:shadow-warm-md transition-all cursor-pointer"
+            className="aspect-square rounded-[10px] flex items-center justify-center shadow-warm-md hover:-translate-y-[2px] hover:shadow-warm-md transition-all cursor-pointer"
             style={{ background: styles.bg }}
           >
             {look.imageUrl ? (

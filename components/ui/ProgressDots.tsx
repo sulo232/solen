@@ -9,7 +9,7 @@ interface ProgressDotsProps {
 }
 
 export default function ProgressDots({ total, current, onDotClick }: ProgressDotsProps) {
-  const t = useTranslations("ui.progress");
+  const t = useTranslations("ui.progress") as any;
   return (
     <div className="flex items-center justify-center gap-2 py-3">
       {Array.from({ length: total }, (_, i) => {

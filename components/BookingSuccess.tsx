@@ -44,7 +44,7 @@ function generateICS(props: BookingSuccessProps): string {
 
 export default function BookingSuccess(props: BookingSuccessProps) {
   const locale = useLocale();
-  const t = useTranslations("ui.bookingSuccess");
+  const t = useTranslations("ui.bookingSuccess") as any;
   const router = useRouter();
   const confettiRef = useRef(false);
 
@@ -157,7 +157,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <h2 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-2">{t("title")}</h2>
       <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{t("subtitle")}</p>
 
-      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-card p-4 mb-6 text-left">
+      <div className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[12px] p-4 mb-6 text-left">
         <p className="font-medium text-s-ink dark:text-s-dm-text">{props.serviceName}</p>
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60 mt-1">{props.salonName}</p>
         <div className="flex items-center gap-4 mt-3 text-sm text-s-ink/50 dark:text-s-dm-text/50">
@@ -185,7 +185,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       </div>
 
       {/* Referral CTA */}
-      <div className="bg-s-coral/5 rounded-card p-4 mb-4 text-left border border-s-coral/10">
+      <div className="bg-s-coral/5 rounded-[12px] p-4 mb-4 text-left border border-s-coral/10">
         <div className="flex items-center gap-2 mb-1">
           <Gift size={14} className="text-s-coral" />
           <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("referralTitle")}</p>

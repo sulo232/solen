@@ -58,8 +58,8 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-6 animate-pulse">
-        <div className="h-12 w-24 rounded-card bg-s-bg-sunken dark:bg-s-dm-surface" />
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-6 animate-pulse">
+        <div className="h-12 w-24 rounded-[12px] bg-s-bg-sunken dark:bg-s-dm-surface" />
         <div className="mt-4 space-y-2">
           <div className="h-4 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-2/3" />
           <div className="h-3 bg-s-bg-sunken dark:bg-s-dm-surface rounded w-1/2" />
@@ -81,7 +81,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
   }, FACTOR_CONFIG[0]);
 
   return (
-    <div className="rounded-card border border-s-ink/[0.06] p-6 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white dark:bg-s-dm-surface">
       {/* Eyebrow */}
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-3">Solen Score</p>
 
@@ -125,7 +125,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
       {/* Improvement tip */}
       {data.solen_score < 80 && (
-        <div className="mt-4 p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="mt-4 p-3 rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06]">
           <div className="flex items-start gap-2">
             <TrendingUp size={14} className="text-s-coral shrink-0 mt-0.5" />
             <div>

@@ -23,7 +23,7 @@ interface CategoryTabBarProps {
 }
 
 export default function CategoryTabBar({ activeCategory, onChange }: CategoryTabBarProps) {
-  const t = useTranslations("discover.tabs");
+  const t = useTranslations("discover.tabs") as any;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -53,7 +53,7 @@ export default function CategoryTabBar({ activeCategory, onChange }: CategoryTab
                 : undefined
             }
           >
-            {t(tab.labelKey)}
+            {t(tab.labelKey as any)}
           </button>
         );
       })}

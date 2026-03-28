@@ -21,7 +21,7 @@ interface ColourCycleConfigProps {
 }
 
 export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
-  const t = useTranslations("dashboardCoiffeur");
+  const t = useTranslations("dashboardCoiffeur") as any;
   const [services, setServices] = useState<CoiffeurService[]>([]);
   const [loading, setLoading] = useState(true);
 

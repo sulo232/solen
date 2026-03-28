@@ -21,7 +21,7 @@ interface LoyaltyCardProps {
 }
 
 export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
-  const t = useTranslations("barber.loyalty");
+  const t = useTranslations("barber.loyalty") as any;
   const [showQR, setShowQR] = useState(false);
   const [qrSvg, setQrSvg] = useState<string | null>(null);
   const [loadingQR, setLoadingQR] = useState(false);

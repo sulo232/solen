@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { CalendarHeart, Plus, ChevronRight, Link as LinkIcon, X } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
 
 const STAGES = [
   { key: "trial_pending", labelKey: "stage.trial_pending" },
@@ -28,7 +29,7 @@ interface BridalWorkflow {
 }
 
 export default function BridalPlanner({ salonId }: { salonId: string }) {
-  const t = useTranslations("dashboardMakeup");
+  const t = useTranslations("dashboardMakeup") as any;
   const [workflows, setWorkflows] = useState<BridalWorkflow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -136,13 +137,14 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
       {/* Create form */}
       {showForm && (
         <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
-          <input
-            value={clientId}
-            onChange={(e) => setClientId(e.target.value)}
-            placeholder={t("bridal_client_id")}
-            className="w-full px-3 py-2 rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] bg-transparent text-xs text-s-ink dark:text-s-dm-text"
-            aria-label={t("bridal_client_id")}
-          />
+          <div className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-[8px]">
+            <ClientSelectorDropdown 
+              salonId={salonId}
+              value={clientId || null} 
+              onChange={(id) => setClientId(id || "")} 
+              placeholder={t("bridal_client_id")} 
+            />
+          </div>
           <div className="grid grid-cols-2 gap-2">
             <input
               type="date"
@@ -245,7 +247,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <span className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
-                      {t(`event_type.${wf.event_type}`)}
+                      {t(`event_type.${wf.event_type}` as any)}
                     </span>
                     <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">
                       {new Date(wf.event_date).toLocaleDateString()}

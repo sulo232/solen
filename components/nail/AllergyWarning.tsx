@@ -16,7 +16,7 @@ interface AllergyData {
 }
 
 export default function AllergyWarning({ customerId }: AllergyWarningProps) {
-  const t = useTranslations("booking");
+  const t = useTranslations("booking") as any;
   const [data, setData] = useState<AllergyData | null>(null);
 
   useEffect(() => {

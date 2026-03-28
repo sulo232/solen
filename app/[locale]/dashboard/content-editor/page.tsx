@@ -60,7 +60,7 @@ function ContentField({
   };
 
   return (
-    <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card p-4">
+    <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
         <div>
           <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-wide">{row.key}</p>

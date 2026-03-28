@@ -103,7 +103,7 @@ export default function SalonPackagesPage() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-card p-5"
+                  className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-md p-5"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>

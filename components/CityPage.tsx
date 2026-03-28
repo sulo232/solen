@@ -27,7 +27,7 @@ interface CityPageProps {
 }
 
 export default function CityPage({ city, locale, initialCategory = undefined }: CityPageProps) {
-  const t = useTranslations("home.featured");
+  const t = useTranslations("home.featured") as any;
   const tCityPage = useTranslations("cityPage");
   const tNav = useTranslations("navigation");
   const [salons, setSalons] = useState<SalonCardType[]>([]);

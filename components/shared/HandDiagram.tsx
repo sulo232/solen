@@ -24,7 +24,7 @@ interface HandDiagramProps {
  * Zone 4: NO glass, NO animation beyond transition-opacity duration-150.
  */
 export default function HandDiagram({ selectedNails, onNailSelect }: HandDiagramProps) {
-  const t = useTranslations("diagrams");
+  const t = useTranslations("diagrams") as any;
   const [svgSource, setSvgSource] = useState<string | null>(null);
 
   useEffect(() => {

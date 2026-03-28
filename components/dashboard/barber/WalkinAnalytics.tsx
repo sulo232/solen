@@ -28,7 +28,7 @@ import { useTranslations } from "next-intl";
 
 export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
   const tc = useTranslations("common");
-  const t = useTranslations("walkinAnalytics");
+  const t = useTranslations("walkinAnalytics") as any;
   const [stats, setStats] = useState<WalkinStats | null>(null);
   const [trends, setTrends] = useState<Trends | null>(null);
   const [loading, setLoading] = useState(true);

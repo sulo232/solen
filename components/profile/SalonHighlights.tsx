@@ -46,7 +46,7 @@ export const SalonHighlights: React.FC<SalonHighlightsProps> = ({ favorites, loc
             >
               {/* Circle */}
               <div
-                className="w-[58px] h-[58px] rounded-full flex items-center justify-center shadow-card transition-all hover:-translate-y-[2px] hover:shadow-warm-md"
+                className="w-[58px] h-[58px] rounded-full flex items-center justify-center shadow-warm-md transition-all hover:-translate-y-[2px] hover:shadow-warm-md"
                 style={{ background: colors.bg }}
               >
                 <Scissors size={24} strokeWidth={1.8} style={{ color: colors.icon }} />

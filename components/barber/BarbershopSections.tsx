@@ -44,7 +44,7 @@ export function BarbershopAboveGrid() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const t = useTranslations("barber.sections");
+  const t = useTranslations("barber.sections") as any;
 
   // Stable helper that sets one param without wiping others
   const createQueryString = useCallback(
@@ -137,7 +137,7 @@ const FEATURED_BARBERS = [
 
 export function BarbershopBelowGrid() {
   const locale = useLocale();
-  const t = useTranslations("barber");
+  const t = useTranslations("barber") as any;
   const ts = useTranslations("barber.sections");
   return (
     <section className="pt-12 pb-4">

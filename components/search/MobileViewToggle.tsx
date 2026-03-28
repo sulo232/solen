@@ -9,7 +9,7 @@ interface MobileViewToggleProps {
 }
 
 export default function MobileViewToggle({ view, onToggle }: MobileViewToggleProps) {
-  const t = useTranslations("ui.viewToggle");
+  const t = useTranslations("ui.viewToggle") as any;
   return (
     <button
       onClick={() => onToggle(view === "grid" ? "map" : "grid")}

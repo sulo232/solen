@@ -58,7 +58,7 @@ const CancelModal = memo(function CancelModal({
   onClose: () => void;
   onCancelled: (id: string) => void;
 }) {
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -123,7 +123,7 @@ const CancelModal = memo(function CancelModal({
 // ─────────────────────────────────────────
 
 const ReferralSection = memo(function ReferralSection({ locale }: { locale: string }) {
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const [code, setCode] = useState<string | null>(null);
   const [stats, setStats] = useState({ friends_invited: 0, total_earned: 0 });
   const [copied, setCopied] = useState(false);
@@ -159,10 +159,10 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
     window.open(`sms:?body=${encodeURIComponent(msg)}`, "_blank");
   };
 
-  if (loading) return <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5"><Spinner size="sm" /></div>;
+  if (loading) return <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5"><Spinner size="sm" /></div>;
 
   return (
-    <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4">
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4">
       {/* Eyebrow header */}
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 dark:text-s-dm-text/35">
         Freunde einladen
@@ -274,7 +274,7 @@ const BookingCard = memo(function BookingCard({
   locale: string;
   onCancel: (b: BookingWithDetails) => void;
 }) {
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const canCancel = b.status === "confirmed" && hoursUntil(b.starts_at) > 24;
   const tooLate = b.status === "confirmed" && hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
 
@@ -288,7 +288,7 @@ const BookingCard = memo(function BookingCard({
   const localeFmt = locale === "de" ? "de-CH" : locale;
 
   return (
-    <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface">
       <div className="flex justify-between items-start gap-4">
         <div>
           <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
@@ -373,7 +373,7 @@ const SettingsSection = memo(function SettingsSection({
 }) {
   const router = useRouter();
   const locale = useLocale();
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const tPrefs = useTranslations("booking.preferences");
   const [name, setName] = useState(profile.display_name);
   const [bio, setBio] = useState(profile.bio ?? "");
@@ -645,7 +645,7 @@ const ProfileSectionLabel = ({ children, icon: Icon }: { children: React.ReactNo
 
 export default function ProfilePage() {
   const locale = useLocale();
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const router = useRouter();
   const pathname = usePathname();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -940,7 +940,7 @@ export default function ProfilePage() {
               ) : (
                 <div className="grid grid-cols-1 gap-3">
                   {favorites.map((salon) => (
-                    <div key={salon.id} className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] overflow-hidden flex gap-3 p-3 group relative">
+                    <div key={salon.id} className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] overflow-hidden flex gap-3 p-3 group relative">
                       {salon.cover_photo_url && (
                         <div className="w-14 h-14 rounded-[10px] overflow-hidden shrink-0 bg-s-bg-sunken dark:bg-s-dm-bg">
                           <Image src={salon.cover_photo_url} alt={salon.name} width={56} height={56} className="object-cover w-full h-full" loading="lazy" />
@@ -996,7 +996,7 @@ export default function ProfilePage() {
                       else alert("Bestätigungsmail gesendet — bitte prüfe dein Postfach.");
                     }
                   }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
                 >
                   <div className="text-left">
                     <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">E-Mail ändern</p>
@@ -1019,7 +1019,7 @@ export default function ProfilePage() {
                       alert("Passwort muss mindestens 8 Zeichen lang sein.");
                     }
                   }}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
                 >
                   <div className="text-left">
                     <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">Passwort ändern</p>

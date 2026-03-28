@@ -14,7 +14,7 @@ interface WalkInModalProps {
 }
 
 export default function WalkInModal({ salonId, services, staff, onClose, onCreated }: WalkInModalProps) {
-  const t = useTranslations("dashboard.walkin_modal");
+  const t = useTranslations("dashboard.walkin_modal") as any;
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("+41");
   const [serviceId, setServiceId] = useState(services[0]?.id ?? "");

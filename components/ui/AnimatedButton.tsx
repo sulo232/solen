@@ -1,9 +1,21 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+
+/* Detect fine-pointer hover capability (Emil: gate hover on touch devices) */
+const HOVER_QUERY = "(hover: hover) and (pointer: fine)";
+const subscribe = (cb: () => void) => {
+  if (typeof window === "undefined") return () => {};
+  const mql = window.matchMedia(HOVER_QUERY);
+  mql.addEventListener("change", cb);
+  return () => mql.removeEventListener("change", cb);
+};
+const getSnapshot = () =>
+  typeof window !== "undefined" && window.matchMedia(HOVER_QUERY).matches;
+const getServerSnapshot = () => false;
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
@@ -19,7 +31,7 @@ const variantClasses: Record<Variant, string> = {
   primary:
     "bg-s-coral text-white shadow-warm-sm hover:brightness-[1.06] active:brightness-[0.97]",
   secondary:
-    "bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text shadow-card hover:border-s-coral/40 hover:shadow-warm-sm",
+    "bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text shadow-warm-md hover:border-s-coral/40 hover:shadow-warm-sm",
   ghost:
     "bg-transparent text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/5 dark:hover:bg-white/5 hover:text-s-ink dark:hover:text-s-dm-text",
   danger:
@@ -50,13 +62,14 @@ const AnimatedButton = forwardRef<HTMLButtonElement, AnimatedButtonProps>(
     },
     ref
   ) => {
-  const t = useTranslations("ui.button");
+  const t = useTranslations("ui.button") as any;
+  const hasHover = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   return (
     <motion.button
       ref={ref}
-      whileHover={!disabled && !loading ? { scale: 1.02 } : undefined}
+      whileHover={hasHover && !disabled && !loading ? { scale: 1.02 } : undefined}
       whileTap={!disabled && !loading ? { scale: 0.97 } : undefined}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      transition={{ type: "spring", duration: 0.4, bounce: 0.15 }}
       className={cn(
         "inline-flex items-center justify-center font-body font-medium",
         "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-s-coral/50",

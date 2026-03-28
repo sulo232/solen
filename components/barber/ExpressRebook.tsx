@@ -37,7 +37,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
   const [step, setStep] = useState<"idle" | "searching" | "confirm" | "booking" | "done" | "error">("idle");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const t = useTranslations("barber");
+  const t = useTranslations("barber") as any;
 
   useEffect(() => {
     if (!customerId) { setLoading(false); return; }

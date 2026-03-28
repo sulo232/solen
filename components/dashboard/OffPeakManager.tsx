@@ -20,7 +20,7 @@ function timeToHour(t: string) {
 }
 
 export default function OffPeakManager({ salonId }: { salonId: string }) {
-  const t = useTranslations("dashboard.offPeak");
+  const t = useTranslations("dashboard.offPeak") as any;
   const tSchedule = useTranslations("dashboard.schedule");
 
   const DAYS = (["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const).map(d => tSchedule(d).slice(0, 2));

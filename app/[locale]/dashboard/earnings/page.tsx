@@ -102,7 +102,7 @@ export default function SalonEarningsPage() {
       ) : (
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card flex items-center gap-4">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md flex items-center gap-4">
               <div className="w-12 h-12 rounded-btn bg-s-coral/10 flex items-center justify-center shrink-0">
                 <Wallet size={24} className="text-s-coral" />
               </div>
@@ -113,7 +113,7 @@ export default function SalonEarningsPage() {
               </div>
             </motion.div>
             
-            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-5 shadow-card flex items-center gap-4">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-5 shadow-warm-md flex items-center gap-4">
               <div className="w-12 h-12 rounded-btn bg-green-50 flex items-center justify-center shrink-0 dark:bg-green-500/10">
                 <DollarSign size={24} className="text-green-600 dark:text-green-400" />
               </div>
@@ -125,7 +125,7 @@ export default function SalonEarningsPage() {
             </motion.div>
           </div>
 
-          <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card overflow-hidden">
+          <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
               <h2 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">Transaktionen & Gutschriften</h2>
             </div>
@@ -187,7 +187,7 @@ export default function SalonEarningsPage() {
           </motion.div>
 
           {/* Staff Payout Table */}
-          <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card overflow-hidden">
+          <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5 flex items-center gap-2">
               <Users size={16} className="text-s-coral" />
               <h2 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">Mitarbeiter-Abrechnung</h2>

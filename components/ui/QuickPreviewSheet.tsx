@@ -28,7 +28,7 @@ const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreviewSheetProps) {
   const locale = useLocale();
-  const t = useTranslations("ui.preview");
+  const t = useTranslations("ui.preview") as any;
 
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
@@ -131,7 +131,7 @@ function SheetContent({
     <div className="px-5 pb-8">
       {/* Cover photo */}
       {salon.cover_photo_url && (
-        <div className="relative w-full aspect-[16/9] rounded-card overflow-hidden bg-s-bg-sunken mb-4">
+        <div className="relative w-full aspect-[16/9] rounded-[12px] overflow-hidden bg-s-bg-sunken mb-4">
           <Image src={salon.cover_photo_url} alt={salon.name} fill className="object-cover" />
         </div>
       )}

@@ -52,7 +52,7 @@ function ConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-xl w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-3">
           <h3 className="font-heading font-bold text-base text-s-ink">{title}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -188,7 +188,7 @@ export default function AllUsersPage() {
               <motion.div
                 key={u.id}
                 variants={itemVariants}
-                className={`bg-white rounded-card border shadow-card p-4 ${
+                className={`bg-white rounded-[12px] border shadow-warm-md p-4 ${
                   u.is_suspended ? "border-s-coral/30 bg-s-coral/[0.02]" : "border-s-ink/5"
                 }`}
               >

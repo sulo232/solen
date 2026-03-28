@@ -38,13 +38,13 @@ export default function BarberOpsPage() {
       {loading ? (
         <div className="space-y-6 animate-pulse">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
-            <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
+            <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
+            <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
           </div>
-          <div className="h-80 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
+          <div className="h-80 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
-            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
+            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
+            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
           </div>
         </div>
       ) : (

@@ -19,7 +19,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
   initialProfile,
   onSave,
 }) => {
-  const t = useTranslations('account.beauty');
+  const t = useTranslations('account.beauty') as any;
   const [profile, setProfile] = useState<BeautyProfile>(initialProfile);
   const [isSaving, setIsSaving] = useState(false);
 

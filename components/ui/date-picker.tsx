@@ -66,7 +66,7 @@ export default function SolenDatePicker({
         </Button>
       </Group>
       <Popover
-        className="rounded-card border border-s-ink/5 dark:border-white/10 bg-white dark:bg-s-dm-raised shadow-surface p-3 z-50"
+        className="rounded-[12px] border border-s-ink/5 dark:border-white/10 bg-white dark:bg-s-dm-raised shadow-surface p-3 z-50"
       >
         <Dialog className="outline-none">
           <Calendar>

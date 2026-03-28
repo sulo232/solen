@@ -120,7 +120,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">Zahlung</p>
 
       {/* Stripe sandbox — wrapper only */}
-      <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
+      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
         style={{ background: "#FFFFFF", boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
@@ -590,7 +590,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
       {/* Barbershop: last cut repeat banner */}
       {serviceCategory === "barbershop" && lastBarberCut && (
-        <div className="mx-4 mt-4 rounded-card bg-s-amber/5 border border-s-amber/20 px-4 py-3 flex items-start gap-3">
+        <div className="mx-4 mt-4 rounded-[12px] bg-s-amber/5 border border-s-amber/20 px-4 py-3 flex items-start gap-3">
           <span className="text-lg">✂️</span>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">Letzter Schnitt wiederholen</p>
@@ -708,7 +708,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                           onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
                           className={[
-                            "px-4 py-2.5 rounded-card text-xs font-heading font-bold transition-all duration-150 border",
+                            "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-all duration-150 border",
                             isSelected
                               ? "bg-s-coral text-white border-s-coral shadow-[0_2px_4px_rgba(232,98,74,.20)]"
                               : offPeakPct
@@ -913,7 +913,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       {/* Waitlist Modal */}
       {showWaitlist && (
         <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40" onClick={() => setShowWaitlist(false)}>
-          <div className="bg-white dark:bg-s-dm-raised rounded-card p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-s-dm-raised rounded-[12px] p-6 mx-4 max-w-sm w-full shadow-surface" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-3">
               <ClipboardList className="w-5 h-5 text-s-coral" />
               <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">Warteliste</h3>

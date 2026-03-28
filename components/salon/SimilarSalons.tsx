@@ -13,7 +13,7 @@ interface SimilarSalonsProps {
 }
 
 export default function SimilarSalons({ currentSalonId, category, locale }: SimilarSalonsProps) {
-  const t = useTranslations("salon");
+  const t = useTranslations("salon") as any;
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
 

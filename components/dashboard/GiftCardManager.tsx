@@ -25,7 +25,7 @@ interface GiftCardManagerProps {
 
 export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
   const locale = useLocale();
-  const t = useTranslations("dashboard.giftCards");
+  const t = useTranslations("dashboard.giftCards") as any;
   const [cards, setCards] = useState<GiftCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total_sold: 0, total_revenue: 0, active_cards: 0, unredeemed_balance: 0 });

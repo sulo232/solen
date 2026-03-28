@@ -79,7 +79,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">{initial ? "Service bearbeiten" : "Service hinzufügen"}</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -285,7 +285,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                 disabled={added || adding === tmpl.name_de}
                 onClick={() => addTemplate(tmpl)}
                 className={[
-                  "flex items-center justify-between px-3 py-2.5 rounded-card border text-left transition-all",
+                  "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-all",
                   added
                     ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
                     : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",
@@ -382,7 +382,7 @@ export default function ServicesPage() {
       )}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-card shadow-warm-lg w-full max-w-sm p-6">
+          <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
             <h3 className="font-heading font-bold text-base mb-3">Service löschen</h3>
             <p className="text-sm text-s-ink/60 mb-4">Möchtest du <strong>{deleteTarget.name_de}</strong> löschen?</p>
             <div className="flex gap-2">
@@ -427,7 +427,7 @@ export default function ServicesPage() {
         <div className="text-center py-12 text-s-ink/30"><p className="text-sm">Noch keine Services</p></div>
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
-        <div className="bg-white rounded-card border border-s-ink/5 overflow-hidden">
+        <div className="bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-s-bg-surface border-b border-s-ink/5">
               <tr>
@@ -483,7 +483,7 @@ export default function ServicesPage() {
       {/* CSV Import Modal */}
       {importOpen && salonId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-card shadow-warm-lg w-full max-w-md p-6">
+          <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6">
             <div className="flex items-start justify-between mb-4">
               <h3 className="font-heading font-bold text-base">CSV Import</h3>
               <button onClick={() => setImportOpen(false)}><X size={18} className="text-s-ink/30" /></button>

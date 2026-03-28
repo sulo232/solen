@@ -60,12 +60,12 @@ export default function WaxingAdminPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card animate-pulse" />
+        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px] animate-pulse" />
       ) : (
         <div className="space-y-4">
           {/* Client ID picker for client-specific tabs */}
           {needsClient && (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] p-4">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
                 Kunden-ID
               </p>
@@ -99,7 +99,7 @@ export default function WaxingAdminPage() {
 
 function EmptyClientPrompt() {
   return (
-    <div className="rounded-card border border-s-ink/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
+    <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
       <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">
         Kunden-ID eingeben, um weiterzufahren
       </p>

@@ -54,7 +54,7 @@ type SubRatings = {
 };
 
 export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: ReviewFormProps) {
-  const t = useTranslations("reviews");
+  const t = useTranslations("reviews") as any;
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState("");
@@ -127,7 +127,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05 }}
-        className="bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg w-full max-w-md p-6 relative"
+        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-md p-6 relative"
       >
         <button
           onClick={onClose}
@@ -195,7 +195,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
               placeholder={t("comment_placeholder")}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full px-4 py-3 rounded-card border border-s-ink/10 dark:border-white/10 bg-white dark:bg-black/20 text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
+              className="w-full px-4 py-3 rounded-[12px] border border-s-ink/10 dark:border-white/10 bg-white dark:bg-black/20 text-s-ink dark:text-s-dm-text text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
               rows={4}
               maxLength={500}
             />
@@ -213,7 +213,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             </label>
             <div className="flex gap-2 mb-2 flex-wrap">
               {photos.map((p, i) => (
-                <div key={i} className="relative w-16 h-16 rounded-card overflow-hidden border border-s-ink/10 dark:border-white/10 shrink-0">
+                <div key={i} className="relative w-16 h-16 rounded-[12px] overflow-hidden border border-s-ink/10 dark:border-white/10 shrink-0">
                   <img src={URL.createObjectURL(p)} alt="Preview" className="w-full h-full object-cover" />
                   <button type="button" onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-black/50 hover:bg-black/70 text-white rounded-full p-0.5 transition-colors" title={t("remove_photo")}>
                     <X size={10} />
@@ -221,7 +221,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                 </div>
               ))}
               {photos.length < 3 && (
-                <label className="w-16 h-16 flex items-center justify-center shrink-0 rounded-card border-2 border-dashed border-s-ink/20 dark:border-white/20 text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/5 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                <label className="w-16 h-16 flex items-center justify-center shrink-0 rounded-[12px] border-2 border-dashed border-s-ink/20 dark:border-white/20 text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/5 dark:hover:bg-white/5 cursor-pointer transition-colors">
                   <span className="text-xl">+</span>
                   <input type="file" accept="image/jpeg, image/png, image/webp" multiple className="hidden" onChange={(e) => {
                     const files = Array.from(e.target.files || []);

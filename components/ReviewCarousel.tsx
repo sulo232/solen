@@ -43,7 +43,7 @@ export default function ReviewCarousel() {
           <div className="h-6 w-48 bg-s-bg-sunken dark:bg-white/10 rounded-btn animate-pulse mb-6" />
           <div className="flex gap-4 md:grid md:grid-cols-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="shrink-0 w-[280px] md:w-auto bg-white/80 dark:bg-s-dm-surface/80 rounded-card p-5 space-y-3">
+              <div key={i} className="shrink-0 w-[280px] md:w-auto bg-white/80 dark:bg-s-dm-surface/80 rounded-[12px] p-5 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-s-bg-sunken dark:bg-white/10 animate-pulse" />
                   <div className="space-y-1.5 flex-1">

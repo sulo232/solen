@@ -35,7 +35,7 @@ export default function CoiffeurCRMPage() {
       </div>
 
       {/* Optional client selector */}
-      <div className="mb-6 bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] p-4">
+      <div className="mb-6 bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
           Aktiver Kunde (optional — für Formeln und Notizen filtern)
         </p>
@@ -50,10 +50,10 @@ export default function CoiffeurCRMPage() {
       {loading ? (
         <div className="space-y-6 animate-pulse">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
-            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
+            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
+            <div className="h-96 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
           </div>
-          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
+          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
         </div>
       ) : (
         <div className="space-y-6">

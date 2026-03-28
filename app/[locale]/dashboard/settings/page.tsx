@@ -343,7 +343,7 @@ function QuickRepliesTab() {
   return (
     <div className="py-4 max-w-md space-y-2">
       {replies.map((r, i) => (
-        <div key={i} className="flex items-center gap-2 bg-white border border-s-ink/10 rounded-card px-3 py-2.5">
+        <div key={i} className="flex items-center gap-2 bg-white border border-s-ink/10 rounded-[12px] px-3 py-2.5">
           {editing === i ? (
             <>
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
@@ -475,7 +475,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
               type="button"
               onClick={() => setFeeType(opt.id)}
               className={[
-                "rounded-card border p-3 text-left transition-colors",
+                "rounded-[12px] border p-3 text-left transition-colors",
                 feeType === opt.id
                   ? "border-s-coral bg-s-coral/5"
                   : "border-s-ink/10 hover:border-s-ink/20",
@@ -523,7 +523,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
       </div>
 
       {/* Preview */}
-      <div className="bg-s-bg-surface rounded-card px-4 py-3">
+      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3">
         <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest mb-1">Vorschau für Kunden</p>
         <p className="text-sm text-s-ink/70">{previewText}</p>
       </div>
@@ -558,7 +558,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
   return (
     <div className="py-4 max-w-md space-y-4">
       {warnings > 0 && (
-        <div className="bg-s-coral/5 border border-s-coral/20 rounded-card px-4 py-3 flex items-start gap-3">
+        <div className="bg-s-coral/5 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-start gap-3">
           <AlertTriangle size={16} className="text-s-coral shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-s-ink">Dein Salon hat {warnings}/3 Warnungen.</p>
@@ -570,12 +570,12 @@ function VerificationTab({ salon }: { salon: Salon }) {
         </div>
       )}
       {!salon.is_active && (
-        <div className="bg-s-error-bg border border-s-error/20 rounded-card px-4 py-3">
+        <div className="bg-s-error-bg border border-s-error/20 rounded-[12px] px-4 py-3">
           <p className="text-sm font-medium text-s-error">Dein Salon wurde eingefroren.</p>
           <p className="text-xs text-s-error/70 mt-1">Kontaktiere support@solen.ch.</p>
         </div>
       )}
-      <div className="bg-s-bg-surface rounded-card px-4 py-3 text-sm text-s-ink/60 space-y-1">
+      <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 text-sm text-s-ink/60 space-y-1">
         <p><span className="font-medium">Letzte Verifizierung:</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
         <p><span className="font-medium">Stornierungsrichtlinie:</span> Kunden können bis 24h vor dem Termin stornieren.</p>
       </div>
@@ -628,7 +628,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
       </div>
 
       {isActive && (
-        <div className="bg-s-amber-subtle border border-s-amber/20 rounded-card px-4 py-3 flex items-center gap-3">
+        <div className="bg-s-amber-subtle border border-s-amber/20 rounded-[12px] px-4 py-3 flex items-center gap-3">
           <Palmtree size={16} className="text-s-amber shrink-0" />
           <p className="text-sm text-s-amber-text">
             Ferienmodus aktiv: {new Date(start).toLocaleDateString("de-CH")} – {new Date(end).toLocaleDateString("de-CH")}
@@ -737,7 +737,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
   return (
     <div className="py-4 max-w-md space-y-6">
       {/* Stripe Connect — always visible */}
-      <div className="border border-s-ink/10 rounded-card p-4 space-y-3">
+      <div className="border border-s-ink/10 rounded-[12px] p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-s-ink/40" />
@@ -766,7 +766,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
       </div>
 
       {/* Marketing card */}
-      <div className="rounded-card bg-s-coral/5 border border-s-coral/20 p-4">
+      <div className="rounded-[12px] bg-s-coral/5 border border-s-coral/20 p-4">
         <p className="text-sm font-semibold text-s-coral mb-1">Zahlungsmodus wählen</p>
         <p className="text-xs text-s-ink/60 leading-relaxed">
           Wähle, wie deine Kunden bezahlen. Anzahlung oder Vorauszahlung schützt vor No-Shows.
@@ -783,7 +783,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
               type="button"
               onClick={() => setPaymentMode(opt.id)}
               className={[
-                "w-full rounded-card border p-3.5 text-left transition-colors flex items-center gap-3",
+                "w-full rounded-[12px] border p-3.5 text-left transition-colors flex items-center gap-3",
                 paymentMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20",
               ].join(" ")}
             >
@@ -979,7 +979,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
             { id: "manual_approval", label: "Manuelle Freigabe", desc: "Sie bestätigen" },
           ].map((opt) => (
             <button key={opt.id} type="button" onClick={() => setConfirmMode(opt.id as any)}
-              className={["rounded-card border p-3 text-left transition-colors",
+              className={["rounded-[12px] border p-3 text-left transition-colors",
                 confirmMode === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20"].join(" ")}>
               <p className={["text-sm font-medium", confirmMode === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>{opt.label}</p>
               <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
@@ -996,7 +996,7 @@ function SchedulingTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
             { id: "least_busy", label: "Wenigster", desc: "Am wenigsten ausgelastet" },
           ].map((opt) => (
             <button key={opt.id} type="button" onClick={() => setMethod(opt.id)}
-              className={["rounded-card border p-3 text-left transition-colors",
+              className={["rounded-[12px] border p-3 text-left transition-colors",
                 method === opt.id ? "border-s-coral bg-s-coral/5" : "border-s-ink/10 hover:border-s-ink/20"].join(" ")}>
               <p className={["text-sm font-medium", method === opt.id ? "text-s-coral" : "text-s-ink"].join(" ")}>{opt.label}</p>
               <p className="text-[10px] text-s-ink/40 mt-0.5">{opt.desc}</p>
@@ -1133,7 +1133,7 @@ export default function SettingsPage() {
     <DashboardLayout>
       {salon && !salon.is_active && (
         <div className="fixed inset-0 z-40 bg-s-error-bg/90 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white border border-s-error/20 rounded-card p-8 text-center max-w-sm shadow-warm-lg">
+          <div className="bg-white border border-s-error/20 rounded-[12px] p-8 text-center max-w-sm shadow-warm-lg">
             <AlertTriangle size={32} className="text-s-error mx-auto mb-3" />
             <h2 className="font-heading font-bold text-lg text-s-ink mb-2">Salon eingefroren</h2>
             {(salon as any).frozen_reason && (
@@ -1162,7 +1162,7 @@ export default function SettingsPage() {
       ) : !salon ? (
         <div className="text-center py-12 text-s-ink/30 text-sm">Salon nicht gefunden</div>
       ) : (
-        <div className="bg-white rounded-card shadow-card">
+        <div className="bg-white rounded-[12px] shadow-warm-md">
           <ExpandableTabs
             defaultTab="profile"
             tabs={[

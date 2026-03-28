@@ -27,7 +27,7 @@ interface SkinToneMatcherProps {
 }
 
 export default function SkinToneMatcher({ clientId, onSave }: SkinToneMatcherProps) {
-  const t = useTranslations("dashboardMakeup");
+  const t = useTranslations("dashboardMakeup") as any;
   const [undertone, setUndertone] = useState<string>("");
   const [fitzpatrick, setFitzpatrick] = useState<string>("");
   const [foundationNotes, setFoundationNotes] = useState("");

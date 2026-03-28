@@ -141,7 +141,7 @@ export default function ClientsPage() {
             <button
               key={c.user_id}
               onClick={() => setSelectedClient(c)}
-              className="w-full flex items-center gap-3 p-3 rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:border-s-coral/20 transition-colors text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:border-s-coral/20 transition-colors text-left"
             >
               <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 overflow-hidden">
                 {c.avatar_url ? (
@@ -326,7 +326,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
           ) : (
             <div className="space-y-2">
               {bookings.map((b) => (
-                <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3 flex items-center justify-between">
+                <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{b.service_name || "Service"}</p>
                     <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
@@ -367,7 +367,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
             ) : (
               <div className="space-y-2">
                 {notes.map((n) => (
-                  <div key={n.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-3">
+                  <div key={n.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-3">
                     <p className="text-sm text-s-ink dark:text-s-dm-text">{n.note}</p>
                     <p className="text-[10px] text-s-ink/20 dark:text-s-dm-text/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
                   </div>

@@ -55,7 +55,7 @@ export default function HelpPage() {
       {/* Hero */}
       <div className="bg-gradient-to-b from-s-coral/5 via-white dark:via-s-dm-bg to-transparent pt-8 pb-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="w-14 h-14 rounded-card bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-[12px] bg-s-coral/10 flex items-center justify-center mx-auto mb-4">
             <BookOpen size={28} className="text-s-coral" />
           </div>
           <h1 className="font-heading font-bold text-2xl sm:text-4xl text-s-ink">
@@ -144,7 +144,7 @@ export default function HelpPage() {
                       <Link
                         key={article.id}
                         href={`/${locale}/help/${article.slug}`}
-                        className="flex items-center justify-between px-4 py-3 rounded-card bg-s-bg-surface hover:bg-s-bg-sunken transition-colors group"
+                        className="flex items-center justify-between px-4 py-3 rounded-[12px] bg-s-bg-surface hover:bg-s-bg-sunken transition-colors group"
                       >
                         <span className="font-body text-sm text-s-ink/80 group-hover:text-s-ink transition-colors">
                           {article.title}

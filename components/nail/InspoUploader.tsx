@@ -12,7 +12,7 @@ interface InspoUploaderProps {
 }
 
 export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }: InspoUploaderProps) {
-  const t = useTranslations("booking");
+  const t = useTranslations("booking") as any;
   const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);

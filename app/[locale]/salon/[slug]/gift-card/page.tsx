@@ -96,7 +96,7 @@ export default function GiftCardPage() {
           <p className="text-sm text-s-ink/40 dark:text-s-dm-text/40">{salon.name}</p>
         </div>
 
-        <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-card p-5 space-y-4">
+        <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-md p-5 space-y-4">
           {/* Amount */}
           <div>
             <label className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2 block">Betrag</label>

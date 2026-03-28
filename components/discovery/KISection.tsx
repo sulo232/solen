@@ -36,7 +36,7 @@ interface KISectionProps {
  * - Manual refresh button
  */
 export function KISection({ zone = 1, className = "" }: KISectionProps) {
-  const t = useTranslations("recommendations");
+  const t = useTranslations("recommendations") as any;
   const locale = useLocale() as "de" | "en" | "fr" | "it";
   const posthog = usePostHog();
 

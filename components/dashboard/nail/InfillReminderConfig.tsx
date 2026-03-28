@@ -17,7 +17,7 @@ interface DueClient {
 }
 
 export default function InfillReminderConfig({ salonId }: { salonId: string }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [services, setServices] = useState<NailService[]>([]);
   const [dueClients, setDueClients] = useState<DueClient[]>([]);
   const [loading, setLoading] = useState(true);

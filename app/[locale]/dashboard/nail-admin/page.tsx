@@ -55,7 +55,7 @@ export default function NailAdminPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card animate-pulse" />
+        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px] animate-pulse" />
       ) : (
         <div>
           {activeTab === 0 && salonId && <AiArtGenerator salonId={salonId} />}

@@ -36,7 +36,7 @@ export default function BodyDiagram({
   mode = "waxing",
   severityMap,
 }: BodyDiagramProps) {
-  const t = useTranslations("diagrams");
+  const t = useTranslations("diagrams") as any;
   const [svgSource, setSvgSource] = useState<string | null>(null);
 
   useEffect(() => {

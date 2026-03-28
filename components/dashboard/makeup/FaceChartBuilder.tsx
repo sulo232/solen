@@ -48,7 +48,7 @@ export default function FaceChartBuilder({
   salonId: string;
   clientId: string | null;
 }) {
-  const t = useTranslations("dashboardMakeup");
+  const t = useTranslations("dashboardMakeup") as any;
   const [charts, setCharts] = useState<FaceChart[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -259,17 +259,17 @@ export default function FaceChartBuilder({
                   className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-white dark:bg-s-dm-surface"
                 >
                   <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text mb-2">
-                    {t(zone.labelKey)}
+                    {t(zone.labelKey as any)}
                   </p>
                   <select
                     value={zones[zone.key] || ""}
                     onChange={(e) => setZones((prev) => ({ ...prev, [zone.key]: e.target.value }))}
                     className="w-full rounded-[8px] border border-s-ink/[0.10] dark:border-s-dm-text/[0.10] px-2 py-1.5 text-xs bg-transparent text-s-ink dark:text-s-dm-text"
-                    aria-label={t(zone.labelKey)}
+                    aria-label={t(zone.labelKey as any)}
                   >
                     <option value="">{t("select_technique")}</option>
                     {TECHNIQUES.map((tech) => (
-                      <option key={tech} value={tech}>{t(`technique.${tech}`)}</option>
+                      <option key={tech} value={tech}>{t(`technique.${tech}` as any)}</option>
                     ))}
                   </select>
                 </div>
@@ -425,7 +425,7 @@ export default function FaceChartBuilder({
                       key={zone}
                       className="text-[9px] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/60 dark:text-s-dm-text/60"
                     >
-                      {t(`zones.${zone}`)}: {t(`technique.${tech}`)}
+                      {t(`zones.${zone}` as any)}: {t(`technique.${tech}` as any)}
                     </span>
                   ))}
                 </div>

@@ -19,7 +19,7 @@ interface CardData {
 }
 
 export default function LoyaltyCardList() {
-  const t = useTranslations("barber.loyalty");
+  const t = useTranslations("barber.loyalty") as any;
   const [cards, setCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCompleted, setShowCompleted] = useState(false);

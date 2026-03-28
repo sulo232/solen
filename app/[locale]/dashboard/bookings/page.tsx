@@ -68,7 +68,7 @@ function SalonCancelModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Termin stornieren</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -211,7 +211,7 @@ export default function BookingsPage() {
       ) : (
         <div className="space-y-2">
           {bookings.map((b) => (
-            <div key={b.id} className="bg-white rounded-card border border-s-ink/5 p-4">
+            <div key={b.id} className="bg-white rounded-[12px] border border-s-ink/5 p-4">
               <div className="flex items-start gap-4">
                 {/* Time */}
                 <div className="shrink-0 text-center w-14">

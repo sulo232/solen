@@ -11,7 +11,7 @@ interface WalkinQueueProps {
 }
 
 export default function WalkinQueue({ salonId }: WalkinQueueProps) {
-  const t = useTranslations("barber.queue");
+  const t = useTranslations("barber.queue") as any;
   const [queue, setQueue] = useState<BarberWalkinQueue[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createBrowserSupabaseClient();

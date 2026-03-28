@@ -235,7 +235,7 @@ export default function EditPanel({
               {selectedElements.length} element{selectedElements.length > 1 ? "s" : ""} selected — click more in preview to add
             </p>
             {selectedElements.map((el) => (
-              <div key={el.selector} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-card p-2 flex items-start gap-2">
+              <div key={el.selector} className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-[12px] p-2 flex items-start gap-2">
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral font-medium">
@@ -267,7 +267,7 @@ export default function EditPanel({
             </p>
           </div>
         ) : (
-          <div className="bg-s-blue/5 dark:bg-s-blue/10 rounded-card p-3 space-y-1">
+          <div className="bg-s-blue/5 dark:bg-s-blue/10 rounded-[12px] p-3 space-y-1">
             <p className="text-xs font-medium text-s-blue">
               General page feedback
             </p>
@@ -339,7 +339,7 @@ export default function EditPanel({
 
         {/* Copy Actions for Claude */}
         {requests.length > 0 && (
-          <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-card p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
+          <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
             <div className="flex items-center gap-1.5">
               <ClipboardList size={14} className="text-s-coral" />
               <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">

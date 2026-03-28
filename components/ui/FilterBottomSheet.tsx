@@ -20,7 +20,7 @@ export default function FilterBottomSheet({
   onClose,
   zone,
 }: FilterBottomSheetProps) {
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
 
   // Close on Escape
   useEffect(() => {

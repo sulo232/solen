@@ -268,6 +268,43 @@ html {
   transition: background-color 300ms ease, color 300ms ease;
 }
 
+/* ── Touch-device hover guard (Emil Kowalski) ────────────────────── */
+@media not all and (hover: hover) {
+  .store-card:hover,
+  .spotlight-card:hover,
+  .service-icon-card:hover,
+  .quartier-photo-card:hover,
+  .trending-card:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+  }
+}
+
+/* ── @starting-style progressive enhancement (Emil Kowalski) ─────── */
+@supports (selector(:starting-style)) {
+  .css-enter-fade {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 250ms var(--ease-out-strong), transform 250ms var(--ease-out-strong);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  .css-enter-scale {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 200ms var(--ease-out-strong), transform 200ms var(--ease-out-strong);
+
+    @starting-style {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+}
+
 /* ── Accessibility: prefers-reduced-motion (universal) ────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

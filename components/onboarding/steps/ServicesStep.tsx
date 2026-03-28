@@ -18,7 +18,7 @@ interface ServicesStepProps {
 }
 
 export default function ServicesStep({ onSaved }: ServicesStepProps) {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
   const locale = useLocale();
   const [services, setServices] = useState<SimpleService[]>([]);
   const [salonId, setSalonId] = useState<string | null>(null);
@@ -69,7 +69,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           setShowAdd(false);
         }
         setSuggestions((prev) => prev.filter((s) => s.name_de !== svc.name_de));
-        onSaved();
+        // Removed onSaved() so user can add multiple services before advancing
       }
     } catch { /* ignore */ } finally {
       setSaving(false);
@@ -86,7 +86,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-card bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
           <Scissors size={22} className="text-s-coral" />
         </div>
         <div>
@@ -104,7 +104,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
       ) : (
         <>
           {services.length > 0 && (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 overflow-hidden">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 overflow-hidden">
               {services.map((s, i) => (
                 <div key={s.id ?? i} className={["flex items-center justify-between px-5 py-4", i > 0 ? "border-t border-s-ink/5 dark:border-white/5" : ""].join(" ")}>
                   <div>
@@ -122,7 +122,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           )}
 
           {showAdd ? (
-            <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-coral/20 p-5 space-y-3 shadow-warm-sm">
+            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-coral/20 p-5 space-y-3 shadow-warm-sm">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("services.new")}</p>
                 <button onClick={() => setShowAdd(false)} className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink dark:hover:text-s-dm-text">
@@ -135,7 +135,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   value={newService.name_de}
                   onChange={(e) => setNewService({ ...newService, name_de: e.target.value })}
                   placeholder={t("services.namePlaceholder")}
-                  className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                  className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -145,7 +145,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={15} step={15}
                     value={newService.duration_minutes}
                     onChange={(e) => setNewService({ ...newService, duration_minutes: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
                   />
                 </div>
                 <div>
@@ -154,14 +154,14 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                     type="number" min={0}
                     value={newService.price}
                     onChange={(e) => setNewService({ ...newService, price: +e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+                    className="w-full px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
                   />
                 </div>
               </div>
               <button
                 onClick={() => addService()}
                 disabled={!newService.name_de || saving}
-                className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm transition-all"
+                className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] transition-all"
               >
                 {saving && <Spinner size="sm" invert />}
                 {t("services.add")}
@@ -179,10 +179,10 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
 
           {suggestions.length > 0 && (
             <div className="pt-2">
-              <p className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-3 px-1">✨ KI-Vorschläge</p>
+              <p className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-3 px-1">{t("services.aiSuggestions")}</p>
               <div className="grid gap-2">
                 {suggestions.map((s, i) => (
-                  <div key={i} className="flex justify-between items-center bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/10 rounded-card px-4 py-3">
+                  <div key={i} className="flex justify-between items-center bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/10 rounded-[12px] px-4 py-3">
                     <div>
                       <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{s.name_de}</p>
                       <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{s.duration_minutes} min · {formatCurrency(Number(s.price), locale)}</p>
@@ -192,7 +192,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                       disabled={saving}
                       className="px-3 py-1.5 text-xs font-medium rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 text-s-ink/80 hover:text-s-coral transition-all disabled:opacity-50"
                     >
-                      Hinzufügen
+                      {t("services.addButton")}
                     </button>
                   </div>
                 ))}
@@ -201,7 +201,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
           )}
 
           {services.length > 0 && (
-            <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-2">
+            <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
               <Check size={14} className="text-s-coral shrink-0" />
               <div>
                 <p className="text-xs text-s-coral font-medium">
@@ -213,6 +213,14 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
               </div>
             </div>
           )}
+
+          <button
+            onClick={() => onSaved()}
+            disabled={services.length === 0}
+            className="w-full py-3 mt-6 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
+          >
+            {t("setup.saveAndContinue")}
+          </button>
         </>
       )}
     </div>

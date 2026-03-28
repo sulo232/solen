@@ -42,12 +42,19 @@ export async function GET(
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
-  // Determine period date range
+  // Determine period date range — support explicit from/to params OR named period
+  const fromParam = searchParams.get("from");
+  const toParam = searchParams.get("to");
   const now = new Date();
   const periodDays: Record<string, number> = { week: 7, month: 30, quarter: 90, year: 365 };
   const days = periodDays[period] ?? 30;
-  const periodStart = new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
-  const periodEnd = now.toISOString();
+  const periodStart = fromParam ? new Date(fromParam + "T00:00:00Z").toISOString() : new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
+  const periodEnd = toParam ? new Date(toParam + "T23:59:59Z").toISOString() : now.toISOString();
+  const periodMs = new Date(periodEnd).getTime() - new Date(periodStart).getTime();
+
+  // Prior period for trends_vs_prior comparison
+  const priorEnd = new Date(periodStart).toISOString();
+  const priorStart = new Date(new Date(periodStart).getTime() - periodMs).toISOString();
 
   // Fetch pre-aggregated analytics if available
   const periodStartDate = periodStart.split("T")[0];
@@ -169,9 +176,33 @@ export async function GET(
   }
   const conversionRate = profileViews > 0 ? (totalBookings / profileViews) * 100 : 0;
 
+  // Prior period bookings for trends_vs_prior delta percentages
+  const { data: priorBookings } = await admin
+    .from("bookings")
+    .select("status, price_paid, user_id, is_first_visit")
+    .eq("salon_id", id)
+    .gte("starts_at", priorStart)
+    .lte("starts_at", priorEnd);
+
+  const priorAll = priorBookings ?? [];
+  const priorCompleted = priorAll.filter(b => b.status === "completed");
+  const priorRevenue = priorCompleted.reduce((s, b) => s + (b.price_paid ?? 0), 0);
+  const priorFirst = priorAll.filter(b => b.is_first_visit === true).length;
+
+  function pctDelta(current: number, prior: number): number {
+    if (prior === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - prior) / prior) * 100);
+  }
+
   return NextResponse.json({
     salon_id: id,
     period,
+    trends_vs_prior: {
+      bookings: pctDelta(totalBookings, priorAll.length),
+      revenue: pctDelta(totalRevenue, priorRevenue),
+      new_customers: pctDelta(firstVisits, priorFirst),
+      rating: 0, // rating delta requires prior period reviews — set flat for now
+    },
     period_start: periodStartDate,
     period_end: periodEndDate,
     total_bookings: totalBookings,

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home, Calendar, Clock, MessageCircle, Users, Scissors,
-  BarChart, Settings, Menu, X, ChevronRight,
+  BarChart, Settings, Menu, X, Search,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
   UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid,
@@ -19,6 +19,8 @@ import { Sidebar, SidebarBody } from "@/components/ui/sidebar";
 import type { Profile, UserRole } from "@/lib/types";
 import { useMemo } from "react";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
+import CommandPalette from "@/components/dashboard/CommandPalette";
+import NotificationCenter from "@/components/dashboard/NotificationCenter";
 
 // ─────────────────────────────────────────
 // Nav config
@@ -152,12 +154,24 @@ export default function DashboardLayout({
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
-  const t = useTranslations("dashboard.nav");
+  const t = useTranslations("dashboard.nav") as any;
   const [authChecked, setAuthChecked] = useState(false);
   const [role, setRole] = useState<UserRole | null>(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
+
+  // Global Ctrl+K / Cmd+K shortcut to open command palette
+  useEffect(() => {
+    function handler(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+      }
+    }
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   // Filter nav groups by salon categories (desktop)
   const filteredOwnerNavGroups = useMemo(() => {
@@ -234,10 +248,10 @@ export default function DashboardLayout({
           <Skeleton className="h-8 w-48" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 rounded-card" />
+              <Skeleton key={i} className="h-24 rounded-[12px]" />
             ))}
           </div>
-          <Skeleton className="h-64 rounded-card" />
+          <Skeleton className="h-64 rounded-[12px]" />
         </div>
       </div>
     );
@@ -484,16 +498,23 @@ export default function DashboardLayout({
       <div className="flex-1 md:ml-60 flex flex-col min-h-screen">
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white dark:bg-s-dm-surface border-b border-s-ink/[0.06] dark:border-white/[0.06] px-4 py-3 flex items-center gap-3">
-          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60">
+          <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink/60 dark:text-s-dm-text/60" aria-label="Menu öffnen">
             <Menu size={20} />
           </button>
-          <span className="font-heading font-bold text-base">solen<span className="text-s-coral">.</span>ch</span>
+          <span className="font-heading font-bold text-base flex-1">solen<span className="text-s-coral">.</span>ch</span>
+          <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
+            <Search size={16} />
+          </button>
+          <NotificationCenter salonId={undefined} />
         </div>
 
         <main className="flex-1 px-4 sm:px-6 py-6 md:py-8">
           {children}
         </main>
       </div>
+
+      {/* ── Command Palette ── */}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
 
       {/* ── Mobile bottom nav ── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-s-ink/[0.06] bg-white dark:bg-s-dm-surface"

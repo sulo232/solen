@@ -19,7 +19,7 @@ interface LoyaltyConfigProps {
 
 export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
   const tc = useTranslations("common");
-  const t = useTranslations("loyaltyConfig");
+  const t = useTranslations("loyaltyConfig") as any;
   const [program, setProgram] = useState<LoyaltyProgram>({
     name: t("default_name"),
     stamps_required: 10,

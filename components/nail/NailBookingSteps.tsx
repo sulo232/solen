@@ -56,7 +56,7 @@ export default function NailBookingSteps({
   onNailOptionsChange,
 }: NailBookingStepsProps) {
   const locale = useLocale();
-  const t = useTranslations("booking");
+  const t = useTranslations("booking") as any;
   const [material, setMaterial] = useState<NailMaterial | null>(serviceMaterialType ?? null);
   const [shape, setShape] = useState<NailShape | null>(null);
   const [length, setLength] = useState<NailLength | null>(null);

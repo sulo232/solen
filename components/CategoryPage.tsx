@@ -117,7 +117,7 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
 export default function CategoryPage({ category, city, aboveGrid, belowGrid }: CategoryPageProps) {
   const locale = useLocale();
   const tc = useTranslations("common");
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
   const searchParams = useSearchParams();
   const routerNav = useRouter();
   const currentPathname = usePathname();
@@ -388,7 +388,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               params.set("view", "map");
               routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
             }}
-            className="relative w-full h-[200px] rounded-card overflow-hidden border border-s-ink/10 dark:border-white/10"
+            className="relative w-full h-[200px] rounded-[12px] overflow-hidden border border-s-ink/10 dark:border-white/10"
           >
             <MapView
               salons={salons.slice(0, 20)}
@@ -410,7 +410,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       {/* Grid / Map */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
         {isMapView && !loading && salons.length > 0 ? (
-          <div className="h-[350px] sm:h-[500px] rounded-card overflow-hidden">
+          <div className="h-[350px] sm:h-[500px] rounded-[12px] overflow-hidden">
             <MapView
               salons={salons}
               enhanced

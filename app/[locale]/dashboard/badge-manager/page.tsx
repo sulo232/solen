@@ -78,7 +78,7 @@ function BadgeModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6">
+      <div className="bg-white rounded-[12px] shadow-xl w-full max-w-md p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base text-s-ink">
             {badge?.id ? "Badge bearbeiten" : "Neues Badge erstellen"}
@@ -195,7 +195,7 @@ function DeleteModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-xl w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-xl w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base text-s-ink mb-2">Badge löschen</h3>
         <p className="text-sm text-s-ink/50 mb-5">
           Badge &quot;{name}&quot; löschen? Es wird von allen Salons entfernt.
@@ -379,7 +379,7 @@ export default function BadgeManagerPage() {
                     <motion.div
                       key={b.id}
                       variants={itemVariants}
-                      className="bg-white rounded-card border border-s-ink/5 shadow-card p-4"
+                      className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-4"
                     >
                       <div className="flex items-start gap-3">
                         <div
@@ -428,7 +428,7 @@ export default function BadgeManagerPage() {
           {/* Section 2: Badge Assignments */}
           <div>
             <h2 className="font-heading font-semibold text-s-ink text-sm mb-3">Badge-Zuweisungen</h2>
-            <div className="bg-white rounded-card border border-s-ink/5 shadow-card p-5 space-y-4">
+            <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 space-y-4">
               {/* Salon search */}
               <div className="relative max-w-sm">
                 <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
@@ -440,7 +440,7 @@ export default function BadgeManagerPage() {
                   className="w-full pl-9 pr-4 py-2.5 rounded-btn border border-s-ink/10 bg-white text-sm text-s-ink placeholder-dark/30 focus:outline-none focus:border-s-coral transition-colors"
                 />
                 {salonResults.length > 0 && !selectedSalon && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-card border border-s-ink/5 shadow-card z-10 overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md z-10 overflow-hidden">
                     {salonResults.map((s) => (
                       <button
                         key={s.id}

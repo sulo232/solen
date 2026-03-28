@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 
 export default function PartnerSignupForm() {
-  const t = useTranslations("partner");
+  const t = useTranslations("partner") as any;
   const [email, setEmail] = useState("");
   const [salonName, setSalonName] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -69,7 +69,7 @@ export default function PartnerSignupForm() {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full bg-s-coral hover:bg-s-coral/90 text-white font-heading font-semibold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center disabled:opacity-70 mt-1"
+          className="w-full bg-s-coral hover:brightness-[1.06] text-white font-heading font-semibold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center disabled:opacity-70 mt-1"
         >
           {status === "loading" ? (
             <Loader2 className="w-5 h-5 animate-spin" />

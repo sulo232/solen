@@ -16,7 +16,7 @@ interface ExpressMenuProps {
 }
 
 export default function ExpressMenu({ salonId }: ExpressMenuProps) {
-  const t = useTranslations("dashboardBarber");
+  const t = useTranslations("dashboardBarber") as any;
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState<string | null>(null);

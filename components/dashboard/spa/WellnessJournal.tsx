@@ -25,7 +25,7 @@ const TENSION_OPTIONS = [
 const PRESSURE_OPTIONS = ["light", "medium", "firm", "deep"] as const;
 
 export default function WellnessJournal({ salonId, clientId }: { salonId: string; clientId: string }) {
-  const t = useTranslations("dashboardSpa");
+  const t = useTranslations("dashboardSpa") as any;
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

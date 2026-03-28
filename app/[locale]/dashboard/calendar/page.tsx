@@ -92,7 +92,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Slot erstellen</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -172,7 +172,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">Wochenplan erstellen</h3>
           <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
@@ -279,7 +279,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-card shadow-warm-lg w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base">
             {rescheduleMode ? "Termin verschieben" : "Termin-Details"}
@@ -612,7 +612,7 @@ export default function CalendarPage() {
 
       {/* ═══ WEEK VIEW ═══ */}
       {viewMode === "week" && (
-        <div className="overflow-x-auto rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-card">
+        <div className="overflow-x-auto rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-warm-md">
           <div className="min-w-[600px]">
             <div className="grid grid-cols-8 border-b border-s-ink/5 dark:border-white/5">
               <div className="py-3 px-2 text-xs text-s-ink/30 dark:text-s-dm-text/30" />
@@ -696,7 +696,7 @@ export default function CalendarPage() {
 
       {/* ═══ DAY VIEW ═══ */}
       {viewMode === "day" && (
-        <div className="rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-card">
+        <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-warm-md">
           {/* Staff column headers */}
           <div className="grid border-b border-s-ink/5 dark:border-white/5" style={{ gridTemplateColumns: `60px repeat(${Math.max(staff.length, 1)}, 1fr)` }}>
             <div className="py-3 px-2 text-xs text-s-ink/30 dark:text-s-dm-text/30" />
@@ -805,7 +805,7 @@ export default function CalendarPage() {
         const monthDays = getMonthCalendarDays(currentDate);
         const thisMonth = currentDate.getMonth();
         return (
-          <div className="rounded-card border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-card">
+          <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface shadow-warm-md">
             <div className="grid grid-cols-7 border-b border-s-ink/5 dark:border-white/5">
               {DAYS_LABEL.map((label) => (
                 <div key={label} className="py-2 text-center text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{label}</div>

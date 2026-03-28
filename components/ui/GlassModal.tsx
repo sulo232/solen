@@ -74,7 +74,7 @@ export default function GlassModal({
   children,
   className,
 }: GlassModalProps) {
-  const t = useTranslations("ui.modal");
+  const t = useTranslations("ui.modal") as any;
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(panelRef, open);
 

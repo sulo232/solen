@@ -27,7 +27,7 @@ interface NearbySalonsProps {
 
 export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
   const locale = useLocale();
-  const t = useTranslations("home.nearby");
+  const t = useTranslations("home.nearby") as any;
   const [salons, setSalons] = useState<NearbySalon[]>([]);
   const [loading, setLoading] = useState(true);
 

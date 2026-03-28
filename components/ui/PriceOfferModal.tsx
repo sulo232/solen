@@ -12,7 +12,7 @@ interface PriceOfferModalProps {
 }
 
 export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferModalProps) {
-  const t = useTranslations("ui.priceOffer");
+  const t = useTranslations("ui.priceOffer") as any;
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");

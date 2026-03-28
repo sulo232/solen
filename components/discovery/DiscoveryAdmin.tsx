@@ -19,7 +19,7 @@ type Tab = "tiktok" | "smart" | "category";
 const CATEGORIES = ["hair", "beard", "nails", "makeup", "waxing"] as const;
 
 export default function DiscoveryAdmin() {
-  const t = useTranslations("discovery.admin");
+  const t = useTranslations("discovery.admin") as any;
   const [tab, setTab] = useState<Tab>("smart");
   const [open, setOpen] = useState(false);
 
@@ -82,7 +82,7 @@ export default function DiscoveryAdmin() {
 
 // ═══ Smart Search Tab ═══
 function SmartSearchTab() {
-  const t = useTranslations("discovery.admin");
+  const t = useTranslations("discovery.admin") as any;
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>("hair");
   const [searching, setSearching] = useState(false);
@@ -271,7 +271,7 @@ function SmartSearchTab() {
 
 // ═══ TikTok Import Tab ═══
 function TikTokImportTab() {
-  const t = useTranslations("discovery.admin");
+  const t = useTranslations("discovery.admin") as any;
   const [urls, setUrls] = useState("");
   const [importing, setImporting] = useState(false);
   const [results, setResults] = useState<Array<{ url: string; status: string; style_name?: string }>>([]);
@@ -356,7 +356,7 @@ function TikTokImportTab() {
 
 // ═══ Category Quick-Import Tab ═══
 function CategoryImportTab() {
-  const t = useTranslations("discovery.admin");
+  const t = useTranslations("discovery.admin") as any;
   const [importing, setImporting] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
 

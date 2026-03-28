@@ -14,7 +14,7 @@ type PurchaseWithPackage = PackagePurchase & { service_packages: ServicePackage 
 export default function MyPackagesPage() {
   const locale = useLocale();
   const router = useRouter();
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const [purchases, setPurchases] = useState<PurchaseWithPackage[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ export default function MyPackagesPage() {
       <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center">
         <div className="grid gap-4 w-full max-w-3xl px-4">
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-5 bg-white dark:bg-s-dm-surface animate-pulse">
+            <div key={i} className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-5 bg-white dark:bg-s-dm-surface animate-pulse">
               <div className="h-4 w-40 bg-s-bg-sunken dark:bg-s-dm-bg rounded mb-3" />
               <div className="h-2 w-full bg-s-bg-sunken dark:bg-s-dm-bg rounded" />
             </div>
@@ -75,7 +75,7 @@ export default function MyPackagesPage() {
 
         {/* List */}
         {purchases.length === 0 ? (
-          <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-8 text-center bg-white dark:bg-s-dm-surface">
+          <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-8 text-center bg-white dark:bg-s-dm-surface">
             <Package className="w-10 h-10 mx-auto mb-3 text-s-ink/15 dark:text-s-dm-text/15" />
             <p className="text-xs font-heading uppercase tracking-[.10em] text-s-ink/30 dark:text-s-dm-text/30">Keine Pakete gefunden</p>
           </div>
@@ -92,7 +92,7 @@ export default function MyPackagesPage() {
               const isExpired = expireDate && expireDate.getTime() < Date.now();
 
               return (
-                <div key={p.id} className={`rounded-card border p-5 bg-white dark:bg-s-dm-surface ${
+                <div key={p.id} className={`rounded-[12px] border p-5 bg-white dark:bg-s-dm-surface ${
                   isUsedUp || isExpired ? "border-s-ink/[0.06] dark:border-white/[0.06] opacity-60" : "border-s-coral/20"
                 }`}>
                   <div className="flex justify-between items-start mb-4">

@@ -78,7 +78,7 @@ export default function LoyaltyDashboardPage() {
           <LoyaltyConfig salonId={salonId} />
 
           {/* Scanner */}
-          <div className="rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
+          <div className="rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-s-dm-text/10 p-4">
             <div className="flex items-center gap-2 mb-4">
               <QrCode size={18} className="text-s-coral" />
               <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">

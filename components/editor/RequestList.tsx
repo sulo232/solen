@@ -124,7 +124,7 @@ export default function RequestList({
 
       {/* Copy for Claude section */}
       {requests.length > 0 && (
-        <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-card p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
+        <div className="border border-s-ink/10 dark:border-s-dm-text/10 rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50 dark:bg-s-dm-bg/50">
           <div className="flex items-center gap-1.5">
             <ClipboardList size={14} className="text-s-coral" />
             <p className="text-xs font-medium text-s-ink dark:text-s-dm-text">
@@ -175,7 +175,7 @@ export default function RequestList({
           {filtered.map((r) => (
             <div
               key={r.id}
-              className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-s-dm-text/10 shadow-card overflow-hidden"
+              className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-s-dm-text/10 shadow-warm-md overflow-hidden"
             >
               <div className="p-3 space-y-2">
                 <div className="flex items-start gap-2">

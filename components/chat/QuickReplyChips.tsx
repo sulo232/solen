@@ -10,7 +10,7 @@ interface QuickReplyChipsProps {
 }
 
 export default function QuickReplyChips({ salonId, onSelectTemplate }: QuickReplyChipsProps) {
-  const t = useTranslations("chat.quickReplyChips");
+  const t = useTranslations("chat.quickReplyChips") as any;
   const [templates, setTemplates] = useState<string[]>([]);
 
   const defaultTemplates = [

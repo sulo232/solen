@@ -33,7 +33,7 @@ const PAGE_SIZE = 30;
 
 export default function ChatWindow({ conversationId, perspective, currentUserId, salonId, salonName, salonSlug, salonServices, isNailSalon }: ChatWindowProps) {
   const locale = useLocale();
-  const t = useTranslations("chat");
+  const t = useTranslations("chat") as any;
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -302,7 +302,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5"
+      className="flex flex-col h-full min-h-[400px] bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5"
     >
       {/* Tab header */}
       <div className="flex border-b border-s-ink/10 dark:border-white/10">
@@ -365,7 +365,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
               <div className="space-y-3 py-4">
                 {["w-3/4", "w-5/12", "w-3/5"].map((w, i) => (
                   <div key={i} className={i % 2 ? "flex justify-end" : "flex"}>
-                    <Skeleton className={`h-10 ${w} rounded-card`} />
+                    <Skeleton className={`h-10 ${w} rounded-[12px]`} />
                   </div>
                 ))}
               </div>
@@ -388,12 +388,12 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
               className={["group flex gap-2", isOwn(msg) ? "flex-row-reverse" : "flex-row"].join(" ")}
             >
               <div className={[
-                "max-w-[75%] px-3 py-2 rounded-card text-sm leading-relaxed",
+                "max-w-[75%] px-3 py-2 rounded-[12px] text-sm leading-relaxed",
                 isOwn(msg) ? "bg-s-coral text-white rounded-tr-sm" : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text rounded-tl-sm",
               ].join(" ")}>
                 {msg.message_type === "image" && msg.image_url ? (
                   <div>
-                    <div className="rounded-card overflow-hidden max-w-[200px]">
+                    <div className="rounded-[12px] overflow-hidden max-w-[200px]">
                       <Image src={msg.image_url} alt={t("imageAlt")} width={200} height={150} className="object-cover" />
                     </div>
                     {isSalonOwner && (

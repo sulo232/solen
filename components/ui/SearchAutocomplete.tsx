@@ -52,7 +52,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
   const router = useRouter();
   const params = useParams();
   const rawCity = params?.city as string | undefined;
-  const t = useTranslations("ui.search");
+  const t = useTranslations("ui.search") as any;
   const [query, setQuery] = useState("");
   const [services, setServices] = useState<SuggestService[]>([]);
   const [salons, setSalons] = useState<SuggestSalon[]>([]);
@@ -196,7 +196,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       </div>
 
       {open && totalItems > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-lg rounded-card shadow-surface border border-s-ink/5 dark:border-white/10 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-lg rounded-[12px] shadow-surface border border-s-ink/5 dark:border-white/10 overflow-hidden z-50">
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
@@ -316,7 +316,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       )}
 
       {open && totalItems === 0 && query.length >= 1 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-lg rounded-card shadow-surface border border-s-ink/5 dark:border-white/10 z-50 px-4 py-5 text-center">
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-lg rounded-[12px] shadow-surface border border-s-ink/5 dark:border-white/10 z-50 px-4 py-5 text-center">
           <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">Keine Ergebnisse für „{query}“</p>
         </div>
       )}

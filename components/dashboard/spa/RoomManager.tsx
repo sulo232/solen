@@ -23,7 +23,7 @@ const EQUIPMENT_OPTIONS = [
 ];
 
 export default function RoomManager({ salonId }: { salonId: string }) {
-  const t = useTranslations("dashboardSpa");
+  const t = useTranslations("dashboardSpa") as any;
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

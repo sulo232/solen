@@ -48,7 +48,7 @@ const CATEGORY_ICONS: Record<string, { icon: typeof Scissors; label: string }> =
 };
 
 export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
-  const t = useTranslations("navigation");
+  const t = useTranslations("navigation") as any;
   const tCities = useTranslations("cities");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -187,7 +187,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   aria-current={isActive ? "page" : undefined}
                   title={t(key as any)}
                   className={cn(
-                    "flex flex-col items-center justify-center transition-all duration-200 rounded-full",
+                    "flex flex-col items-center justify-center transition-colors duration-200 rounded-full",
                     scrolled ? "p-2" : "p-2.5",
                     isActive
                       ? "text-s-coral bg-s-coral/10"
@@ -242,7 +242,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 aria-expanded={profileOpen}
                 className={cn(
                   "flex items-center justify-center w-10 h-10 rounded-full bg-s-coral text-white",
-                  "active:scale-[0.98] transition-all duration-200",
+                  "active:scale-[0.98] transition-transform duration-200",
                   profileOpen && "ring-2 ring-s-coral/30"
                 )}
                 style={{ boxShadow: "0 2px 4px rgba(232,98,74,.30)" }}
@@ -299,7 +299,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             <Link
               href={`/${locale}/auth/login`}
               aria-label={t("login")}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-ink/[0.06] text-s-ink hover:bg-s-ink/[0.10] active:scale-[0.98] transition-all duration-200"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-ink/[0.06] text-s-ink hover:bg-s-ink/[0.10] active:scale-[0.98] transition-[background-color,transform] duration-200"
             >
               <User className="w-4 h-4" />
             </Link>

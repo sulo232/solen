@@ -26,7 +26,7 @@ interface FormulaBookProps {
 }
 
 export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
-  const t = useTranslations("dashboardCoiffeur");
+  const t = useTranslations("dashboardCoiffeur") as any;
   const [formulas, setFormulas] = useState<Formula[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAdd, setShowAdd] = useState(false);

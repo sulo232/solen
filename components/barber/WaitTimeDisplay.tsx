@@ -9,7 +9,7 @@ interface WaitTimeDisplayProps {
 }
 
 export default function WaitTimeDisplay({ salonId }: WaitTimeDisplayProps) {
-  const t = useTranslations("barber.queue");
+  const t = useTranslations("barber.queue") as any;
   const [waitData, setWaitData] = useState<{
     queue_length: number;
     estimated_wait_minutes: number;

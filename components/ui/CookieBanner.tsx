@@ -27,7 +27,7 @@ function storeConsent(consent: ConsentState) {
 
 export default function CookieBanner() {
   const locale = useLocale();
-  const t = useTranslations("cookies");
+  const t = useTranslations("cookies") as any;
   const [visible, setVisible] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [analytics, setAnalytics] = useState(false);
@@ -72,7 +72,7 @@ export default function CookieBanner() {
       {/* Banner */}
       {!settingsOpen && (
         <div className="fixed bottom-0 inset-x-0 z-70 p-4 sm:p-6">
-          <div className="max-w-2xl mx-auto bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-5">
+          <div className="max-w-2xl mx-auto bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg border border-s-ink/5 dark:border-white/10 p-5">
             <div className="flex items-start gap-3">
               <Cookie className="w-5 h-5 text-s-coral shrink-0 mt-0.5" />
               <div className="flex-1">
@@ -118,7 +118,7 @@ export default function CookieBanner() {
       {settingsOpen && (
         <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
-          <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-card shadow-warm-lg p-6">
+          <div className="relative w-full max-w-md bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg p-6">
             <button
               onClick={() => setSettingsOpen(false)}
               className="absolute top-4 right-4 p-1.5 rounded-full text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-sunken dark:hover:bg-white/10 transition-colors"

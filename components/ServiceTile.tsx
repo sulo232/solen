@@ -27,7 +27,7 @@ export default function ServiceTile({ category, minPrice, isFavorite = false, lo
   return (
     <Link
       href={`/${locale}/${category}`}
-      className="relative flex-shrink-0 flex flex-col items-center justify-center gap-2 w-28 h-28 rounded-card bg-white dark:bg-s-dm-surface shadow-warm-sm hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250 p-3"
+      className="relative flex-shrink-0 flex flex-col items-center justify-center gap-2 w-28 h-28 rounded-[12px] bg-white dark:bg-s-dm-surface shadow-warm-sm hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250 p-3"
     >
       {isFavorite && (
         <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-pill bg-s-coral text-white text-[9px] font-medium leading-none">

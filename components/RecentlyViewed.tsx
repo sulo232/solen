@@ -51,7 +51,7 @@ export function trackSalonView(salon: {
 
 export default function RecentlyViewed() {
   const locale = useLocale();
-  const t = useTranslations("recentlyViewed");
+  const t = useTranslations("recentlyViewed") as any;
   const [salons, setSalons] = useState<RecentSalon[]>([]);
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function RecentlyViewed() {
               href={`/${locale}/salon/${salon.slug}`}
               className="block w-[160px] group"
             >
-              <div className="relative w-[160px] h-[100px] rounded-card overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface mb-2">
+              <div className="relative w-[160px] h-[100px] rounded-[12px] overflow-hidden bg-s-bg-sunken dark:bg-s-dm-surface mb-2">
                 {salon.cover_photo_url ? (
                   <Image
                     src={salon.cover_photo_url}

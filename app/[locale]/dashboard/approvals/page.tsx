@@ -67,14 +67,14 @@ export default function ApprovalsPage() {
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : salons.length === 0 ? (
-        <div className="bg-white rounded-card border border-s-ink/5 p-12 text-center">
+        <div className="bg-white rounded-[12px] border border-s-ink/5 p-12 text-center">
           <ShieldCheck size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
           <p className="text-s-ink/40 text-sm">Keine ausstehenden Genehmigungen</p>
         </div>
       ) : (
         <div className="space-y-4">
           {salons.map((salon) => (
-            <div key={salon.id} className="bg-white rounded-card border border-s-ink/5 shadow-card p-5">
+            <div key={salon.id} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex-1 min-w-0 space-y-1.5">
                   <h2 className="font-heading font-bold text-lg text-s-ink">{salon.name}</h2>
@@ -134,7 +134,7 @@ export default function ApprovalsPage() {
       {/* Reject modal */}
       {rejectModal && (
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-card shadow-xl w-full max-w-md p-6">
+          <div className="bg-white rounded-[12px] shadow-xl w-full max-w-md p-6">
             <h3 className="font-heading font-bold text-lg text-s-ink mb-1">Salon ablehnen</h3>
             <p className="text-sm text-s-ink/50 mb-4">
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):

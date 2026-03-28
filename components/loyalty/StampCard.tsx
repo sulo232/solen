@@ -42,7 +42,7 @@ export default function StampCard({
   }, [isComplete]);
 
   return (
-    <div className="relative rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden"
+    <div className="relative rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden"
       style={{ boxShadow: "none" }}>
       {/* Confetti overlay */}
       {showConfetti && (

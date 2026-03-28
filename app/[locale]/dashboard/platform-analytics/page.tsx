@@ -62,7 +62,7 @@ function StatCard({
   return (
     <motion.div
       variants={itemVariants}
-      className="bg-white rounded-card border border-s-ink/5 shadow-card p-5 flex items-start gap-4"
+      className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 flex items-start gap-4"
     >
       <div className={`p-2.5 rounded-xl ${bg} shrink-0`}>
         <Icon size={20} className={color} />
@@ -118,7 +118,7 @@ export default function PlatformAnalyticsPage() {
           {/* Charts placeholder */}
           <motion.div
             variants={itemVariants}
-            className="bg-white rounded-card border border-s-ink/5 shadow-card p-10 text-center"
+            className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-10 text-center"
           >
             <BarChart3 size={36} className="mx-auto mb-3 text-s-coral opacity-40" />
             <p className="text-sm text-s-ink/40 font-body">

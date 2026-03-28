@@ -13,7 +13,7 @@ interface ProfileTabsProps {
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({ activeTab, onTabChange, children }) => {
-  const t = useTranslations('account.beauty.tabs');
+  const t = useTranslations('account.beauty.tabs') as any;
 
   const tabs: { key: TabKey; label: string; icon: React.FC<any> }[] = [
     { key: 'looks', label: t('looks'), icon: Grid3x3 },

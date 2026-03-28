@@ -16,7 +16,7 @@ const SHAPE_OPTIONS: { value: NailShape; label: string }[] = [
 ];
 
 export default function AiArtGenerator() {
-  const t = useTranslations("aiArtGenerator");
+  const t = useTranslations("aiArtGenerator") as any;
   const [shape, setShape] = useState("almond");
   const [style, setStyle] = useState(STYLE_PRESETS[0].value);
   const [colors, setColors] = useState(COLOR_PRESETS[0].value);

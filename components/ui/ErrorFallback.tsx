@@ -10,14 +10,14 @@ interface ErrorFallbackProps {
 }
 
 export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
-  const t = useTranslations("ui.error");
+  const t = useTranslations("ui.error") as any;
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="max-w-md w-full text-center bg-white dark:bg-s-dm-surface rounded-card shadow-warm-md p-8"
+        className="max-w-md w-full text-center bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md p-8"
       >
         <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-s-coral/10 flex items-center justify-center">
           <AlertTriangle size={28} className="text-s-coral" />

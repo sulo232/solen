@@ -88,7 +88,7 @@ export default function SegmentsPage() {
               <motion.div
                 key={seg.id}
                 variants={itemVariants}
-                className="bg-white rounded-card border border-s-ink/5 shadow-card overflow-hidden"
+                className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden"
               >
                 {/* Header */}
                 <div className="p-4">

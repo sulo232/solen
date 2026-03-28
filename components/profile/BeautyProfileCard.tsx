@@ -21,7 +21,7 @@ const ROW_STYLES = {
 } as const;
 
 export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, onEdit }) => {
-  const t = useTranslations('account.beauty');
+  const t = useTranslations('account.beauty') as any;
 
   // Extract beauty profile from customer_preferences
   const beautyProfile: BeautyProfile = (profile.customer_preferences as any)?.beauty || {};
@@ -89,7 +89,7 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
   }
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] p-4 shadow-card">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] p-4 shadow-warm-md">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-heading text-[16px] font-bold text-s-ink dark:text-s-dm-text">

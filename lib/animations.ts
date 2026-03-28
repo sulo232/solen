@@ -1,5 +1,9 @@
 import type { Variants } from "framer-motion";
 
+/* ── Emil Kowalski easing constants ── */
+const EASE_OUT_STRONG = [0.23, 1, 0.32, 1];
+const EASE_IN_OUT_STRONG = [0.77, 0, 0.175, 1];
+
 /** Stagger children with 80ms delay (V3: max 100ms per child) */
 export const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -18,7 +22,7 @@ export const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.4, ease: EASE_OUT_STRONG },
   },
 };
 
@@ -30,12 +34,12 @@ export const slideSwitch = (direction: "left" | "right" | 1 | -1 = "right"): Var
     animate: {
       x: 0,
       opacity: 1,
-      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+      transition: { duration: 0.4, ease: EASE_OUT_STRONG },
     },
     exit: {
       x: isForward ? -40 : 40,
       opacity: 0,
-      transition: { duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] },
+      transition: { duration: 0.25, ease: EASE_OUT_STRONG },
     },
   };
 };
@@ -45,7 +49,7 @@ export const exitFade: Variants = {
   exit: {
     opacity: 0,
     scale: 0.95,
-    transition: { duration: 0.3, ease: "easeIn" },
+    transition: { duration: 0.2, ease: EASE_OUT_STRONG },
   },
 };
 
@@ -55,24 +59,26 @@ export const cardPopIn: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: [0.25, 1, 0.5, 1] },
+    transition: { duration: 0.35, ease: EASE_OUT_STRONG },
   },
 };
 
 /** Modal slide up from bottom */
 export const modalVariants: Variants = {
-  hidden: { opacity: 0, y: 32, scale: 0.97 },
+  hidden: { opacity: 0, y: 32, scale: 0.97, filter: "blur(0px)" },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
+    filter: "blur(0px)",
     transition: { duration: 0.35, ease: [0.34, 1.2, 0.64, 1] },
   },
   exit: {
     opacity: 0,
     y: 24,
     scale: 0.97,
-    transition: { duration: 0.25, ease: "easeIn" },
+    filter: "blur(2px)",
+    transition: { duration: 0.18, ease: EASE_OUT_STRONG },
   },
 };
 
@@ -82,12 +88,12 @@ export const toastVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.25, ease: [0.25, 1, 0.5, 1] },
+    transition: { duration: 0.25, ease: EASE_OUT_STRONG },
   },
   exit: {
     opacity: 0,
     y: -6,
-    transition: { duration: 0.18, ease: "easeIn" },
+    transition: { duration: 0.18, ease: EASE_OUT_STRONG },
   },
 };
 
@@ -108,3 +114,6 @@ export const pressAnimation = {
   whileTap: { scale: 0.98 },
   transition: { duration: 0.12, ease: "easeOut" },
 };
+
+/** Exported easing constants for use in components */
+export { EASE_OUT_STRONG, EASE_IN_OUT_STRONG };

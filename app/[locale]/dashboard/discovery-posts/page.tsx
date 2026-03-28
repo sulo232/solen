@@ -130,7 +130,7 @@ export default function DiscoveryPostsPage() {
         {tab === "new" && (
           <div className="space-y-4">
             {success && (
-              <div className="p-3 rounded-card bg-s-success-bg text-s-success text-sm">
+              <div className="p-3 rounded-[12px] bg-s-success-bg text-s-success text-sm">
                 Post erstellt!
               </div>
             )}
@@ -190,7 +190,7 @@ export default function DiscoveryPostsPage() {
             ) : (
               <div className="space-y-3">
                 {posts.map((post) => (
-                  <div key={post.id} className="p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 flex items-center gap-3">
+                  <div key={post.id} className="p-3 rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 flex items-center gap-3">
                     <div className="w-14 h-14 rounded-btn bg-s-ink/5 dark:bg-white/5 shrink-0 overflow-hidden">
                       {post.image_url && <img src={post.image_url} alt="" className="w-full h-full object-cover" />}
                     </div>

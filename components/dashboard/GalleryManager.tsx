@@ -154,14 +154,14 @@ export default function GalleryManager({
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-card text-sm mb-6">
+        <div className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm mb-6">
           <AlertCircle size={16} />
           {error}
         </div>
       )}
 
       {urls.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed border-s-ink/10 dark:border-white/10 rounded-card">
+        <div className="text-center py-12 border-2 border-dashed border-s-ink/10 dark:border-white/10 rounded-[12px]">
           <div className="w-12 h-12 bg-s-coral/10 text-s-coral rounded-full flex items-center justify-center mx-auto mb-3">
             <Image src="/images/placeholder.jpg" width={24} height={24} className="opacity-0" alt="" />
             <Plus size={24} />
@@ -180,7 +180,7 @@ export default function GalleryManager({
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className={`group relative aspect-[4/3] rounded-card overflow-hidden border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-surface cursor-grab active:cursor-grabbing ${
+              className={`group relative aspect-[4/3] rounded-[12px] overflow-hidden border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-surface cursor-grab active:cursor-grabbing ${
                 draggedIndex === index ? "opacity-50 scale-95" : "opacity-100 transition-all"
               }`}
             >

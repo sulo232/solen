@@ -33,7 +33,7 @@ const LENGTHS: { value: NailLength; key: string; barHeight: string }[] = [
 ];
 
 export default function ShapeLengthPicker({ shape, length, onShapeChange, onLengthChange }: ShapeLengthPickerProps) {
-  const t = useTranslations("booking");
+  const t = useTranslations("booking") as any;
 
   return (
     <div className="space-y-4">
@@ -46,7 +46,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               key={v}
               type="button"
               onClick={() => onShapeChange(v)}
-              className={`flex flex-col items-center gap-1 p-2 rounded-card border transition-all ${
+              className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-all ${
                 shape === v
                   ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-coral-glow"
                   : "border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface hover:border-s-coral/20"

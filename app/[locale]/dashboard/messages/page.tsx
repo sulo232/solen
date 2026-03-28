@@ -60,7 +60,7 @@ export default function MessagesPage() {
     <DashboardLayout unreadCount={totalUnread}>
       <div className="flex h-[calc(100vh-120px)] gap-4">
         {/* Conversation list */}
-        <div className="w-72 shrink-0 flex flex-col bg-white rounded-card border border-s-ink/5 overflow-hidden">
+        <div className="w-72 shrink-0 flex flex-col bg-white rounded-[12px] border border-s-ink/5 overflow-hidden">
           <div className="px-4 py-3 border-b border-s-ink/5">
             <h2 className="font-heading font-bold text-base text-s-ink">Nachrichten</h2>
           </div>
@@ -134,7 +134,7 @@ export default function MessagesPage() {
                   Schnellantwort <ChevronDown size={12} className={showQuickReplies ? "rotate-180" : ""} />
                 </button>
                 {showQuickReplies && (
-                  <div className="absolute bottom-full mb-1 left-0 bg-white rounded-card shadow-xl border border-s-ink/5 py-1 min-w-[240px] z-10">
+                  <div className="absolute bottom-full mb-1 left-0 bg-white rounded-[12px] shadow-xl border border-s-ink/5 py-1 min-w-[240px] z-10">
                     {QUICK_REPLIES.map((r, i) => (
                       <button
                         key={i}
@@ -157,7 +157,7 @@ export default function MessagesPage() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-card border border-s-ink/5 text-s-ink/30">
+            <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-[12px] border border-s-ink/5 text-s-ink/30">
               <MessageCircle size={32} className="mb-3 opacity-30" />
               <p className="text-sm">Gespräch auswählen</p>
             </div>

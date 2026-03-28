@@ -12,7 +12,7 @@ interface ProfileHeroProps {
 }
 
 export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEditProfile }) => {
-  const t = useTranslations('account.beauty');
+  const t = useTranslations('account.beauty') as any;
 
   const getInitial = () => {
     if (profile.display_name) {

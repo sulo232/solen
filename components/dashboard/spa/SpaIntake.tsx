@@ -9,7 +9,7 @@ interface SpaIntakeProps {
 }
 
 export default function SpaIntake({ customerId }: SpaIntakeProps) {
-  const t = useTranslations("dashboardSpa");
+  const t = useTranslations("dashboardSpa") as any;
 
   return (
     <div className="space-y-3">

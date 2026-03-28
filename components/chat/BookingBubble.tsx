@@ -14,7 +14,7 @@ interface BookingBubbleProps {
 
 export default function BookingBubble({ salonName, salonSlug, conversationId, messageCount }: BookingBubbleProps) {
   const locale = useLocale();
-  const t = useTranslations("chat.bookingBubble");
+  const t = useTranslations("chat.bookingBubble") as any;
   const [dismissed, setDismissed] = useState(() => {
     if (typeof window === "undefined") return true;
     return localStorage.getItem(`booking_bubble_${conversationId}`) === "1";
@@ -29,7 +29,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
   };
 
   return (
-    <div className="mx-4 mb-2 p-3 rounded-card bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
+    <div className="mx-4 mb-2 p-3 rounded-[12px] bg-s-coral/5 border border-s-coral/15 flex items-center gap-3">
       <Calendar size={18} className="text-s-coral shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("title", { salonName })}</p>

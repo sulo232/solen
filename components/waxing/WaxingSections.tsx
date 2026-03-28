@@ -9,7 +9,7 @@ export function WaxingAboveGrid() {
 }
 
 export function WaxingBelowGrid() {
-  const t = useTranslations("common");
+  const t = useTranslations("common") as any;
 
   return (
     <section className="py-16 px-4">

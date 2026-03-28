@@ -16,7 +16,7 @@ export default function FilterBar({
   zone,
   className = '',
 }: FilterBarProps) {
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
   const [openPillId, setOpenPillId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -127,7 +127,7 @@ export default function FilterBar({
           {activeFilters.map((f) => (
             <span
               key={`${f.pillId}-${f.subId}`}
-              className="flex items-center gap-1 px-3 py-1 rounded-pill bg-s-coral-subtle text-s-coral-text text-xs font-body shadow-card"
+              className="flex items-center gap-1 px-3 py-1 rounded-pill bg-s-coral-subtle text-s-coral-text text-xs font-body shadow-warm-md"
             >
               {f.label}
               <button

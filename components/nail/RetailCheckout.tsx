@@ -23,7 +23,7 @@ interface RetailCheckoutProps {
 }
 
 export default function RetailCheckout({ salonId, products, onClose }: RetailCheckoutProps) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const locale = useLocale();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [processing, setProcessing] = useState(false);

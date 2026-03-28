@@ -29,7 +29,7 @@ type ViewMode = "table" | "chart";
 const CORAL = "#E8624A";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
-  const t = useTranslations("dashboard.barber_leaderboard");
+  const t = useTranslations("dashboard.barber_leaderboard") as any;
   const [stats, setStats] = useState<BarberStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortKey>("bookings_count");

@@ -89,7 +89,6 @@ export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Safety check — if env vars are missing, skip auth but don't crash
   if (!supabaseUrl || !supabaseKey) {
     console.error("[middleware] MISSING ENV VARS:", { supabaseUrl: !!supabaseUrl, supabaseKey: !!supabaseKey });
     return response;
@@ -104,12 +103,12 @@ export async function middleware(request: NextRequest) {
           getAll() {
             return request.cookies.getAll();
           },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value }) =>
+          setAll(cookiesToSet: any[]) {
+            cookiesToSet.forEach(({ name, value }: any) =>
               request.cookies.set(name, value)
             );
             response = NextResponse.next({ request });
-            cookiesToSet.forEach(({ name, value, options }) =>
+            cookiesToSet.forEach(({ name, value, options }: any) =>
               response.cookies.set(name, value, options)
             );
           },

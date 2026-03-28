@@ -24,7 +24,7 @@ interface InspoBoardProps {
 }
 
 export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps) {
-  const t = useTranslations("booking");
+  const t = useTranslations("booking") as any;
   const [boards, setBoards] = useState<Board[]>([]);
   const [images, setImages] = useState<InspoImage[]>([]);
   const [activeBoard, setActiveBoard] = useState<string | null>(null);

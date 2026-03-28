@@ -22,7 +22,7 @@ const TEMPLATE_NAMES: Record<string, string> = {
 export default function MyIntakeFormsPage() {
   const locale = useLocale();
   const router = useRouter();
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const [forms, setForms] = useState<FormWithSalon[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export default function MyIntakeFormsPage() {
 
         {/* List */}
         {forms.length === 0 ? (
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
+          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/10 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
             <ClipboardList className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm font-medium">Bisher keine Formulare ausgefüllt</p>
           </div>
@@ -97,7 +97,7 @@ export default function MyIntakeFormsPage() {
                     const responses = form.responses as Record<string, string>;
 
                     return (
-                      <div key={form.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 overflow-hidden">
+                      <div key={form.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/10 overflow-hidden">
                         <button
                           onClick={() => setExpanded(isExpanded ? null : form.id)}
                           className="w-full text-left p-4 flex justify-between items-center hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
@@ -119,7 +119,7 @@ export default function MyIntakeFormsPage() {
                         {isExpanded && (
                           <div className="p-4 pt-0 border-t border-s-ink/5 dark:border-white/5">
                             {form.ai_recommendation && (
-                              <div className="mt-4 mb-5 p-3 rounded-card bg-s-amber/10 border border-s-amber/20">
+                              <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-amber/10 border border-s-amber/20">
                                 <p className="text-xs font-bold text-s-amber flex items-center gap-1 mb-1.5 uppercase tracking-wide">
                                   <Sparkles size={12} /> AI Analyse
                                 </p>

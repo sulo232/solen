@@ -10,7 +10,7 @@ interface NailPreferencesFormProps {
 }
 
 export default function NailPreferencesForm({ customerId }: NailPreferencesFormProps) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [shape, setShape] = useState<NailShape | "">("");

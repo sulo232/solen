@@ -32,7 +32,7 @@ interface PackageManagerProps {
 
 export default function PackageManager({ salonId }: PackageManagerProps) {
   const locale = useLocale();
-  const t = useTranslations("dashboard.packages");
+  const t = useTranslations("dashboard.packages") as any;
   const [packages, setPackages] = useState<ServicePackage[]>([]);
   const [purchases, setPurchases] = useState<PackagePurchase[]>([]);
   const [loading, setLoading] = useState(true);

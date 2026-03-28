@@ -14,7 +14,7 @@ interface CitySelectorProps {
 
 export default function CitySelector({ variant = "header", onCityChange }: CitySelectorProps) {
   const locale = useLocale();
-  const t = useTranslations("cities");
+  const t = useTranslations("cities") as any;
   const [selectedCity, setSelectedCity] = useState<CitySlug | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

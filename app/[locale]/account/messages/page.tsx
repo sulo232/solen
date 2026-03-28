@@ -52,7 +52,7 @@ export default function MessagesPage() {
             {/* Conversation list skeleton */}
             <div className="w-72 shrink-0 flex flex-col gap-2">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex gap-3 p-3 rounded-card bg-white border border-s-ink/[0.06]">
+                <div key={i} className="flex gap-3 p-3 rounded-[12px] bg-white border border-s-ink/[0.06]">
                   <div className="w-10 h-10 rounded-full bg-s-bg-sunken shrink-0" />
                   <div className="flex-1 space-y-1.5 pt-1">
                     <div className="h-2.5 w-3/4 bg-s-bg-sunken rounded" />
@@ -112,7 +112,7 @@ export default function MessagesPage() {
                   key={conv.id}
                   onClick={() => setSelected(conv.id)}
                   className={[
-                    "flex items-start gap-3 p-3 rounded-card text-left w-full transition-all",
+                    "flex items-start gap-3 p-3 rounded-[12px] text-left w-full transition-all",
                     selected === conv.id
                       ? "border border-s-coral/20"
                       : "bg-white dark:bg-s-dm-surface border border-s-ink/[0.07] dark:border-white/[0.06] hover:border-s-coral/25",

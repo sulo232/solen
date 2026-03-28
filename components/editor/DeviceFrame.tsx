@@ -47,7 +47,7 @@ export default function DeviceFrame({
   onElementHovered,
   iframeRef,
 }: DeviceFrameProps) {
-  const t = useTranslations("ui.deviceFrame");
+  const t = useTranslations("ui.deviceFrame") as any;
   const bridgeReady = useRef(false);
 
   const handleMessage = useCallback(
@@ -107,7 +107,7 @@ export default function DeviceFrame({
       <div
         className={`relative bg-white dark:bg-s-dm-surface transition-all duration-300 ${
           isFramed
-            ? "rounded-card shadow-warm-md border border-s-ink/5 dark:border-s-dm-text/10"
+            ? "rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-s-dm-text/10"
             : "w-full h-full"
         }`}
         style={{

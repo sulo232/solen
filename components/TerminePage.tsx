@@ -158,7 +158,7 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
   };
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">
+    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4">
       <div className="flex items-center justify-between mb-3">
         <button onClick={prev} className="p-1 text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors">
           <ChevronLeft size={16} />
@@ -327,7 +327,7 @@ export default function TerminePage() {
                     const tooLate = hoursUntil(b.starts_at) <= 24 && hoursUntil(b.starts_at) > 0;
 
                     return (
-                      <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">
+                      <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
                             <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>
@@ -416,7 +416,7 @@ export default function TerminePage() {
                     />
                   ) : (
                     past.map((b) => (
-                      <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4">
+                      <div key={b.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4">
                         <div className="flex justify-between items-start gap-4">
                           <div>
                             <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{b.salon_name}</p>

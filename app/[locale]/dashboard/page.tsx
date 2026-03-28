@@ -1,70 +1,21 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar, MessageCircle, Users, TrendingUp, AlertTriangle, ShieldAlert,
-  Plus, Scissors, Star, PartyPopper,
+  Plus, Scissors, Star, PartyPopper, Zap,
 } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SetupBanner from "@/components/dashboard/SetupBanner";
-import MiniSparkline from "@/components/dashboard/MiniSparkline";
+import { StatCard } from "@/components/dashboard/StatCard";
+import ActivityFeed from "@/components/dashboard/ActivityFeed";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { Booking, SalonCategory } from "@/lib/types";
 import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
 import { useMemo } from "react";
-
-function useCountUp(target: number, duration = 1000) {
-  const prefersReduced = typeof window !== "undefined"
-    && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const [value, setValue] = useState(prefersReduced ? target : 0);
-  const raf = useRef<number>(0);
-  useEffect(() => {
-    if (prefersReduced) { setValue(target); return; }
-    const start = performance.now();
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      setValue(Math.round(target * progress));
-      if (progress < 1) raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf.current);
-  }, [target, duration, prefersReduced]);
-  return value;
-}
-
-interface StatCardProps {
-  label: string;
-  value: number;
-  Icon: React.ElementType;
-  color: string;
-  bg: string;
-  isRating?: boolean;
-  sparklineData?: number[];
-  sparklineColor?: string;
-}
-
-function StatCard({ label, value, Icon, color, bg, isRating, sparklineData, sparklineColor }: StatCardProps) {
-  const count = useCountUp(value);
-  const display = isRating ? (count / 10).toFixed(1) : count;
-  return (
-    <motion.div variants={itemVariants}
-      className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-8 h-8 rounded-[10px] ${bg} flex items-center justify-center`}>
-          <Icon size={15} className={color} />
-        </div>
-        {sparklineData && sparklineData.length > 1 && (
-          <MiniSparkline data={sparklineData} color={sparklineColor} width={64} height={24} />
-        )}
-      </div>
-      <p className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">{display}</p>
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mt-2">{label}</p>
-    </motion.div>
-  );
-}
 
 interface DashboardStats {
   total_bookings: number;
@@ -78,6 +29,12 @@ interface DashboardStats {
     revenue: number[];
     new_customers: number[];
     rating: number[];
+  };
+  trends_vs_prior?: {
+    bookings: number;
+    revenue: number;
+    new_customers: number;
+    rating: number;
   };
   verification_overdue?: boolean;
 }
@@ -93,17 +50,23 @@ const SectionLabel = ({ children, amber }: { children: React.ReactNode; amber?: 
   </p>
 );
 
+function deltaDir(v: number): "up" | "down" | "flat" {
+  if (v > 0) return "up";
+  if (v < 0) return "down";
+  return "flat";
+}
+
 export default function DashboardPage() {
   const locale = useLocale();
   const params = useSearchParams();
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [salonId, setSalonId] = useState<string | undefined>();
   const [unread, setUnread] = useState(0);
   const [loading, setLoading] = useState(true);
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
 
-  // Build category tool groups from registry (same source as sidebar)
   const categoryToolGroups = useMemo(
     () => getCategoryNavGroups((salonCategories ?? []) as SalonCategory[]),
     [salonCategories]
@@ -124,13 +87,14 @@ export default function DashboardPage() {
       .then((profile) => {
         setSalonName(profile?.salon_name);
         setSalonCategories(profile?.salon_categories);
-        const salonId = profile?.salon_id;
+        const sid = profile?.salon_id;
+        setSalonId(sid);
         const todayBookings = fetch(`/api/bookings?date=${today}&limit=20`).then((r) => r.json());
-        const analytics = salonId
-          ? fetch(`/api/analytics/salon/${salonId}?period=week`).then((r) => r.json())
+        const analytics = sid
+          ? fetch(`/api/analytics/salon/${sid}?period=week`).then((r) => r.json())
           : Promise.resolve(null);
-        const convos = salonId
-          ? fetch(`/api/conversations?salon_id=${salonId}&unread=true`).then((r) => r.json())
+        const convos = sid
+          ? fetch(`/api/conversations?salon_id=${sid}&unread=true`).then((r) => r.json())
           : Promise.resolve(null);
         return Promise.all([todayBookings, analytics, convos]);
       })
@@ -144,6 +108,7 @@ export default function DashboardPage() {
   }, []);
 
   const today = new Date().toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+  const prior = stats?.trends_vs_prior;
 
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories} unreadCount={unread}>
@@ -154,7 +119,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="mb-6 rounded-card px-4 py-4 flex items-center gap-3"
+            className="mb-6 rounded-[12px] px-4 py-4 flex items-center gap-3"
             style={{ background: "#E8624A" }}
           >
             <PartyPopper size={20} className="shrink-0 text-white/80" />
@@ -179,20 +144,18 @@ export default function DashboardPage() {
 
       {loading ? (
         <div className="space-y-6">
-          {/* Stat card skeletons */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="rounded-card border border-s-ink/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
+              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white dark:bg-s-dm-surface animate-pulse">
                 <div className="w-8 h-8 rounded-[10px] bg-s-bg-sunken dark:bg-s-dm-raised mb-4" />
                 <div className="h-7 w-16 bg-s-bg-sunken dark:bg-s-dm-raised rounded mb-2" />
                 <div className="h-2.5 w-24 bg-s-bg-sunken dark:bg-s-dm-raised rounded" />
               </div>
             ))}
           </div>
-          {/* Booking row skeletons */}
           <div className="space-y-2">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="rounded-card border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface animate-pulse">
+              <div key={i} className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface animate-pulse">
                 <div className="w-10 h-10 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[8px] shrink-0" />
                 <div className="w-px h-8 bg-s-ink/[0.05] shrink-0" />
                 <div className="flex-1 space-y-2">
@@ -205,7 +168,7 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {/* Stats */}
+          {/* KPI stats with delta badges */}
           {stats && (
             <motion.div
               variants={containerVariants}
@@ -214,10 +177,47 @@ export default function DashboardPage() {
               className="grid grid-cols-2 sm:grid-cols-4 gap-3"
             >
               {[
-                { label: "Termine diese Woche", value: stats.total_bookings, Icon: Calendar, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.bookings, sparklineColor: "#E8624A" },
-                { label: "Umsatz (CHF)", value: Math.round(stats.revenue), Icon: TrendingUp, color: "text-s-ink", bg: "bg-s-ink/5", sparklineData: stats.trends?.revenue, sparklineColor: "#1A1209" },
-                { label: "Neukunden", value: stats.new_customers, Icon: Users, color: "text-s-coral", bg: "bg-s-coral/5", sparklineData: stats.trends?.new_customers, sparklineColor: "#D4870A" },
-                { label: "Bewertung", value: Math.round(stats.average_rating * 10), Icon: Star, color: "text-s-amber", bg: "bg-s-amber-subtle/50", isRating: true, sparklineData: stats.trends?.rating, sparklineColor: "#D4870A" },
+                {
+                  label: "Termine diese Woche",
+                  value: stats.total_bookings,
+                  Icon: Calendar,
+                  color: "text-s-coral",
+                  bg: "bg-s-coral/5",
+                  sparklineData: stats.trends?.bookings,
+                  sparklineColor: "#E8624A",
+                  delta: prior ? { value: Math.abs(prior.bookings), direction: deltaDir(prior.bookings) } : undefined,
+                },
+                {
+                  label: "Umsatz (CHF)",
+                  value: Math.round(stats.revenue),
+                  Icon: TrendingUp,
+                  color: "text-s-ink",
+                  bg: "bg-s-ink/5",
+                  sparklineData: stats.trends?.revenue,
+                  sparklineColor: "#1A1209",
+                  delta: prior ? { value: Math.abs(prior.revenue), direction: deltaDir(prior.revenue) } : undefined,
+                },
+                {
+                  label: "Neukunden",
+                  value: stats.new_customers,
+                  Icon: Users,
+                  color: "text-s-coral",
+                  bg: "bg-s-coral/5",
+                  sparklineData: stats.trends?.new_customers,
+                  sparklineColor: "#D4870A",
+                  delta: prior ? { value: Math.abs(prior.new_customers), direction: deltaDir(prior.new_customers) } : undefined,
+                },
+                {
+                  label: "Bewertung",
+                  value: Math.round(stats.average_rating * 10),
+                  Icon: Star,
+                  color: "text-s-amber",
+                  bg: "bg-s-amber-subtle/50",
+                  isRating: true,
+                  sparklineData: stats.trends?.rating,
+                  sparklineColor: "#D4870A",
+                  delta: prior ? { value: Math.abs(prior.rating), direction: deltaDir(prior.rating) } : undefined,
+                },
               ].map((s) => (
                 <StatCard key={s.label} {...s} />
               ))}
@@ -229,7 +229,7 @@ export default function DashboardPage() {
             <div className="space-y-2">
               <SectionLabel amber>Handlungsbedarf</SectionLabel>
               {stats.verification_overdue && (
-                <div className="rounded-card px-4 py-3.5 flex items-center gap-3"
+                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <ShieldAlert size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -243,7 +243,7 @@ export default function DashboardPage() {
                 </div>
               )}
               {stats.low_slots_warning && (
-                <div className="rounded-card px-4 py-3.5 flex items-center gap-3"
+                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
                   style={{ background: "rgba(232,98,74,.06)", border: "1px solid rgba(232,98,74,.18)" }}>
                   <AlertTriangle size={16} className="text-s-coral shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -257,7 +257,7 @@ export default function DashboardPage() {
                 </div>
               )}
               {stats.pending_cancellations > 0 && (
-                <div className="rounded-card px-4 py-3.5 flex items-center gap-3"
+                <div className="rounded-[12px] px-4 py-3.5 flex items-center gap-3"
                   style={{ background: "rgba(212,135,10,.06)", border: "1px solid rgba(212,135,10,.20)" }}>
                   <AlertTriangle size={16} className="text-s-amber shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ export default function DashboardPage() {
           {/* Unread messages */}
           {unread > 0 && (
             <a href={`/${locale}/dashboard/messages`}
-              className="block rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 transition-colors">
+              className="block rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center">
                   <MessageCircle size={18} className="text-s-coral" />
@@ -288,55 +288,67 @@ export default function DashboardPage() {
             </a>
           )}
 
-          {/* Today's bookings */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <SectionLabel>Heute</SectionLabel>
-              <a href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral">Alle →</a>
-            </div>
-            {bookings.length === 0 ? (
-              <div className="rounded-card border border-s-ink/[0.06] border-dashed p-8 text-center bg-white dark:bg-s-dm-surface">
-                <Calendar size={24} className="mx-auto mb-2 text-s-ink/20" />
-                <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">Keine Termine heute</p>
+          {/* Two-column layout: Today's bookings + Activity feed */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Today's bookings */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <SectionLabel>Heute</SectionLabel>
+                <a href={`/${locale}/dashboard/bookings`} className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral">Alle →</a>
               </div>
-            ) : (
-              <div className="space-y-2">
-                {bookings.map((b) => (
-                  <div key={b.id}
-                    className="rounded-card border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface">
-                    {/* Time column */}
-                    <div className="shrink-0 text-center w-10">
-                      <p className="data-text font-bold text-base text-s-coral leading-none">
-                        {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
-                      </p>
+              {bookings.length === 0 ? (
+                <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-8 text-center bg-white dark:bg-s-dm-surface">
+                  <Calendar size={24} className="mx-auto mb-2 text-s-ink/20" />
+                  <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">Keine Termine heute</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {bookings.map((b) => (
+                    <div key={b.id}
+                      className="rounded-[12px] border border-s-ink/[0.06] px-4 py-3.5 flex items-center gap-4 bg-white dark:bg-s-dm-surface">
+                      <div className="shrink-0 text-center w-10">
+                        <p className="data-text font-bold text-base text-s-coral leading-none">
+                          {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                        </p>
+                      </div>
+                      <div className="w-px h-8 bg-s-ink/[0.07] shrink-0" />
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{b.customer_name}</p>
+                        <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5 max-w-[160px] sm:max-w-none">{b.service_name}</p>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-2">
+                        {b.is_first_visit && (
+                          <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading font-bold uppercase tracking-[.06em]"
+                            style={{ background: "rgba(232,98,74,.10)", color: "#7A2415" }}>
+                            Neu
+                          </span>
+                        )}
+                        <div className={`w-2 h-2 rounded-full ${
+                          b.status === "confirmed" ? "bg-[#4CAF6F]" :
+                          b.status === "pending" ? "bg-s-amber" : "bg-s-ink/20"
+                        }`} />
+                      </div>
                     </div>
-                    {/* Divider */}
-                    <div className="w-px h-8 bg-s-ink/[0.07] shrink-0" />
-                    {/* Details */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{b.customer_name}</p>
-                      <p className="text-[10px] font-heading uppercase tracking-[.08em] text-s-ink/40 truncate mt-0.5">{b.service_name}</p>
-                    </div>
-                    {/* Status + badge */}
-                    <div className="shrink-0 flex items-center gap-2">
-                      {b.is_first_visit && (
-                        <span className="px-2 py-0.5 rounded-[6px] text-[9px] font-heading font-bold uppercase tracking-[.06em]"
-                          style={{ background: "rgba(232,98,74,.10)", color: "#7A2415" }}>
-                          Neu
-                        </span>
-                      )}
-                      <div className={`w-2 h-2 rounded-full ${
-                        b.status === "confirmed" ? "bg-[#4CAF6F]" :
-                        b.status === "pending" ? "bg-s-amber" : "bg-s-ink/20"
-                      }`} />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Activity Feed */}
+            {salonId && (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <SectionLabel>Aktivitäten</SectionLabel>
+                  <Zap size={12} className="text-s-ink/25" />
+                </div>
+                <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+                  <ActivityFeed salonId={salonId} />
+                </div>
               </div>
             )}
           </div>
 
-          {/* Category tool shortcuts — shown when salon has any registered categories */}
+          {/* Category tool shortcuts */}
           {categoryToolGroups.length > 0 && (
             <div>
               <SectionLabel>Deine Werkzeuge</SectionLabel>
@@ -349,12 +361,11 @@ export default function DashboardPage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       {group.items.map(item => {
                         const Icon = item.icon;
-                        const active = typeof window !== "undefined" && window.location.pathname.includes(item.href);
                         return (
                           <a
                             key={item.key}
                             href={`/${locale}${item.href}`}
-                            className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-3.5 flex items-center gap-3 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
+                            className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-3.5 flex items-center gap-3 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
                           >
                             <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
                               style={{ background: "rgba(232,98,74,.08)" }}>
@@ -373,17 +384,17 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Quick actions */}
+          {/* Quick actions — horizontal scroll on mobile */}
           <div>
             <SectionLabel>Schnellaktionen</SectionLabel>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex gap-2 overflow-x-auto md:grid md:grid-cols-3 scrollbar-hide">
               {[
                 { label: "Termin", href: `/${locale}/dashboard/calendar`, Icon: Plus },
                 { label: "Service", href: `/${locale}/dashboard/services`, Icon: Scissors },
                 { label: "Nachrichten", href: `/${locale}/dashboard/messages`, Icon: MessageCircle },
               ].map(({ label, href, Icon }) => (
                 <a key={href} href={href}
-                  className="rounded-card border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
+                  className="shrink-0 w-24 md:w-auto rounded-[12px] border border-s-ink/[0.06] p-4 flex flex-col items-center gap-2.5 text-center bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors">
                   <div className="w-9 h-9 rounded-[10px] flex items-center justify-center"
                     style={{ background: "rgba(232,98,74,.08)" }}>
                     <Icon size={17} className="text-s-coral" />

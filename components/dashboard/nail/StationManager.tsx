@@ -11,7 +11,7 @@ interface StationConfig {
 }
 
 export default function StationManager({ salonId }: { salonId: string }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [config, setConfig] = useState<StationConfig>({ total_stations: 1, uv_lamp_count: 1, sterilization_buffer_minutes: 15 });
   const [activeBookings, setActiveBookings] = useState(0);
   const [loading, setLoading] = useState(true);

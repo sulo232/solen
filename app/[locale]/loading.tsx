@@ -8,7 +8,7 @@ export default function Loading() {
       {/* Category tiles */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-32 rounded-card" />
+          <Skeleton key={i} className="h-32 rounded-[12px]" />
         ))}
       </div>
       {/* Salon card grid */}

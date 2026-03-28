@@ -10,8 +10,8 @@
   /* ── COLOR TOKENS (Warm Swiss / Basel) ── */
   --c-bg:#F8F4ED;--c-bg-elevated:#FFFFFF;--c-surface:#FFFFFF;--c-surface-alt:#F3EEE6;
   --c-text:#1F1F1F;--c-text-secondary:#6B5E4F;--c-text-muted:#8C7E6F;
-  --c-accent:#9B1D30;--c-accent-hover:#7A1626;--c-accent-fg:#FFFFFF;
-  --c-cta:#9B1D30;--c-cta-hover:#7A1626;--c-cta-fg:#FFFFFF;
+  --c-accent:#E8624A;--c-accent-hover:#CC4E35;--c-accent-fg:#FFFFFF;
+  --c-cta:#E8624A;--c-cta-hover:#CC4E35;--c-cta-fg:#FFFFFF;
   --c-highlight:#D4AF77;--c-accent-secondary:#D4AF77;
   --c-border:#E2DCD3;--c-border-strong:#D5CFC6;
   --c-success:#2d7a4f;--c-error:#DC2626;--c-warning:#d97706;
@@ -24,20 +24,23 @@
   --border:var(--c-border);--border2:var(--c-border-strong);
   --success:var(--c-success);--error:var(--c-error);--warning:var(--c-warning);
   /* ── TYPOGRAPHY TOKENS ── */
-  --font-display:'DM Serif Display',serif;
+  --font-display:'Bebas Neue',sans-serif;
   --font-body:'DM Sans',system-ui,-apple-system,sans-serif;
   --font-mono:'JetBrains Mono','Space Grotesk',monospace;
   --lh-body:1.55;--lh-heading:1.25;
   /* ── RADIUS TOKENS ── */
   --r:8px;--r2:16px;--r-lg:16px;--r-pill:100px;--radius:8px;
   /* ── SHADOW TOKENS ── */
-  --shadow-card:0 10px 30px -10px rgba(155,29,48,0.15);
-  --shadow:var(--shadow-card);--shadow2:0 20px 40px -15px rgba(155,29,48,0.2);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
-  --glow:0 2px 8px rgba(155,29,48,0.12);
+  --shadow-card:0 10px 30px -10px rgba(26,18,9,0.12);
+  --shadow:var(--shadow-card);--shadow2:0 20px 40px -15px rgba(26,18,9,0.15);--shadow3:0 4px 8px rgba(0,0,0,.08),0 16px 40px rgba(0,0,0,.08),0 40px 80px rgba(0,0,0,.08);
+  --glow:0 2px 8px rgba(232,98,74,0.12);
   /* ── MOTION TOKENS ── */
   --ease:cubic-bezier(.4,0,.2,1);
   --ease-standard:cubic-bezier(.2,.8,.2,1);
   --ease-emphasized:cubic-bezier(.2,0,0,1);
+  --ease-out-strong:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out-strong:cubic-bezier(0.77,0,0.175,1);
+  --ease-drawer:cubic-bezier(0.32,0.72,0,1);
   --motion-fast:120ms;
   --motion-base:200ms;
   --motion-slow:280ms;
@@ -47,7 +50,7 @@
   --elev-2:0 6px 18px rgba(0,0,0,.08);
   --elev-3:0 12px 36px rgba(0,0,0,.12);
   /* ── CATEGORY TOKENS ── */
-  --cat-hair:#9B1D30;--cat-barbershop:#4A4A8A;--cat-nails:#C4587A;--cat-spa:#5B8F7B;--cat-makeup:#9B6BBF;--cat-cosmetik:#D4AF77;--cat-tattoo:#2D2D2D;
+  --cat-hair:#E8624A;--cat-barbershop:#4A4A8A;--cat-nails:#C4587A;--cat-spa:#5B8F7B;--cat-makeup:#9B6BBF;--cat-cosmetik:#D4AF77;--cat-tattoo:#2D2D2D;
   /* ── SPACING ── */
   --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:40px;--space-6:48px;--space-8:64px;
   /* ── RGB TOKENS FOR GLASSMORPHISM ── */
@@ -72,7 +75,7 @@
   --c-border:#2E2E2E;--c-border-strong:#3a3a3a;
   --shadow:0 2px 16px rgba(0,0,0,0.35);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
   --shadow-card:0 2px 16px rgba(0,0,0,0.35);
-  --glow:0 2px 8px rgba(155,29,48,0.15);
+  --glow:0 2px 8px rgba(232,98,74,0.15);
   --elev-1:0 2px 8px rgba(0,0,0,.2);--elev-2:0 8px 24px rgba(0,0,0,.3);--elev-3:0 16px 48px rgba(0,0,0,.4);
   --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
   --dm-bubble-theirs:#262626;--dm-sent:#3797F0;
@@ -92,7 +95,7 @@
   --c-border:#2a2a2a;--c-border-strong:#3a3a3a;
   --shadow:0 2px 16px rgba(0,0,0,0.35);--shadow2:0 8px 32px rgba(0,0,0,.4);--shadow3:0 20px 60px rgba(0,0,0,.5);
   --shadow-card:0 2px 16px rgba(0,0,0,0.35);
-  --glow:0 2px 8px rgba(155,29,48,0.15);
+  --glow:0 2px 8px rgba(232,98,74,0.15);
   --elev-1:0 2px 8px rgba(0,0,0,.2);--elev-2:0 8px 24px rgba(0,0,0,.3);--elev-3:0 16px 48px rgba(0,0,0,.4);
   --cat-hair:#D4586A;--cat-barbershop:#7B7BCC;--cat-nails:#D4869E;--cat-spa:#7BAF9B;--cat-makeup:#B89BDB;--cat-cosmetik:#D4AF77;--cat-tattoo:#888;
   --dm-bubble-theirs:#262626;--dm-sent:#3797F0;

@@ -39,7 +39,7 @@ export default function TreatmentsClient() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const t = useTranslations('filters');
+  const t = useTranslations('filters') as any;
 
   const slugParts = params.slug ?? [];
   const categorySlug = slugParts[slugParts.length - 1] ?? "";

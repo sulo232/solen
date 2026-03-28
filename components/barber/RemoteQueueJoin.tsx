@@ -19,7 +19,7 @@ interface RemoteQueueResult {
 }
 
 export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueueJoinProps) {
-  const t = useTranslations("barber.queue");
+  const t = useTranslations("barber.queue") as any;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [preferredBarberId, setPreferredBarberId] = useState("");

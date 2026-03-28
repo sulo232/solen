@@ -33,7 +33,7 @@ interface ZonePackagesProps {
 }
 
 export default function ZonePackages({ salonId }: ZonePackagesProps) {
-  const t = useTranslations("dashboardWaxing");
+  const t = useTranslations("dashboardWaxing") as any;
   const [packages, setPackages] = useState<ZonePackage[]>([
     {
       id: "preset-full",
@@ -120,14 +120,14 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
                 <button
                   key={zone}
                   onClick={() => toggleFormZone(zone)}
-                  aria-label={t(`zones.${zone}`)}
+                  aria-label={t(`zones.${zone}` as any)}
                   className={`rounded-[8px] border px-2 py-1 text-[10px] font-heading font-semibold transition-colors duration-150 ${
                     form.zones.includes(zone)
                       ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
                       : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
                   }`}
                 >
-                  {t(`zones.${zone}`)}
+                  {t(`zones.${zone}` as any)}
                 </button>
               ))}
             </div>
@@ -186,7 +186,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
                   {pkg.name}
                 </p>
                 <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40">
-                  {pkg.zones.map((z) => t(`zones.${z}`)).join(", ")}
+                  {pkg.zones.map((z) => t(`zones.${z}` as any)).join(", ")}
                 </p>
               </div>
               <div className="flex items-center gap-2">

@@ -29,7 +29,7 @@ function daysDiff(expiryDateStr: string): number {
 }
 
 export default function KitInventory({ salonId }: { salonId: string }) {
-  const t = useTranslations("dashboardMakeup");
+  const t = useTranslations("dashboardMakeup") as any;
   const [items, setItems] = useState<KitItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -173,9 +173,9 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                 ? "bg-s-coral text-white"
                 : "bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
             }`}
-            aria-label={t(`kit_cat.${cat}`)}
+            aria-label={t(`kit_cat.${cat}` as any)}
           >
-            {t(`kit_cat.${cat}`)}
+            {t(`kit_cat.${cat}` as any)}
           </button>
         ))}
       </div>
@@ -214,7 +214,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
               aria-label={t("kit_category")}
             >
               {KIT_CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>{t(`kit_cat.${cat}`)}</option>
+                <option key={cat} value={cat}>{t(`kit_cat.${cat}` as any)}</option>
               ))}
             </select>
             <input
@@ -278,7 +278,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
                   )}
                   {item.category && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded-[4px] bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] text-s-ink/50 dark:text-s-dm-text/50">
-                      {t(`kit_cat.${item.category}`)}
+                      {t(`kit_cat.${item.category}` as any)}
                     </span>
                   )}
                 </div>

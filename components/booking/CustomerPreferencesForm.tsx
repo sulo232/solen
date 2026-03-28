@@ -19,7 +19,7 @@ export default function CustomerPreferencesForm({
   showSkip = false,
   onSkip,
 }: CustomerPreferencesFormProps) {
-  const t = useTranslations("booking.preferences");
+  const t = useTranslations("booking.preferences") as any;
 
   const [allergies, setAllergies] = useState(initialPreferences?.allergies || "");
   const [skinType, setSkinType] = useState(initialPreferences?.skinType || "");
@@ -60,7 +60,7 @@ export default function CustomerPreferencesForm({
   };
 
   return (
-    <div className="bg-white rounded-card shadow-warm-md border border-s-ink/[0.06] p-6">
+    <div className="bg-white rounded-[12px] shadow-warm-md border border-s-ink/[0.06] p-6">
       {/* Header */}
       <div className="flex items-start gap-3 mb-5">
         <div

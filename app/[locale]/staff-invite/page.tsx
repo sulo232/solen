@@ -83,7 +83,7 @@ export default function StaffInvitePage() {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-s-dm-surface rounded-card shadow-card max-w-md w-full p-8"
+        className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md max-w-md w-full p-8"
       >
         {success ? (
           <div className="text-center">

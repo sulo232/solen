@@ -21,7 +21,7 @@ export default function PriceAdjustmentModal({
   onClose,
   onSuccess,
 }: PriceAdjustmentModalProps) {
-  const t = useTranslations("dashboard.pricing");
+  const t = useTranslations("dashboard.pricing") as any;
   const [newPrice, setNewPrice] = useState<string>("");
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);

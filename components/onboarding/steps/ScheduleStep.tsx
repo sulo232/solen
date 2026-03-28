@@ -9,7 +9,7 @@ interface ScheduleStepProps {
 }
 
 export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
   const [applied, setApplied] = useState(false);
   const [applying, setApplying] = useState(false);
 
@@ -26,7 +26,6 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           .then(schedData => {
             if ((schedData?.schedules ?? []).length > 0) {
               setApplied(true);
-              onSaved();
             }
           });
       })
@@ -56,7 +55,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-card bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
           <Calendar size={22} className="text-s-coral" />
         </div>
         <div>
@@ -69,13 +68,13 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-4">
         <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
           {t("schedule.description")}
         </p>
 
         {applied ? (
-          <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-card px-4 py-3 flex items-center gap-2">
+          <div className="bg-s-coral/5 dark:bg-s-coral/10 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
             <Check size={14} className="text-s-coral shrink-0" />
             <div>
               <p className="text-xs text-s-coral font-medium">
@@ -90,14 +89,23 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           <button
             onClick={handleApply}
             disabled={applying}
-            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
+            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
           >
             {applying && <Loader2 size={14} className="animate-spin" />}
-            Arbeitszeiten übernehmen
+            {t("schedule.applyHours")}
           </button>
         )}
 
-        <div className="bg-s-bg-surface dark:bg-s-dm-raised rounded-card px-4 py-3 flex items-start gap-2">
+        {applied && (
+          <button
+            onClick={() => onSaved()}
+            className="w-full py-3 mt-6 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
+          >
+            {t("setup.saveAndContinue")}
+          </button>
+        )}
+
+        <div className="bg-s-bg-surface dark:bg-s-dm-raised rounded-[12px] px-4 py-3 flex items-start gap-2">
           <Lightbulb size={14} className="text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 shrink-0" />
           <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
             {t("schedule.individualHint")}

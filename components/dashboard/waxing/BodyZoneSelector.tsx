@@ -69,7 +69,7 @@ export default function BodyZoneSelector({
   salonId,
   clientId,
 }: BodyZoneSelectorProps) {
-  const t = useTranslations("dashboardWaxing");
+  const t = useTranslations("dashboardWaxing") as any;
   const [selected, setSelected] = useState<string[]>([]);
   const [waxPrefs, setWaxPrefs] = useState<Record<string, WaxType>>({});
   const [saving, setSaving] = useState(false);
@@ -169,10 +169,10 @@ export default function BodyZoneSelector({
           <button
             key={preset.labelKey}
             onClick={() => applyPreset(preset.zones)}
-            aria-label={t(preset.labelKey)}
+            aria-label={t(preset.labelKey as any)}
             className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] px-3 py-1.5 text-[10px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 transition-colors duration-150 hover:border-s-coral/40 hover:text-s-coral"
           >
-            {t(preset.labelKey)}
+            {t(preset.labelKey as any)}
           </button>
         ))}
       </div>
@@ -185,7 +185,7 @@ export default function BodyZoneSelector({
             <button
               key={zone.key}
               onClick={() => toggleZone(zone.key)}
-              aria-label={t(zone.labelKey)}
+              aria-label={t(zone.labelKey as any)}
               className={`rounded-[12px] border p-3 flex items-center gap-3 transition-colors duration-150 ${
                 isSelected
                   ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
@@ -194,7 +194,7 @@ export default function BodyZoneSelector({
             >
               <zone.icon size={16} />
               <span className="text-xs font-heading font-semibold">
-                {t(zone.labelKey)}
+                {t(zone.labelKey as any)}
               </span>
               {isSelected && <Check size={12} className="ml-auto" />}
             </button>
@@ -214,7 +214,7 @@ export default function BodyZoneSelector({
               className="flex items-center justify-between rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-2 bg-white dark:bg-s-dm-surface"
             >
               <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
-                {t(`zones.${zoneKey}`)}
+                {t(`zones.${zoneKey}` as any)}
               </span>
               <select
                 value={waxPrefs[zoneKey] ?? ""}
@@ -222,14 +222,14 @@ export default function BodyZoneSelector({
                   setWaxType(zoneKey, e.target.value as WaxType)
                 }
                 aria-label={t("wax_type_select", {
-                  zone: t(`zones.${zoneKey}`),
+                  zone: t(`zones.${zoneKey}` as any),
                 })}
                 className="text-xs px-2 py-1 rounded-[8px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-transparent text-s-ink dark:text-s-dm-text"
               >
                 <option value="">{t("wax_type_none")}</option>
                 {WAX_TYPES.map((wt) => (
                   <option key={wt} value={wt}>
-                    {t(`wax_types.${wt}`)}
+                    {t(`wax_types.${wt}` as any)}
                   </option>
                 ))}
               </select>

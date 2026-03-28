@@ -64,7 +64,7 @@ const EMPTY_STATE: BlueprintState = {
 };
 
 export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps) {
-  const t = useTranslations("dashboardBarber");
+  const t = useTranslations("dashboardBarber") as any;
   const [blueprint, setBlueprint] = useState<BlueprintState>(EMPTY_STATE);
   const [activeZone, setActiveZone] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);

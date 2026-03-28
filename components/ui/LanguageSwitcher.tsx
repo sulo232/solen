@@ -55,10 +55,11 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
           <button
             key={key}
             onClick={() => switchLocale(key)}
-            className={`px-3 py-1.5 rounded-pill text-xs font-heading font-bold transition-colors ${
+            aria-label={`Switch to ${label}`}
+            className={`px-5 py-2.5 min-h-[44px] min-w-[44px] rounded-pill text-sm font-heading font-bold transition-colors ${
               key === locale
-                ? "bg-white/10 text-white"
-                : "bg-transparent text-white/50 hover:text-white/90 hover:bg-white/5"
+                ? "bg-white/15 text-white border border-white/20"
+                : "bg-transparent text-white/50 hover:text-white/90 hover:bg-white/10 border border-white/10"
             }`}
           >
             {label}
@@ -81,7 +82,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white dark:bg-s-dm-surface rounded-card shadow-card border border-s-ink/5 dark:border-white/10 py-1 min-w-[120px] z-50">
+        <div className="absolute right-0 top-full mt-1 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/10 py-1 min-w-[120px] z-50">
           {Object.entries(LOCALE_LABELS).map(([key, label]) => (
             <button
               key={key}

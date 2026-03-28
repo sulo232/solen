@@ -60,7 +60,7 @@ export default function RevenuePage() {
           <p className="text-sm text-s-ink/40 mt-0.5">Plattform-Einnahmen</p>
         </div>
         {/* Period picker */}
-        <div className="flex rounded-btn overflow-hidden border border-s-ink/10 bg-white shadow-card shrink-0">
+        <div className="flex rounded-btn overflow-hidden border border-s-ink/10 bg-white shadow-warm-md shrink-0">
           {(["week", "month", "year"] as const).map((p) => (
             <button
               key={p}
@@ -136,7 +136,7 @@ export default function RevenuePage() {
               <motion.div
                 key={card.label}
                 variants={itemVariants}
-                className="bg-white rounded-card border border-s-ink/5 p-4 shadow-card"
+                className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md"
               >
                 <div className={`w-8 h-8 rounded-btn ${card.bg} flex items-center justify-center mb-3`}>
                   <card.icon size={15} className={card.color} />
@@ -149,7 +149,7 @@ export default function RevenuePage() {
 
           {/* Revenue chart */}
           {data.daily.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 p-5 shadow-card">
+            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md">
               <h2 className="font-heading font-semibold text-s-ink text-sm mb-4">Tagesumsatz (CHF)</h2>
               <ResponsiveContainer width="100%" height={200}>
                 <AreaChart data={data.daily} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -195,7 +195,7 @@ export default function RevenuePage() {
 
           {/* Top salons table */}
           {data.top_salons.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white rounded-card border border-s-ink/5 shadow-card overflow-hidden">
+            <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5">
                 <h2 className="font-heading font-semibold text-s-ink text-sm">Top Salons</h2>
               </div>
@@ -230,7 +230,7 @@ export default function RevenuePage() {
 
           {/* Staff commissions */}
           {data.staff_commissions && data.staff_commissions.length > 0 && (
-            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 shadow-card overflow-hidden">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 shadow-warm-md overflow-hidden">
               <div className="px-5 py-4 border-b border-s-ink/5 dark:border-white/5">
                 <h2 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">Provision pro Stylist</h2>
               </div>
@@ -267,7 +267,7 @@ export default function RevenuePage() {
           {(data.gift_card_revenue != null || data.tips_total != null) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {data.gift_card_revenue != null && (
-                <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card flex items-center gap-3">
+                <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Gift size={18} className="text-s-coral" />
                   </div>
@@ -278,7 +278,7 @@ export default function RevenuePage() {
                 </motion.div>
               )}
               {data.tips_total != null && (
-                <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-4 shadow-card flex items-center gap-3">
+                <motion.div variants={itemVariants} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
                     <Heart size={18} className="text-s-coral" />
                   </div>

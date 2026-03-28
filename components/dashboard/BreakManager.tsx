@@ -18,7 +18,7 @@ interface BreakManagerProps {
 }
 
 export default function BreakManager({ staffMemberId }: BreakManagerProps) {
-  const t = useTranslations("dashboard.break_manager");
+  const t = useTranslations("dashboard.break_manager") as any;
   const [breaks, setBreaks] = useState<Break[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -82,7 +82,7 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
             <select value={dayOfWeek} onChange={e => setDayOfWeek(Number(e.target.value))}
               className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
               {[0, 1, 2, 3, 4, 5, 6].map((v) => (
-                <option key={v} value={v}>{t(`day_${v}`)}</option>
+                <option key={v} value={v}>{t(`day_${v}` as any)}</option>
               ))}
             </select>
           </div>
@@ -115,7 +115,7 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
           {breaks.map(b => (
             <div key={b.id} className="flex items-center justify-between bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
               <div>
-                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t(`day_${b.day_of_week}`)}</p>
+                <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t(`day_${b.day_of_week}` as any)}</p>
                 <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">{b.start_time} — {b.end_time}</p>
               </div>
               <button onClick={() => handleDelete(b.id)} className="p-1.5 text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors">

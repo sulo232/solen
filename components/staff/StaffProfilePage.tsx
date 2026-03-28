@@ -117,7 +117,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
       </Link>
 
       {/* Hero card */}
-      <div className="rounded-card border border-s-ink/5 dark:border-white/5 p-6 bg-white dark:bg-s-dm-surface shadow-warm-md mb-8">
+      <div className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 bg-white dark:bg-s-dm-surface shadow-warm-md mb-8">
         <div className="flex items-start gap-4">
           {/* Avatar */}
           <div className="w-24 h-24 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
@@ -206,7 +206,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
           <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-4">
             Portfolio
           </h2>
-          <div className="grid grid-cols-3 gap-1.5 rounded-card overflow-hidden">
+          <div className="grid grid-cols-3 gap-1.5 rounded-[12px] overflow-hidden">
             {portfolio.map((img, i) => (
               <button
                 key={img.id}
@@ -240,7 +240,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
             {services.map((s) => (
               <div
                 key={s.id}
-                className="rounded-card border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface flex items-center justify-between"
+                className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface flex items-center justify-between"
               >
                 <div>
                   <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text">
@@ -273,7 +273,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
             {reviews.map((r) => (
               <div
                 key={r.id}
-                className="rounded-card border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface"
+                className="rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 bg-white dark:bg-s-dm-surface"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-8 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden shrink-0 flex items-center justify-center">
@@ -367,7 +367,7 @@ export default function StaffProfilePage({ staffId, salonSlug }: StaffProfilePag
             alt=""
             width={800}
             height={800}
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded-card"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-[12px]"
             onClick={(e) => e.stopPropagation()}
           />
         </div>

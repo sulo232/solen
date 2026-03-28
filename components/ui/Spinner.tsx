@@ -21,7 +21,7 @@ export default function Spinner({ size = "md", invert = false, coral = false, cl
       role="status"
       aria-label="Laden…"
       className={cn(
-        "animate-spin rounded-full border-2",
+        "animate-[spin_0.7s_linear_infinite] rounded-full border-2",
         sizeMap[size],
         invert
           ? "border-white/30 border-t-white"

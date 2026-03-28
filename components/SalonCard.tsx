@@ -56,7 +56,7 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
 
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
-  const t = useTranslations("salon");
+  const t = useTranslations("salon") as any;
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
@@ -65,7 +65,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface shadow-warm-sm hover:shadow-warm-float transition-shadow duration-[250ms]"
+        className="flex items-center gap-3 p-3 rounded-[12px] bg-white dark:bg-s-dm-surface shadow-warm-sm hover:shadow-warm-float transition-shadow duration-[250ms]"
       >
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0 bg-s-bg-sunken">
           {salon.cover_photo_url && (
@@ -120,7 +120,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </span>
       )}
 
-      <Link href={href} className="block w-full h-full group transition-all duration-[250ms]">
+      <Link href={href} className="block w-full h-full group">
         {/* Cover photo */}
         <div className="relative w-full aspect-[3/2] bg-s-bg-sunken overflow-hidden rounded-t-[12px]">
           {salon.cover_photo_url ? (
@@ -254,7 +254,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
           {showAvailability && salon.next_available_slot && (
             <div className="mt-2">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-s-sage-text bg-s-sage-subtle px-2.5 py-1 rounded-pill shadow-card">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-s-sage-text bg-s-sage-subtle px-2.5 py-1 rounded-pill shadow-warm-md">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
                 </svg>
@@ -284,7 +284,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {aiReason && (
               <div className="relative group ml-1">
                 <Sparkles className="w-3.5 h-3.5 text-s-coral cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-card shadow-warm-md border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 z-10">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 z-10">
                   {aiReason}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-white dark:border-t-s-dm-surface" />
                 </div>

@@ -13,7 +13,7 @@ import type { GiftCard } from "@/lib/types";
 export default function MyGiftCardsPage() {
   const locale = useLocale();
   const router = useRouter();
-  const t = useTranslations("Profile");
+  const t = useTranslations("Profile") as any;
   const [cards, setCards] = useState<GiftCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export default function MyGiftCardsPage() {
 
         {/* List */}
         {cards.length === 0 ? (
-          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/10 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
+          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/10 p-8 text-center text-s-ink/40 dark:text-s-dm-text/40">
             <Gift className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm font-medium">Keine Geschenkkarten gefunden</p>
           </div>
@@ -83,7 +83,7 @@ export default function MyGiftCardsPage() {
               const isInactive = isUsedUp || isExpired || !card.is_active;
 
               return (
-                <div key={card.id} className={`bg-white dark:bg-s-dm-surface rounded-card border ${isInactive ? "border-s-ink/5 dark:border-white/5 opacity-60" : "border-s-coral/30 shadow-warm-sm bg-gradient-to-br from-white to-s-coral/5 dark:from-s-dm-surface dark:to-s-coral/5"} p-5 relative overflow-hidden`}>
+                <div key={card.id} className={`bg-white dark:bg-s-dm-surface rounded-[12px] border ${isInactive ? "border-s-ink/5 dark:border-white/5 opacity-60" : "border-s-coral/30 shadow-warm-sm bg-gradient-to-br from-white to-s-coral/5 dark:from-s-dm-surface dark:to-s-coral/5"} p-5 relative overflow-hidden`}>
                   {/* Decorative corner */}
                   {!isInactive && (
                     <div className="absolute -top-6 -right-6 w-16 h-16 bg-s-coral/10 rounded-full blur-xl pointer-events-none" />

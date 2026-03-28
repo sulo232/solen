@@ -33,7 +33,7 @@ export default function SensitivityLog({
   salonId,
   clientId,
 }: SensitivityLogProps) {
-  const t = useTranslations("dashboardWaxing");
+  const t = useTranslations("dashboardWaxing") as any;
   const [entries, setEntries] = useState<SensitivityEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

@@ -37,8 +37,8 @@ export default function BarberClientsPage() {
 
       {loading ? (
         <div className="space-y-6 animate-pulse">
-          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
-          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-card" />
+          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
+          <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px]" />
         </div>
       ) : (
         <div className="space-y-6">

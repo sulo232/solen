@@ -26,7 +26,7 @@ function getTimeLeft(startsAt: string, nowLabel: string): { label: string; minut
 }
 
 export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardProps) {
-  const t = useTranslations("lastMinuteCard");
+  const t = useTranslations("lastMinuteCard") as any;
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(slot.starts_at, t("now")));
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       <Link
         href={`/${locale}/salon/${slot.salon.slug}?slot=${slot.id}`}
         className={cn(
-          "flex flex-col justify-between rounded-card bg-white dark:bg-s-dm-surface shadow-card overflow-hidden h-52 border-l-2",
+          "flex flex-col justify-between rounded-[12px] bg-white dark:bg-s-dm-surface shadow-warm-md overflow-hidden h-52 border-l-2",
           isUrgent
             ? "border-s-coral animate-coral-pulse"
             : "border-s-coral/40"

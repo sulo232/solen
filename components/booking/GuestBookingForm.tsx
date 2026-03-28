@@ -17,7 +17,7 @@ interface GuestBookingFormProps {
 }
 
 export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingFormProps) {
-  const t = useTranslations("guestBookingForm");
+  const t = useTranslations("guestBookingForm") as any;
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+41");
   const [email, setEmail] = useState("");
@@ -40,7 +40,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
   };
 
   return (
-    <div className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4"
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4"
       style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
       <div>
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">

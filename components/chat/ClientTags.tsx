@@ -27,7 +27,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 export default function ClientTags({ salonId, customerId, compact }: ClientTagsProps) {
-  const t = useTranslations("chat.clientTags");
+  const t = useTranslations("chat.clientTags") as any;
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -133,7 +133,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
 
       {/* Add tag form */}
       {showAdd && (
-        <div className="border border-s-ink/10 dark:border-white/10 rounded-card p-3 space-y-2">
+        <div className="border border-s-ink/10 dark:border-white/10 rounded-[12px] p-3 space-y-2">
           {/* Allergy presets */}
           <div className="flex flex-wrap gap-1">
             {allergyPresets.map((preset) => (

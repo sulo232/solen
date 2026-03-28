@@ -14,7 +14,7 @@ interface OpeningHoursStepProps {
 }
 
 export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepProps) {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("onboarding") as any;
   const tc = useTranslations("common");
   const dayLabels = DAY_KEYS.map((k) => t(`hours.days.${k}`));
   const [hours, setHours] = useState<Record<string, { open: string; close: string; break_start?: string; break_end?: string } | null>>(() => {
@@ -82,7 +82,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-12 h-12 rounded-card bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-[12px] bg-s-coral/10 dark:bg-s-coral/20 flex items-center justify-center">
           <Clock size={22} className="text-s-coral" />
         </div>
         <div>
@@ -95,7 +95,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
         </div>
       </div>
 
-      <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-6 space-y-3">
         {DAY_KEYS.map((key, i) => {
           const h = hours[key];
           return (
@@ -117,18 +117,18 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                       type="time"
                       value={h.open}
                       onChange={(e) => update(key, "open", e.target.value)}
-                      className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                      className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                     />
                     <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
                     <input
                       type="time"
                       value={h.close}
                       onChange={(e) => update(key, "close", e.target.value)}
-                      className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                      className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-raised text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                     />
                     {!h.break_start && (
                       <button onClick={() => toggleBreak(key)} className="ml-2 text-xs font-medium text-s-coral hover:text-s-coral/80">
-                        + Pause
+                        {t("hours.addBreak")}
                       </button>
                     )}
                   </div>
@@ -139,17 +139,17 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
                         type="time"
                         value={h.break_start}
                         onChange={(e) => update(key, "break_start", e.target.value)}
-                        className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                        className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                       />
                       <span className="text-s-ink/20 dark:text-s-dm-text/20">–</span>
                       <input
                         type="time"
                         value={h.break_end}
                         onChange={(e) => update(key, "break_end", e.target.value)}
-                        className="px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24"
+                        className="px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 w-24 transition-colors"
                       />
                       <button onClick={() => toggleBreak(key)} className="ml-2 text-xs text-s-ink/30 hover:text-s-coral">
-                        Entfernen
+                        {t("hours.removeBreak")}
                       </button>
                     </div>
                   )}
@@ -167,7 +167,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
       <button
         onClick={handleSave}
         disabled={!hasAnyOpen || saving}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
       >
         {saving && <Spinner size="sm" invert />}
         {tc("save")}
