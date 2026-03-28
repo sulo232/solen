@@ -32,13 +32,16 @@ export default function NearbySalons({ salonSlug }: NearbySalonsProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/salons/${salonSlug}/nearby`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
-        setSalons(d.items ?? []);
+        if (cancelled) return;
+        setSalons(d?.items ?? []);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [salonSlug]);
 
   if (loading) {

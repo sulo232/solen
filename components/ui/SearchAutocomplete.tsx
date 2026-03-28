@@ -80,6 +80,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       const categoryParam = category ? `&category=${category}` : "";
       const cityParam = rawCity ? `&city=${rawCity}` : "";
       const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(q)}${categoryParam}${cityParam}`);
+      if (!res.ok) { setServices([]); setSalons([]); return; }
       const data = await res.json();
       setServices(data.services ?? []);
       setSalons(data.salons ?? []);
@@ -100,6 +101,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
               `/api/search/smart?q=${encodeURIComponent(q)}${categoryParam}${cityParam}`,
               { signal: controller.signal }
             );
+            if (!smartRes.ok) return;
             const smartData = await smartRes.json();
             setSmartResults(smartData.results ?? []);
             if (smartData.suggested_category && smartData.suggested_category !== category) {
@@ -183,7 +185,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder={t("placeholder")}
-          className="w-full pl-9 pr-8 py-2.5 rounded-input bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-sm border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors"
+          className="w-full pl-9 pr-8 py-2.5 rounded-input bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-[6px] border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors duration-150"
         />
         {query && (
           <button
@@ -206,7 +208,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                 <button
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
                     activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                   }`}
                 >
@@ -231,7 +233,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                   <button
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors duration-150 ${
                       activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
@@ -282,7 +284,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                         });
                       }
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
+                    className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
                       activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >

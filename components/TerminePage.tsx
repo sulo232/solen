@@ -214,20 +214,24 @@ export default function TerminePage() {
   const [pastOpen, setPastOpen] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/profile")
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((p) => {
+        if (cancelled) return;
         if (!p?.id) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
           return;
         }
-        return fetch("/api/bookings?limit=100").then((r) => r.json());
+        return fetch("/api/bookings?limit=100").then((r) => r.ok ? r.json() : null);
       })
       .then((d) => {
+        if (cancelled) return;
         if (d) setBookings(d.bookings ?? []);
       })
-      .catch(() => router.push(`/${locale}/auth/login`))
-      .finally(() => setLoading(false));
+      .catch(() => { if (!cancelled) router.push(`/${locale}/auth/login`); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [locale, router, pathname]);
 
   const handleCancelled = (id: string) => {

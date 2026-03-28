@@ -25,8 +25,8 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
 
   useEffect(() => {
     fetch(`/api/analytics/staff-comparison?salon_id=${salonId}`)
-      .then((r) => r.json())
-      .then((d) => setData(d.staff ?? d.items ?? []))
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setData(d.staff ?? d.items ?? []); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [salonId]);
@@ -41,12 +41,12 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">Team-Vergleich</h3>
         <div className="flex rounded-btn border border-s-ink/10 dark:border-white/10 overflow-hidden">
-          <button onClick={() => setViewMode("table")}
-            className={`px-2 py-1 text-xs transition-colors ${viewMode === "table" ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+          <button onClick={() => setViewMode("table")} aria-pressed={viewMode === "table"}
+            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "table" ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
             <Table2 size={12} />
           </button>
-          <button onClick={() => setViewMode("chart")}
-            className={`px-2 py-1 text-xs transition-colors ${viewMode === "chart" ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
+          <button onClick={() => setViewMode("chart")} aria-pressed={viewMode === "chart"}
+            className={`px-2 py-1 text-xs transition-colors duration-150 ${viewMode === "chart" ? "bg-s-coral text-white" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>
             <BarChart2 size={12} />
           </button>
         </div>

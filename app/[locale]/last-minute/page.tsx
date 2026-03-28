@@ -66,9 +66,10 @@ export default function LastMinutePage() {
     setLoading(true);
 
     fetch(`/api/slots/last-minute?limit=${PAGE_SIZE}&offset=0`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (cancelled) return;
+        if (!data) { setLoading(false); return; }
         setSlots(data.items ?? []);
         setTotal(data.total ?? 0);
         setLoading(false);
@@ -105,9 +106,11 @@ export default function LastMinutePage() {
     const nextPage = page + 1;
     setLoadingMore(true);
     try {
-      const data = await fetch(
+      const res = await fetch(
         `/api/slots/last-minute?limit=${PAGE_SIZE}&offset=${(nextPage - 1) * PAGE_SIZE}`
-      ).then((r) => r.json());
+      );
+      if (!res.ok) return;
+      const data = await res.json();
       setSlots((prev) => [...prev, ...(data.items ?? [])]);
       setPage(nextPage);
     } finally {
@@ -197,7 +200,7 @@ export default function LastMinutePage() {
               key={key}
               onClick={() => toggleCategory(key)}
               className={[
-                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-all",
+                "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150",
                 selectedCategories.includes(key)
                   ? "bg-s-coral text-white"
                   : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10]",
@@ -214,7 +217,7 @@ export default function LastMinutePage() {
               key={price}
               onClick={() => setMaxPrice(maxPrice === price ? null : price)}
               className={[
-                "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold transition-all",
+                "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold transition-colors duration-150",
                 maxPrice === price
                   ? "bg-s-coral text-white"
                   : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10]",
@@ -227,7 +230,7 @@ export default function LastMinutePage() {
           {(selectedCategories.length > 0 || maxPrice !== null) && (
             <button
               onClick={() => { setSelectedCategories([]); setMaxPrice(null); }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:border-s-ink/20 hover:text-s-ink/65 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-pill border border-s-ink/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/45 hover:border-s-ink/20 hover:text-s-ink/65 transition-colors duration-150"
             >
               <X size={11} />
               Zurücksetzen
@@ -260,7 +263,7 @@ export default function LastMinutePage() {
             action={
               <Link
                 href={`/${locale}/coiffeur`}
-                className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+                className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150"
                 style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}
               >
                 Coiffeure entdecken
@@ -285,7 +288,7 @@ export default function LastMinutePage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral hover:text-s-coral transition-colors disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 rounded-btn bg-white dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral hover:text-s-coral transition-colors duration-150 disabled:opacity-50"
                 >
                   {loadingMore ? <Spinner size="sm" /> : null}
                   {loadingMore ? "Lade mehr…" : "Mehr laden"}

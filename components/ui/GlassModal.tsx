@@ -105,7 +105,7 @@ export default function GlassModal({
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-s-ink/30 backdrop-blur-sm"
+            className="absolute inset-0 bg-s-ink/30 backdrop-blur-[6px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -130,7 +130,7 @@ export default function GlassModal({
               className
             )}
             style={{
-              background: "#FFFFFF",
+              background: "var(--raised, #FFFFFF)",
               boxShadow: "0 8px 24px rgba(26,18,9,.12), 0 32px 64px rgba(26,18,9,.10)"
             }}
           >
@@ -143,7 +143,7 @@ export default function GlassModal({
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-[8px] text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors"
+                  className="p-1.5 rounded-[8px] text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors duration-150"
                   aria-label={t("close")}
                 >
                   <X size={18} />

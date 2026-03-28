@@ -13,6 +13,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard as SalonCardType } from "@/lib/types";
+import { useCompare } from "@/components/compare/CompareContext";
 
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgOCA1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiNFOEU0REYiLz48L3N2Zz4=";
 
@@ -27,8 +28,6 @@ interface SalonCardProps {
   variant?: "default" | "compact";
   locale?: string;
   showCompare?: boolean;
-  compareSelected?: boolean;
-  onCompareToggle?: (salonId: string) => void;
   showAvailability?: boolean;
   showDistance?: boolean;
   isFavorited?: boolean;
@@ -56,11 +55,13 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
 };
 
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare, compareSelected, onCompareToggle, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = true, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
   const t = useTranslations("salon") as any;
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
+  const { toggleCompare, isInCompare } = useCompare();
+  const compareSelected = isInCompare(salon.id);
 
   if (variant === "compact") {
     return (
@@ -132,7 +133,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               placeholder="blur"
               blurDataURL={BLUR_PLACEHOLDER}
-              className="object-cover transition-transform duration-500"
+              className="object-cover transition-transform duration-[250ms]"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-s-ink/20 text-4xl font-heading">
@@ -162,7 +163,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {salon.categories.slice(0, 2).map((cat) => (
               <span
                 key={cat}
-                className="px-2 py-0.5 rounded-pill bg-s-ink/50 backdrop-blur-sm text-white text-[10px] font-body font-medium capitalize border border-white/10"
+                className="px-2 py-0.5 rounded-pill bg-s-ink/50 backdrop-blur-[6px] text-white text-[10px] font-body font-medium capitalize border border-white/10"
               >
                 {cat}
               </span>
@@ -172,12 +173,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {showCompare && (
             <button
               type="button"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onCompareToggle?.(salon.id); }}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(salon as any); }}
               className={[
-                "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors z-10",
+                "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-colors duration-150 z-10",
                 compareSelected
                   ? "bg-s-coral border-s-coral text-white"
-                  : "bg-white/80 backdrop-blur-sm border-white/60 text-transparent hover:border-s-coral/50",
+                  : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-coral/50",
               ].join(" ")}
             >
               {compareSelected && (
@@ -190,11 +191,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center transition-colors hover:bg-white/90"
+              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/70 backdrop-blur-[6px] flex items-center justify-center transition-colors duration-150 hover:bg-white/90"
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
             >
               <Heart
-                className={`w-4 h-4 transition-colors ${isFavorited ? "fill-s-coral text-s-coral" : "text-s-ink/50"}`}
+                className={`w-4 h-4 transition-colors duration-150 ${isFavorited ? "fill-s-coral text-s-coral" : "text-s-ink/50"}`}
               />
             </button>
           )}
@@ -285,7 +286,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {aiReason && (
               <div className="relative group ml-1">
                 <Sparkles className="w-3.5 h-3.5 text-s-coral cursor-help" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 z-10">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150 z-10">
                   {aiReason}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-white dark:border-t-s-dm-surface" />
                 </div>

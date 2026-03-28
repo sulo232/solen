@@ -201,8 +201,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     setLoading(true);
     setPage(1);
     fetch(buildUrl(1))
-      .then((r) => r.json())
-      .then((data) => { if (cancelled) return; setSalons(data.items ?? []); setTotal(data.total ?? 0); setLoading(false); })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (cancelled) return; if (!data) { setLoading(false); return; } setSalons(data.items ?? []); setTotal(data.total ?? 0); setLoading(false); })
       .catch(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [buildUrl]);
@@ -212,8 +212,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     setDirLoading(true);
     setDirPage(1);
     fetch(buildDirUrl(1))
-      .then((r) => r.json())
-      .then((data) => { if (cancelled) return; setDirEntries(data.items ?? []); setDirTotal(data.total ?? 0); setDirLoading(false); })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (cancelled) return; if (!data) { setDirLoading(false); return; } setDirEntries(data.items ?? []); setDirTotal(data.total ?? 0); setDirLoading(false); })
       .catch(() => { if (!cancelled) setDirLoading(false); });
     return () => { cancelled = true; };
   }, [buildDirUrl]);
@@ -222,7 +222,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     const nextPage = page + 1;
     setLoadingMore(true);
     try {
-      const data = await fetch(buildUrl(nextPage)).then((r) => r.json());
+      const res = await fetch(buildUrl(nextPage));
+      if (!res.ok) return;
+      const data = await res.json();
       setSalons((prev) => [...prev, ...(data.items ?? [])]);
       setPage(nextPage);
     } finally { setLoadingMore(false); }
@@ -232,7 +234,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     const nextPage = dirPage + 1;
     setDirLoadingMore(true);
     try {
-      const data = await fetch(buildDirUrl(nextPage)).then((r) => r.json());
+      const res = await fetch(buildDirUrl(nextPage));
+      if (!res.ok) return;
+      const data = await res.json();
       setDirEntries((prev) => [...prev, ...(data.items ?? [])]);
       setDirPage(nextPage);
     } finally { setDirLoadingMore(false); }

@@ -18,12 +18,19 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-60 lg:hidden">
           <motion.div
-            className="absolute inset-0 bg-s-ink/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-s-ink/50 backdrop-blur-[6px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -31,7 +38,7 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
           />
           <motion.div
             className="absolute bottom-0 inset-x-0 rounded-t-[28px] overflow-hidden overscroll-contain max-h-[90vh] overflow-y-auto"
-            style={{ background: "rgba(250,246,239,.96)", backdropFilter: "blur(28px) saturate(1.3)",
+            style={{ background: "var(--glass-bg, rgba(250,246,239,.96))", backdropFilter: "blur(28px) saturate(1.3)",
                      WebkitBackdropFilter: "blur(28px) saturate(1.3)",
                      boxShadow: "0 -8px 32px rgba(26,18,9,.12), var(--glass-shadow-inset)" }}
             initial={{ y: "100%" }}

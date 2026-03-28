@@ -243,8 +243,9 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
     const from = isoDate(todayDate);
     const to = isoDate(addDays(todayDate, 30));
     fetch(`/api/availability/${salonId}?date_from=${from}&date_to=${to}`)
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
+        if (!d) return;
         const booked = new Set<string>(d.fully_booked_dates ?? []);
         setFullyBookedDates(booked);
         if (booked.has(isoDate(todayDate))) {
@@ -287,8 +288,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   // Fetch staff list once
   useEffect(() => {
     fetch(`/api/salons/${salonId}`)
-      .then((r) => r.json())
-      .then((d) => { setStaffList(d.staff ?? []); })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d) setStaffList(d.staff ?? []); })
       .catch(() => {});
   }, [salonId]);
 
@@ -335,7 +336,9 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       const params = new URLSearchParams({ salon_id: salonId, date: isoDate(date) });
       if (serviceId) params.set("service_id", serviceId);
       if (selectedStaff !== "any") params.set("staff_member_id", selectedStaff);
-      const data = await fetch(`/api/slots?${params}`).then((r) => r.json());
+      const res = await fetch(`/api/slots?${params}`);
+      if (!res.ok) return;
+      const data = await res.json();
       const items: SlotWithRelations[] = data.items ?? [];
       setSlots(items);
       if (slotId) {

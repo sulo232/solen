@@ -94,7 +94,7 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
           />
           <Bar dataKey="revenue" fill="#E8624A" radius={[4, 4, 0, 0]} maxBarSize={28} name="revenue" />
           <Area dataKey="forecastHigh" fill="#D4870A" fillOpacity={0.08} stroke="none" />
-          <Area dataKey="forecastLow" fill="white" fillOpacity={1} stroke="none" />
+          <Area dataKey="forecastLow" fill="var(--raised, #FFFFFF)" fillOpacity={1} stroke="none" />
           <Line dataKey="forecast" stroke="#D4870A" strokeWidth={2} strokeDasharray="5 3" dot={{ r: 3, fill: "#D4870A" }} name="forecast" />
         </ComposedChart>
       </ResponsiveContainer>

@@ -28,9 +28,12 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/categories")
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
+        if (cancelled) return;
+        if (!d) { setLoading(false); return; }
         setCategories(d.items ?? []);
         setLoading(false);
         // Auto-expand parent of active slug
@@ -42,7 +45,8 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
           }
         }
       })
-      .catch(() => setLoading(false));
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [activeSlug]);
 
   const toggleExpand = (id: string) => {
@@ -74,7 +78,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
           key={cat.id}
           href={`/${locale}/behandlungen/${cat.slug}`}
           className={[
-            "px-3 py-1.5 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-all duration-200 border flex items-center shrink-0",
+            "px-3 py-1.5 rounded-pill text-xs font-body font-medium whitespace-nowrap transition-colors duration-150 border flex items-center shrink-0",
             activeSlug === cat.slug
               ? "bg-s-coral text-white border-s-coral"
               : "bg-white/70 dark:bg-s-dm-surface backdrop-blur-sm text-s-ink/70 dark:text-s-dm-text/70 border-white/60 dark:border-white/10 hover:border-s-coral/50",
