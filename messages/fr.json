@@ -1670,6 +1670,20 @@
       "done": "Terminé",
       "noShow": "Absent",
       "cancel": "Annuler"
+    },
+    "express": {
+      "lastCut": "Dernier rendez-vous",
+      "daysAgo": "il y a {days} jours",
+      "staffAt": "avec",
+      "rebook": "Réserver à nouveau",
+      "searching": "Recherche du prochain créneau...",
+      "confirm": "Confirmer",
+      "booking": "Réservation en cours...",
+      "booked": "Rendez-vous confirmé!",
+      "retry": "Réessayer",
+      "errorNoSlot": "Aucun créneau disponible",
+      "errorNetwork": "Erreur réseau",
+      "errorBooking": "Échec de la réservation"
     }
   },
   "Profile": {
@@ -2588,7 +2602,37 @@
     "plSubtitle": "8 dernières semaines",
     "appointments": "Rendez-vous",
     "walkIns": "Walk-ins",
-    "noData": "Aucune donnée disponible"
+    "noData": "Aucune donnée disponible",
+    "smartReminders": "Rappels intelligents",
+    "dueThisWeek": "à envoyer cette semaine",
+    "noReminders": "Aucun rappel en attente",
+    "daysOverdue": "{days} jours de retard",
+    "dueToday": "À envoyer aujourd'hui",
+    "cycle": "Cycle",
+    "lastVisit": "Dernière visite",
+    "sent": "Envoyé",
+    "recentlySent": "Envoyé récemment",
+    "send": "Envoyer",
+    "sending": "Envoi...",
+    "confirmTitle": "Envoyer le rappel ?",
+    "confirmDesc": "Envoyer un rappel à {name} ?",
+    "noFavorite": "Pas de favori",
+    "headDiagramTitle": "Diagramme des zones",
+    "diagramComingSoon": "Diagrammes bientôt disponibles",
+    "guardSize": "Taille de sabot",
+    "fadeBlueprint": "Plan de dégradé",
+    "textMode": "Texte",
+    "visualMode": "Visuel",
+    "liveQueue": "File en direct",
+    "expressMenu": "Walk-in express",
+    "walkinAnalyticsTitle": "Analyse walk-in",
+    "walkinRate": "Taux walk-in",
+    "avgWait": "Attente moy.",
+    "conversionRate": "Conversion",
+    "abandonmentRate": "Taux d'abandon",
+    "chairUtilization": "Utilisation des postes",
+    "week": "Semaine",
+    "month": "Mois"
   },
   "aiArtGenerator": {
     "title": "Générateur AI Nail Art",
@@ -2767,5 +2811,14 @@
       "ai_desc": "Répondez à 3 courtes questions — nous vous recommandons le salon idéal.",
       "ai_cta": "Recommandation IA →"
     }
+  },
+  "marketing": {
+    "title": "Marketing",
+    "subtitle": "Forfaits, Cartes cadeaux, Parrainage & Promotions",
+    "tab_packages": "Forfaits",
+    "tab_gift_cards": "Cartes cadeaux",
+    "tab_referrals": "Parrainage",
+    "tab_promos": "Promotions",
+    "loading_salon": "Chargement du salon..."
   }
 }

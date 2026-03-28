@@ -1670,6 +1670,20 @@
       "done": "Fatto",
       "noShow": "Non presentato",
       "cancel": "Annulla"
+    },
+    "express": {
+      "lastCut": "Ultimo appuntamento",
+      "daysAgo": "{days} giorni fa",
+      "staffAt": "con",
+      "rebook": "Prenota di nuovo",
+      "searching": "Ricerca del prossimo slot disponibile...",
+      "confirm": "Conferma",
+      "booking": "Prenotazione in corso...",
+      "booked": "Appuntamento prenotato!",
+      "retry": "Riprova",
+      "errorNoSlot": "Nessuno slot disponibile",
+      "errorNetwork": "Errore di rete",
+      "errorBooking": "Prenotazione fallita"
     }
   },
   "Profile": {
@@ -2588,7 +2602,37 @@
     "plSubtitle": "Ultime 8 settimane",
     "appointments": "Appuntamenti",
     "walkIns": "Walk-in",
-    "noData": "Nessun dato disponibile"
+    "noData": "Nessun dato disponibile",
+    "smartReminders": "Promemoria intelligenti",
+    "dueThisWeek": "da inviare questa settimana",
+    "noReminders": "Nessun promemoria in scadenza",
+    "daysOverdue": "{days} giorni di ritardo",
+    "dueToday": "In scadenza oggi",
+    "cycle": "Ciclo",
+    "lastVisit": "Ultima visita",
+    "sent": "Inviato",
+    "recentlySent": "Inviato di recente",
+    "send": "Invia",
+    "sending": "Invio...",
+    "confirmTitle": "Inviare il promemoria?",
+    "confirmDesc": "Inviare un promemoria a {name}?",
+    "noFavorite": "Nessun preferito",
+    "headDiagramTitle": "Diagramma zone",
+    "diagramComingSoon": "Diagrammi disponibili a breve",
+    "guardSize": "Misura pettine",
+    "fadeBlueprint": "Schema fade",
+    "textMode": "Testo",
+    "visualMode": "Visuale",
+    "liveQueue": "Coda in diretta",
+    "expressMenu": "Walk-in express",
+    "walkinAnalyticsTitle": "Analisi walk-in",
+    "walkinRate": "Tasso walk-in",
+    "avgWait": "Attesa media",
+    "conversionRate": "Conversione",
+    "abandonmentRate": "Tasso abbandono",
+    "chairUtilization": "Utilizzo postazione",
+    "week": "Settimana",
+    "month": "Mese"
   },
   "aiArtGenerator": {
     "title": "Generatore AI Nail Art",
@@ -2767,5 +2811,14 @@
       "ai_desc": "Rispondi a 3 brevi domande — ti raccomandiamo il salon giusto per te.",
       "ai_cta": "Raccomandazione IA →"
     }
+  },
+  "marketing": {
+    "title": "Marketing",
+    "subtitle": "Pacchetti, Buoni regalo, Referral & Promozioni",
+    "tab_packages": "Pacchetti",
+    "tab_gift_cards": "Buoni regalo",
+    "tab_referrals": "Referral",
+    "tab_promos": "Promozioni",
+    "loading_salon": "Caricamento salone..."
   }
 }

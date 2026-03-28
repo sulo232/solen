@@ -1704,6 +1704,20 @@
       "done": "Fertig",
       "noShow": "Nicht erschienen",
       "cancel": "Abbrechen"
+    },
+    "express": {
+      "lastCut": "Letzter Termin",
+      "daysAgo": "vor {days} Tagen",
+      "staffAt": "bei",
+      "rebook": "Gleich nochmal buchen",
+      "searching": "Suche nächsten verfügbaren Slot...",
+      "confirm": "Bestätigen",
+      "booking": "Wird gebucht...",
+      "booked": "Termin gebucht!",
+      "retry": "Erneut versuchen",
+      "errorNoSlot": "Kein Slot verfügbar",
+      "errorNetwork": "Netzwerkfehler",
+      "errorBooking": "Buchung fehlgeschlagen"
     }
   },
   "Profile": {
@@ -2622,7 +2636,37 @@
     "plSubtitle": "Letzte 8 Wochen",
     "appointments": "Termine",
     "walkIns": "Walk-ins",
-    "noData": "Keine Daten verfügbar"
+    "noData": "Keine Daten verfügbar",
+    "smartReminders": "Smart Reminders",
+    "dueThisWeek": "fällig diese Woche",
+    "noReminders": "Keine Erinnerungen fällig",
+    "daysOverdue": "{days} Tage überfällig",
+    "dueToday": "Heute fällig",
+    "cycle": "Zyklus",
+    "lastVisit": "Letzter Besuch",
+    "sent": "Gesendet",
+    "recentlySent": "Kürzlich gesendet",
+    "send": "Senden",
+    "sending": "Senden...",
+    "confirmTitle": "Erinnerung senden?",
+    "confirmDesc": "Soll eine Erinnerung an {name} geschickt werden?",
+    "noFavorite": "Kein Favorit",
+    "headDiagramTitle": "Zonen-Diagramm",
+    "diagramComingSoon": "Diagramme demnächst verfügbar",
+    "guardSize": "Aufsatzgrösse",
+    "fadeBlueprint": "Fade Blueprint",
+    "textMode": "Textmodus",
+    "visualMode": "Visueller Modus",
+    "liveQueue": "Live Queue",
+    "expressMenu": "Express Walk-in",
+    "walkinAnalyticsTitle": "Walk-in Analyse",
+    "walkinRate": "Walk-in Quote",
+    "avgWait": "Ø Wartezeit",
+    "conversionRate": "Conversion",
+    "abandonmentRate": "Abbruchrate",
+    "chairUtilization": "Auslastung",
+    "week": "Woche",
+    "month": "Monat"
   },
   "aiArtGenerator": {
     "title": "AI Nail Art Generator",
@@ -2801,5 +2845,14 @@
       "ai_desc": "Beantworte 3 kurze Fragen — wir empfehlen dir den passenden Salon.",
       "ai_cta": "KI-Empfehlung →"
     }
+  },
+  "marketing": {
+    "title": "Marketing",
+    "subtitle": "Pakete, Geschenkkarten, Empfehlungen & Aktionen",
+    "tab_packages": "Pakete",
+    "tab_gift_cards": "Geschenkkarten",
+    "tab_referrals": "Empfehlungen",
+    "tab_promos": "Aktionen",
+    "loading_salon": "Salon wird geladen..."
   }
 }

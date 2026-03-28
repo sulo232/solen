@@ -1693,6 +1693,20 @@
       "done": "Done",
       "noShow": "No-show",
       "cancel": "Cancel"
+    },
+    "express": {
+      "lastCut": "Last appointment",
+      "daysAgo": "{days} days ago",
+      "staffAt": "with",
+      "rebook": "Book again",
+      "searching": "Finding next available slot...",
+      "confirm": "Confirm",
+      "booking": "Booking...",
+      "booked": "Appointment booked!",
+      "retry": "Try again",
+      "errorNoSlot": "No slot available",
+      "errorNetwork": "Network error",
+      "errorBooking": "Booking failed"
     }
   },
   "Profile": {
@@ -2611,7 +2625,37 @@
     "plSubtitle": "Last 8 weeks",
     "appointments": "Appointments",
     "walkIns": "Walk-ins",
-    "noData": "No data available"
+    "noData": "No data available",
+    "smartReminders": "Smart Reminders",
+    "dueThisWeek": "due this week",
+    "noReminders": "No reminders due",
+    "daysOverdue": "{days} days overdue",
+    "dueToday": "Due today",
+    "cycle": "Cycle",
+    "lastVisit": "Last visit",
+    "sent": "Sent",
+    "recentlySent": "Recently sent",
+    "send": "Send",
+    "sending": "Sending...",
+    "confirmTitle": "Send reminder?",
+    "confirmDesc": "Send a reminder to {name}?",
+    "noFavorite": "No favourite",
+    "headDiagramTitle": "Zone diagram",
+    "diagramComingSoon": "Diagrams coming soon",
+    "guardSize": "Guard size",
+    "fadeBlueprint": "Fade Blueprint",
+    "textMode": "Text",
+    "visualMode": "Visual",
+    "liveQueue": "Live Queue",
+    "expressMenu": "Express Walk-in",
+    "walkinAnalyticsTitle": "Walk-in Analytics",
+    "walkinRate": "Walk-in rate",
+    "avgWait": "Avg. wait time",
+    "conversionRate": "Conversion",
+    "abandonmentRate": "Abandonment rate",
+    "chairUtilization": "Chair utilisation",
+    "week": "Week",
+    "month": "Month"
   },
   "aiArtGenerator": {
     "title": "AI Nail Art Generator",
@@ -2790,5 +2834,14 @@
       "ai_desc": "Answer 3 short questions — we recommend the right salon for you.",
       "ai_cta": "AI recommendation →"
     }
+  },
+  "marketing": {
+    "title": "Marketing",
+    "subtitle": "Packages, Gift Cards, Referrals & Promotions",
+    "tab_packages": "Packages",
+    "tab_gift_cards": "Gift Cards",
+    "tab_referrals": "Referrals",
+    "tab_promos": "Promotions",
+    "loading_salon": "Loading salon..."
   }
 }
