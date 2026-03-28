@@ -2496,7 +2496,8 @@
       "salons": "Salons",
       "aiSuggestions": "AI Suggestions",
       "didYouMean": "Did you mean",
-      "switch": "Switch"
+      "switch": "Switch",
+      "noResults": "No results for \"{query}\""
     },
     "priceSlider": {
       "minPrice": "Minimum price",

@@ -2507,7 +2507,8 @@
       "salons": "Salons",
       "aiSuggestions": "KI-Vorschläge",
       "didYouMean": "Meintest du",
-      "switch": "Wechseln"
+      "switch": "Wechseln",
+      "noResults": "Keine Ergebnisse für \"{query}\""
     },
     "priceSlider": {
       "minPrice": "Mindestpreis",

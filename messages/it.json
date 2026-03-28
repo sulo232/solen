@@ -2473,7 +2473,8 @@
       "salons": "Saloni",
       "aiSuggestions": "Suggerimenti IA",
       "didYouMean": "Intendevi",
-      "switch": "Cambia"
+      "switch": "Cambia",
+      "noResults": "Nessun risultato per \"{query}\""
     },
     "priceSlider": {
       "minPrice": "Prezzo minimo",

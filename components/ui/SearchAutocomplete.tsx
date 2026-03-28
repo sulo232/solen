@@ -174,9 +174,11 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
     }
   };
 
+  const noResultsMsg = t("noResults", { query: query });
+
   return (
     <div ref={containerRef} className="relative w-full max-w-md">
-      <div className="relative">
+      <div className="relative glass-search rounded-input">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
@@ -185,7 +187,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           onKeyDown={handleKeyDown}
           onFocus={() => { if (services.length || salons.length) setOpen(true); }}
           placeholder={t("placeholder")}
-          className="w-full pl-9 pr-8 py-2.5 rounded-input bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-[6px] border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 transition-colors duration-150"
+          className="w-full pl-9 pr-8 py-2.5 bg-transparent text-sm text-s-ink dark:text-s-dm-text placeholder:italic placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/30 focus:outline-none focus-visible:shadow-none focus-visible:border-transparent transition-colors duration-150"
         />
         {query && (
           <button
@@ -198,7 +200,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       </div>
 
       {open && totalItems > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-[6px] rounded-[12px] shadow-surface border border-s-ink/5 dark:border-white/10 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float overflow-hidden z-50">
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
@@ -209,7 +211,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                   key={service.id}
                   onClick={() => handleServiceClick(service)}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                    activeIndex === i ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
+                    activeIndex === i ? "bg-s-coral/[0.06] text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                   }`}
                 >
                   <span className="font-medium truncate">{service.name_de}</span>
@@ -234,7 +236,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                     key={salon.id}
                     onClick={() => handleSalonClick(salon)}
                     className={`w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-coral/[0.06] text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0">
@@ -285,7 +287,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                       }
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-150 ${
-                      activeIndex === idx ? "bg-s-coral/10 text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
+                      activeIndex === idx ? "bg-s-coral/[0.06] text-s-coral" : "text-s-ink/80 hover:bg-s-bg-surface"
                     }`}
                   >
                     <span className="font-medium truncate">{result.name}</span>
@@ -318,8 +320,8 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
       )}
 
       {open && totalItems === 0 && query.length >= 1 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white/95 dark:bg-s-dm-surface/95 backdrop-blur-[6px] rounded-[12px] shadow-surface border border-s-ink/5 dark:border-white/10 z-50 px-4 py-5 text-center">
-          <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">Keine Ergebnisse für „{query}“</p>
+        <div className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float z-50 px-4 py-5 text-center">
+          <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">{noResultsMsg}</p>
         </div>
       )}
     </div>

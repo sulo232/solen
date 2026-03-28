@@ -130,11 +130,7 @@ export default function HomeSearchBar() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto" role="search" aria-label={t("formLabel")}>
-      <div className="rounded-card overflow-hidden"
-        style={{ background: "var(--glass-bg-strong)", backdropFilter: "blur(24px) saturate(1.3)",
-                 WebkitBackdropFilter: "blur(24px) saturate(1.3)",
-                 border: "1px solid var(--glass-bg-card)",
-                 boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07), var(--glass-shadow-inset)" }}>
+      <div className="glass-search rounded-card overflow-hidden shadow-v5-float">
         
         <div className="flex flex-col md:flex-row items-stretch">
           
@@ -143,7 +139,7 @@ export default function HomeSearchBar() {
             <Search size={18} className="absolute left-5 text-s-ink/40" aria-hidden="true" />
             <input type="text" value={query} onChange={(e) => { setQuery(e.target.value); setSelectedCategory(null); }}
               placeholder={t("servicePlaceholder")} aria-label={t("servicePlaceholder")}
-              className={`w-full py-5 md:py-6 pl-12 pr-4 text-sm md:text-[15px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/40 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "ring-2 ring-s-coral/30 ring-inset" : ""}`} />
+              className={`w-full py-5 md:py-6 pl-12 pr-4 text-sm md:text-[15px] font-body text-s-ink dark:text-s-dm-text placeholder:italic placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none ${categoryHint ? "ring-2 ring-s-coral/30 ring-inset" : ""}`} />
             
             {/* If they type something that maps exactly, show pill? For now just keep input */}
           </div>
