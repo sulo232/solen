@@ -1050,7 +1050,9 @@
     "outcomeNotes": "Follow-up Notes",
     "outcomeNextVisit": "Next Visit",
     "outcomeSave": "Save Outcome",
-    "outcomeEmpty": "No treatment outcomes yet"
+    "outcomeEmpty": "No treatment outcomes yet",
+    "add_product": "Add product",
+    "remove_product": "Remove product"
   },
   "dashboardMakeup": {
     "eyebrow": "Makeup",

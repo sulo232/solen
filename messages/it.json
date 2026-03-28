@@ -1027,7 +1027,9 @@
     "outcomeNotes": "Note di follow-up",
     "outcomeNextVisit": "Prossima visita",
     "outcomeSave": "Salva esito",
-    "outcomeEmpty": "Nessun esito di trattamento"
+    "outcomeEmpty": "Nessun esito di trattamento",
+    "add_product": "Aggiungi prodotto",
+    "remove_product": "Rimuovi prodotto"
   },
   "dashboardMakeup": {
     "eyebrow": "Trucco",

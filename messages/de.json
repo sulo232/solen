@@ -1061,7 +1061,9 @@
     "outcomeNotes": "Folgehinweise",
     "outcomeNextVisit": "Nächster Besuch",
     "outcomeSave": "Ergebnis speichern",
-    "outcomeEmpty": "Noch keine Behandlungsergebnisse"
+    "outcomeEmpty": "Noch keine Behandlungsergebnisse",
+    "add_product": "Produkt hinzufügen",
+    "remove_product": "Produkt entfernen"
   },
   "dashboardMakeup": {
     "eyebrow": "Makeup",

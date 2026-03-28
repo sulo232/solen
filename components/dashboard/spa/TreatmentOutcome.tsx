@@ -42,10 +42,17 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
 
   useEffect(() => {
     if (!clientId) return;
-    fetch(`/api/dashboard/spa/treatment-outcomes?salon_id=${salonId}&client_id=${clientId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.outcomes) setOutcomes(d.outcomes); })
-      .catch(() => {});
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/dashboard/spa/treatment-outcomes?salon_id=${salonId}&client_id=${clientId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled && d?.outcomes) setOutcomes(d.outcomes);
+      } catch {}
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId, clientId]);
 
   const handleSave = async () => {
@@ -87,14 +94,14 @@ export default function TreatmentOutcome({ salonId, clientId, bookingId }: Treat
   const inputCls = "w-full px-3 py-2 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral";
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-blue">
           {t("outcomeTitle")}
         </p>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors"
+          className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors duration-150"
           aria-label={t("outcomeAdd")}
         >
           <Plus size={12} /> {t("outcomeAdd")}

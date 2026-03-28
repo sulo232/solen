@@ -44,11 +44,20 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
   useEffect(() => {
     if (!clientId) return;
-    fetch(`/api/dashboard/spa/wellness-journal?client_id=${clientId}`)
-      .then((r) => (r.ok ? r.json() : { data: [] }))
-      .then((d) => setEntries(d.data ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/dashboard/spa/wellness-journal?client_id=${clientId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled) setEntries(d.data ?? []);
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId, clientId]);
 
   const resetForm = () => {
@@ -116,7 +125,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
       {/* Add Entry Form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
           <div className="flex items-center justify-between mb-1">
             <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("new_entry")}</p>
             <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 dark:text-s-dm-text/30 hover:text-s-ink dark:hover:text-s-dm-text transition-colors">
@@ -182,6 +191,8 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 <button
                   key={area}
                   onClick={() => toggleTension(area)}
+                  aria-label={t(`tension_area.${area}` as any)}
+                  aria-pressed={form.tension_areas.includes(area)}
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.tension_areas.includes(area)
                       ? "bg-s-coral text-white"
@@ -240,6 +251,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
               />
               <button
                 onClick={addProduct}
+                aria-label={t("add_product")}
                 className="px-2 py-1 rounded-[8px] bg-s-ink/[0.05] dark:bg-s-dm-text/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09] transition-colors duration-150"
               >
                 <Plus size={14} />
@@ -250,7 +262,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 {form.products_used.map((p) => (
                   <span key={p} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[8px] bg-s-sage-subtle dark:bg-s-sage/10 text-[10px] text-s-sage-text dark:text-s-sage">
                     {p}
-                    <button onClick={() => setForm((prev) => ({ ...prev, products_used: prev.products_used.filter((x) => x !== p) }))} className="text-s-sage-text/50 hover:text-s-sage-text">
+                    <button onClick={() => setForm((prev) => ({ ...prev, products_used: prev.products_used.filter((x) => x !== p) }))} aria-label={t("remove_product")} className="text-s-sage-text/50 hover:text-s-sage-text">
                       <X size={10} />
                     </button>
                   </span>
@@ -291,6 +303,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
           <div className="flex gap-2 pt-1">
             <button
               onClick={resetForm}
+              aria-label={t("cancel")}
               className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 transition-colors duration-150"
             >
               {t("cancel")}
@@ -310,12 +323,12 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
       {/* Timeline */}
       {entries.length === 0 && !showForm ? (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] border-dashed p-6 text-center bg-white dark:bg-s-dm-surface">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] border-dashed p-6 text-center bg-[--raised] dark:bg-s-dm-surface">
           <BookHeart size={20} className="mx-auto mb-2 text-s-ink/20 dark:text-s-dm-text/20" />
           <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("no_entries")}</p>
         </div>
       ) : (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-[--raised] dark:bg-s-dm-surface overflow-hidden">
           {entries.map((e, i) => (
             <div
               key={e.id}

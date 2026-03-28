@@ -39,11 +39,20 @@ export default function RoomManager({ salonId }: { salonId: string }) {
   });
 
   useEffect(() => {
-    fetch("/api/dashboard/spa/rooms")
-      .then((r) => (r.ok ? r.json() : { data: [] }))
-      .then((d) => setRooms(d.data ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch("/api/dashboard/spa/rooms");
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled) setRooms(d.data ?? []);
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId]);
 
   const resetForm = () => {
@@ -91,8 +100,10 @@ export default function RoomManager({ salonId }: { salonId: string }) {
   };
 
   const handleDelete = async (id: string) => {
-    const res = await fetch(`/api/dashboard/spa/rooms?id=${id}`, { method: "DELETE" });
-    if (res.ok) setRooms((prev) => prev.filter((r) => r.id !== id));
+    try {
+      const res = await fetch(`/api/dashboard/spa/rooms?id=${id}`, { method: "DELETE" });
+      if (res.ok) setRooms((prev) => prev.filter((r) => r.id !== id));
+    } catch {}
   };
 
   const toggleEquipment = (item: string) => {
@@ -129,7 +140,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
           <div className="flex items-center justify-between mb-1">
             <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
               {editingId ? t("edit_room") : t("new_room")}
@@ -227,6 +238,8 @@ export default function RoomManager({ salonId }: { salonId: string }) {
                 <button
                   key={eq}
                   onClick={() => toggleEquipment(eq)}
+                  aria-label={t(`equipment_item.${eq}` as any)}
+                  aria-pressed={form.equipment.includes(eq)}
                   className={`px-2.5 py-1 rounded-[8px] text-[10px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                     form.equipment.includes(eq)
                       ? "bg-s-coral text-white"
@@ -243,6 +256,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
           <div className="flex gap-2 pt-1">
             <button
               onClick={resetForm}
+              aria-label={t("cancel")}
               className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 transition-colors duration-150"
             >
               {t("cancel")}
@@ -262,12 +276,12 @@ export default function RoomManager({ salonId }: { salonId: string }) {
 
       {/* Room List */}
       {rooms.length === 0 && !showForm ? (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] border-dashed p-6 text-center bg-white dark:bg-s-dm-surface">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] border-dashed p-6 text-center bg-[--raised] dark:bg-s-dm-surface">
           <DoorOpen size={20} className="mx-auto mb-2 text-s-ink/20 dark:text-s-dm-text/20" />
           <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("no_rooms")}</p>
         </div>
       ) : (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-white dark:bg-s-dm-surface overflow-hidden">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] bg-[--raised] dark:bg-s-dm-surface overflow-hidden">
           {rooms.map((room, i) => {
             const utilization = 0; // Placeholder — real utilization requires booking query
             return (
