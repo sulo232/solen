@@ -102,8 +102,8 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Dynamic Scaling based on Center or Hover position */}
-                <div 
-                  className={`w-full h-full transition-all duration-300 origin-center transform 
+                <div
+                  className={`w-full h-full rounded-[16px] overflow-hidden transition-[transform,opacity] duration-[250ms] origin-center transform
                     ${isExpanded ? "scale-[1.03] z-10 opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
                   `}
                 >

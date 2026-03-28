@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, ExternalLink, Play } from "lucide-react";
 import { motion } from "framer-motion";
 import type { DiscoveryItem } from "@/lib/types";
 import SourceBadge from "./SourceBadge";
@@ -24,24 +24,6 @@ interface DetailPageProps {
   isAuthenticated: boolean;
 }
 
-function extractVideoId(url: string | null, embedHtml?: string | null): string | null {
-  // Try extracting from the URL first
-  if (url) {
-    const urlMatch = url.match(/\/video\/(\d+)/);
-    if (urlMatch) return urlMatch[1];
-    const embedMatch = url.match(/\/embed\/v2\/(\d+)/);
-    if (embedMatch) return embedMatch[1];
-  }
-  // Fallback: extract from embed HTML (data-video-id="...")
-  if (embedHtml) {
-    const htmlMatch = embedHtml.match(/data-video-id="(\d+)"/);
-    if (htmlMatch) return htmlMatch[1];
-    // Also check cite URL in blockquote
-    const citeMatch = embedHtml.match(/\/video\/(\d+)/);
-    if (citeMatch) return citeMatch[1];
-  }
-  return null;
-}
 
 function formatDate(dateStr: string, locale: string): string {
   try {
@@ -67,7 +49,6 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
   const dt = DL[locale] ?? DL.en;
   // Consider it a video if media_type is tiktok OR if tiktok data exists
   const isVideo = item.media_type === "tiktok" || !!item.tiktok_url || !!item.tiktok_embed_html;
-  const videoId = extractVideoId(item.tiktok_url, item.tiktok_embed_html);
   const displayImage = item.image_url || item.tiktok_thumbnail_url;
 
   return (
@@ -88,14 +69,34 @@ export default function DetailPage({ item, locale, isAuthenticated }: DetailPage
         transition={{ duration: 0.35, delay: 0.05 }}
         className="relative rounded-[16px] overflow-hidden bg-s-ink"
       >
-        {isVideo && videoId ? (
+        {isVideo && (item.tiktok_thumbnail_url || displayImage) ? (
           <div className="relative w-full aspect-[9/16] max-h-[80vh] bg-s-ink">
-            <iframe
-              src={`https://www.tiktok.com/embed/v2/${videoId}?lang=${locale}`}
-              className="absolute inset-0 w-full h-full border-0"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
+            <Image
+              src={item.tiktok_thumbnail_url || displayImage!}
+              alt={item.alt_text || item.style_name || "TikTok"}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 672px"
+              priority
             />
+            {/* TikTok play overlay — opens in new tab instead of embedding (avoids GDPR cookie wall) */}
+            {item.tiktok_url && (
+              <a
+                href={item.tiktok_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-s-ink/30 hover:bg-s-ink/40 transition-colors duration-150"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+                  <Play size={22} className="text-white ml-1" fill="white" />
+                </div>
+                <span className="flex items-center gap-1.5 text-white text-xs font-heading font-semibold bg-s-ink/50 backdrop-blur-sm px-3 py-1.5 rounded-pill">
+                  <ExternalLink size={12} />
+                  Auf TikTok ansehen
+                </span>
+              </a>
+            )}
           </div>
         ) : displayImage ? (
           <div className="relative aspect-[3/4] max-h-[70vh]">
