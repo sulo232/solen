@@ -53,16 +53,22 @@ export async function POST(req: NextRequest) {
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { shape, style, colors, length, material, skinTone, shotType } = validated;
 
+  // Map extended shotType values to valid NailShotType
+  const validShotTypes: Record<string, "hero" | "detail" | "lifestyle"> = {
+    hero: "hero", top_down: "detail", macro: "detail", lifestyle: "lifestyle",
+  };
+  const resolvedShotType = validShotTypes[shotType ?? "hero"] ?? "hero";
+
   try {
     // 9. Build prompt using template system
     const prompt = buildNailPrompt({
-      shape,
+      shape: shape ?? "",
       length: length || "medium",
       material: material || "gel",
-      style,
-      colors,
-      skinTone,
-      shotType: shotType || "hero",
+      style: style ?? "",
+      colors: Array.isArray(colors) ? colors.join(", ") : "",
+      skinTone: skinTone ?? undefined,
+      shotType: resolvedShotType,
     });
 
     // 10. Call fal.ai via REST

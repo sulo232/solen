@@ -354,6 +354,17 @@
       "language_placeholder": "ex: Allemand, Français...",
       "notes_label": "Autres Notes",
       "notes_placeholder": "Informations complémentaires..."
+    },
+    "packageRedeemBanner": {
+      "remaining": "Il vous reste {remaining} sur {total} séances dans votre forfait «{name}»",
+      "redeem": "Utiliser maintenant",
+      "redeemed": "Utilisé!",
+      "noCharge": "Aucun frais supplémentaire.",
+      "sessionsUsed": "{used}/{total} séances utilisées",
+      "error": "Erreur de remboursement",
+      "redemptionFailed": "Échec du remboursement",
+      "redeemNow": "Utiliser maintenant",
+      "noAdditionalCharge": "Aucun frais supplémentaire"
     }
   },
   "chat": {
@@ -362,7 +373,41 @@
     "no_conversations": "Pas encore de messages",
     "start_chat": "Démarrer la conversation",
     "image": "Envoyer une image",
-    "booking_link": "Envoyer un lien de réservation"
+    "booking_link": "Envoyer un lien de réservation",
+    "aiSuggestion": {
+      "generating": "Génération de suggestion de réponse…",
+      "suggestedReply": "Réponse suggérée:",
+      "accept": "Accepter",
+      "dismiss": "Ignorer"
+    },
+    "bookingBubble": {
+      "title": "Réserver un rendez-vous chez {salon}",
+      "cta": "Réserver maintenant",
+      "close": "Fermer"
+    },
+    "clientTags": {
+      "addTag": "Étiquette",
+      "allergyWarning": "Attention: Le client a des allergies/intolérances",
+      "customPlaceholder": "Étiquette personnalisée…",
+      "cancel": "Annuler",
+      "colors": {
+        "gray": "Gris",
+        "red": "Rouge",
+        "orange": "Orange",
+        "coral": "Corail",
+        "blue": "Bleu",
+        "purple": "Violet"
+      }
+    },
+    "quickReplyChips": {
+      "defaults": {
+        "0": "Un moment s'il vous plaît!",
+        "1": "Nous vous répondrons bientôt.",
+        "2": "Bien sûr, comment puis-je vous aider?",
+        "3": "Rendez-vous confirmé!",
+        "4": "Merci pour votre message."
+      }
+    }
   },
   "auth": {
     "login_title": "Se connecter",
@@ -1377,7 +1422,53 @@
       "unknown": "Une erreur s'est produite"
     },
     "cut_photo_alt": "Photo de coupe",
-    "service_at": "chez"
+    "service_at": "chez",
+    "loyalty": {
+      "loyaltyCard": "Carte fidélité",
+      "rewardFreeService": "Service gratuit",
+      "rewardChfDiscount": "CHF {value} de réduction",
+      "rewardPercentDiscount": "{value}% de réduction",
+      "rewardAvailable": "Récompense: {reward}",
+      "redeemed": "Échangé",
+      "stamps": "{collected}/{required} tampons",
+      "showQr": "Afficher QR",
+      "close": "Fermer",
+      "showQrToBarber": "Montrer le QR au barbier",
+      "loading": "Chargement...",
+      "noCards": "Aucune carte fidélité",
+      "completedCards": "Cartes complètes"
+    },
+    "queue": {
+      "error": "Erreur d'inscription",
+      "networkError": "Erreur réseau",
+      "joinedSuccess": "Inscrit avec succès!",
+      "position": "Position",
+      "estimatedWait": "Temps d'attente",
+      "minutes": "min.",
+      "trackingCode": "Code de suivi",
+      "nameLabel": "Nom",
+      "namePlaceholder": "Votre nom",
+      "phoneLabel": "Téléphone (optionnel)",
+      "phonePlaceholder": "+41...",
+      "preferredBarberLabel": "Barbier préféré",
+      "noFavorite": "Aucune préférence",
+      "serviceLabel": "Service",
+      "pleaseSelect": "Veuillez sélectionner",
+      "joinNow": "Rejoindre la file",
+      "joining": "Inscription...",
+      "currentWaitTime": "Attente actuelle: ~{minutes} min.",
+      "peopleWaiting": "{count} en attente",
+      "loadingQueue": "Chargement...",
+      "queueTitle": "File d'attente",
+      "waiting": "{count} en attente",
+      "noCustomers": "Aucun client en attente",
+      "inChair": "En chaise",
+      "remote": "À distance",
+      "next": "Suivant",
+      "done": "Terminé",
+      "noShow": "Absent",
+      "cancel": "Annuler"
+    }
   },
   "Profile": {
     "myProfile": "Mon profil",
@@ -1585,6 +1676,7 @@
     "close": "Fermer",
     "no_data": "Aucune donnée",
     "tab_designs": "Designs",
+    "tab_hand_chart": "Main (Chart)",
     "tab_preferences": "Préférences",
     "tab_inspo": "Inspiration",
     "tab_notes": "Notes",
@@ -2308,5 +2400,70 @@
     "hand_pinky_nail": "Auriculaire",
     "visual_mode": "Mode visuel",
     "text_mode": "Mode texte"
+  },
+  "lastMinuteCard": {
+    "now": "Maintenant",
+    "in": "dans"
+  },
+  "guestBookingForm": {
+    "title": "Réservation invité",
+    "subtitle": "Vos coordonnées",
+    "nameLabel": "Nom",
+    "phoneLabel": "Téléphone",
+    "emailLabel": "Email (optionnel)",
+    "namePlaceholder": "Prénom et nom",
+    "phonePlaceholder": "+41791234567",
+    "emailPlaceholder": "votre@email.ch",
+    "nameError": "Le nom est requis (min. 2 caractères)",
+    "phoneError": "Numéro suisse valide (+41XXXXXXXXX)",
+    "emailError": "Email invalide",
+    "disclaimer": "* La disponibilité affichée peut ne pas être en temps réel. Le salon confirmera votre demande.",
+    "submit": "Continuer vers le paiement →"
+  },
+  "staffPicker": {
+    "title": "Choisir un membre du personnel",
+    "any": "Peu importe"
+  },
+  "categoryHero": {
+    "coiffeur": {
+      "label": "Coiffeur",
+      "subtitle": "Les meilleurs coiffeurs à Bâle",
+      "titleSuffix": "à Bâle"
+    },
+    "barbershop": {
+      "label": "Barbershop",
+      "subtitle": "Barbershops classiques à Bâle",
+      "titleSuffix": "à Bâle"
+    },
+    "nails": {
+      "label": "Ongles",
+      "subtitle": "Salons d'ongles et manucure à Bâle",
+      "titleSuffix": "à Bâle"
+    },
+    "spa": {
+      "label": "Spa & Massage",
+      "subtitle": "Bien-être et détente à Bâle",
+      "titleSuffix": "à Bâle"
+    },
+    "makeup": {
+      "label": "Maquillage",
+      "subtitle": "Maquillage professionnel à Bâle",
+      "titleSuffix": "à Bâle"
+    },
+    "waxing": {
+      "label": "Épilation",
+      "subtitle": "Studios d'épilation à Bâle",
+      "titleSuffix": "à Bâle"
+    },
+    "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} disponible"
+  },
+  "recentlyViewed": {
+    "title": "Récemment consulté"
+  },
+  "vouchers": {
+    "loading": "Chargement...",
+    "title": "Acheter un bon",
+    "error": "Erreur lors de la création du bon",
+    "processing": "Traitement en cours..."
   }
 }

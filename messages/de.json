@@ -241,7 +241,8 @@
         "schedule": "Arbeitszeiten",
         "payments": "Zahlungen",
         "go_live": "Bereit!"
-      }
+      },
+      "saveAndContinue": "Speichern & Weiter"
     },
     "profile": {
       "title": "Dein Salon",
@@ -252,7 +253,10 @@
       "descPlaceholder": "Beschreibe deinen Salon für Kunden...",
       "descriptionEn": "Beschreibung (EN)",
       "phone": "Telefon",
-      "coverUrl": "Titelbild URL"
+      "coverUrl": "Titelbild URL",
+      "categories": "Kategorien",
+      "multipleChoice": "(mehrere wählbar)",
+      "atLeastOneCategory": "Mindestens eine Kategorie erforderlich."
     },
     "services": {
       "title": "Services hinzufügen",
@@ -264,6 +268,8 @@
       "namePlaceholder": "z.B. Herrenhaarschnitt",
       "add": "Service hinzufügen",
       "added": "hinzugefügt",
+      "aiSuggestions": "✨ KI-Vorschläge",
+      "addButton": "Hinzufügen",
       "addMoreLater": "Du kannst später jederzeit weitere hinzufügen."
     },
     "team": {
@@ -272,12 +278,18 @@
       "sendInvite": "Einladung senden",
       "inviteSent": "Einladung gesendet",
       "firstName": "Vorname",
+      "emailLabel": "E-Mail *",
+      "nameLabel": "Name",
+      "errorLabel": "Fehler",
       "soloHint": "Arbeitest du alleine? Kein Problem — überspringe diesen Schritt. Du kannst später jederzeit Mitarbeiter einladen."
     },
     "hours": {
       "title": "Öffnungszeiten",
       "subtitle": "Wann ist dein Salon geöffnet?",
       "closed": "Geschlossen",
+      "addBreak": "+ Pause",
+      "removeBreak": "Entfernen",
+      "breakLabel": "Pause",
       "days": {
         "mon": "Montag",
         "tue": "Dienstag",
@@ -294,6 +306,7 @@
       "description": "Arbeitszeiten und Pausen kannst du jederzeit im Dashboard unter Kalender verwalten. Standardmässig übernehmen Mitarbeiter die Öffnungszeiten des Salons.",
       "autoConfigured": "Automatisch eingestellt",
       "autoConfiguredDesc": "Deine Öffnungszeiten werden als Standard-Arbeitszeiten verwendet.",
+      "applyHours": "Arbeitszeiten übernehmen",
       "individualHint": "Du kannst individuelle Arbeitszeiten pro Mitarbeiter nach dem Setup im Dashboard festlegen."
     },
     "payments": {
@@ -374,6 +387,17 @@
       "language_placeholder": "z.B. Deutsch, Englisch...",
       "notes_label": "Weitere Notizen",
       "notes_placeholder": "Zusätzliche Informationen..."
+    },
+    "packageRedeemBanner": {
+      "remaining": "Du hast noch {remaining} von {total} Terminen in deinem Paket «{name}»",
+      "redeem": "Jetzt einlösen",
+      "redeemed": "Eingelöst!",
+      "noCharge": "Kein zusätzlicher Betrag fällig.",
+      "sessionsUsed": "{used}/{total} Sessions genutzt",
+      "error": "Fehler beim Einlösen",
+      "redemptionFailed": "Einlösung fehlgeschlagen",
+      "redeemNow": "Jetzt einlösen",
+      "noAdditionalCharge": "Kein zusätzlicher Betrag fällig"
     }
   },
   "chat": {
@@ -382,7 +406,41 @@
     "no_conversations": "Noch keine Nachrichten",
     "start_chat": "Chat starten",
     "image": "Bild senden",
-    "booking_link": "Buchungslink senden"
+    "booking_link": "Buchungslink senden",
+    "aiSuggestion": {
+      "generating": "Antwort wird vorgeschlagen…",
+      "suggestedReply": "Vorgeschlagene Antwort:",
+      "accept": "Übernehmen",
+      "dismiss": "Verwerfen"
+    },
+    "bookingBubble": {
+      "title": "Termin buchen bei {salon}",
+      "cta": "Jetzt buchen",
+      "close": "Schliessen"
+    },
+    "clientTags": {
+      "addTag": "Tag",
+      "allergyWarning": "Achtung: Kundin hat Allergien/Unverträglichkeiten",
+      "customPlaceholder": "Eigenes Tag…",
+      "cancel": "Abbrechen",
+      "colors": {
+        "gray": "Grau",
+        "red": "Rot",
+        "orange": "Orange",
+        "coral": "Coral",
+        "blue": "Blau",
+        "purple": "Lila"
+      }
+    },
+    "quickReplyChips": {
+      "defaults": {
+        "0": "Einen Moment bitte!",
+        "1": "Wir melden uns gleich.",
+        "2": "Gerne, wie kann ich helfen?",
+        "3": "Termin bestätigt!",
+        "4": "Danke für deine Nachricht."
+      }
+    }
   },
   "auth": {
     "login_title": "Anmelden",
@@ -1398,7 +1456,53 @@
       "unknown": "Fehler aufgetreten"
     },
     "cut_photo_alt": "Cut photo",
-    "service_at": "bei"
+    "service_at": "bei",
+    "loyalty": {
+      "loyaltyCard": "Treuekarte",
+      "rewardFreeService": "Gratis-Service",
+      "rewardChfDiscount": "CHF {value} Rabatt",
+      "rewardPercentDiscount": "{value}% Rabatt",
+      "rewardAvailable": "Belohnung: {reward}",
+      "redeemed": "Eingelöst",
+      "stamps": "{collected}/{required} Stempel",
+      "showQr": "QR zeigen",
+      "close": "Schliessen",
+      "showQrToBarber": "QR-Code dem Barber zeigen",
+      "loading": "Lade...",
+      "noCards": "Noch keine Treuekarten",
+      "completedCards": "Abgeschlossene Karten"
+    },
+    "queue": {
+      "error": "Fehler beim Anmelden",
+      "networkError": "Netzwerkfehler",
+      "joinedSuccess": "Erfolgreich angestellt!",
+      "position": "Position",
+      "estimatedWait": "Wartezeit",
+      "minutes": "Min.",
+      "trackingCode": "Tracking-Code",
+      "nameLabel": "Name",
+      "namePlaceholder": "Dein Name",
+      "phoneLabel": "Telefon (optional)",
+      "phonePlaceholder": "+41...",
+      "preferredBarberLabel": "Bevorzugter Barber",
+      "noFavorite": "Kein Favorit",
+      "serviceLabel": "Service",
+      "pleaseSelect": "Bitte wählen",
+      "joinNow": "Jetzt anstellen",
+      "joining": "Wird angemeldet...",
+      "currentWaitTime": "Aktuelle Wartezeit: ~{minutes} Min.",
+      "peopleWaiting": "{count} wartend",
+      "loadingQueue": "Lädt Warteschlange...",
+      "queueTitle": "Warteschlange",
+      "waiting": "{count} wartend",
+      "noCustomers": "Keine Kunden in der Warteschlange",
+      "inChair": "Im Stuhl",
+      "remote": "Remote",
+      "next": "Nächster",
+      "done": "Fertig",
+      "noShow": "Nicht erschienen",
+      "cancel": "Abbrechen"
+    }
   },
   "Profile": {
     "myProfile": "Mein Profil",
@@ -1606,6 +1710,7 @@
     "close": "Schliessen",
     "no_data": "Keine Daten",
     "tab_designs": "Designs",
+    "tab_hand_chart": "Hand Chart",
     "tab_preferences": "Präferenzen",
     "tab_inspo": "Inspiration",
     "tab_notes": "Notizen",
@@ -2329,5 +2434,70 @@
     "hand_pinky_nail": "Kleiner Finger",
     "visual_mode": "Visueller Modus",
     "text_mode": "Textmodus"
+  },
+  "lastMinuteCard": {
+    "now": "Jetzt",
+    "in": "in"
+  },
+  "guestBookingForm": {
+    "title": "Gastbuchung",
+    "subtitle": "Deine Kontaktdaten",
+    "nameLabel": "Name",
+    "phoneLabel": "Telefon",
+    "emailLabel": "E-Mail (optional)",
+    "namePlaceholder": "Vor- und Nachname",
+    "phonePlaceholder": "+41791234567",
+    "emailPlaceholder": "deine@email.ch",
+    "nameError": "Name ist erforderlich (min. 2 Zeichen)",
+    "phoneError": "Gültige Schweizer Nummer (+41XXXXXXXXX)",
+    "emailError": "Ungültige E-Mail",
+    "disclaimer": "* Die angezeigte Verfügbarkeit ist möglicherweise nicht in Echtzeit auf dem neuesten Stand. Der Salon bestätigt deinen Termin nach der Anfrage.",
+    "submit": "Weiter zur Zahlung →"
+  },
+  "staffPicker": {
+    "title": "Mitarbeiter wählen",
+    "any": "Egal"
+  },
+  "categoryHero": {
+    "coiffeur": {
+      "label": "Coiffeur",
+      "subtitle": "Die besten Coiffeure in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "barbershop": {
+      "label": "Barbershop",
+      "subtitle": "Klassische Barbershops in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "nails": {
+      "label": "Nails",
+      "subtitle": "Nagelstudios und Maniküre in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "spa": {
+      "label": "Spa & Massage",
+      "subtitle": "Wellness und Entspannung in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "makeup": {
+      "label": "Makeup",
+      "subtitle": "Professionelles Makeup in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "waxing": {
+      "label": "Waxing",
+      "subtitle": "Waxing Studios in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "salonsAvailable": "{count, plural, =1 {1 Salon} other {# Salons}} verfügbar"
+  },
+  "recentlyViewed": {
+    "title": "Zuletzt angesehen"
+  },
+  "vouchers": {
+    "loading": "Lade...",
+    "title": "Gutschein kaufen",
+    "error": "Fehler beim Erstellen des Gutscheins",
+    "processing": "Wird verarbeitet..."
   }
 }

@@ -81,13 +81,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await logAuditEvent({
-    actor_id: user.id,
-    action: "help_article.create",
-    target_type: "help_article",
-    target_id: data.id,
-    metadata: { slug, category },
-  });
+  await logAuditEvent(req, user.id, "help_article.create", "help_article", data.id, { slug, category });
 
   return NextResponse.json({ article: data }, { status: 201 });
 }
@@ -116,13 +110,7 @@ export async function PATCH(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await logAuditEvent({
-    actor_id: user.id,
-    action: "help_article.update",
-    target_type: "help_article",
-    target_id: id,
-    metadata: { fields: Object.keys(updates) },
-  });
+  await logAuditEvent(req, user.id, "help_article.update", "help_article", id, { fields: Object.keys(updates) });
 
   return NextResponse.json({ article: data });
 }
@@ -148,13 +136,7 @@ export async function DELETE(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await logAuditEvent({
-    actor_id: user.id,
-    action: "help_article.delete",
-    target_type: "help_article",
-    target_id: id,
-    metadata: {},
-  });
+  await logAuditEvent(req, user.id, "help_article.delete", "help_article", id);
 
   return NextResponse.json({ success: true });
 }

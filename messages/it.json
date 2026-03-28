@@ -354,6 +354,17 @@
       "language_placeholder": "es. Tedesco, Inglese...",
       "notes_label": "Altre Note",
       "notes_placeholder": "Informazioni aggiuntive..."
+    },
+    "packageRedeemBanner": {
+      "remaining": "Ti rimangono {remaining} di {total} sessioni nel tuo pacchetto «{name}»",
+      "redeem": "Usa ora",
+      "redeemed": "Usato!",
+      "noCharge": "Nessun costo aggiuntivo.",
+      "sessionsUsed": "{used}/{total} sessioni utilizzate",
+      "error": "Errore di rimborso",
+      "redemptionFailed": "Rimborso fallito",
+      "redeemNow": "Riscatta ora",
+      "noAdditionalCharge": "Nessun costo aggiuntivo"
     }
   },
   "chat": {
@@ -362,7 +373,41 @@
     "no_conversations": "Ancora nessun messaggio",
     "start_chat": "Avvia chat",
     "image": "Invia immagine",
-    "booking_link": "Invia link prenotazione"
+    "booking_link": "Invia link prenotazione",
+    "aiSuggestion": {
+      "generating": "Generazione suggerimento risposta…",
+      "suggestedReply": "Risposta suggerita:",
+      "accept": "Accetta",
+      "dismiss": "Ignora"
+    },
+    "bookingBubble": {
+      "title": "Prenota appuntamento da {salon}",
+      "cta": "Prenota ora",
+      "close": "Chiudi"
+    },
+    "clientTags": {
+      "addTag": "Tag",
+      "allergyWarning": "Attenzione: Il cliente ha allergie/intolleranze",
+      "customPlaceholder": "Tag personalizzato…",
+      "cancel": "Annulla",
+      "colors": {
+        "gray": "Grigio",
+        "red": "Rosso",
+        "orange": "Arancione",
+        "coral": "Corallo",
+        "blue": "Blu",
+        "purple": "Viola"
+      }
+    },
+    "quickReplyChips": {
+      "defaults": {
+        "0": "Un momento per favore!",
+        "1": "Ti risponderemo a breve.",
+        "2": "Certo, come posso aiutarti?",
+        "3": "Appuntamento confermato!",
+        "4": "Grazie per il tuo messaggio."
+      }
+    }
   },
   "auth": {
     "login_title": "Accedi",
@@ -1377,7 +1422,53 @@
       "unknown": "Si è verificato un errore"
     },
     "cut_photo_alt": "Foto taglio",
-    "service_at": "da"
+    "service_at": "da",
+    "loyalty": {
+      "loyaltyCard": "Carta fedeltà",
+      "rewardFreeService": "Servizio gratuito",
+      "rewardChfDiscount": "CHF {value} di sconto",
+      "rewardPercentDiscount": "{value}% di sconto",
+      "rewardAvailable": "Premio: {reward}",
+      "redeemed": "Riscattato",
+      "stamps": "{collected}/{required} timbri",
+      "showQr": "Mostra QR",
+      "close": "Chiudi",
+      "showQrToBarber": "Mostra QR al barbiere",
+      "loading": "Caricamento...",
+      "noCards": "Nessuna carta fedeltà",
+      "completedCards": "Carte completate"
+    },
+    "queue": {
+      "error": "Errore di registrazione",
+      "networkError": "Errore di rete",
+      "joinedSuccess": "Registrato con successo!",
+      "position": "Posizione",
+      "estimatedWait": "Tempo d'attesa",
+      "minutes": "min.",
+      "trackingCode": "Codice di tracciamento",
+      "nameLabel": "Nome",
+      "namePlaceholder": "Il tuo nome",
+      "phoneLabel": "Telefono (opzionale)",
+      "phonePlaceholder": "+41...",
+      "preferredBarberLabel": "Barbiere preferito",
+      "noFavorite": "Nessuna preferenza",
+      "serviceLabel": "Servizio",
+      "pleaseSelect": "Seleziona",
+      "joinNow": "Unisciti alla coda",
+      "joining": "Registrazione...",
+      "currentWaitTime": "Attesa attuale: ~{minutes} min.",
+      "peopleWaiting": "{count} in attesa",
+      "loadingQueue": "Caricamento...",
+      "queueTitle": "Coda",
+      "waiting": "{count} in attesa",
+      "noCustomers": "Nessun cliente in coda",
+      "inChair": "In sedia",
+      "remote": "Da remoto",
+      "next": "Prossimo",
+      "done": "Fatto",
+      "noShow": "Non presentato",
+      "cancel": "Annulla"
+    }
   },
   "Profile": {
     "myProfile": "Il mio profilo",
@@ -1585,6 +1676,7 @@
     "close": "Chiudi",
     "no_data": "Nessun dato",
     "tab_designs": "Design",
+    "tab_hand_chart": "Grafico Mano",
     "tab_preferences": "Preferenze",
     "tab_inspo": "Ispirazione",
     "tab_notes": "Note",
@@ -2308,5 +2400,70 @@
     "hand_pinky_nail": "Mignolo",
     "visual_mode": "Modalità visuale",
     "text_mode": "Modalità testo"
+  },
+  "lastMinuteCard": {
+    "now": "Ora",
+    "in": "tra"
+  },
+  "guestBookingForm": {
+    "title": "Prenotazione ospite",
+    "subtitle": "I tuoi dati di contatto",
+    "nameLabel": "Nome",
+    "phoneLabel": "Telefono",
+    "emailLabel": "Email (opzionale)",
+    "namePlaceholder": "Nome e cognome",
+    "phonePlaceholder": "+41791234567",
+    "emailPlaceholder": "tua@email.ch",
+    "nameError": "Il nome è richiesto (min. 2 caratteri)",
+    "phoneError": "Numero svizzero valido (+41XXXXXXXXX)",
+    "emailError": "Email non valida",
+    "disclaimer": "* La disponibilità mostrata potrebbe non essere in tempo reale. Il salone confermerà la tua richiesta.",
+    "submit": "Continua al pagamento →"
+  },
+  "staffPicker": {
+    "title": "Scegli membro dello staff",
+    "any": "Qualsiasi"
+  },
+  "categoryHero": {
+    "coiffeur": {
+      "label": "Parrucchiere",
+      "subtitle": "I migliori parrucchieri a Basilea",
+      "titleSuffix": "a Basilea"
+    },
+    "barbershop": {
+      "label": "Barbershop",
+      "subtitle": "Barbershop classici a Basilea",
+      "titleSuffix": "a Basilea"
+    },
+    "nails": {
+      "label": "Unghie",
+      "subtitle": "Saloni per unghie e manicure a Basilea",
+      "titleSuffix": "a Basilea"
+    },
+    "spa": {
+      "label": "Spa & Massaggi",
+      "subtitle": "Benessere e relax a Basilea",
+      "titleSuffix": "a Basilea"
+    },
+    "makeup": {
+      "label": "Trucco",
+      "subtitle": "Trucco professionale a Basilea",
+      "titleSuffix": "a Basilea"
+    },
+    "waxing": {
+      "label": "Ceretta",
+      "subtitle": "Studi di ceretta a Basilea",
+      "titleSuffix": "a Basilea"
+    },
+    "salonsAvailable": "{count, plural, =1 {1 salone} other {# saloni}} disponibile"
+  },
+  "recentlyViewed": {
+    "title": "Visti di recente"
+  },
+  "vouchers": {
+    "loading": "Caricamento...",
+    "title": "Acquista voucher",
+    "error": "Errore nella creazione del voucher",
+    "processing": "Elaborazione..."
   }
 }

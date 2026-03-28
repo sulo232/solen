@@ -13,7 +13,7 @@ interface DesignHistoryTimelineProps {
 }
 
 export default function DesignHistoryTimeline({ customerId, salonId, locale = "de" }: DesignHistoryTimelineProps) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [designs, setDesigns] = useState<NailDesignHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [publishingId, setPublishingId] = useState<string | null>(null);
@@ -27,15 +27,15 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
   }, [customerId]);
 
   const handlePublish = async (design: NailDesignHistory) => {
-    if (!design.image_url || !salonId) return;
+    if (!design.photo_url || !salonId) return;
     setPublishingId(design.id);
     try {
       await fetch("/api/nail-discovery/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          image_url: design.image_url,
-          style: design.style,
+          image_url: design.photo_url,
+          style: design.style_category,
           shape: design.shape,
           material: design.material,
         }),
@@ -71,9 +71,9 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
             <div className="rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface p-3">
               <div className="flex items-start gap-3">
                 {/* Design image */}
-                {d.image_url && (
+                {d.photo_url && (
                   <div className="w-20 h-20 rounded-btn overflow-hidden bg-s-bg-sunken dark:bg-s-dm-bg shrink-0">
-                    <Image src={d.image_url} alt="" width={80} height={80} className="object-cover w-full h-full" />
+                    <Image src={d.photo_url} alt="" width={80} height={80} className="object-cover w-full h-full" />
                   </div>
                 )}
 
@@ -86,7 +86,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
 
                   {/* Badges */}
                   <div className="flex flex-wrap gap-1 mb-2">
-                    {[d.style, d.shape, d.material].filter(Boolean).map((b) => (
+                    {[d.style_category, d.shape, d.material].filter(Boolean).map((b) => (
                       <span key={b} className="text-[10px] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
                         {BADGE_LABELS[b as string] || b}
                       </span>
@@ -120,7 +120,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   <RefreshCw size={10} />
                   {t("timeline_repeat")}
                 </button>
-                {d.image_url && salonId && (
+                {d.photo_url && salonId && (
                   <button
                     onClick={() => handlePublish(d)}
                     disabled={publishingId === d.id}

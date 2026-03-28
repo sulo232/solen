@@ -16,6 +16,8 @@ interface NailDesignCardProps {
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
   onClick?: () => void;
+  showBookCta?: boolean;
+  bookingUrl?: string;
 }
 
 const BADGE_LABELS: Record<string, string> = {

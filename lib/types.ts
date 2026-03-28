@@ -906,10 +906,10 @@ export interface GiftCard {
 export type NailShape = 'round' | 'square' | 'almond' | 'coffin' | 'stiletto' | 'oval' | 'squoval' | 'ballerina' | 'lipstick' | 'edge';
 export type NailLength = 'natural' | 'short' | 'medium' | 'long' | 'extra_long';
 export type NailMaterial = 'natural' | 'gel' | 'acrylic' | 'dip_powder' | 'biab' | 'shellac' | 'polygel' | 'press_on' | 'gel_x';
-export type NailStyleCategory = 'french' | 'ombre' | 'chrome' | '3d' | 'marble' | 'minimalist' | 'glitter' | 'abstract' | 'floral' | 'geometric' | 'solid' | 'negative_space' | 'encapsulated' | 'cat_eye' | 'aurora' | 'velvet' | 'glazed_donut';
+export type NailStyleCategory = 'french' | 'ombre' | 'chrome' | '3d' | '3d_art' | 'marble' | 'minimalist' | 'minimal' | 'glitter' | 'abstract' | 'floral' | 'geometric' | 'solid' | 'negative_space' | 'encapsulated' | 'cat_eye' | 'aurora' | 'velvet' | 'glazed_donut' | 'bridal';
 export type NailAllergySeverity = 'mild' | 'moderate' | 'severe';
 export type NailRetailCategory = 'cuticle_oil' | 'hand_cream' | 'press_on' | 'nail_kit' | 'polish' | 'other';
-export type DynamicPricingRuleType = 'peak' | 'off_peak' | 'day_special' | 'demand' | 'segment';
+export type DynamicPricingRuleType = 'peak' | 'off_peak' | 'day_special' | 'demand' | 'segment' | 'peak_hour' | 'weekend' | 'last_minute' | 'loyalty';
 export type StaffTier = 'junior' | 'standard' | 'senior' | 'master';
 
 export interface NailDesignHistory {

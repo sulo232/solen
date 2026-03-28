@@ -663,7 +663,10 @@ export const bookingPatchSchema = z.object({
 });
 
 export const bookingInspoSchema = z.object({
-  image_ids: z.array(z.string().uuid()).min(1).max(10),
+  image_ids: z.array(z.string().uuid()).max(10).optional(),
+  inspo_image_id: z.string().uuid().optional(),
+  image_url: z.string().url().max(2048).optional(),
+  notes: z.string().max(500).optional(),
 });
 
 export const bookingRefundSchema = z.object({
@@ -678,10 +681,14 @@ export const bookingRescheduleSchema = z.object({
 export const expressRebookSchema = z.object({
   salon_id: z.string().uuid(),
   service_id: z.string().uuid(),
+  rebook_from_booking_id: z.string().uuid().optional(),
 });
 
 export const expressRebookConfirmSchema = z.object({
   slot_id: z.string().uuid(),
+  service_id: z.string().uuid().optional(),
+  staff_id: z.string().uuid().optional(),
+  source_booking_id: z.string().uuid().optional(),
 });
 
 export const recurringBookingSchema = z.object({

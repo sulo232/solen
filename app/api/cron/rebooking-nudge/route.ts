@@ -20,9 +20,14 @@ export async function GET(request: NextRequest) {
 
   // Find users whose most recent completed booking ended 28+ days ago
   // and who haven't received a nudge in the last 28 days
-  const { data: candidates } = await admin.rpc("get_rebooking_candidates", {
-    cutoff_date: cutoffStr,
-  }).catch(() => ({ data: null }));
+  let rpcResult: { data: unknown[] | null } = { data: null };
+  try {
+    const { data } = await admin.rpc("get_rebooking_candidates", { cutoff_date: cutoffStr });
+    rpcResult = { data };
+  } catch {
+    rpcResult = { data: null };
+  }
+  const { data: candidates } = rpcResult;
 
   // Fallback: manual query if RPC doesn't exist
   let users = candidates;

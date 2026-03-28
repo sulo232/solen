@@ -56,7 +56,7 @@ const MATERIAL_FILTERS: { value: NailMaterial; label: string }[] = [
 ];
 
 export default function TechPortfolio({ staffId, staffName, salonSlug, initialImages, limit }: TechPortfolioProps) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [images, setImages] = useState<PortfolioImage[]>(initialImages ?? []);
   const [loading, setLoading] = useState(!initialImages);
   const [filterStyle, setFilterStyle] = useState<NailStyleCategory | null>(null);

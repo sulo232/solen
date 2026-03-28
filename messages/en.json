@@ -241,7 +241,8 @@
         "schedule": "Working hours",
         "payments": "Payments",
         "go_live": "Go live!"
-      }
+      },
+      "saveAndContinue": "Save & Continue"
     },
     "profile": {
       "title": "Your Salon",
@@ -252,7 +253,10 @@
       "descPlaceholder": "Describe your salon for customers...",
       "descriptionEn": "Description (EN)",
       "phone": "Phone",
-      "coverUrl": "Cover photo URL"
+      "coverUrl": "Cover photo URL",
+      "categories": "Categories",
+      "multipleChoice": "(multiple selection possible)",
+      "atLeastOneCategory": "At least one category is required."
     },
     "services": {
       "title": "Add Services",
@@ -264,6 +268,8 @@
       "namePlaceholder": "e.g. Men's haircut",
       "add": "Add service",
       "added": "added",
+      "aiSuggestions": "✨ AI Suggestions",
+      "addButton": "Add",
       "addMoreLater": "You can always add more later."
     },
     "team": {
@@ -272,12 +278,18 @@
       "sendInvite": "Send Invite",
       "inviteSent": "Invite sent",
       "firstName": "First name",
+      "emailLabel": "Email *",
+      "nameLabel": "Name",
+      "errorLabel": "Error",
       "soloHint": "Working solo? No problem — skip this step. You can invite staff later."
     },
     "hours": {
       "title": "Opening Hours",
       "subtitle": "When is your salon open?",
       "closed": "Closed",
+      "addBreak": "+ Break",
+      "removeBreak": "Remove",
+      "breakLabel": "Break",
       "days": {
         "mon": "Monday",
         "tue": "Tuesday",
@@ -294,6 +306,7 @@
       "description": "You can manage working hours and breaks anytime in the Dashboard under Calendar. By default, staff inherits salon opening hours.",
       "autoConfigured": "Automatically configured",
       "autoConfiguredDesc": "Your opening hours are used as default working hours.",
+      "applyHours": "Apply working hours",
       "individualHint": "You can set individual working hours per staff member after setup in the dashboard."
     },
     "payments": {
@@ -363,6 +376,17 @@
       "language_placeholder": "e.g. German, English...",
       "notes_label": "Other Notes",
       "notes_placeholder": "Additional information..."
+    },
+    "packageRedeemBanner": {
+      "remaining": "You have {remaining} of {total} sessions left in your «{name}» package",
+      "redeem": "Redeem now",
+      "redeemed": "Redeemed!",
+      "noCharge": "No additional charge.",
+      "sessionsUsed": "{used}/{total} sessions used",
+      "error": "Redemption error",
+      "redemptionFailed": "Redemption failed",
+      "redeemNow": "Redeem now",
+      "noAdditionalCharge": "No additional charge"
     }
   },
   "chat": {
@@ -371,7 +395,41 @@
     "no_conversations": "No messages yet",
     "start_chat": "Start chat",
     "image": "Send image",
-    "booking_link": "Send booking link"
+    "booking_link": "Send booking link",
+    "aiSuggestion": {
+      "generating": "Generating reply suggestion…",
+      "suggestedReply": "Suggested reply:",
+      "accept": "Accept",
+      "dismiss": "Dismiss"
+    },
+    "bookingBubble": {
+      "title": "Book appointment at {salon}",
+      "cta": "Book now",
+      "close": "Close"
+    },
+    "clientTags": {
+      "addTag": "Tag",
+      "allergyWarning": "Warning: Client has allergies/intolerances",
+      "customPlaceholder": "Custom tag…",
+      "cancel": "Cancel",
+      "colors": {
+        "gray": "Gray",
+        "red": "Red",
+        "orange": "Orange",
+        "coral": "Coral",
+        "blue": "Blue",
+        "purple": "Purple"
+      }
+    },
+    "quickReplyChips": {
+      "defaults": {
+        "0": "One moment please!",
+        "1": "We'll get back to you shortly.",
+        "2": "Of course, how can I help?",
+        "3": "Appointment confirmed!",
+        "4": "Thank you for your message."
+      }
+    }
   },
   "auth": {
     "login_title": "Sign in",
@@ -1387,7 +1445,53 @@
       "unknown": "An error occurred"
     },
     "cut_photo_alt": "Cut photo",
-    "service_at": "at"
+    "service_at": "at",
+    "loyalty": {
+      "loyaltyCard": "Loyalty Card",
+      "rewardFreeService": "Free service",
+      "rewardChfDiscount": "CHF {value} discount",
+      "rewardPercentDiscount": "{value}% discount",
+      "rewardAvailable": "Reward: {reward}",
+      "redeemed": "Redeemed",
+      "stamps": "{collected}/{required} stamps",
+      "showQr": "Show QR",
+      "close": "Close",
+      "showQrToBarber": "Show QR code to barber",
+      "loading": "Loading...",
+      "noCards": "No loyalty cards yet",
+      "completedCards": "Completed cards"
+    },
+    "queue": {
+      "error": "Sign-up failed",
+      "networkError": "Network error",
+      "joinedSuccess": "Successfully queued!",
+      "position": "Position",
+      "estimatedWait": "Wait time",
+      "minutes": "min.",
+      "trackingCode": "Tracking code",
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "phoneLabel": "Phone (optional)",
+      "phonePlaceholder": "+41...",
+      "preferredBarberLabel": "Preferred barber",
+      "noFavorite": "No preference",
+      "serviceLabel": "Service",
+      "pleaseSelect": "Please select",
+      "joinNow": "Join queue",
+      "joining": "Joining...",
+      "currentWaitTime": "Current wait: ~{minutes} min.",
+      "peopleWaiting": "{count} waiting",
+      "loadingQueue": "Loading queue...",
+      "queueTitle": "Queue",
+      "waiting": "{count} waiting",
+      "noCustomers": "No customers in queue",
+      "inChair": "In chair",
+      "remote": "Remote",
+      "next": "Next",
+      "done": "Done",
+      "noShow": "No-show",
+      "cancel": "Cancel"
+    }
   },
   "Profile": {
     "myProfile": "My Profile",
@@ -1595,6 +1699,7 @@
     "close": "Close",
     "no_data": "No data",
     "tab_designs": "Designs",
+    "tab_hand_chart": "Hand Chart",
     "tab_preferences": "Preferences",
     "tab_inspo": "Inspiration",
     "tab_notes": "Notes",
@@ -2318,5 +2423,70 @@
     "hand_pinky_nail": "Pinky finger",
     "visual_mode": "Visual mode",
     "text_mode": "Text mode"
+  },
+  "lastMinuteCard": {
+    "now": "Now",
+    "in": "in"
+  },
+  "guestBookingForm": {
+    "title": "Guest booking",
+    "subtitle": "Your contact details",
+    "nameLabel": "Name",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email (optional)",
+    "namePlaceholder": "First and last name",
+    "phonePlaceholder": "+41791234567",
+    "emailPlaceholder": "your@email.ch",
+    "nameError": "Name is required (min. 2 characters)",
+    "phoneError": "Valid Swiss number (+41XXXXXXXXX)",
+    "emailError": "Invalid email",
+    "disclaimer": "* Displayed availability may not be real-time. The salon will confirm your appointment request.",
+    "submit": "Continue to payment →"
+  },
+  "staffPicker": {
+    "title": "Choose staff member",
+    "any": "Any"
+  },
+  "categoryHero": {
+    "coiffeur": {
+      "label": "Hair Salon",
+      "subtitle": "The best hair salons in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "barbershop": {
+      "label": "Barbershop",
+      "subtitle": "Classic barbershops in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "nails": {
+      "label": "Nails",
+      "subtitle": "Nail salons and manicure in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "spa": {
+      "label": "Spa & Massage",
+      "subtitle": "Wellness and relaxation in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "makeup": {
+      "label": "Makeup",
+      "subtitle": "Professional makeup in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "waxing": {
+      "label": "Waxing",
+      "subtitle": "Waxing studios in Basel",
+      "titleSuffix": "in Basel"
+    },
+    "salonsAvailable": "{count, plural, =1 {1 salon} other {# salons}} available"
+  },
+  "recentlyViewed": {
+    "title": "Recently viewed"
+  },
+  "vouchers": {
+    "loading": "Loading...",
+    "title": "Buy voucher",
+    "error": "Error creating voucher",
+    "processing": "Processing..."
   }
 }

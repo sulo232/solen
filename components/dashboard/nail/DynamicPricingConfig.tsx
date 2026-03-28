@@ -33,7 +33,7 @@ const RULE_TYPE_KEYS: Record<DynamicPricingRuleType, string> = {
 };
 
 export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
-  const t = useTranslations("nail_dashboard");
+  const t = useTranslations("nail_dashboard") as any;
   const [rules, setRules] = useState<PricingRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
