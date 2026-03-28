@@ -85,7 +85,7 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
         </div>
         <div className="h-2 rounded-pill bg-s-sand-subtle dark:bg-s-dm-bg overflow-hidden">
           <div
-            className={`h-full rounded-pill transition-[width] duration-[350ms] ${
+            className={`h-full rounded-pill transition-[width] duration-[250ms] ${
               utilization >= 90 ? "bg-s-error" : utilization >= 70 ? "bg-s-amber" : "bg-s-sage"
             }`}
             style={{ width: `${Math.min(utilization, 100)}%` }}

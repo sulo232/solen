@@ -94,7 +94,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
 
       {/* Score bar */}
       <div className="h-2 rounded-full bg-s-ink/[0.06] mt-4 overflow-hidden">
-        <div className="h-full rounded-full transition-[width] duration-[350ms]"
+        <div className="h-full rounded-full transition-[width] duration-[250ms]"
           style={{ width: `${data.solen_score}%`, background: data.solen_score >= 75 ? "#4CAF6F" : data.solen_score >= 50 ? "#D4870A" : "#E8624A" }} />
       </div>
 
@@ -113,7 +113,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
                 </div>
                 <div className="h-1.5 rounded-full bg-s-sand dark:bg-s-dm-raised overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-[width] duration-[350ms] ease-out"
+                    className="h-full rounded-full transition-[width] duration-[250ms] ease-out"
                     style={{ width: `${pct}%`, backgroundColor: tier.color }}
                   />
                 </div>

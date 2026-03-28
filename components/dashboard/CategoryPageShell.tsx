@@ -57,15 +57,17 @@ export function CategoryPageShell({
       </div>
 
       {/* Scrollable tab nav */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
+      <div role="tablist" className="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
         {tabs.map((tab, idx) => {
           const Icon = tab.icon;
           return (
             <button
               key={tab.label}
+              role="tab"
+              aria-selected={activeTab === idx}
               onClick={() => setActiveTab(idx)}
               aria-label={tab.label}
-              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${
+              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors duration-150 ${
                 activeTab === idx
                   ? "bg-s-coral text-white"
                   : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-ink dark:hover:text-s-dm-text"

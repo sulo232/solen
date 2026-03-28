@@ -98,8 +98,9 @@ export default function WalkinAnalytics({ salonId }: WalkinAnalyticsProps) {
           {(["week", "month"] as const).map((p) => (
             <button
               key={p}
+              aria-pressed={period === p}
               onClick={() => setPeriod(p)}
-              className={`px-3 py-1 text-xs font-medium transition-colors ${
+              className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                 period === p
                   ? "bg-s-coral text-white"
                   : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"

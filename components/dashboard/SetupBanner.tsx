@@ -48,7 +48,7 @@ export default function SetupBanner() {
       </p>
       {/* Progress bar */}
       <div className="h-1.5 rounded-full bg-s-ink/[0.06] mb-4 overflow-hidden">
-        <div className="h-full bg-s-coral rounded-full transition-[width] duration-[350ms]"
+        <div className="h-full bg-s-coral rounded-full transition-[width] duration-[250ms]"
           style={{ width: `${data.percentage}%` }} />
       </div>
       {/* Steps list */}

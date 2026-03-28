@@ -74,7 +74,7 @@ export default function AiArtGenerator() {
           </div>
           <div className="h-2 rounded-pill bg-s-sand-subtle dark:bg-s-dm-text/10">
             <div
-              className={`h-full rounded-pill transition-[width] duration-[350ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-coral"}`}
+              className={`h-full rounded-pill transition-[width] duration-[250ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-coral"}`}
               style={{ width: `${Math.min(100, budget.percentUsed * 100)}%` }}
             />
           </div>

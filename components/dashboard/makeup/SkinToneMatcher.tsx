@@ -204,7 +204,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
                   <div key={scale} className="flex-1 flex flex-col items-center gap-0.5">
                     <span className="text-[8px] tabular-nums text-s-ink/30 dark:text-s-dm-text/30">{count}</span>
                     <div
-                      className="w-full rounded-t-[3px] bg-s-amber/70 transition-[width] duration-[350ms]"
+                      className="w-full rounded-t-[3px] bg-s-amber/70 transition-[width] duration-[250ms]"
                       style={{ height: `${Math.max(heightPct, 4)}%` }}
                     />
                     <span className="text-[9px] font-heading font-bold text-s-ink/40 dark:text-s-dm-text/40">{scale}</span>

@@ -25,11 +25,13 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/clients/${customerId}/photos`)
-      .then((r) => r.json())
-      .then((d) => setPhotos(d.items ?? []))
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (!cancelled && d) setPhotos(d.items ?? []); })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [customerId]);
 
   const handleUpload = async (file: File) => {

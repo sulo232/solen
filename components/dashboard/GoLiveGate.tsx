@@ -22,10 +22,8 @@ export default function GoLiveGate() {
 
   const load = () => {
     fetch("/api/salon/go-live")
-      .then((r) => r.json())
-      .then((d) => {
-        if (!d.error) setStatus(d);
-      })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d && !d.error) setStatus(d); })
       .catch(() => {});
   };
 

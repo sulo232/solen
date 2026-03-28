@@ -32,11 +32,13 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
   const [notes, setNotes] = useState("");
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/clients/${customerId}/formulas`)
-      .then((r) => r.json())
-      .then((d) => setFormulas(d.items ?? []))
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (!cancelled && d) setFormulas(d.items ?? []); })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [customerId]);
 
   const handleAdd = async () => {

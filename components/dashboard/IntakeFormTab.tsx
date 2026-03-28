@@ -38,11 +38,13 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
   const questions = INTAKE_TEMPLATES[templateKey] ?? [];
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/clients/${customerId}/intake`)
-      .then((r) => r.json())
-      .then((d) => setHistory(d.items ?? []))
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (!cancelled && d) setHistory(d.items ?? []); })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [customerId]);
 
   // Reset responses when template changes

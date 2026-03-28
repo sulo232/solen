@@ -91,7 +91,8 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           {/* View mode toggle */}
           <button
             onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
-            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+            aria-pressed={viewMode === "chart"}
+            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors duration-150"
             title={viewMode === "table" ? t("view_chart") : t("view_table")}
             aria-label={viewMode === "table" ? t("view_chart") : t("view_table")}
           >
@@ -100,7 +101,8 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           {/* Anonymize toggle */}
           <button
             onClick={() => setAnonymized(!anonymized)}
-            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
+            aria-pressed={anonymized}
+            className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors duration-150"
             title={anonymized ? t("show_names") : t("anonymize")}
             aria-label={anonymized ? t("show_names") : t("anonymize")}
           >
@@ -111,8 +113,9 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             {(["week", "month"] as Period[]).map((p) => (
               <button
                 key={p}
+                aria-pressed={period === p}
                 onClick={() => setPeriod(p)}
-                className={`px-3 py-1 text-xs font-medium transition-colors ${
+                className={`px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                   period === p
                     ? "bg-s-coral text-white"
                     : "text-s-ink/50 dark:text-s-dm-text/50 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"

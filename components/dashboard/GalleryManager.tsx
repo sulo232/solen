@@ -192,19 +192,19 @@ export default function GalleryManager({
               {/* Overlay controls */}
               <div className="absolute inset-0 bg-s-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                 <div className="flex justify-between items-start">
-                  <div className="bg-white/90 dark:bg-black/90 text-s-ink dark:text-s-dm-text p-1.5 rounded-md backdrop-blur-sm cursor-grab">
+                  <div className="bg-white/90 dark:bg-black/90 text-s-ink dark:text-s-dm-text p-1.5 rounded-md backdrop-blur-[6px] cursor-grab">
                     <GripVertical size={14} />
                   </div>
                   <button
                     onClick={() => handleDelete(url, index)}
                     aria-label={t("gallery_confirm_delete")}
-                    className="bg-white/90 dark:bg-black/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-sm transition-colors"
+                    className="bg-white/90 dark:bg-black/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-[6px] transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>
                 </div>
                 {index === 0 && (
-                  <div className="self-center bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-sm">
+                  <div className="self-center bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-[6px]">
                     {t("gallery_cover_overlay")}
                   </div>
                 )}
@@ -212,7 +212,7 @@ export default function GalleryManager({
 
               {/* Permanent cover badge */}
               {index === 0 && (
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-sm group-hover:opacity-0 transition-opacity pointer-events-none">
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-[6px] group-hover:opacity-0 transition-opacity pointer-events-none">
                   {t("gallery_cover")}
                 </div>
               )}

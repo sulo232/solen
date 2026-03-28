@@ -113,11 +113,11 @@ export default function PLComparison({ salonId }: PLComparisonProps) {
           {/* Share bar */}
           <div className="flex rounded-full overflow-hidden h-2 mb-4">
             <div
-              className="bg-s-coral transition-[width] duration-[350ms]"
+              className="bg-s-coral transition-[width] duration-[250ms]"
               style={{ width: `${apptShare}%` }}
             />
             <div
-              className="bg-s-amber transition-[width] duration-[350ms]"
+              className="bg-s-amber transition-[width] duration-[250ms]"
               style={{ width: `${walkinShare}%` }}
             />
           </div>
