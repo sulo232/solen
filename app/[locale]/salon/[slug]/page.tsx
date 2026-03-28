@@ -503,7 +503,7 @@ export default function SalonProfilePage() {
                 {/* Left nav */}
                 <button onClick={() => setPhotoIndex(i => (i - 1 + photos.length) % photos.length)}
                   aria-label="Vorheriges Foto"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-[transform] hover:scale-110"
                   style={{ background: "rgba(255,255,255,.75)", backdropFilter: "blur(8px)",
                            WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,.50)",
                            boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
@@ -512,7 +512,7 @@ export default function SalonProfilePage() {
                 {/* Right nav */}
                 <button onClick={() => setPhotoIndex(i => (i + 1) % photos.length)}
                   aria-label="Nächstes Foto"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-[transform] hover:scale-110"
                   style={{ background: "rgba(255,255,255,.75)", backdropFilter: "blur(8px)",
                            WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,.50)",
                            boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)" }}>
@@ -529,7 +529,7 @@ export default function SalonProfilePage() {
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
                   {photos.map((_, i) => (
                     <button key={i} onClick={() => setPhotoIndex(i)} aria-label={`Foto ${i + 1}`}
-                      className={`rounded-full transition-all ${i === photoIndex ? "bg-white w-3 h-3" : "bg-white/50 w-2 h-2"}`} />
+                      className={`rounded-full transition-[background-color,width,height] ${i === photoIndex ? "bg-white w-3 h-3" : "bg-white/50 w-2 h-2"}`} />
                   ))}
                 </div>
               </>
@@ -827,13 +827,9 @@ export default function SalonProfilePage() {
                         <Link
                           key={m.id}
                           href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
-                          className="group rounded-[20px] p-4 text-center hover:-translate-y-[5px] transition-all duration-[250ms]"
-                          style={{ background: "rgba(255,255,255,.62)", backdropFilter: "blur(16px) saturate(1.2)",
-                                   WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                                   border: "1px solid rgba(255,255,255,.55)",
-                                   boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}
+                          className="group glass-frost rounded-[20px] p-4 text-center hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
                         >
-                          <div className="w-14 h-14 rounded-full bg-s-bg-surface dark:bg-s-dm-bg mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-coral/40 transition-all">
+                          <div className="w-14 h-14 rounded-full bg-s-bg-surface dark:bg-s-dm-bg mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-coral/40 transition-[box-shadow,transform]">
                             {m.avatar_url ? (
                               <Image src={m.avatar_url} alt={m.name} width={56} height={56} className="object-cover w-full h-full" />
                             ) : (
@@ -897,7 +893,7 @@ export default function SalonProfilePage() {
                                 setSelectedService(svc.id); 
                                 setCalendarOpen(true); 
                               }}
-                              className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[12px] text-left transition-all duration-[200ms] ${
+                              className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[12px] text-left transition-[background-color,border-color] duration-[200ms] ${
                                 selectedService === svc.id
                                   ? "bg-s-coral/[0.08] border border-s-coral/20"
                                   : "hover:bg-s-bg-surface dark:hover:bg-s-dm-surface border border-transparent"
@@ -999,7 +995,7 @@ export default function SalonProfilePage() {
                         <button
                           key={s}
                           onClick={() => { setReviewSort(s); setReviewPage(1); }}
-                          className={`px-3 py-1.5 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all ${
+                          className={`px-3 py-1.5 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-colors ${
                             reviewSort === s
                               ? "bg-s-coral text-white"
                               : "bg-s-bg-raised border border-s-ink/[0.08] text-s-ink/60 hover:border-s-ink/20"
@@ -1058,7 +1054,7 @@ export default function SalonProfilePage() {
                                       <button
                                         onClick={submitFlag}
                                         disabled={flagLoading || flagReason.trim().length < 5}
-                                        className="text-xs text-white font-heading font-bold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral disabled:opacity-50 transition-all shadow-coral-glow"
+                                        className="text-xs text-white font-heading font-bold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral disabled:opacity-50 transition-[transform,filter] shadow-coral-glow"
                                       >
                                         {flagLoading ? "…" : "Melden"}
                                       </button>

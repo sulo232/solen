@@ -91,7 +91,7 @@ export default function LoyaltyStampPage() {
             </p>
             <button
               onClick={handleStamp}
-              className="w-full rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.98] transition-all"
+              className="w-full rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] py-3.5 hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter]"
               style={{
                 background: "#E8624A",
                 boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)",

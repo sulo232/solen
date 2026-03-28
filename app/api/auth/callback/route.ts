@@ -10,7 +10,9 @@ export async function GET(request: NextRequest) {
 
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const redirect = searchParams.get("redirect") ?? searchParams.get("next") ?? "/de";
+  const rawRedirect = searchParams.get("redirect") ?? searchParams.get("next") ?? "/de";
+  // SECURITY: Only allow internal relative paths — block external redirects and protocol-relative URLs
+  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/de";
 
   if (code) {
     // Build a Supabase client that sets cookies on the REDIRECT response

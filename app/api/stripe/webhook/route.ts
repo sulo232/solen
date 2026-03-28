@@ -99,9 +99,11 @@ export async function POST(req: NextRequest) {
           const { data: authUser } = await admin.auth.admin.getUserById(booking.user_id);
           const email = authUser?.user?.email;
           if (email) {
-            const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
-            const timeStr = new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-            const serviceName = (booking.services as any)?.name_de ?? "Service";
+            const localeMap: Record<string, string> = { de: "de-CH", en: "en-CH", fr: "fr-CH", it: "it-CH" };
+            const bcp47 = localeMap[locale] ?? "de-CH";
+            const dateStr = new Date(booking.starts_at).toLocaleDateString(bcp47, { weekday: "long", day: "numeric", month: "long" });
+            const timeStr = new Date(booking.starts_at).toLocaleTimeString(bcp47, { hour: "2-digit", minute: "2-digit" });
+            const serviceName = (booking.services as any)?.[`name_${locale}`] ?? (booking.services as any)?.name_de ?? "Service";
             const salonName = (booking.salons as any)?.name ?? "Salon";
             
             const { sendNotification } = await import("@/lib/notifications");

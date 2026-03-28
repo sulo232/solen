@@ -84,7 +84,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
       {/* Book button */}
       <button
         onClick={() => onBook?.(member.id)}
-        className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all shadow-warm-sm"
+        className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
       >
         {t("book_with", { name: member.name })}
       </button>

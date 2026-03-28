@@ -127,7 +127,7 @@ export default function TipPage() {
             {TIP_PRESETS.map((amount) => (
               <button key={amount}
                 onClick={() => { setSelectedAmount(amount); setUseCustom(false); }}
-                className={`py-3 rounded-btn text-xs font-heading font-bold transition-all ${
+                className={`py-3 rounded-btn text-xs font-heading font-bold transition-colors ${
                   !useCustom && selectedAmount === amount
                     ? "bg-s-coral text-white"
                     : "border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/50"
@@ -171,7 +171,7 @@ export default function TipPage() {
 
           <button onClick={handlePay}
             disabled={paying || tipAmount < 100}
-            className="w-full py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
             style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
             {paying ? <Spinner size="sm" invert /> : <Heart size={13} />}
             {formatCurrency(tipAmount / 100, locale)} — {l.send}

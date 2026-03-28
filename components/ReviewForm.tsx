@@ -251,7 +251,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
             <button
               type="submit"
               disabled={loading || rating === 0}
-              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-all"
+              className="flex-1 py-3 flex justify-center items-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 transition-[transform,filter]"
             >
               {loading && <Spinner size="sm" invert />}
               {t("submit")}

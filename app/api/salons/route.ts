@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
     const limit = Math.min(50, parseInt(searchParams.get("limit") ?? "20"));
     const offset = (page - 1) * limit;
+    const idsParam = searchParams.get("ids");
 
     const supabase = await createServerSupabaseClient();
 
@@ -41,6 +42,13 @@ export async function GET(request: NextRequest) {
     if (city) {
       const { data: cData } = await supabase.from("cities").select("id").eq("slug", city).single();
       if (cData?.id) query = query.eq("city_id", cData.id);
+    }
+
+    if (idsParam) {
+      const idArray = idsParam.split(",").filter(id => id.trim() !== "");
+      if (idArray.length > 0) {
+        query = query.in("id", idArray);
+      }
     }
 
     if (min_rating) query = query.gte("average_rating", parseFloat(min_rating));

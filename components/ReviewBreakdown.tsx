@@ -69,7 +69,7 @@ export default function ReviewBreakdown({
                 <span className="text-s-ink/40 dark:text-s-dm-text/40 w-2">{r}</span>
                 <div className="flex-1 h-1.5 bg-s-bg-sunken dark:bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-s-coral rounded-full transition-all duration-300"
+                    className="h-full bg-s-coral rounded-full transition-[width] duration-300"
                     style={{ width: `${pct}%` }}
                   />
                 </div>

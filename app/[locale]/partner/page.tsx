@@ -118,7 +118,7 @@ export default function PartnerPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {FEATURES.map((f, i) => (
-            <div key={i} className="p-5 rounded-[14px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] hover:shadow-warm-sm transition-shadow duration-200">
+            <div key={i} className="p-5 rounded-[14px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3"
                 style={{ background: "rgba(232,98,74,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />
@@ -153,7 +153,7 @@ export default function PartnerPage() {
               { icon: Star, key: "cat_makeup" },
               { icon: Zap, key: "cat_waxing" },
             ].map((cat) => (
-              <div key={cat.key} className="p-5 rounded-[14px] bg-white dark:bg-s-dm-bg border border-s-ink/[0.05] dark:border-white/[0.06] hover:border-s-coral/20 hover:shadow-warm-sm transition-all duration-200">
+              <div key={cat.key} className="p-5 rounded-[14px] bg-white dark:bg-s-dm-bg border border-s-ink/[0.05] dark:border-white/[0.06] hover:border-s-coral/20 hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
                 <cat.icon className="w-6 h-6 text-s-coral mb-3" />
                 <h3 className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text mb-1">{t(`${cat.key}_title` as any)}</h3>
                 <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">{t(`${cat.key}_desc` as any)}</p>
@@ -441,7 +441,7 @@ export default function PartnerPage() {
               <button
                 key={key}
                 onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
-                className={`snap-start shrink-0 w-72 sm:w-80 text-left rounded-[16px] border transition-all duration-300 ${
+                className={`snap-start shrink-0 w-72 sm:w-80 text-left rounded-[16px] border transition-[border-color,box-shadow] duration-300 ${
                   expandedFaq === i
                     ? "bg-white dark:bg-s-dm-surface border-s-coral/30 shadow-warm-md"
                     : "bg-white dark:bg-s-dm-surface border-s-ink/[0.05] dark:border-white/[0.06] shadow-warm-sm hover:shadow-warm-md hover:border-s-coral/20"
@@ -459,7 +459,7 @@ export default function PartnerPage() {
                     />
                   </div>
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
+                    className={`overflow-hidden transition-[height,opacity] duration-300 ${
                       expandedFaq === i ? "max-h-48 opacity-100 mt-4" : "max-h-0 opacity-0"
                     }`}
                   >

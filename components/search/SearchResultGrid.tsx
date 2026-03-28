@@ -72,7 +72,7 @@ export default function SearchResultGrid({
             key={salon.id}
             variants={itemVariants}
             onClick={() => onSelect?.(salon.id)}
-            className={`cursor-pointer rounded-[12px] transition-all ${
+            className={`cursor-pointer rounded-[12px] transition-[background-color,border-color] ${
               selectedId === salon.id
                 ? "ring-2 ring-s-coral ring-offset-2"
                 : ""
@@ -88,7 +88,7 @@ export default function SearchResultGrid({
           <button
             onClick={onLoadMore}
             disabled={loadingMore}
-            className="px-6 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium shadow-warm-sm hover:shadow-coral-glow transition-all disabled:opacity-50"
+            className="px-6 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium shadow-warm-sm hover:shadow-coral-glow transition-[transform,filter] disabled:opacity-50"
           >
             {loadingMore ? <Spinner /> : "Mehr laden"}
           </button>

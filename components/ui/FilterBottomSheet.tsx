@@ -53,7 +53,7 @@ export default function FilterBottomSheet({
 
   // Rule 31 — Zone-aware surface
   const surfaceClasses = (zone === 1 || zone === 2)
-    ? 'backdrop-blur-[6px] bg-white/[0.62] dark:bg-s-dm-surface/90 border border-white/[0.55] dark:border-white/[0.08]'
+    ? 'glass-frost'
     : 'bg-[--raised]';
 
   // Rule 31 — Zone-aware animation

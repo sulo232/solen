@@ -171,7 +171,7 @@ export function CoiffeurBelowGrid() {
               <Link
                 key={style.label}
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
-                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-warm-xl hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]`}
+                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-v5-card-hover hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               >
                 <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 self-start">
                   {style.tag}

@@ -285,7 +285,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                 disabled={added || adding === tmpl.name_de}
                 onClick={() => addTemplate(tmpl)}
                 className={[
-                  "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-all",
+                  "flex items-center justify-between px-3 py-2.5 rounded-[12px] border text-left transition-[background-color,border-color]",
                   added
                     ? "bg-s-coral/5 border-s-coral/20 opacity-60 cursor-default"
                     : "border-s-ink/10 dark:border-white/10 hover:border-s-coral hover:bg-s-coral/5 cursor-pointer",

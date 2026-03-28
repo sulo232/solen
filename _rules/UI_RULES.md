@@ -13,15 +13,18 @@
   - Brand colours brighten in dark mode (coral→#F07560, amber→#E8A030, blue→#85BCD8)
   - Plum INVERTS to lavender (#C090B4) in dark mode
   - Transition: `html { transition: background-color 300ms ease, color 300ms ease }` — only these two properties
-- **Three-Tier Glassmorphism:** Glass is only used on floating elements above decorated backgrounds. Glass on plain cream is invisible and banned.
-  - **Tier 1 (Nav only):** `backdrop-filter: blur(28px) saturate(1.3)`, bg `rgba(250,246,239,.82)`, border `rgba(255,255,255,.55)`
-  - **Tier 2 (Floating cards):** `backdrop-filter: blur(16px) saturate(1.2)`, bg `rgba(255,255,255,.62)`
-  - **Tier 3 (Ambient):** `backdrop-filter: blur(8px)`, bg `rgba(250,246,239,.50)`
-  - **Zone restrictions:** Glass allowed in Zone 1 + Zone 2 only. **NO glass in Zone 3 or Zone 4 ever.**
+- **V5 Glass System (Intentional, Not Universal):**
+  - **Rule**: Glass = floating UI **only** (header on scroll, search dropdown, modals). Cards = solid white. NEVER glass on content cards.
+  - **`.glass-frost`** (Floating overlays): `backdrop-filter: blur(20px) saturate(1.4)`, bg `rgba(255,255,255,0.72)`, border `rgba(255,255,255,0.50)` — used on header pill (scrolled), modals, dropdown overlays
+  - **`.glass-search`** (Search inputs): `backdrop-filter: blur(16px) saturate(1.3)`, coral focus ring `rgba(232,98,74,0.40)` — used on search bar container
+  - **`.glass-toolbar`** (Filter bar): `backdrop-filter: blur(16px) saturate(1.2)`, bottom border — sticky filter bar below header
+  - **`.card-v4`** (Content cards): **Solid white** `#ffffff`, NO glass, NO backdrop-filter — 16px radius, layered shadow, CSS hover lift
+  - **Zone restrictions:** Glass allowed in Zone 1 + Zone 2 floating overlays only. **NO glass in Zone 3 or Zone 4 ever.** NO glass on content cards in ANY zone.
   - Always pair `backdrop-filter` with `-webkit-backdrop-filter` for Safari/iOS.
   - Never stack more than 3 glass elements visible simultaneously.
+  - **Blobs are RETIRED**: `<BlobBackground>`, `.blob-interactive`, decorative blob shapes — all purged. Use `.ambient-v5` radial gradients instead.
 - **No Glowing Borders:** Do not use AI-style glowing borders or generic neon shadows. Stick to clean, Apple-depth shadow system.
-- **Premium Feel:** The UI must feel like Apple made it — multi-layer warm shadows, glass materials, consistent light source.
+- **Premium Feel:** The UI must feel like Airbnb × Fresha — multi-layer warm shadows, solid surfaces for content, glass exclusively for floating UI, consistent light source.
 
 ## 2. Colors & Branding
 - **Primary Colors:**
@@ -50,20 +53,19 @@
 - **Playful Accents:** Use Bebas Neue for section labels, category names, or impact headers. Mix font weights to create a playful but premium hierarchy.
 
 ## 4. Animations & Interactions
-- **Three-Tier Motion System:**
+- **V5 Motion System:**
   - **150ms (fast):** Colour changes, hover backgrounds, immediate feedback
-  - **220ms (mid):** Shadow transitions, card lifts, transform-based hover
-  - **400ms (slow):** Page load reveals, stagger animations
-- **Easing:** Standard `cubic-bezier(.4,0,.2,1)`, Deceleration `cubic-bezier(0,.55,.45,1)` for reveals
-- **Hover States:** Cards have **lift-up effect** (`translateY(-5px)` + shadow upgrade to sh-xl + border-color to b2, 250ms ease).
-- **Button Hover:** `translateY(-1px)` + intensified shadow, 150ms ease. **Active:** `translateY(+1px)` + pressed shadow + inset shadow, 100ms.
-- **Category Tile Hover:** `scale(1.03) rotate(-1deg)` + shadow upgrade, 250ms. Inner image: `scale(1.07)`, 400ms.
+  - **250ms (mid):** Shadow transitions, button press, transform-based hover
+  - **400ms (slow):** Card hover lift + shadow. V5 easing: `cubic-bezier(0.23, 1, 0.32, 1)`
+  - **500ms (image):** Image zoom inside cards on hover (`img-hover-zoom` → `scale(1.03)`)
+- **V5 Easing:** Standard `cubic-bezier(.4,0,.2,1)`, V5 deceleration `cubic-bezier(0.23, 1, 0.32, 1)` for card/reveal transitions. NO springs, NO bounce.
+- **V5 Card Hover:** `.card-v4:hover` → `translateY(-4px)` + layered shadow upgrade, 400ms `cubic-bezier(0.23, 1, 0.32, 1)`. Image zoom begins on hover, continues smoothly.
+- **Button Hover:** `hover:brightness-[1.06]`, 150ms. **Active:** `active:scale-[0.98]`, 100ms.
 - **Tab Switching:** Use a smooth **slide left/right** animation (like turning pages), not a simple fade.
-  - **Exception — Filter/Category tabs:** When a tab switch changes a **filter state** (not a page section), use a 150ms `opacity` fade on the content grid only — NOT a slide animation. Slide animations imply page-level navigation. Example: switching from "Hair" to "Nails" on `/discover` is a filter state change, not navigation. Correct pattern: `transition-opacity duration-150` on the grid wrapper, toggled via state.
-- **Lists/Grids:** Use stagger with **80ms delay** between children for page-load entrance animations.
-- **Float Animation:** `.hero-blob` applies `solen-float` keyframes (6s ease-in-out infinite, translateY(-14px) + slight rotate) for Zone 1 hero background blobs. One element per page only. Not on interactive elements.
-- **No blob morphing on interactive elements.** `.blob-interactive` is RETIRED for buttons and cards. Blob shapes are decorative only.
-- **Zone restrictions:** Tier 1 (float) = Zone 1 only. Tier 2 (reveals) = Zone 1+2. Tier 3 (hover) = Zone 1+2. **NO animation in Zone 3 or Zone 4.**
+  - **Exception — Filter/Category tabs:** When a tab switch changes a **filter state** (not a page section), use a 150ms `opacity` fade on the content grid only — NOT a slide animation.
+- **V5 Stagger Reveals:** Cards stagger with **50ms delay** between children. Section headings slide-in from left, 0.5s. Uses `cubic-bezier(0.23, 1, 0.32, 1)` easing.
+- **Blobs RETIRED:** `.hero-blob`, `.blob-interactive`, all blob animations — completely removed. Ambient backgrounds use `.ambient-v5` static radial gradients.
+- **Zone restrictions:** Reveals/stagger = Zone 1+2. Card hover = Zone 1+2. **NO animation in Zone 3 or Zone 4.**
 - **prefers-reduced-motion:** MANDATORY global wrapper that makes all animations instant. Not optional. Not per-component.
 
 ## 5. Structural Rules
@@ -122,37 +124,31 @@ Applied via `[data-theme="dark"]` on the `<html>` element. All dark surfaces sta
 | Nav glass | Tier 1: rgba(250,246,239,.82) | rgba(21,16,9,.88) |
 | Grain blend | multiply | overlay |
 
-## 10. Border Radius — Three-Tier Shape System
+## 10. Border Radius — V5 Shape System
 
-### Tier 1 — Decorative (Blob shapes) — NEVER on interactive elements
-Blobs are for background carpet divs (z-index: -1, aria-hidden: true), Instagram tiles, hero floating visuals, and large decorative elements ONLY.
+### ~~Tier 1 — Blob shapes~~ → **RETIRED (V5)**
+> All blob shape tokens (`rounded-blob-a/b/c/d/e`) and `.blob-interactive` have been purged from the codebase as part of the V5 overhaul. Do NOT add them back.
+
+### Tier 2 — Containers (V5 updated radii from `tailwind.config.js`)
 | Token | Value | Usage |
 |---|---|---|
-| `rounded-blob-a` | `40% 60% 70% 30% / 40% 50% 60% 50%` | Background blobs, Instagram tile resting |
-| `rounded-blob-b` | `60% 40% 45% 55% / 50% 60% 40% 50%` | Secondary decorative blobs, Instagram hover |
-| `rounded-blob-c` | `50% 50% 40% 60% / 60% 40% 60% 40%` | Tertiary decorative elements |
-| `rounded-blob-d` | `40% 60% 55% 45% / 30% 30% 70% 70%` | Wide background blobs |
-| `rounded-blob-e` | `70% 30% 50% 50% / 40% 60% 40% 60%` | Tall decorative blobs |
-
-### Tier 2 — Containers (Warm organic rounding)
-| Token | Value | Usage |
-|---|---|---|
-| `rounded-card` | **20px** | Salon cards, glass stat cards, Last Minute card, category tiles, feature blocks, modal main container |
+| `rounded-card` | **16px** | Salon cards, listing cards, content blocks |
+| `rounded-card-lg` | **20px** | Hero cards, feature cards, modals |
 | `rounded-panel` | 16px | Inner panels within a card, review cards, section content blocks |
-| `rounded-input` | **12px** | Form inputs, select dropdowns, search button (inside bar), dashboard cards (Zone 4), toast, dropdown menus |
-| `rounded-search` | **18px** | Search bar outer container |
+| `rounded-input` | **12px** | Form inputs, select dropdowns, dashboard cards (Zone 4), toast, dropdown menus |
+| `rounded-search` | **99px** | Search bar outer container (fully rounded) |
 
-### Tier 3 — Interactive (Pill 99px) — ALL interactive elements
+### Tier 3 — Interactive (Pill) — ALL interactive elements
 | Token | Value | Usage |
 |---|---|---|
-| `rounded-pill` | **99px** | ALL buttons (every variant, every size), nav pill, category/service tags, filter pills, availability time slots, trust badges, confirmation pills, mobile search summary pill |
+| `rounded-pill` | **9999px** | Availability pills, tags, nav pill, filter chips |
+| `rounded-btn` | **99px** | ALL CTA buttons, action buttons |
 
 **CRITICAL RULES:**
-- **NEVER** use blob shapes on buttons, form inputs, or any interactive element (Ch.18 #6-8)
+- **NEVER** use blob shapes anywhere — they are retired
 - **NEVER** morph a card's border-radius on hover (cards translate only, radius stays fixed)
 - **NEVER** use sharp corners (0px radius) anywhere
-- `.blob-interactive` is **RETIRED** — blob shapes are decorative only. The solen identity comes from colour and type, not morphing shapes.
-- Standard Tailwind `rounded-*` should NOT be used — use the design tokens.
+- Standard Tailwind `rounded-*` should NOT be used — use the design tokens
 
 ## 11. Shadows — Apple 5-Level System
 All shadows use warm tinting `rgba(26,18,9,x)` — NEVER `rgba(0,0,0,x)`. Two layers minimum (contact + ambient). 1:3 offset:blur ratio.
@@ -182,23 +178,24 @@ Transition: `box-shadow 220ms cubic-bezier(.4,0,.2,1)` — slightly slower than 
 
 Body default = `font-body` (set on `<body>`). You don't need `font-body` class unless overriding.
 
-## 13. Glassmorphism — Three-Tier System
+## 13. V5 Glass System — Intentional, Not Universal
 
-**RULE:** Glass is only used on floating elements above decorated backgrounds (carpet blobs, gradients, or photos). Glass on a plain cream background is invisible — don't use it.
+**RULE:** Glass = floating UI **only** (header on scroll, search dropdown, modals). Content cards use solid white. NEVER apply `backdrop-filter` to listing cards.
 
-| Tier | Blur | Background | Border | Usage | Zone |
+| Class | Blur | Background | Border | Usage | Zone |
 |---|---|---|---|---|---|
-| **Tier 1 (Nav)** | `blur(28px) saturate(1.3)` | `rgba(250,246,239,.82)` | `rgba(255,255,255,.55)` | Floating nav pill ONLY | All zones |
-| **Tier 2 (Cards)** | `blur(16px) saturate(1.2)` | `rgba(255,255,255,.62)` | `rgba(255,255,255,.55)` | Stat cards on gradient, review cards on photos | Zone 1+2 only |
-| **Tier 3 (Ambient)** | `blur(8px)` | `rgba(250,246,239,.50)` | `rgba(255,255,255,.25)` | Trust strip, price labels on photos | Zone 1+2 only |
+| **`.glass-frost`** | `blur(20px) saturate(1.4)` | `rgba(255,255,255,0.72)` | `rgba(255,255,255,0.50)` | Header pill (scrolled), modals, dropdown overlays | Zone 1+2 |
+| **`.glass-search`** | `blur(16px) saturate(1.3)` | `rgba(255,255,255,0.82)` | `rgba(26,18,9,0.06)` + coral focus | Search bar container | Zone 1+2 |
+| **`.glass-toolbar`** | `blur(16px) saturate(1.2)` | `rgba(255,255,255,0.88)` | bottom `rgba(26,18,9,0.04)` | Sticky filter bar below header | Zone 1+2 |
+| **`.card-v4`** | **NONE** | `#ffffff` solid | `rgba(26,18,9,0.05)` | Salon cards, listing cards | ALL zones |
 
-**Dark variant (Tier 2):** `background: rgba(26,18,9,.55)`, `border: rgba(255,255,255,.12)`
+**Dark variants:** All glass classes have `.dark` variants using `rgba(30,23,16,...)` backgrounds.
 
 **Performance rules:**
-- Mobile fallback: `backdrop-filter: none; background: rgba(250,246,239,.97);` on viewport < 768px
 - Never stack more than 3 glass elements visible simultaneously
 - Always pair `backdrop-filter` with `-webkit-backdrop-filter` for Safari/iOS
 - **NO glass in Zone 3** (trust/payment — glass looks unstable) or **Zone 4** (dashboard — glass obscures data)
+- **NO glass on content cards in ANY zone** — use `.card-v4` (solid white) instead
 
 ## 14. Z-Index Scale
 | Token | Value | Used For |
@@ -261,13 +258,13 @@ Body default = `font-body` (set on `<body>`). You don't need `font-body` class u
 - ~~`shadow-xl`~~ / ~~`shadow-2xl`~~ → `shadow-warm-lg`
 - ~~`drop-shadow-sm`~~ / ~~`drop-shadow-md`~~ → avoid; use `shadow-warm-sm` if elevation needed
 
-### Border radius tokens — use design token radii
+### Border radius tokens — use V5 design token radii
 - ~~`rounded-lg`~~ → `rounded-input` (12px) for inputs, or `rounded-panel` (16px) for inner panels
-- ~~`rounded-xl`~~ / ~~`rounded-2xl`~~ / ~~`rounded-3xl`~~ → `rounded-card` (20px)
-- ~~`rounded-full`~~ → `rounded-pill` (99px)
+- ~~`rounded-xl`~~ / ~~`rounded-2xl`~~ / ~~`rounded-3xl`~~ → `rounded-card` (16px) or `rounded-card-lg` (20px)
+- ~~`rounded-full`~~ → `rounded-pill` (9999px)
 - ~~`rounded-sm`~~ → only acceptable for data visualization cells (heatmaps, charts)
-- Standard Tailwind `rounded-*` should NOT be used — always use `rounded-card`, `rounded-input`, `rounded-panel`, `rounded-search`, `rounded-pill`, or `rounded-blob-*` (decorative only)
-- ~~`rounded-blob-*` on buttons/cards~~ → **RETIRED.** Blobs are decorative background elements only. Buttons always use `rounded-pill` (99px). Cards always use `rounded-card` (20px).
+- Standard Tailwind `rounded-*` should NOT be used — always use `rounded-card`, `rounded-card-lg`, `rounded-input`, `rounded-panel`, `rounded-search`, `rounded-pill`, or `rounded-btn`
+- ~~`rounded-blob-*`~~ → **RETIRED in V5.** All blob shape tokens purged from codebase. Buttons: `rounded-btn` (99px). Cards: `rounded-card` (16px).
 
 ## 17. Currency Formatting
 Always use `formatCurrency(amount, locale)` from `@/lib/format-currency` instead of hardcoded `CHF {amount}`. Pass `locale` from `useLocale()` in client components or from `params` in server components.
@@ -345,9 +342,9 @@ These are NOT enforced in code but guide design decisions:
 
 | Zone | Pages | Typography | Colors | Animation | Shapes | Glass |
 |---|---|---|---|---|---|---|
-| 1 — Full Maximalist | Homepage, discovery, category pages, splash/landing, marketing | All three fonts (Bebas hero + Syne headings + DM Sans body) | Full palette, full saturation, 3-blob carpet bg + grain (desktop) | Float (Tier 1) + Reveals (Tier 2) + Hover (Tier 3) | `rounded-card` (20px), `rounded-pill` (99px), decorative blobs bg only | Tier 2 + Tier 3 |
-| 2 — Soft Maximalist | Salon profile, search results grid, map view, review sections, photo gallery | Syne + DM Sans (Bebas Neue allowed ONCE for page title H1) | Full palette, max 1 blob at 50% opacity, no grain | Reveals (Tier 2) + Hover (Tier 3). NO float animation | `rounded-card` (20px), `rounded-pill` (99px). NO blob morphing | Tier 3 only |
-| 3 — Clean Functional | Booking flow, date/time picker, payment (TWINT), login, signup, password reset, account settings | Syne + DM Sans (no Bebas except nav logo) | Coral CTAs + amber accents + cream base. Shadows sm-md only (no xl) | **ZERO animation** | `rounded-input` (12px), `rounded-card` (20px), `rounded-pill` (99px) | **NO glass** |
+| 1 — Full Maximalist | Homepage, discovery, category pages, splash/landing, marketing | All three fonts (Bebas hero + Syne headings + DM Sans body) | Full palette, full saturation, `.ambient-v5` radial gradients | V5 stagger reveals (50ms) + Card hover lift + Section heading slide-in | `rounded-card` (16px), `rounded-pill` (9999px) | `.glass-frost` on floating overlays only |
+| 2 — Soft Maximalist | Salon profile, search results grid, map view, review sections, photo gallery | Syne + DM Sans (Bebas Neue allowed ONCE for page title H1) | Full palette, `.ambient-v5` at reduced opacity | Card hover lift + Section heading slide-in. NO stagger | `rounded-card` (16px), `rounded-pill` (9999px) | `.glass-frost` on dropdowns only |
+| 3 — Clean Functional | Booking flow, date/time picker, payment (TWINT), login, signup, password reset, account settings | Syne + DM Sans (no Bebas except nav logo) | Coral CTAs + amber accents + cream base. Shadows sm-md only (no xl) | **ZERO animation** | `rounded-input` (12px), `rounded-card` (16px), `rounded-pill` (9999px) | **NO glass** |
 | 4 — Pure Structured | Dashboard, admin, calendar, analytics, settings | Syne 700 + DM Sans. **No Bebas Neue ever** | Palette on borders/status/icons only. 12px max radius | **ZERO animation** | `rounded-input` (12px) max | **NO glass** |
 
 ---
@@ -411,7 +408,7 @@ Use this checklist when building or reviewing ANY component:
 | Dividers | Heavy `<hr>` lines between content | Whitespace or `border-s-ink/5` hairlines |
 | Shadows | Generic `shadow-md` | Warm `shadow-card` / `shadow-warm-*` tokens |
 | Typography | Random font sizes, inconsistent weights | Strict hierarchy: display → heading → body with token sizes |
-| Border radius | Mixed `rounded-lg`, `rounded-2xl`, `rounded-full` | Consistent `rounded-card`, `rounded-button`, `rounded-pill` |
+| Border radius | Mixed `rounded-lg`, `rounded-2xl`, `rounded-full` | Consistent `rounded-card` (16px), `rounded-btn` (99px), `rounded-pill` (9999px) |
 | Colors | Raw Tailwind colors (`yellow-400`, `emerald-500`) | Design tokens (`s-yellow`, `s-success`) |
 
 ### 19f. Strict Font Scaling & Line Heights
@@ -422,7 +419,7 @@ Use this checklist when building or reviewing ANY component:
 - **Map vs Grid Equality:** The discovery experience (`app/[locale]/search`) MUST feature a Split View architecture on desktop (50% Map, 50% Grid) and a "Coin-Flip" floating action button on mobile that instantly swaps views without a page reload.
 - **Hyper-Fluid Booking Success:** Do not use full-page redirects for booking success. The `[Book Now]` button MUST use Framer Motion `layoutId` to compress, morph into a circle spinner, and then expand into a glassmorphic Receipt Card Modal containing a self-drawing premium SVG checkmark. **No Confetti.**
 - **Sneaker-Drop Urgency (Last-Minute):** The Last-Minute booking section MUST enforce high urgency. Disappearing slots require `shadow-coral-glow` pulsing. Slots expiring in <2 hours require a floating translucent countdown timer.
-- **Playful, Premium Micro-Delight:** Enforce `.blob-interactive` squish physics on major interactive cards. Favoriting a salon MUST trigger a haptic heart-pop animation (`scale: 1.2` bezier easing down to `scale: 1.0`).
+- **Heart Animation:** Favoriting a salon MUST trigger a heartBounce keyframe (`scale: 1 → 1.3 → 0.9 → 1.1 → 0.95 → 1`, 500ms ease-out).
 
 ---
 **Rule Enforcement:** If a prompt asks for a UI component that contradicts these rules, you must **refuse the specific contradiction** and implement the component using these rules instead.
@@ -464,11 +461,13 @@ The following CSS classes are BANNED. If you write ANY of these, the code is wro
 | `bg-red-*` | `bg-s-error-bg` / `bg-s-error` | Generic Tailwind, use semantic token |
 | `shadow-sm` / `shadow-md` / `shadow-lg` | `shadow-warm-sm` / `shadow-warm-md` / `shadow-warm-lg` | Cold shadows → warm design tokens |
 | `shadow-xl` / `shadow-2xl` | `shadow-warm-lg` | Cold shadows → warm design tokens |
-| `rounded-lg/xl/2xl/3xl` | `rounded-card` (20px) / `rounded-input` (12px) / `rounded-pill` (99px) | Use design token radii (see UI_RULES §10) |
-| `rounded-full` | `rounded-pill` | Use design token (99px) |
-| `rounded-blob-*` on buttons/cards | **RETIRED** — Blobs are decorative only | Buttons: `rounded-pill` (99px). Cards: `rounded-card` (20px) |
-| `rounded-button` (8px) | `rounded-pill` (99px) for buttons, `rounded-input` (12px) for inputs | Old 8px token retired |
-| `.blob-interactive` on buttons | **RETIRED** | Blob morphing is decorative only |
+| `rounded-lg/xl/2xl/3xl` | `rounded-card` (16px) / `rounded-card-lg` (20px) / `rounded-input` (12px) | Use V5 design token radii (see UI_RULES §10) |
+| `rounded-full` | `rounded-pill` (9999px) | Use design token |
+| `rounded-blob-*` | **FULLY RETIRED in V5** — purged from codebase | Do NOT add back. No blob shapes anywhere |
+| `rounded-button` (8px) | `rounded-btn` (99px) for buttons, `rounded-input` (12px) for inputs | Old 8px token retired |
+| `.blob-interactive` | **FULLY RETIRED in V5** — purged from codebase | No blob morphing anywhere |
+| `<BlobBackground>` | `.ambient-v5` radial gradients | V5 replaces decorative blobs with subtle gradients |
+| `transition-all` | `transition-[transform,box-shadow]`, `transition-colors`, `transition-opacity` | Name exact CSS properties (see §21-A) |
 | Any emoji in JSX | Lucide React icon | UI_RULES §5: no emoji in UI |
 | `#00A19C` | `bg-s-coral` / `text-s-coral` / `s-blue` | Old teal brand hex (BANNED) |
 | `#F59E0B` | `s-warning` / `s-yellow` | Generic Tailwind warning orange (BANNED) |
@@ -685,7 +684,7 @@ npx tsc --noEmit 2>&1 | grep "has no exported member"
 |---|---|---|---|---|
 | Glass on bottom sheet | ✅ Tier 2 glass | ✅ Tier 3 glass | ❌ Solid surface only | ❌ Solid surface only |
 | Slide/reveal animations | ✅ 220–400ms | ✅ 220ms max | ❌ ZERO animation | ❌ ZERO animation |
-| Backdrop carpet blob bg | ✅ | ✅ | ❌ | ❌ |
+| `.ambient-v5` background | ✅ | ✅ | ❌ | ❌ |
 | Expand drawer animation | ✅ | ✅ | ❌ | ❌ |
 
 **Implementation contract:**
@@ -723,7 +722,7 @@ grep -rn "backdrop-blur\|backdrop-filter\|glass-tier" \
 
 1. **8-Point Grid**: ALL spacing must be 8px multiples. NEVER use `gap-5`, `p-5`, `gap-7`, `p-7`, `gap-9`
 2. **Design Token Shadows**: NEVER use `shadow-sm/md/lg/xl/2xl`. ALWAYS use `shadow-card`, `shadow-warm-sm/md/lg`, `shadow-warm-float`, `shadow-glass`
-3. **Design Token Radii**: NEVER use `rounded-lg/xl/2xl/3xl/full`. ALWAYS use `rounded-card` (20px), `rounded-input` (12px), `rounded-panel` (16px), `rounded-search` (18px), `rounded-pill` (99px). `rounded-blob-*` is decorative only.
+3. **Design Token Radii**: NEVER use `rounded-lg/xl/2xl/3xl/full`. ALWAYS use `rounded-card` (16px), `rounded-card-lg` (20px), `rounded-input` (12px), `rounded-panel` (16px), `rounded-search` (99px), `rounded-pill` (9999px), `rounded-btn` (99px). Blob shapes are RETIRED.
 4. **Design Token Colors**: NEVER use raw Tailwind colors (`yellow-400`, `emerald-500`, `green-300`, `purple-300`, `rose-300`, `blue-200`). ALWAYS use `s-*` tokens.
 5. **60-30-10 Color Rule**: 60% neutral base, 30% card surfaces, 10% accent colors
 6. **Cheap vs Premium Matrix**: Check every new component against the audit matrix in `UI_RULES.md` §19e
@@ -979,6 +978,6 @@ grep -rn "duration-500\|duration-700\|duration-1000" components/ app/ --include=
 # Find banned ease-in
 grep -rn '"ease-in"\\|ease-in[^-]' components/ app/ --include="*.tsx"
 
-# Expected for all: 0 results (except decorative animations like blobs, confetti)
+# Expected for all: 0 results (except decorative animations like confetti)
 ```
 

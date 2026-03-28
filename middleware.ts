@@ -116,9 +116,13 @@ export async function middleware(request: NextRequest) {
       }
     );
 
-    // Refresh session from cookies (no network call — getUser() times out on Vercel Edge)
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+    // SECURITY: Use getUser() for proper JWT verification — getSession() is not safe for auth decisions
+    // Wrapping with AbortController timeout to prevent Vercel Edge hangs
+    const userPromise = supabase.auth.getUser();
+    const timeoutPromise = new Promise<{ data: { user: null }, error: Error }>((resolve) =>
+      setTimeout(() => resolve({ data: { user: null }, error: new Error("Auth timeout") }), 4000)
+    );
+    const { data: { user } } = await Promise.race([userPromise, timeoutPromise]);
 
     // ── Auth guards for dashboard routes ──
     const currentLocale = locales.find(

@@ -86,7 +86,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
             key={opt.id}
             onClick={() => setPaymentMode(opt.id)}
             className={[
-              "w-full rounded-[12px] border p-4 text-left transition-all flex items-center gap-3",
+              "w-full rounded-[12px] border p-4 text-left transition-[background-color,border-color,box-shadow] flex items-center gap-3",
               paymentMode === opt.id
                 ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-warm-sm"
                 : "border-s-ink/10 dark:border-white/10 hover:border-s-ink/20 dark:hover:border-white/20",
@@ -148,7 +148,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
       <button
         onClick={handleSave}
         disabled={saving}
-        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
+        className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
       >
         {saving && <Loader2 size={14} className="animate-spin" />}
         {t("setup.saveAndContinue")}

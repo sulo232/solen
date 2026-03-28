@@ -95,7 +95,7 @@ export default function StampCard({
               <div
                 key={i}
                 className={[
-                  "w-9 h-9 rounded-full flex items-center justify-center transition-all",
+                  "w-9 h-9 rounded-full flex items-center justify-center transition-colors",
                   isFilled
                     ? "bg-s-coral text-white"
                     : "border-2 border-dashed border-s-ink/10 dark:border-white/20",

@@ -47,17 +47,16 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, y: -8 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -3, boxShadow: "0 10px 28px rgba(26,18,9,.10)" }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: -8 }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
       className="will-change-transform"
     >
       <Link
         href={`/${locale}/salon/${slot.salon.slug}?slot=${slot.id}`}
         className={cn(
-          "flex flex-col justify-between rounded-[12px] bg-white dark:bg-s-dm-surface shadow-warm-md overflow-hidden h-52 border-l-2",
+          "flex flex-col justify-between rounded-card bg-white dark:bg-s-dm-surface shadow-elevation-2 overflow-hidden h-52 border-l-2 hover:-translate-y-[2px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-300",
           isUrgent
             ? "border-s-coral animate-coral-pulse"
             : "border-s-coral/40"

@@ -73,7 +73,7 @@ export default function CitySelector({ variant = "header", onCityChange }: CityS
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          inline-flex items-center gap-1.5 text-sm font-body transition-all duration-150
+          inline-flex items-center gap-1.5 text-sm font-body transition-colors duration-150
           ${variant === "menu"
             ? "w-full px-4 py-3 rounded-input bg-s-bg-surface dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text"
             : "px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20 dark:hover:border-white/20 hover:text-s-ink dark:hover:text-s-dm-text"

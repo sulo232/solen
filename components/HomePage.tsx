@@ -13,6 +13,7 @@ import {
   RotateCcw,
   CreditCard,
   Shield,
+  MapPin,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -21,7 +22,7 @@ import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
 // StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
 import LastMinuteCard from "@/components/LastMinuteCard";
-import BlobBackground from "@/components/ui/BlobBackground";
+// BlobBackground removed — V4 uses ambient-v4 CSS class
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
@@ -74,12 +75,12 @@ import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "COIFFEUR",   count: "42",  Icon: CoiffeurIcon, color: "text-s-coral",       bgClass: "bg-s-coral/[0.08] dark:bg-s-coral/[0.15]" },
-  { key: "barbershop", label: "BARBER",     count: "18",  Icon: BarberIcon,   color: "text-s-ink",         bgClass: "bg-s-ink/[0.06] dark:bg-white/[0.08]" },
-  { key: "nails",      label: "NAILS",      count: "24",  Icon: NailsIcon,    color: "text-s-amber",       bgClass: "bg-s-yellow/[0.15] dark:bg-s-yellow/[0.12]" },
-  { key: "spa",        label: "SPA",        count: "11",  Icon: SpaIcon,      color: "text-s-sage",        bgClass: "bg-s-sage/[0.12] dark:bg-s-sage/[0.15]" },
-  { key: "makeup",     label: "MAKEUP",     count: "8",   Icon: MakeupIcon,   color: "text-s-sand",        bgClass: "bg-s-sand/[0.15] dark:bg-s-sand/[0.12]" },
-  { key: "waxing",     label: "WAXING",     count: "15",  Icon: WaxingIcon,   color: "text-s-plum",        bgClass: "bg-s-plum/[0.10] dark:bg-s-plum/[0.20]" },
+  { key: "coiffeur",   label: "COIFFEUR",   Icon: CoiffeurIcon, color: "text-s-coral",       bgClass: "bg-s-coral/[0.08] dark:bg-s-coral/[0.15]" },
+  { key: "barbershop", label: "BARBER",     Icon: BarberIcon,   color: "text-s-ink",         bgClass: "bg-s-ink/[0.06] dark:bg-white/[0.08]" },
+  { key: "nails",      label: "NAILS",      Icon: NailsIcon,    color: "text-s-amber",       bgClass: "bg-s-yellow/[0.15] dark:bg-s-yellow/[0.12]" },
+  { key: "spa",        label: "SPA",        Icon: SpaIcon,      color: "text-s-sage",        bgClass: "bg-s-sage/[0.12] dark:bg-s-sage/[0.15]" },
+  { key: "makeup",     label: "MAKEUP",     Icon: MakeupIcon,   color: "text-s-sand",        bgClass: "bg-s-sand/[0.15] dark:bg-s-sand/[0.12]" },
+  { key: "waxing",     label: "WAXING",     Icon: WaxingIcon,   color: "text-s-plum",        bgClass: "bg-s-plum/[0.10] dark:bg-s-plum/[0.20]" },
 ] as const;
 
 
@@ -131,7 +132,6 @@ export default function HomePage({ initialData }: HomePageProps) {
     }
   );
   const [showNearby, setShowNearby] = useState(false);
-  const [expandedPin, setExpandedPin] = useState<string | null>(null);
 
   const fetchNearby = useCallback(() => {
     if (!navigator.geolocation) {
@@ -202,8 +202,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-transparent relative overflow-x-hidden">
-      <BlobBackground zone={1} />
+    <div className="min-h-screen bg-white dark:bg-s-dm-bg ambient-v5 relative overflow-x-hidden">
 
       {/* ── Hero (compact) ──────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-10 sm:pt-16 pb-6 sm:pb-10">
@@ -232,7 +231,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
           {/* Search bar right under greeting */}
           <div className="mt-8 max-w-4xl mx-auto relative group">
-            <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-s-coral/15 via-s-plum/10 to-s-amber/15 dark:from-s-coral/10 dark:to-s-amber/10 rounded-[40px] blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+            <div className="absolute -inset-3 md:-inset-5 bg-gradient-to-r from-s-coral/8 via-s-plum/6 to-s-amber/8 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-60 transition-opacity duration-[400ms] -z-10" />
             <HomeSearchBar />
           </div>
 
@@ -267,13 +266,12 @@ export default function HomePage({ initialData }: HomePageProps) {
           </h2>
         </div>
         <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-          {CATEGORIES.map(({ key, label, count, Icon, color, bgClass }) => {
+          {CATEGORIES.map(({ key, label, Icon, color, bgClass }) => {
             const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
             return (
               <Link key={key} href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
                 aria-disabled={!isEnabled}
-                className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group transition-[transform,box-shadow] duration-[250ms] flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/10 dark:border-s-dm-border ${isEnabled ? 'hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)]' : 'cursor-default'}`}
-                style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
+                className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-card bg-white dark:bg-s-dm-surface overflow-hidden group transition-all duration-300 ease-out flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 ${isEnabled ? 'hover:-translate-y-[3px] hover:shadow-elevation-3' : 'cursor-default'}`}>
                 <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${bgClass}`}>
                   <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} />
                 </div>
@@ -282,7 +280,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                     {label}
                   </div>
                   <div className="text-[10px] lg:text-[11px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1.5 lg:mt-1">
-                    {isEnabled ? `${categoryCounts[key] ?? count} ${t("categories.salonsCount")}` : t("categories.comingSoon")}
+                    {isEnabled ? (categoryCounts[key] != null ? `${categoryCounts[key]} ${t("categories.salonsCount")}` : t("categories.salonsCount")) : t("categories.comingSoon")}
                   </div>
                 </div>
                 {/* Coming-soon overlay for disabled categories */}
@@ -296,7 +294,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
-      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden bg-s-bg-base/80 dark:bg-s-dm-bg">
+      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden section-alt">
         <div className="max-w-5xl mx-auto px-4 mb-2 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
@@ -319,12 +317,8 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* ── Wieder buchen? (logged-in users with past booking) ───────────── */}
       {sections.rebook && lastBookedSalon && (
         <section className="max-w-5xl mx-auto px-4 pt-6">
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}
-            className="flex items-center gap-4 p-4 rounded-[20px]"
-            style={{ background: "var(--glass-bg-subtle)", backdropFilter: "blur(16px) saturate(1.2)",
-                     WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                     border: "1px solid var(--glass-border-subtle)",
-                     boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), var(--glass-shadow-inset)" }}>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+            className="flex items-center gap-4 p-4 card-v4">
             <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-coral/[0.12] dark:bg-s-coral/[0.20]">
               <RefreshCw size={18} className="text-s-coral" />
             </div>
@@ -410,11 +404,6 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* ── Deals ────────────────────────────────────────── */}
       {sections.last_minute && (
       <section id="tour-last-minute" className="py-16 md:py-24 overflow-hidden relative bg-s-plum">
-        {/* Deco blobs on dark */}
-        <div className="absolute w-[360px] h-[360px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
-          style={{ background: "rgba(232,98,74,.14)" }} />
-        <div className="absolute w-[240px] h-[240px] rounded-full left-[-50px] bottom-[-50px] pointer-events-none"
-          style={{ background: "rgba(107,163,200,.08)" }} />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
             <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
               <div>
@@ -529,137 +518,33 @@ export default function HomePage({ initialData }: HomePageProps) {
         </section>
       )}
 
-      {/* ── Map Preview Section (Phase 4 — Interactive Dots) ──────────────── */}
-      {(() => {
-        // Use first 5 salons (or fewer if less available) for map dots
-        const mapSalons = salons.slice(0, 5);
-        const PIN_POSITIONS = [
-          { top: "25%", left: "25%" },
-          { top: "33%", right: "25%" },
-          { bottom: "33%", left: "33%" },
-          { top: "20%", left: "55%" },
-          { bottom: "25%", right: "35%" },
-        ];
-
-        return (
-          <section className="py-16 md:py-24">
-            <div className="max-w-5xl mx-auto px-4">
-              <div className="mb-6">
-                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
-                  {t("map.eyebrow")}
-                </span>
-                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
+      {/* ── Map CTA — V4 Clean ──────────────────────────────────────────── */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="card-v4 p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 rounded-full bg-s-coral/[0.08] dark:bg-s-coral/[0.15] flex items-center justify-center shrink-0">
+                <MapPin className="w-6 h-6 text-s-coral" />
+              </div>
+              <div>
+                <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-lg">
                   {t("map.title")}
                 </h2>
-              </div>
-
-              <div className="relative w-full h-[380px] md:h-[450px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm cursor-pointer"
-                   onClick={(e) => {
-                     // Only navigate if clicking the background, not a pin
-                     if ((e.target as HTMLElement).closest('[data-map-pin]')) return;
-                     setExpandedPin(null);
-                   }}>
-                {/* Map abstract background */}
-                <div className="absolute inset-0 opacity-40 dark:invert dark:opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-bg/80" />
-
-                {/* Interactive map pins */}
-                {mapSalons.map((salon, i) => {
-                  const pos = PIN_POSITIONS[i] || PIN_POSITIONS[0];
-                  const isExpanded = expandedPin === salon.id;
-                  const isPrimary = i === 0;
-                  return (
-                    <div
-                      key={salon.id}
-                      data-map-pin
-                      className="absolute z-10"
-                      style={{ ...pos, transform: "translate(-50%, -50%)" }}
-                    >
-                      {/* Pin dot */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setExpandedPin(isExpanded ? null : salon.id);
-                        }}
-                        className={`relative flex items-center justify-center rounded-full transition-colors duration-200 ease-out ${
-                          isPrimary
-                            ? "w-10 h-10 bg-white shadow-warm-md border-2 border-s-coral text-s-coral"
-                            : "w-8 h-8 bg-s-coral shadow-coral-glow text-white"
-                        } ${isExpanded ? "scale-[1.3] ring-4 ring-s-coral/20" : "hover:brightness-[1.06]"}`}
-                        aria-label={`Pin: ${salon.name}`}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width={isPrimary ? 20 : 16} height={isPrimary ? 20 : 16} viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" fill="white" />
-                        </svg>
-                      </button>
-
-                      {/* Expanded salon info popup */}
-                      {isExpanded && (
-                        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 bg-white dark:bg-s-dm-raised rounded-[12px] shadow-warm-lg border border-s-ink/10 dark:border-white/10 p-3 z-20 animate-fade-in">
-                          <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text truncate">
-                            {salon.name}
-                          </p>
-                          {salon.average_rating > 0 && (
-                            <div className="flex items-center gap-1 mt-1">
-                              <span className="text-s-amber text-xs">★</span>
-                              <span className="text-xs font-medium text-s-ink/70 dark:text-s-dm-text/70">{salon.average_rating.toFixed(1)}</span>
-                              {salon.review_count > 0 && <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">({salon.review_count})</span>}
-                            </div>
-                          )}
-                          {salon.categories?.[0] && (
-                            <span className="inline-block mt-1.5 text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-coral bg-s-coral/10 px-2 py-0.5 rounded-pill">
-                              {salon.categories[0]}
-                            </span>
-                          )}
-                          <Link
-                            href={`/${locale}/salon/${salon.slug}`}
-                            className="mt-2.5 block w-full text-center py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {t("map.bookCta")}
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {/* Fallback pins if no salons loaded */}
-                {mapSalons.length === 0 && (
-                  <>
-                    <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-coral text-s-coral">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
-                      </div>
-                    </div>
-                    <div className="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="w-8 h-8 rounded-full bg-s-coral shadow-coral-glow flex items-center justify-center text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-ink text-s-ink">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* Overlay CTA */}
-                <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none">
-                  <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-                    className="pointer-events-auto px-6 py-3 rounded-full bg-white/90 border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    {t("map.openCta")}
-                  </Link>
-                </div>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-0.5">
+                  {t("map.eyebrow")}
+                </p>
               </div>
             </div>
-          </section>
-        );
-      })()}
+            <Link
+              href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-s-ink dark:bg-white text-white dark:text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:-translate-y-px hover:shadow-elevation-3 active:scale-[0.98] transition-all duration-200 shrink-0"
+            >
+              <MapPin className="w-4 h-4" />
+              {t("map.openCta")}
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ── Review Carousel ──────────────────────────────────────────────── */}
       {sections.reviews && <ReviewCarousel />}
@@ -705,11 +590,8 @@ export default function HomePage({ initialData }: HomePageProps) {
         <div className="max-w-5xl mx-auto">
           <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.5 }}
-            className="rounded-[20px] overflow-hidden relative bg-gradient-to-br from-s-amber via-s-coral to-s-plum"
+            className="rounded-card-lg overflow-hidden relative bg-gradient-to-br from-s-amber via-s-coral to-s-plum"
             style={{ boxShadow: "0 24px 72px rgba(26,18,9,.18)" }}>
-            {/* Inner blobs */}
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full pointer-events-none"
-              style={{ background: "rgba(255,255,255,.12)", filter: "blur(60px)", transform: "translate(50%,-50%)" }} />
             <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-xl text-center md:text-left">
                 <h2 className="font-heading font-bold text-white mb-4 leading-tight"
@@ -737,7 +619,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* ── Trust Strip ──────────────────────────────────────────────────── */}
       <div className="px-4 pb-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-[16px] bg-s-bg-base dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-s-dm-border shadow-warm-xs">
+          <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1">
             {[
               { icon: <Lock size={14} aria-hidden="true" />, label: t("trust.securePayment") },
               { icon: <Shield size={14} aria-hidden="true" />, label: t("trust.swissMade") },
@@ -746,7 +628,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               { icon: <CreditCard size={14} aria-hidden="true" />, label: t("trust.paymentMethods") },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-xs text-s-ink/70 dark:text-s-dm-text/70">
-                <div className="w-7 h-7 rounded-[8px] bg-white dark:bg-s-dm-surface border border-s-ink/08 dark:border-white/08 flex items-center justify-center text-s-ink/60 dark:text-s-dm-text/60 shadow-warm-xs shrink-0">{icon}</div>
+                <div className="w-7 h-7 rounded-[8px] bg-s-bg-sunken dark:bg-s-dm-bg/50 flex items-center justify-center text-s-ink/50 dark:text-s-dm-text/50 shrink-0">{icon}</div>
                 <span>{label}</span>
               </div>
             ))}

@@ -129,7 +129,7 @@ export default function MyPackagesPage() {
                     </div>
                     <div className="h-2 w-full rounded-full overflow-hidden"
                       style={{ background: "rgba(26,18,9,.06)" }}>
-                      <div className="h-full rounded-full transition-all duration-500"
+                      <div className="h-full rounded-full transition-[width] duration-500"
                         style={{
                           width: `${(used / total) * 100}%`,
                           background: isUsedUp ? "rgba(26,18,9,.15)" : "#E8624A"

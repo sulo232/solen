@@ -89,7 +89,7 @@ export default function CoiffeurCRMPage() {
             key={id}
             onClick={() => setActiveTab(id)}
             aria-label={t(labelKey)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-all duration-150 shrink-0 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-colors duration-150 shrink-0 ${
               activeTab === id
                 ? "bg-s-coral text-white shadow-[0_2px_8px_rgba(232,98,74,0.3)]"
                 : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
@@ -157,7 +157,7 @@ export default function CoiffeurCRMPage() {
                         return (
                           <div
                             key={i}
-                            className="flex-1 bg-s-coral rounded-t-[3px] transition-all"
+                            className="flex-1 bg-s-coral rounded-t-[3px] transition-[height]"
                             style={{ height: `${Math.max(4, (v / max) * 100)}%`, opacity: v === 0 ? 0.15 : 1 }}
                           />
                         );

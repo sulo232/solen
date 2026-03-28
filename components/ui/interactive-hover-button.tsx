@@ -16,7 +16,7 @@ export default function InteractiveHoverButton({
   return (
     <button
       className={cn(
-        "flex items-center justify-center gap-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-60",
+        "flex items-center justify-center gap-2 text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] disabled:opacity-60",
         className
       )}
       style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}

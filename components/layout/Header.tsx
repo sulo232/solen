@@ -124,7 +124,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       <div className="flex items-center justify-center gap-3">
         {/* Main nav pill */}
         <div className={cn(
-          "flex items-center justify-between rounded-full transition-all duration-300 ease-out w-full",
+          "flex items-center justify-between rounded-full transition-[max-width,padding,min-height,background-color,border-color,box-shadow] duration-300 ease-out w-full",
           scrolled
             ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost"
             : "mt-3 max-w-5xl min-h-[60px] py-2.5 px-5 sm:px-8 bg-white/85 backdrop-blur-sm border border-s-ink/[0.05] shadow-elevation-1"
@@ -164,7 +164,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           </div>
 
           {/* Desktop nav — V4: always visible */}
-          <nav className="hidden md:flex items-center gap-1.5 transition-all duration-300" aria-label="Hauptnavigation">
+          <nav className="hidden md:flex items-center gap-1.5 transition-opacity duration-300" aria-label="Hauptnavigation">
             {NAV_LINKS.map(({ key, href, Icon }) => {
               const isActive = pathname.includes(href);
               return (
@@ -186,7 +186,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                     <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-s-coral" />
                   )}
                   {/* Tooltip */}
-                  <span className="absolute top-[120%] left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-s-ink text-white dark:bg-white dark:text-s-ink text-[10px] font-heading font-medium tracking-wide uppercase px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap z-50">
+                  <span className="absolute top-[120%] left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-s-ink text-white dark:bg-white dark:text-s-ink text-[10px] font-heading font-medium tracking-wide uppercase px-2.5 py-1.5 rounded-md shadow-elevation-3 whitespace-nowrap z-50">
                     {t(key as any)}
                   </span>
                 </Link>

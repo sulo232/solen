@@ -21,7 +21,7 @@ export default function SolenExclusiveBadge({
       onMouseLeave={() => setShowTooltip(false)}
       onClick={() => setShowTooltip((v) => !v)}
     >
-      <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-gradient-to-r from-s-coral-500/20 to-s-coral-400/10 text-s-coral-700 dark:text-s-coral-300 px-1.5 py-0.5 rounded-full border border-s-coral-200/50 dark:border-s-coral-700/50 cursor-help whitespace-nowrap">
+      <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-gradient-to-r from-s-coral-500/20 to-s-coral-400/10 text-s-coral-700 dark:text-s-coral-300 px-1.5 py-0.5 rounded-pill border border-s-coral-200/50 dark:border-s-coral-700/50 cursor-help whitespace-nowrap">
         <Sparkles size={10} />
         Nur bei Solen
       </span>

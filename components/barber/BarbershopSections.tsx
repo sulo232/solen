@@ -161,7 +161,7 @@ export function BarbershopBelowGrid() {
         {FEATURED_BARBERS.map((barber) => (
           <div
             key={barber.id}
-            className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 p-4 flex flex-col items-center text-center shadow-warm-sm hover:shadow-warm-xl hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]"
+            className="rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 p-4 flex flex-col items-center text-center shadow-warm-sm hover:shadow-v5-card-hover hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             <div className="w-14 h-14 rounded-pill bg-s-amber/10 flex items-center justify-center mb-3">
               <span className="font-heading font-bold text-s-amber text-lg">{barber.initials}</span>

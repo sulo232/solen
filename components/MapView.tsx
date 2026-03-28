@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard } from "@/lib/types";
+import Supercluster from "supercluster";
 
 const BASEL_CENTER: [number, number] = [7.5886, 47.5596];
 
@@ -39,7 +40,27 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
   const [activeCategory, setActiveCategory] = useState("all");
   const [showAreaSearch, setShowAreaSearch] = useState(false);
   const [mapError, setMapError] = useState(!process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const moveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync dark mode state from document root
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    
+    const root = document.documentElement;
+    setIsDarkTheme(root.classList.contains("dark"));
+
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          setIsDarkTheme(root.classList.contains("dark"));
+        }
+      });
+    });
+
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
 
   // Filter salons by category
   const filteredSalons = activeCategory === "all"
@@ -48,13 +69,17 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
 
   // Init map once
   useEffect(() => {
-    if (!containerRef.current || mapError) return;
+    if (!containerRef.current || mapError || mapRef.current) return;
 
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
 
+    const styleDark = process.env.NEXT_PUBLIC_MAPBOX_STYLE_DARK || "mapbox://styles/mapbox/dark-v11";
+    const styleLight = process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT || "mapbox://styles/mapbox/light-v11";
+    const initialStyle = isDarkTheme ? styleDark : styleLight;
+
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/light-v11",
+      style: initialStyle,
       center: BASEL_CENTER,
       zoom: 13,
       cooperativeGestures: true, // Require Ctrl+scroll / two-finger on mobile
@@ -86,7 +111,19 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       map.remove();
       mapRef.current = null;
     };
-  }, [enhanced]);
+  // We intentionally do not include `resolvedTheme` here because we ONLY want to init the map once,
+  // and handle style changes in a separate effect below.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enhanced, mapError]);
+
+  // Handle dynamic style switching (Dark/Light mode) without destroying map
+  useEffect(() => {
+    if (mapRef.current) {
+      const styleDark = process.env.NEXT_PUBLIC_MAPBOX_STYLE_DARK || "mapbox://styles/mapbox/dark-v11";
+      const styleLight = process.env.NEXT_PUBLIC_MAPBOX_STYLE_LIGHT || "mapbox://styles/mapbox/light-v11";
+      mapRef.current.setStyle(isDarkTheme ? styleDark : styleLight);
+    }
+  }, [isDarkTheme, mapError]);
 
   // Sync markers whenever salons, selection, or category change
   useEffect(() => {
@@ -270,7 +307,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
             href="https://www.google.com/maps/search/?api=1&query=Basel,+Switzerland"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3.5 bg-s-coral hover:brightness-[1.06] text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] rounded-btn shadow-coral-glow transition-all active:scale-[0.98]"
+            className="inline-flex items-center gap-2 px-6 py-3.5 bg-s-coral hover:brightness-[1.06] text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] rounded-btn shadow-coral-glow transition-[transform,filter] active:scale-[0.98]"
           >
             In Google Maps öffnen
           </a>

@@ -97,7 +97,7 @@ export function NailsBelowGrid() {
             <Link
               key={item.label}
               href={`/${locale}/discover?category=nails`}
-              className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-warm-xl transition-[transform,box-shadow] duration-[250ms]`}
+              className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]`}
               aria-label={item.label}
             >
               <span className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 leading-tight">

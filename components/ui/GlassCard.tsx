@@ -2,26 +2,26 @@ import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Extra strong blur — for modals / floating overlays */
+  /** Use elevated for modals/floating overlays (keeps glass effect) */
   elevated?: boolean;
   /** Remove default padding */
   noPadding?: boolean;
 }
 
 /**
- * Glassmorphism container — rounded-3xl, backdrop-blur, translucent white.
- * Use for cards, panels, sections throughout the Next.js layer.
+ * V4 Card container — solid backgrounds, clean borders, elevation shadows.
+ * Elevated variant keeps glassmorphism for modals/overlays only.
  */
 const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
   ({ className, elevated = false, noPadding = false, children, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        "relative rounded-[12px] border border-white/60",
-        "bg-white/80 dark:bg-s-dm-surface/80 backdrop-blur-panel",
-        "shadow-surface",
+        "relative rounded-card",
+        elevated
+          ? "glass-frost shadow-elevation-3"
+          : "bg-[--raised] dark:bg-s-dm-surface shadow-elevation-1 border border-s-ink/[0.06] dark:border-white/[0.06]",
         !noPadding && "p-6",
-        elevated && "bg-white/90 dark:bg-s-dm-surface/90 shadow-warm-xl border-white/80",
         className
       )}
       {...props}

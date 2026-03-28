@@ -149,7 +149,7 @@ export default function ImageUploader({
           {uploading && (
             <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-s-sand">
               <div
-                className="h-full bg-s-coral rounded-full transition-all duration-300"
+                className="h-full bg-s-coral rounded-full transition-[width] duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>

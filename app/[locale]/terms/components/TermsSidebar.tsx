@@ -113,7 +113,7 @@ export default function TermsSidebar() {
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
-                className={`text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 border-l-2 ${
+                className={`text-left px-3 py-2 rounded-lg text-sm transition-colors duration-200 border-l-2 ${
                   activeSection === section.id
                     ? "border-s-coral bg-s-coral/5 text-s-coral font-medium pl-4"
                     : "border-transparent text-s-ink/70 dark:text-s-dm-text/70 hover:bg-black/5 dark:hover:bg-white/5 hover:border-black/20 dark:hover:border-white/20"

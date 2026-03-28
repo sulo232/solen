@@ -20,7 +20,7 @@ export default function ProgressDots({ total, current, onDotClick }: ProgressDot
             key={i}
             onClick={() => isCompleted && onDotClick?.(i)}
             disabled={!isCompleted}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+            className={`w-2.5 h-2.5 rounded-full transition-[background-color,transform] duration-300 ${
               isCurrent
                 ? "bg-s-coral scale-125"
                 : isCompleted

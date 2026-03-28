@@ -7,7 +7,8 @@ import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { getClientIp } from "@/lib/ratelimit";
 
 // PATCH /api/packages/[id] — Toggle is_active on a service package
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 

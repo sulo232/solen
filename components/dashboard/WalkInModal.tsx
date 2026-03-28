@@ -59,7 +59,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-[6px] px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="walkin-modal-title">
-      <div className="bg-white/90 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-[16px] shadow-surface w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
+      <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-surface w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <h3 id="walkin-modal-title" className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">{t("title")}</h3>
           <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"><X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>

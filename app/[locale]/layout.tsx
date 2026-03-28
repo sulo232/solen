@@ -8,6 +8,7 @@ import CookieBanner from "@/components/ui/CookieBanner";
 import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
 import TosPrompt from "@/components/auth/TosPrompt";
 import TOSUpdateBanner from "@/components/global/TOSUpdateBanner";
+import { CompareProvider } from "@/components/compare/CompareContext";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -35,9 +36,11 @@ export default async function LocaleLayout({
             Zum Inhalt springen
           </a>
           <Header locale={locale} />
-          <main id="main-content" tabIndex={-1}>
-            {children}
-          </main>
+          <CompareProvider>
+            <main id="main-content" tabIndex={-1}>
+              {children}
+            </main>
+          </CompareProvider>
           <CookieBanner />
           <PWAInstallPrompt />
           <TosPrompt />

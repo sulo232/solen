@@ -82,8 +82,8 @@ When a date is selected:
 - The grey overlay must NOT prevent clicking the salon card
 
 ```tsx
-// ✅ CORRECT — grey overlay with inherited blob borderRadius + click-through
-// SalonCard uses blob shapes (40% 60% 55% 45%...) so overlay MUST use rounded-[inherit]
+// ✅ CORRECT — grey overlay with inherited card borderRadius + click-through
+// V5 SalonCard uses rounded-card (16px) — overlay inherits with rounded-[inherit]
 <div className="absolute inset-0 bg-white/60 dark:bg-s-dm-bg/60 rounded-[inherit] z-10 pointer-events-none" />
 // Card itself remains clickable underneath
 
@@ -92,8 +92,6 @@ When a date is selected:
 
 // ❌ WRONG — hiding unavailable salons
 {availability?.status !== 'unavailable' && <SalonCard ... />}
-// ❌ WRONG — using rounded-card on blob-shaped cards
-<div className="rounded-card" /> // Will clip incorrectly on blob shapes
 ```
 
 ---

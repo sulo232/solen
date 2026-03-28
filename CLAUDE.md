@@ -117,30 +117,85 @@ solen/
 └── vercel.json         # Vercel deployment config
 ```
 
-### 3.3 Design System (New — Next.js)
+### 3.3 Design System (V5 — Fresha × Airbnb Overhaul)
 
-- **Colors**: Terracotta Coral `#E8624A` (primary, class: `s-coral`), Amber `#D4870A` (accent, class: `s-amber`), Basel Blue `#6BA3C8` (accent, class: `s-blue`), Warm Ink `#1A1209` (text, class: `s-ink`)
-- **Extended Colors**: Yellow `#F2C144` (`s-yellow`), Plum `#4A1E3C` (`s-plum`), Sage `#7BA688` (`s-sage`), Sand `#C9A96E` (`s-sand`). Each has `DEFAULT`, `hover` (where applicable), `subtle`, `text` variants.
-- **Backgrounds**: Cream `#FAF6EF` (base), White `#FFFFFF` (cards/raised), `#EDE5D8` (sunken inputs), `#F3EDE2` (surface)
+> **Active Roadmap**: `V5_DESIGN_ROADMAP.md` in project root. Read it before making any UI changes.
+
+#### Colors (unchanged — keep ALL brand colors)
+- **Primary**: Terracotta Coral `#E8624A` (class: `s-coral`)
+- **Accents**: Amber `#D4870A` (`s-amber`), Basel Blue `#6BA3C8` (`s-blue`)
+- **Text**: Warm Ink `#1A1209` (`s-ink`)
+- **Extended**: Yellow `#F2C144` (`s-yellow`), Plum `#4A1E3C` (`s-plum`), Sage `#7BA688` (`s-sage`), Sand `#C9A96E` (`s-sand`). Each has `DEFAULT`, `hover`, `subtle`, `text` variants.
+- **Backgrounds**: Cream `#FAF6EF` (base), White `#FFFFFF` (cards/raised), `#EDE5D8` (sunken inputs)
 - **Dark mode**: Warm dark base `#151009` (`s-dm-bg`), surface `#1E1710` (`s-dm-surface`), text `#F5EEE4` (`s-dm-text`). NEVER use cool grey or pure black.
+
+#### Typography (unchanged)
 - **Fonts**: Bebas Neue (display ≥40px), Syne (heading), DM Sans (body + data with `tabular-nums`)
-- **Radii**: card `12px`, pill `9999px`, button `8px`
-- **Shadows**: card `0 4px 12px rgba(0,0,0,0.08)`, warm-md `0 4px 16px rgba(26,18,9,0.12)`
-- **Glass nav**: `glass rounded-full shadow-warm-sm` (warm-tinted glassmorphism)
+
+#### V5 Radii (from `tailwind.config.js`)
+| Token | Value | Usage |
+|---|---|---|
+| `rounded-card` | 16px | Salon cards, listing cards, content blocks |
+| `rounded-card-lg` | 20px | Hero cards, feature cards, modals |
+| `rounded-panel` | 16px | Inner panels within a card, review cards |
+| `rounded-search` | 99px | Search bar outer container (fully rounded) |
+| `rounded-pill` | 9999px | Availability pills, tags, nav pill |
+| `rounded-btn` | 99px | CTA buttons, action buttons |
+| `rounded-input` | 12px | Form inputs, dashboard cards |
+
+#### V5 Shadows (Airbnb-inspired elevation)
+| Token | Usage |
+|---|---|
+| `shadow-elevation-1` | Cards at rest, subtle UI |
+| `shadow-elevation-2` | Active dropdowns, focused cards |
+| `shadow-elevation-3` | Card hover, floating elements |
+| `shadow-v5-card` | V5 layered card shadow (rest) |
+| `shadow-v5-card-hover` | V5 card on hover |
+| `shadow-v5-float` | Modals, search dropdown, floating overlays |
+| `shadow-coral-glow` | Coral CTA glow |
+
+#### V5 Glass System — Intentional, Not Universal
+> **Rule**: Glass = floating UI **only** (header on scroll, search dropdown, modals). Cards = solid white. NEVER glass on content cards.
+
+| Class | Where | What |
+|---|---|---|
+| `.glass-frost` | Header pill (scrolled), modals, dropdown overlays | `backdrop-blur(20px) saturate(1.4)`, `rgba(255,255,255,0.72)` |
+| `.glass-search` | Search input container | `backdrop-blur(16px) saturate(1.3)`, coral focus ring |
+| `.glass-toolbar` | Sticky filter bar below header | `backdrop-blur(16px) saturate(1.2)`, subtle bottom border |
+| `.card-v4` | Salon cards, listing cards | **Solid white** `#ffffff`, 16px radius, layered shadow, CSS hover lift |
+
+- **Blobs are RETIRED**: No `<BlobBackground>`, no `.blob-interactive`, no decorative blob shapes.
+- **Ambient background**: `.ambient-v5` — subtle warm radial gradients replacing blobs.
+
+#### V5 Card Hover Pattern
+```css
+.card-v4:hover {
+  box-shadow: 0 4px 12px rgba(26,18,9,.06), 0 16px 40px rgba(26,18,9,.08);
+  transform: translateY(-4px);
+}
+```
+- Easing: `cubic-bezier(0.23, 1, 0.32, 1)` — 400ms
+- Image zoom: `.img-hover-zoom` → `scale(1.03)` over 500ms
+
+#### V5 Motion Philosophy
+- **Easing**: Custom `cubic-bezier(0.23, 1, 0.32, 1)` for all card/reveal transitions
+- **Stagger**: 50ms between cards on grid reveal
+- **Section headings**: Slide-in from left, 0.5s
+- **NO springs, NO bounce** — buttery deceleration only
+- **prefers-reduced-motion**: MANDATORY global disable
+
+#### Component Standards
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
-- **Loading**: Use `<Skeleton variant="card" />` for full-page loading states. Use `<Spinner>` only for inline/button loading.
+- **Loading**: Use `<Skeleton variant="card" />` for full-page loading. Use `<Spinner>` only for inline/button loading.
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
-- **Mobile nav**: Single top bar architecture. Hamburger menu contains all navigation items including those previously in a bottom bar. Bottom navigation is **retired** to maximize screen real estate.
-- **Empty states**: Use `<EmptyState>` with optional `illustration` prop (`"no-results"` or `"coming-soon"`).
+- **Mobile nav**: Single top bar architecture. Hamburger menu contains all navigation. Bottom nav is **retired**.
+- **Empty states**: Use `<EmptyState>` with optional `illustration` prop.
 - **Social proof**: `<SocialProofStrip>` between hero and content. `<TrustBadges>` in footer.
 - **Dashboard sidebar**: Animated `<Sidebar>` from `sidebar.tsx` — collapses to 60px icons, expands on hover.
 - **Date picker**: `<SolenDatePicker>` from `date-picker.tsx` — react-aria-components calendar with coral theme.
-- **Background blobs**: `<BlobBackground>` from `BlobBackground.tsx` — accepts `zone={1}` (maximalist) or `zone={2}` (soft/subtle). Decorative gradient blobs for hero/section backgrounds.
-- **Radii**: card 12px, pill 9999px, button 8px, blob-a/b/c/d/e organic % (see UI_RULES.md §10)
-- **Blob physics**: `.blob-interactive` for 500ms spring border-radius morphing on hover
-- **Filter System**: `<FilterBar>` from `FilterBar.tsx` — universal zone-aware filter pill row with sub-filters. Requires `zone` prop (1-4). Desktop: inline dropdown + overflow drawer (max 5 visible pills). Mobile: bottom sheet. Active filter chips with remove buttons. Uses `useTranslations('filters')` for i18n. Companion components: `<FilterBottomSheet>` (mobile), `<FilterDrawer>` (desktop inline/drawer). **Search pages** (last-minute, behandlungen, category pages) use `getSearchFilterPills()` from `lib/search-filter-pills.ts` for grouped filter configuration (location, availability, rating, online_payment, off_peak, sort). **Always** pair with `<SearchAutocomplete>` above the FilterBar in a sticky container.
-- **Profile Page**: Overhauled into 6 subcomponents (`components/profile/`). Uses `customer_preferences` JSONB column for beauty profile data. Zone 3 (functional, no glass animations). Avatar with gradient ring, 5-row beauty profile card with categorized pills, salon highlights circles, 4-tab system (Looks, Termine, Favoriten, Stempel).
-- **Beauty Icons**: Custom SVG icon library in `components/ui/beauty-icons.tsx` — 20+ hand-crafted icons for hair/nail/skin/style selections. NOT lucide (these don't exist in lucide). Per-row semantic colors (not V3 tokens): HAAR `#F5E6E0`/`#8B4A35`, NÄGEL `#E4EBF7`/`#3A5280`, HAUT `#E8F3E8`/`#3A6040`, STYLIST `#F5EEE0`/`#7A5A2A`, STYLE `#EEE8F5`/`#5A3A7A`.
+- **Filter System**: `<FilterBar>` + `<ScrollableFilterRow>` — zone-aware filter pills. Glass-frost when unselected, coral fill when active. Companion: `<FilterBottomSheet>` (mobile), `<FilterDrawer>` (desktop). Always pair with `<SearchAutocomplete>` in a sticky container.
+- **Profile Page**: 6 subcomponents in `components/profile/`. Zone 3 (no glass). Avatar with gradient ring, beauty profile card, salon highlights, 4-tab system.
+- **Beauty Icons**: Custom SVG icon library in `components/ui/beauty-icons.tsx` — 20+ icons for hair/nail/skin/style. NOT lucide.
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 
@@ -842,14 +897,14 @@ interface MyComponentProps {
   zone: 1 | 2 | 3 | 4;  // Receive from parent page
 }
 
-// Zone 1 (Hero/Discovery): Glass allowed, warm gradients, rich animations
-// Zone 2 (Category sections): Subtle glass, reduced animations
+// Zone 1 (Hero/Discovery): Glass-frost on floating UI only, .ambient-v5 gradients, V5 stagger reveals
+// Zone 2 (Category sections): Glass-frost on dropdowns only, card hover lift
 // Zone 3 (Booking/Functional): NO glass, NO animations, clean and fast
 // Zone 4 (Dashboard): Minimal, data-first
 
-// Animation tokens per zone:
+// Animation tokens per zone (V5):
 const motionClass = (zone <= 2)
-  ? 'transition-all duration-[220ms] ease-[cubic-bezier(.4,0,.2,1)]'
+  ? 'transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]'
   : 'transition-none';
 ```
 
@@ -857,21 +912,21 @@ const motionClass = (zone <= 2)
 1. **Read `_rules/UI_RULES.md`** before writing ANY styling
 2. Colors: ONLY use `s-coral`, `s-amber`, `s-blue`, `s-ink`, `s-plum`, `s-sage`, `s-sand`, `s-yellow` — NEVER raw hex or Tailwind defaults
 3. Fonts: `font-display` (Bebas Neue ≥40px), `font-heading` (Syne), `font-body` (DM Sans)
-4. Radii: `rounded-card` (12px), `rounded-pill` (9999px), `rounded-btn` (8px)
-5. Shadows: `shadow-warm-md`, or inline `style={{ boxShadow: '0 4px 12px rgba(26,18,9,0.08)' }}`
-6. Glass: Use `var(--glass-bg)` variables — NEVER hardcoded `rgba(255,255,255,...)`
+4. Radii: `rounded-card` (16px), `rounded-card-lg` (20px), `rounded-pill` (9999px), `rounded-btn` (99px), `rounded-input` (12px)
+5. Shadows: `shadow-elevation-1` (rest), `shadow-elevation-3` (hover), `shadow-v5-card`, `shadow-v5-float` — NEVER generic `shadow-md`
+6. Glass: `.glass-frost` for floating UI ONLY, `.card-v4` for content cards — NEVER glass on listing cards
 7. Icons: `lucide-react` ONLY — no emoji icons, no heroicons, no fontawesome
 
-#### E. Interaction Standard — COPY EXACTLY
+#### E. Interaction Standard — V5 COPY EXACTLY
 ```tsx
-// Cards:
-className="hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms]"
+// Cards (V5 — use .card-v4 class or these utilities):
+className="hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(26,18,9,.06),0_16px_40px_rgba(26,18,9,.08)] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
 
 // CTA Buttons:
-className="bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] transition-all"
+className="bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
 
 // BANNED interactions:
-// hover:bg-s-coral/90, hover:scale-[1.03], hover:opacity-80, hover:-translate-y-1, shadow-md
+// transition-all, hover:bg-s-coral/90, hover:scale-[1.03], hover:opacity-80, shadow-md, duration-500+
 ```
 
 #### F. Accessibility

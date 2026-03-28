@@ -59,7 +59,7 @@ export default function StaffAvailability({ staffId, locale }: StaffAvailability
           return (
             <div
               key={date.toISOString()}
-              className={`shrink-0 min-w-[110px] p-3 rounded-[12px] border transition-all ${
+              className={`shrink-0 min-w-[110px] p-3 rounded-[12px] border transition-[background-color,border-color,box-shadow] ${
                 daySchedule
                   ? "border-s-coral/30 bg-s-coral/5"
                   : "border-s-ink/5 dark:border-white/5 bg-s-bg-sunken dark:bg-s-dm-bg opacity-60"

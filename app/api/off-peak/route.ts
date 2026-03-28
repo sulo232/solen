@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionUser, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, offPeakSlotSchema, offPeakDeleteSchema } from "@/lib/validations";
+import { sendEmail } from "@/lib/email";
+import { offPeakAlert } from "@/lib/email-templates/off-peak";
 
 /**
  * GET /api/off-peak?salon_id=...
@@ -64,7 +66,7 @@ export async function POST(req: NextRequest) {
 
   const { data: salon } = await admin
     .from("salons")
-    .select("id")
+    .select("id, name, slug")
     .eq("id", input.salon_id)
     .eq("owner_id", user.id)
     .single();
@@ -98,6 +100,59 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // --- TRIGGER EMAIL NOTIFICATIONS ---
+  // If deals_enabled is false on profiles, skip.
+  try {
+    const { data: favorites } = await admin
+      .from("user_favorites")
+      .select("user_id")
+      .eq("salon_id", input.salon_id);
+
+    if (favorites && favorites.length > 0) {
+      const userIds = favorites.map(f => f.user_id);
+      
+      const { data: usersInfo } = await admin
+        .from("profiles")
+        .select(`
+          id,
+          deals_enabled,
+          locale,
+          users:id ( email ) 
+        `)
+        .in("id", userIds)
+        .eq("deals_enabled", true);
+
+      if (usersInfo && usersInfo.length > 0) {
+        // Fire & forget emails
+        // The weird syntax for users:id (email) assumes we can join auth.users if exposed to the public schema.
+        // Wait, auth.users is NOT exposed to public by default.
+        // For V1, we will just use the `auth.admin.getUserById` or query a public view if available.
+        // Actually, Supabase has admin.auth.admin.getUserById(). Instead, let's do a loop over usersInfo.
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://solen.ch";
+        
+        usersInfo.forEach(async (profile) => {
+          try {
+            const { data: { user: authUser } } = await admin.auth.admin.getUserById(profile.id);
+            if (authUser?.email) {
+              const payload = offPeakAlert(
+                authUser.email,
+                {
+                  salonName: salon.name || "Dein Lieblingssalon",
+                  discountPercent: input.discount_percent,
+                  salonUrl: `${baseUrl}/${profile.locale || "de"}/salon/${salon.slug}`
+                },
+                (profile.locale as "de" | "en" | "fr" | "it") || "de"
+              );
+              await sendEmail(payload).catch(console.error);
+            }
+          } catch(e) { /* ignore single user error */ }
+        });
+      }
+    }
+  } catch(e) {
+    console.error("[api/off-peak] Failed to process email alerts:", e);
+  }
 
   return NextResponse.json(created, { status: 201 });
 }

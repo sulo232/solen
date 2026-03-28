@@ -47,7 +47,7 @@ function Section({
     <section
       ref={ref}
       id={id}
-      className={`py-16 sm:py-24 transition-all duration-700 ${
+      className={`py-16 sm:py-24 transition-[opacity,transform] duration-700 ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       } ${className}`}
     >
@@ -196,7 +196,7 @@ export default function WarumSolenPage() {
           </p>
           <button
             onClick={() => document.getElementById("section-chat")?.scrollIntoView({ behavior: "smooth" })}
-            className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+            className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter]"
             style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
           >
             Jetzt entdecken
@@ -420,7 +420,7 @@ export default function WarumSolenPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href={`/${locale}`}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter]"
                 style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
               >
                 Jetzt ausprobieren

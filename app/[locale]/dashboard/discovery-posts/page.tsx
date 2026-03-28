@@ -174,7 +174,7 @@ export default function DiscoveryPostsPage() {
             <ToSCheckbox checked={tosAccepted} onChange={setTosAccepted} />
             {error && <p className="text-xs text-s-error">{error}</p>}
 
-            <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-all flex items-center justify-center gap-2">
+            <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-coral hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] flex items-center justify-center gap-2">
               {posting && <Loader2 size={14} className="animate-spin" />}
               Veröffentlichen
             </button>

@@ -89,7 +89,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
           <button
             onClick={handleApply}
             disabled={applying}
-            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
+            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
           >
             {applying && <Loader2 size={14} className="animate-spin" />}
             {t("schedule.applyHours")}
@@ -99,7 +99,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         {applied && (
           <button
             onClick={() => onSaved()}
-            className="w-full py-3 mt-6 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-all"
+            className="w-full py-3 mt-6 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter]"
           >
             {t("setup.saveAndContinue")}
           </button>

@@ -22,7 +22,7 @@ export default async function NotFound() {
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.98] transition-all shadow-warm-sm"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] shadow-warm-sm"
         >
           {t("homeButton")}
         </Link>

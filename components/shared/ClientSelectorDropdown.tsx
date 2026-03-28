@@ -62,7 +62,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white dark:bg-s-dm-raised transition-all ${isOpen ? 'border-s-coral ring-2 ring-s-coral/10' : 'border-s-ink/[0.10] dark:border-white/10'}`}
+        className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white dark:bg-s-dm-raised transition-[border-color,box-shadow] ${isOpen ? 'border-s-coral ring-2 ring-s-coral/10' : 'border-s-ink/[0.10] dark:border-white/10'}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
           <User size={14} className="text-s-ink/40 dark:text-s-dm-text/40 shrink-0" />

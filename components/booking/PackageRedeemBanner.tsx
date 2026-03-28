@@ -11,6 +11,7 @@ interface PackageRedeemBannerProps {
   sessionsUsed: number;
   totalSessions: number;
   slotId: string;
+  serviceId?: string;
   onRedeemed: () => void;
 }
 

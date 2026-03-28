@@ -82,7 +82,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
           <input
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm ${errors.name ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.name ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
             placeholder={t("step1.namePlaceholder")}
           />
           {errors.name && <p className="text-xs text-s-coral mt-0.5">{errors.name}</p>}
@@ -94,7 +94,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
-            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm ${errors.email ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
+            className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "border-s-coral" : "border-s-ink/10 dark:border-white/10"}`}
             placeholder={t("step1.emailPlaceholder")}
           />
           {errors.email && <p className="text-xs text-s-coral mt-0.5">{errors.email}</p>}
@@ -109,7 +109,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-all active:scale-[0.98]",
+                  "px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors active:scale-[0.98]",
                   data.categories.includes(c.value)
                     ? "bg-s-coral text-white border-s-coral"
                     : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
@@ -129,7 +129,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
             <select
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
-              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all ${errors.city ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
+              className={`w-full px-4 py-3 rounded-input border text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-[border-color,box-shadow] ${errors.city ? "border-s-coral" : "border-s-ink/5 dark:border-white/5"}`}
             >
               <option value="">Stadt wählen</option>
               <option value="zuerich">Zürich</option>
@@ -232,7 +232,7 @@ function Step3({ data, onChange, category, t }: {
             <input
               value={data.service_name}
               onChange={(e) => onChange({ ...data, service_name: e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all shadow-warm-sm"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/10 dark:border-white/10 text-sm text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-raised focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] shadow-warm-sm"
               placeholder="z. B. Waschen, Schneiden, Föhnen"
             />
             {suggesting && (
@@ -259,7 +259,7 @@ function Step3({ data, onChange, category, t }: {
             <select
               value={data.service_duration}
               onChange={(e) => onChange({ ...data, service_duration: +e.target.value })}
-              className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-all"
+              className="w-full px-4 py-3 rounded-input border border-s-ink/5 dark:border-white/5 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 bg-white dark:bg-s-dm-raised shadow-warm-sm transition-[border-color,box-shadow]"
             >
               {[15, 30, 45, 60, 75, 90, 120].map((d) => (
                 <option key={d} value={d}>{d} min</option>
@@ -597,7 +597,7 @@ export default function SalonOnboardingPage() {
               <div
                 key={i}
                 className={[
-                  "h-1.5 rounded-full transition-all duration-300 flex-1",
+                  "h-1.5 rounded-full transition-[width] duration-300 flex-1",
                   i < step ? "bg-s-coral" : "bg-transparent",
                 ].join(" ")}
               />
@@ -651,7 +651,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-all"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-bg-sunken hover:border-s-ink/20 active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
               <ChevronLeft size={16} /> {t("nav.back")}
             </button>
@@ -660,7 +660,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-all group"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group"
               style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
             >
               <span>{t("nav.next")}</span>

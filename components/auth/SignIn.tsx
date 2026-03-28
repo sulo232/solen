@@ -12,7 +12,9 @@ export default function SignIn() {
   const t = useTranslations("auth") as any;
   const searchParams = useSearchParams();
   const router = useRouter();
-  const redirect = searchParams.get("redirect") ?? "/";
+  const rawRedirect = searchParams.get("redirect") ?? "/";
+  // SECURITY: Only allow internal relative paths — block external redirects and protocol-relative URLs
+  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/";
   const toast = useToast();
 
   const [email, setEmail] = useState("");

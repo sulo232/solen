@@ -99,7 +99,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
                 className={`shrink-0 flex flex-col items-center gap-1 transition-[background-color,color,box-shadow] duration-150`}
               >
                 <span
-                  className={`w-10 h-10 rounded-full flex items-center justify-center border-[1.5px] transition-[background-color,color,box-shadow] duration-150 ${
+                  className={`w-10 h-10 rounded-pill flex items-center justify-center border-[1.5px] transition-[background-color,color,box-shadow] duration-150 ${
                     activeValue === opt.value
                       ? "bg-s-coral border-s-coral text-white shadow-warm-sm"
                       : "bg-white dark:bg-s-dm-surface border-[#e0dcd6] dark:border-white/15 text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-coral/40"
@@ -122,7 +122,7 @@ export default function ScrollableFilterRow(props: ScrollableFilterRowProps) {
               <button
                 key={opt.value}
                 onClick={() => handleToggle(opt.value)}
-                className={`shrink-0 px-[14px] py-[6px] rounded-full text-[12px] font-semibold tracking-[0.04em] border-[1.5px] transition-[background-color,color,box-shadow] duration-150 whitespace-nowrap ${
+                className={`shrink-0 px-[14px] py-[6px] rounded-pill text-[12px] font-semibold tracking-[0.04em] border-[1.5px] transition-[background-color,color,box-shadow] duration-150 whitespace-nowrap ${
                   activeValue === opt.value
                     ? "bg-s-coral border-s-coral text-white shadow-warm-sm"
                     : "bg-white dark:bg-s-dm-surface border-[#e0dcd6] dark:border-white/15 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40"

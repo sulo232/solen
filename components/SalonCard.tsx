@@ -200,7 +200,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(salon as any); }}
               className={[
-                "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 z-10",
+                "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-[background-color,border-color] duration-200 z-10",
                 compareSelected
                   ? "bg-s-coral border-s-coral text-white scale-100"
                   : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-coral/50 hover:scale-110",
@@ -217,11 +217,11 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-[8px] flex items-center justify-center transition-all duration-200 hover:bg-white hover:scale-110 active:scale-95"
+              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-[8px] flex items-center justify-center transition-[transform,background-color] duration-200 hover:bg-white hover:scale-110 active:scale-95"
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
             >
               <Heart
-                className={`w-4 h-4 transition-all duration-300 ${heartBouncing ? "heart-bounce" : ""} ${isFavorited ? "fill-s-coral text-s-coral scale-110" : "text-s-ink/40 group-hover:text-s-ink/60"}`}
+                className={`w-4 h-4 transition-[transform,color] duration-300 ${heartBouncing ? "heart-bounce" : ""} ${isFavorited ? "fill-s-coral text-s-coral scale-110" : "text-s-ink/40 group-hover:text-s-ink/60"}`}
               />
             </button>
           )}
@@ -289,7 +289,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             {aiReason && (
               <div className="relative group/ai ml-auto">
                 <Sparkles className="w-3.5 h-3.5 text-s-coral cursor-help" />
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-card shadow-elevation-3 border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover/ai:opacity-100 group-hover/ai:pointer-events-auto transition-all duration-200 group-hover/ai:-translate-y-1 z-10">
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-card shadow-elevation-3 border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover/ai:opacity-100 group-hover/ai:pointer-events-auto transition-[opacity,transform] duration-200 group-hover/ai:-translate-y-1 z-10">
                   {aiReason}
                   <div className="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-white dark:border-t-s-dm-surface" />
                 </div>

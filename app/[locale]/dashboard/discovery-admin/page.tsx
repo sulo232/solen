@@ -198,7 +198,7 @@ function StockImportTab() {
             onClick={() => toggleSelect(photo.id)}
             onKeyDown={(e) => e.key === "Enter" && toggleSelect(photo.id)}
             className={[
-              "relative aspect-[3/4] rounded-[12px] overflow-hidden cursor-pointer border-2 transition-all",
+              "relative aspect-[3/4] rounded-[12px] overflow-hidden cursor-pointer border-2 transition-[background-color,border-color,box-shadow]",
               selected.has(photo.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent",
             ].join(" ")}
           >
@@ -444,7 +444,7 @@ function StagingTab() {
             key={item.id}
             onClick={() => toggleSelect(item.id)}
             className={[
-              "relative rounded-[12px] overflow-hidden cursor-pointer border-2 transition-all",
+              "relative rounded-[12px] overflow-hidden cursor-pointer border-2 transition-[background-color,border-color,box-shadow]",
               selected.has(item.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent bg-white dark:bg-s-dm-surface",
             ].join(" ")}
           >
