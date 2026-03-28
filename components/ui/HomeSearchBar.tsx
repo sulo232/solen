@@ -46,7 +46,7 @@ const pillActive =
   + " shadow-[0_2px_4px_rgba(232,98,74,.25),0_4px_16px_rgba(232,98,74,.15)]";
 const pillInactive =
   "text-s-ink/65 dark:text-s-dm-text/65 border-s-ink/[0.08] dark:border-white/10"
-  + " bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm"
+  + " bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-[6px]"
   + " hover:border-s-coral/40 hover:bg-white/90 dark:hover:bg-s-dm-raised/90"
   + " shadow-[0_1px_2px_rgba(26,18,9,.06)]";
 
@@ -155,11 +155,11 @@ export default function HomeSearchBar() {
               value={selectedCity || ""}
               onChange={(e) => setSelectedCity(e.target.value || null)}
               className="w-full h-full py-5 md:py-6 pl-12 pr-8 text-sm md:text-[15px] font-body font-medium text-s-ink dark:text-s-dm-text bg-transparent appearance-none focus:outline-none cursor-pointer"
-              aria-label="Stadt wählen"
+              aria-label={t("cityLabel")}
             >
-              <option value="" className="text-black">{t("allSwitzerland")}</option>
+              <option value="" className="text-s-ink">{t("allSwitzerland")}</option>
               {CITY_SLUGS.map((slug: string) => (
-                <option key={slug} value={slug} className="text-black">
+                <option key={slug} value={slug} className="text-s-ink">
                   {slug.charAt(0).toUpperCase() + slug.slice(1)}
                 </option>
               ))}

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { createBrowserSupabaseClient } from "@/lib/supabase";
 import {
   Scissors,
   RefreshCw,
@@ -94,6 +93,7 @@ type HomePageProps = {
     lastMinuteSlots: LastMinuteSlot[];
     newSalons: SalonCardType[];
     trendingSalons: SalonCardType[];
+    categoryCounts: Record<string, number>;
     sections: Record<string, boolean>;
   }
 };
@@ -105,7 +105,6 @@ export default function HomePage({ initialData }: HomePageProps) {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("home") as any;
-  const supabase = createBrowserSupabaseClient();
   const [userId, setUserId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -114,7 +113,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
   const [locationError, setLocationError] = useState(false);
   const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
-  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(initialData?.categoryCounts || {});
 
   const [salons, setSalons] = useState<SalonCardType[]>(initialData?.salons || []);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>(initialData?.lastMinuteSlots || []);
@@ -145,8 +144,9 @@ export default function HomePage({ initialData }: HomePageProps) {
       (pos) => {
         const { latitude, longitude } = pos.coords;
         fetch(`/api/salons?limit=6&sort=distance&lat=${latitude}&lng=${longitude}`)
-          .then((r) => r.json())
+          .then((r) => r.ok ? r.json() : null)
           .then((data) => {
+            if (!data) { setLocationError(true); return; }
             setNearbySalons(data.items ?? []);
             setLocationError(false);
           })
@@ -157,63 +157,25 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   const fetchData = useCallback(async () => {
-    // Check if user is logged in
-    const { data: { session } } = await supabase.auth.getSession();
-    const currentUserId = session?.user?.id || null;
-    setUserId(currentUserId);
+    // Single consolidated call for all user-specific data (bookings, profile, favorites)
+    // Category counts are now SSR'd via initialData.categoryCounts
+    fetch("/api/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data) return;
+        if (data.profile?.first_name) setUserName(data.profile.first_name);
+        if (data.lastBooking?.slug) setLastBookedSalon({ slug: data.lastBooking.slug, name: data.lastBooking.name });
+        if (data.nextBooking?.date) {
+          const date = new Date(data.nextBooking.date).toLocaleDateString(locale, { weekday: "short", day: "numeric", month: "short" });
+          setNextBooking({ date, salon: data.nextBooking.salon });
+        }
+        if (Array.isArray(data.favorites)) setFavoriteIds(new Set(data.favorites as string[]));
+        // Auth status: if profile is non-null, user is logged in
+        if (data.profile) setUserId("authenticated");
+      })
+      .catch(() => {});
 
-    if (currentUserId) {
-      // Fetch user specific data
-      fetch("/api/bookings?status=completed&limit=1&sort=recent")
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.items?.[0]) {
-            setLastBookedSalon({ slug: data.items[0].salon.slug, name: data.items[0].salon.name });
-          }
-        })
-        .catch(() => {});
-
-      fetch("/api/profile")
-        .then((r) => r.json())
-        .then((data) => setUserName(data.first_name))
-        .catch(() => {});
-
-      fetch("/api/bookings?status=confirmed&limit=1&sort=upcoming")
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.items?.[0]) {
-            const date = new Date(data.items[0].start_time).toLocaleDateString(locale, { weekday: "short", day: "numeric", month: "short" });
-            setNextBooking({ date, salon: data.items[0].salon.name });
-          }
-        })
-        .catch(() => {});
-
-      fetch("/api/profile/favorites")
-        .then((r) => r.json())
-        .then((favs) => {
-          if (Array.isArray(favs)) setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
-        })
-        .catch(() => {});
-    }
-
-    // Passively fetch favorites once on load if logged in via standard cookies fallback
-    if (!currentUserId) {
-      fetch("/api/profile/favorites")
-        .then((r) => r.ok ? r.json() : null)
-        .then((data) => {
-          const favs = data?.favorites ?? [];
-          if (Array.isArray(favs)) setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
-        })
-        .catch(() => {});
-    }
-
-    // Fetch category counts
-    fetch("/api/analytics/platform")
-      .then((r) => r.json())
-      .then((data) => setCategoryCounts(data.categories ?? {}))
-      .catch(() => setCategoryCounts({}));
-
-    // Try to passively fetch nearby if permission already granted
+    // Try to passively fetch nearby if geolocation permission already granted
     if (navigator.permissions) {
       navigator.permissions.query({ name: 'geolocation' }).then((result) => {
         if (result.state === 'granted') {
@@ -221,7 +183,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         }
       }).catch(() => {});
     }
-  }, [locale, fetchNearby, supabase]);
+  }, [locale, fetchNearby]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -258,7 +220,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               {userName ? (
                 <>{t("hero.hello")} <span className="text-s-coral">{userName}</span></>
               ) : (
-                <>BEAUTY<span className="text-s-coral">.</span> BUCHEN<span className="text-s-coral">.</span></>
+                <>{t("hero.headlineWord1")}<span className="text-s-coral">.</span> {t("hero.headlineWord2")}<span className="text-s-coral">.</span></>
               )}
             </motion.h1>
             <motion.p variants={fadeUp}
@@ -309,23 +271,31 @@ export default function HomePage({ initialData }: HomePageProps) {
           </h2>
         </div>
         <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-          {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, Icon, color, bg }) => (
-            <Link key={key} href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-              className="relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(20%-13px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms] flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/10 dark:border-s-dm-border"
-              style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300" style={{ backgroundColor: bg }}>
-                <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${color}`} />
-              </div>
-              <div className="flex flex-col text-center lg:text-left">
-                <div className="font-display text-[18px] lg:text-[20px] text-s-ink dark:text-s-dm-text leading-none">
-                  {label}
+          {CATEGORIES.map(({ key, label, count, Icon, color, bg }) => {
+            const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
+            return (
+              <Link key={key} href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
+                aria-disabled={!isEnabled}
+                className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group transition-[transform,box-shadow] duration-[250ms] flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/10 dark:border-s-dm-border ${isEnabled ? 'hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)]' : 'cursor-default'}`}
+                style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
+                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300" style={{ backgroundColor: bg }}>
+                  <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} />
                 </div>
-                <div className="text-[10px] lg:text-[11px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1.5 lg:mt-1">
-                  {categoryCounts[key] ?? count} {t("categories.salonsCount")}
+                <div className="flex flex-col text-center lg:text-left">
+                  <div className={`font-display text-[18px] lg:text-[20px] leading-none ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/40 dark:text-s-dm-text/40'}`}>
+                    {label}
+                  </div>
+                  <div className="text-[10px] lg:text-[11px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1.5 lg:mt-1">
+                    {isEnabled ? `${categoryCounts[key] ?? count} ${t("categories.salonsCount")}` : t("categories.comingSoon")}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+                {/* Coming-soon overlay for disabled categories */}
+                {!isEnabled && (
+                  <div className="absolute inset-0 bg-white/50 dark:bg-s-dm-surface/50 rounded-[20px]" aria-hidden="true" />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </section>
 

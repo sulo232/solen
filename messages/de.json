@@ -37,7 +37,8 @@
     "no_results": "Keine Salons gefunden",
     "hero": {
       "byline": "Deine Schweizer Salon-Plattform",
-      "headline": "BEAUTY. BUCHEN.",
+      "headlineWord1": "BEAUTY",
+      "headlineWord2": "BUCHEN",
       "hello": "Hallo",
       "welcome": "Willkommen {name}",
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deiner Stadt.",
@@ -53,7 +54,8 @@
     "categories": {
       "label": "KATEGORIEN",
       "title": "Was suchst du?",
-      "salonsCount": "Salons"
+      "salonsCount": "Salons",
+      "comingSoon": "Bald verfügbar"
     },
     "rebook": {
       "title": "Wieder buchen?",
@@ -140,7 +142,11 @@
     "discover": {
       "eyebrow": "Entdecken",
       "title": "FINDE DEINE INSPIRATION",
-      "catalogCta": "Katalog öffnen"
+      "catalogCta": "Katalog öffnen",
+      "scrollLeft": "Nach links scrollen",
+      "scrollRight": "Nach rechts scrollen",
+      "browseAll": "Alle entdecken",
+      "inspirationText": "Lass dich von tausenden Styles inspirieren"
     },
     "map": {
       "eyebrow": "In deiner Nähe",

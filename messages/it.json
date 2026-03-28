@@ -37,7 +37,8 @@
     "no_results": "Nessun salone trovato",
     "hero": {
       "byline": "La tua piattaforma svizzera di saloni",
-      "headline": "BELLEZZA. PRENOTA.",
+      "headlineWord1": "BELLEZZA",
+      "headlineWord2": "PRENOTA",
       "hello": "Ciao",
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nella tua città.",
@@ -53,7 +54,8 @@
     "categories": {
       "label": "CATEGORIE",
       "title": "Cosa stai cercando?",
-      "salonsCount": "Saloni"
+      "salonsCount": "Saloni",
+      "comingSoon": "Presto disponibile"
     },
     "rebook": {
       "title": "Prenotare di nuovo?",
@@ -140,7 +142,11 @@
     "discover": {
       "eyebrow": "Esplora",
       "title": "TROVA LA TUA ISPIRAZIONE",
-      "catalogCta": "Apri il catalogo"
+      "catalogCta": "Apri il catalogo",
+      "scrollLeft": "Scorri a sinistra",
+      "scrollRight": "Scorri a destra",
+      "browseAll": "Sfoglia tutto",
+      "inspirationText": "Lasciati ispirare da migliaia di stili"
     },
     "map": {
       "eyebrow": "Vicino a te",

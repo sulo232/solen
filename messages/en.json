@@ -37,7 +37,8 @@
     "no_results": "No salons found",
     "hero": {
       "byline": "Your Swiss Salon Platform",
-      "headline": "BEAUTY. BOOK.",
+      "headlineWord1": "BEAUTY",
+      "headlineWord2": "BOOK",
       "hello": "Hello",
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
@@ -53,7 +54,8 @@
     "categories": {
       "label": "CATEGORIES",
       "title": "What are you looking for?",
-      "salonsCount": "Salons"
+      "salonsCount": "Salons",
+      "comingSoon": "Coming soon"
     },
     "rebook": {
       "title": "Book again?",
@@ -140,7 +142,11 @@
     "discover": {
       "eyebrow": "Explore",
       "title": "FIND YOUR INSPIRATION",
-      "catalogCta": "Open catalogue"
+      "catalogCta": "Open catalogue",
+      "scrollLeft": "Scroll left",
+      "scrollRight": "Scroll right",
+      "browseAll": "Browse all",
+      "inspirationText": "Get inspired by thousands of styles"
     },
     "map": {
       "eyebrow": "Near you",

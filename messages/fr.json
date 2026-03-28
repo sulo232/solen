@@ -37,7 +37,8 @@
     "no_results": "Aucun salon trouvé",
     "hero": {
       "byline": "Ta plateforme suisse de salons",
-      "headline": "BEAUTÉ. RÉSERVER.",
+      "headlineWord1": "BEAUTÉ",
+      "headlineWord2": "RÉSERVER",
       "hello": "Bonjour",
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
@@ -53,7 +54,8 @@
     "categories": {
       "label": "CATÉGORIES",
       "title": "Que recherchez-vous?",
-      "salonsCount": "Salons"
+      "salonsCount": "Salons",
+      "comingSoon": "Bientôt disponible"
     },
     "rebook": {
       "title": "Réserver à nouveau?",
@@ -140,7 +142,11 @@
     "discover": {
       "eyebrow": "Explorer",
       "title": "TROUVEZ VOTRE INSPIRATION",
-      "catalogCta": "Ouvrir le catalogue"
+      "catalogCta": "Ouvrir le catalogue",
+      "scrollLeft": "Défiler à gauche",
+      "scrollRight": "Défiler à droite",
+      "browseAll": "Tout parcourir",
+      "inspirationText": "Inspirez-vous de milliers de styles"
     },
     "map": {
       "eyebrow": "Près de vous",
