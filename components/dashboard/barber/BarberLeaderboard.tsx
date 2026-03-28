@@ -141,7 +141,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
               <button
                 key={col.key}
                 onClick={() => setSortBy(col.key)}
-                className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors ${
+                className={`px-2 py-1 rounded-btn text-xs whitespace-nowrap transition-colors duration-150 ${
                   sortBy === col.key
                     ? "bg-s-coral/10 text-s-coral font-medium"
                     : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text"

@@ -66,7 +66,8 @@ export default function LoyaltyCardList() {
         <div>
           <button
             onClick={() => setShowCompleted(!showCompleted)}
-            className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors mt-4"
+            aria-pressed={showCompleted}
+            className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors duration-150 mt-4"
             aria-label={t("completedCards")}
           >
             <ChevronDown size={14} className={`transition-transform ${showCompleted ? "rotate-180" : ""}`} />

@@ -29,6 +29,13 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
   const [confirmClient, setConfirmClient] = useState<ReminderClient | null>(null);
 
   useEffect(() => {
+    if (!confirmClient) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setConfirmClient(null); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [confirmClient]);
+
+  useEffect(() => {
     const fetchDue = async () => {
       try {
         const res = await fetch(`/api/dashboard/barber-reminders?salon_id=${salonId}`);
@@ -129,7 +136,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                         <button
                           onClick={() => setConfirmClient(client)}
                           disabled={sending === client.id}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral/10 text-s-coral text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/20 disabled:opacity-50 transition-colors"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral/10 text-s-coral text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/20 disabled:opacity-50 transition-colors duration-150"
                         >
                           <Send size={12} />
                           {sending === client.id ? t("sending") : t("send")}
@@ -146,15 +153,16 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
 
       {/* Confirmation dialog */}
       {confirmClient && (
-        <div className="fixed inset-0 z-[55] bg-s-ink/40 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[55] bg-s-ink/40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirmDialogTitle">
           <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-lg p-6 max-w-sm w-full">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
+              <h4 id="confirmDialogTitle" className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
                 {t("confirmTitle")}
               </h4>
               <button
                 onClick={() => setConfirmClient(null)}
-                className="p-1 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg"
+                aria-label={t("cancel")}
+                className="p-1 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors duration-150"
               >
                 <X size={16} />
               </button>

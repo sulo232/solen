@@ -114,7 +114,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
               {onRepeat && (
                 <button
                   onClick={() => onRepeat(cut)}
-                  className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors"
+                  className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors duration-150"
                 >
                   <RefreshCw size={12} />
                   {t("cut_repeat")}

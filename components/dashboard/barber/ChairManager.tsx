@@ -19,31 +19,36 @@ export default function ChairManager({ salonId }: ChairManagerProps) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchChairs = async () => {
       try {
         const res = await fetch("/api/salon/chairs");
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
           const chairs = data.chairs;
-          setChairCount(chairs.chair_count ?? 1);
-          setBufferMinutes(chairs.buffer_minutes ?? 5);
+          if (!cancelled) {
+            setChairCount(chairs.chair_count ?? 1);
+            setBufferMinutes(chairs.buffer_minutes ?? 5);
+          }
         }
 
+        if (cancelled) return;
         // Get currently occupied chairs
         const qRes = await fetch(`/api/walkin/queue?salon_id=${salonId}`);
-        if (qRes.ok) {
+        if (qRes.ok && !cancelled) {
           const qData = await qRes.json();
           const inChair = (qData.queue ?? []).filter(
             (q: { status: string }) => q.status === "in_chair"
           ).length;
-          setOccupiedChairs(inChair);
+          if (!cancelled) setOccupiedChairs(inChair);
         }
       } catch {
         // Error loading
       }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     };
     fetchChairs();
+    return () => { cancelled = true; };
   }, [salonId]);
 
   const handleSave = async () => {

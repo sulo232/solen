@@ -96,7 +96,7 @@ export function BarbershopAboveGrid() {
       </div>
 
       {/* Discovery signal filter pills */}
-      <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
+      <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-[6px] border border-s-ink/5 dark:border-white/5 rounded-[20px] px-4 py-3 flex flex-col gap-2.5">
         <ScrollableFilterRow
           label={t("filter_fade_type")}
           options={FADE_TYPES}

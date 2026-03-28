@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, Circle, Gift, QrCode, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -25,6 +25,13 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
   const [showQR, setShowQR] = useState(false);
   const [qrSvg, setQrSvg] = useState<string | null>(null);
   const [loadingQR, setLoadingQR] = useState(false);
+
+  useEffect(() => {
+    if (!showQR) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setShowQR(false); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [showQR]);
 
   const program = card.barber_loyalty_programs;
   const stampsRequired = program?.stamps_required ?? 10;
@@ -111,7 +118,7 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
             <button
               onClick={handleShowQR}
               disabled={loadingQR}
-              className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors"
+              className="flex items-center gap-1 text-xs text-s-coral hover:brightness-[1.06] transition-colors duration-150"
               aria-label={t("showQr")}
             >
               <QrCode size={14} />

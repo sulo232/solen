@@ -74,13 +74,14 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
   // Load last blueprint for returning client
   useEffect(() => {
     if (!clientId) return;
+    let cancelled = false;
     const load = async () => {
       const res = await fetch(
         `/api/dashboard/fade-blueprints?salon_id=${salonId}&client_id=${clientId}`
       );
-      if (res.ok) {
+      if (res.ok && !cancelled) {
         const data = await res.json();
-        if (data.data) {
+        if (!cancelled && data.data) {
           setBlueprint({
             top_guard: data.data.top_guard ?? "",
             sides_guard: data.data.sides_guard ?? "",
@@ -95,6 +96,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
       }
     };
     load();
+    return () => { cancelled = true; };
   }, [salonId, clientId]);
 
   const getGuardOpacity = (guardValue: string): number => {
@@ -143,6 +145,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
         </p>
         <div className="flex items-center gap-2">
           <button
+            aria-pressed={visualMode}
             onClick={() => setVisualMode(!visualMode)}
             className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
               visualMode
