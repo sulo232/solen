@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Bell, Calendar, Send } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 interface RebookClient {
   client_id: string;
@@ -18,16 +18,26 @@ interface RebookAlertsProps {
 
 export default function RebookAlerts({ salonId }: RebookAlertsProps) {
   const t = useTranslations("dashboardWaxing") as any;
+  const locale = useLocale();
   const [clients, setClients] = useState<RebookClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [sent, setSent] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    fetch(`/api/dashboard/waxing/rebook-alerts?salon_id=${salonId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.clients) setClients(d.clients); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/dashboard/waxing/rebook-alerts?salon_id=${salonId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled && d?.clients) setClients(d.clients);
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId]);
 
   const sendReminder = async (clientId: string) => {
@@ -42,7 +52,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-[8px] bg-s-amber/10 flex items-center justify-center">
           <Bell size={13} className="text-s-amber" />
@@ -86,7 +96,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
                   {sent.has(c.client_id) ? t("rebookSent") : t("rebookSendReminder")}
                 </button>
                 <a
-                  href={`/de/dashboard/calendar?client=${c.client_id}`}
+                  href={`/${locale}/dashboard/calendar?client=${c.client_id}`}
                   className="flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
                   aria-label={t("rebookBook")}
                 >

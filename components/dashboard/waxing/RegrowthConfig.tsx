@@ -27,16 +27,24 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/services?salon_id=${salonId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        const waxingSvcs = (d?.services ?? []).filter(
-          (s: { category?: string }) => s.category === "waxing"
-        );
-        setServices(waxingSvcs);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/services?salon_id=${salonId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled) {
+          setServices((d?.services ?? []).filter(
+            (s: { category?: string }) => s.category === "waxing"
+          ));
+        }
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId]);
 
   const updateCycle = async (serviceId: string, days: number | null) => {
@@ -45,11 +53,13 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
         s.id === serviceId ? { ...s, reminder_cycle_days: days } : s
       )
     );
-    await fetch("/api/services", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: serviceId, reminder_cycle_days: days }),
-    });
+    try {
+      await fetch(`/api/services/${serviceId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reminder_cycle_days: days }),
+      });
+    } catch {}
   };
 
   if (loading)
@@ -77,7 +87,7 @@ export default function RegrowthConfig({ salonId }: RegrowthConfigProps) {
           {services.map((svc) => (
             <div
               key={svc.id}
-              className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-white dark:bg-s-dm-surface"
+              className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-[--raised] dark:bg-s-dm-surface"
             >
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">

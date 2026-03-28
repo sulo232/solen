@@ -77,18 +77,23 @@ export default function BodyZoneSelector({
   const [visualMode, setVisualMode] = useState(false);
 
   useEffect(() => {
-    fetch(
-      `/api/dashboard/waxing/zone-preferences?salon_id=${salonId}&client_id=${clientId}`
-    )
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.data) {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/dashboard/waxing/zone-preferences?salon_id=${salonId}&client_id=${clientId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled && d?.data) {
           setSelected(d.data.zones_selected ?? []);
           setWaxPrefs(d.data.wax_type_preferences ?? {});
         }
-      })
-      .catch(() => {})
-      .finally(() => setLoaded(true));
+      } catch {
+      } finally {
+        if (!cancelled) setLoaded(true);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId, clientId]);
 
   const toggleZone = useCallback((key: string) => {
@@ -211,7 +216,7 @@ export default function BodyZoneSelector({
           {selected.map((zoneKey) => (
             <div
               key={zoneKey}
-              className="flex items-center justify-between rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-2 bg-white dark:bg-s-dm-surface"
+              className="flex items-center justify-between rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-2 bg-[--raised] dark:bg-s-dm-surface"
             >
               <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">
                 {t(`zones.${zoneKey}` as any)}

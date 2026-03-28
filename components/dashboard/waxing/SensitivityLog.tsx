@@ -49,15 +49,20 @@ export default function SensitivityLog({
   });
 
   useEffect(() => {
-    fetch(
-      `/api/dashboard/waxing/sensitivity?salon_id=${salonId}&client_id=${clientId}`
-    )
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.data) setEntries(d.data);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/dashboard/waxing/sensitivity?salon_id=${salonId}&client_id=${clientId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled && d?.data) setEntries(d.data);
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId, clientId]);
 
   const handleSubmit = async () => {
@@ -133,7 +138,7 @@ export default function SensitivityLog({
 
       {/* Add form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 mb-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 mb-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
           {/* Reaction level */}
           <div>
             <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40 mb-1 block">
@@ -259,7 +264,7 @@ export default function SensitivityLog({
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-white dark:bg-s-dm-surface"
+              className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-3 bg-[--raised] dark:bg-s-dm-surface"
             >
               <div className="flex items-center justify-between mb-2">
                 <span

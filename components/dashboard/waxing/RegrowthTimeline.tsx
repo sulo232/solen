@@ -19,7 +19,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
   if (!zones || zones.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-plum mb-4">
         {t("timelineTitle")}
       </p>
@@ -54,7 +54,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
                 />
                 {/* Progress */}
                 <div
-                  className={`absolute top-0 left-0 h-full rounded-full transition-[width] duration-[350ms] ${
+                  className={`absolute top-0 left-0 h-full rounded-full transition-[width] duration-200 ${
                     isOverdue ? "bg-red-400" : isInWindow ? "bg-s-amber" : "bg-s-sage"
                   }`}
                   style={{ width: `${pct}%` }}

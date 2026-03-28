@@ -48,11 +48,20 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
   });
 
   useEffect(() => {
-    fetch(`/api/salon/waxing-zone-packages?salon_id=${salonId}`)
-      .then((r) => r.ok ? r.json() : Promise.reject())
-      .then((d) => setPackages(d.packages ?? []))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/salon/waxing-zone-packages?salon_id=${salonId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled) setPackages(d.packages ?? []);
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId]);
 
   const toggleFormZone = (zone: string) => {
@@ -134,7 +143,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
 
       {/* Add form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 mb-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 mb-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -195,7 +204,7 @@ export default function ZonePackages({ salonId }: ZonePackagesProps) {
       )}
 
       {/* Package list */}
-      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface">
+      <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface">
         <div className="flex items-center gap-2 mb-3">
           <Package size={14} className="text-s-coral" />
           <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">

@@ -23,15 +23,24 @@ export default function ZoneRevenueChart({ salonId }: ZoneRevenueChartProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/dashboard/waxing/zone-revenue?salon_id=${salonId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.zones) setData(d.zones); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/dashboard/waxing/zone-revenue?salon_id=${salonId}`);
+        if (!r.ok || cancelled) return;
+        const d = await r.json();
+        if (!cancelled && d?.zones) setData(d.zones);
+      } catch {
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, [salonId]);
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-[8px] bg-s-plum/10 flex items-center justify-center">
           <BarChart3 size={13} className="text-s-plum" />
