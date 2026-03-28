@@ -146,7 +146,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                     { v: "male", l: t.male },
                     { v: "unisex", l: t.allPref },
                   ].map((g) => (
-                    <button key={g.v} onClick={() => setGender(gender === g.v ? null : g.v)} className={pillClass(gender === g.v)}>
+                    <button key={g.v} aria-pressed={gender === g.v} onClick={() => setGender(gender === g.v ? null : g.v)} className={pillClass(gender === g.v)}>
                       {g.l}
                     </button>
                   ))}
@@ -163,7 +163,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                     { v: "curly", l: t.curly },
                     { v: "coily", l: t.coily },
                   ].map((tx) => (
-                    <button key={tx.v} onClick={() => setTexture(texture === tx.v ? null : tx.v)} className={pillClass(texture === tx.v)}>
+                    <button key={tx.v} aria-pressed={texture === tx.v} onClick={() => setTexture(texture === tx.v ? null : tx.v)} className={pillClass(texture === tx.v)}>
                       {tx.l}
                     </button>
                   ))}
@@ -179,7 +179,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
                     { v: "medium", l: t.medium },
                     { v: "long", l: t.long },
                   ].map((ln) => (
-                    <button key={ln.v} onClick={() => setLength(length === ln.v ? null : ln.v)} className={pillClass(length === ln.v)}>
+                    <button key={ln.v} aria-pressed={length === ln.v} onClick={() => setLength(length === ln.v ? null : ln.v)} className={pillClass(length === ln.v)}>
                       {ln.l}
                     </button>
                   ))}

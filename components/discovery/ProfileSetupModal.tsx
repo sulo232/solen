@@ -108,7 +108,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
   };
 
   const pillClass = (active: boolean) =>
-    `px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-all ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/40"}`;
+    `px-4 py-2.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[color,background-color,border-color] duration-150 ${active ? "border-s-coral bg-s-coral/[0.08] text-s-coral" : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/40"}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-s-ink/40" onClick={onClose}>
@@ -143,7 +143,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
           <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.genderLabel}</label>
           <div className="flex flex-wrap gap-2">
             {GENDERS.map((g) => (
-              <button key={g.value} onClick={() => setGender(gender === g.value ? null : g.value)} className={pillClass(gender === g.value)}>
+              <button key={g.value} aria-pressed={gender === g.value} onClick={() => setGender(gender === g.value ? null : g.value)} className={pillClass(gender === g.value)}>
                 {g.label}
               </button>
             ))}
@@ -155,7 +155,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
           <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.textureLabel}</label>
           <div className="flex flex-wrap gap-2">
             {TEXTURES.map((tx) => (
-              <button key={tx.value} onClick={() => setTexture(texture === tx.value ? null : tx.value)} className={pillClass(texture === tx.value)}>
+              <button key={tx.value} aria-pressed={texture === tx.value} onClick={() => setTexture(texture === tx.value ? null : tx.value)} className={pillClass(texture === tx.value)}>
                 {tx.label}
               </button>
             ))}
@@ -167,7 +167,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
           <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.lengthLabel}</label>
           <div className="flex flex-wrap gap-2">
             {LENGTHS.map((l) => (
-              <button key={l.value} onClick={() => setLength(length === l.value ? null : l.value)} className={pillClass(length === l.value)}>
+              <button key={l.value} aria-pressed={length === l.value} onClick={() => setLength(length === l.value ? null : l.value)} className={pillClass(length === l.value)}>
                 {l.label}
               </button>
             ))}
@@ -179,7 +179,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
           <label className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 mb-2 block">{t.faceLabel}</label>
           <div className="flex flex-wrap gap-2">
             {FACE_SHAPES.map((f) => (
-              <button key={f.value} onClick={() => setFaceShape(faceShape === f.value ? null : f.value)} className={pillClass(faceShape === f.value)}>
+              <button key={f.value} aria-pressed={faceShape === f.value} onClick={() => setFaceShape(faceShape === f.value ? null : f.value)} className={pillClass(faceShape === f.value)}>
                 {f.label}
               </button>
             ))}

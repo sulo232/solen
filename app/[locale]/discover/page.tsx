@@ -74,24 +74,27 @@ function DiscoverPageContent() {
 
   // Check if profile setup needed + auth state
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/profile")
       .then((r) => {
         if (r.ok) {
-          setIsAuthenticated(true);
+          if (!cancelled) setIsAuthenticated(true);
           return r.json().then((p: any) => {
-            if (p?.role === "admin") setIsAdmin(true);
+            if (!cancelled && p?.role === "admin") setIsAdmin(true);
             return p;
           });
         }
         return null;
       })
       .then((p) => {
+        if (cancelled) return;
         if (p && p.disc_profile_set === false) {
           setShowProfileSetup(true);
         }
         setProfileChecked(true);
       })
-      .catch(() => setProfileChecked(true));
+      .catch(() => { if (!cancelled) setProfileChecked(true); });
+    return () => { cancelled = true; };
   }, []);
 
   // Fetch items

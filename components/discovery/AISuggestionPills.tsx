@@ -90,6 +90,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
       {pills.map(({ label, emoji }) => (
         <button
           key={label}
+          aria-pressed={selected === label}
           onClick={() => {
             setSelected(selected === label ? null : label);
             onSelect(selected === label ? "" : label);

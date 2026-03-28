@@ -43,6 +43,7 @@ export default function PatternSelector({ category, selected, onSelect }: Patter
         {options.map((opt) => (
           <button
             key={opt.value ?? "all"}
+            aria-pressed={selected === opt.value}
             onClick={() => onSelect(opt.value)}
             className={cn(
               "px-3 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150 border",

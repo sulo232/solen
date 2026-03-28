@@ -19,7 +19,7 @@ export default function ImportProgressBar({ current, total, label }: ImportProgr
       )}
       <div className="w-full h-2 bg-s-ink/5 dark:bg-white/5 rounded-pill overflow-hidden">
         <div
-          className="h-full bg-s-coral rounded-pill transition-all duration-300"
+          className="h-full bg-s-coral rounded-pill transition-[width] duration-[250ms]"
           style={{ width: `${percent}%` }}
         />
       </div>

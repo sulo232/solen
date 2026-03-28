@@ -24,7 +24,7 @@ export default function FilterBar({
 
   // Zone-aware animation class — Rules 31, UI_RULES §4
   const motionClass = (zone === 1 || zone === 2)
-    ? 'transition-all duration-[220ms] ease-[cubic-bezier(.4,0,.2,1)]'
+    ? 'transition-[color,background-color,border-color,transform] duration-[220ms] ease-[cubic-bezier(.4,0,.2,1)]'
     : 'transition-none duration-0';
   const hoverLift = (zone === 1 || zone === 2) ? 'hover:-translate-y-px' : '';
 
