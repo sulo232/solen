@@ -80,11 +80,11 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
         setSuggested(data.slot);
         setStep("confirm");
       } else {
-        setError(data.error ?? "Kein Slot verfügbar");
+        setError(data.error ?? t("express.errorNoSlot"));
         setStep("error");
       }
     } catch {
-      setError("Netzwerkfehler");
+      setError(t("express.errorNetwork"));
       setStep("error");
     }
   };
@@ -107,11 +107,11 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
         setStep("done");
       } else {
         const data = await res.json();
-        setError(data.error ?? "Buchung fehlgeschlagen");
+        setError(data.error ?? t("express.errorBooking"));
         setStep("error");
       }
     } catch {
-      setError("Netzwerkfehler");
+      setError(t("express.errorNetwork"));
       setStep("error");
     }
   };
@@ -135,7 +135,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
-            Letzter Termin: {cutDescription} bei {lastCut.staff_name}, vor {daysAgo} Tagen
+            {t("express.lastCut")}: {cutDescription} {t("express.staffAt")} {lastCut.staff_name}, {t("express.daysAgo", { days: daysAgo })}
           </p>
 
           {step === "idle" && (
@@ -144,13 +144,13 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
               className="mt-3 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
             >
               <RefreshCw size={16} />
-              Gleich nochmal buchen
+              {t("express.rebook")}
             </button>
           )}
 
           {step === "searching" && (
             <p className="mt-2 text-sm text-s-ink/50 dark:text-s-dm-text/50 animate-pulse">
-              Suche nächsten verfügbaren Slot...
+              {t("express.searching")}
             </p>
           )}
 
@@ -162,28 +162,28 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
                   <span className="font-medium">{formatDate(suggested.starts_at)}</span>
                 </div>
                 <p className="text-s-ink/60 dark:text-s-dm-text/60">
-                  bei {suggested.staff_name} · {formatCurrency(suggested.price)}
+                  {t("express.staffAt")} {suggested.staff_name} · {formatCurrency(suggested.price)}
                 </p>
               </div>
               <button
                 onClick={handleConfirm}
                 className="w-full rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
-                Bestätigen
+                {t("express.confirm")}
               </button>
             </div>
           )}
 
           {step === "booking" && (
             <p className="mt-2 text-sm text-s-ink/50 dark:text-s-dm-text/50 animate-pulse">
-              Wird gebucht...
+              {t("express.booking")}
             </p>
           )}
 
           {step === "done" && (
             <div className="mt-3 flex items-center gap-2 text-sm text-s-sage">
               <CalendarCheck size={16} />
-              Termin gebucht!
+              {t("express.booked")}
             </div>
           )}
 
@@ -197,7 +197,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
                 onClick={() => setStep("idle")}
                 className="text-xs text-s-coral hover:underline"
               >
-                Erneut versuchen
+                {t("express.retry")}
               </button>
             </div>
           )}

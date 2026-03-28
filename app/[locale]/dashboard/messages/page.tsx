@@ -84,7 +84,7 @@ export default function MessagesPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
-                      {c.customer_name[0]}
+                      {(c.customer_name?.charAt(0) ?? "?").toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">

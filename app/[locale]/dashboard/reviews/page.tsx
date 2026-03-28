@@ -110,7 +110,7 @@ export default function SalonReviewsPage() {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center text-xs font-bold text-s-coral shrink-0">
-                    {(r.profiles?.display_name ?? "?")[0].toUpperCase()}
+                    {(r.profiles?.display_name?.charAt(0) ?? "?").toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

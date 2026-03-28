@@ -494,7 +494,7 @@ export default function StaffPage() {
               <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
                 {s.avatar_url ? (
                   <img src={s.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
-                ) : s.name[0]}
+                ) : (s.name?.charAt(0) ?? "?").toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm text-s-ink dark:text-s-dm-text">{s.name}</p>

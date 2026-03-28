@@ -42,16 +42,22 @@ export default function HeadDiagram({ zoneGuards, onZoneGuardChange }: HeadDiagr
   const [activeZone, setActiveZone] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/diagrams/head-zones.svg")
-      .then((r) => (r.ok ? r.text() : null))
-      .then((text) => {
-        if (text) {
-          // Strip the outer <svg> wrapper — InteractiveZoneDiagram wraps it
-          const inner = text.replace(/<\/?svg[^>]*>/gi, "").replace(/<\?xml[^>]*>/gi, "");
-          setSvgSource(inner);
-        }
-      })
-      .catch(() => {});
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch("/diagrams/head-zones.svg");
+        if (!r.ok || cancelled) return;
+        const text = await r.text();
+        if (cancelled) return;
+        // Strip the outer <svg> wrapper — InteractiveZoneDiagram wraps it
+        const inner = text.replace(/<\/?svg[^>]*>/gi, "").replace(/<\?xml[^>]*>/gi, "");
+        setSvgSource(inner);
+      } catch {
+        // silent fail is ok for diagram
+      }
+    };
+    load();
+    return () => { cancelled = true; };
   }, []);
 
   // Build opacity map from guard selections (darker = shorter guard)

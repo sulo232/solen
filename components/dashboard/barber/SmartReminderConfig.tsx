@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Bell, Send, Users, CheckCircle2, X } from "lucide-react";
 
 interface ReminderClient {
@@ -20,6 +21,7 @@ interface SmartReminderConfigProps {
 
 
 export default function SmartReminderConfig({ salonId }: SmartReminderConfigProps) {
+  const t = useTranslations("dashboardBarber");
   const [dueClients, setDueClients] = useState<ReminderClient[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
   };
 
   const byBarber = dueClients.reduce<Record<string, ReminderClient[]>>((acc, c) => {
-    const barber = c.preferred_barber ?? "Kein Favorit";
+    const barber = c.preferred_barber ?? t("noFavorite");
     if (!acc[barber]) acc[barber] = [];
     acc[barber].push(c);
     return acc;
@@ -72,19 +74,19 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Bell size={18} className="text-s-amber" />
-          <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">Smart Reminders</h3>
+          <h3 className="font-heading text-sm font-bold text-s-ink dark:text-s-dm-text">{t("smartReminders")}</h3>
         </div>
         <span className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50">
           <Users size={14} />
-          {dueClients.length} fällig diese Woche
+          {dueClients.length} {t("dueThisWeek")}
         </span>
       </div>
 
       {loading ? (
-        <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">Laden...</div>
+        <div className="py-4 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">{t("loading")}</div>
       ) : dueClients.length === 0 ? (
         <div className="py-6 text-center text-sm text-s-ink/40 dark:text-s-dm-text/40">
-          Keine Erinnerungen fällig
+          {t("noReminders")}
         </div>
       ) : (
         <div className="space-y-4">
@@ -107,21 +109,21 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                         </p>
                         <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50">
                           {client.days_overdue > 0
-                            ? `${client.days_overdue} Tage überfällig`
-                            : "Heute fällig"}
-                          {client.cycle_days ? ` · Zyklus: ${client.cycle_days} Tage` : ""}
-                          {client.last_visit_date ? ` · Letzter Besuch: ${new Date(client.last_visit_date).toLocaleDateString("de-CH")}` : ""}
+                            ? t("daysOverdue", { days: client.days_overdue })
+                            : t("dueToday")}
+                          {client.cycle_days ? ` · ${t("cycle")}: ${client.cycle_days}` : ""}
+                          {client.last_visit_date ? ` · ${t("lastVisit")}: ${new Date(client.last_visit_date).toLocaleDateString()}` : ""}
                         </p>
                       </div>
 
                       {justSent ? (
                         <span className="flex items-center gap-1 text-xs text-s-success font-medium">
                           <CheckCircle2 size={14} />
-                          Gesendet
+                          {t("sent")}
                         </span>
                       ) : cooldown ? (
                         <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">
-                          Kürzlich gesendet
+                          {t("recentlySent")}
                         </span>
                       ) : (
                         <button
@@ -130,7 +132,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                           className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral/10 text-s-coral text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-s-coral/20 disabled:opacity-50 transition-colors"
                         >
                           <Send size={12} />
-                          {sending === client.id ? "..." : "Senden"}
+                          {sending === client.id ? t("sending") : t("send")}
                         </button>
                       )}
                     </div>
@@ -148,7 +150,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
           <div className="bg-white dark:bg-s-dm-surface rounded-[16px] shadow-warm-lg p-6 max-w-sm w-full">
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
-                Erinnerung senden?
+                {t("confirmTitle")}
               </h4>
               <button
                 onClick={() => setConfirmClient(null)}
@@ -158,22 +160,22 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
               </button>
             </div>
             <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 mb-4">
-              Erinnerung an <strong>{confirmClient.display_name}</strong>
-              {confirmClient.phone ? ` (${confirmClient.phone})` : ""} senden?
+              {t("confirmDesc", { name: confirmClient.display_name })}
+              {confirmClient.phone ? ` (${confirmClient.phone})` : ""}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmClient(null)}
                 className="flex-1 py-2 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
               >
-                Abbrechen
+                {t("cancel")}
               </button>
               <button
                 onClick={() => handleSendReminder(confirmClient)}
                 disabled={sending === confirmClient.id}
                 className="flex-1 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 shadow-coral-glow transition-[transform,filter] duration-150"
               >
-                {sending === confirmClient.id ? "Senden..." : "Ja, senden"}
+                {sending === confirmClient.id ? t("sending") : t("confirmSend")}
               </button>
             </div>
           </div>

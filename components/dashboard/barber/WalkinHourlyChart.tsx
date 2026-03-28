@@ -15,6 +15,8 @@ interface WalkinHourlyChartProps {
 }
 
 const HOURS = Array.from({ length: 13 }, (_, i) => i + 8); // 8..20
+const CHART_CORAL = "#E8624A"; // peak hour bar
+const CHART_AMBER = "#D4870A"; // standard hour bar
 
 export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
   const t = useTranslations("dashboardBarber");
@@ -95,7 +97,7 @@ export default function WalkinHourlyChart({ salonId }: WalkinHourlyChartProps) {
               {data.map((entry) => (
                 <Cell
                   key={entry.hour}
-                  fill={entry.count === maxCount && maxCount > 0 ? "#E8624A" : "#D4870A"}
+                  fill={entry.count === maxCount && maxCount > 0 ? CHART_CORAL : CHART_AMBER}
                   fillOpacity={entry.count === 0 ? 0.2 : 1}
                 />
               ))}

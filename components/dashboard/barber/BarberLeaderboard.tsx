@@ -26,7 +26,7 @@ type SortKey = keyof Omit<BarberStats, "staff_id" | "staff_name">;
 type Period = "week" | "month";
 type ViewMode = "table" | "chart";
 
-const CORAL = "#E8624A";
+const CHART_CORAL = "#E8624A";
 
 export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const t = useTranslations("dashboard.barber_leaderboard") as any;
@@ -93,6 +93,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             onClick={() => setViewMode(viewMode === "table" ? "chart" : "table")}
             className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
             title={viewMode === "table" ? t("view_chart") : t("view_table")}
+            aria-label={viewMode === "table" ? t("view_chart") : t("view_table")}
           >
             {viewMode === "table" ? <BarChart2 size={14} /> : <Table2 size={14} />}
           </button>
@@ -101,6 +102,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             onClick={() => setAnonymized(!anonymized)}
             className="p-1.5 rounded-btn text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-bg-surface dark:hover:bg-s-dm-bg transition-colors"
             title={anonymized ? t("show_names") : t("anonymize")}
+            aria-label={anonymized ? t("show_names") : t("anonymize")}
           >
             {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
@@ -149,12 +151,12 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#1A120966" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "#1A120966" }} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: "#1A1209", fillOpacity: 0.4 }} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #f0f0f0" }} />
               <Bar
                 dataKey={columns.find((c) => c.key === sortBy)?.label ?? t("value")}
-                fill={CORAL}
+                fill={CHART_CORAL}
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>

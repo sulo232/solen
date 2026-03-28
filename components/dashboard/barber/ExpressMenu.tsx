@@ -20,6 +20,7 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState<string | null>(null);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -42,8 +43,9 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
 
   const createWalkin = async (serviceId: string) => {
     setCreating(serviceId);
+    setCreateError(null);
     try {
-      await fetch("/api/walkin/queue", {
+      const res = await fetch("/api/walkin/queue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,8 +55,11 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
           join_method: "in_person",
         }),
       });
+      if (!res.ok) {
+        setCreateError(t("walkin_create_error"));
+      }
     } catch {
-      // Error
+      setCreateError(t("walkin_create_error"));
     }
     setCreating(null);
   };
@@ -76,6 +81,10 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
       <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3">
         {t("express_menu")}
       </p>
+
+      {createError && (
+        <p className="text-xs text-red-500 dark:text-red-400 mb-2">{createError}</p>
+      )}
 
       <div className="grid grid-cols-2 gap-2">
         {services.map((svc) => (

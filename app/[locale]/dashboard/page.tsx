@@ -101,7 +101,10 @@ export default function DashboardPage() {
       .then(([bData, analyticsData, convoData]) => {
         setBookings(bData?.bookings ?? []);
         if (analyticsData) setStats(analyticsData);
-        if (convoData) setUnread(convoData.unread_count ?? 0);
+        if (convoData) {
+          const convos: { unread_count_salon?: number }[] = convoData.conversations ?? convoData.data ?? [];
+          setUnread(convos.reduce((sum, c) => sum + (c.unread_count_salon ?? 0), 0));
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false));

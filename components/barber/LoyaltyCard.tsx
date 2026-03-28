@@ -124,6 +124,9 @@ export default function LoyaltyCard({ card, salonName }: LoyaltyCardProps) {
       {/* QR Fullscreen overlay */}
       {showQR && qrSvg && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("qrCodeTitle")}
           className="fixed inset-0 z-50 bg-s-ink/80 dark:bg-s-dm-bg/90 flex items-center justify-center p-8"
           onClick={() => setShowQR(false)}
         >

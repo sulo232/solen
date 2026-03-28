@@ -31,18 +31,23 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
   const [stats, setStats] = useState({ total_sold: 0, total_revenue: 0, active_cards: 0, unredeemed_balance: 0 });
 
   useEffect(() => {
-    Promise.all([
-      fetch(`/api/gift-cards/balance?salon_id=${salonId}`).then((r) => r.json()),
-      fetch(`/api/analytics/gift-card-revenue?salon_id=${salonId}`).then((r) => r.json()),
-    ]).then(([cardsData, statsData]) => {
-      setCards(cardsData.items ?? cardsData.cards ?? []);
-      setStats({
-        total_sold: statsData.total_sold ?? 0,
-        total_revenue: statsData.total_revenue ?? 0,
-        active_cards: statsData.active_cards ?? 0,
-        unredeemed_balance: statsData.unredeemed_balance ?? 0,
-      });
-    }).catch(() => {}).finally(() => setLoading(false));
+    Promise.allSettled([
+      fetch(`/api/gift-cards/balance?salon_id=${salonId}`).then((r) => r.ok ? r.json() : Promise.reject()),
+      fetch(`/api/analytics/gift-card-revenue?salon_id=${salonId}`).then((r) => r.ok ? r.json() : Promise.reject()),
+    ]).then(([cardsResult, statsResult]) => {
+      if (cardsResult.status === "fulfilled") {
+        setCards(cardsResult.value.items ?? cardsResult.value.cards ?? []);
+      }
+      if (statsResult.status === "fulfilled") {
+        const statsData = statsResult.value;
+        setStats({
+          total_sold: Number(statsData.total_sold) || 0,
+          total_revenue: Number(statsData.total_revenue) || 0,
+          active_cards: Number(statsData.active_cards) || 0,
+          unredeemed_balance: Number(statsData.unredeemed_balance) || 0,
+        });
+      }
+    }).finally(() => setLoading(false));
   }, [salonId]);
 
   if (loading) return <div className="flex justify-center py-6"><Spinner size="md" /></div>;

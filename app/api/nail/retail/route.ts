@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: products, error } = await supabase
     .from("nail_retail_products")
-    .select("id, name, description, price, image_url, category, is_active, created_at")
+    .select("id, name, description, price, image_url, category, is_active, stock_count, low_stock_threshold, created_at")
     .eq("salon_id", salonId)
     .order("created_at", { ascending: false });
 
