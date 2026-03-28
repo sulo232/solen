@@ -1312,7 +1312,10 @@
     "zoneRevenueTitle": "Zonen-Umsatz",
     "zoneRevenueSubtitle": "Umsatz nach Servicezone (letzte 90 Tage)",
     "revenue": "Umsatz",
-    "noData": "Keine Daten verfügbar"
+    "noData": "Keine Daten verfügbar",
+    "save_error": "Fehler beim Speichern",
+    "delete_error": "Fehler beim Löschen",
+    "confirm_remove": "Paket wirklich entfernen?"
   },
   "adminSandbox": {
     "pageTitle": "Admin Sandbox",
@@ -1670,6 +1673,7 @@
       "showQr": "QR zeigen",
       "close": "Schliessen",
       "showQrToBarber": "QR-Code dem Barber zeigen",
+      "qrCodeTitle": "QR-Code Treuekarte",
       "loading": "Lade...",
       "noCards": "Noch keine Treuekarten",
       "completedCards": "Abgeschlossene Karten"
@@ -2666,7 +2670,9 @@
     "abandonmentRate": "Abbruchrate",
     "chairUtilization": "Auslastung",
     "week": "Woche",
-    "month": "Monat"
+    "month": "Monat",
+    "walkin_create_error": "Fehler beim Hinzufügen zur Warteschlange. Bitte erneut versuchen.",
+    "confirmSend": "Ja, senden"
   },
   "aiArtGenerator": {
     "title": "AI Nail Art Generator",

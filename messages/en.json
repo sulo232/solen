@@ -1301,7 +1301,10 @@
     "zoneRevenueTitle": "Zone Revenue",
     "zoneRevenueSubtitle": "Revenue by service zone (last 90 days)",
     "revenue": "Revenue",
-    "noData": "No data available"
+    "noData": "No data available",
+    "save_error": "Failed to save",
+    "delete_error": "Failed to delete",
+    "confirm_remove": "Remove this package?"
   },
   "adminSandbox": {
     "pageTitle": "Admin Sandbox",
@@ -1659,6 +1662,7 @@
       "showQr": "Show QR",
       "close": "Close",
       "showQrToBarber": "Show QR code to barber",
+      "qrCodeTitle": "Loyalty card QR code",
       "loading": "Loading...",
       "noCards": "No loyalty cards yet",
       "completedCards": "Completed cards"
@@ -2655,7 +2659,9 @@
     "abandonmentRate": "Abandonment rate",
     "chairUtilization": "Chair utilisation",
     "week": "Week",
-    "month": "Month"
+    "month": "Month",
+    "walkin_create_error": "Failed to add to queue. Please try again.",
+    "confirmSend": "Yes, send"
   },
   "aiArtGenerator": {
     "title": "AI Nail Art Generator",

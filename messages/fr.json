@@ -1278,7 +1278,10 @@
     "zoneRevenueTitle": "Revenus par zone",
     "zoneRevenueSubtitle": "Revenus par zone de service (90 derniers jours)",
     "revenue": "Revenu",
-    "noData": "Aucune donnée disponible"
+    "noData": "Aucune donnée disponible",
+    "save_error": "Erreur lors de la sauvegarde",
+    "delete_error": "Erreur lors de la suppression",
+    "confirm_remove": "Supprimer ce forfait ?"
   },
   "adminSandbox": {
     "pageTitle": "Sandbox Admin",
@@ -1636,6 +1639,7 @@
       "showQr": "Afficher QR",
       "close": "Fermer",
       "showQrToBarber": "Montrer le QR au barbier",
+      "qrCodeTitle": "QR code carte de fidélité",
       "loading": "Chargement...",
       "noCards": "Aucune carte fidélité",
       "completedCards": "Cartes complètes"
@@ -2632,7 +2636,9 @@
     "abandonmentRate": "Taux d'abandon",
     "chairUtilization": "Utilisation des postes",
     "week": "Semaine",
-    "month": "Mois"
+    "month": "Mois",
+    "walkin_create_error": "Échec de l'ajout à la file d'attente. Veuillez réessayer.",
+    "confirmSend": "Oui, envoyer"
   },
   "aiArtGenerator": {
     "title": "Générateur AI Nail Art",
