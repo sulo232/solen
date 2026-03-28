@@ -859,7 +859,9 @@
     },
     "select_client": "Seleziona cliente",
     "no_clients": "Nessun cliente",
-    "no_salon": "Nessun salone trovato"
+    "no_salon": "Nessun salone trovato",
+    "visual_mode": "Modalità visuale",
+    "text_mode": "Modalità testo"
   },
   "dashboardMakeup": {
     "eyebrow": "Trucco",
@@ -878,7 +880,11 @@
     "foundation_shade": "Tonalità",
     "undertone_label": "Sottotono",
     "undertone_select": "Scegli il sottotono",
-    "undertone": { "warm": "Caldo", "cool": "Freddo", "neutral": "Neutro" },
+    "undertone": {
+      "warm": "Caldo",
+      "cool": "Freddo",
+      "neutral": "Neutro"
+    },
     "zones_title": "Zone del viso",
     "zones": {
       "forehead": "Fronte",
@@ -970,7 +976,13 @@
     },
     "foundation_notes": "Raccomandazione fondotinta",
     "foundation_notes_placeholder": "es. MAC NC25, Fenty 230",
-    "tabs": { "clients": "Clienti", "events": "Eventi", "kit": "Kit" }
+    "tabs": {
+      "clients": "Clienti",
+      "events": "Eventi",
+      "kit": "Kit"
+    },
+    "visual_mode": "Modalità visuale",
+    "text_mode": "Modalità testo"
   },
   "dashboardWaxing": {
     "eyebrow": "Ceretta",
@@ -1052,7 +1064,9 @@
     "no_packages": "Nessun pacchetto",
     "package_name_placeholder": "Nome pacchetto",
     "select_zones": "Seleziona zone",
-    "discount_percent": "Sconto %"
+    "discount_percent": "Sconto %",
+    "visual_mode": "Modalità visuale",
+    "text_mode": "Modalità testo"
   },
   "errors": {
     "not_found": "Pagina non trovata",
@@ -2228,7 +2242,17 @@
     "no_one_serving": "Nessuno in servizio",
     "up_next": "Prossimo",
     "ops_title": "Operazioni Barbershop",
-    "tv_display": "Display TV"
+    "tv_display": "Display TV",
+    "diagrams_coming_soon": "Diagrammi in arrivo",
+    "head_diagram_label": "Diagramma interattivo della testa",
+    "zone_label_top": "Sopra",
+    "zone_label_left_side": "Lato sinistro",
+    "zone_label_right_side": "Lato destro",
+    "zone_label_back": "Dietro",
+    "zone_label_neckline": "Linea del collo",
+    "zone_label_temples": "Tempie",
+    "visual_mode": "Modalità visuale",
+    "text_mode": "Modalità testo"
   },
   "aiArtGenerator": {
     "title": "Generatore AI Nail Art",
@@ -2253,5 +2277,36 @@
       "coffin": "Bara",
       "stiletto": "Stiletto"
     }
+  },
+  "diagrams": {
+    "coming_soon": "Diagrammi in arrivo",
+    "body_diagram_label": "Diagramma interattivo delle zone corporee",
+    "body_neck": "Collo",
+    "body_shoulders": "Spalle",
+    "body_chest": "Petto",
+    "body_upper_back": "Parte alta della schiena",
+    "body_stomach": "Stomaco",
+    "body_lower_back": "Parte bassa della schiena",
+    "body_full_arms": "Braccia",
+    "body_full_legs": "Gambe",
+    "body_feet": "Piedi",
+    "face_diagram_label": "Diagramma interattivo delle zone del viso",
+    "face_forehead": "Fronte",
+    "face_temples": "Tempie",
+    "face_eyelids": "Palpebre",
+    "face_under_eye": "Sotto gli occhi",
+    "face_nose_bridge": "Ponte del naso",
+    "face_cheekbones": "Zigomi",
+    "face_jawline": "Mascella",
+    "face_lips": "Labbra",
+    "face_chin": "Mento",
+    "hand_diagram_label": "Diagramma interattivo della mano",
+    "hand_thumb_nail": "Pollice",
+    "hand_index_nail": "Indice",
+    "hand_middle_nail": "Medio",
+    "hand_ring_nail": "Anulare",
+    "hand_pinky_nail": "Mignolo",
+    "visual_mode": "Modalità visuale",
+    "text_mode": "Modalità testo"
   }
 }

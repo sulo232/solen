@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { LucideIcon } from "lucide-react";
+import BodyDiagram from "@/components/shared/BodyDiagram";
 
 interface WaxingZone {
   key: string;
@@ -73,6 +74,7 @@ export default function BodyZoneSelector({
   const [waxPrefs, setWaxPrefs] = useState<Record<string, WaxType>>({});
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [visualMode, setVisualMode] = useState(false);
 
   useEffect(() => {
     fetch(
@@ -129,9 +131,37 @@ export default function BodyZoneSelector({
 
   return (
     <div>
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3">
-        {t("zone_selector")}
-      </p>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+          {t("zone_selector")}
+        </p>
+        <button
+          onClick={() => setVisualMode(!visualMode)}
+          className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+            visualMode
+              ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+              : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+          }`}
+          aria-label={t(visualMode ? "text_mode" : "visual_mode")}
+        >
+          {t(visualMode ? "text_mode" : "visual_mode")}
+        </button>
+      </div>
+
+      {/* Visual Mode: Body Diagram */}
+      {visualMode && (
+        <div className="mb-4">
+          <BodyDiagram
+            selectedZones={selected}
+            onZoneSelect={(zoneId, sel) => {
+              setSelected((prev) =>
+                sel ? [...prev, zoneId] : prev.filter((z) => z !== zoneId)
+              );
+            }}
+            mode="waxing"
+          />
+        </div>
+      )}
 
       {/* Presets */}
       <div className="flex flex-wrap gap-2 mb-4">

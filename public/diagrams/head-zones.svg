@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <title>Head zones diagram</title>
+  <!-- Top-down head outline with selectable zones -->
+  <!-- Zone: top (crown area) -->
+  <path id="zone-top"
+    d="M60,40 Q100,15 140,40 Q148,60 140,80 Q100,92 60,80 Q52,60 60,40Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: left side -->
+  <path id="zone-left-side"
+    d="M38,80 Q52,60 60,40 Q30,55 25,80 Q30,110 45,125 Q50,105 38,80Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: right side -->
+  <path id="zone-right-side"
+    d="M162,80 Q148,60 140,40 Q170,55 175,80 Q170,110 155,125 Q150,105 162,80Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: back -->
+  <path id="zone-back"
+    d="M45,125 Q72,140 100,145 Q128,140 155,125 Q150,105 140,80 Q100,92 60,80 Q50,105 45,125Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: neckline -->
+  <path id="zone-neckline"
+    d="M50,148 Q75,165 100,170 Q125,165 150,148 Q128,140 100,145 Q72,140 50,148Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: temples (left + right) -->
+  <path id="zone-temples"
+    d="M25,55 Q30,42 38,35 Q32,48 28,60 Q25,65 25,55Z M175,55 Q170,42 162,35 Q168,48 172,60 Q175,65 175,55Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+</svg>

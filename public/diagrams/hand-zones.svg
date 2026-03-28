@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" fill="none">
+  <title>Hand zones diagram</title>
+  <!-- Simplified hand (palm-up) with nail zones on each finger -->
+  <!-- Palm (non-interactive context) -->
+  <path d="M60,140 Q55,170 58,200 Q70,225 100,230 Q130,225 142,200 Q145,170 140,140Z"
+    fill="none" stroke="rgba(26,18,9,0.10)" stroke-width="0.8"/>
+  <!-- Thumb -->
+  <path d="M55,145 Q40,130 35,110 Q32,100 38,95 Q45,92 50,100 Q55,115 58,135Z"
+    fill="none" stroke="rgba(26,18,9,0.12)" stroke-width="0.8"/>
+  <!-- Zone: thumb nail -->
+  <path id="zone-thumb-nail"
+    d="M35,110 Q34,100 38,95 Q45,92 50,100 Q46,108 35,110Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Index finger -->
+  <path d="M68,140 Q66,110 65,80 Q64,65 70,60 Q78,58 82,65 Q84,80 82,110 L80,140Z"
+    fill="none" stroke="rgba(26,18,9,0.12)" stroke-width="0.8"/>
+  <!-- Zone: index nail -->
+  <path id="zone-index-nail"
+    d="M65,80 Q64,68 70,60 Q78,58 82,65 Q84,75 82,85 Q75,82 65,80Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Middle finger -->
+  <path d="M88,138 Q86,105 86,70 Q85,50 92,45 Q100,42 106,48 Q110,55 108,70 L108,105 L106,138Z"
+    fill="none" stroke="rgba(26,18,9,0.12)" stroke-width="0.8"/>
+  <!-- Zone: middle nail -->
+  <path id="zone-middle-nail"
+    d="M86,70 Q85,55 92,45 Q100,42 106,48 Q110,58 108,70 Q98,66 86,70Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Ring finger -->
+  <path d="M112,138 Q112,108 114,78 Q115,62 120,56 Q128,52 134,58 Q138,65 136,78 L134,108 L132,138Z"
+    fill="none" stroke="rgba(26,18,9,0.12)" stroke-width="0.8"/>
+  <!-- Zone: ring nail -->
+  <path id="zone-ring-nail"
+    d="M114,78 Q115,65 120,56 Q128,52 134,58 Q138,68 136,78 Q126,74 114,78Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Pinky finger -->
+  <path d="M136,140 Q138,115 140,90 Q141,78 146,72 Q152,68 158,74 Q162,80 160,90 L158,115 L156,140Z"
+    fill="none" stroke="rgba(26,18,9,0.12)" stroke-width="0.8"/>
+  <!-- Zone: pinky nail -->
+  <path id="zone-pinky-nail"
+    d="M140,90 Q141,80 146,72 Q152,68 158,74 Q162,82 160,90 Q152,86 140,90Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+</svg>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Save, Plus, X, Image as ImageIcon } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
+import FaceDiagram from "@/components/shared/FaceDiagram";
 
 const FACE_ZONES = [
   { key: "forehead", labelKey: "zones.forehead" },
@@ -63,6 +64,7 @@ export default function FaceChartBuilder({
   const [products, setProducts] = useState<{ name: string; shade?: string }[]>([]);
   const [productInput, setProductInput] = useState("");
   const [notes, setNotes] = useState("");
+  const [visualMode, setVisualMode] = useState(false);
 
   // Kit autocomplete
   const [kitItems, setKitItems] = useState<ProductSuggestion[]>([]);
@@ -213,9 +215,43 @@ export default function FaceChartBuilder({
 
           {/* Face zones */}
           <div className="space-y-2">
-            <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
-              {t("zones_title")}
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/40 dark:text-s-dm-text/40">
+                {t("zones_title")}
+              </p>
+              <button
+                onClick={() => setVisualMode(!visualMode)}
+                className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+                  visualMode
+                    ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                    : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+                }`}
+                aria-label={t(visualMode ? "text_mode" : "visual_mode")}
+              >
+                {t(visualMode ? "text_mode" : "visual_mode")}
+              </button>
+            </div>
+
+            {/* Visual Mode: Face Diagram */}
+            {visualMode && (
+              <div className="mb-2">
+                <FaceDiagram
+                  zoneSelections={zones}
+                  onZoneClick={(zoneId) => {
+                    // Toggle zone — cycle through techniques or deselect
+                    setZones((prev) => {
+                      if (prev[zoneId]) {
+                        const copy = { ...prev };
+                        delete copy[zoneId];
+                        return copy;
+                      }
+                      return { ...prev, [zoneId]: "highlight" };
+                    });
+                  }}
+                />
+              </div>
+            )}
+
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {FACE_ZONES.map((zone) => (
                 <div

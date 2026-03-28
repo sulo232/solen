@@ -860,7 +860,9 @@
     },
     "select_client": "Select client",
     "no_clients": "No clients",
-    "no_salon": "No salon found"
+    "no_salon": "No salon found",
+    "visual_mode": "Visual mode",
+    "text_mode": "Text mode"
   },
   "dashboardMakeup": {
     "eyebrow": "Makeup",
@@ -879,7 +881,11 @@
     "foundation_shade": "Shade",
     "undertone_label": "Undertone",
     "undertone_select": "Select undertone",
-    "undertone": { "warm": "Warm", "cool": "Cool", "neutral": "Neutral" },
+    "undertone": {
+      "warm": "Warm",
+      "cool": "Cool",
+      "neutral": "Neutral"
+    },
     "zones_title": "Face Zones",
     "zones": {
       "forehead": "Forehead",
@@ -971,7 +977,13 @@
     },
     "foundation_notes": "Foundation Recommendation",
     "foundation_notes_placeholder": "e.g. MAC NC25, Fenty 230",
-    "tabs": { "clients": "Clients", "events": "Events", "kit": "Kit" }
+    "tabs": {
+      "clients": "Clients",
+      "events": "Events",
+      "kit": "Kit"
+    },
+    "visual_mode": "Visual mode",
+    "text_mode": "Text mode"
   },
   "dashboardWaxing": {
     "eyebrow": "Waxing",
@@ -1053,7 +1065,9 @@
     "no_packages": "No packages yet",
     "package_name_placeholder": "Package name",
     "select_zones": "Select zones",
-    "discount_percent": "Discount %"
+    "discount_percent": "Discount %",
+    "visual_mode": "Visual mode",
+    "text_mode": "Text mode"
   },
   "errors": {
     "not_found": "Page not found",
@@ -2229,7 +2243,17 @@
     "no_one_serving": "No one being served",
     "up_next": "Up Next",
     "ops_title": "Barbershop Operations",
-    "tv_display": "TV Display"
+    "tv_display": "TV Display",
+    "diagrams_coming_soon": "Diagrams coming soon",
+    "head_diagram_label": "Interactive head diagram",
+    "zone_label_top": "Top",
+    "zone_label_left_side": "Left side",
+    "zone_label_right_side": "Right side",
+    "zone_label_back": "Back",
+    "zone_label_neckline": "Neckline",
+    "zone_label_temples": "Temples",
+    "visual_mode": "Visual mode",
+    "text_mode": "Text mode"
   },
   "aiArtGenerator": {
     "title": "AI Nail Art Generator",
@@ -2254,5 +2278,36 @@
       "coffin": "Coffin",
       "stiletto": "Stiletto"
     }
+  },
+  "diagrams": {
+    "coming_soon": "Diagrams coming soon",
+    "body_diagram_label": "Interactive body zone diagram",
+    "body_neck": "Neck",
+    "body_shoulders": "Shoulders",
+    "body_chest": "Chest",
+    "body_upper_back": "Upper back",
+    "body_stomach": "Stomach",
+    "body_lower_back": "Lower back",
+    "body_full_arms": "Arms",
+    "body_full_legs": "Legs",
+    "body_feet": "Feet",
+    "face_diagram_label": "Interactive face zone diagram",
+    "face_forehead": "Forehead",
+    "face_temples": "Temples",
+    "face_eyelids": "Eyelids",
+    "face_under_eye": "Under eye",
+    "face_nose_bridge": "Nose bridge",
+    "face_cheekbones": "Cheekbones",
+    "face_jawline": "Jawline",
+    "face_lips": "Lips",
+    "face_chin": "Chin",
+    "hand_diagram_label": "Interactive hand diagram",
+    "hand_thumb_nail": "Thumb",
+    "hand_index_nail": "Index finger",
+    "hand_middle_nail": "Middle finger",
+    "hand_ring_nail": "Ring finger",
+    "hand_pinky_nail": "Pinky finger",
+    "visual_mode": "Visual mode",
+    "text_mode": "Text mode"
   }
 }

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250" fill="none">
+  <title>Face zones diagram</title>
+  <!-- Stylized line-art face with selectable zones -->
+  <!-- Face outline (non-interactive) -->
+  <ellipse cx="100" cy="120" rx="68" ry="88" fill="none" stroke="rgba(26,18,9,0.12)" stroke-width="0.8"/>
+  <!-- Zone: forehead -->
+  <path id="zone-forehead"
+    d="M45,55 Q100,30 155,55 Q155,75 148,85 Q100,78 52,85 Q45,75 45,55Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: temples (left + right) -->
+  <path id="zone-temples"
+    d="M35,65 Q40,55 45,55 Q45,75 50,85 L38,90 Q32,80 35,65Z M165,65 Q160,55 155,55 Q155,75 150,85 L162,90 Q168,80 165,65Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: eyelids (left + right) -->
+  <path id="zone-eyelids"
+    d="M62,92 Q76,88 90,92 Q76,98 62,92Z M110,92 Q124,88 138,92 Q124,98 110,92Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: under-eye (left + right) -->
+  <path id="zone-under-eye"
+    d="M62,98 Q76,102 90,98 Q82,108 68,108 Q58,106 62,98Z M110,98 Q124,102 138,98 Q132,108 118,108 Q108,106 110,98Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: nose bridge -->
+  <path id="zone-nose-bridge"
+    d="M94,85 L106,85 L108,130 Q100,135 92,130Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: cheekbones (left + right) -->
+  <path id="zone-cheekbones"
+    d="M38,100 Q48,95 58,105 Q55,125 45,135 Q35,125 38,100Z M162,100 Q152,95 142,105 Q145,125 155,135 Q165,125 162,100Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: jawline -->
+  <path id="zone-jawline"
+    d="M40,150 Q45,135 55,140 Q60,160 80,175 L100,180 L120,175 Q140,160 145,140 Q155,135 160,150 Q155,175 140,192 Q100,210 60,192 Q45,175 40,150Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: lips -->
+  <path id="zone-lips"
+    d="M80,155 Q90,148 100,150 Q110,148 120,155 Q112,165 100,168 Q88,165 80,155Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+  <!-- Zone: chin -->
+  <path id="zone-chin"
+    d="M82,170 Q100,168 118,170 Q115,188 100,195 Q85,188 82,170Z"
+    fill="rgba(26,18,9,0.04)" stroke="rgba(26,18,9,0.15)" stroke-width="1"/>
+</svg>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { BookHeart, Plus, Save, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import BodyDiagram from "@/components/shared/BodyDiagram";
 
 interface JournalEntry {
   id: string;
@@ -39,6 +40,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
     notes: "",
     product_input: "",
   });
+  const [visualMode, setVisualMode] = useState(false);
 
   useEffect(() => {
     if (!clientId) return;
@@ -140,9 +142,41 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
 
           {/* Tension Areas */}
           <div>
-            <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block mb-2">
-              {t("tension_areas")}
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-[10px] font-heading font-bold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 block">
+                {t("tension_areas")}
+              </label>
+              <button
+                onClick={() => setVisualMode(!visualMode)}
+                className={`rounded-[8px] border px-3 py-1.5 text-[10px] font-heading font-semibold transition-colors duration-150 ${
+                  visualMode
+                    ? "border-s-coral bg-s-coral/[0.06] text-s-coral"
+                    : "border-s-ink/[0.06] dark:border-s-dm-text/[0.06] text-s-ink/40 dark:text-s-dm-text/40"
+                }`}
+                aria-label={t(visualMode ? "text_mode" : "visual_mode")}
+              >
+                {t(visualMode ? "text_mode" : "visual_mode")}
+              </button>
+            </div>
+
+            {/* Visual Mode: Body Diagram for tension marking */}
+            {visualMode && (
+              <div className="mb-3">
+                <BodyDiagram
+                  selectedZones={form.tension_areas}
+                  onZoneSelect={(zoneId, sel) => {
+                    setForm((prev) => ({
+                      ...prev,
+                      tension_areas: sel
+                        ? [...prev.tension_areas, zoneId]
+                        : prev.tension_areas.filter((a) => a !== zoneId),
+                    }));
+                  }}
+                  mode="spa"
+                />
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-2">
               {TENSION_OPTIONS.map((area) => (
                 <button

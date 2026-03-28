@@ -871,7 +871,9 @@
     },
     "select_client": "Klient auswählen",
     "no_clients": "Keine Klienten",
-    "no_salon": "Kein Salon gefunden"
+    "no_salon": "Kein Salon gefunden",
+    "visual_mode": "Visueller Modus",
+    "text_mode": "Textmodus"
   },
   "dashboardMakeup": {
     "eyebrow": "Makeup",
@@ -890,7 +892,11 @@
     "foundation_shade": "Farbton",
     "undertone_label": "Unterton",
     "undertone_select": "Unterton wählen",
-    "undertone": { "warm": "Warm", "cool": "Kühl", "neutral": "Neutral" },
+    "undertone": {
+      "warm": "Warm",
+      "cool": "Kühl",
+      "neutral": "Neutral"
+    },
     "zones_title": "Gesichtszonen",
     "zones": {
       "forehead": "Stirn",
@@ -982,7 +988,13 @@
     },
     "foundation_notes": "Foundation-Empfehlung",
     "foundation_notes_placeholder": "z.B. MAC NC25, Fenty 230",
-    "tabs": { "clients": "Kunden", "events": "Events", "kit": "Kit" }
+    "tabs": {
+      "clients": "Kunden",
+      "events": "Events",
+      "kit": "Kit"
+    },
+    "visual_mode": "Visueller Modus",
+    "text_mode": "Textmodus"
   },
   "dashboardWaxing": {
     "eyebrow": "Waxing",
@@ -1064,7 +1076,9 @@
     "no_packages": "Keine Pakete vorhanden",
     "package_name_placeholder": "Paketname",
     "select_zones": "Zonen auswählen",
-    "discount_percent": "Rabatt %"
+    "discount_percent": "Rabatt %",
+    "visual_mode": "Visueller Modus",
+    "text_mode": "Textmodus"
   },
   "errors": {
     "not_found": "Seite nicht gefunden",
@@ -2240,7 +2254,17 @@
     "no_one_serving": "Niemand wird bedient",
     "up_next": "Als Nächstes",
     "ops_title": "Barbershop Operations",
-    "tv_display": "TV-Anzeige"
+    "tv_display": "TV-Anzeige",
+    "diagrams_coming_soon": "Diagramme bald verfügbar",
+    "head_diagram_label": "Interaktives Kopfdiagramm",
+    "zone_label_top": "Oberkopf",
+    "zone_label_left_side": "Linke Seite",
+    "zone_label_right_side": "Rechte Seite",
+    "zone_label_back": "Hinterkopf",
+    "zone_label_neckline": "Nackenlinie",
+    "zone_label_temples": "Schläfen",
+    "visual_mode": "Visueller Modus",
+    "text_mode": "Textmodus"
   },
   "aiArtGenerator": {
     "title": "AI Nail Art Generator",
@@ -2265,5 +2289,36 @@
       "coffin": "Coffin",
       "stiletto": "Stiletto"
     }
+  },
+  "diagrams": {
+    "coming_soon": "Diagramme bald verfügbar",
+    "body_diagram_label": "Interaktives Körperzonendiagramm",
+    "body_neck": "Nacken",
+    "body_shoulders": "Schultern",
+    "body_chest": "Brust",
+    "body_upper_back": "Oberer Rücken",
+    "body_stomach": "Bauch",
+    "body_lower_back": "Unterer Rücken",
+    "body_full_arms": "Arme",
+    "body_full_legs": "Beine",
+    "body_feet": "Füsse",
+    "face_diagram_label": "Interaktives Gesichtszonendiagramm",
+    "face_forehead": "Stirn",
+    "face_temples": "Schläfen",
+    "face_eyelids": "Augenlider",
+    "face_under_eye": "Unter den Augen",
+    "face_nose_bridge": "Nasenrücken",
+    "face_cheekbones": "Wangenknochen",
+    "face_jawline": "Kieferlinie",
+    "face_lips": "Lippen",
+    "face_chin": "Kinn",
+    "hand_diagram_label": "Interaktives Handdiagramm",
+    "hand_thumb_nail": "Daumen",
+    "hand_index_nail": "Zeigefinger",
+    "hand_middle_nail": "Mittelfinger",
+    "hand_ring_nail": "Ringfinger",
+    "hand_pinky_nail": "Kleiner Finger",
+    "visual_mode": "Visueller Modus",
+    "text_mode": "Textmodus"
   }
 }
