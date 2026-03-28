@@ -2099,6 +2099,10 @@
     "day_fri": "Fr",
     "day_sat": "Sa"
   },
+  "makeup": {
+    "coming_soon_title": "Kommt bald",
+    "coming_soon_message": "Wir arbeiten daran, diese Kategorie für dich verfügbar zu machen."
+  },
   "barber_dashboard": {
     "leaderboard_title": "Barber Leaderboard",
     "bookings": "Buchungen",

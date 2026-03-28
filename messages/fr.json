@@ -2065,6 +2065,10 @@
     "day_fri": "Ven",
     "day_sat": "Sam"
   },
+  "makeup": {
+    "coming_soon_title": "Bientôt disponible",
+    "coming_soon_message": "Nous travaillons à rendre cette catégorie disponible pour vous."
+  },
   "barber_dashboard": {
     "leaderboard_title": "Classement Barbers",
     "bookings": "Réservations",

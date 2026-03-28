@@ -153,10 +153,14 @@ export default function KitInventory({ salonId }: { salonId: string }) {
 
   const loadUsageLogs = async (itemId: string) => {
     if (usageLogs[itemId]) return; // already loaded
-    const res = await fetch(`/api/dashboard/makeup/kit-usage?salon_id=${salonId}&item_id=${itemId}`);
-    if (res.ok) {
-      const d = await res.json();
-      setUsageLogs((prev) => ({ ...prev, [itemId]: d.logs ?? [] }));
+    try {
+      const res = await fetch(`/api/dashboard/makeup/kit-usage?salon_id=${salonId}&item_id=${itemId}`);
+      if (res.ok) {
+        const d = await res.json();
+        setUsageLogs((prev) => ({ ...prev, [itemId]: d.logs ?? [] }));
+      }
+    } catch {
+      setUsageLogs((prev) => ({ ...prev, [itemId]: [] }));
     }
   };
 
@@ -247,7 +251,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
 
       {/* Add form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input
               value={formData.brand}
@@ -331,7 +335,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
           return (
             <div
               key={item.id}
-              className={`rounded-[12px] border bg-white dark:bg-s-dm-surface ${
+              className={`rounded-[12px] border bg-[--raised] dark:bg-s-dm-surface ${
                 isExpired ? "border-s-error/30" : isExpiringSoon ? "border-s-warning/30" : "border-s-ink/[0.04] dark:border-s-dm-text/[0.04]"
               }`}
             >
@@ -438,8 +442,12 @@ export default function KitInventory({ salonId }: { salonId: string }) {
 
       {/* Checkout modal */}
       {checkoutItem && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-s-ink/40">
-          <div className="w-full max-w-sm rounded-[16px] bg-white dark:bg-s-dm-surface p-5 space-y-4 shadow-[0_8px_32px_rgba(26,18,9,0.18)]">
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-s-ink/40 backdrop-blur-[6px]"
+        >
+          <div className="w-full max-w-sm rounded-[16px] bg-[--raised] dark:bg-s-dm-surface p-5 space-y-4 shadow-[0_8px_32px_rgba(26,18,9,0.18)]">
             <div className="flex items-center justify-between">
               <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
                 {t("kit_checkout_title")}

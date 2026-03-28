@@ -136,7 +136,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
 
       {/* Create form */}
       {showForm && (
-        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface space-y-3">
+        <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface space-y-3">
           <div className="bg-s-bg-sunken dark:bg-s-dm-bg rounded-[8px]">
             <ClientSelectorDropdown 
               salonId={salonId}
@@ -241,7 +241,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
             return (
               <div
                 key={wf.id}
-                className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-white dark:bg-s-dm-surface"
+                className="rounded-[12px] border border-s-ink/[0.06] dark:border-s-dm-text/[0.06] p-4 bg-[--raised] dark:bg-s-dm-surface"
               >
                 {/* Event info */}
                 <div className="flex items-center justify-between mb-3">
