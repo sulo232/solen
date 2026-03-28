@@ -67,7 +67,7 @@ export default function StaffPortfolio({ member, images = [], salonSlug, onBook 
             <button
               key={img.id}
               onClick={() => setLightboxIndex(i)}
-              className="aspect-square bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden hover:opacity-90 transition-opacity"
+              className="aspect-square bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden hover:brightness-[0.95] transition-[filter] duration-150"
             >
               <Image
                 src={img.image_url}

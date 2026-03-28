@@ -203,7 +203,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 "absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-[background-color,border-color] duration-200 z-10",
                 compareSelected
                   ? "bg-s-coral border-s-coral text-white scale-100"
-                  : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-coral/50 hover:scale-110",
+                  : "bg-white/80 backdrop-blur-[6px] border-white/60 text-transparent hover:border-s-coral/50",
               ].join(" ")}
             >
               {compareSelected && (
@@ -217,7 +217,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-[8px] flex items-center justify-center transition-[transform,background-color] duration-200 hover:bg-white hover:scale-110 active:scale-95"
+              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-[8px] flex items-center justify-center transition-[transform,background-color] duration-200 hover:bg-white active:scale-[0.98]"
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
             >
               <Heart
@@ -305,7 +305,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 return (
                   <span
                     key={i}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-medium transition-transform duration-200 hover:scale-105"
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-medium"
                     style={{ color: b.color, backgroundColor: b.bg_color }}
                   >
                     <Ic size={10} />

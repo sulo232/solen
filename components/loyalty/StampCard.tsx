@@ -68,7 +68,7 @@ export default function StampCard({
         </p>
         <Link
           href={`/${locale}/salon/${salonSlug}`}
-          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          className="flex items-center gap-3 transition-[background-color,color] duration-150"
         >
           <div className="relative w-10 h-10 rounded-[8px] overflow-hidden bg-s-bg-sunken dark:bg-white/10 shrink-0">
             {salonImageUrl ? (

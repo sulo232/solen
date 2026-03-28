@@ -12,7 +12,7 @@ import { getSearchFilterPills } from "@/lib/search-filter-pills";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import { Search } from "lucide-react";
-// BlobBackground removed — V4 uses ambient-v4 CSS class
+// BlobBackground removed — V5 uses ambient-v5 CSS class
 import type { ActiveFilter } from "@/lib/types";
 
 interface TreatmentSalon {
@@ -124,7 +124,7 @@ export default function TreatmentsClient() {
   }, [pathname, router, searchParams]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg ambient-v4 relative overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-s-dm-bg ambient-v5 relative overflow-x-hidden">
       {/* Search + Filters */}
       <div className="sticky top-[57px] z-40 isolate">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">

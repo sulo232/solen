@@ -14,7 +14,7 @@ import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
-// BlobBackground removed — V4 uses ambient-v4 CSS class
+// BlobBackground removed — V5 uses ambient-v5 CSS class
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
 import { type CitySlug, getCityName } from "@/lib/cities";
@@ -62,7 +62,7 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-[20px] overflow-hidden hover:-translate-y-[3px] transition-all duration-[250ms]"
+      className="rounded-[20px] overflow-hidden hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
       style={{ border: "1.5px dashed rgba(26,18,9,.12)",
                background: "var(--glass-bg-subtle)",
                boxShadow: "0 1px 3px rgba(26,18,9,.06)" }}
@@ -98,13 +98,13 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
         <div className="flex gap-2">
           {entry.phone && (
             <a href={`tel:${entry.phone}`}
-              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-all">
+              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
               <Phone className="w-3 h-3 inline mr-1" />Anrufen
             </a>
           )}
           {entry.website && (
             <a href={entry.website} target="_blank" rel="noopener noreferrer"
-              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-all">
+              className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
               <Globe className="w-3 h-3 inline mr-1" />Website
             </a>
           )}
@@ -365,7 +365,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               }
               routerNav.replace(`${currentPathname}?${params.toString()}`, { scroll: false });
             }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
             style={{ border: "1px solid rgba(26,18,9,.10)",
                      background: isMapView ? "#E8624A" : "var(--glass-bg-card)",
                      color: isMapView ? "#fff" : "rgba(26,18,9,.65)",
@@ -511,7 +511,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               {hasMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-8">
                   <button onClick={handleLoadMore} disabled={loadingMore}
-                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color,opacity] duration-150 disabled:opacity-50"
                     style={{ border: "1px solid rgba(26,18,9,.10)",
                              background: "var(--glass-bg-card)", backdropFilter: "blur(8px)",
                              WebkitBackdropFilter: "blur(8px)",
@@ -529,7 +529,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               {!dirLoading && hasDirMore && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mt-4">
                   <button onClick={handleDirLoadMore} disabled={dirLoadingMore}
-                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-8 py-3 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color,opacity] duration-150 disabled:opacity-50"
                     style={{ border: "1px solid rgba(26,18,9,.10)",
                              background: "var(--glass-bg-card)", backdropFilter: "blur(8px)",
                              WebkitBackdropFilter: "blur(8px)",

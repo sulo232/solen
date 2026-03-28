@@ -285,7 +285,7 @@ function LastMinuteTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Sa
         </div>
         <button onClick={() => setEnabled(!enabled)}
           className={["w-11 h-6 rounded-full transition-colors relative", enabled ? "bg-s-coral" : "bg-s-sand"].join(" ")}>
-          <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform",
+          <span className={["absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-elevation-1 transition-transform",
             enabled ? "translate-x-5.5" : "translate-x-0.5"].join(" ")} />
         </button>
       </div>
@@ -1148,7 +1148,7 @@ export default function SettingsPage() {
       )}
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-s-coral text-white px-4 py-2.5 rounded-pill shadow-lg text-sm font-medium">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-s-coral text-white px-4 py-2.5 rounded-pill shadow-elevation-3 text-sm font-medium">
           {toast}
         </div>
       )}

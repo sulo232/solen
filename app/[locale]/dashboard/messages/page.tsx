@@ -134,7 +134,7 @@ export default function MessagesPage() {
                   Schnellantwort <ChevronDown size={12} className={showQuickReplies ? "rotate-180" : ""} />
                 </button>
                 {showQuickReplies && (
-                  <div className="absolute bottom-full mb-1 left-0 bg-white rounded-[12px] shadow-xl border border-s-ink/5 py-1 min-w-[240px] z-10">
+                  <div className="absolute bottom-full mb-1 left-0 bg-white rounded-[12px] shadow-v5-float border border-s-ink/5 py-1 min-w-[240px] z-10">
                     {QUICK_REPLIES.map((r, i) => (
                       <button
                         key={i}

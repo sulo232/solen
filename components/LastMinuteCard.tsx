@@ -56,7 +56,7 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       <Link
         href={`/${locale}/salon/${slot.salon.slug}?slot=${slot.id}`}
         className={cn(
-          "flex flex-col justify-between rounded-card bg-white dark:bg-s-dm-surface shadow-elevation-2 overflow-hidden h-52 border-l-2 hover:-translate-y-[2px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-300",
+          "flex flex-col justify-between rounded-card bg-white dark:bg-s-dm-surface shadow-elevation-2 overflow-hidden h-52 border-l-2 hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
           isUrgent
             ? "border-s-coral animate-coral-pulse"
             : "border-s-coral/40"

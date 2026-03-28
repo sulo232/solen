@@ -22,7 +22,7 @@ import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
 // StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
 import LastMinuteCard from "@/components/LastMinuteCard";
-// BlobBackground removed — V4 uses ambient-v4 CSS class
+// BlobBackground removed — V5 uses ambient-v5 CSS class
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";

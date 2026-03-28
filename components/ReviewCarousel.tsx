@@ -93,7 +93,7 @@ export default function ReviewCarousel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: i * 0.1 }}
-              className="snap-start shrink-0 w-[280px] md:w-auto rounded-[20px] p-5 hover:-translate-y-[3px] transition-transform duration-[250ms]"
+              className="snap-start shrink-0 w-[280px] md:w-auto rounded-[20px] p-5 hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
               style={{
                 background: "var(--glass-bg-subtle)",
                 backdropFilter: "blur(16px) saturate(1.2)",

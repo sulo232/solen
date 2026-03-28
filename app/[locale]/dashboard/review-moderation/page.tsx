@@ -49,7 +49,7 @@ function DeleteModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-xl w-full max-w-sm p-6">
+      <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text mb-2">Bewertung löschen</h3>
         <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-5">Bewertung endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
         <div className="flex gap-2">

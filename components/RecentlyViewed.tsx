@@ -97,7 +97,7 @@ export default function RecentlyViewed() {
                     src={salon.cover_photo_url}
                     alt={salon.name}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover transition-none"
                     sizes="160px"
                   />
                 ) : (

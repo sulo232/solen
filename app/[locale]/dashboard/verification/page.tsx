@@ -141,7 +141,7 @@ export default function VerificationPage() {
             ) : (
               <div className="space-y-3">
                 {documents.map((doc) => (
-                  <div key={doc.id} className="bg-white rounded-[12px] shadow-sm border border-s-ink/5 p-4 flex items-start gap-3">
+                  <div key={doc.id} className="bg-white rounded-[12px] shadow-elevation-1 border border-s-ink/5 p-4 flex items-start gap-3">
                     <div className="p-2 bg-s-bg-surface rounded-btn shrink-0 text-s-ink/40">
                       <File size={20} />
                     </div>

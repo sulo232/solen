@@ -116,7 +116,7 @@ export default function DiscoveryPostsPage() {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === t ? "bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text shadow-sm" : "text-s-ink/40 dark:text-s-dm-text/40"}`}
+              className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === t ? "bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text shadow-elevation-1" : "text-s-ink/40 dark:text-s-dm-text/40"}`}
             >
               {t === "new" ? (
                 <span className="flex items-center gap-1.5"><Plus size={14} /> Neuer Post</span>

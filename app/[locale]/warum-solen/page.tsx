@@ -161,7 +161,7 @@ function MockMap() {
       {/* Pins */}
       {pins.map((pin, i) => (
         <div key={i} className="absolute flex flex-col items-center" style={{ left: pin.left, top: pin.top }}>
-          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white shadow-md whitespace-nowrap mb-1" style={{ backgroundColor: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }}>
+          <span className="px-2 py-0.5 rounded-full text-[10px] data-text font-semibold text-white shadow-elevation-2 whitespace-nowrap mb-1" style={{ backgroundColor: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }}>
             {pin.price}
           </span>
           <MapPin className="w-4 h-4" style={{ color: pin.color === "bg-s-coral" ? "#E8624A" : "#F2C144" }} />

@@ -629,7 +629,7 @@ export default function SalonProfilePage() {
 
               <div id="section-info" className="scroll-mt-[180px]">
                 {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
-                  <div className="mb-8 p-6 rounded-[20px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 shadow-sm">
+                  <div className="mb-8 p-6 rounded-[20px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 shadow-elevation-1">
                     <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">
                       Über uns
                     </h2>

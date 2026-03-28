@@ -134,7 +134,7 @@ export default function ApprovalsPage() {
       {/* Reject modal */}
       {rejectModal && (
         <div className="fixed inset-0 z-50 bg-s-ink/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-[12px] shadow-xl w-full max-w-md p-6">
+          <div className="bg-white dark:bg-s-dm-surface rounded-input shadow-v5-float w-full max-w-md p-6">
             <h3 className="font-heading font-bold text-lg text-s-ink mb-1">Salon ablehnen</h3>
             <p className="text-sm text-s-ink/50 mb-4">
               Begründung für <strong>{rejectModal.name}</strong> (wird per E-Mail gesendet):

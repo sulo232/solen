@@ -24,7 +24,7 @@ function SubRatingRow({ label, value, onChange }: SubRatingRowProps) {
             type="button"
             onMouseEnter={() => setHover(star)}
             onClick={() => onChange(value === star ? 0 : star)}
-            className="p-0.5 focus:outline-none transition-transform hover:scale-110"
+            className="p-0.5 focus:outline-none transition-[transform] duration-150 hover:scale-110"
           >
             <Star
               size={20}
@@ -153,7 +153,7 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
                   type="button"
                   onMouseEnter={() => setHoverRating(star)}
                   onClick={() => setRating(star)}
-                  className="p-1 focus:outline-none transition-transform hover:scale-110"
+                  className="p-1 focus:outline-none transition-[transform] duration-150 hover:scale-110"
                 >
                   <Star
                     size={36}

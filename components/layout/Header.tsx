@@ -181,7 +181,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       : "text-s-ink/60 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/5"
                   )}
                 >
-                  <Icon width={20} height={20} className="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-105" />
+                  <Icon width={20} height={20} className="w-5 h-5 shrink-0" />
                   {isActive && (
                     <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-s-coral" />
                   )}
@@ -247,14 +247,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               {/* Dropdown panel */}
               {profileOpen && (
                 <div
-                  className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-input z-[60] overflow-hidden"
-                  style={{
-                    background: "var(--glass-bg-strong)",
-                    backdropFilter: "blur(16px) saturate(1.2)",
-                    WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                    border: "1px solid var(--glass-border)",
-                    boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
-                  }}
+                  className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-input z-[60] overflow-hidden glass-frost shadow-v5-float"
                 >
                   <nav className="py-1" role="menu">
                     {[
@@ -309,14 +302,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
-            className="md:hidden mt-2 rounded-card p-4 overflow-hidden"
-            style={{
-              background: "rgba(255,255,255,0.97)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(26,18,9,0.06)",
-              boxShadow: "0 4px 16px rgba(26,18,9,.08), 0 12px 40px rgba(26,18,9,.06)"
-            }}
+            className="md:hidden mt-2 rounded-card p-4 overflow-hidden glass-frost shadow-v5-float"
           >
             <nav className="flex flex-col gap-2">
               {/* Mobile nav items — complete set including category subsites */}

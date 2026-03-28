@@ -78,7 +78,7 @@ function BadgeModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-xl w-full max-w-md p-6">
+      <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-md p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base text-s-ink">
             {badge?.id ? "Badge bearbeiten" : "Neues Badge erstellen"}
@@ -195,7 +195,7 @@ function DeleteModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-sm px-4">
-      <div className="bg-white rounded-[12px] shadow-xl w-full max-w-sm p-6">
+      <div className="bg-white rounded-[12px] shadow-v5-float w-full max-w-sm p-6">
         <h3 className="font-heading font-bold text-base text-s-ink mb-2">Badge löschen</h3>
         <p className="text-sm text-s-ink/50 mb-5">
           Badge &quot;{name}&quot; löschen? Es wird von allen Salons entfernt.

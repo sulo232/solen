@@ -29,7 +29,7 @@ export default function HeroVisualCard() {
         </div>
 
         {/* Heart button */}
-        <button className="absolute top-4 right-4 w-[36px] h-[36px] rounded-full flex items-center justify-center transition-[transform,filter] hover:scale-110"
+        <button className="absolute top-4 right-4 w-[36px] h-[36px] rounded-full flex items-center justify-center transition-[transform,filter] duration-150 active:scale-[0.98]"
           style={{ background: "var(--glass-bg-card)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid var(--glass-border-subtle)" }}>
           <Heart size={16} className="text-s-coral fill-s-coral" />
         </button>

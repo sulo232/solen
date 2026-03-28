@@ -71,7 +71,7 @@ export default function PrivacySidebar() {
         </button>
 
         {isMobileMenuOpen && (
-          <div className="mt-2 p-2 bg-white dark:bg-s-dm-bg border border-s-ink/10 dark:border-s-dm-text/10 rounded-xl shadow-lg absolute z-10 w-[calc(100%-2rem)] max-h-[60vh] overflow-y-auto max-w-[720px]">
+          <div className="mt-2 p-2 bg-white dark:bg-s-dm-bg border border-s-ink/10 dark:border-s-dm-text/10 rounded-xl shadow-elevation-3 absolute z-10 w-[calc(100%-2rem)] max-h-[60vh] overflow-y-auto max-w-[720px]">
             <nav className="flex flex-col gap-1">
               {sections.map((section) => (
                 <button
