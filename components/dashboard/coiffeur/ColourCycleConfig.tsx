@@ -42,10 +42,10 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
     setServices((prev) =>
       prev.map((s) => (s.id === serviceId ? { ...s, reminder_cycle_days: days } : s))
     );
-    await fetch("/api/services", {
-      method: "PUT",
+    await fetch(`/api/services/${serviceId}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: serviceId, reminder_cycle_days: days }),
+      body: JSON.stringify({ reminder_cycle_days: days }),
     });
   };
 

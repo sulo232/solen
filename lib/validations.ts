@@ -761,6 +761,7 @@ export const serviceUpdateSchema = z.object({
   duration_minutes: z.number().int().min(5).max(480).optional(),
   price: z.number().int().min(0).max(100000).optional(),
   is_active: z.boolean().optional(),
+  reminder_cycle_days: z.number().int().min(1).max(365).nullable().optional(),
 });
 
 export const availabilityManageSchema = z.object({
