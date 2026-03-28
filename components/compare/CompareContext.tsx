@@ -141,8 +141,17 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+const NOOP_COMPARE: CompareContextValue = {
+  comparedSalons: [],
+  toggleCompare: () => {},
+  removeSalon: () => {},
+  clearCompare: () => {},
+  openDrawer: () => {},
+  closeDrawer: () => {},
+  isCompareOpen: false,
+  isInCompare: () => false,
+};
+
 export function useCompare() {
-  const ctx = useContext(CompareContext);
-  if (!ctx) throw new Error("useCompare must be used within a CompareProvider");
-  return ctx;
+  return useContext(CompareContext) ?? NOOP_COMPARE;
 }
