@@ -36,17 +36,16 @@ export default async function Page() {
     { data: sectionsData },
     { data: categoryCountsData, error: ccError }
   ] = await Promise.all([
-    supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).order("solen_score", { ascending: false }).limit(8),
+    supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).order("average_rating", { ascending: false }).limit(8),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).order("created_at", { ascending: false }).limit(6),
     supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })),
     supabase.from("salons").select("categories").eq("is_active", true)
   ]);
 
-  if (pError || lmError || nsError) {
-    console.error("Critical SSR Database Error:", pError || lmError || nsError);
-    throw new Error("Database unavailable");
-  }
+  if (pError) console.error("SSR popular salons query failed:", pError.message);
+  if (lmError) console.error("SSR last-minute query failed:", lmError.message);
+  if (nsError) console.error("SSR new salons query failed:", nsError.message);
 
   if (ccError) console.error("SSR category counts query failed:", ccError.message);
 
