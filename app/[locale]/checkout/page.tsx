@@ -265,7 +265,7 @@ export default function CheckoutPage() {
   if (error || !intent) {
     return (
       <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
-        <div className="w-full max-w-sm rounded-[14px] border border-s-coral/20 p-8 text-center"
+        <div className="w-full max-w-sm rounded-card border border-s-coral/20 p-8 text-center shadow-warm-lg"
           style={{ background: "rgba(232,98,74,.04)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
           <div className="w-12 h-12 rounded-card flex items-center justify-center mx-auto mb-4"
             style={{ background: "rgba(232,98,74,.12)" }}>
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-s-bg-base flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="rounded-[16px] border border-s-success/20 p-8 flex flex-col items-center gap-4"
+          <div className="rounded-card border border-s-success/20 p-8 flex flex-col items-center gap-4 shadow-warm-lg"
             style={{ background: "rgba(46,125,50,.06)", boxShadow: "0 4px 16px rgba(26,18,9,.06)" }}>
             <div className="w-16 h-16 rounded-[18px] flex items-center justify-center"
               style={{ background: "rgba(46,125,50,.12)" }}>
@@ -336,8 +336,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-lg mx-auto space-y-4">
         {/* P2 — Booking summary card */}
-        <div className="bg-white rounded-card border border-s-ink/[0.07]"
-          style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+        <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md">
           <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05]">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">
               Deine Buchung
@@ -420,8 +419,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* P5 — Promo code + credits */}
-        <div className="bg-white rounded-card border border-s-ink/[0.07] p-5 space-y-3"
-          style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+        <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5 space-y-3">
           <div className="flex items-center gap-2">
             <Tag className="w-3.5 h-3.5 text-s-coral" />
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
@@ -494,8 +492,7 @@ export default function CheckoutPage() {
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
           // P8 — At-salon confirm card
-          <div className="bg-white rounded-card border border-s-ink/[0.07] p-5"
-            style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-9 h-9 rounded-[10px] flex items-center justify-center shrink-0"
                 style={{ background: "rgba(76,175,111,.10)" }}>
@@ -528,8 +525,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           // P10 — Payment card (Stripe Elements) — header only, DO NOT touch Elements/appearance
-          <div className="bg-white rounded-card border border-s-ink/[0.07] overflow-hidden"
-            style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05), 0 4px 12px rgba(26,18,9,.06)" }}>
+          <div className="bg-white dark:bg-s-dm-surface rounded-card border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md overflow-hidden">
             <div className="px-5 pt-5 pb-4 border-b border-s-ink/[0.05] flex items-center gap-2">
               <Lock size={13} className="text-s-ink/35 shrink-0" />
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/35">
