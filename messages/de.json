@@ -419,7 +419,13 @@
       "language_label": "Bevorzugte Sprache",
       "language_placeholder": "z.B. Deutsch, Englisch...",
       "notes_label": "Weitere Notizen",
-      "notes_placeholder": "Zusätzliche Informationen..."
+      "notes_placeholder": "Zusätzliche Informationen...",
+      "label_optional": "(Optional)",
+      "error_save": "Fehler beim Speichern der Präferenzen",
+      "success_save": "Präferenzen gespeichert",
+      "saving": "Speichern...",
+      "save": "Speichern",
+      "skip": "Überspringen"
     },
     "packageRedeemBanner": {
       "remaining": "Du hast noch {remaining} von {total} Terminen in deinem Paket «{name}»",

@@ -105,8 +105,6 @@ export default function HomePage({ initialData }: HomePageProps) {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("home") as any;
-  const [userId, setUserId] = useState<string | null>(null);
-
   const [loading, setLoading] = useState(false);
   const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
@@ -170,8 +168,6 @@ export default function HomePage({ initialData }: HomePageProps) {
           setNextBooking({ date, salon: data.nextBooking.salon });
         }
         if (Array.isArray(data.favorites)) setFavoriteIds(new Set(data.favorites as string[]));
-        // Auth status: if profile is non-null, user is logged in
-        if (data.profile) setUserId("authenticated");
       })
       .catch(() => {});
 
@@ -266,7 +262,7 @@ export default function HomePage({ initialData }: HomePageProps) {
           <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber block mb-1">
             {t("categories.label")}
           </span>
-          <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+          <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
             {t("categories.title")}
           </h2>
         </div>
@@ -360,7 +356,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   {t("featured.eyebrow")}
                 </span>
                 <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
                   {t("featured.title")}
                 </h2>
                 <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
@@ -427,7 +423,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   {t("lastMinute.eyebrow")}
                 </span>
                 <h2 className="font-body font-bold text-white"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
                   {t("lastMinute.title")}
                 </h2>
               </div>
@@ -473,7 +469,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   {t("trending.eyebrow")}
                 </span>
                 <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
                   {t("trending.title")}
                 </h2>
                 <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
@@ -506,7 +502,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   {t("nearby.eyebrow")}
                 </span>
                 <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
                   {t("nearby.title")}
                 </h2>
                 <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
@@ -554,7 +550,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   {t("map.eyebrow")}
                 </span>
                 <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
                   {t("map.title")}
                 </h2>
               </div>
@@ -678,7 +674,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 {t("newSalons.eyebrow")}
               </span>
               <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
                 {t("newSalons.title")}
               </h2>
               <p className="text-sm text-s-ink/50 mt-1 font-body">

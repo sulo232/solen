@@ -33,12 +33,14 @@ export default async function Page() {
     { data: popularData, error: pError },
     { data: lastMinuteData, error: lmError },
     { data: newSalonsData, error: nsError },
-    { data: sectionsData }
+    { data: sectionsData },
+    { data: categoryCountsData, error: ccError }
   ] = await Promise.all([
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).order("solen_score", { ascending: false }).limit(8),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).order("created_at", { ascending: false }).limit(6),
-    supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data }))
+    supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })),
+    supabase.from("salons").select("categories").eq("is_active", true)
   ]);
 
   if (pError || lmError || nsError) {
@@ -46,11 +48,22 @@ export default async function Page() {
     throw new Error("Database unavailable");
   }
 
+  if (ccError) console.error("SSR category counts query failed:", ccError.message);
+
+  // Build category counts from SSR data
+  const categoryCounts: Record<string, number> = {};
+  (categoryCountsData ?? []).forEach((row: { categories?: string[] }) => {
+    (row.categories ?? []).forEach((cat: string) => {
+      categoryCounts[cat] = (categoryCounts[cat] ?? 0) + 1;
+    });
+  });
+
   const initialData = {
     salons: (popularData as unknown as any[]) ?? [],
     lastMinuteSlots: (lastMinuteData as unknown as any[]) ?? [],
     newSalons: (newSalonsData as unknown as any[]) ?? [],
-    trendingSalons: (popularData as unknown as any[]) ?? [], // Reuse popular for trending on SSR if needed, or separate
+    trendingSalons: (popularData as unknown as any[]) ?? [],
+    categoryCounts,
     sections: (sectionsData?.value as Record<string, boolean>) ?? {
       trending: true, nearby: true, new_salons: true,
       rebook: true, reviews: true, last_minute: true, featured: true,

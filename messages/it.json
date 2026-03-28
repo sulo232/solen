@@ -386,7 +386,13 @@
       "language_label": "Lingua Preferita",
       "language_placeholder": "es. Tedesco, Inglese...",
       "notes_label": "Altre Note",
-      "notes_placeholder": "Informazioni aggiuntive..."
+      "notes_placeholder": "Informazioni aggiuntive...",
+      "label_optional": "(Facoltativo)",
+      "error_save": "Errore nel salvataggio delle preferenze",
+      "success_save": "Preferenze salvate",
+      "saving": "Salvataggio...",
+      "save": "Salva",
+      "skip": "Salta"
     },
     "packageRedeemBanner": {
       "remaining": "Ti rimangono {remaining} di {total} sessioni nel tuo pacchetto «{name}»",

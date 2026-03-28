@@ -386,7 +386,13 @@
       "language_label": "Langue Souhaitée",
       "language_placeholder": "ex: Allemand, Français...",
       "notes_label": "Autres Notes",
-      "notes_placeholder": "Informations complémentaires..."
+      "notes_placeholder": "Informations complémentaires...",
+      "label_optional": "(Facultatif)",
+      "error_save": "Erreur lors de l'enregistrement des préférences",
+      "success_save": "Préférences enregistrées",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "skip": "Passer"
     },
     "packageRedeemBanner": {
       "remaining": "Il vous reste {remaining} sur {total} séances dans votre forfait «{name}»",

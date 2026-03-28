@@ -408,7 +408,13 @@
       "language_label": "Preferred Language",
       "language_placeholder": "e.g. German, English...",
       "notes_label": "Other Notes",
-      "notes_placeholder": "Additional information..."
+      "notes_placeholder": "Additional information...",
+      "label_optional": "(Optional)",
+      "error_save": "Error saving preferences",
+      "success_save": "Preferences saved",
+      "saving": "Saving...",
+      "save": "Save",
+      "skip": "Skip"
     },
     "packageRedeemBanner": {
       "remaining": "You have {remaining} of {total} sessions left in your «{name}» package",

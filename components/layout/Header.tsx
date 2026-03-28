@@ -184,6 +184,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 <Link
                   key={key}
                   href={`/${locale}${href}`}
+                  aria-label={t(key as any)}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "group relative flex flex-col items-center justify-center transition-colors duration-200 rounded-full",
