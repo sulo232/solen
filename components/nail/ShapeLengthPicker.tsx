@@ -49,7 +49,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
               className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-[border-color,background-color,box-shadow] duration-150 ${
                 shape === v
                   ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 shadow-coral-glow"
-                  : "border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface hover:border-s-coral/20"
+                  : "border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/20"
               }`}
             >
               <svg viewBox="0 0 20 14" className={`w-8 h-6 ${shape === v ? "fill-s-coral/20 stroke-s-coral" : "fill-s-ink/5 stroke-s-ink/30 dark:fill-s-dm-text/5 dark:stroke-s-dm-text/30"}`} strokeWidth="1">

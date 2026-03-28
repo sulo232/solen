@@ -30,7 +30,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
     if (!design.photo_url || !salonId) return;
     setPublishingId(design.id);
     try {
-      await fetch("/api/nail-discovery/publish", {
+      const res = await fetch("/api/nail-discovery/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -40,6 +40,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
           material: design.material,
         }),
       });
+      if (!res.ok) throw new Error("publish failed");
     } finally {
       setPublishingId(null);
     }
@@ -65,10 +66,10 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
         {designs.map((d) => (
           <div key={d.id} className="relative pl-12">
             {/* Dot */}
-            <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-coral border-2 border-white dark:border-s-dm-surface" />
+            <div className="absolute left-3.5 top-2 w-3 h-3 rounded-full bg-s-coral border-2 border-[--raised] dark:border-s-dm-surface" />
 
             {/* Card */}
-            <div className="rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface p-3">
+            <div className="rounded-[16px] border border-s-ink/5 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface p-3">
               <div className="flex items-start gap-3">
                 {/* Design image */}
                 {d.photo_url && (
@@ -116,7 +117,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
 
               {/* Actions */}
               <div className="flex gap-2 mt-2 pt-2 border-t border-s-ink/5 dark:border-s-dm-text/10">
-                <button className="flex items-center gap-1 text-xs text-s-coral hover:underline">
+                <button className="flex items-center gap-1 text-xs text-s-coral hover:underline" aria-label={t("timeline_repeat")}>
                   <RefreshCw size={10} />
                   {t("timeline_repeat")}
                 </button>
@@ -124,6 +125,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
                   <button
                     onClick={() => handlePublish(d)}
                     disabled={publishingId === d.id}
+                    aria-label={publishingId === d.id ? t("timeline_publishing") : t("timeline_publish")}
                     className="flex items-center gap-1 text-xs text-s-ink/50 dark:text-s-dm-text/50 hover:brightness-[1.06] disabled:opacity-50 transition-colors"
                   >
                     <Share2 size={10} />
