@@ -22,19 +22,19 @@ export default function AllergyAlert({ allergies, chemicalSensitivities, patchTe
     : true;
 
   return (
-    <div className="flex gap-3 p-3 rounded-[10px] bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/40 mb-4">
-      <AlertTriangle size={15} className="text-red-500 shrink-0 mt-0.5" />
+    <div className="flex gap-3 p-3 rounded-[10px] bg-s-error/8 dark:bg-s-error/15 border border-s-error/20 dark:border-s-error/20 mb-4">
+      <AlertTriangle size={15} className="text-s-error shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-heading font-bold text-red-600 dark:text-red-400 mb-0.5">
+        <p className="text-xs font-heading font-bold text-s-error dark:text-s-error mb-0.5">
           {t("allergyAlertTitle")}
         </p>
         {allergies && (
-          <p className="text-[11px] text-red-500/80 dark:text-red-400/80">{allergies}</p>
+          <p className="text-[11px] text-s-error/70 dark:text-s-error/70">{allergies}</p>
         )}
         {chemicalSensitivities && chemicalSensitivities.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
             {chemicalSensitivities.map((s) => (
-              <span key={s} className="px-1.5 py-0.5 rounded-[4px] bg-red-100 dark:bg-red-900/30 text-[9px] font-heading font-bold text-red-600 dark:text-red-400">
+              <span key={s} className="px-1.5 py-0.5 rounded-[4px] bg-s-error/12 dark:bg-s-error/15 text-[9px] font-heading font-bold text-s-error dark:text-s-error">
                 {s}
               </span>
             ))}

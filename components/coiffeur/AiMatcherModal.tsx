@@ -2,41 +2,59 @@
 
 import { useState, useEffect } from "react";
 import { X, ChevronRight, Sparkles } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
-// ── Question data ──────────────────────────────────────────────────────────
-
-const STEPS = [
-  {
-    question: "Was ist dein Haartyp?",
-    options: ["Lockig", "Wellig", "Glatt", "Fein", "Kräftig", "Gefärbt"],
-  },
-  {
-    question: "Welchen Service suchst du?",
-    options: ["Schneiden", "Färben", "Behandlung", "Styling", "Extensions", "Beratung"],
-  },
-  {
-    question: "Wie wichtig ist dir…?",
-    options: ["Preis", "Nähe", "Bewertungen", "Verfügbarkeit", "Spezialisierung"],
-  },
-];
-
-// ── Props ──────────────────────────────────────────────────────────────────
+// ── Component ──────────────────────────────────────────────────────────────
 
 interface AiMatcherModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-// ── Component ──────────────────────────────────────────────────────────────
-
 export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
   const locale = useLocale();
+  const t = useTranslations("coiffeur.ai_matcher");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+
+  // ── Question data (built from translation keys) ────────────────────────
+  const STEPS = [
+    {
+      question: t("step1_question"),
+      options: [
+        { key: "option_curly", value: t("option_curly") },
+        { key: "option_wavy", value: t("option_wavy") },
+        { key: "option_straight", value: t("option_straight") },
+        { key: "option_fine", value: t("option_fine") },
+        { key: "option_thick", value: t("option_thick") },
+        { key: "option_colored", value: t("option_colored") },
+      ],
+    },
+    {
+      question: t("step2_question"),
+      options: [
+        { key: "option_cut", value: t("option_cut") },
+        { key: "option_color", value: t("option_color") },
+        { key: "option_treatment", value: t("option_treatment") },
+        { key: "option_styling", value: t("option_styling") },
+        { key: "option_extensions", value: t("option_extensions") },
+        { key: "option_consult", value: t("option_consult") },
+      ],
+    },
+    {
+      question: t("step3_question"),
+      options: [
+        { key: "option_price", value: t("option_price") },
+        { key: "option_proximity", value: t("option_proximity") },
+        { key: "option_ratings", value: t("option_ratings") },
+        { key: "option_availability", value: t("option_availability") },
+        { key: "option_specialty", value: t("option_specialty") },
+      ],
+    },
+  ];
 
   // Reset state when modal reopens
   useEffect(() => {
@@ -85,7 +103,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
       className="fixed inset-0 z-[500] flex items-end sm:items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-label="KI-Salon-Empfehlung"
+      aria-label={t("ai_label")}
     >
       {/* Backdrop */}
       <div
@@ -112,13 +130,13 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-s-coral" />
             <span className="font-heading font-bold text-s-ink dark:text-s-dm-text text-sm tracking-[0.1em] uppercase">
-              KI-Empfehlung
+              {t("ai_badge")}
             </span>
           </div>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors"
-            aria-label="Schließen"
+            aria-label={t("close")}
           >
             <X size={18} className="text-s-ink/50 dark:text-s-dm-text/50" />
           </button>
@@ -130,7 +148,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
             <>
               {/* Step indicator */}
               <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 font-body mb-3">
-                Schritt {step + 1} von {STEPS.length}
+                {t("step_label", { step: step + 1, total: STEPS.length })}
               </p>
 
               {/* Question */}
@@ -150,15 +168,16 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               >
                 {currentStep.options.map((opt) => (
                   <button
-                    key={opt}
-                    onClick={() => setSelected(opt === selected ? null : opt)}
+                    key={opt.key}
+                    onClick={() => setSelected(opt.value === selected ? null : opt.value)}
+                    aria-label={opt.value}
                     className={`px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,border-color,color,box-shadow] duration-150 ${
-                      selected === opt
+                      selected === opt.value
                         ? "bg-s-coral text-white border-s-coral shadow-warm-sm"
                         : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border-s-ink/10 dark:border-white/10 hover:border-s-coral"
                     }`}
                   >
-                    {opt}
+                    {opt.value}
                   </button>
                 ))}
               </div>
@@ -167,9 +186,10 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <button
                 onClick={handleNext}
                 disabled={!selected}
+                aria-label={step < STEPS.length - 1 ? t("next") : t("show_result")}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
-                {step < STEPS.length - 1 ? "Weiter" : "Empfehlung anzeigen"}
+                {step < STEPS.length - 1 ? t("next") : t("show_result")}
                 <ChevronRight size={16} />
               </button>
             </>
@@ -183,17 +203,17 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                 <Sparkles size={26} className="text-s-coral" />
               </div>
               <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-2">
-                Wir haben Salons für dich!
+                {t("result_heading")}
               </h2>
               <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mb-6">
-                Basierend auf deinen Antworten zeigen wir dir die besten Matches in Basel.
+                {t("result_desc")}
               </p>
               <Link
                 href={`/${locale}/coiffeur?q=${encodeURIComponent(searchQuery.trim())}`}
                 onClick={onClose}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
-                Salons entdecken <ChevronRight size={16} />
+                {t("result_cta")} <ChevronRight size={16} />
               </Link>
             </div>
           )}

@@ -27,6 +27,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
   const [loading, setLoading] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   // Form fields
   const [hairCondition, setHairCondition] = useState("");
@@ -40,8 +41,8 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
     if (!clientId) return;
     setLoading(true);
     fetch(`/api/dashboard/coiffeur/consultations?client_id=${clientId}`)
-      .then((r) => r.json())
-      .then((d) => setNotesList(d.data ?? []))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setNotesList(d?.data ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [clientId]);
@@ -54,6 +55,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
   const handleAdd = async () => {
     if (!clientId) return;
     setSaving(true);
+    setSaveError(false);
     try {
       const res = await fetch("/api/dashboard/coiffeur/consultations", {
         method: "POST",
@@ -69,12 +71,18 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
         }),
       });
       if (res.ok) {
-        const { data } = await res.json();
-        setNotesList((prev) => [data, ...prev]);
-        setShowAdd(false);
-        resetForm();
+        const json = await res.json();
+        if (json?.data) {
+          setNotesList((prev) => [json.data, ...prev]);
+          setShowAdd(false);
+          resetForm();
+        } else {
+          setSaveError(true);
+        }
+      } else {
+        setSaveError(true);
       }
-    } catch { /* ignore */ } finally {
+    } catch { setSaveError(true); } finally {
       setSaving(false);
     }
   };
@@ -134,8 +142,11 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={`${inputClass} resize-none`} aria-label={t("notes")} />
           </div>
 
+          {saveError && (
+            <p className="text-[11px] text-s-error" role="alert">{t("save_error")}</p>
+          )}
           <div className="flex gap-2">
-            <button onClick={() => { setShowAdd(false); resetForm(); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
+            <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={saving}

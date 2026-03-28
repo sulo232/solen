@@ -32,6 +32,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
   const [loading, setLoading] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -54,8 +55,8 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
     if (!clientId) return;
     setLoading(true);
     fetch(`/api/clients/${clientId}/formulas`)
-      .then((r) => r.json())
-      .then((d) => setFormulas(d.items ?? []))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setFormulas(d?.items ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [clientId]);
@@ -68,6 +69,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
   const handleAdd = async () => {
     if (!clientId || !mixFormula.trim()) return;
     setSaving(true);
+    setSaveError(false);
     try {
       const res = await fetch(`/api/clients/${clientId}/formulas`, {
         method: "POST",
@@ -85,12 +87,18 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
         }),
       });
       if (res.ok) {
-        const { data } = await res.json();
-        setFormulas((prev) => [data, ...prev]);
-        setShowAdd(false);
-        resetForm();
+        const json = await res.json();
+        if (json?.data) {
+          setFormulas((prev) => [json.data, ...prev]);
+          setShowAdd(false);
+          resetForm();
+        } else {
+          setSaveError(true);
+        }
+      } else {
+        setSaveError(true);
       }
-    } catch { /* ignore */ } finally {
+    } catch { setSaveError(true); } finally {
       setSaving(false);
     }
   };
@@ -216,8 +224,11 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={`${inputClass} resize-none`} aria-label={t("notes")} />
           </div>
 
+          {saveError && (
+            <p className="text-[11px] text-s-error" role="alert">{t("save_error")}</p>
+          )}
           <div className="flex gap-2">
-            <button onClick={() => { setShowAdd(false); resetForm(); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
+            <button onClick={() => { setShowAdd(false); resetForm(); setSaveError(false); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={!mixFormula.trim() || saving}
