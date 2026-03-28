@@ -40,7 +40,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
   };
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4"
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface p-5 space-y-4"
       style={{ boxShadow: "0 1px 2px rgba(26,18,9,.05)" }}>
       <div>
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">
@@ -104,7 +104,7 @@ export default function GuestBookingForm({ onSubmit, submitting }: GuestBookingF
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
+        className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 6px 20px rgba(232,98,74,.15)" }}
       >
         {t("submit")}

@@ -60,7 +60,7 @@ export default function CustomerPreferencesForm({
   };
 
   return (
-    <div className="bg-white rounded-[12px] shadow-warm-md border border-s-ink/[0.06] p-6">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/[0.06] p-6">
       {/* Header */}
       <div className="flex items-start gap-3 mb-5">
         <div
@@ -89,7 +89,7 @@ export default function CustomerPreferencesForm({
             value={allergies}
             onChange={(e) => setAllergies(e.target.value)}
             placeholder={t("allergies_placeholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
           />
         </div>
 
@@ -103,7 +103,7 @@ export default function CustomerPreferencesForm({
             value={skinType}
             onChange={(e) => setSkinType(e.target.value)}
             placeholder={t("skin_type_placeholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
           />
         </div>
 
@@ -140,7 +140,7 @@ export default function CustomerPreferencesForm({
             value={accessibilityNeeds}
             onChange={(e) => setAccessibilityNeeds(e.target.value)}
             placeholder={t("accessibility_placeholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
           />
         </div>
 
@@ -154,7 +154,7 @@ export default function CustomerPreferencesForm({
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             placeholder={t("language_placeholder")}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors"
           />
         </div>
 
@@ -168,7 +168,7 @@ export default function CustomerPreferencesForm({
             onChange={(e) => setNotes(e.target.value)}
             placeholder={t("notes_placeholder")}
             rows={3}
-            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-white text-sm font-body text-s-ink placeholder:text-s-ink/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors resize-none"
+            className="w-full px-4 py-3 rounded-input border border-s-ink/[0.08] bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-colors resize-none"
           />
         </div>
 

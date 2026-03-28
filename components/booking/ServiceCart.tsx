@@ -39,14 +39,14 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
 
   // Fetch addons per service
   useEffect(() => {
-    for (const svc of services) {
+    let cancelled = false;
+    const fetches = services.map(svc =>
       fetch(`/api/services/${svc.id}/addons`)
-        .then(r => r.json())
-        .then(d => {
-          if (d.items) setAddons(prev => ({ ...prev, [svc.id]: d.items }));
-        })
-        .catch(() => {});
-    }
+        .then(r => { if (!r.ok || cancelled) return; return r.json(); })
+        .then(d => { if (!cancelled && d?.items) setAddons(prev => ({ ...prev, [svc.id]: d.items })); })
+        .catch(() => {})
+    );
+    return () => { cancelled = true; };
   }, [services]);
 
   const toggleAddon = (id: string) => {
@@ -64,7 +64,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
   const totalDuration = services.reduce((s, svc) => s + svc.duration_minutes, 0) + activeAddons.reduce((s, a) => s + a.duration_minutes, 0);
 
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-white dark:bg-s-dm-surface p-5 space-y-4"
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface p-5 space-y-4"
       style={{ boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
       {/* P6 — Header eyebrow */}
       <div className="flex items-center justify-between mb-1">

@@ -2094,6 +2094,17 @@
     "coming_soon_title": "Coming soon",
     "coming_soon_message": "We're working on making this category available for you."
   },
+  "discoveryFilters": {
+    "filter_label": "Filter",
+    "open_filters": "Open filters",
+    "refine_search": "Refine search",
+    "category": "Category",
+    "gender": "Gender",
+    "reset": "Reset",
+    "apply": "Apply",
+    "close": "Close",
+    "all_styles": "All styles"
+  },
   "barber_dashboard": {
     "leaderboard_title": "Barber Leaderboard",
     "bookings": "Bookings",
@@ -2774,6 +2785,19 @@
   "lastMinuteCard": {
     "now": "Now",
     "in": "in"
+  },
+  "groupBooking": {
+    "title": "Group booking",
+    "close_label": "Close",
+    "event_type_label": "Event type",
+    "organizer_name_label": "Your name",
+    "name_placeholder": "Name",
+    "add_person": "Add person",
+    "remove_person": "Remove person",
+    "people_count": "{count} persons",
+    "book_group": "Book group",
+    "booking_failed": "Booking failed",
+    "error_generic": "Error"
   },
   "guestBookingForm": {
     "title": "Guest booking",

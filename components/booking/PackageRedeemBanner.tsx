@@ -11,7 +11,6 @@ interface PackageRedeemBannerProps {
   sessionsUsed: number;
   totalSessions: number;
   slotId: string;
-  serviceId: string;
   onRedeemed: () => void;
 }
 
@@ -21,7 +20,6 @@ export default function PackageRedeemBanner({
   sessionsUsed,
   totalSessions,
   slotId,
-  serviceId,
   onRedeemed,
 }: PackageRedeemBannerProps) {
   const t = useTranslations("booking.packageRedeemBanner") as any;
@@ -38,7 +36,7 @@ export default function PackageRedeemBanner({
       const res = await fetch("/api/packages/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ package_purchase_id: packageId, slot_id: slotId, service_id: serviceId }),
+        body: JSON.stringify({ purchase_id: packageId, booking_id: slotId }),
       });
       if (!res.ok) {
         const data = await res.json();

@@ -2071,6 +2071,17 @@
     "coming_soon_title": "Prossimamente",
     "coming_soon_message": "Stiamo lavorando per rendere questa categoria disponibile per te."
   },
+  "discoveryFilters": {
+    "filter_label": "Filtra",
+    "open_filters": "Apri filtri",
+    "refine_search": "Affina la ricerca",
+    "category": "Categoria",
+    "gender": "Genere",
+    "reset": "Reimposta",
+    "apply": "Applica",
+    "close": "Chiudi",
+    "all_styles": "Tutti gli stili"
+  },
   "barber_dashboard": {
     "leaderboard_title": "Classifica Barber",
     "bookings": "Prenotazioni",
@@ -2751,6 +2762,19 @@
   "lastMinuteCard": {
     "now": "Ora",
     "in": "tra"
+  },
+  "groupBooking": {
+    "title": "Prenotazione di gruppo",
+    "close_label": "Chiudi",
+    "event_type_label": "Tipo di evento",
+    "organizer_name_label": "Il tuo nome",
+    "name_placeholder": "Nome",
+    "add_person": "Aggiungi persona",
+    "remove_person": "Rimuovi persona",
+    "people_count": "{count} persone",
+    "book_group": "Prenota il gruppo",
+    "booking_failed": "Prenotazione fallita",
+    "error_generic": "Errore"
   },
   "guestBookingForm": {
     "title": "Prenotazione ospite",

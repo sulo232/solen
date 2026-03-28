@@ -28,7 +28,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
           className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
             selectedStaff === "any"
               ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
-              : "border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface hover:-translate-y-[4px] hover:border-s-coral/40 hover:shadow-warm-sm"
+              : "border-s-ink/[0.08] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] hover:border-s-coral/40"
           }`}
           style={{ minWidth: "90px" }}
         >
@@ -46,7 +46,7 @@ export default function StaffPicker({ staffList, selectedStaff, onSelect }: Staf
             className={`shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-[14px] border transition-[border-color,background-color,box-shadow,transform] duration-150 ${
               selectedStaff === s.id
                 ? "border-s-coral ring-2 ring-s-coral/30 bg-s-coral/[0.06]"
-                : "border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface hover:-translate-y-[4px] hover:border-s-coral/40 hover:shadow-warm-sm"
+                : "border-s-ink/[0.08] dark:border-white/[0.08] bg-[--raised] dark:bg-s-dm-surface hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] hover:border-s-coral/40"
             }`}
             style={{ minWidth: "90px" }}
           >
