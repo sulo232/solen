@@ -521,6 +521,14 @@
       "bold": "Bold",
       "edgy": "Edgy",
       "addMore": "Hinzufügen",
+      "close": "Schließen",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "saving": "Speichern...",
+      "more": "Mehr",
+      "addLook": "Hinzu",
+      "editAvatar": "Avatar bearbeiten",
+      "editProfile": "Profil bearbeiten",
       "tabs": {
         "looks": "Looks",
         "termine": "Termine",
@@ -2958,5 +2966,17 @@
     "tab_referrals": "Empfehlungen",
     "tab_promos": "Aktionen",
     "loading_salon": "Salon wird geladen..."
+  },
+  "paymentMethods": {
+    "title": "Zahlungsmethoden",
+    "add": "Hinzufügen",
+    "creditCard": "Kreditkarte",
+    "noCard": "Keine Karte gespeichert",
+    "addCard": "Karte hinzufügen",
+    "comingSoon": "Bald verfügbar",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "cardEndingIn": "Kreditkarte •••• {last4}",
+    "expires": "Läuft ab"
   }
 }

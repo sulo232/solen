@@ -145,7 +145,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-end sm:items-center justify-center z-modal p-4">
-        <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-warm-lg">
+        <div role="dialog" aria-modal="true" className="bg-[--raised] dark:bg-s-dm-surface rounded-[18px] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-warm-lg">
           {/* Header */}
           <div className="sticky top-0 bg-[--raised] dark:bg-s-dm-surface border-b border-s-ink/10 dark:border-white/10 px-6 py-4 flex items-center justify-between rounded-t-[18px]">
             <h2 className="font-heading text-[18px] font-bold text-s-ink dark:text-s-dm-text">
@@ -154,7 +154,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
             <button
               onClick={onClose}
               className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"
-              aria-label="Close"
+              aria-label={t("close")}
             >
               <X size={20} strokeWidth={2} className="text-s-ink/60 dark:text-s-dm-text/60" />
             </button>
@@ -254,17 +254,17 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
             <button
               onClick={onClose}
               className="flex-1 px-4 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-[14px] font-medium hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
-              aria-label="Cancel"
+              aria-label={t("cancel")}
             >
-              Abbrechen
+              {t("cancel")}
             </button>
             <button
               onClick={handleSave}
               disabled={isSaving}
               className="flex-1 px-4 py-3 rounded-pill bg-s-coral text-white text-[14px] font-medium hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-coral-glow"
-              aria-label="Save"
+              aria-label={t("save")}
             >
-              {isSaving ? 'Speichern...' : 'Speichern'}
+              {isSaving ? t("saving") : t("save")}
             </button>
           </div>
         </div>

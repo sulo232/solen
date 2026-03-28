@@ -123,12 +123,12 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
-            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2"
             style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
             {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
             Reset-Link senden
@@ -178,7 +178,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
-          className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          className="w-full px-4 py-3.5 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
         />
         <div className="relative">
           <input
@@ -187,7 +187,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
-            className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-white dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+            className="w-full px-4 py-3.5 pr-10 rounded-input border border-s-ink/[0.08] dark:border-white/10 bg-[--raised] dark:bg-s-dm-surface text-sm font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/30 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
           <button
             type="button"

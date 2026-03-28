@@ -488,6 +488,14 @@
       "bold": "Audacieux",
       "edgy": "Edgy",
       "addMore": "Ajouter",
+      "close": "Fermer",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "more": "Plus",
+      "addLook": "Ajouter",
+      "editAvatar": "Modifier l'avatar",
+      "editProfile": "Modifier le profil",
       "tabs": {
         "looks": "Looks",
         "termine": "Rendez-vous",
@@ -2924,5 +2932,17 @@
     "tab_referrals": "Parrainage",
     "tab_promos": "Promotions",
     "loading_salon": "Chargement du salon..."
+  },
+  "paymentMethods": {
+    "title": "Méthodes de paiement",
+    "add": "Ajouter",
+    "creditCard": "Carte de crédit",
+    "noCard": "Aucune carte enregistrée",
+    "addCard": "Ajouter une carte",
+    "comingSoon": "Bientôt",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "cardEndingIn": "Carte de crédit •••• {last4}",
+    "expires": "Expire le"
   }
 }

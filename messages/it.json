@@ -488,6 +488,14 @@
       "bold": "Audace",
       "edgy": "Tagliente",
       "addMore": "Aggiungi",
+      "close": "Chiudi",
+      "cancel": "Annulla",
+      "save": "Salva",
+      "saving": "Salvataggio...",
+      "more": "Di più",
+      "addLook": "Aggiungi",
+      "editAvatar": "Modifica avatar",
+      "editProfile": "Modifica profilo",
       "tabs": {
         "looks": "Looks",
         "termine": "Appuntamenti",
@@ -2924,5 +2932,17 @@
     "tab_referrals": "Referral",
     "tab_promos": "Promozioni",
     "loading_salon": "Caricamento salone..."
+  },
+  "paymentMethods": {
+    "title": "Metodi di pagamento",
+    "add": "Aggiungi",
+    "creditCard": "Carta di credito",
+    "noCard": "Nessuna carta salvata",
+    "addCard": "Aggiungi carta",
+    "comingSoon": "Presto",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "cardEndingIn": "Carta di credito •••• {last4}",
+    "expires": "Scadenza"
   }
 }

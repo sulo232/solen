@@ -70,11 +70,13 @@ export default function TosPrompt() {
   if (loading || !show) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-s-ink/40 dark:bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-s-ink/40 dark:bg-black/60 backdrop-blur-[6px] p-4">
       <motion.div
+        role="dialog"
+        aria-modal="true"
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="w-full max-w-md bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
+        className="w-full max-w-md bg-[--raised] dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg overflow-hidden flex flex-col"
       >
         <div className="p-6 text-center border-b border-s-ink/5 dark:border-white/5">
           <div className="w-12 h-12 rounded-full bg-s-coral/10 mx-auto flex items-center justify-center mb-4">
@@ -88,11 +90,11 @@ export default function TosPrompt() {
 
         <div className="p-6 bg-s-bg-sunken dark:bg-s-dm-bg">
           <div className="flex flex-col gap-3">
-            <a href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
+            <a href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
               <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("termsLink")}</span>
               <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
             </a>
-            <a href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-white dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
+            <a href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
               <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("privacyLink")}</span>
               <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
             </a>
@@ -103,7 +105,7 @@ export default function TosPrompt() {
           <button
             onClick={handleAccept}
             disabled={saving}
-            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-medium text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 flex items-center justify-center gap-2"
           >
             {saving ? <Spinner size="sm" invert /> : <Check size={18} />}
             {t("acceptButton")}

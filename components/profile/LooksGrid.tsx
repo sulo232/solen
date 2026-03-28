@@ -34,7 +34,7 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
         return (
           <div
             key={look.id}
-            className="aspect-square rounded-[10px] flex items-center justify-center shadow-warm-md hover:-translate-y-[2px] hover:shadow-warm-md transition-all cursor-pointer"
+            className="aspect-square rounded-[10px] flex items-center justify-center shadow-warm-md hover:-translate-y-[2px] hover:shadow-warm-md transition-[transform,box-shadow] duration-[250ms] cursor-pointer"
             style={{ background: styles.bg }}
           >
             {look.imageUrl ? (
@@ -53,12 +53,12 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
       {/* Add new look cell */}
       <button
         onClick={onAddLook}
-        className="aspect-square rounded-[10px] flex flex-col items-center justify-center border-2 border-dashed border-s-ink/20 dark:border-white/20 hover:border-s-coral dark:hover:border-s-coral transition-all"
+        className="aspect-square rounded-[10px] flex flex-col items-center justify-center border-2 border-dashed border-s-ink/20 dark:border-white/20 hover:border-s-coral dark:hover:border-s-coral transition-[border-color] duration-150"
         aria-label={t('addMore')}
       >
         <Plus size={28} strokeWidth={2} className="text-s-ink/40 dark:text-s-dm-text/40 mb-1" />
         <span className="text-[11px] font-body text-s-ink/50 dark:text-s-dm-text/50">
-          Hinzu
+          {t("addLook")}
         </span>
       </button>
     </div>

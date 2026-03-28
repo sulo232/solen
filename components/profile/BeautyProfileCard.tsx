@@ -52,7 +52,7 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
     const styles = ROW_STYLES[categoryKey];
     return (
       <button
-        className="inline-flex items-center gap-1 px-[11px] py-[5px] rounded-pill text-[12px] font-body border-2 border-dashed transition-all hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.05]"
+        className="inline-flex items-center gap-1 px-[11px] py-[5px] rounded-pill text-[12px] font-body border-2 border-dashed transition-colors duration-150 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.05]"
         style={{ borderColor: styles.dot, color: styles.dot }}
         onClick={onEdit}
         aria-label={t('addMore')}
@@ -97,7 +97,7 @@ export const BeautyProfileCard: React.FC<BeautyProfileCardProps> = ({ profile, o
         </h2>
         <button
           onClick={onEdit}
-          className="text-[13px] font-body text-s-coral hover:brightness-[1.1] transition-all"
+          className="text-[13px] font-body text-s-coral hover:brightness-[1.1] transition-[filter] duration-150"
           aria-label={t('edit')}
         >
           {t('edit')}

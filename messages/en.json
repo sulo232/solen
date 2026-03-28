@@ -510,6 +510,14 @@
       "bold": "Bold",
       "edgy": "Edgy",
       "addMore": "Add more",
+      "close": "Close",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "more": "More",
+      "addLook": "Add",
+      "editAvatar": "Edit avatar",
+      "editProfile": "Edit profile",
       "tabs": {
         "looks": "Looks",
         "termine": "Appointments",
@@ -2947,5 +2955,17 @@
     "tab_referrals": "Referrals",
     "tab_promos": "Promotions",
     "loading_salon": "Loading salon..."
+  },
+  "paymentMethods": {
+    "title": "Payment methods",
+    "add": "Add",
+    "creditCard": "Credit card",
+    "noCard": "No card saved",
+    "addCard": "Add card",
+    "comingSoon": "Coming soon",
+    "cancel": "Cancel",
+    "save": "Save",
+    "cardEndingIn": "Credit card •••• {last4}",
+    "expires": "Expires"
   }
 }
