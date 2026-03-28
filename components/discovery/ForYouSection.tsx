@@ -18,31 +18,34 @@ export default function ForYouSection() {
   const locale = useLocale();
 
   useEffect(() => {
+    let cancelled = false;
     const fetchForYou = async () => {
       try {
         // Fetch user's last 3 saved items
         const savesRes = await fetch("/api/discovery/saves?limit=3");
-        if (!savesRes.ok) { setLoading(false); return; }
+        if (!savesRes.ok || cancelled) { if (!cancelled) setLoading(false); return; }
         const savesData = await savesRes.json();
         const savedItems: DiscoveryItem[] = savesData.items ?? [];
 
-        if (savedItems.length === 0) { setLoading(false); return; }
+        if (savedItems.length === 0 || cancelled) { if (!cancelled) setLoading(false); return; }
 
         // For each saved item, fetch similar
         const results: SavedStyle[] = [];
         for (const item of savedItems) {
+          if (cancelled) break;
           const simRes = await fetch(`/api/discovery/similar?item_id=${item.id}&limit=4`);
-          if (!simRes.ok) continue;
+          if (!simRes.ok || cancelled) continue;
           const simData = await simRes.json();
           if ((simData.items ?? []).length > 0) {
             results.push({ item, similar: simData.items });
           }
         }
-        setSections(results);
+        if (!cancelled) setSections(results);
       } catch { /* silent */ }
-      finally { setLoading(false); }
+      finally { if (!cancelled) setLoading(false); }
     };
     fetchForYou();
+    return () => { cancelled = true; };
   }, []);
 
   if (!loading && sections.length === 0) return null;
@@ -77,7 +80,7 @@ export default function ForYouSection() {
               <div
                 key={sim.id}
                 onClick={() => router.push(`/${locale}/discover/${sim.id}`)}
-                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]"
+                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]"
               >
                 <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
                   {(sim.image_url || sim.tiktok_thumbnail_url) && (

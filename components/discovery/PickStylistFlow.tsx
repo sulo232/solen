@@ -33,18 +33,20 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
   const labels = LABELS[locale] ?? LABELS.de;
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       try {
         const res = await fetch(`/api/salons/${salonSlug}/staff`);
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
-          setStaff(data.staff ?? data.data ?? []);
+          if (!cancelled) setStaff(data.staff ?? data.data ?? []);
         }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     load();
+    return () => { cancelled = true; };
   }, [salonSlug]);
 
   if (loading) {
@@ -65,7 +67,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
         {/* "Anyone" option */}
         <button
           onClick={() => onSelect(null)}
-          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors text-left"
+          className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors duration-150 text-left"
         >
           <div className="w-10 h-10 rounded-full bg-s-ink/5 dark:bg-white/5 flex items-center justify-center text-s-ink/30 dark:text-s-dm-text/30">
             <Star size={16} />
@@ -79,7 +81,7 @@ export default function PickStylistFlow({ salonId, salonSlug, locale, onSelect }
           <div key={member.id}>
             <button
               onClick={() => setExpanded(expanded === member.id ? null : member.id)}
-              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors text-left"
+              className="w-full flex items-center gap-3 p-3 rounded-[16px] bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 hover:border-s-coral/30 transition-colors duration-150 text-left"
             >
               <div className="w-10 h-10 rounded-full bg-s-ink/5 dark:bg-white/5 overflow-hidden shrink-0">
                 {member.avatar_url ? (

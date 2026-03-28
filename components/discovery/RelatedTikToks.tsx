@@ -21,16 +21,18 @@ export default function RelatedTikToks({ itemId, isCurrentTikTok }: RelatedTikTo
   const locale = useLocale();
 
   useEffect(() => {
+    let cancelled = false;
     const fetchRelated = async () => {
       try {
         const res = await fetch(`/api/discovery/similar?item_id=${itemId}&media_type=tiktok&limit=3`);
-        if (!res.ok) return;
+        if (!res.ok || cancelled) return;
         const data = await res.json();
-        setItems(data.items ?? []);
+        if (!cancelled) setItems(data.items ?? []);
       } catch { /* silent */ }
-      finally { setLoading(false); }
+      finally { if (!cancelled) setLoading(false); }
     };
     fetchRelated();
+    return () => { cancelled = true; };
   }, [itemId]);
 
   if (!loading && items.length === 0) return null;

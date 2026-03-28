@@ -26,16 +26,18 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
   const locale = useLocale();
 
   useEffect(() => {
+    let cancelled = false;
     const fetchSimilar = async () => {
       try {
         const res = await fetch(`/api/discovery/similar?item_id=${itemId}&limit=6`);
-        if (!res.ok) return;
+        if (!res.ok || cancelled) return;
         const data = await res.json();
-        setItems(data.items ?? []);
+        if (!cancelled) setItems(data.items ?? []);
       } catch { /* silent */ }
-      finally { setLoading(false); }
+      finally { if (!cancelled) setLoading(false); }
     };
     fetchSimilar();
+    return () => { cancelled = true; };
   }, [itemId]);
 
   if (!loading && items.length === 0) return null;
@@ -49,7 +51,7 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
       <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-hide">
         {loading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
+            <div key={i} className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5">
               <div className="aspect-[3/4] bg-s-ink/5 dark:bg-white/5 shimmer" />
               <div className="p-2 space-y-1">
                 <div className="h-2.5 bg-s-ink/5 dark:bg-white/5 rounded-pill w-3/4 shimmer" />
@@ -61,7 +63,7 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
             <div
               key={item.id}
               onClick={() => router.push(`/${locale}/discover/${item.id}`)}
-              className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]"
+              className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 cursor-pointer hover:shadow-warm-lg hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]"
             >
               <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
                 {(item.image_url || item.tiktok_thumbnail_url) && (
