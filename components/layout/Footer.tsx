@@ -23,14 +23,11 @@ export default function Footer() {
   return (
     <footer className="bg-s-ink text-white">
       {/* ── Brand Banner ─────────────────────────────────────── */}
-      <div className="text-center py-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[240px] h-[240px] rounded-full pointer-events-none"
-          style={{ background: "rgba(232,98,74,.10)", filter: "blur(60px)" }} />
-        <h2 className="font-display relative z-10"
-          style={{ fontSize: "clamp(44px, 6vw, 80px)", letterSpacing: "0.02em", color: "rgba(245,238,228,.90)" }}>
-          SO<span style={{ color: "#E8624A" }}>.</span>LEN
+      <div className="text-center py-16 border-b border-white/[0.06]">
+        <h2 className="font-display text-7xl md:text-8xl tracking-wider text-white/90">
+          SO<span className="text-s-coral">.</span>LEN
         </h2>
-        <p className="font-body italic mt-2 text-sm relative z-10" style={{ color: "rgba(245,238,228,.50)" }}>
+        <p className="font-body italic mt-3 text-sm text-white/40">
           {t("tagline")}
         </p>
       </div>
@@ -45,12 +42,12 @@ export default function Footer() {
             <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("categories")}
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {CATEGORIES.map(({ key, label }) => (
                 <li key={key}>
                   <Link
                     href={`/${locale}/${key}`}
-                    className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                    className="block text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                   >
                     {label}
                   </Link>
@@ -64,12 +61,12 @@ export default function Footer() {
             <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("cities")}
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {CITY_SLUGS.map((slug) => (
                 <li key={slug}>
                   <Link
                     href={`/${locale}/${slug}`}
-                    className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                    className="block text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                   >
                     {getCityName(slug, locale)}
                   </Link>
@@ -83,7 +80,7 @@ export default function Footer() {
             <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("company")}
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {[
                 { label: t("impressum"), href: `/${locale}/impressum` },
                 { label: t("agb"),       href: `/${locale}/agb` },
@@ -93,7 +90,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                    className="block text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                   >
                     {label}
                   </Link>
@@ -110,11 +107,11 @@ export default function Footer() {
             <p className="text-xs text-white/40 font-body mb-3">
               {t("salonPitch")}
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               <li>
                 <Link
                   href={`/${locale}/partner`}
-                  className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                  className="block text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                 >
                   {t("becomePartner")}
                 </Link>
@@ -122,7 +119,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/onboarding/salon`}
-                  className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                  className="block text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                 >
                   {t("registerSalon")}
                 </Link>
@@ -130,7 +127,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={`/${locale}/dashboard`}
-                  className="block text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
+                  className="block text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150 leading-relaxed"
                 >
                   {t("dashboard")}
                 </Link>
@@ -143,13 +140,13 @@ export default function Footer() {
             <h3 className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-white/45 mb-5">
               {t("social")}
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               <li>
                 <a
                   href="https://instagram.com/solen.ch"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-xs font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150"
+                  className="flex items-center gap-2 text-[13px] font-heading font-medium text-white/50 hover:text-white/90 transition-colors duration-150"
                 >
                   <Instagram size={13} />
                   Instagram
@@ -161,7 +158,7 @@ export default function Footer() {
 
         {/* Language switcher — footer */}
         <div className="mt-8 mb-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/40 font-body">Sprache ändern</p>
+          <p className="text-xs text-white/40 font-body">{t("changeLanguage")}</p>
           <LanguageSwitcher locale={locale} variant="footer" />
         </div>
 
@@ -184,7 +181,7 @@ export default function Footer() {
               <div className="flex items-center justify-center sm:justify-end gap-1.5 mt-3">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF6F]" />
                 <p className="text-[9px] font-heading uppercase tracking-[.08em]" style={{ color: "rgba(76,175,111,.60)" }}>
-                  nDSG-konform · Schweizer Datenschutz
+                  {t("fadpCompliant")}
                 </p>
               </div>
             </div>

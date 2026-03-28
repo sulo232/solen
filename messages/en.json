@@ -246,7 +246,9 @@
     "becomePartner": "Become a Partner",
     "registerSalon": "Register Salon",
     "dashboard": "Dashboard",
-    "compliance": "Swiss data protection compliant"
+    "compliance": "Swiss data protection compliant",
+    "changeLanguage": "Change language",
+    "fadpCompliant": "FADP-compliant · Swiss data protection"
   },
   "cookie": {
     "title": "We use cookies",
@@ -2376,6 +2378,8 @@
     "apply": "Apply",
     "closeFilter": "Close filter",
     "moreFilters": "Open {count} more filters",
+    "lessFilters": "Fewer filters",
+    "moreFiltersToggle": "More filters",
     "more": "more",
     "removeFilter": "Remove filter {name}",
     "clearAll": "Clear all",

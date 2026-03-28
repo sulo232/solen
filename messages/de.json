@@ -246,7 +246,9 @@
     "becomePartner": "Partner werden",
     "registerSalon": "Salon registrieren",
     "dashboard": "Dashboard",
-    "compliance": "nDSG-konform · Daten in der Schweiz"
+    "compliance": "nDSG-konform · Daten in der Schweiz",
+    "changeLanguage": "Sprache ändern",
+    "fadpCompliant": "nDSG-konform · Schweizer Datenschutz"
   },
   "cookie": {
     "title": "Wir verwenden Cookies",
@@ -2387,6 +2389,8 @@
     "apply": "Anwenden",
     "closeFilter": "Filter schliessen",
     "moreFilters": "{count} weitere Filter öffnen",
+    "lessFilters": "Weniger Filter",
+    "moreFiltersToggle": "Mehr Filter",
     "more": "weitere",
     "removeFilter": "Filter {name} entfernen",
     "clearAll": "Alle entfernen",

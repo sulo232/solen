@@ -14,7 +14,7 @@ import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
-import BlobBackground from "@/components/ui/BlobBackground";
+// BlobBackground removed — V4 uses ambient-v4 CSS class
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
 import { type CitySlug, getCityName } from "@/lib/cities";
@@ -140,6 +140,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const [dirLoadingMore, setDirLoadingMore] = useState(false);
 
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   // Fetch favorites
   useEffect(() => {
@@ -281,14 +282,13 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   }, [currentPathname, routerNav, searchParams]);
 
   return (
-    <div className="min-h-screen bg-s-bg-base relative overflow-x-hidden">
-      <BlobBackground zone={2} />
+    <div className="min-h-screen bg-white dark:bg-s-dm-bg ambient-v5 relative overflow-x-hidden">
       {/* Hero — category gradient + Bebas Neue H1 */}
-      <div className="pt-20 pb-8 md:pt-24 md:pb-12 relative z-10 overflow-hidden">
+      <div className="pt-16 pb-6 md:pt-20 md:pb-8 relative z-10 overflow-hidden">
         {/* Category gradient overlay */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} pointer-events-none`} />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+        <div className="max-w-5xl mx-auto px-4 pt-8 pb-6 relative z-10">
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
             <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[.12em] flex-wrap">
@@ -309,9 +309,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             {cityName} · {categoryLabel}
           </span>
 
-          {/* Hero H1 — Bebas Neue at display size */}
-          <h1 className="font-display text-s-ink dark:text-s-dm-text"
-            style={{ fontSize: "clamp(32px, 8vw, 96px)", lineHeight: "0.90", letterSpacing: "0.01em" }}>
+          {/* Hero H1 — compact, responsive */}
+          <h1 className="font-display text-4xl md:text-6xl text-s-ink dark:text-s-dm-text"
+            style={{ lineHeight: "0.92", letterSpacing: "0.01em" }}>
             {categoryLabel.toUpperCase()} IN{" "}
             <span className="text-s-coral">{cityName.toUpperCase()}</span>
           </h1>
@@ -327,8 +327,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       </div>
 
       {/* Search + Filters */}
-      <div className="sticky top-[56px] sm:top-[60px] z-40 isolate">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 sm:py-3 bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/[0.06] dark:border-white/[0.06]">
+      <div className="sticky top-[56px] sm:top-[60px] z-40 glass-toolbar">
+        <div className="max-w-5xl mx-auto px-3 sm:px-6 py-2 sm:py-3">
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>
@@ -378,9 +378,29 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         </div>
       </div>
 
-      {/* Above grid slot (e.g. barbershop filter pills) */}
+      {/* Above grid slot (e.g. category-specific filters) — collapsible */}
       {aboveGrid && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">{aboveGrid}</div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4">
+          <button
+            onClick={() => setFiltersExpanded(!filtersExpanded)}
+            className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral-hover transition-colors mb-2"
+          >
+            {filtersExpanded ? t("lessFilters") : t("moreFiltersToggle")}
+          </button>
+          <AnimatePresence>
+            {filtersExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                className="overflow-hidden"
+              >
+                {aboveGrid}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
       {/* Mobile inline mini-map (always visible on mobile, hidden on desktop) */}
@@ -450,26 +470,36 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                     return aAvail - bAvail;
                   })
                 : salons
-              ).map((salon) => (
-                <SalonCard
+              ).map((salon, i) => (
+                <motion.div
                   key={salon.id}
-                  salon={salon}
-                  locale={locale}
-                  isFavorited={favoriteIds.has(salon.id)}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  {...(selectedDate
-                    ? {
-                        availability: {
-                          status: salon.available_on_date === undefined
-                            ? "unknown" as const
-                            : salon.available_on_date
-                              ? "available" as const
-                              : "unavailable" as const,
-                          nextDate: salon.next_available_date ?? undefined,
-                        },
-                      }
-                    : {})}
-                />
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.45,
+                    delay: Math.min(i * 0.05, 0.4),
+                    ease: [0.23, 1, 0.32, 1]
+                  }}
+                >
+                  <SalonCard
+                    salon={salon}
+                    locale={locale}
+                    isFavorited={favoriteIds.has(salon.id)}
+                    onFavoriteToggle={handleFavoriteToggle}
+                    {...(selectedDate
+                      ? {
+                          availability: {
+                            status: salon.available_on_date === undefined
+                              ? "unknown" as const
+                              : salon.available_on_date
+                                ? "available" as const
+                                : "unavailable" as const,
+                            nextDate: salon.next_available_date ?? undefined,
+                          },
+                        }
+                      : {})}
+                  />
+                </motion.div>
               ))}
               {!dirLoading && dirEntries.map((entry) => (
                 <DirectoryCard key={entry.id} entry={entry} />

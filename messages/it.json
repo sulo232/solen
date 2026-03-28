@@ -246,7 +246,9 @@
     "becomePartner": "Diventa partner",
     "registerSalon": "Registra salone",
     "dashboard": "Dashboard",
-    "compliance": "Conforme alla protezione dei dati svizzera"
+    "compliance": "Conforme alla protezione dei dati svizzera",
+    "changeLanguage": "Cambia lingua",
+    "fadpCompliant": "Conforme nLPD · Protezione dei dati svizzera"
   },
   "cookie": {
     "title": "Utilizziamo i cookie",
@@ -2353,6 +2355,8 @@
     "apply": "Applica",
     "closeFilter": "Chiudi filtro",
     "moreFilters": "Apri {count} altri filtri",
+    "lessFilters": "Meno filtri",
+    "moreFiltersToggle": "Altri filtri",
     "more": "altri",
     "removeFilter": "Rimuovi filtro {name}",
     "clearAll": "Rimuovi tutto",

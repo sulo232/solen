@@ -77,12 +77,12 @@ export default function FilterBar({
               onClick={() => handlePillClick(pill)}
               className={[
                 'flex items-center gap-1.5 px-4 py-2 rounded-pill text-sm font-heading whitespace-nowrap',
-                'shadow-warm-sm border border-s-ink/8',
+                'transition-all duration-200 active:scale-[0.96]',
                 motionClass,
                 hoverLift,
                 active
-                  ? 'bg-s-coral text-white border-s-coral shadow-coral-glow'
-                  : 'bg-[--raised] text-s-ink dark:text-s-dm-text hover:bg-s-coral-subtle hover:border-s-coral/30',
+                  ? 'bg-s-coral text-white border border-s-coral shadow-coral-glow'
+                  : 'bg-white/60 backdrop-blur-sm border border-s-ink/[0.06] text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-coral-subtle hover:border-s-coral/30',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}

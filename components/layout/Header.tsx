@@ -124,21 +124,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       <div className="flex items-center justify-center gap-3">
         {/* Main nav pill */}
         <div className={cn(
-          "flex items-center justify-between rounded-full transition-[background,box-shadow,padding,max-width] duration-300 ease-out border",
+          "flex items-center justify-between rounded-full transition-all duration-300 ease-out w-full",
           scrolled
-            ? "mt-2 max-w-3xl min-h-[56px] py-2 px-4 sm:px-6 dark:border-white/[0.06]"
-            : "mt-3 max-w-5xl min-h-[64px] py-3 px-5 sm:px-8 bg-s-bg-base/70 dark:bg-s-dm-bg/50 border-s-ink/[0.06] dark:border-white/5 shadow-warm-sm"
-        )}
-        style={scrolled ? {
-          background: "var(--glass-bg)",
-          backdropFilter: "blur(16px) saturate(1.3)",
-          WebkitBackdropFilter: "blur(16px) saturate(1.3)",
-          border: "1px solid var(--glass-border)",
-          boxShadow: "0 2px 6px rgba(26,18,9,.08), 0 8px 24px rgba(26,18,9,.06)"
-        } : {
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)"
-        }}>
+            ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost"
+            : "mt-3 max-w-5xl min-h-[60px] py-2.5 px-5 sm:px-8 bg-white/85 backdrop-blur-sm border border-s-ink/[0.05] shadow-elevation-1"
+        )}>
           {/* Logo + Sub-site icon */}
           <div className="flex items-center gap-2 shrink-0">
             <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
@@ -173,11 +163,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             )}
           </div>
 
-          {/* Desktop nav */}
-          <nav className={cn(
-            "hidden md:flex items-center transition-all duration-300",
-            scrolled ? "gap-1 opacity-100 translate-y-0" : "gap-3 opacity-0 -translate-y-2 pointer-events-none"
-          )} aria-label="Hauptnavigation">
+          {/* Desktop nav — V4: always visible */}
+          <nav className="hidden md:flex items-center gap-1.5 transition-all duration-300" aria-label="Hauptnavigation">
             {NAV_LINKS.map(({ key, href, Icon }) => {
               const isActive = pathname.includes(href);
               return (
@@ -190,11 +177,14 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                     "group relative flex flex-col items-center justify-center transition-colors duration-200 rounded-full",
                     scrolled ? "p-2" : "p-2.5",
                     isActive
-                      ? "text-white bg-s-ink dark:text-s-ink dark:bg-white shadow-md shadow-s-ink/10"
+                      ? "text-white bg-s-ink dark:text-s-ink dark:bg-white shadow-elevation-2"
                       : "text-s-ink/60 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/5"
                   )}
                 >
-                  <Icon width={20} height={20} className={cn("w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110", isActive ? "text-current" : "text-current")} />
+                  <Icon width={20} height={20} className="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-105" />
+                  {isActive && (
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-s-coral" />
+                  )}
                   {/* Tooltip */}
                   <span className="absolute top-[120%] left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-s-ink text-white dark:bg-white dark:text-s-ink text-[10px] font-heading font-medium tracking-wide uppercase px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap z-50">
                     {t(key as any)}
@@ -319,13 +309,13 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
-            className="md:hidden mt-2 rounded-[16px] p-4 dark:border-white/[0.06] overflow-hidden"
+            className="md:hidden mt-2 rounded-card p-4 overflow-hidden"
             style={{
-              background: "var(--glass-bg-strong)",
-              backdropFilter: "blur(20px) saturate(1.3)",
-              WebkitBackdropFilter: "blur(20px) saturate(1.3)",
-              border: "1px solid var(--glass-border-subtle)",
-              boxShadow: "0 4px 12px rgba(26,18,9,.10), 0 12px 32px rgba(26,18,9,.08)"
+              background: "rgba(255,255,255,0.97)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(26,18,9,0.06)",
+              boxShadow: "0 4px 16px rgba(26,18,9,.08), 0 12px 40px rgba(26,18,9,.06)"
             }}
           >
             <nav className="flex flex-col gap-2">

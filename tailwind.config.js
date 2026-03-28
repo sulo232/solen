@@ -41,15 +41,14 @@ module.exports = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        // ── Solen V3 Design System ──
-        card: "20px",      // Salon cards, glass stat cards, Last Minute card, category tiles, modals
-        panel: "16px",     // Inner panels within a card, review cards, section content blocks
+        // ── Solen V4 Design System ──
+        card: "16px",      // V4: Salon cards, listing cards, content blocks
+        "card-lg": "20px", // Hero cards, feature cards, modals
+        panel: "16px",     // Inner panels within a card, review cards
         search: "99px",    // Search bar outer container fully rounded
         pill: "9999px",    // availability pills, tags
-        btn:  "99px",      // CTA buttons, action buttons (V3 standard)
-        input: "12px",     // form inputs, dashboard cards (Zone 4)
-        // NOTE: rounded-button (8px) REMOVED — use rounded-btn (99px)
-        // NOTE: rounded-blob REMOVED — NEVER rule #6
+        btn:  "99px",      // CTA buttons, action buttons
+        input: "12px",     // form inputs, dashboard cards
       },
       boxShadow: {
         // ── Legacy warm aliases (renamed for V3 clarity) ──
@@ -70,6 +69,15 @@ module.exports = {
         "coral-glow-hover": "0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22)",
         "amber-glow":       "0 2px 4px rgba(212,135,10,.22), 0 4px 16px rgba(212,135,10,.14)",
         "pressed":          "0 1px 1px rgba(26,18,9,.12), inset 0 1px 2px rgba(26,18,9,.06)",
+        // ── V4 Elevation System (Airbnb-inspired) ──
+        "elevation-1":      "0 1px 2px rgba(26,18,9,.04)",
+        "elevation-2":      "0 2px 8px rgba(26,18,9,.06), 0 1px 2px rgba(26,18,9,.04)",
+        "elevation-3":      "0 8px 28px rgba(26,18,9,.1), 0 2px 6px rgba(26,18,9,.04)",
+        // ── V5 Layered Shadows ──
+        "v5-card":       "0 1px 2px rgba(26,18,9,.04), 0 4px 12px rgba(26,18,9,.03)",
+        "v5-card-hover": "0 4px 12px rgba(26,18,9,.06), 0 12px 32px rgba(26,18,9,.06)",
+        "v5-float":      "0 8px 32px rgba(26,18,9,.10), 0 2px 8px rgba(26,18,9,.04)",
+        "v5-glow-coral": "0 0 24px rgba(232,98,74,.12)",
       },
       zIndex: {
         55: '55',
@@ -97,9 +105,12 @@ module.exports = {
       animation: {
         "pulse-coral": "pulse-coral 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "count-up": "count-up 0.6s ease-out forwards",
-        "slide-in-up": "slide-in-up 0.4s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
+        "slide-in-up": "slide-in-up 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+        "fade-in": "fade-in 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
         "shimmer": "shimmer 1.5s ease-in-out infinite",
+        // V4 additions
+        "v4-reveal": "v4-reveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards",
+        "v4-scale-in": "v4-scale-in 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards",
       },
       keyframes: {
         "shimmer": {
@@ -117,6 +128,15 @@ module.exports = {
         "fade-in": {
           from: { opacity: "0" },
           to: { opacity: "1" },
+        },
+        // V4 new keyframes
+        "v4-reveal": {
+          from: { opacity: "0", transform: "translateY(16px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "v4-scale-in": {
+          from: { opacity: "0", transform: "scale(0.96)" },
+          to: { opacity: "1", transform: "scale(1)" },
         },
       },
     },
