@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { beautyIconMap } from '@/components/ui/beauty-icons';
@@ -22,6 +22,13 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
   const t = useTranslations('account.beauty') as any;
   const [profile, setProfile] = useState<BeautyProfile>(initialProfile);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

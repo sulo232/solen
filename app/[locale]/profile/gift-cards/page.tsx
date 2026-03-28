@@ -19,10 +19,12 @@ export default function MyGiftCardsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const loadCards = async () => {
       try {
         const supabase = createBrowserSupabaseClient();
         const { data: { session } } = await supabase.auth.getSession();
+        if (cancelled) return;
         if (!session?.user) {
           router.push(`/${locale}/auth/login`);
           return;
@@ -34,14 +36,15 @@ export default function MyGiftCardsPage() {
           .or(`purchaser_id.eq.${session.user.id},recipient_email.eq.${session.user.email}`)
           .order("created_at", { ascending: false });
 
-        if (data) setCards(data as any);
+        if (!cancelled && data) setCards(data as any);
       } catch (err) {
         console.error("Error loading gift cards:", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     loadCards();
+    return () => { cancelled = true; };
   }, [locale, router]);
 
   const copyCode = (code: string) => {

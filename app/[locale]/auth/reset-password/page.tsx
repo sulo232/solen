@@ -24,9 +24,11 @@ export default function ResetPasswordPage() {
 
   // Exchange the code from the URL for a session
   useEffect(() => {
+    let cancelled = false;
     const code = searchParams.get("code");
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (cancelled) return;
         if (error) {
           toast("Link ist ungültig oder abgelaufen. Bitte fordere einen neuen an.", "error");
         } else {
@@ -36,9 +38,10 @@ export default function ResetPasswordPage() {
     } else {
       // If no code, check if already authenticated (e.g. hash-based flow)
       supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) setSessionReady(true);
+        if (!cancelled && session) setSessionReady(true);
       });
     }
+    return () => { cancelled = true; };
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const passwordValid = password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);

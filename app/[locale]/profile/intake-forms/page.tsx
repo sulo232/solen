@@ -28,10 +28,12 @@ export default function MyIntakeFormsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     const loadForms = async () => {
       try {
         const supabase = createBrowserSupabaseClient();
         const { data: { session } } = await supabase.auth.getSession();
+        if (cancelled) return;
         if (!session?.user) {
           router.push(`/${locale}/auth/login`);
           return;
@@ -43,14 +45,15 @@ export default function MyIntakeFormsPage() {
           .eq("customer_id", session.user.id)
           .order("filled_at", { ascending: false });
 
-        if (data) setForms(data as any);
+        if (!cancelled && data) setForms(data as any);
       } catch (err) {
         console.error("Error loading forms:", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     loadForms();
+    return () => { cancelled = true; };
   }, [locale, router]);
 
   if (loading) {

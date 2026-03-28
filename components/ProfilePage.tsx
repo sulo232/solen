@@ -131,8 +131,9 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
 
   useEffect(() => {
     fetch("/api/referral")
-      .then((r) => r.json())
+      .then((r) => r.ok ? r.json() : null)
       .then((d) => {
+        if (!d) return;
         setCode(d.referral_code ?? null);
         setStats({ friends_invited: d.friends_invited ?? 0, total_earned: d.total_earned ?? 0 });
       })

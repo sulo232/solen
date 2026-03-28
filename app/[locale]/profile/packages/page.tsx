@@ -19,10 +19,12 @@ export default function MyPackagesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const loadPackages = async () => {
       try {
         const supabase = createBrowserSupabaseClient();
         const { data: { session } } = await supabase.auth.getSession();
+        if (cancelled) return;
         if (!session?.user) {
           router.push(`/${locale}/auth/login`);
           return;
@@ -34,14 +36,15 @@ export default function MyPackagesPage() {
           .eq("user_id", session.user.id)
           .order("purchased_at", { ascending: false });
 
-        if (data) setPurchases(data as any);
+        if (!cancelled && data) setPurchases(data as any);
       } catch (err) {
         console.error("Error loading packages:", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     loadPackages();
+    return () => { cancelled = true; };
   }, [locale, router]);
 
   if (loading) {
