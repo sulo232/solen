@@ -99,7 +99,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
               <div className="flex gap-1">
                 <button
                   onClick={() => toggleSave(entry.id, entry.is_saved)}
-                  className={`flex-1 py-1 rounded-[6px] text-[9px] font-heading font-bold transition-colors ${
+                  className={`flex-1 py-1 rounded-[6px] text-[9px] font-heading font-bold transition-colors duration-150 ${
                     entry.is_saved
                       ? "bg-s-coral text-white"
                       : "bg-white/20 text-white hover:bg-white/30"

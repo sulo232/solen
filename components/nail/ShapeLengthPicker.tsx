@@ -45,6 +45,7 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
             <button
               key={v}
               type="button"
+              aria-pressed={shape === v}
               onClick={() => onShapeChange(v)}
               className={`flex flex-col items-center gap-1 p-2 rounded-[12px] border transition-[border-color,background-color,box-shadow] duration-150 ${
                 shape === v
@@ -71,11 +72,12 @@ export default function ShapeLengthPicker({ shape, length, onShapeChange, onLeng
             <button
               key={v}
               type="button"
+              aria-pressed={length === v}
               onClick={() => onLengthChange(v)}
               className="flex flex-col items-center gap-1 flex-1"
             >
               <div
-                className={`w-full ${barHeight} rounded-t-sm transition-colors ${
+                className={`w-full ${barHeight} rounded-t-sm transition-colors duration-150 ${
                   length === v
                     ? "bg-s-coral"
                     : "bg-s-ink/10 dark:bg-s-dm-text/10 hover:bg-s-coral/20"

@@ -121,8 +121,8 @@ export default function AiArtGenerator() {
         <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60 mb-1.5 block">{t("shot_type")}</span>
         <div className="flex gap-2">
           {(["hero", "detail", "lifestyle"] as const).map((tType) => (
-            <button key={tType} onClick={() => setShotType(tType)}
-              className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors ${
+            <button key={tType} aria-pressed={shotType === tType} onClick={() => setShotType(tType)}
+              className={`px-3 py-1.5 rounded-pill text-xs font-medium transition-colors duration-150 ${
                 shotType === tType ? "bg-s-coral text-white" : "bg-s-ink/5 dark:bg-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60"
               }`}>
               {tType === "hero" ? t("shot_hero") : tType === "detail" ? t("shot_macro") : t("shot_lifestyle")}

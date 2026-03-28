@@ -47,14 +47,16 @@ export default function NailClientTab({ client, salonId }: NailClientTabProps) {
       </div>
 
       {/* Tab bar */}
-      <div className="relative flex gap-1 overflow-x-auto scrollbar-hide mb-4 border-b border-s-ink/5 dark:border-s-dm-text/10">
+      <div role="tablist" className="relative flex gap-1 overflow-x-auto scrollbar-hide mb-4 border-b border-s-ink/5 dark:border-s-dm-text/10">
         {TAB_KEYS.map((key) => {
           const Icon = TAB_ICONS[key];
           return (
             <button
               key={key}
+              role="tab"
+              aria-selected={activeTab === key}
               onClick={() => setActiveTab(key)}
-              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors min-h-12 ${
+              className={`relative flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 min-h-12 ${
                 activeTab === key
                   ? "text-s-coral font-medium"
                   : "text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text"

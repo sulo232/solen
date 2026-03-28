@@ -204,8 +204,9 @@ function FilterRow<T extends string>({
       {options.map((opt) => (
         <button
           key={opt.value}
+          aria-pressed={value === opt.value}
           onClick={() => onChange(opt.value)}
-          className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors ${
+          className={`shrink-0 text-xs px-3 py-1 rounded-pill border transition-colors duration-150 ${
             value === opt.value
               ? "bg-s-coral text-white border-s-coral"
               : "bg-[--raised] dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border-s-ink/10 dark:border-s-dm-text/10 hover:border-s-coral/30"

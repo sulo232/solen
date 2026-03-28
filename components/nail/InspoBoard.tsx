@@ -119,7 +119,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         <div className="flex items-center gap-2 px-4 py-2 overflow-x-auto border-b border-s-ink/5 dark:border-s-dm-text/10 scrollbar-hide">
           <button
             onClick={() => setActiveBoard(null)}
-            className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors ${
+            className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
               activeBoard === null
                 ? "bg-s-coral text-white border-s-coral"
                 : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60 hover:brightness-[1.06]"
@@ -131,7 +131,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
             <button
               key={b.id}
               onClick={() => setActiveBoard(b.id)}
-              className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors ${
+              className={`shrink-0 text-[11px] font-heading font-bold uppercase tracking-[.06em] px-3 py-1 rounded-pill border transition-colors duration-150 ${
                 activeBoard === b.id
                   ? "bg-s-coral text-white border-s-coral"
                   : "border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/60 dark:text-s-dm-text/60 hover:brightness-[1.06]"
