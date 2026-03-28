@@ -126,6 +126,16 @@
     },
     "search": {
       "placeholder": "Rechercher un salon à Bâle..."
+    },
+    "discover": {
+      "eyebrow": "Explorer",
+      "catalogCta": "Ouvrir le catalogue"
+    },
+    "map": {
+      "eyebrow": "Près de vous",
+      "title": "SALONS SUR LA CARTE",
+      "bookCta": "Réserver",
+      "openCta": "Ouvrir"
     }
   },
   "common": {

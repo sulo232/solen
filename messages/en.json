@@ -126,6 +126,16 @@
     },
     "search": {
       "placeholder": "Search salons in Basel..."
+    },
+    "discover": {
+      "eyebrow": "Explore",
+      "catalogCta": "Open catalogue"
+    },
+    "map": {
+      "eyebrow": "Near you",
+      "title": "SALONS ON THE MAP",
+      "bookCta": "Book",
+      "openCta": "Open"
     }
   },
   "common": {

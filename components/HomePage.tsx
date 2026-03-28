@@ -7,18 +7,20 @@ import { motion } from "framer-motion";
 import {
   Scissors,
   RefreshCw,
-  Search,
+  Lock,
+  Check,
+  RotateCcw,
+  CreditCard,
+  Shield,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
-import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import Footer from "@/components/layout/Footer";
 import SocialProofStrip from "@/components/ui/SocialProofStrip";
 // StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
 import LastMinuteCard from "@/components/LastMinuteCard";
 import BlobBackground from "@/components/ui/BlobBackground";
-import HeroVisualCard from "@/components/ui/HeroVisualCard";
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
@@ -88,7 +90,7 @@ export default function HomePage() {
   useCityDetection();
   
   const locale = useLocale();
-  const t = useTranslations("home");
+  const t = useTranslations("home") as any;
   const [salons, setSalons] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
@@ -251,64 +253,54 @@ export default function HomePage() {
     <div className="min-h-screen bg-transparent relative overflow-x-hidden">
       <BlobBackground zone={1} />
 
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden py-16 sm:py-24 min-h-[80vh] flex items-center">
-        {/* Mobile text legibility gradient overlay */}
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-s-bg-base/90 to-transparent pointer-events-none md:hidden" />
+      {/* ── Hero (compact) ──────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden pt-10 sm:pt-16 pb-6 sm:pb-10">
         <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-10 lg:gap-16 items-center">
-
-            {/* LEFT: editorial text stack */}
-            <motion.div variants={containerVariants} initial="hidden" animate="visible">
-              {!userName && (
-                <motion.span variants={fadeUp}
-                  className="font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber block mb-3">
-                  {t("hero.byline")}
-                </motion.span>
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center">
+            {/* Greeting / headline */}
+            <motion.h1 variants={fadeUp}
+              className="font-display uppercase text-s-ink dark:text-s-dm-text"
+              style={{ fontSize: "clamp(40px, 7vw, 80px)", letterSpacing: "0.01em", lineHeight: "0.9" }}>
+              {userName ? (
+                <>{t("hero.hello")} <span className="text-s-coral">{userName}</span></>
+              ) : (
+                <>BEAUTY<span className="text-s-coral">.</span> BUCHEN<span className="text-s-coral">.</span></>
               )}
-              <motion.h1 variants={fadeUp}
-                className="font-display uppercase text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(64px, 9vw, 130px)", letterSpacing: "0.01em", lineHeight: "0.87" }}>
-                {userName ? (
-                  <>{t("hero.hello")}{" "}<span className="text-s-coral">{userName}</span></>
-                ) : (
-                  <>BEAUTY<span className="text-s-coral">.</span><br />BUCHEN<span className="text-s-coral">.</span></>
-                )}
-              </motion.h1>
-              <motion.p variants={fadeUp}
-                className="mt-5 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.82] max-w-md"
-                style={{ fontSize: "17px" }}>
-                {userName && nextBooking
-                  ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
-                  : userName
-                    ? t("hero.welcomeBack")
-                    : t("hero.subtitle")}
-              </motion.p>
+            </motion.h1>
+            <motion.p variants={fadeUp}
+              className="mt-3 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.7] max-w-md mx-auto"
+              style={{ fontSize: "15px" }}>
+              {userName && nextBooking
+                ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
+                : userName
+                  ? t("hero.welcomeBack")
+                  : t("hero.subtitle")}
+            </motion.p>
+          </motion.div>
 
-              {/* Hero CTAs — two pill buttons */}
-              <motion.div variants={fadeUp} className="mt-8 flex gap-3 flex-wrap">
-                <Link href={`/${locale}/search`}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em] shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover hover:-translate-y-px active:translate-y-px active:shadow-pressed transition-all duration-150"
-                  aria-label={t("cta.findSalon")}>
-                  <Search size={15} aria-hidden="true" /> {t("cta.findSalon")}
-                </Link>
-                <Link href={`/${locale}/angebote`}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-pill border-[1.5px] border-s-ink/20 dark:border-white/20 text-s-ink dark:text-s-dm-text font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-ink hover:text-white hover:shadow-warm-md hover:-translate-y-px transition-all duration-150"
-                  aria-label={t("cta.lastMinute")}>
-                  {t("cta.lastMinute")} →
-                </Link>
-              </motion.div>
-            </motion.div>
-
-            {/* RIGHT: floating hero visual card (desktop only) */}
-            <HeroVisualCard />
+          {/* Search bar right under greeting */}
+          <div className="mt-6 max-w-4xl mx-auto">
+            <HomeSearchBar />
           </div>
-        </div>
-      </section>
 
-      {/* ── Search Bar ─────────────────────────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 -mt-6 relative z-20 mb-12">
-        <HomeSearchBar />
+          {/* Small text links (Angebote, Buchungen, Partner) */}
+          <motion.div variants={fadeUp} initial="hidden" animate="visible"
+            className="mt-4 flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
+            <Link href={`/${locale}/angebote`}
+              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors"
+              aria-label={t("cta.lastMinute")}>
+              {t("cta.lastMinute")} →
+            </Link>
+            <Link href={`/${locale}/account/bookings`}
+              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors">
+              {t("hero.bookings") ?? "Buchungen"} →
+            </Link>
+            <Link href={`/${locale}/partner`}
+              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors">
+              Partner →
+            </Link>
+          </motion.div>
+        </div>
       </section>
 
       {/* ── Social Proof ─────────────────────────────────────────────────── */}
@@ -327,7 +319,7 @@ export default function HomePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, Icon, color, bg }) => (
             <Link key={key} href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-              className="relative aspect-square rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:scale-[1.03] hover:-rotate-1 transition-all duration-[250ms] flex flex-col items-center justify-center p-4 border border-s-ink/10 dark:border-s-dm-border"
+              className="relative aspect-square rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms] flex flex-col items-center justify-center p-4 border border-s-ink/10 dark:border-s-dm-border"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
               <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors duration-300" style={{ backgroundColor: bg }}>
                 <Icon className={`w-6 h-6 ${color}`} />
@@ -347,14 +339,14 @@ export default function HomePage() {
       <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden bg-s-bg-base/80 dark:bg-s-dm-bg">
         <div className="max-w-5xl mx-auto px-4 mb-2 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">Entdecken</span>
+            <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
             <h2 className="font-display text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(32px, 5vw, 48px)", letterSpacing: "0.01em", lineHeight: "0.95" }}>
               FINDE DEINE<br /><span className="text-s-coral">INSPIRATION</span>
             </h2>
           </div>
           <Link href={`/${locale}/discover`}
-            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:bg-s-ink hover:text-white dark:hover:bg-white dark:hover:text-s-ink transition-all shrink-0">
-            Katalog öffnen →
+            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink/70 dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,color,border-color] shrink-0">
+            {t("discover.catalogCta")} →
           </Link>
         </div>
         
@@ -413,7 +405,7 @@ export default function HomePage() {
             </div>
             <Link
               href={`/${locale}/coiffeur`}
-              className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4"
+              className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-colors shrink-0 ml-4"
               aria-label={t("featured.viewAll")}>
               {t("featured.viewAll")} →
             </Link>
@@ -458,8 +450,7 @@ export default function HomePage() {
 
       {/* ── Deals ────────────────────────────────────────── */}
       {sections.last_minute && (
-      <section id="tour-last-minute" className="py-16 md:py-24 overflow-hidden relative"
-        style={{ background: "#4A1E3C" }}>
+      <section id="tour-last-minute" className="py-16 md:py-24 overflow-hidden relative bg-s-plum">
         {/* Deco blobs on dark */}
         <div className="absolute w-[360px] h-[360px] rounded-full right-[-80px] top-[-80px] pointer-events-none"
           style={{ background: "rgba(232,98,74,.14)" }} />
@@ -468,17 +459,18 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
             <div>
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2"
-                style={{ color: "#F2C144" }}>Angebote</span>
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2 text-s-yellow">
+                {t("lastMinute.eyebrow")}
+              </span>
               <h2 className="font-heading font-extrabold text-white"
                 style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                Aktuelle Angebote
+                {t("lastMinute.title")}
               </h2>
             </div>
             <Link href={`/${locale}/deals`}
-              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-all"
-              aria-label="Alle ansehen">
-              Alle ansehen →
+              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-colors"
+              aria-label={t("lastMinute.viewAll")}>
+              {t("lastMinute.viewAll")} →
             </Link>
           </div>
 
@@ -494,18 +486,17 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-card bg-white/[0.08] border border-white/[0.12] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
+              className="rounded-[12px] bg-white/[0.08] border border-white/[0.12] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
             >
               <div className="flex-1">
                 <p className="text-sm text-white/60 font-body">
                   {t("lastMinute.emptyMessage")}
                 </p>
               </div>
-              <Link href={`/${locale}/deals`} className="shrink-0">
-                <InteractiveHoverButton
-                  text="Angebote entdecken"
-                  className="w-44 border-white/20"
-                />
+              <Link href={`/${locale}/deals`}
+                className="shrink-0 px-5 py-2.5 rounded-pill border border-white/20 text-sm font-heading font-bold text-white/80 hover:text-white hover:border-white/40 transition-all"
+                aria-label={t("lastMinute.viewAll")}>
+                {t("lastMinute.viewAll")} →
               </Link>
             </motion.div>
           )}
@@ -562,7 +553,7 @@ export default function HomePage() {
                 </p>
               </div>
               {nearbySalons.length > 0 && (
-                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-all shrink-0 ml-4" aria-label={t("nearby.viewAll")}>
+                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-colors shrink-0 ml-4" aria-label={t("nearby.viewAll")}>
                   {t("nearby.viewAll")} →
                 </Link>
               )}
@@ -597,20 +588,14 @@ export default function HomePage() {
         return (
           <section className="py-16 md:py-24">
             <div className="max-w-5xl mx-auto px-4">
-              <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                    In deiner Nähe
-                  </span>
-                  <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                    style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                    SALONS AUF DER KARTE
-                  </h2>
-                </div>
-                <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-                  className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:bg-s-ink hover:text-white dark:hover:bg-white dark:hover:text-s-ink transition-all shrink-0">
-                  Karte öffnen →
-                </Link>
+              <div className="mb-6">
+                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                  {t("map.eyebrow")}
+                </span>
+                <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                  {t("map.title")}
+                </h2>
               </div>
 
               <div className="relative w-full h-[300px] md:h-[400px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm cursor-pointer"
@@ -641,11 +626,11 @@ export default function HomePage() {
                           e.stopPropagation();
                           setExpandedPin(isExpanded ? null : salon.id);
                         }}
-                        className={`relative flex items-center justify-center rounded-full transition-all duration-200 ease-out ${
+                        className={`relative flex items-center justify-center rounded-full transition-colors duration-200 ease-out ${
                           isPrimary
                             ? "w-10 h-10 bg-white shadow-warm-md border-2 border-s-coral text-s-coral"
                             : "w-8 h-8 bg-s-coral shadow-coral-glow text-white"
-                        } ${isExpanded ? "scale-[1.3] ring-4 ring-s-coral/20" : "hover:scale-[1.2]"}`}
+                        } ${isExpanded ? "scale-[1.3] ring-4 ring-s-coral/20" : "hover:brightness-[1.06]"}`}
                         aria-label={`Pin: ${salon.name}`}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width={isPrimary ? 20 : 16} height={isPrimary ? 20 : 16} viewBox="0 0 24 24" fill="currentColor" stroke="none">
@@ -656,7 +641,7 @@ export default function HomePage() {
 
                       {/* Expanded salon info popup */}
                       {isExpanded && (
-                        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 bg-white dark:bg-s-dm-raised rounded-card shadow-warm-lg border border-s-ink/10 dark:border-white/10 p-3 z-20 animate-fade-in">
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 bg-white dark:bg-s-dm-raised rounded-[12px] shadow-warm-lg border border-s-ink/10 dark:border-white/10 p-3 z-20 animate-fade-in">
                           <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text truncate">
                             {salon.name}
                           </p>
@@ -677,7 +662,7 @@ export default function HomePage() {
                             className="mt-2.5 block w-full text-center py-2 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            Buchen
+                            {t("map.bookCta")}
                           </Link>
                         </div>
                       )}
@@ -689,17 +674,17 @@ export default function HomePage() {
                 {mapSalons.length === 0 && (
                   <>
                     <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-coral text-s-coral hover:scale-[1.2] transition-transform">
+                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-coral text-s-coral">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
                       </div>
                     </div>
                     <div className="absolute top-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="w-8 h-8 rounded-full bg-s-coral shadow-coral-glow flex items-center justify-center text-white hover:scale-[1.2] transition-transform">
+                      <div className="w-8 h-8 rounded-full bg-s-coral shadow-coral-glow flex items-center justify-center text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
                       </div>
                     </div>
                     <div className="absolute bottom-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-ink text-s-ink hover:scale-[1.2] transition-transform">
+                      <div className="w-10 h-10 rounded-full bg-white shadow-warm-md flex items-center justify-center border-2 border-s-ink text-s-ink">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3" fill="white"></circle></svg>
                       </div>
                     </div>
@@ -709,9 +694,9 @@ export default function HomePage() {
                 {/* Overlay CTA */}
                 <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none">
                   <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-                    className="pointer-events-auto px-6 py-3 rounded-full bg-white/90 backdrop-blur-sm border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 hover:scale-105 transition-transform">
+                    className="pointer-events-auto px-6 py-3 rounded-full bg-white/90 border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Karte erkunden
+                    {t("map.openCta")}
                   </Link>
                 </div>
               </div>
@@ -764,9 +749,8 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto">
           <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.5 }}
-            className="rounded-[20px] overflow-hidden relative"
-            style={{ background: "linear-gradient(135deg,#D4870A 0%,#E8624A 55%,#4A1E3C 100%)",
-                     boxShadow: "0 24px 72px rgba(26,18,9,.18)" }}>
+            className="rounded-[20px] overflow-hidden relative bg-gradient-to-br from-s-amber via-s-coral to-s-plum"
+            style={{ boxShadow: "0 24px 72px rgba(26,18,9,.18)" }}>
             {/* Inner blobs */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full pointer-events-none"
               style={{ background: "rgba(255,255,255,.12)", filter: "blur(60px)", transform: "translate(50%,-50%)" }} />
@@ -782,7 +766,7 @@ export default function HomePage() {
               </div>
               <div className="shrink-0">
                 <Link href={`/${locale}/partner`}
-                  className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white text-s-ink font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base hover:-translate-y-px transition-all duration-150"
+                  className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white text-s-ink font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base hover:-translate-y-px transition-[background-color,transform] duration-150"
                   style={{ boxShadow: "0 2px 4px rgba(26,18,9,.12), 0 4px 16px rgba(26,18,9,.10)" }}
                   aria-label={t("partner.cta")}>
                   {t("partner.cta")} →
@@ -797,13 +781,13 @@ export default function HomePage() {
       {/* ── Trust Strip ──────────────────────────────────────────────────── */}
       <div className="px-4 pb-16">
         <div className="max-w-5xl mx-auto">
-          <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-[16px] bg-s-bg-base/50 dark:bg-s-dm-surface/50 backdrop-blur-[8px] border border-white/25 dark:border-white/10 shadow-warm-xs">
+          <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-[16px] bg-s-bg-base dark:bg-s-dm-surface border border-s-ink/[0.08] dark:border-s-dm-border shadow-warm-xs">
             {[
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, label: t("trust.securePayment") },
-              { icon: <span className="text-sm font-bold">CH</span>, label: t("trust.swissMade") },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>, label: t("trust.gdprCompliant") },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>, label: t("trust.freeCancellation") },
-              { icon: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>, label: t("trust.paymentMethods") },
+              { icon: <Lock size={14} aria-hidden="true" />, label: t("trust.securePayment") },
+              { icon: <Shield size={14} aria-hidden="true" />, label: t("trust.swissMade") },
+              { icon: <Check size={14} aria-hidden="true" />, label: t("trust.gdprCompliant") },
+              { icon: <RotateCcw size={14} aria-hidden="true" />, label: t("trust.freeCancellation") },
+              { icon: <CreditCard size={14} aria-hidden="true" />, label: t("trust.paymentMethods") },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-2 text-xs text-s-ink/70 dark:text-s-dm-text/70">
                 <div className="w-7 h-7 rounded-[8px] bg-white dark:bg-s-dm-surface border border-s-ink/08 dark:border-white/08 flex items-center justify-center text-s-ink/60 dark:text-s-dm-text/60 shadow-warm-xs shrink-0">{icon}</div>

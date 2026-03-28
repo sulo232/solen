@@ -129,7 +129,7 @@ export default function HomeSearchBar() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto" role="search" aria-label="Salon suchen">
-      <div className="rounded-search overflow-hidden"
+      <div className="rounded-card overflow-hidden"
         style={{ background: "var(--glass-bg-strong)", backdropFilter: "blur(24px) saturate(1.3)",
                  WebkitBackdropFilter: "blur(24px) saturate(1.3)",
                  border: "1px solid var(--glass-bg-card)",
@@ -184,7 +184,7 @@ export default function HomeSearchBar() {
             
             {/* Submit Button */}
             <button type="submit" disabled={detecting}
-              className="shrink-0 ml-2 px-6 py-3 md:py-4 rounded-btn bg-s-coral text-white font-heading font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-all disabled:opacity-60 min-w[100px] h-full h-[44px] md:h-[48px]">
+              className="shrink-0 ml-2 px-6 py-3 md:py-4 rounded-[10px] bg-s-coral text-white font-heading font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-all disabled:opacity-60 min-w-[100px] h-[44px] md:h-[48px]">
               {detecting ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} aria-hidden="true" />}
               <span className="hidden sm:inline">{detecting ? "Suche..." : "Suchen"}</span>
             </button>

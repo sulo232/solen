@@ -126,6 +126,16 @@
     },
     "search": {
       "placeholder": "Cerca un salone a Basilea..."
+    },
+    "discover": {
+      "eyebrow": "Esplora",
+      "catalogCta": "Apri il catalogo"
+    },
+    "map": {
+      "eyebrow": "Vicino a te",
+      "title": "SALONI SULLA MAPPA",
+      "bookCta": "Prenota",
+      "openCta": "Apri"
     }
   },
   "common": {
