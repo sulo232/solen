@@ -319,7 +319,7 @@ export default function HomePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, Icon, color, bg }) => (
             <Link key={key} href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-              className="relative aspect-square rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms] flex flex-col items-center justify-center p-4 border border-s-ink/10 dark:border-s-dm-border"
+              className="relative aspect-square rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms] flex flex-col items-center justify-center p-4 border border-s-ink/10 dark:border-s-dm-border"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
               <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors duration-300" style={{ backgroundColor: bg }}>
                 <Icon className={`w-6 h-6 ${color}`} />
@@ -345,7 +345,7 @@ export default function HomePage() {
             </h2>
           </div>
           <Link href={`/${locale}/discover`}
-            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink/70 dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-btn hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,color,border-color] shrink-0">
+            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink/70 dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-pill hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,color,border-color] duration-150 shrink-0">
             {t("discover.catalogCta")} →
           </Link>
         </div>
@@ -405,7 +405,7 @@ export default function HomePage() {
             </div>
             <Link
               href={`/${locale}/coiffeur`}
-              className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-colors shrink-0 ml-4"
+              className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0 ml-4"
               aria-label={t("featured.viewAll")}>
               {t("featured.viewAll")} →
             </Link>
@@ -468,7 +468,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link href={`/${locale}/deals`}
-              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-btn hover:border-white/40 hover:text-white transition-colors"
+              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-pill hover:border-white/40 hover:text-white transition-colors duration-150"
               aria-label={t("lastMinute.viewAll")}>
               {t("lastMinute.viewAll")} →
             </Link>
@@ -494,7 +494,7 @@ export default function HomePage() {
                 </p>
               </div>
               <Link href={`/${locale}/deals`}
-                className="shrink-0 px-5 py-2.5 rounded-pill border border-white/20 text-sm font-heading font-bold text-white/80 hover:text-white hover:border-white/40 transition-all"
+                className="shrink-0 px-5 py-2.5 rounded-pill border border-white/20 text-sm font-heading font-bold text-white/80 hover:text-white hover:border-white/40 transition-[border-color,color] duration-150"
                 aria-label={t("lastMinute.viewAll")}>
                 {t("lastMinute.viewAll")} →
               </Link>
@@ -553,7 +553,7 @@ export default function HomePage() {
                 </p>
               </div>
               {nearbySalons.length > 0 && (
-                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-btn hover:border-s-ink/20 hover:text-s-ink transition-colors shrink-0 ml-4" aria-label={t("nearby.viewAll")}>
+                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0 ml-4" aria-label={t("nearby.viewAll")}>
                   {t("nearby.viewAll")} →
                 </Link>
               )}
@@ -659,7 +659,7 @@ export default function HomePage() {
                           )}
                           <Link
                             href={`/${locale}/salon/${salon.slug}`}
-                            className="mt-2.5 block w-full text-center py-2 rounded-btn bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
+                            className="mt-2.5 block w-full text-center py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {t("map.bookCta")}
@@ -694,7 +694,7 @@ export default function HomePage() {
                 {/* Overlay CTA */}
                 <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none">
                   <Link href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-                    className="pointer-events-auto px-6 py-3 rounded-full bg-white/90 border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms]">
+                    className="pointer-events-auto px-6 py-3 rounded-full bg-white/90 border border-s-ink/10 shadow-warm-md text-s-ink font-heading font-bold text-xs tracking-wider uppercase flex items-center gap-2 hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     {t("map.openCta")}
                   </Link>

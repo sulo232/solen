@@ -58,7 +58,7 @@ export default function FilterBottomSheet({
 
   // Rule 31 — Zone-aware animation
   const animClass = (zone === 1 || zone === 2)
-    ? 'animate-in slide-in-from-bottom duration-300 ease-[cubic-bezier(0,.55,.45,1)]'
+    ? 'animate-in slide-in-from-bottom duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)]'
     : '';
 
   return (

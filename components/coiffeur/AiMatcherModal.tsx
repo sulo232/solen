@@ -102,7 +102,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
         {/* Progress bar */}
         <div className="h-1 bg-s-ink/5 dark:bg-white/5">
           <div
-            className="h-full bg-s-coral transition-all duration-500"
+            className="h-full bg-s-coral transition-[width] duration-[350ms] ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -152,7 +152,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                   <button
                     key={opt}
                     onClick={() => setSelected(opt === selected ? null : opt)}
-                    className={`px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,border-color,color,box-shadow] duration-150 ${
                       selected === opt
                         ? "bg-s-coral text-white border-s-coral shadow-warm-sm"
                         : "bg-s-bg-surface dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 border-s-ink/10 dark:border-white/10 hover:border-s-coral"
@@ -167,7 +167,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <button
                 onClick={handleNext}
                 disabled={!selected}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-all shadow-warm-sm"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
                 {step < STEPS.length - 1 ? "Weiter" : "Empfehlung anzeigen"}
                 <ChevronRight size={16} />
@@ -191,7 +191,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
               <Link
                 href={`/${locale}/coiffeur?q=${encodeURIComponent(searchQuery.trim())}`}
                 onClick={onClose}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-all shadow-warm-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
                 Salons entdecken <ChevronRight size={16} />
               </Link>
