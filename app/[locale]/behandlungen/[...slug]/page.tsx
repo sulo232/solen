@@ -191,7 +191,7 @@ export default function TreatmentResultsPage() {
                 <EmptyState
                   icon={Search}
                   title="Keine Salons gefunden"
-                  description="Versuche eine andere Kategorie oder ändere die Filter."
+                  message="Versuche eine andere Kategorie oder ändere die Filter."
                   illustration="no-results"
                 />
               </div>
@@ -202,8 +202,6 @@ export default function TreatmentResultsPage() {
                     key={salon.id}
                     salon={salon as any}
                     locale={locale}
-                    minPrice={salon.min_price ?? undefined}
-                    featuredServices={salon.matching_services?.slice(0, 2)}
                     onQuickPreview={() => handleQuickPreview(salon)}
                   />
                 ))}

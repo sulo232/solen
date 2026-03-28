@@ -365,6 +365,7 @@ export interface LastMinuteSlot extends AvailabilitySlot {
   service: Pick<Service, "id" | "name_de" | "name_en" | "category" | "duration_minutes">;
   staff_member: Pick<StaffMember, "id" | "name" | "avatar_url"> | null;
   discounted_price: number;
+  original_price?: number;
 }
 
 export interface SalonBadge {
@@ -416,11 +417,11 @@ export interface ApiSuccess<T = void> {
 
 export type DiscoveryCategory = "hair" | "beard" | "nails" | "makeup" | "waxing";
 export type DiscoveryContentType = "curated" | "tiktok" | "salon" | "user";
-export type DiscoveryMediaType = "photo" | "tiktok";
+export type DiscoveryMediaType = "photo" | "tiktok" | "video";
 export type DiscoveryStatus = "staging" | "published" | "flagged" | "archived";
 export type DiscoverySource = "unsplash" | "pexels" | "pixabay" | "admin" | "salon" | "user" | "tiktok";
 export type DiscoveryTexture = "straight" | "wavy" | "curly" | "coily" | "protective" | "bald";
-export type DiscoveryGender = "male" | "female" | "unisex";
+export type DiscoveryGender = "male" | "female" | "unisex" | "all";
 
 export interface DiscoveryItem {
   id: string;

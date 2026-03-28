@@ -49,13 +49,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { data: validated, error: validationError } = validateBody(reviewRespondSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
   const { salon_response } = validated;
+  const replyText = (salon_response ?? validated.reply_text ?? "").trim();
 
   const { error } = await admin
     .from("review_replies")
     .upsert({
       review_id: id,
       salon_id: review.salon_id,
-      reply_text: salon_response.trim(),
+      reply_text: replyText,
       is_public: true,
     }, { onConflict: "review_id" });
 
@@ -66,7 +67,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   fetch(`${baseUrl}/api/notify/review-replied`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ review_id: id, reply_text: salon_response.trim() })
+    body: JSON.stringify({ review_id: id, reply_text: replyText })
   }).catch(() => {});
 
   return NextResponse.json({ ok: true });

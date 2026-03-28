@@ -25,11 +25,15 @@ const RULE_TYPE_VALUES: DynamicPricingRuleType[] = [
 ];
 
 const RULE_TYPE_KEYS: Record<DynamicPricingRuleType, string> = {
+  peak: "pricing_peak",
   peak_hour: "pricing_peak",
   off_peak: "pricing_off_peak",
+  day_special: "pricing_day_special",
   weekend: "pricing_weekend",
+  demand: "pricing_demand",
   last_minute: "pricing_last_minute",
   loyalty: "pricing_loyalty",
+  segment: "pricing_segment",
 };
 
 export default function DynamicPricingConfig({ salonId }: { salonId: string }) {

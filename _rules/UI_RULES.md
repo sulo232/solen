@@ -748,3 +748,237 @@ grep -Ern "shadow-sm[^a]|shadow-md|shadow-lg[^a]|shadow-xl|shadow-2xl|rounded-lg
 1. **NEVER** hardcode conditional badges (like "Top Pick", "Neu", "Premium") into UI components.
 2. If a badge implies a shifting status, it MUST be conditionally rendered based on a database flag (e.g., `salons.is_top_pick`).
 
+---
+
+## 21. 🎬 INTERACTION CONSISTENCY PATTERNS (MANDATORY — EVERY COMPONENT)
+
+> **CONTEXT**: A 2026-03-28 audit found `transition-all` used 50+ times (animates layout, triggering expensive repaints), `duration-500` in UI components (too slow), 3 different cancel button visual patterns, modals missing Escape-key support, and tab switches using different easing curves. These rules establish a single source of truth for every micro-interaction across all subsites.
+
+---
+
+### §21-A. Transition Specificity (Emil Rule — NO `transition-all`)
+
+Always name the exact CSS properties being animated. `transition-all` causes the browser to watch every animatable property and recompute layout on each frame.
+
+| Context | ✅ Required class | ❌ Banned |
+|---|---|---|
+| Card hover (lift + shadow) | `transition-[transform,box-shadow] duration-[250ms] ease-[cubic-bezier(.4,0,.2,1)]` | `transition-all` |
+| Button press / hover | `transition-[transform,filter] duration-150` | `transition-all` |
+| Color/bg change (tabs, badges, links) | `transition-colors duration-150` | `transition-all duration-200` |
+| Opacity fade (tooltips, overlays) | `transition-opacity duration-150` | `transition-all` |
+| Border color change (inputs on focus) | `transition-[border-color,box-shadow] duration-150` | `transition-all` |
+| Background + text color (pill tabs) | `transition-[background-color,color] duration-150` | `transition-all` |
+
+---
+
+### §21-B. Timing Standards
+
+| Use case | Duration | Easing |
+|---|---|---|
+| Tab highlight, badge, link color | `150ms` | `ease-out` (default) |
+| Button press active feedback | `100ms` | `ease-out` |
+| Card hover lift | `250ms` | `cubic-bezier(.4,0,.2,1)` |
+| Dropdown / small popover | `150–200ms` | `cubic-bezier(0.23,1,0.32,1)` |
+| Modal/dialog enter | `350ms` via Framer spring `[0.34,1.2,0.64,1]` | spring |
+| Modal/dialog exit | `180ms` `[0.23,1,0.32,1]` — always faster than enter | fast ease-out |
+| Bottom sheet enter | `300ms` `cubic-bezier(0.32,0.72,0,1)` iOS-drawer curve | iOS-drawer |
+| Bottom sheet exit | `200ms` `[0.23,1,0.32,1]` | fast ease-out |
+| **BANNED in all UI** | `500ms+` | any |
+| **BANNED easing** | `ease-in` on any interactive element — feels sluggish | — |
+
+---
+
+### §21-C. Modal / Dialog Standard
+
+**Rule:** Every overlay MUST use `<GlassModal>` from `components/ui/GlassModal.tsx`. No raw custom modals.
+**Rule:** Every modal MUST support ALL THREE close methods: Escape key + backdrop click + X button.
+
+```tsx
+// ✅ Correct — always wrap with GlassModal
+<GlassModal open={isOpen} title={t("title")} onClose={onClose} maxWidth="max-w-md">
+  {/* content */}
+</GlassModal>
+
+// ❌ Banned — raw fixed overlay
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40">
+  <div className="bg-white rounded-[16px] p-6">...</div>
+</div>
+```
+
+**Backdrop class** (inside GlassModal — do not override): `bg-s-ink/40 backdrop-blur-[6px]`
+**Animation** (from `lib/animations.ts` `modalVariants`):
+- Enter: `{ opacity: 0, y: 32, scale: 0.97 }` → `{ opacity: 1, y: 0, scale: 1 }`, spring `[0.34,1.2,0.64,1]` 350ms
+- Exit: `{ opacity: 0, y: 24, scale: 0.97, filter: "blur(2px)" }`, ease-out `[0.23,1,0.32,1]` 180ms
+
+---
+
+### §21-D. Close (X) Button Standard
+
+The X close button sits in the top-right of every modal, drawer, and sheet.
+
+```tsx
+// ✅ Standard X close button
+<button
+  onClick={onClose}
+  aria-label={t("close")}
+  className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"
+>
+  <X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" />
+</button>
+```
+
+| Property | Value | Why |
+|---|---|---|
+| Padding | `p-2` (32×32 hit area) | Meets 44px touch target with surrounding space |
+| Shape | `rounded-pill` | Consistent with all interactive elements |
+| Hover bg | `hover:bg-s-ink/5` | Barely-there — doesn't compete with content |
+| Icon size | `18px` | Not too big, not invisible |
+| Icon color | `text-s-ink/40` | Recessive — user's eye goes to content, not the X |
+| Transition | `transition-colors duration-150` | Color only — no scale/translate on a close button |
+
+---
+
+### §21-E. Cancel Button Standard (text form)
+
+Used inside forms and confirmation dialogs alongside the primary action button.
+
+```tsx
+// ✅ Standard cancel button
+<button
+  type="button"
+  onClick={onClose}
+  className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
+>
+  {t("cancel")}
+</button>
+```
+
+**Pattern:** Ghost/outline → coral hint on hover. Same `active:scale-[0.98]` feedback as primary buttons.
+**NEVER:** different border-radius, different opacity level, or a plain text link `<button>` with no border for cancel.
+
+---
+
+### §21-F. Submit / Primary Action Button Standard
+
+```tsx
+// ✅ Standard submit button
+<button
+  type="submit"
+  disabled={loading}
+  className="flex-1 py-2.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-coral-glow"
+>
+  {loading && <Spinner size="sm" invert />}
+  {t("save")}
+</button>
+```
+
+**Rules:**
+- Transition: `transition-[transform,filter]` — NOT `transition-all`
+- Hover: `hover:brightness-[1.06]` — NOT `hover:bg-s-coral/90` or `hover:opacity-*`
+- Active: `active:scale-[0.98]` — always present, gives press feedback
+- Disabled: `disabled:opacity-50 disabled:cursor-not-allowed` — no other disabled pattern
+- Shadow: `shadow-coral-glow` — color-matched warm glow, not generic shadow
+
+---
+
+### §21-G. Tab Switching Standard
+
+Two distinct tab patterns. NEVER mix them.
+
+**Pattern A — Filter / State tabs** (changes data shown on same page: discover category, dashboard section):
+```tsx
+// Active
+"bg-s-coral text-white shadow-coral-glow"
+
+// Inactive
+"bg-s-ink/[0.05] dark:bg-white/[0.05] text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-white/[0.09]"
+
+// On the button element itself:
+"transition-[background-color,color,box-shadow] duration-150"
+// ❌ BANNED: transition-all, transition-colors (color only), any slide/translate animation
+```
+
+**Pattern B — Navigation tabs** (moves between page sections: profile tabs, booking steps):
+- Use `slideSwitch` Framer Motion variant from `lib/animations.ts`
+- Active underline: `absolute bottom-0 left-0 right-0 h-[2px] bg-s-coral` with `layoutId="tabUnderline"`
+- Tab button itself: `transition-colors duration-150` only
+
+---
+
+### §21-H. Form Input Focus Standard
+
+Every `<input>`, `<textarea>`, `<select>`:
+```tsx
+className="... border border-s-ink/[0.08] dark:border-white/[0.08] focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none transition-[border-color,box-shadow] duration-150"
+```
+
+**Rules:**
+- Transition: `transition-[border-color,box-shadow]` — NOT `transition-all`
+- Focus ring: `ring-s-coral/15` — NOT `ring-blue-500` or generic `ring-2`
+- No `outline` (replaced by focus ring)
+
+---
+
+### §21-I. Success / Error Feedback Banner Standard
+
+Inline banners that appear after save/submit actions. Auto-dismiss after 2000ms.
+
+```tsx
+// ✅ Success banner
+<div className="flex items-center gap-2 bg-s-success-bg text-s-success px-3 py-2 rounded-input text-sm font-medium animate-in fade-in slide-in-from-top-1 duration-[200ms]">
+  <Check size={14} />
+  {t("saved")}
+</div>
+
+// ✅ Error banner
+<div className="flex items-center gap-2 bg-s-error-bg text-s-error px-3 py-2 rounded-input text-sm font-medium animate-in fade-in slide-in-from-top-1 duration-[200ms]">
+  <AlertCircle size={14} />
+  {errorMessage}
+</div>
+```
+
+**Rules:**
+- Auto-dismiss: `setTimeout(clearStatus, 2000)` — not 3000ms or persistent
+- Radius: `rounded-input` (12px) — NOT `rounded-[12px]` inline
+- Entrance animation: `animate-in fade-in slide-in-from-top-1 duration-[200ms]` — subtle slide, not full bounce
+- NO toast library calls for inline form feedback — use this pattern instead
+
+---
+
+### §21-J. Inline Edit Toggle Standard
+
+Pattern for components with a "view" and "edit" state (e.g., salon about editor).
+
+```tsx
+// Pencil button to enter edit mode
+<button
+  onClick={() => setEditing(true)}
+  aria-label={t("edit")}
+  className="p-1.5 rounded-pill text-s-ink/30 hover:text-s-coral hover:bg-s-coral/5 transition-[color,background-color] duration-150"
+>
+  <Pencil size={14} />
+</button>
+
+// On save: show success banner, auto-clear after 2000ms
+// On cancel: instantly revert (no exit animation needed)
+```
+
+---
+
+### §21-K. Quick-Reference Audit Commands
+
+Run these before and after touching any component to verify compliance:
+
+```bash
+# Find remaining transition-all violations
+grep -rn "transition-all" components/ app/ --include="*.tsx" | grep -v "node_modules"
+
+# Find slow duration-500 in UI
+grep -rn "duration-500\|duration-700\|duration-1000" components/ app/ --include="*.tsx" | grep -v "blob\|float\|marquee\|confetti"
+
+# Find banned ease-in
+grep -rn '"ease-in"\\|ease-in[^-]' components/ app/ --include="*.tsx"
+
+# Expected for all: 0 results (except decorative animations like blobs, confetti)
+```
+

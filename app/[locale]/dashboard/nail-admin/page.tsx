@@ -1,20 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Sparkles, Tag, Layers, ShoppingBag, ImageIcon, Bell } from "lucide-react";
+import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import AiArtGenerator from "@/components/dashboard/nail/AiArtGenerator";
+import AiArtGallery from "@/components/dashboard/nail/AiArtGallery";
 import DynamicPricingConfig from "@/components/dashboard/nail/DynamicPricingConfig";
 import StationManager from "@/components/dashboard/nail/StationManager";
 import RetailManager from "@/components/dashboard/nail/RetailManager";
+import RetailSalesDashboard from "@/components/dashboard/nail/RetailSalesDashboard";
+import InfillReminderConfig from "@/components/dashboard/nail/InfillReminderConfig";
 
-const TABS = ["AI Art", "Preise", "Stationen", "Retail"] as const;
+type Tab = "ai" | "gallery" | "prices" | "stations" | "retail" | "sales" | "reminders";
+
+const TABS: { id: Tab; labelKey: string; icon: React.ElementType }[] = [
+  { id: "ai", labelKey: "tabAI", icon: Sparkles },
+  { id: "gallery", labelKey: "tabGallery", icon: ImageIcon },
+  { id: "prices", labelKey: "tabPrices", icon: Tag },
+  { id: "stations", labelKey: "tabStations", icon: Layers },
+  { id: "retail", labelKey: "tabRetail", icon: ShoppingBag },
+  { id: "sales", labelKey: "tabSales", icon: ShoppingBag },
+  { id: "reminders", labelKey: "tabReminders", icon: Bell },
+];
 
 export default function NailAdminPage() {
+  const t = useTranslations("nail_dashboard") as any;
   const [salonId, setSalonId] = useState<string | undefined>();
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState<Tab>("ai");
 
   useEffect(() => {
     fetch("/api/profile")
@@ -33,35 +49,40 @@ export default function NailAdminPage() {
       <div className="mb-6">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Nails</p>
         <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
-          Nagel Verwaltung
+          {t("pageTitle")}
         </h1>
       </div>
 
-      {/* Scrollable tab nav */}
-      <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-        {TABS.map((tab, idx) => (
+      {/* Tab nav */}
+      <div className="flex gap-1 overflow-x-auto pb-1 mb-6 scrollbar-hide">
+        {TABS.map(({ id, labelKey, icon: Icon }) => (
           <button
-            key={tab}
-            onClick={() => setActiveTab(idx)}
-            className={`shrink-0 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${
-              activeTab === idx
-                ? "bg-s-coral text-white"
-                : "bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-ink"
+            key={id}
+            onClick={() => setActiveTab(id)}
+            aria-label={t(labelKey)}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-all duration-150 shrink-0 ${
+              activeTab === id
+                ? "bg-s-coral text-white shadow-[0_2px_8px_rgba(232,98,74,0.3)]"
+                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09] dark:hover:bg-s-dm-text/[0.09]"
             }`}
           >
-            {tab}
+            <Icon size={12} />
+            {t(labelKey)}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px] animate-pulse" />
-      ) : (
+        <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px] animate-pulse" />
+      ) : !salonId ? null : (
         <div>
-          {activeTab === 0 && salonId && <AiArtGenerator salonId={salonId} />}
-          {activeTab === 1 && salonId && <DynamicPricingConfig salonId={salonId} />}
-          {activeTab === 2 && salonId && <StationManager salonId={salonId} />}
-          {activeTab === 3 && salonId && <RetailManager salonId={salonId} />}
+          {activeTab === "ai" && <AiArtGenerator />}
+          {activeTab === "gallery" && <AiArtGallery salonId={salonId} />}
+          {activeTab === "prices" && <DynamicPricingConfig salonId={salonId} />}
+          {activeTab === "stations" && <StationManager salonId={salonId} />}
+          {activeTab === "retail" && <RetailManager salonId={salonId} />}
+          {activeTab === "sales" && <RetailSalesDashboard salonId={salonId} />}
+          {activeTab === "reminders" && <InfillReminderConfig salonId={salonId} />}
         </div>
       )}
     </DashboardLayout>

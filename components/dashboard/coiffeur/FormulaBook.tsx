@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Beaker, Plus, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Beaker, Plus, Copy, Check, ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Spinner from "@/components/ui/Spinner";
+import FormulaPhotoUpload from "@/components/dashboard/coiffeur/FormulaPhotoUpload";
 
 interface Formula {
   id: string;
@@ -33,6 +34,10 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
   const [saving, setSaving] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [techniqueFilter, setTechniqueFilter] = useState<string | null>(null);
+
+  const TECHNIQUES = ["Root", "Highlights", "Balayage", "Ombré", "Toning", "Gloss", "Full colour"];
 
   // Form fields
   const [brand, setBrand] = useState("");
@@ -133,6 +138,36 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
         </button>
       </div>
 
+      {/* Search + technique filter */}
+      <div className="space-y-2 mb-3">
+        <div className="relative">
+          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t("formulaSearch")}
+            className="w-full pl-7 pr-3 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 bg-s-ink/[0.02] dark:bg-s-dm-text/[0.02] text-xs text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+            aria-label={t("formulaSearch")}
+          />
+        </div>
+        <div className="flex flex-wrap gap-1">
+          {TECHNIQUES.map((tech) => (
+            <button
+              key={tech}
+              onClick={() => setTechniqueFilter(techniqueFilter === tech ? null : tech)}
+              className={`px-2 py-0.5 text-[9px] font-heading font-semibold rounded-pill transition-all ${
+                techniqueFilter === tech
+                  ? "bg-s-amber text-white"
+                  : "bg-s-ink/[0.05] text-s-ink/50 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/50 hover:bg-s-ink/[0.09]"
+              }`}
+              aria-label={tech}
+            >
+              {tech}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {showAdd && (
         <div className="rounded-[12px] border border-s-coral/20 bg-s-coral/5 dark:bg-s-coral/[0.03] p-4 mb-4 space-y-3">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -201,7 +236,15 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
         <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-6">{t("no_formulas")}</p>
       ) : (
         <div className="space-y-2">
-          {formulas.map((f) => {
+          {formulas
+            .filter((f) => {
+              const q = search.toLowerCase();
+              const matchSearch = !q || [f.brand, f.shade_code, f.mix_formula, f.notes]
+                .some((v) => v?.toLowerCase().includes(q));
+              const matchTech = !techniqueFilter || f.notes?.includes(techniqueFilter) || f.mix_formula?.includes(techniqueFilter);
+              return matchSearch && matchTech;
+            })
+            .map((f) => {
             const isExpanded = expandedId === f.id;
             return (
               <div key={f.id} className="border-b border-s-ink/[0.04] dark:border-s-dm-text/[0.04] py-3 last:border-0">
@@ -269,6 +312,16 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
                       </div>
                     )}
                   </div>
+                )}
+                {isExpanded && (
+                  <FormulaPhotoUpload
+                    formulaId={f.id}
+                    beforeUrl={(f as any).before_photo_url}
+                    afterUrl={(f as any).after_photo_url}
+                    onSaved={(b, a) => setFormulas((prev) =>
+                      prev.map((x) => x.id === f.id ? { ...x, before_photo_url: b, after_photo_url: a } as any : x)
+                    )}
+                  />
                 )}
               </div>
             );

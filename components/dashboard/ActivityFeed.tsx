@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   Calendar, X, Star, MessageCircle, Users, ChevronDown
 } from "lucide-react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 interface FeedEvent {
   type: string;
@@ -73,7 +73,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
   const [events, setEvents] = useState<FeedEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const channelRef = useRef<ReturnType<typeof createClientComponentClient>["channel"] | null>(null);
+  const channelRef = useRef<ReturnType<typeof createBrowserSupabaseClient>["channel"] | null>(null);
 
   function loadFeed() {
     fetch(`/api/dashboard/activity-feed?salon_id=${salonId}&limit=20`)
@@ -87,7 +87,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
     loadFeed();
 
     // Realtime subscription — refresh feed on any relevant change
-    const supabase = createClientComponentClient();
+    const supabase = createBrowserSupabaseClient();
     const channel = supabase
       .channel(`activity-feed-${salonId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `salon_id=eq.${salonId}` }, () => loadFeed())
@@ -95,7 +95,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
       .on("postgres_changes", { event: "*", schema: "public", table: "conversations", filter: `salon_id=eq.${salonId}` }, () => loadFeed())
       .subscribe();
 
-    channelRef.current = channel as unknown as ReturnType<typeof createClientComponentClient>["channel"];
+    channelRef.current = channel as unknown as ReturnType<typeof createBrowserSupabaseClient>["channel"];
     return () => { supabase.removeChannel(channel); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salonId]);
@@ -143,7 +143,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text leading-snug">
                   {cfg.label}
-                  {event.type === "review_new" && event.meta?.rating && (
+                  {event.type === "review_new" && !!event.meta?.rating && (
                     <span className="ml-1 text-s-amber">{"★".repeat(Number(event.meta.rating))}</span>
                   )}
                 </p>

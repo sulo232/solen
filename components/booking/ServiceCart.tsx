@@ -93,7 +93,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
               className="flex items-center gap-3 py-2.5 px-3 rounded-[10px] cursor-pointer hover:bg-s-bg-base dark:hover:bg-s-dm-bg transition-colors"
               style={{ border: selectedAddons.has(addon.id) ? "1px solid rgba(232,98,74,.25)" : "1px solid rgba(26,18,9,.06)" }}>
               {/* Custom checkbox */}
-              <div className={`w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0 transition-all ${
+              <div className={`w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0 transition-[background-color,border-color] duration-150 ${
                 selectedAddons.has(addon.id)
                   ? "bg-s-coral border-s-coral"
                   : "border-s-ink/15 dark:border-white/15 bg-white dark:bg-s-dm-surface"
@@ -163,8 +163,8 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
       <button
         onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], giftCardCode, referralCode })}
         disabled={checking}
-        className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-        style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
+        className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
+        style={{ background: "#E8624A" }}
       >
         {checking && <Spinner size="sm" invert />}
         {t("payAndBook")}

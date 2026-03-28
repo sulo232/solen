@@ -102,7 +102,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
             <div key={i} className="flex items-center gap-2">
               <span className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 w-8 shrink-0">#{i + 1}</span>
               <div className="flex-1 h-3 rounded-pill bg-s-ink/10 dark:bg-s-dm-text/10 overflow-hidden flex">
-                <div className="h-full bg-s-coral transition-all duration-500" style={{ width: isBooked ? "100%" : "0%" }} />
+                <div className="h-full bg-s-coral transition-[width] duration-[350ms]" style={{ width: isBooked ? "100%" : "0%" }} />
                 {/* Buffer portion calculation skipped for simple boolean state */}
               </div>
               <span className="text-[9px] data-text text-s-ink/30 dark:text-s-dm-text/30 w-8 text-right">
@@ -123,7 +123,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         onClick={handleSave}
         disabled={saving}
         aria-label={t("save")}
-        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 min-h-12 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-coral-glow"
       >
         <Save size={14} />
         {saving ? t("saving") : t("save")}

@@ -67,7 +67,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
         <button
           onClick={handleSave}
           disabled={isSaving}
-          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-btn font-semibold text-sm hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+          className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading font-bold text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-coral-glow"
         >
           {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           Speichern
@@ -75,15 +75,15 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
       </div>
 
       {status === "success" && (
-        <div className="flex items-center gap-2 bg-s-green/10 text-s-green p-3 rounded-[12px] text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-2">
-          <CheckCircle2 size={16} />
+        <div className="flex items-center gap-2 bg-s-success-bg text-s-success px-3 py-2 rounded-input text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-1 duration-[200ms]">
+          <CheckCircle2 size={14} />
           Erfolgreich gespeichert.
         </div>
       )}
 
       {status === "error" && (
-        <div className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm font-medium mb-4">
-          <AlertCircle size={16} />
+        <div className="flex items-center gap-2 bg-s-error-bg text-s-error px-3 py-2 rounded-input text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-1 duration-[200ms]">
+          <AlertCircle size={14} />
           {errorMsg}
         </div>
       )}
@@ -117,7 +117,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
           placeholder="Willkommen in unserem Salon! Wir spezialisieren uns auf..."
-          className="w-full h-32 p-4 rounded-[12px] border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/20 focus:border-s-coral/40 resize-none transition-all placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
+          className="w-full h-32 p-4 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
         />
         <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30 dark:text-s-dm-text/30">
           {texts[activeLang]?.length || 0} / {maxLength}

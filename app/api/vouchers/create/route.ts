@@ -61,10 +61,10 @@ export async function POST(req: NextRequest) {
     // Step 2: Create Stripe Promotion Code
     const code = nanoid(10).toUpperCase(); // Generate unique 10-char code
     const promotionCode = await stripe.promotionCodes.create({
-      coupon: coupon.id,
+      coupon: coupon.id as string,
       code,
       max_redemptions: 1, // Single-use voucher
-    });
+    } as unknown as import("stripe").Stripe.PromotionCodeCreateParams);
 
     // Step 3: Save to Supabase promo_codes table
     const { data: promoCodeRecord, error: promoError } = await admin

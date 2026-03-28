@@ -1,22 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MapPin, Activity, Clock, Package, Bell, BarChart3 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import BodyZoneSelector from "@/components/dashboard/waxing/BodyZoneSelector";
 import RegrowthConfig from "@/components/dashboard/waxing/RegrowthConfig";
 import SensitivityLog from "@/components/dashboard/waxing/SensitivityLog";
 import ZonePackages from "@/components/dashboard/waxing/ZonePackages";
+import RebookAlerts from "@/components/dashboard/waxing/RebookAlerts";
+import ZoneRevenueChart from "@/components/dashboard/waxing/ZoneRevenueChart";
 import ClientSelectorDropdown from "@/components/shared/ClientSelectorDropdown";
 
-const TABS = ["Zonen", "Empfindlichkeit", "Nachwuchs", "Pakete"] as const;
+type Tab = "zones" | "sensitivity" | "regrowth" | "packages" | "reminders" | "revenue";
+
+const TABS: { id: Tab; labelKey: string; icon: React.ElementType }[] = [
+  { id: "zones", labelKey: "tabZones", icon: MapPin },
+  { id: "sensitivity", labelKey: "tabSensitivity", icon: Activity },
+  { id: "regrowth", labelKey: "tabRegrowth", icon: Clock },
+  { id: "packages", labelKey: "tabPackages", icon: Package },
+  { id: "reminders", labelKey: "tabReminders", icon: Bell },
+  { id: "revenue", labelKey: "tabRevenue", icon: BarChart3 },
+];
 
 export default function WaxingAdminPage() {
+  const t = useTranslations("dashboardWaxing") as any;
   const [salonId, setSalonId] = useState<string | undefined>();
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(0);
-  const [clientId, setClientId] = useState("");
+  const [activeTab, setActiveTab] = useState<Tab>("zones");
+  const [clientId, setClientId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
@@ -30,79 +44,79 @@ export default function WaxingAdminPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Tabs 0 (Zonen) and 1 (Empfindlichkeit) need a client
-  const needsClient = activeTab === 0 || activeTab === 1;
+  const needsClient = activeTab === "zones" || activeTab === "sensitivity";
 
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Waxing</p>
         <h1 className="font-heading font-bold text-[28px] text-s-ink dark:text-s-dm-text leading-none">
-          Waxing Studio
+          {t("pageTitle")}
         </h1>
       </div>
 
-      {/* Scrollable tab nav */}
-      <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-        {TABS.map((tab, idx) => (
+      {/* Tab nav */}
+      <div className="flex gap-1 overflow-x-auto pb-1 mb-5 scrollbar-hide">
+        {TABS.map(({ id, labelKey, icon: Icon }) => (
           <button
-            key={tab}
-            onClick={() => setActiveTab(idx)}
-            className={`shrink-0 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${
-              activeTab === idx
-                ? "bg-s-coral text-white"
-                : "bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-ink"
+            key={id}
+            onClick={() => setActiveTab(id)}
+            aria-label={t(labelKey)}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-pill text-xs font-heading font-semibold whitespace-nowrap transition-all duration-150 shrink-0 ${
+              activeTab === id
+                ? "bg-s-coral text-white shadow-[0_2px_8px_rgba(232,98,74,0.3)]"
+                : "bg-s-ink/[0.05] text-s-ink/55 dark:bg-s-dm-text/[0.05] dark:text-s-dm-text/55 hover:bg-s-ink/[0.09]"
             }`}
           >
-            {tab}
+            <Icon size={12} />
+            {t(labelKey)}
           </button>
         ))}
       </div>
 
-      {loading ? (
-        <div className="h-64 bg-s-bg-sunken dark:bg-s-dm-raised rounded-[12px] animate-pulse" />
-      ) : (
-        <div className="space-y-4">
-          {/* Client ID picker for client-specific tabs */}
-          {needsClient && (
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
-              <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
-                Kunden-ID
-              </p>
-              <ClientSelectorDropdown 
-                salonId={salonId}
-                value={clientId || null} 
-                onChange={(id) => setClientId(id || "")} 
-                placeholder="Kunde suchen oder auswählen..." 
-              />
-            </div>
-          )}
+      {/* Client selector */}
+      {needsClient && (
+        <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 mb-4">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/35 dark:text-s-dm-text/35 mb-2">
+            {t("selectClient")}
+          </p>
+          <ClientSelectorDropdown
+            salonId={salonId}
+            value={clientId}
+            onChange={setClientId}
+            placeholder={t("clientPlaceholder")}
+          />
+        </div>
+      )}
 
-          {/* Tab content */}
-          {activeTab === 0 && salonId && (
+      {loading ? (
+        <div className="h-64 bg-s-ink/[0.04] dark:bg-s-dm-text/[0.04] rounded-[12px] animate-pulse" />
+      ) : !salonId ? null : (
+        <div className="space-y-4">
+          {activeTab === "zones" && (
             clientId
               ? <BodyZoneSelector salonId={salonId} clientId={clientId} />
-              : <EmptyClientPrompt />
+              : <EmptyClientPrompt label={t("selectClientFirst")} />
           )}
-          {activeTab === 1 && salonId && (
+          {activeTab === "sensitivity" && (
             clientId
               ? <SensitivityLog salonId={salonId} clientId={clientId} />
-              : <EmptyClientPrompt />
+              : <EmptyClientPrompt label={t("selectClientFirst")} />
           )}
-          {activeTab === 2 && salonId && <RegrowthConfig salonId={salonId} />}
-          {activeTab === 3 && salonId && <ZonePackages salonId={salonId} />}
+          {activeTab === "regrowth" && <RegrowthConfig salonId={salonId} />}
+          {activeTab === "packages" && <ZonePackages salonId={salonId} />}
+          {activeTab === "reminders" && <RebookAlerts salonId={salonId} />}
+          {activeTab === "revenue" && <ZoneRevenueChart salonId={salonId} />}
         </div>
       )}
     </DashboardLayout>
   );
 }
 
-function EmptyClientPrompt() {
+function EmptyClientPrompt({ label }: { label: string }) {
   return (
-    <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
-      <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">
-        Kunden-ID eingeben, um weiterzufahren
-      </p>
+    <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
+      <p className="text-xs font-heading text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-[.10em]">{label}</p>
     </div>
   );
 }

@@ -2,24 +2,11 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 import { NextRequest } from "next/server";
 import { getClientIp } from "@/lib/ratelimit";
 
-type AuditAction =
-  | "salon.approve" | "salon.reject" | "salon.freeze" | "salon.warn"
-  | "user.ban" | "user.unban"
-  | "feature_flag.toggle"
-  | "account.delete"
-  | "account.delete_requested"
-  | "account.data_export"
-  | "account.tos_accepted"
-  | "review.delete"
-  | "payment.refund"
-  | "help_article.create" | "help_article.update" | "help_article.delete"
-  | "discovery.import" | "discovery.moderate" | "discovery.flag_remove"
-  | "discovery.archive" | "discovery.reject" | "discovery.publish";
 
 export async function logAuditEvent(
   req: NextRequest,
   actorId: string,
-  action: AuditAction,
+  action: string,
   targetType: string,
   targetId?: string,
   metadata?: Record<string, unknown>,

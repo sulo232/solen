@@ -601,7 +601,7 @@ export default function RegisterPage() {
   };
 
   const direction =
-    step === "done" || (step !== -1 && step !== "done" && prevStep !== "done" && Number(step) > Number(prevStep))
+    step === "done" || (step !== -1 && prevStep !== "done" && Number(step) > Number(prevStep))
       ? "right"
       : "left";
   const variants = slideSwitch(direction);

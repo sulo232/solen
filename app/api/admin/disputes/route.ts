@@ -64,13 +64,7 @@ export async function PATCH(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await logAuditEvent({
-    actor_id: user.id,
-    action: "resolve_dispute",
-    target_type: "price_dispute",
-    target_id: dispute_id,
-    metadata: { decision, admin_amount },
-  });
+  await logAuditEvent(req, user.id, "resolve_dispute", "price_dispute", dispute_id, { decision, admin_amount });
 
   return NextResponse.json({ message: "Dispute resolved" });
 }

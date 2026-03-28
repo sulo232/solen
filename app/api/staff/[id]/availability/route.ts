@@ -3,10 +3,10 @@ import { createAdminSupabaseClient } from "@/lib/supabase";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const staffId = params.id;
+    const { id: staffId } = await params;
     if (!staffId) {
       return NextResponse.json({ error: "Missing staff ID" }, { status: 400 });
     }

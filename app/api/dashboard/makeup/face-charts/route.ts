@@ -15,7 +15,7 @@ const postSchema = z.object({
   foundation_brand: z.string().max(200).optional(),
   foundation_shade: z.string().max(200).optional(),
   undertone: z.enum(["warm", "cool", "neutral"]).optional(),
-  zones: z.record(z.string()).optional(),
+  zones: z.record(z.string(), z.string()).optional(),
   eye_look: z.string().max(500).optional(),
   lip_colour: z.string().max(200).optional(),
   products_used: z.array(z.object({

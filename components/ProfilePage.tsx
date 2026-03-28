@@ -101,14 +101,14 @@ const CancelModal = memo(function CancelModal({
         <div className="flex gap-2">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-bg-surface dark:hover:bg-white/5 transition-colors"
+            className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleCancel}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
           >
             {loading && <Spinner size="sm" invert />}
             {t("confirmCancel")}
@@ -188,7 +188,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
           <button
             onClick={copyCode}
             aria-label={t("copyCode")}
-            className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-all ${
+            className={`w-10 h-10 rounded-[10px] border flex items-center justify-center transition-[border-color,background-color] duration-150 ${
               copied
                 ? "border-[#4CAF6F] bg-[#4CAF6F]/10"
                 : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40"
@@ -205,21 +205,21 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
       <div className="grid grid-cols-3 gap-2">
         <button
           onClick={shareWhatsApp}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] transition-all"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150"
           style={{ background: "#25D366" }}
         >
           <Share2 size={12} /> WhatsApp
         </button>
         <button
           onClick={shareSMS}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] transition-all"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.04em] text-white active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150"
           style={{ background: "#0A84FF" }}
         >
           <MessageCircle size={12} /> SMS
         </button>
         <button
           onClick={copyCode}
-          className="flex items-center justify-center gap-1.5 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral transition-colors"
+          className="flex items-center justify-center gap-1.5 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
         >
           <Copy size={12} /> {t("copyCode")}
         </button>
@@ -512,7 +512,7 @@ const SettingsSection = memo(function SettingsSection({
               type="button"
               onClick={() => setLang(l)}
               className={[
-                "px-4 py-2 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-colors",
+                "px-4 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,border-color,color] duration-150",
                 lang === l
                   ? "bg-s-coral text-white border-s-coral"
                   : "border-s-ink/10 text-s-ink/60 hover:border-s-coral hover:text-s-coral dark:border-white/10 dark:text-s-dm-text/60",

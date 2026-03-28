@@ -9,7 +9,7 @@ export const step1Schema = z.object({
   quartier: z.string().min(1, "Wähle ein Quartier"),
   address: z.string().min(5, "Adresse ist zu kurz"),
   phone: phoneSchema,
-  tos_accepted: z.literal(true, { errorMap: () => ({ message: "Bitte akzeptiere die AGB und Datenschutzerklärung" }) }),
+  tos_accepted: z.literal(true).refine((v) => v === true, { message: "Bitte akzeptiere die AGB und Datenschutzerklärung" }),
 });
 
 export const step2Schema = z.object({
@@ -32,7 +32,7 @@ export const step4Schema = z.object({
 });
 
 export const step5Schema = z.object({
-  template: z.record(z.union([
+  template: z.record(z.string(), z.union([
     z.object({
       start: z.string().min(1),
       end: z.string().min(1),

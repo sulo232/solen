@@ -56,14 +56,7 @@ export async function GET(req: NextRequest) {
     if (newCount >= 3) {
       try {
         const { logAuditEvent } = await import("@/lib/audit");
-        await logAuditEvent({
-          actor_id: "system",
-          action: "customer_excessive_no_shows",
-          target_type: "user",
-          target_id: booking.user_id,
-          metadata: { count: newCount },
-          ip_address: "127.0.0.1"
-        });
+        await logAuditEvent(req, "system", "customer_excessive_no_shows", "user", booking.user_id, { count: newCount });
       } catch { /* ignore */ }
     }
 

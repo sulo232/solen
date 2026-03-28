@@ -1,1 +1,1 @@
-export default function DiscoveryErrorState({ error, reset }: { error?: Error; reset?: () => void }) { return <div />; }
+export default function DiscoveryErrorState({ error, reset, onRetry }: { error?: Error; reset?: () => void; onRetry?: () => void }) { return <div />; }

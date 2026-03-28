@@ -22,6 +22,6 @@ export async function POST(req: NextRequest) {
   const { data: validated, error: validationError } = validateBody(notifyNewSalonSchema, body);
   if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
 
-  await sendEmail(adminNewSalonNotification(ADMIN_EMAIL, { salon: validated.salon_name, email: validated.email, address: validated.address }));
+  await sendEmail(adminNewSalonNotification(ADMIN_EMAIL, { salon: validated.salon_name, email: validated.email, address: validated.address ?? "" }));
   return NextResponse.json({ ok: true });
 }

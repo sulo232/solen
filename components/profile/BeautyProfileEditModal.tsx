@@ -120,7 +120,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
       <button
         onClick={onClick}
         className={`
-          inline-flex items-center gap-1.5 px-[11px] py-[6px] rounded-pill text-[13px] font-body transition-all
+          inline-flex items-center gap-1.5 px-[11px] py-[6px] rounded-pill text-[13px] font-body transition-[background-color,color,box-shadow,opacity] duration-150
           ${isActive ? 'ring-2 ring-s-coral' : 'hover:brightness-95'}
         `}
         style={{
@@ -153,7 +153,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-s-ink/5 dark:hover:bg-white/5 transition-all"
+              className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"
               aria-label="Close"
             >
               <X size={20} strokeWidth={2} className="text-s-ink/60 dark:text-s-dm-text/60" />
@@ -253,7 +253,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
           <div className="sticky bottom-0 bg-[--raised] dark:bg-s-dm-surface border-t border-s-ink/10 dark:border-white/10 px-6 py-4 flex gap-3 rounded-b-[18px]">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 rounded-pill border border-s-ink/20 dark:border-white/20 text-s-ink dark:text-s-dm-text text-[14px] font-medium hover:bg-s-ink/5 dark:hover:bg-white/5 transition-all"
+              className="flex-1 px-4 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 text-[14px] font-medium hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
               aria-label="Cancel"
             >
               Abbrechen
@@ -261,7 +261,7 @@ export const BeautyProfileEditModal: React.FC<BeautyProfileEditModalProps> = ({
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-1 px-4 py-3 rounded-pill bg-s-coral text-white text-[14px] font-medium hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex-1 px-4 py-3 rounded-pill bg-s-coral text-white text-[14px] font-medium hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-coral-glow"
               aria-label="Save"
             >
               {isSaving ? 'Speichern...' : 'Speichern'}

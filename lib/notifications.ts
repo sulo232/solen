@@ -41,7 +41,8 @@ export type NotificationType =
   | 'payout_failed'
   | 'ts_changes'
   | 'salon_strike'
-  | 'salon_rejected';
+  | 'salon_rejected'
+  | 'voucher_purchased';
 
 export async function sendNotification(params: {
   userId: string;

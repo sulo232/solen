@@ -106,14 +106,14 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
   };
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg" onClick={onClose}>
+    <div className="fixed inset-0 z-60 flex items-center justify-center bg-s-ink/40 backdrop-blur-[6px]" onClick={onClose}>
       <div className="bg-white dark:bg-s-dm-surface rounded-[16px] p-6 mx-4 max-w-lg w-full shadow-surface max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Users size={18} className="text-s-coral" />
             <h3 className="font-heading font-bold text-s-ink dark:text-s-dm-text">Gruppenbuchung</h3>
           </div>
-          <button onClick={onClose} aria-label="Schliessen" className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-btn hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors">
+          <button onClick={onClose} aria-label="Schliessen" className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150">
             <X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" />
           </button>
         </div>
@@ -177,7 +177,7 @@ export default function GroupBookingModal({ salonId, slotId, services, onClose, 
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
         >
           {submitting && <Spinner size="sm" invert />}
           Gruppe buchen

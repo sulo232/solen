@@ -47,12 +47,14 @@ export async function evaluateBookingPenalties(
     }
     
     // Log the cancellation action
-    await admin.from("audit_log").insert({
-      actor_id: booking.salon_id, // assuming salon owner
-      action: "salon_cancelled_booking",
-      target_type: "booking",
-      target_id: booking.salon_id,
-    }).catch(() => {});
+    try {
+      await admin.from("audit_log").insert({
+        actor_id: booking.salon_id, // assuming salon owner
+        action: "salon_cancelled_booking",
+        target_type: "booking",
+        target_id: booking.salon_id,
+      });
+    } catch { /* fire-and-forget */ }
   }
   
   if (status === "no_show") {

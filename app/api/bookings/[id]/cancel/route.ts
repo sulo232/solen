@@ -8,7 +8,7 @@ import { validateBody, bookingCancelSchema } from "@/lib/validations";
 import Stripe from "stripe";
 
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
 }
 
 export async function POST(
@@ -87,14 +87,7 @@ export async function POST(
     
     if (newCount >= 3) {
       const { logAuditEvent } = await import("@/lib/audit");
-      await logAuditEvent({
-        actor_id: user.id,
-        action: "salon_excessive_cancellations",
-        target_type: "salon",
-        target_id: booking.salon_id,
-        metadata: { count: newCount },
-        ip_address: request.headers.get("x-forwarded-for") ?? "unknown"
-      });
+      await logAuditEvent(request, user.id, "salon_excessive_cancellations", "salon", booking.salon_id, { count: newCount });
     }
   }
 

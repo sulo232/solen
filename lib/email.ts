@@ -5,7 +5,7 @@
 
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
-interface EmailPayload {
+export interface EmailPayload {
   to: string;
   subject: string;
   html: string;

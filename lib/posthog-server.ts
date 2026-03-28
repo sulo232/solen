@@ -70,7 +70,7 @@ export async function flushPostHog() {
   try {
     const client = getPostHogClient();
     if (client) {
-      await client.flushAsync();
+      await client.shutdown();
     }
   } catch (error) {
     // Ignore internal shutdown errors

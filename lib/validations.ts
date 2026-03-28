@@ -555,6 +555,8 @@ export const adminDisputeActionSchema = z.object({
   dispute_id: z.string().uuid(),
   action: z.enum(["resolve", "refund", "dismiss"]),
   admin_notes: z.string().max(1000).optional(),
+  decision: z.string().max(100).optional(),
+  admin_amount: z.number().int().min(0).optional(),
 });
 
 export const adminHelpArticleSchema = z.object({
@@ -598,6 +600,7 @@ export const flagReviewSchema = z.object({
 });
 
 export const adminDiscoveryItemSchema = z.object({
+  id: z.string().uuid().optional(),
   category: z.enum(["hair", "beard", "nails", "makeup", "waxing"]),
   gender: z.enum(["female", "male", "unisex"]).optional(),
   content_type: z.enum(["inspo", "tutorial", "before_after"]).optional(),
@@ -609,7 +612,8 @@ export const adminDiscoveryItemSchema = z.object({
 });
 
 export const adminDiscoveryModerationSchema = z.object({
-  item_id: z.string().uuid(),
+  id: z.string().uuid().optional(),
+  item_id: z.string().uuid().optional(),
   action: z.enum(["approve", "reject", "flag"]),
   reason: z.string().max(500).optional(),
 });
@@ -659,7 +663,7 @@ export const bookingCancelSchema = z.object({
 });
 
 export const bookingPatchSchema = z.object({
-  status: z.enum(["completed", "no_show"]),
+  status: z.enum(["completed", "no_show", "cancelled"]),
 });
 
 export const bookingInspoSchema = z.object({
@@ -787,12 +791,14 @@ export const clientNoteSchema = z.object({
 export const intakeFormSchema = z.object({
   template_type: z.enum(["hair", "nail", "waxing", "makeup", "spa"]),
   responses: z.record(z.string().max(50), z.unknown()),
+  template_key: z.string().max(100).optional(),
 });
 
 export const priceOfferSchema = z.object({
   amount_chf: z.number().int().min(100).max(100000),
   description: z.string().max(500).optional(),
   expires_hours: z.number().int().min(1).max(168).default(24),
+  photo_url: z.string().url().max(2048).optional(),
 });
 
 export const reviewReplySchema = z.object({
@@ -804,12 +810,14 @@ export const reviewReplySchema = z.object({
 export const reviewRespondSchema = z.object({
   reply_text: z.string().min(1).max(1000),
   is_public: z.boolean().default(true),
+  salon_response: z.string().min(1).max(1000).optional(),
 });
 
 export const intakeRecommendationSchema = z.object({
   template_type: z.enum(["hair", "nail", "waxing", "makeup", "spa"]),
   responses: z.record(z.string().max(50), z.unknown()),
   salon_id: z.string().uuid().optional(),
+  intake_id: z.string().uuid().optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -832,13 +840,18 @@ export const retailPurchaseSchema = z.object({
 
 export const translateSchema = z.object({
   text: z.string().min(1).max(5000),
-  target_locale: z.enum(["de", "en", "fr", "it"]),
+  target_locale: z.enum(["de", "en", "fr", "it"]).optional(),
   source_locale: z.enum(["de", "en", "fr", "it"]).optional(),
+  from: z.string().max(10).optional(),
+  to: z.union([z.string().max(10), z.array(z.string().max(10))]).optional(),
 });
 
 export const waitlistSchema = z.object({
   email: z.string().email(),
   salon_id: z.string().uuid().optional(),
+  service_id: z.string().uuid().optional(),
+  preferred_date: z.string().max(20).optional(),
+  preferred_time_range: z.string().max(50).optional(),
 });
 
 export const quartierSubscribeSchema = z.object({
@@ -853,6 +866,7 @@ export const directoryClaimSchema = z.object({
 export const trackViewSchema = z.object({
   salon_id: z.string().uuid(),
   type: z.enum(["page_view", "card_click", "booking_start"]).default("page_view"),
+  source: z.string().max(100).optional(),
 });
 
 export const barberReminderSendSchema = z.object({

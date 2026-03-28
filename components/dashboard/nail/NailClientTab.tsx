@@ -10,7 +10,7 @@ import NailPreferencesForm from "./NailPreferencesForm";
 import HandChart from "@/components/nail/HandChart";
 
 interface NailClientTabProps {
-  client: { id: string; display_name: string; avatar_url: string | null };
+  client?: { id: string; display_name: string; avatar_url: string | null };
   salonId?: string | null;
 }
 
@@ -29,6 +29,8 @@ const TAB_ICONS = {
 export default function NailClientTab({ client, salonId }: NailClientTabProps) {
   const t = useTranslations("nail_dashboard") as any;
   const [activeTab, setActiveTab] = useState<TabKey>("designs");
+
+  if (!client) return null;
 
   return (
     <div>

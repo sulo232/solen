@@ -42,14 +42,14 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
     duration_minutes: initial?.duration_minutes ?? 60,
     price: initial?.price ?? 80,
     description_de: initial?.description_de ?? "",
-    buffer_minutes: (initial as Record<string, number>)?.buffer_minutes ?? 0,
-    processing_minutes: (initial as Record<string, number>)?.processing_minutes ?? 0,
-    finishing_minutes: (initial as Record<string, number>)?.finishing_minutes ?? 0,
+    buffer_minutes: (initial as unknown as Record<string, number>)?.buffer_minutes ?? 0,
+    processing_minutes: (initial as unknown as Record<string, number>)?.processing_minutes ?? 0,
+    finishing_minutes: (initial as unknown as Record<string, number>)?.finishing_minutes ?? 0,
     suitable_for: initial?.suitable_for ?? [] as AgeGroup[],
     suitable_gender: initial?.suitable_gender ?? [] as Gender[],
     is_active: initial?.is_active ?? true,
   });
-  const [photos, setPhotos] = useState<string[]>((initial as Record<string, string[]>)?.photos ?? []);
+  const [photos, setPhotos] = useState<string[]>((initial as unknown as Record<string, string[]>)?.photos ?? []);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
 

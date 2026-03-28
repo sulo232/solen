@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Image as ImageIcon, X, Paperclip, DollarSign, Camera, Check, CheckCheck, Languages, MessageCircle } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";

@@ -76,5 +76,30 @@ export async function GET(request: Request) {
     abandonments: Array.from({ length: trendDays }, () => Math.floor(Math.random() * 30)),
   };
 
+  // Hourly breakdown for current day (8–20h)
+  const breakdown = url.searchParams.get("breakdown");
+  if (breakdown === "hourly") {
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+
+    const { data: todayBookings } = await supabase
+      .from("bookings")
+      .select("starts_at, is_walkin")
+      .eq("salon_id", salonId)
+      .eq("is_walkin", true)
+      .gte("starts_at", todayStart.toISOString())
+      .lte("starts_at", now.toISOString());
+
+    const hourlyMap = new Map<number, number>();
+    for (const b of todayBookings ?? []) {
+      const h = new Date(b.starts_at).getHours();
+      if (h >= 8 && h <= 20) {
+        hourlyMap.set(h, (hourlyMap.get(h) ?? 0) + 1);
+      }
+    }
+    const hourly = Array.from(hourlyMap.entries()).map(([hour, count]) => ({ hour, count }));
+    return NextResponse.json({ stats, trends, hourly });
+  }
+
   return NextResponse.json({ stats, trends });
 }

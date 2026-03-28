@@ -114,8 +114,8 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
             aria-label={t("cmdPlaceholder")}
             className="flex-1 text-sm text-s-ink dark:text-s-dm-text bg-transparent outline-none placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
           />
-          <button onClick={onClose} aria-label={t("close")} className="p-1 rounded-btn hover:bg-s-ink/[0.05] transition-colors">
-            <X size={13} className="text-s-ink/40" />
+          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150">
+            <X size={16} className="text-s-ink/40 dark:text-s-dm-text/40" />
           </button>
         </div>
 

@@ -43,6 +43,7 @@ interface SalonCardProps {
   };
   offPeakToday?: { discount_percent: number } | null;
   aiReason?: string; // AI-generated recommendation reason text (from /api/recommendations)
+  onQuickPreview?: () => void;
 }
 
 const CAT_COLOURS: Record<string, { bg: string; text: string }> = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { X, Phone, User, Send } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
@@ -21,6 +21,12 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
   const [staffId, setStaffId] = useState(staff[0]?.id ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
 
   const handleCreate = async () => {
     if (!customerName.trim() || !phone || !serviceId) return;
@@ -52,11 +58,11 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-lg px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="walkin-modal-title">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-s-ink/40 backdrop-blur-[6px] px-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="walkin-modal-title">
       <div className="bg-white/90 dark:bg-s-dm-surface/95 backdrop-blur-xl rounded-[16px] shadow-surface w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <h3 id="walkin-modal-title" className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">{t("title")}</h3>
-          <button onClick={onClose} aria-label="Close"><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
+          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors duration-150"><X size={18} className="text-s-ink/40 dark:text-s-dm-text/40" /></button>
         </div>
 
         <div className="space-y-3 mb-5">
@@ -94,9 +100,9 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
         {error && <p className="text-xs text-s-coral mb-3">{error}</p>}
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60">{t("cancel")}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!customerName.trim() || !serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center justify-center gap-2 transition-all">
+            className="flex-1 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] duration-150 shadow-coral-glow">
             {loading && <Spinner size="sm" invert />}<Send size={14} /> {t("create")}
           </button>
         </div>

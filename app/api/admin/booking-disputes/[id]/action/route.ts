@@ -111,7 +111,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     const Stripe = require("stripe");
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" });
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
     try {
       await stripe.refunds.create({
         payment_intent: booking.payment_intent_id,
@@ -146,13 +146,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }).select();
   }
 
-  await logAuditEvent({
-    actor_id: user.id,
-    action: `booking_dispute_${action}`,
-    target_type: "booking_dispute",
-    target_id: disputeId,
-    metadata: { action, resolution_note },
-  });
+  await logAuditEvent(req, user.id, `booking_dispute_${action}`, "booking_dispute", disputeId, { action, resolution_note });
 
   return NextResponse.json({ message: `Action '${action}' applied to dispute ${disputeId}` });
 }

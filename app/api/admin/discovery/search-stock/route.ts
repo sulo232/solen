@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = validateBody(discoverySearchStockSchema, body);
   if (error) return NextResponse.json({ message: error.message }, { status: 400 });
 
-  const result = await searchStockPhotos(data.query, data.category, data.source, data.page);
+  const result = await searchStockPhotos(data.query, data.category ?? "all", data.source, data.page);
 
   await logAuditEvent(req, user.id, "discovery.import", "stock_search", undefined, {
     query: data.query, category: data.category, results: result.total,

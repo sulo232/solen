@@ -10,3 +10,9 @@
 type Messages = typeof import('./messages/de.json');
 
 declare interface IntlMessages extends Messages {}
+
+// CSS side-effect imports
+declare module "driver.js/dist/driver.css" {
+  const content: never;
+  export default content;
+}

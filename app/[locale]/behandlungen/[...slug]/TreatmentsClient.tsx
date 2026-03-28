@@ -204,8 +204,6 @@ export default function TreatmentsClient() {
                     key={salon.id}
                     salon={salon as any}
                     locale={locale}
-                    minPrice={salon.min_price ?? undefined}
-                    featuredServices={salon.matching_services?.slice(0, 2)}
                     onQuickPreview={() => handleQuickPreview(salon)}
                   />
                 ))}

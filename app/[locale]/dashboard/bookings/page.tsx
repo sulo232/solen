@@ -19,12 +19,16 @@ interface EnrichedBooking extends Booking {
 }
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
+  pending: "Ausstehend",
+  pending_approval: "Warte auf Bestätigung",
   confirmed: "Bestätigt",
   cancelled: "Storniert",
   completed: "Abgeschlossen",
   no_show: "Nicht erschienen",
 };
 const STATUS_COLORS: Record<BookingStatus, string> = {
+  pending: "bg-s-amber/10 text-s-amber",
+  pending_approval: "bg-s-amber/10 text-s-amber",
   confirmed: "bg-s-coral/10 text-s-coral",
   cancelled: "bg-s-coral/10 text-s-coral",
   completed: "bg-s-bg-sunken text-s-ink/50",

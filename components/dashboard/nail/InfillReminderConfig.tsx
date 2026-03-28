@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, Clock, Users } from "lucide-react";
+import { Bell, Clock, Users, Send, CalendarCheck, Percent } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface NailService {
@@ -16,10 +16,17 @@ interface DueClient {
   days_overdue: number;
 }
 
+interface ReminderMetrics {
+  sent: number;
+  booked: number;
+  conversion_rate: number;
+}
+
 export default function InfillReminderConfig({ salonId }: { salonId: string }) {
   const t = useTranslations("nail_dashboard") as any;
   const [services, setServices] = useState<NailService[]>([]);
   const [dueClients, setDueClients] = useState<DueClient[]>([]);
+  const [metrics, setMetrics] = useState<ReminderMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +46,12 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       .then((d) => {
         if (d?.due_clients) setDueClients(d.due_clients);
       })
+      .catch(() => {});
+
+    // Fetch reminder metrics
+    fetch(`/api/dashboard/nail/reminder-metrics?salon_id=${salonId}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d) setMetrics({ sent: d.sent, booked: d.booked, conversion_rate: d.conversion_rate }); })
       .catch(() => {});
   }, [salonId]);
 
@@ -102,6 +115,32 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
             <Users size={14} />
             {t("infill_due_clients", { count: dueClients.length })}
           </p>
+        </div>
+      )}
+
+      {/* Reminder metrics (last 30 days) */}
+      {metrics && (
+        <div className="mt-2 pt-4 border-t border-s-ink/[0.05] dark:border-s-dm-text/[0.05]">
+          <p className="text-[9px] font-heading font-bold uppercase tracking-[.15em] text-s-ink/35 dark:text-s-dm-text/35 mb-3">
+            {t("infill_metrics_title")}
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03] dark:bg-s-dm-text/[0.03]">
+              <Send size={12} className="text-s-blue" />
+              <p className="text-base font-heading font-bold data-text text-s-ink dark:text-s-dm-text">{metrics.sent}</p>
+              <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 text-center">{t("infill_sent")}</p>
+            </div>
+            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03] dark:bg-s-dm-text/[0.03]">
+              <CalendarCheck size={12} className="text-s-sage" />
+              <p className="text-base font-heading font-bold data-text text-s-ink dark:text-s-dm-text">{metrics.booked}</p>
+              <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 text-center">{t("infill_booked")}</p>
+            </div>
+            <div className="flex flex-col items-center gap-1 p-2 rounded-[8px] bg-s-ink/[0.03] dark:bg-s-dm-text/[0.03]">
+              <Percent size={12} className="text-s-coral" />
+              <p className="text-base font-heading font-bold data-text text-s-ink dark:text-s-dm-text">{metrics.conversion_rate}%</p>
+              <p className="text-[9px] text-s-ink/40 dark:text-s-dm-text/40 text-center">{t("infill_conversion")}</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

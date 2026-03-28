@@ -191,7 +191,7 @@ export default function DashboardLayout({
       // Hide group entirely if no items match
       if (filtered.length === 0) return null;
       return { ...group, items: filtered };
-    }).filter(Boolean);
+    }).filter((g): g is NonNullable<typeof g> => g !== null);
   }, [salonCategories]);
 
   // Filter flat nav for mobile sidebar

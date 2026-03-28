@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Salon does not accept online payments" }, { status: 400 });
   }
 
-  const setupIntentParams: Parameters<typeof stripe.setupIntents.create>[0] = {
+  const setupIntentParams: import("stripe").Stripe.SetupIntentCreateParams = {
     customer: customer_id,
     payment_method_types: ["card"],
     metadata: {
@@ -55,11 +55,8 @@ export async function POST(req: NextRequest) {
       salon_id,
       customer_id: user.id,
     },
+    ...(salon.stripe_account_id ? { on_behalf_of: salon.stripe_account_id } : {}),
   };
-
-  if (salon.stripe_account_id) {
-    setupIntentParams.on_behalf_of = salon.stripe_account_id;
-  }
 
   const setupIntent = await stripe.setupIntents.create(setupIntentParams);
 
