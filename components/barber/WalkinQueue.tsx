@@ -119,7 +119,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   {entry.status === "waiting" && (
                     <button
                       onClick={() => updateStatus(entry.id, "in_chair")}
-                      className="p-1.5 rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+                      className="p-1.5 rounded-pill bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors duration-150"
                       title={t("next")}
                       aria-label={t("next")}
                     >
@@ -129,7 +129,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   {entry.status === "in_chair" && (
                     <button
                       onClick={() => updateStatus(entry.id, "completed")}
-                      className="p-1.5 rounded-btn bg-s-sage/20 text-s-sage hover:bg-s-sage/30 transition-colors"
+                      className="p-1.5 rounded-pill bg-s-sage/20 text-s-sage hover:bg-s-sage/30 transition-colors duration-150"
                       title={t("done")}
                       aria-label={t("done")}
                     >
@@ -138,7 +138,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   )}
                   <button
                     onClick={() => updateStatus(entry.id, "no_show")}
-                    className="p-1.5 rounded-btn bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
+                    className="p-1.5 rounded-pill bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
                     title={t("noShow")}
                     aria-label={t("noShow")}
                   >
@@ -146,7 +146,7 @@ export default function WalkinQueue({ salonId }: WalkinQueueProps) {
                   </button>
                   <button
                     onClick={() => updateStatus(entry.id, "cancelled")}
-                    className="p-1.5 rounded-btn bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors"
+                    className="p-1.5 rounded-pill bg-s-ink/5 text-s-ink/40 hover:bg-s-ink/10 dark:bg-s-dm-text/5 dark:text-s-dm-text/40 transition-colors duration-150"
                     title={t("cancel")}
                     aria-label={t("cancel")}
                   >

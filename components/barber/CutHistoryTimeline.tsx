@@ -58,7 +58,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
             <Skeleton className="w-8 h-8 rounded-full shrink-0" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-3 w-24" />
-              <Skeleton className="h-4 w-full rounded-btn" />
+              <Skeleton className="h-4 w-full rounded-input" />
               <div className="flex gap-1.5">
                 <Skeleton className="h-5 w-14 rounded-pill" />
                 <Skeleton className="h-5 w-14 rounded-pill" />
@@ -140,7 +140,7 @@ export default function CutHistoryTimeline({ clientId, salonId, onRepeat }: CutH
             {cut.photos.length > 0 && (
               <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-2">
                 {cut.photos.map((url, i) => (
-                  <div key={i} className="relative w-20 h-20 rounded-btn overflow-hidden shrink-0">
+                  <div key={i} className="relative w-20 h-20 rounded-input overflow-hidden shrink-0">
                     <Image src={url} alt={t("cut_photo_alt")} fill className="object-cover" sizes="80px" />
                   </div>
                 ))}

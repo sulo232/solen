@@ -96,7 +96,7 @@ export default function HandChart({ customerId }: HandChartProps) {
               <button
                 key={finger.id}
                 onClick={() => setSelectedFinger(finger.id)}
-                className={`relative w-[28px] rounded-full transition-all border ${
+                className={`relative w-[28px] rounded-full transition-[border-color,background-color,box-shadow,transform] duration-150 border ${
                   selectedFinger === finger.id 
                     ? "border-s-coral bg-s-coral shadow-coral-glow scale-105" 
                     : hasNote 
@@ -125,7 +125,7 @@ export default function HandChart({ customerId }: HandChartProps) {
               <button
                 key={finger.id}
                 onClick={() => setSelectedFinger(finger.id)}
-                className={`relative w-[28px] rounded-full transition-all border ${
+                className={`relative w-[28px] rounded-full transition-[border-color,background-color,box-shadow,transform] duration-150 border ${
                   selectedFinger === finger.id 
                     ? "border-s-coral bg-s-coral shadow-coral-glow scale-105" 
                     : hasNote 

@@ -136,7 +136,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
             <button
               onClick={handleCheckout}
               disabled={processing}
-              className="w-full min-h-12 flex items-center justify-center gap-2 px-4 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50"
+              className="w-full min-h-12 flex items-center justify-center gap-2 px-4 py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 shadow-coral-glow"
             >
               <CreditCard size={14} />
               {processing ? t("checkout_processing") : t("checkout_pay")}

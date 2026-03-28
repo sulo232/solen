@@ -83,7 +83,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {result?.error && (
-        <div className="flex items-center gap-2 text-sm text-s-error bg-s-error-bg dark:bg-s-error/10 rounded-btn px-3 py-2">
+        <div className="flex items-center gap-2 text-sm text-s-error bg-s-error-bg dark:bg-s-error/10 rounded-input px-3 py-2">
           <AlertCircle size={16} />
           {result.error}
         </div>
@@ -99,7 +99,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           onChange={(e) => setName(e.target.value)}
           required
           maxLength={100}
-          className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+          className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
           placeholder={t("namePlaceholder")}
           aria-label={t("nameLabel")}
         />
@@ -114,7 +114,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           maxLength={20}
-          className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+          className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
           placeholder={t("phonePlaceholder")}
           aria-label={t("phoneLabel")}
         />
@@ -128,7 +128,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           <select
             value={preferredBarberId}
             onChange={(e) => setPreferredBarberId(e.target.value)}
-            className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
             aria-label={t("preferredBarberLabel")}
           >
             <option value="">{t("noFavorite")}</option>
@@ -147,7 +147,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
           <select
             value={serviceId}
             onChange={(e) => setServiceId(e.target.value)}
-            className="w-full rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/30"
+            className="w-full rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface px-3 py-2 text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
             aria-label={t("serviceLabel")}
           >
             <option value="">{t("pleaseSelect")}</option>
@@ -161,7 +161,7 @@ export default function RemoteQueueJoin({ salonId, staff, services }: RemoteQueu
       <button
         type="submit"
         disabled={!name.trim() || submitting}
-        className="w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        className="w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150 shadow-coral-glow"
         aria-label={t("joinNow")}
       >
         <Users size={16} />

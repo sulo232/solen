@@ -103,7 +103,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-s-ink/5 dark:border-s-dm-text/10">
           <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("board_title")}</h3>
-          <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink rounded-btn">
+          <button onClick={onClose} aria-label={t("close")} className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-s-ink/40 dark:text-s-dm-text/40 hover:bg-s-ink/5 dark:hover:bg-white/5 rounded-pill transition-colors duration-150">
             <X size={18} />
           </button>
         </div>
@@ -148,10 +148,10 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
               value={newBoardName}
               onChange={(e) => setNewBoardName(e.target.value)}
               placeholder={t("board_name_placeholder")}
-              className="flex-1 text-sm px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text"
+              className="flex-1 text-sm px-3 py-1.5 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-transparent text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral transition-[border-color,box-shadow] duration-150"
               onKeyDown={(e) => e.key === "Enter" && handleCreateBoard()}
             />
-            <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-all">
+            <button onClick={handleCreateBoard} className="text-[11px] font-heading font-bold uppercase tracking-[.04em] px-3 py-1.5 rounded-pill active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150">
               {t("board_create")}
             </button>
             <button onClick={() => setShowNewForm(false)} className="text-xs text-s-ink/40">
@@ -175,7 +175,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
                 <button
                   key={img.id}
                   onClick={() => toggleSelect(img.id)}
-                  className={`relative aspect-square rounded-btn overflow-hidden border-2 transition-all ${
+                  className={`relative aspect-square rounded-card overflow-hidden border-2 transition-[border-color] duration-150 ${
                     selected.has(img.id) ? "border-s-coral ring-2 ring-s-coral/30" : "border-transparent"
                   }`}
                 >
@@ -196,7 +196,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
           <div className="px-4 py-3 border-t border-s-ink/5 dark:border-s-dm-text/10">
             <button
               onClick={handleConfirm}
-              className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-all"
+              className="w-full py-2.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
             >
               {t("board_select_images", { count: selected.size })}
             </button>

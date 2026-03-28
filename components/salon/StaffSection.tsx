@@ -29,7 +29,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
           <Link
             key={m.id}
             href={`/${locale}/salon/${salonSlug}/staff/${m.id}`}
-            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-4 hover:-translate-y-[2px] transition-all duration-250 shadow-sm hover:shadow-md"
+            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-4 hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms] shadow-warm-sm hover:shadow-card-hover"
           >
             {/* Avatar */}
             <div className="block">
@@ -106,7 +106,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
             {/* Book button */}
             <button
               onClick={(e) => { e.preventDefault(); onBook?.(m.id); }}
-              className="w-full mt-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral/10 text-s-coral hover:bg-s-coral hover:text-white text-xs font-semibold uppercase tracking-[.06em] transition-all"
+              className="w-full mt-3 py-2 rounded-pill active:scale-[0.98] bg-s-coral/10 text-s-coral hover:bg-s-coral hover:text-white text-xs font-semibold uppercase tracking-[.06em] transition-[background-color,color] duration-150"
             >
               Wählen
             </button>

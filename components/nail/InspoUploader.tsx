@@ -58,7 +58,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors duration-150"
           >
             <Upload size={12} />
             {t("inspo_choose_file")}
@@ -66,7 +66,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
           <button
             type="button"
             onClick={() => cameraRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors duration-150"
           >
             <Camera size={12} />
             {t("inspo_camera")}
@@ -74,7 +74,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
           <button
             type="button"
             onClick={onOpenBoard}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-btn bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-pill bg-s-coral/10 text-s-coral hover:bg-s-coral/20 transition-colors duration-150"
           >
             <FolderOpen size={12} />
             {t("inspo_from_board")}
@@ -89,7 +89,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
       {previews.length > 0 && (
         <div className="flex gap-2 mt-3 overflow-x-auto">
           {previews.map((p, i) => (
-            <div key={i} className="relative shrink-0 w-16 h-16 rounded-btn overflow-hidden">
+            <div key={i} className="relative shrink-0 w-16 h-16 rounded-input overflow-hidden">
               <Image src={p.url} alt="" fill className="object-cover" />
               <button
                 type="button"

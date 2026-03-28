@@ -141,7 +141,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
           {step === "idle" && (
             <button
               onClick={handleRebook}
-              className="mt-3 w-full flex items-center justify-center gap-2 rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-all"
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
             >
               <RefreshCw size={16} />
               Gleich nochmal buchen
@@ -156,7 +156,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
 
           {step === "confirm" && suggested && (
             <div className="mt-3 space-y-2">
-              <div className="rounded-btn bg-s-bg-surface dark:bg-s-dm-bg p-3 text-sm text-s-ink dark:text-s-dm-text">
+              <div className="rounded-input bg-s-bg-surface dark:bg-s-dm-bg p-3 text-sm text-s-ink dark:text-s-dm-text">
                 <div className="flex items-center gap-2 mb-1">
                   <CalendarCheck size={14} className="text-s-sage" />
                   <span className="font-medium">{formatDate(suggested.starts_at)}</span>
@@ -167,7 +167,7 @@ export default function ExpressRebook({ salonId, customerId }: ExpressRebookProp
               </div>
               <button
                 onClick={handleConfirm}
-                className="w-full rounded-btn active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-all"
+                className="w-full rounded-pill active:scale-[0.98] bg-s-coral text-white font-heading font-bold uppercase tracking-[.04em] py-2.5 text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
               >
                 Bestätigen
               </button>

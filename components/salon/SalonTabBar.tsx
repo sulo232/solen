@@ -42,7 +42,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
               data-tab={tab.key}
               onClick={() => onTabClick(tab.key)}
               className={`
-                whitespace-nowrap pb-3 text-sm font-semibold transition-all duration-200 snap-center
+                whitespace-nowrap pb-3 text-sm font-semibold transition-colors duration-150 snap-center
                 ${isActive 
                   ? "text-s-coral border-b-2 border-s-coral" 
                   : "text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text border-b-2 border-transparent"

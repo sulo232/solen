@@ -97,7 +97,7 @@ export function NailsBelowGrid() {
             <Link
               key={item.label}
               href={`/${locale}/discover?category=nails`}
-              className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-warm-xl transition-all duration-250`}
+              className={`rounded-[16px] bg-gradient-to-br ${item.color} aspect-square flex items-end p-2 overflow-hidden hover:-translate-y-[5px] hover:shadow-warm-xl transition-[transform,box-shadow] duration-[250ms]`}
             >
               <span className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 leading-tight">
                 {item.label}
@@ -122,7 +122,7 @@ export function NailsBelowGrid() {
         </div>
         <Link
           href={`/${locale}/discover?category=nails`}
-          className="shrink-0 px-4 py-2 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors shadow-warm-sm"
+          className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
         >
           Inspo entdecken →
         </Link>

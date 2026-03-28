@@ -31,7 +31,7 @@ export default function MaterialSelector({ value, onChange }: MaterialSelectorPr
             key={v}
             type="button"
             onClick={() => onChange(v)}
-            className={`flex items-start gap-2.5 p-3 rounded-[16px] border text-left transition-all ${
+            className={`flex items-start gap-2.5 p-3 rounded-[16px] border text-left transition-[border-color,background-color] duration-150 ${
               value === v
                 ? "border-s-coral bg-s-coral/5 dark:bg-s-coral/10 ring-1 ring-s-coral/30"
                 : "border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface hover:border-s-coral/20"

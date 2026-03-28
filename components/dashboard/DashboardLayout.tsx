@@ -11,7 +11,7 @@ import {
   BarChart, Settings, Menu, X, Search,
   ShieldCheck, Store, UsersRound, DollarSign, BarChart3, Award, FileEdit,
   MessageSquareWarning, Star, PieChart, Paintbrush, Compass, Camera,
-  UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid,
+  UserCheck, Megaphone, Image as ImageIcon, Sparkles, LayoutGrid, FlaskConical,
 } from "lucide-react";
 
 import Skeleton from "@/components/ui/Skeleton";
@@ -47,6 +47,7 @@ const ADMIN_NAV = [
   { key: "visualEditor",       href: "/dashboard/editor",             icon: Paintbrush },
   { key: "discovery",           href: "/dashboard/discovery-admin",    icon: Compass },
   { key: "homepage",            href: "/dashboard/homepage-admin",     icon: LayoutGrid },
+  { key: "sandbox",             href: "/dashboard/admin-sandbox",      icon: FlaskConical },
 ] as const;
 
 const OWNER_NAV = [
