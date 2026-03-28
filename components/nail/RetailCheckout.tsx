@@ -94,7 +94,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
           <button
             key={product.id}
             onClick={() => addToCart(product)}
-            className="p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors"
+            className="p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors duration-150"
           >
             <p className="text-xs font-medium text-s-ink dark:text-s-dm-text truncate">{product.name}</p>
             <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mt-0.5">{formatCurrency(product.price / 100, locale)}</p>
@@ -104,7 +104,7 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
 
       {/* Cart */}
       {cart.length > 0 && (
-        <div className="rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface divide-y divide-s-ink/5 dark:divide-s-dm-text/10">
+        <div className="rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface divide-y divide-s-ink/5 dark:divide-s-dm-text/10">
           {cart.map((item) => (
             <div key={item.id} className="flex items-center justify-between p-3">
               <div className="flex-1 min-w-0">
@@ -115,11 +115,13 @@ export default function RetailCheckout({ salonId, products, onClose }: RetailChe
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => updateQuantity(item.id, -1)}
+                  aria-label={`${t("decrease")} ${item.name}`}
                   className="w-6 h-6 rounded-full bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center">
                   <Minus size={10} className="text-s-ink/50 dark:text-s-dm-text/50" />
                 </button>
                 <span className="text-xs font-medium text-s-ink dark:text-s-dm-text w-4 text-center">{item.quantity}</span>
                 <button onClick={() => updateQuantity(item.id, 1)}
+                  aria-label={`${t("increase")} ${item.name}`}
                   className="w-6 h-6 rounded-full bg-s-ink/5 dark:bg-s-dm-text/10 flex items-center justify-center">
                   <Plus size={10} className="text-s-ink/50 dark:text-s-dm-text/50" />
                 </button>

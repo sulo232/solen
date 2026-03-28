@@ -3,7 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { createBrowserSupabaseClient } from "@/lib/supabase";
 import {
   Scissors,
   RefreshCw,
@@ -86,33 +88,51 @@ const CATEGORIES = [
 // HomePage component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function HomePage() {
+type HomePageProps = {
+  initialData?: {
+    salons: SalonCardType[];
+    lastMinuteSlots: LastMinuteSlot[];
+    newSalons: SalonCardType[];
+    trendingSalons: SalonCardType[];
+    sections: Record<string, boolean>;
+  }
+};
+
+export default function HomePage({ initialData }: HomePageProps) {
   useCityDetection();
   
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("home") as any;
-  const [salons, setSalons] = useState<SalonCardType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>([]);
+  const supabase = createBrowserSupabaseClient();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
   const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const [newSalons, setNewSalons] = useState<SalonCardType[]>([]);
-  const [trendingSalons, setTrendingSalons] = useState<SalonCardType[]>([]);
   const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
   const [locationError, setLocationError] = useState(false);
   const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+
+  const [salons, setSalons] = useState<SalonCardType[]>(initialData?.salons || []);
+  const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>(initialData?.lastMinuteSlots || []);
+  const [newSalons, setNewSalons] = useState<SalonCardType[]>(initialData?.newSalons || []);
+  const [trendingSalons, setTrendingSalons] = useState<SalonCardType[]>(initialData?.trendingSalons || []);
 
   useEffect(() => {
     setPersistedCity(getPersistedCity());
   }, []);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
-  const [sections, setSections] = useState<Record<string, boolean>>({
-    trending: true, nearby: true, new_salons: true,
-    rebook: true, reviews: true, last_minute: true, featured: true,
-    social_proof: true, partner_cta: true,
-  });
+  const [sections, setSections] = useState<Record<string, boolean>>(
+    initialData?.sections || {
+      trending: true, nearby: true, new_salons: true,
+      rebook: true, reviews: true, last_minute: true, featured: true,
+      social_proof: true, partner_cta: true,
+    }
+  );
   const [showNearby, setShowNearby] = useState(false);
   const [expandedPin, setExpandedPin] = useState<string | null>(null);
 
@@ -136,82 +156,56 @@ export default function HomePage() {
     );
   }, []);
 
-  const fetchData = useCallback(() => {
-    // Fetch homepage section visibility config
-    fetch("/api/homepage-sections")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.sections) setSections(data.sections);
-      })
-      .catch(() => {}); // Default to all-visible on error
+  const fetchData = useCallback(async () => {
+    // Check if user is logged in
+    const { data: { session } } = await supabase.auth.getSession();
+    const currentUserId = session?.user?.id || null;
+    setUserId(currentUserId);
 
-    fetch("/api/salons?limit=8&sort=rating")
-      .then((r) => r.json())
-      .then((data) => setSalons(data.items ?? []))
-      .catch(() => setSalons([]))
-      .finally(() => setLoading(false));
+    if (currentUserId) {
+      // Fetch user specific data
+      fetch("/api/bookings?status=completed&limit=1&sort=recent")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.items?.[0]) {
+            setLastBookedSalon({ slug: data.items[0].salon.slug, name: data.items[0].salon.name });
+          }
+        })
+        .catch(() => {});
 
-    fetch("/api/salons?sort=last_minute&limit=4")
-      .then((r) => r.json())
-      .then((data) => setLastMinuteSlots(data.items ?? []))
-      .catch(() => setLastMinuteSlots([]));
+      fetch("/api/profile")
+        .then((r) => r.json())
+        .then((data) => setUserName(data.first_name))
+        .catch(() => {});
 
-    // Fetch last completed booking for "Wieder buchen?" widget
-    fetch("/api/bookings?status=completed&limit=1&sort=recent")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        const booking = data?.bookings?.[0] ?? data?.items?.[0];
-        if (booking?.salon_name && booking?.salon_slug) {
-          setLastBookedSalon({ name: booking.salon_name, slug: booking.salon_slug });
-        }
-      })
-      .catch(() => {});
+      fetch("/api/bookings?status=confirmed&limit=1&sort=upcoming")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.items?.[0]) {
+            const date = new Date(data.items[0].start_time).toLocaleDateString(locale, { weekday: "short", day: "numeric", month: "short" });
+            setNextBooking({ date, salon: data.items[0].salon.name });
+          }
+        })
+        .catch(() => {});
 
-    // Fetch user profile for dynamic hero text
-    fetch("/api/profile")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.display_name) {
-          const firstName = data.display_name.split(" ")[0];
-          setUserName(firstName);
-        }
-      })
-      .catch(() => {});
+      fetch("/api/profile/favorites")
+        .then((r) => r.json())
+        .then((favs) => {
+          if (Array.isArray(favs)) setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
+        })
+        .catch(() => {});
+    }
 
-    // Fetch next upcoming booking for hero subtext
-    fetch("/api/bookings?status=confirmed&limit=1&sort=upcoming")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        const booking = data?.bookings?.[0] ?? data?.items?.[0];
-        if (booking?.starts_at && booking?.salon_name) {
-          setNextBooking({
-            date: new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" }),
-            salon: booking.salon_name,
-          });
-        }
-      })
-      .catch(() => {});
-
-    // Fetch user favorites
-    fetch("/api/profile/favorites")
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        const favs = data?.favorites ?? [];
-        setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
-      })
-      .catch(() => {});
-
-    // Fetch newest salons
-    fetch("/api/salons?limit=6&sort=newest")
-      .then((r) => r.json())
-      .then((data) => setNewSalons(data.items ?? []))
-      .catch(() => setNewSalons([]));
-
-    // Fetch trending salons
-    fetch("/api/salons/trending")
-      .then((r) => r.json())
-      .then((data) => setTrendingSalons(data.items ?? []))
-      .catch(() => setTrendingSalons([]));
+    // Passively fetch favorites once on load if logged in via standard cookies fallback
+    if (!currentUserId) {
+      fetch("/api/profile/favorites")
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          const favs = data?.favorites ?? [];
+          if (Array.isArray(favs)) setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
+        })
+        .catch(() => {});
+    }
 
     // Fetch category counts
     fetch("/api/analytics/platform")
@@ -227,7 +221,7 @@ export default function HomePage() {
         }
       }).catch(() => {});
     }
-  }, [fetchNearby]);
+  }, [locale, fetchNearby, supabase]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -279,7 +273,8 @@ export default function HomePage() {
           </motion.div>
 
           {/* Search bar right under greeting */}
-          <div className="mt-6 max-w-4xl mx-auto">
+          <div className="mt-8 max-w-4xl mx-auto relative group">
+            <div className="absolute -inset-2 md:-inset-4 bg-gradient-to-r from-s-coral/15 via-s-plum/10 to-s-amber/15 dark:from-s-coral/10 dark:to-s-amber/10 rounded-[40px] blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
             <HomeSearchBar />
           </div>
 
@@ -303,9 +298,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Social Proof ─────────────────────────────────────────────────── */}
-      <SocialProofStrip />
-
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
       <section id="tour-services" className="max-w-5xl mx-auto px-4 py-16 md:py-24">
         <div className="mb-6 text-center">
@@ -316,19 +308,21 @@ export default function HomePage() {
             {t("categories.title")}
           </h2>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
           {CATEGORIES.filter(c => c.key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled).map(({ key, label, count, Icon, color, bg }) => (
             <Link key={key} href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-              className="relative aspect-square rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms] flex flex-col items-center justify-center p-4 border border-s-ink/10 dark:border-s-dm-border"
+              className="relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(20%-13px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms] flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/10 dark:border-s-dm-border"
               style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-colors duration-300" style={{ backgroundColor: bg }}>
-                <Icon className={`w-6 h-6 ${color}`} />
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300" style={{ backgroundColor: bg }}>
+                <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${color}`} />
               </div>
-              <div className="font-display text-[18px] text-s-ink dark:text-s-dm-text leading-none text-center">
-                {label}
-              </div>
-              <div className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1">
-                {categoryCounts[key] ?? count} {t("categories.salonsCount")}
+              <div className="flex flex-col text-center lg:text-left">
+                <div className="font-display text-[18px] lg:text-[20px] text-s-ink dark:text-s-dm-text leading-none">
+                  {label}
+                </div>
+                <div className="text-[10px] lg:text-[11px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1.5 lg:mt-1">
+                  {categoryCounts[key] ?? count} {t("categories.salonsCount")}
+                </div>
               </div>
             </Link>
           ))}
@@ -388,28 +382,28 @@ export default function HomePage() {
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
       {sections.featured && (
-      <section className="py-16 md:py-24">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                {t("featured.eyebrow")}
-              </span>
-              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                {t("featured.title")}
-              </h2>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
-                {t("featured.subtitle")}
-              </p>
+        <section className="py-16 md:py-24">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
+              <div>
+                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
+                  {t("featured.eyebrow")}
+                </span>
+                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  {t("featured.title")}
+                </h2>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
+                  {t("featured.subtitle")}
+                </p>
+              </div>
+              <Link
+                href={`/${locale}/coiffeur`}
+                className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0"
+                aria-label={t("featured.viewAll")}>
+                {t("featured.viewAll")} →
+              </Link>
             </div>
-            <Link
-              href={`/${locale}/coiffeur`}
-              className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0 ml-4"
-              aria-label={t("featured.viewAll")}>
-              {t("featured.viewAll")} →
-            </Link>
-          </div>
 
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -457,22 +451,22 @@ export default function HomePage() {
         <div className="absolute w-[240px] h-[240px] rounded-full left-[-50px] bottom-[-50px] pointer-events-none"
           style={{ background: "rgba(107,163,200,.08)" }} />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
-          <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
-            <div>
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] mb-2 text-s-yellow">
-                {t("lastMinute.eyebrow")}
-              </span>
-              <h2 className="font-heading font-extrabold text-white"
-                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                {t("lastMinute.title")}
-              </h2>
+            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
+              <div>
+                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] mb-2 text-s-yellow">
+                  {t("lastMinute.eyebrow")}
+                </span>
+                <h2 className="font-body font-bold text-white"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  {t("lastMinute.title")}
+                </h2>
+              </div>
+              <Link href={`/${locale}/deals`}
+                className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-pill hover:border-white/40 hover:text-white transition-colors duration-150 shrink-0"
+                aria-label={t("lastMinute.viewAll")}>
+                {t("lastMinute.viewAll")} →
+              </Link>
             </div>
-            <Link href={`/${locale}/deals`}
-              className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-pill hover:border-white/40 hover:text-white transition-colors duration-150"
-              aria-label={t("lastMinute.viewAll")}>
-              {t("lastMinute.viewAll")} →
-            </Link>
-          </div>
 
           {lastMinuteSlots.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -488,16 +482,11 @@ export default function HomePage() {
               transition={{ duration: 0.4 }}
               className="rounded-[12px] bg-white/[0.08] border border-white/[0.12] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
             >
-              <div className="flex-1">
+              <div className="flex-1 w-full text-center sm:text-left">
                 <p className="text-sm text-white/60 font-body">
                   {t("lastMinute.emptyMessage")}
                 </p>
               </div>
-              <Link href={`/${locale}/deals`}
-                className="shrink-0 px-5 py-2.5 rounded-pill border border-white/20 text-sm font-heading font-bold text-white/80 hover:text-white hover:border-white/40 transition-[border-color,color] duration-150"
-                aria-label={t("lastMinute.viewAll")}>
-                {t("lastMinute.viewAll")} →
-              </Link>
             </motion.div>
           )}
         </div>
@@ -508,17 +497,19 @@ export default function HomePage() {
       {sections.trending && trendingSalons.length > 0 && (
         <section className="py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-6">
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                {t("trending.eyebrow")}
-              </span>
-              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
-                {t("trending.title")}
-              </h2>
-              <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
-                {t("trending.subtitle")}
-              </p>
+            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
+              <div>
+                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
+                  {t("trending.eyebrow")}
+                </span>
+                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
+                  {t("trending.title")}
+                </h2>
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+                  {t("trending.subtitle")}
+                </p>
+              </div>
             </div>
 
             <div
@@ -539,13 +530,13 @@ export default function HomePage() {
       {sections.nearby && (showNearby || nearbySalons.length > 0) && (
         <section className="py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
               <div>
-                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
                   {t("nearby.eyebrow")}
                 </span>
-                <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
                   {t("nearby.title")}
                 </h2>
                 <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
@@ -553,7 +544,7 @@ export default function HomePage() {
                 </p>
               </div>
               {nearbySalons.length > 0 && (
-                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0 ml-4" aria-label={t("nearby.viewAll")}>
+                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0" aria-label={t("nearby.viewAll")}>
                   {t("nearby.viewAll")} →
                 </Link>
               )}
@@ -589,23 +580,23 @@ export default function HomePage() {
           <section className="py-16 md:py-24">
             <div className="max-w-5xl mx-auto px-4">
               <div className="mb-6">
-                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
+                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
                   {t("map.eyebrow")}
                 </span>
-                <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.02em" }}>
+                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(26px, 3.5vw, 44px)", letterSpacing: "-0.04em" }}>
                   {t("map.title")}
                 </h2>
               </div>
 
-              <div className="relative w-full h-[300px] md:h-[400px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm cursor-pointer"
+              <div className="relative w-full h-[380px] md:h-[450px] rounded-[24px] overflow-hidden bg-s-bg-base/30 dark:bg-s-dm-surface/30 border border-s-ink/10 dark:border-s-dm-border shadow-warm-sm cursor-pointer"
                    onClick={(e) => {
                      // Only navigate if clicking the background, not a pin
                      if ((e.target as HTMLElement).closest('[data-map-pin]')) return;
                      setExpandedPin(null);
                    }}>
                 {/* Map abstract background */}
-                <div className="absolute inset-0 opacity-40 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
+                <div className="absolute inset-0 opacity-40 dark:invert dark:opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI2LCAxOCwgOSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-s-bg-base/80 dark:to-s-dm-background/80" />
 
                 {/* Interactive map pins */}

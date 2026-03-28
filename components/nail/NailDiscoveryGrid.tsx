@@ -108,7 +108,7 @@ export default function NailDiscoveryGrid() {
         <EmptyState
           icon={Sparkles}
           title={tc("noNailDesigns")}
-          message="Versuche andere Filter oder schau später nochmal vorbei."
+          message={tc("noNailDesigns_message")}
           illustration="no-results"
         />
       ) : (

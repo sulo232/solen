@@ -164,6 +164,7 @@
     "noPast": "No past appointments",
     "noSalonsFound": "No salons found",
     "noNailDesigns": "No nail designs found",
+    "noNailDesigns_message": "Try different filters or check back later.",
     "pleaseFill": "Please fill in all fields",
     "pleaseLogin": "Please sign in first",
     "pleaseSelectRating": "Please select a rating",
@@ -398,7 +399,15 @@
       "redemptionFailed": "Redemption failed",
       "redeemNow": "Redeem now",
       "noAdditionalCharge": "No additional charge"
-    }
+    },
+    "board_title": "Inspo boards",
+    "board_all": "All",
+    "board_new": "New board",
+    "board_name_placeholder": "Board name...",
+    "board_create": "Create",
+    "board_loading": "Loading images...",
+    "board_empty": "No images in this board yet",
+    "board_select_images": "{count} images selected"
   },
   "chat": {
     "send": "Send",
@@ -1968,7 +1977,8 @@
     "inspo_see_all": "All designs",
     "ai_teaser_title": "Your design, your style",
     "ai_teaser_body": "Create your personal nail art design with AI — share it at your appointment.",
-    "ai_teaser_cta": "Discover inspo →"
+    "ai_teaser_cta": "Discover inspo →",
+    "category": "Nails"
   },
   "nail_dashboard": {
     "hand_chart_title": "Visual Hand Chart",
@@ -2024,6 +2034,8 @@
     "retail_cat_polish": "Nail polish",
     "retail_cat_accessories": "Accessories",
     "checkout_title": "Checkout",
+    "decrease": "Decrease",
+    "increase": "Increase",
     "checkout_total": "Total",
     "checkout_pay": "Pay",
     "checkout_processing": "Processing...",

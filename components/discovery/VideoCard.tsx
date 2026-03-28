@@ -115,6 +115,9 @@ export default memo(function VideoCard({
         )}
       </div>
 
+      {/* ── Dark gradient overlay for bottom text contrast ── */}
+      <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10" />
+
       {/* ── Top-left: Category badge ── */}
       <div className="absolute top-2 left-2 z-10">
         <span
@@ -128,7 +131,7 @@ export default memo(function VideoCard({
 
       {/* ── Top-right: Like + Save buttons ── */}
       <div
-        className="absolute top-2 right-2 z-10 flex items-center gap-1"
+        className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-1.5 py-1">
@@ -150,7 +153,7 @@ export default memo(function VideoCard({
 
       {/* ── Bottom: Glassmorphism info pill ── */}
       {item.style_name && (
-        <div className="absolute bottom-2 left-2 right-2 z-10">
+        <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {item.style_name}

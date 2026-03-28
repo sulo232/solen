@@ -164,6 +164,7 @@
     "noPast": "Aucun rendez-vous passé",
     "noSalonsFound": "Aucun salon trouvé",
     "noNailDesigns": "Aucun design ongle trouvé",
+    "noNailDesigns_message": "Essayez d'autres filtres ou revenez plus tard.",
     "pleaseFill": "Veuillez remplir tous les champs",
     "pleaseLogin": "Veuillez d'abord vous connecter",
     "pleaseSelectRating": "Veuillez sélectionner une note",
@@ -376,7 +377,15 @@
       "redemptionFailed": "Échec du remboursement",
       "redeemNow": "Utiliser maintenant",
       "noAdditionalCharge": "Aucun frais supplémentaire"
-    }
+    },
+    "board_title": "Boards d'inspo",
+    "board_all": "Tous",
+    "board_new": "Nouveau board",
+    "board_name_placeholder": "Nom du board...",
+    "board_create": "Créer",
+    "board_loading": "Chargement des images...",
+    "board_empty": "Aucune image dans ce board",
+    "board_select_images": "{count} images sélectionnées"
   },
   "chat": {
     "send": "Envoyer",
@@ -1945,7 +1954,8 @@
     "inspo_see_all": "Tous les designs",
     "ai_teaser_title": "Votre design, votre style",
     "ai_teaser_body": "Créez votre nail art personnalisé avec l'IA — partagez-le lors de votre rendez-vous.",
-    "ai_teaser_cta": "Découvrir l'inspo →"
+    "ai_teaser_cta": "Découvrir l'inspo →",
+    "category": "Nails"
   },
   "nail_dashboard": {
     "hand_chart_title": "Schéma visuel des mains",
@@ -2001,6 +2011,8 @@
     "retail_cat_polish": "Vernis",
     "retail_cat_accessories": "Accessoires",
     "checkout_title": "Caisse",
+    "decrease": "Diminuer",
+    "increase": "Augmenter",
     "checkout_total": "Total",
     "checkout_pay": "Payer",
     "checkout_processing": "Traitement...",

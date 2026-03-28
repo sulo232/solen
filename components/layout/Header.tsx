@@ -124,10 +124,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       <div className="flex items-center justify-center gap-3">
         {/* Main nav pill */}
         <div className={cn(
-          "flex items-center justify-between rounded-full transition-[background,box-shadow,padding,max-width] duration-300 ease-out",
+          "flex items-center justify-between rounded-full transition-[background,box-shadow,padding,max-width] duration-300 ease-out border",
           scrolled
             ? "mt-2 max-w-3xl min-h-[56px] py-2 px-4 sm:px-6 dark:border-white/[0.06]"
-            : "mt-3 max-w-5xl min-h-[64px] py-3 px-5 sm:px-8 bg-s-bg-base/50 dark:bg-s-dm-bg/50"
+            : "mt-3 max-w-5xl min-h-[64px] py-3 px-5 sm:px-8 bg-s-bg-base/70 dark:bg-s-dm-bg/50 border-s-ink/[0.06] dark:border-white/5 shadow-warm-sm"
         )}
         style={scrolled ? {
           background: "var(--glass-bg)",
@@ -175,8 +175,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
           {/* Desktop nav */}
           <nav className={cn(
-            "hidden md:flex items-center",
-            scrolled ? "gap-1" : "gap-3"
+            "hidden md:flex items-center transition-all duration-300",
+            scrolled ? "gap-1 opacity-100 translate-y-0" : "gap-3 opacity-0 -translate-y-2 pointer-events-none"
           )} aria-label="Hauptnavigation">
             {NAV_LINKS.map(({ key, href, Icon }) => {
               const isActive = pathname.includes(href);
@@ -185,16 +185,19 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   key={key}
                   href={`/${locale}${href}`}
                   aria-current={isActive ? "page" : undefined}
-                  title={t(key as any)}
                   className={cn(
-                    "flex flex-col items-center justify-center transition-colors duration-200 rounded-full",
+                    "group relative flex flex-col items-center justify-center transition-colors duration-200 rounded-full",
                     scrolled ? "p-2" : "p-2.5",
                     isActive
-                      ? "text-s-coral bg-s-coral/10"
+                      ? "text-white bg-s-ink dark:text-s-ink dark:bg-white shadow-md shadow-s-ink/10"
                       : "text-s-ink/60 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/5"
                   )}
                 >
-                  <Icon width={20} height={20} className={cn("w-5 h-5 shrink-0", isActive ? "text-s-coral" : "text-current")} />
+                  <Icon width={20} height={20} className={cn("w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110", isActive ? "text-current" : "text-current")} />
+                  {/* Tooltip */}
+                  <span className="absolute top-[120%] left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-s-ink text-white dark:bg-white dark:text-s-ink text-[10px] font-heading font-medium tracking-wide uppercase px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap z-50">
+                    {t(key as any)}
+                  </span>
                 </Link>
               );
             })}

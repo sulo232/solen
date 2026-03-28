@@ -57,11 +57,12 @@ export default function HandChart({ customerId }: HandChartProps) {
   const saveNotes = async (newNotes: Record<FingerKey, string>) => {
     setSaving(true);
     try {
-      await fetch("/api/nail/hand-chart", {
+      const r = await fetch("/api/nail/hand-chart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clientId: customerId, notes: newNotes }),
       });
+      if (!r.ok) return;
     } finally {
       setSaving(false);
     }

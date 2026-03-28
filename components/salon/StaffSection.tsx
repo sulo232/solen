@@ -29,7 +29,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
           <Link
             key={m.id}
             href={`/${locale}/salon/${salonSlug}/staff/${m.id}`}
-            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface p-4 hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms] shadow-warm-sm hover:shadow-card-hover"
+            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-[--raised] dark:bg-s-dm-surface p-4 hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms] shadow-warm-sm hover:shadow-card-hover"
           >
             {/* Avatar */}
             <div className="block">
@@ -52,7 +52,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                 </div>
                 {/* Rating badge overlay */}
                 {m.average_rating != null && m.average_rating > 0 && (
-                  <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-white dark:bg-s-dm-surface px-1.5 py-0.5 rounded-pill shadow-warm-xs border border-s-ink/5 dark:border-white/5">
+                  <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-[--raised] dark:bg-s-dm-surface px-1.5 py-0.5 rounded-pill shadow-warm-xs border border-s-ink/5 dark:border-white/5">
                     <Star size={8} className="fill-s-coral text-s-coral" />
                     <span className="text-[9px] data-text font-semibold text-s-ink dark:text-s-dm-text">
                       {m.average_rating.toFixed(1)}

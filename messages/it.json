@@ -164,6 +164,7 @@
     "noPast": "Nessun appuntamento passato",
     "noSalonsFound": "Nessun salone trovato",
     "noNailDesigns": "Nessun design unghie trovato",
+    "noNailDesigns_message": "Prova altri filtri o ricontrolla più tardi.",
     "pleaseFill": "Compila tutti i campi",
     "pleaseLogin": "Effettua prima il login",
     "pleaseSelectRating": "Seleziona una valutazione",
@@ -376,7 +377,15 @@
       "redemptionFailed": "Rimborso fallito",
       "redeemNow": "Riscatta ora",
       "noAdditionalCharge": "Nessun costo aggiuntivo"
-    }
+    },
+    "board_title": "Board di inspo",
+    "board_all": "Tutti",
+    "board_new": "Nuovo board",
+    "board_name_placeholder": "Nome del board...",
+    "board_create": "Crea",
+    "board_loading": "Caricamento immagini...",
+    "board_empty": "Nessuna immagine in questo board",
+    "board_select_images": "{count} immagini selezionate"
   },
   "chat": {
     "send": "Invia",
@@ -1945,7 +1954,8 @@
     "inspo_see_all": "Tutti i design",
     "ai_teaser_title": "Il tuo design, il tuo stile",
     "ai_teaser_body": "Crea il tuo nail art personalizzato con l'IA — condividilo all'appuntamento.",
-    "ai_teaser_cta": "Scopri l'inspo →"
+    "ai_teaser_cta": "Scopri l'inspo →",
+    "category": "Nails"
   },
   "nail_dashboard": {
     "hand_chart_title": "Schema visivo delle mani",
@@ -2001,6 +2011,8 @@
     "retail_cat_polish": "Smalto",
     "retail_cat_accessories": "Accessori",
     "checkout_title": "Cassa",
+    "decrease": "Diminuisci",
+    "increase": "Aumenta",
     "checkout_total": "Totale",
     "checkout_pay": "Paga",
     "checkout_processing": "Elaborazione...",

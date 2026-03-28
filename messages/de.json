@@ -164,6 +164,7 @@
     "noPast": "Keine vergangenen Termine",
     "noSalonsFound": "Keine Salons gefunden",
     "noNailDesigns": "Keine Nail-Designs gefunden",
+    "noNailDesigns_message": "Versuche andere Filter oder schau später nochmal vorbei.",
     "pleaseFill": "Bitte alle Felder ausfüllen",
     "pleaseLogin": "Bitte melde dich zuerst an",
     "pleaseSelectRating": "Bitte wähle eine Bewertung aus",
@@ -409,7 +410,15 @@
       "redemptionFailed": "Einlösung fehlgeschlagen",
       "redeemNow": "Jetzt einlösen",
       "noAdditionalCharge": "Kein zusätzlicher Betrag fällig"
-    }
+    },
+    "board_title": "Inspo-Boards",
+    "board_all": "Alle",
+    "board_new": "Neues Board",
+    "board_name_placeholder": "Board-Name...",
+    "board_create": "Erstellen",
+    "board_loading": "Bilder laden...",
+    "board_empty": "Noch keine Bilder in diesem Board",
+    "board_select_images": "{count} Bilder ausgewählt"
   },
   "chat": {
     "send": "Senden",
@@ -1979,7 +1988,8 @@
     "inspo_see_all": "Alle Designs",
     "ai_teaser_title": "Dein Design, dein Stil",
     "ai_teaser_body": "Erstelle dein persönliches Nail-Art-Design mit KI — teile es beim Termin.",
-    "ai_teaser_cta": "Inspo entdecken →"
+    "ai_teaser_cta": "Inspo entdecken →",
+    "category": "Nails"
   },
   "nail_dashboard": {
     "hand_chart_title": "Visuelle Handkarte",
@@ -2035,6 +2045,8 @@
     "retail_cat_polish": "Nagellack",
     "retail_cat_accessories": "Zubehör",
     "checkout_title": "Kasse",
+    "decrease": "Weniger",
+    "increase": "Mehr",
     "checkout_total": "Total",
     "checkout_pay": "Bezahlen",
     "checkout_processing": "Verarbeite...",

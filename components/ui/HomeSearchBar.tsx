@@ -171,22 +171,22 @@ export default function HomeSearchBar() {
           </div>
 
           {/* Field 3: Date Picker & Submit */}
-          <div className="relative md:w-64 xl:w-72 shrink-0 flex items-center justify-between pl-2 pr-2 py-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus-within:bg-black/5 dark:focus-within:bg-white/5">
-            <div className="flex-1 flex items-center">
+          <div className="relative md:flex-1 lg:w-80 shrink-0 flex items-center justify-between pl-2 pr-2 py-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5 focus-within:bg-black/5 dark:focus-within:bg-white/5">
+            <div className="flex-1 flex items-center min-w-0">
               <SolenDatePicker 
                 label="" 
                 value={selectedDate} 
                 onChange={setSelectedDate} 
                 minValue={todayValue} 
-                className="[&_label]:hidden w-full [&_button]:w-full [&_button]:border-none [&_button]:shadow-none [&_button]:bg-transparent [&_button]:text-s-ink dark:[&_button]:text-s-dm-text [&_button]:text-sm md:[&_button]:text-[15px] [&_button]:font-medium [&>div]:w-full" 
+                className="[&_label]:hidden w-full [&_button]:w-full [&_button]:border-none [&_button]:shadow-none [&_button]:bg-transparent [&_button]:text-s-ink dark:[&_button]:text-s-dm-text [&_button]:text-sm md:[&_button]:text-[15px] [&_button]:font-medium [&>div]:w-full truncate" 
               />
             </div>
             
             {/* Submit Button */}
             <button type="submit" disabled={detecting}
-              className="shrink-0 ml-2 px-6 py-3 md:py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-[transform,filter] duration-150 disabled:opacity-60 min-w-[100px] h-[44px] md:h-[48px]">
+              className="shrink-0 ml-2 px-6 md:px-8 rounded-pill bg-s-coral text-white font-body font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-[transform,filter] duration-150 disabled:opacity-60 min-w-[120px] md:min-w-[140px] h-[44px] md:h-[48px]">
               {detecting ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} aria-hidden="true" />}
-              <span className="hidden sm:inline">{detecting ? "Suche..." : "Suchen"}</span>
+              <span className="hidden sm:inline whitespace-nowrap">{detecting ? "Suche..." : "Suchen"}</span>
             </button>
           </div>
 

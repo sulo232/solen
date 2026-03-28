@@ -114,7 +114,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
 
       {/* Panel */}
       <div
-        className="relative z-10 w-full sm:max-w-md bg-white dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl overflow-hidden"
+        className="relative z-10 w-full sm:max-w-md bg-[--raised] dark:bg-s-dm-surface rounded-t-[24px] sm:rounded-[24px] shadow-warm-xl overflow-hidden"
         style={{ animation: "slideUp 0.35s var(--ease, cubic-bezier(0.34,1.56,0.64,1)) both" }}
       >
         {/* Progress bar */}

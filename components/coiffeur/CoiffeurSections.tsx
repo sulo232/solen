@@ -110,7 +110,7 @@ export function CoiffeurAboveGrid() {
   };
 
   return (
-    <div className="bg-white/70 dark:bg-s-dm-surface/70 backdrop-blur-sm border border-s-ink/5 dark:border-white/5 rounded-[16px] px-4 py-3 flex flex-col gap-2.5">
+    <div className="bg-[--raised]/70 dark:bg-s-dm-surface/70 backdrop-blur-[6px] border border-s-ink/5 dark:border-white/5 rounded-[16px] px-4 py-3 flex flex-col gap-2.5">
       <ScrollableFilterRow
         label={t("service_label")}
         options={SERVICES}
@@ -173,7 +173,7 @@ export function CoiffeurBelowGrid() {
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
                 className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-warm-xl hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]`}
               >
-                <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-white/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 self-start">
+                <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-[--raised]/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 self-start">
                   {style.tag}
                 </span>
                 <p className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-sm">

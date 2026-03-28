@@ -19,11 +19,13 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
   const [publishingId, setPublishingId] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/clients/${customerId}/nail-history?limit=20`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.history) setDesigns(d.history); })
+      .then((d) => { if (!cancelled && d?.history) setDesigns(d.history); })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [customerId]);
 
   const handlePublish = async (design: NailDesignHistory) => {
@@ -40,7 +42,9 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
           material: design.material,
         }),
       });
-      if (!res.ok) throw new Error("publish failed");
+      if (!res.ok) return;
+    } catch {
+      // silent fail — publish is non-critical
     } finally {
       setPublishingId(null);
     }

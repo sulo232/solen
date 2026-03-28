@@ -91,6 +91,8 @@ export default memo(function ItemCard({
       </div>
 
       {/* ── Top-left: Category + content type badge ── */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none z-10" />
+
       <div className="absolute top-2 left-2 z-10">
         <span
           className={`inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-pill backdrop-blur-md font-medium text-white ${categoryBg}`}
@@ -107,7 +109,7 @@ export default memo(function ItemCard({
 
       {/* ── Top-right: Like + Save buttons ── */}
       <div
-        className="absolute top-2 right-2 z-10 flex items-center gap-1"
+        className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-1 bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-1.5 py-1">
@@ -129,7 +131,7 @@ export default memo(function ItemCard({
 
       {/* ── Bottom: Glassmorphism info pill ── */}
       {item.style_name && (
-        <div className="absolute bottom-2 left-2 right-2 z-10">
+        <div className="absolute bottom-2 left-2 right-2 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <div className="bg-white/30 dark:bg-black/30 backdrop-blur-md rounded-pill px-2.5 py-1.5 max-w-[70%]">
             <p className="text-[11px] font-medium text-white truncate">
               {item.style_name}

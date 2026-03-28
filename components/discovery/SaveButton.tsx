@@ -76,11 +76,12 @@ export default function SaveButton(props: Record<string, any>) {
       disabled={isPending}
       className="flex items-center gap-1 text-xs group"
       aria-label={saved ? "Unsave" : "Save"}
+      aria-pressed={saved}
     >
       <Bookmark
         size={18}
         className={[
-          "transition-all duration-200",
+          "transition-[fill,color] duration-200",
           saved ? "fill-s-ink dark:fill-s-dm-text text-s-ink dark:text-s-dm-text" : "text-s-ink/30 dark:text-s-dm-text/30 group-hover:text-s-ink/60",
         ].join(" ")}
       />

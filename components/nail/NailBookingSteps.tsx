@@ -76,19 +76,23 @@ export default function NailBookingSteps({
   // Fetch repeat-last data
   useEffect(() => {
     if (!customerId) return;
+    let cancelled = false;
     fetch(`/api/clients/${customerId}/repeat-last`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.design) setRepeatLast(d.design); })
+      .then((d) => { if (!cancelled && d?.design) setRepeatLast(d.design); })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, [customerId]);
 
   // Fetch station availability
   useEffect(() => {
     if (!salonId) return;
+    let cancelled = false;
     fetch(`/api/salon/stations?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.station) setStationInfo({ available: d.station.total_stations - 0, used: 0, total: d.station.total_stations }); })
+      .then((d) => { if (!cancelled && d?.station) setStationInfo({ available: d.station.total_stations - 0, used: 0, total: d.station.total_stations }); })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, [salonId]);
 
   const handleRepeatLast = useCallback(() => {
@@ -133,7 +137,7 @@ export default function NailBookingSteps({
         <button
           type="button"
           onClick={handleRepeatLast}
-          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors"
+          className="flex items-center gap-2 w-full p-3 rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 bg-[--raised] dark:bg-s-dm-surface text-left hover:border-s-coral/20 transition-colors duration-150"
         >
           <RefreshCw size={16} className="text-s-coral shrink-0" />
           <div>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 interface StyleNamePillsProps {
@@ -8,13 +9,16 @@ interface StyleNamePillsProps {
 }
 
 export default function StyleNamePills({ selected, onSelect }: StyleNamePillsProps) {
+  const t = useTranslations("discoveryFilters") as any;
   const [styles, setStyles] = useState<{ name: string; count: number }[]>([]);
 
   useEffect(() => {
+    let cancelled = false;
     fetch("/api/discovery/style-names")
-      .then((r) => r.json())
-      .then((d) => setStyles(d.styles ?? []))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled && d?.styles) setStyles(d.styles); })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   if (styles.length === 0) return null;
@@ -27,21 +31,23 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
       <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
         <button
           onClick={() => onSelect(null)}
+          aria-pressed={!selected}
           className={cn(
-            "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-all duration-150",
+            "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-colors duration-150",
             !selected
               ? "border-s-amber bg-s-amber/[0.08] text-s-amber"
               : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-amber/40"
           )}
         >
-          Alle Styles
+          {t("all_styles")}
         </button>
         {styles.slice(0, 20).map((s) => (
           <button
             key={s.name}
             onClick={() => onSelect(s.name)}
+            aria-pressed={selected === s.name}
             className={cn(
-              "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-all duration-150",
+              "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap border transition-colors duration-150",
               selected === s.name
                 ? "border-s-amber bg-s-amber/[0.08] text-s-amber"
                 : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-amber/40"

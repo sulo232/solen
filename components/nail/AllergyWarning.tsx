@@ -21,10 +21,12 @@ export default function AllergyWarning({ customerId }: AllergyWarningProps) {
 
   useEffect(() => {
     if (!customerId) return;
+    let cancelled = false;
     fetch(`/api/clients/${customerId}/nail-allergies`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d) setData(d); })
+      .then((d) => { if (!cancelled && d) setData(d); })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, [customerId]);
 
   if (!data?.hasAllergy) return null;

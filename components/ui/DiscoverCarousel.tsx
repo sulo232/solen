@@ -6,6 +6,7 @@ import ItemCard from "@/components/discovery/ItemCard";
 import VideoCard from "@/components/discovery/VideoCard";
 import Skeleton from "@/components/ui/Skeleton";
 import type { DiscoveryItem } from "@/lib/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Helper to shuffle array
 function shuffleArray<T>(array: T[]): T[] {
@@ -75,8 +76,32 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
     loadItems();
   }, []);
 
+  const scrollLeft = () => {
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: -400, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: 400, behavior: "smooth" });
+  };
+
   return (
-    <div className="w-full relative py-8 overflow-hidden">
+    <div className="w-full relative py-8 overflow-hidden group">
+      {/* Scroll controls (Desktop only) */}
+      <button 
+        onClick={scrollLeft}
+        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-s-dm-raised/90 rounded-full items-center justify-center shadow-warm-lg border border-s-ink/5 dark:border-white/10 opacity-0 group-hover:opacity-100 transition duration-300 z-20 hover:scale-[1.05] active:scale-95 text-s-ink dark:text-white"
+        aria-label="Nach links scrollen"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+      <button 
+        onClick={scrollRight}
+        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-s-dm-raised/90 rounded-full items-center justify-center shadow-warm-lg border border-s-ink/5 dark:border-white/10 opacity-0 group-hover:opacity-100 transition duration-300 z-20 hover:scale-[1.05] active:scale-95 text-s-ink dark:text-white"
+        aria-label="Nach rechts scrollen"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+
       <div 
         ref={scrollRef}
         className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 md:px-12 pb-8 pt-4 hide-scrollbar"
@@ -85,7 +110,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         {isLoading ? (
           // Skeletons matching the TikTok aspect ratio styling
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="shrink-0 snap-center w-[170px] h-[300px] md:w-[200px] md:h-[355px] rounded-[16px]">
+            <div key={i} className="shrink-0 snap-center w-[155px] h-[275px] md:w-[200px] md:h-[355px] rounded-[16px]">
               <Skeleton className="w-full h-full rounded-[16px]" />
             </div>
           ))
@@ -97,7 +122,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
                 href={`/${locale}/discover?id=${item.id}`}
                 prefetch={false}
                 key={item.id}
-                className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
+                className="shrink-0 snap-center group relative block w-[155px] h-[275px] md:w-[200px] md:h-[355px]"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
@@ -121,7 +146,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         {/* 11th item: "Go to Entdecken" card */}
         <Link
           href={`/${locale}/discover`}
-          className="shrink-0 snap-center group relative block w-[170px] h-[300px] md:w-[200px] md:h-[355px]"
+          className="shrink-0 snap-center group relative block w-[155px] h-[275px] md:w-[200px] md:h-[355px]"
         >
           <div 
             className={`w-full h-full rounded-[16px] overflow-hidden bg-s-coral/10 dark:bg-s-coral/5 border-2 border-dashed border-s-coral/30 shadow-warm-sm transition-all duration-300 flex flex-col items-center justify-center p-6 text-center transform origin-center
