@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Store, Camera, Phone } from "lucide-react";
+import { Store, Camera, Phone, Check } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { useTranslations } from "next-intl";
+import type { SalonCategory } from "@/lib/types";
+
+import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 
 interface SalonProfileStepProps {
   salonId: string;
@@ -21,7 +24,13 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
     phone: "",
     cover_photo_url: "",
   });
+  const [categories, setCategories] = useState<SalonCategory[]>([]);
   const [saving, setSaving] = useState(false);
+
+  const toggleCat = (cat: SalonCategory) =>
+    setCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
 
   useEffect(() => {
     if (!salonId) return;
@@ -36,6 +45,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
             phone: s.phone || "",
             cover_photo_url: s.cover_photo_url || "",
           });
+          setCategories((s.categories as SalonCategory[]) || []);
         }
       });
   }, [salonId]);
@@ -47,7 +57,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
       await fetch(`/api/salons/${salonId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, categories }),
       });
       onSaved();
     } catch { /* ignore */ } finally {
@@ -99,6 +109,38 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
           <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 mt-0.5 text-right">{form.description_de.length}/500</p>
         </div>
         <div>
+          <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">
+            Kategorien
+            <span className="ml-1 text-s-ink/30 font-normal">(mehrere wählbar)</span>
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {CATEGORY_OPTIONS.map((opt) => {
+              const active = categories.includes(opt.value);
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => toggleCat(opt.value)}
+                  className={[
+                    "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all active:scale-[0.98]",
+                    active
+                      ? "bg-s-coral text-white border-s-coral"
+                      : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
+                  ].join(" ")}
+                  style={active ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+                >
+                  <span className="text-[13px] leading-none">{opt.emoji}</span>
+                  {opt.label}
+                  {active && <Check size={10} className="ml-0.5" />}
+                </button>
+              );
+            })}
+          </div>
+          {categories.length === 0 && (
+            <p className="text-xs text-s-coral mt-1">Mindestens eine Kategorie erforderlich.</p>
+          )}
+        </div>
+        <div>
           <label className="block text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-1">
             <Phone size={12} className="inline mr-1" />
             {t("profile.phone")}
@@ -126,7 +168,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
 
       <button
         onClick={handleSave}
-        disabled={!form.name || !form.description_de || saving}
+        disabled={!form.name || !form.description_de || saving || categories.length === 0}
         className="w-full py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-all shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}

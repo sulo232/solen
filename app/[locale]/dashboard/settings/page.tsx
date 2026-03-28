@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AlertTriangle, Check, Plus, Trash2, Pencil, X, CreditCard, ExternalLink, Loader2, Palmtree, Globe, Facebook, Tag } from "lucide-react";
+import type { SalonCategory } from "@/lib/types";
+
+// ─────────────────────────────────────────
+// Category options shared across Settings
+// ─────────────────────────────────────────
+
+import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import OffPeakManager from "@/components/dashboard/OffPeakManager";
 import ExpandableTabs from "@/components/ui/ExpandableTabs";
@@ -65,6 +72,7 @@ function HoursEditor({ hours, onChange }: {
 
 function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
   const ext = salon as Salon & { facebook_url?: string; tiktok_url?: string; website_url?: string };
+  const salonExt = salon as Salon & { categories?: string[] };
   const [form, setForm] = useState({
     name: salon.name,
     description_de: salon.description_de ?? "",
@@ -77,9 +85,18 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
     cover_photo_url: salon.cover_photo_url ?? "",
     opening_hours: salon.opening_hours ?? {},
     is_top_pick: salon.is_top_pick ?? false,
+    categories: (salonExt.categories ?? []) as SalonCategory[],
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const toggleCategory = (cat: SalonCategory) =>
+    setForm((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(cat)
+        ? prev.categories.filter((c) => c !== cat)
+        : [...prev.categories, cat],
+    }));
 
   const handleSave = async () => {
     setSaving(true);
@@ -96,6 +113,41 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
           className="w-full px-3 py-2.5 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral" />
       </div>
+
+      {/* ── Category selector ── */}
+      <div>
+        <label className="block text-xs font-medium text-s-ink/50 mb-2">
+          Kategorien
+          <span className="ml-1 text-s-ink/30 font-normal">(mehrere wählbar)</span>
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORY_OPTIONS.map((opt) => {
+            const active = form.categories.includes(opt.value);
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => toggleCategory(opt.value)}
+                className={[
+                  "flex items-center gap-1.5 px-3 py-2 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all active:scale-[0.98]",
+                  active
+                    ? "bg-s-coral text-white border-s-coral"
+                    : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/50",
+                ].join(" ")}
+                style={active ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+              >
+                <span className="text-[13px] leading-none">{opt.emoji}</span>
+                {opt.label}
+                {active && <Check size={10} className="ml-0.5" />}
+              </button>
+            );
+          })}
+        </div>
+        {form.categories.length === 0 && (
+          <p className="text-xs text-s-coral mt-1">Bitte mindestens eine Kategorie auswählen.</p>
+        )}
+      </div>
+
       <div>
         <label className="block text-xs font-medium text-s-ink/50 mb-1">Cover-Foto URL</label>
         <input value={form.cover_photo_url} onChange={(e) => setForm({ ...form, cover_photo_url: e.target.value })}
@@ -198,7 +250,7 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
         <SalonCard salon={{ ...salon, ...form } as Salon} variant="compact" />
       </div>
       <div className="flex items-center gap-3">
-        <button onClick={handleSave} disabled={saving}
+        <button onClick={handleSave} disabled={saving || form.categories.length === 0}
           className="px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium disabled:opacity-50 flex items-center gap-2">
           {saving && <Spinner size="sm" invert />}Speichern
         </button>

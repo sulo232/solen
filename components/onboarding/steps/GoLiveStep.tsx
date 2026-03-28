@@ -8,8 +8,6 @@ import { useTranslations, useLocale } from "next-intl";
 
 interface Step {
   key: string;
-  label: string;
-  label_en: string;
   complete: boolean;
 }
 
@@ -21,8 +19,6 @@ interface GoLiveStepProps {
 
 export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   const t = useTranslations("onboarding");
-  const locale = useLocale();
-  const isDE = locale === "de" || locale === "fr";
   const [going, setGoing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -75,7 +71,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
                   : <X size={12} className="text-s-ink/20 dark:text-s-dm-text/20" />}
               </div>
               <p className={["text-sm", step.complete ? "text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"].join(" ")}>
-                {isDE ? step.label : step.label_en}
+                {t(`setup.steps.${step.key}` as any)}
               </p>
             </div>
           </button>

@@ -7,8 +7,6 @@ import { useTranslations } from "next-intl";
 
 export interface Step {
   key: string;
-  label: string;
-  label_en: string;
   complete: boolean;
 }
 
@@ -31,8 +29,6 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
     if (initialSteps.length > 0) setSteps(initialSteps);
   }, [initialSteps]);
 
-
-  const isDE = locale === "de" || locale === "fr";
   const totalSteps = children.length;
   const isLast = currentStep === totalSteps - 1;
 
@@ -104,7 +100,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                       i === currentStep ? "text-s-coral font-medium" : "text-s-ink/30 dark:text-s-dm-text/30",
                     ].join(" ")}
                   >
-                    {isDE ? step.label : step.label_en}
+                    {t(`setup.steps.${step.key}` as any)}
                   </span>
                 </button>
               ))}

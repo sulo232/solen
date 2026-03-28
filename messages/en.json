@@ -232,7 +232,16 @@
       "back": "Back",
       "skip": "Skip",
       "next": "Next",
-      "goLive": "Go Live"
+      "goLive": "Go Live",
+      "steps": {
+        "profile": "Salon profile",
+        "hours": "Opening hours",
+        "services": "Services",
+        "staff": "Team",
+        "schedule": "Working hours",
+        "payments": "Payments",
+        "go_live": "Go live!"
+      }
     },
     "profile": {
       "title": "Your Salon",

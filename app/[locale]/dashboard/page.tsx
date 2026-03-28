@@ -12,7 +12,9 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SetupBanner from "@/components/dashboard/SetupBanner";
 import MiniSparkline from "@/components/dashboard/MiniSparkline";
 import { containerVariants, itemVariants } from "@/lib/animations";
-import type { Booking } from "@/lib/types";
+import type { Booking, SalonCategory } from "@/lib/types";
+import { getCategoryNavGroups } from "@/lib/dashboard/category-nav";
+import { useMemo } from "react";
 
 function useCountUp(target: number, duration = 1000) {
   const prefersReduced = typeof window !== "undefined"
@@ -100,6 +102,12 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [salonName, setSalonName] = useState<string | undefined>();
   const [salonCategories, setSalonCategories] = useState<string[] | undefined>();
+
+  // Build category tool groups from registry (same source as sidebar)
+  const categoryToolGroups = useMemo(
+    () => getCategoryNavGroups((salonCategories ?? []) as SalonCategory[]),
+    [salonCategories]
+  );
   const [showCelebration, setShowCelebration] = useState(params.get("onboarded") === "1");
 
   useEffect(() => {
@@ -327,6 +335,43 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
+
+          {/* Category tool shortcuts — shown when salon has any registered categories */}
+          {categoryToolGroups.length > 0 && (
+            <div>
+              <SectionLabel>Deine Werkzeuge</SectionLabel>
+              <div className="space-y-3">
+                {categoryToolGroups.map(group => (
+                  <div key={group.category}>
+                    <p className="text-[8px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/25 mb-2">
+                      {group.category.charAt(0).toUpperCase() + group.category.slice(1)}
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {group.items.map(item => {
+                        const Icon = item.icon;
+                        const active = typeof window !== "undefined" && window.location.pathname.includes(item.href);
+                        return (
+                          <a
+                            key={item.key}
+                            href={`/${locale}${item.href}`}
+                            className="rounded-card border border-s-ink/[0.06] dark:border-white/[0.06] p-3.5 flex items-center gap-3 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-colors group"
+                          >
+                            <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
+                              style={{ background: "rgba(232,98,74,.08)" }}>
+                              <Icon size={15} className="text-s-coral" />
+                            </div>
+                            <span className="text-[11px] font-heading font-bold text-s-ink/65 dark:text-s-dm-text/65 group-hover:text-s-coral transition-colors leading-tight">
+                              {item.href.split("/").pop()?.replace(/-/g, " ")}
+                            </span>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Quick actions */}
           <div>

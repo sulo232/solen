@@ -2,7 +2,22 @@
 
 > **Priority**: P0 — Foundation for all category-specific dashboard features.
 > **Zone**: 4 (Structured) — ZERO glass, ZERO blobs, ZERO Bebas Neue, 12px MAX radius. Syne 700 + DM Sans only.
-> **Note**: This roadmap follows `ROADMAP_RULES.md` strict formatting.
+> **Depends On**: Nothing (foundation roadmap).
+
+---
+
+## R10: PRE-SCAN RESULTS
+
+Before writing this roadmap, the following codebase scans were performed:
+
+| Scan | Command | Result |
+|---|---|---|
+| Existing category nav code | `grep -rn "getCategoryNav\|categoryNav" components/ lib/` | ❌ No existing utility — safe to create |
+| DashboardLayout structure | `wc -l components/dashboard/DashboardLayout.tsx` | ~330 lines. Auth guard (lines 103-119), role-based nav (`ADMIN_NAV`, `OWNER_NAV`, `STAFF_NAV`) |
+| Existing category pages | `ls app/[locale]/dashboard/barber-ops/ app/[locale]/dashboard/nail-clients/` | ✅ Barber + Nail already exist. Coiffeur/Spa/Makeup/Waxing do NOT exist yet |
+| Middleware route allowlist | `grep -rn "dashboard" middleware.ts` | Verify new routes are allowed for salon owners |
+| Incomplete features | `cat _tasks/INCOMPLETE_FEATURES.md` | No conflicts with this roadmap |
+| i18n key conflicts | `grep -rn "dashboard.nav" messages/de.json` | No existing `dashboard.nav` namespace — safe to create |
 
 ---
 
@@ -11,9 +26,10 @@
 | Phase | Risk Level | Could Break | How to Prevent |
 |---|---|---|---|
 | Phase 1: Category detection util | 🟢 SAFE | Nothing — new util file | — |
-| Phase 2: DashboardLayout nav injection | 🔴 HIGH | Sidebar navigation for ALL dashboard users | Read current DashboardLayout.tsx in full before editing. Keep ALL existing nav items. Only ADD category-specific items conditionally. Test all 3 roles (owner, staff, admin). |
-| Phase 3: Category dashboard routing | 🟡 MEDIUM | 404 on new pages if middleware blocks | Add new dashboard paths to admin/owner allow-list in middleware.ts |
+| Phase 2: DashboardLayout nav injection | 🔴 HIGH | Sidebar navigation for ALL dashboard users | Read current `DashboardLayout.tsx` in full before editing. Keep ALL existing nav items. Only ADD category-specific items conditionally. Test all 3 roles (owner, staff, admin). |
+| Phase 3: Category dashboard routing | 🟡 MEDIUM | 404 on new pages if middleware blocks | Add new dashboard paths to admin/owner allow-list in `middleware.ts`. Exact files at risk: `middleware.ts` (path matching), `components/dashboard/DashboardLayout.tsx` (layout wrapping). |
 | Phase 4: i18n keys | 🟢 SAFE | Nothing — additive to locale files | — |
+| Phase 5: Smoke test | 🟢 SAFE | Nothing — verification only | — |
 
 ---
 
@@ -32,6 +48,8 @@
 ---
 
 ## Phase 1: Category Detection Utility
+
+> **Zone 4 constraints**: This is a pure utility (no UI), but all `labelKey` values will render in Zone 4 context. Ensure keys map to clean, uppercase-tracking eyebrow labels — no decorative copy.
 
 #### Files
 - `[NEW]` `lib/dashboard/category-nav.ts`
@@ -130,16 +148,19 @@ if (salon.categories.includes("barbershop")) {
 > - This is a pure utility — no side effects, no API calls.
 > - The `items` array for each category will grow as more features are added. Start with existing routes only.
 > - Do NOT create routes that don't exist yet — only reference existing dashboard routes (`barber-ops`, `barber-clients`, `nail-admin`, `nail-clients`). New routes are added in later roadmaps.
+> - Verify `SalonCategory` type import path — it's in `lib/types.ts`.
 
 #### Verification
 ```bash
-git add lib/dashboard/category-nav.ts && git commit -m "R-CD1-P1: category-aware nav group registry utility"
 npx tsc --noEmit
+git add lib/dashboard/category-nav.ts && git commit -m "R-CD1-P1: category-aware nav group registry utility"
 ```
 
 ---
 
 ## Phase 2: DashboardLayout Category Nav Injection
+
+> **Zone 4 constraints**: This is Zone 4 (Structured). DO NOT use glassmorphism, DO NOT use entry animations, DO NOT use Bebas Neue. Sidebar nav items use `text-[12px] font-heading font-semibold` (Syne). Eyebrow labels use `text-[8px] font-heading font-bold uppercase tracking-[.20em]`. Max border-radius: `rounded-[12px]`.
 
 #### Files
 - `[MODIFY]` `components/dashboard/DashboardLayout.tsx`
@@ -184,6 +205,8 @@ npx tsc --noEmit
 const navItems = [...getCategoryNavGroups(salon.categories)]; // Lost all existing items!
 // WRONG — using glass or animation in Zone 4
 <div className="backdrop-blur-lg bg-white/80 animate-slideIn">
+// WRONG — using Bebas Neue or rounded-xl
+<p className="font-display text-lg rounded-xl">
 ```
 
 > ⚠️ **BE CAREFUL**:
@@ -192,17 +215,22 @@ const navItems = [...getCategoryNavGroups(salon.categories)]; // Lost all existi
 > - The role-based nav switching (`ADMIN_NAV` / `OWNER_NAV` / `STAFF_NAV`) must stay.
 > - Test with a salon that has multiple categories (e.g., `["coiffeur", "barbershop"]`) — both groups should appear.
 > - Test with admin role — category groups should NOT appear for admins.
+> - Files that should NOT be touched: `lib/auth.ts`, `app/api/auth/`, any middleware auth logic.
 
 #### Verification
 ```bash
-git add components/dashboard/DashboardLayout.tsx && git commit -m "R-CD1-P2: inject category-specific nav groups into sidebar"
 npm run build
 npx tsc --noEmit
+# Test: verify import exists
+grep -rn "getCategoryNavGroups" components/dashboard/DashboardLayout.tsx
+git add components/dashboard/DashboardLayout.tsx && git commit -m "R-CD1-P2: inject category-specific nav groups into sidebar"
 ```
 
 ---
 
 ## Phase 3: Category Dashboard Page Stubs
+
+> **Zone 4 constraints**: This is Zone 4 (Structured). Pages use `rounded-[12px]` max. `bg-white dark:bg-s-dm-surface` solid surfaces. ZERO glass, ZERO animation, ZERO Bebas Neue, ZERO shadows above `shadow-s-card`.
 
 #### Files
 - `[NEW]` `app/[locale]/dashboard/coiffeur-crm/page.tsx`
@@ -212,7 +240,7 @@ npx tsc --noEmit
 
 #### Instructions
 1. Create minimal stub pages for each NEW category dashboard route.
-2. Each page imports `DashboardLayout` and renders a "Coming Soon" state using `<EmptyState>`.
+2. Each page imports `DashboardLayout` and renders a "Coming Soon" state using a dashed-border card.
 3. Use `useTranslations()` for all text — zero hardcoded strings.
 4. These are Zone 4 pages: `rounded-[12px]`, `bg-white dark:bg-s-dm-surface`, zero glass, zero animation.
 5. Do NOT create pages for `barber-ops`, `barber-clients`, `nail-admin`, `nail-clients` — they already exist.
@@ -250,9 +278,9 @@ export default function CoiffeurCrmPage() {
 
 ❌ **DON'T**
 ```tsx
-// WRONG — hardcoded German, glass, no dark mode
-<div className="backdrop-blur-xl rounded-2xl">
-  <h1>Coiffeur CRM</h1>
+// WRONG — hardcoded German, glass, no dark mode, Bebas Neue
+<div className="backdrop-blur-xl rounded-2xl shadow-xl">
+  <h1 className="font-display">Coiffeur CRM</h1>
   <p>Kommt bald</p>
 </div>
 ```
@@ -261,16 +289,27 @@ export default function CoiffeurCrmPage() {
 > - Verify middleware allows these routes for salon owners. Check `middleware.ts` for path patterns.
 > - Each page must work inside the existing `DashboardLayout` — do NOT create a separate layout.
 > - These are STUBS — they will be fleshed out in subsequent roadmaps (R-CD2 through R-CD6).
+> - Each page must have a matching icon from lucide-react (Scissors for coiffeur, Leaf for spa, Palette for makeup, Zap for waxing).
 
 #### Verification
 ```bash
-git add app/[locale]/dashboard/coiffeur-crm/ app/[locale]/dashboard/spa-admin/ app/[locale]/dashboard/makeup-admin/ app/[locale]/dashboard/waxing-admin/ && git commit -m "R-CD1-P3: stub pages for coiffeur, spa, makeup, waxing dashboard routes"
 npm run build
+# Verify new pages exist:
+ls app/[locale]/dashboard/coiffeur-crm/page.tsx
+ls app/[locale]/dashboard/spa-admin/page.tsx
+ls app/[locale]/dashboard/makeup-admin/page.tsx
+ls app/[locale]/dashboard/waxing-admin/page.tsx
+# Verify no Zone 4 violations in new pages:
+grep -rn "backdrop-blur\|glass\|Bebas\|font-display\|rounded-xl\|rounded-2xl\|rounded-3xl\|shadow-lg\|shadow-xl\|animate-" app/[locale]/dashboard/coiffeur-crm/ app/[locale]/dashboard/spa-admin/ app/[locale]/dashboard/makeup-admin/ app/[locale]/dashboard/waxing-admin/
+# Expected: 0 results
+git add app/[locale]/dashboard/coiffeur-crm/ app/[locale]/dashboard/spa-admin/ app/[locale]/dashboard/makeup-admin/ app/[locale]/dashboard/waxing-admin/ && git commit -m "R-CD1-P3: stub pages for coiffeur, spa, makeup, waxing dashboard routes"
 ```
 
 ---
 
 ## Phase 4: i18n Translation Keys
+
+> **Zone 4 constraints**: N/A (JSON data files), but all label values must be clean dashboard copy — no marketing language, no emojis.
 
 #### Files
 - `[MODIFY]` `messages/de.json`
@@ -283,7 +322,9 @@ npm run build
 2. Add stub page keys for the 4 new category pages.
 3. Keys must exist in ALL 4 locale files.
 
-#### Keys to add
+#### ✅ DO / ❌ DON'T Examples
+
+✅ **DO** — German (`de.json`):
 ```json
 {
   "dashboard": {
@@ -327,20 +368,65 @@ npm run build
 }
 ```
 
+❌ **DON'T**
+```json
+// WRONG — only adding German, forgetting EN/FR/IT
+// WRONG — overwriting the entire locale file instead of appending
+// WRONG — using emojis in labels: "🧖 Spa Tools"
+```
+
 > ⚠️ **BE CAREFUL**:
 > - Do NOT overwrite existing locale file content. APPEND these keys.
 > - Verify all 4 files have identical key structures (different translations).
 > - Use `grep -rn "dashboardCoiffeur" messages/` to verify after adding.
+> - English translations must be professional: "Barber Tools", "Nail Management", etc.
+> - French/Italian translations must be linguistically correct — do NOT use Google Translate quality.
 
 #### Verification
 ```bash
-git add messages/ && git commit -m "R-CD1-P4: i18n keys for category dashboard nav and stub pages"
+# Verify all 4 locales have the keys:
+grep -rn "dashboardCoiffeur" messages/de.json messages/en.json messages/fr.json messages/it.json
+grep -rn "dashboard.nav" messages/de.json
 npm run build
+git add messages/ && git commit -m "R-CD1-P4: i18n keys for category dashboard nav and stub pages"
 ```
 
 ---
 
-## Phase 5: Smoke Test
+## Phase 5: Post-Execution Smoke Test
+
+> **Zone 4 constraints**: Verification phase — ensures all prior phases comply with Zone 4.
+
+#### Files
+- No file changes.
+
+#### ✅ DO / ❌ DON'T Examples
+
+✅ **DO**
+```bash
+# Run the full Zone 4 compliance grep:
+grep -rn "backdrop-blur\|glass\|Bebas\|font-display\|rounded-xl\|rounded-2xl\|rounded-3xl\|shadow-lg\|shadow-xl\|animate-" \
+  lib/dashboard/ \
+  app/[locale]/dashboard/coiffeur-crm/ \
+  app/[locale]/dashboard/spa-admin/ \
+  app/[locale]/dashboard/makeup-admin/ \
+  app/[locale]/dashboard/waxing-admin/
+# Expected: 0 results
+```
+
+❌ **DON'T**
+```bash
+# WRONG — skipping the verification
+# WRONG — only checking one page instead of all four
+grep -rn "glass" app/[locale]/dashboard/coiffeur-crm/
+# Missing: spa-admin, makeup-admin, waxing-admin
+```
+
+> ⚠️ **BE CAREFUL**:
+> - ALL 4 new pages must be verified for Zone 4 compliance.
+> - Verify DashboardLayout still builds for all 3 roles (owner, staff, admin).
+> - Verify no orphaned imports were introduced.
+> - If any grep returns results, go back and fix before committing.
 
 #### Verification
 ```bash
@@ -362,8 +448,13 @@ grep -rn "getCategoryNavGroups" components/dashboard/DashboardLayout.tsx
 # Verify i18n keys in all locales:
 grep -rn "dashboardCoiffeur" messages/de.json messages/en.json messages/fr.json messages/it.json
 
-# Verify no Zone 4 violations:
-grep -rn "backdrop-blur\|glass\|Bebas\|font-display\|rounded-xl\|rounded-2xl\|rounded-3xl" app/[locale]/dashboard/coiffeur-crm/ app/[locale]/dashboard/spa-admin/ app/[locale]/dashboard/makeup-admin/ app/[locale]/dashboard/waxing-admin/
+# Verify no Zone 4 violations across ALL new files:
+grep -rn "backdrop-blur\|glass\|Bebas\|font-display\|rounded-xl\|rounded-2xl\|rounded-3xl\|shadow-lg\|shadow-xl\|animate-" \
+  lib/dashboard/ \
+  app/[locale]/dashboard/coiffeur-crm/ \
+  app/[locale]/dashboard/spa-admin/ \
+  app/[locale]/dashboard/makeup-admin/ \
+  app/[locale]/dashboard/waxing-admin/
 # Expected: 0 results
 ```
 
@@ -384,5 +475,6 @@ grep -rn "backdrop-blur\|glass\|Bebas\|font-display\|rounded-xl\|rounded-2xl\|ro
 ## R8: CLAUDE.md UPDATES
 
 After execution, update:
-- `CLAUDE.md` Section 3.2 (Directory Tree) — add `lib/dashboard/` directory entry
+- `CLAUDE.md` Section 3.2 (Directory Tree) — add `lib/dashboard/` directory entry with `category-nav.ts`
+- `CLAUDE.md` Section 6 (Schema Table) — no new tables in this roadmap
 - `_docs/category-system-map.md` §3.2 — add `lib/dashboard/category-nav.ts` as shared infrastructure

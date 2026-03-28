@@ -45,44 +45,30 @@ export async function GET(req: NextRequest) {
   const steps = [
     {
       key: "profile",
-      label: "Salonprofil",
-      label_en: "Salon profile",
       complete: !!(salon.name && salon.description_de && salon.phone),
     },
     {
       key: "hours",
-      label: "Öffnungszeiten",
-      label_en: "Opening hours",
       complete: !!hasHours,
     },
     {
       key: "services",
-      label: "Services",
-      label_en: "Services",
       complete: (serviceCount ?? 0) >= 1,
     },
     {
       key: "staff",
-      label: "Team",
-      label_en: "Team",
       complete: (staffCount ?? 0) >= 1,
     },
     {
       key: "schedule",
-      label: "Arbeitszeiten",
-      label_en: "Working hours",
       complete: (scheduleCount ?? 0) >= 1,
     },
     {
       key: "payments",
-      label: "Zahlungen",
-      label_en: "Payments",
       complete: !!salon.stripe_account_id,
     },
     {
       key: "go_live",
-      label: "Bereit!",
-      label_en: "Go live!",
       // Complete when at least profile + hours + 1 service are done
       complete: !!(salon.name && salon.description_de && hasHours && (serviceCount ?? 0) >= 1),
     },

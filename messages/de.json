@@ -232,7 +232,16 @@
       "back": "Zurück",
       "skip": "Überspringen",
       "next": "Weiter",
-      "goLive": "Salon aktivieren"
+      "goLive": "Salon aktivieren",
+      "steps": {
+        "profile": "Salonprofil",
+        "hours": "Öffnungszeiten",
+        "services": "Services",
+        "staff": "Team",
+        "schedule": "Arbeitszeiten",
+        "payments": "Zahlungen",
+        "go_live": "Bereit!"
+      }
     },
     "profile": {
       "title": "Dein Salon",

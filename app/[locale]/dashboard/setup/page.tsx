@@ -16,8 +16,6 @@ import Spinner from "@/components/ui/Spinner";
 
 interface Step {
   key: string;
-  label: string;
-  label_en: string;
   complete: boolean;
 }
 

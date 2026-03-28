@@ -16,15 +16,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 // ─────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────
-
-const CATEGORIES: { value: SalonCategory; label: string }[] = [
-  { value: "coiffeur",    label: "Coiffeur" },
-  { value: "barbershop",  label: "Barbershop" },
-  { value: "nails",       label: "Nails" },
-  { value: "spa",         label: "Spa / Massage" },
-  { value: "makeup",      label: "Make-up / Kosmetik" },
-  { value: "waxing",      label: "Waxing / Sugaring" },
-];
+import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 
 const TOTAL_STEPS = 2;
 
@@ -111,7 +103,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         <div>
           <label className="block text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">{t("step1.categories")}</label>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => (
+            {CATEGORY_OPTIONS.map((c) => (
               <button
                 key={c.value}
                 type="button"
