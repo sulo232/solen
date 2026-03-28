@@ -152,7 +152,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
       <button
         onClick={handleSave}
         disabled={!undertone || !fitzpatrick}
-        className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-40"
+        className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-40"
         aria-label={saved ? t("saved") : t("save")}
       >
         <Save size={12} />
@@ -204,7 +204,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
                   <div key={scale} className="flex-1 flex flex-col items-center gap-0.5">
                     <span className="text-[8px] tabular-nums text-s-ink/30 dark:text-s-dm-text/30">{count}</span>
                     <div
-                      className="w-full rounded-t-[3px] bg-s-amber/70 transition-all duration-300"
+                      className="w-full rounded-t-[3px] bg-s-amber/70 transition-[width] duration-[350ms]"
                       style={{ height: `${Math.max(heightPct, 4)}%` }}
                     />
                     <span className="text-[9px] font-heading font-bold text-s-ink/40 dark:text-s-dm-text/40">{scale}</span>

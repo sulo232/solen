@@ -665,6 +665,8 @@
       "discovery": "Discovery",
       "homepage": "Homepage",
       "sandbox": "Sandbox",
+      "previewBanner": "Vorschau-Modus aktiv — du siehst das Dashboard als:",
+      "previewExit": "Beenden",
       "barber_tools": "Barber-Tools",
       "barber_ops": "Barber Betrieb",
       "barber_clients": "Barber Kunden",
@@ -730,7 +732,10 @@
       "recentPurchases": "Letzte Käufe",
       "toggleActiveAriaLabel": "Paket {status}",
       "activate": "Aktivieren",
-      "deactivate": "Deaktivieren"
+      "deactivate": "Deaktivieren",
+      "createError": "Fehler beim Erstellen. Bitte erneut versuchen.",
+      "toggleError": "Status konnte nicht geändert werden.",
+      "priceMinError": "Preis muss grösser als 0 sein."
     },
     "pricing": {
       "title": "Preisänderung anfragen",
@@ -789,7 +794,10 @@
       "add": "Hinzufügen",
       "empty": "Keine Rabattzeiten eingerichtet.",
       "saveError": "Fehler beim Speichern",
-      "networkError": "Netzwerkfehler"
+      "networkError": "Netzwerkfehler",
+      "confirmDelete": "Rabattzeit wirklich löschen?",
+      "deleteError": "Fehler beim Löschen.",
+      "invalidTimes": "Endzeit muss nach Startzeit liegen."
     },
     "break_manager": {
       "title": "Pausen",
@@ -806,7 +814,11 @@
       "day_3": "Mittwoch",
       "day_4": "Donnerstag",
       "day_5": "Freitag",
-      "day_6": "Samstag"
+      "day_6": "Samstag",
+      "confirmDelete": "Pause wirklich löschen?",
+      "invalidTimes": "Endzeit muss nach Startzeit liegen.",
+      "saveError": "Fehler beim Speichern.",
+      "deleteError": "Fehler beim Löschen."
     },
     "closure_manager": {
       "title": "Feiertage & Schliessungen",
@@ -817,7 +829,11 @@
       "cancel": "Abbrechen",
       "save": "Speichern",
       "empty": "Keine Schliessungen geplant",
-      "default_reason": "Schliessung"
+      "default_reason": "Schliessung",
+      "confirmDelete": "Schliessung wirklich löschen?",
+      "invalidDates": "Enddatum muss nach Startdatum liegen.",
+      "saveError": "Fehler beim Speichern.",
+      "deleteError": "Fehler beim Löschen."
     },
     "walkin_modal": {
       "title": "Walk-in hinzufügen",
@@ -829,6 +845,26 @@
       "create": "Erstellen & SMS",
       "error": "Fehler"
     },
+    "event_booking_new": "Neuer Termin",
+    "event_booking_cancelled": "Termin storniert",
+    "event_review_new": "Neue Bewertung",
+    "event_message_new": "Neue Nachricht",
+    "event_walkin_new": "Walk-In eingereiht",
+    "timeJustNow": "Gerade eben",
+    "timeMinAgo": "Vor {n} Min.",
+    "timeHoursAgo": "Vor {n} Std.",
+    "timeDaysAgo": "Vor {n} Tagen",
+    "gallery_title": "Galerie",
+    "gallery_subtitle": "Zeige deinen Salon von der besten Seite. {count}/{max} Fotos.",
+    "gallery_upload": "Foto hochladen",
+    "gallery_empty_title": "Keine Fotos",
+    "gallery_empty_desc": "Lade hochauflösende Fotos deines Salons und deiner Arbeit hoch.",
+    "gallery_confirm_delete": "Foto wirklich löschen?",
+    "gallery_cover": "Cover",
+    "gallery_cover_overlay": "Titelbild (Cover)",
+    "gallery_max_error": "Maximal {max} Fotos erlaubt.",
+    "gallery_delete_error": "Fehler beim Löschen des Fotos.",
+    "gallery_reorder_error": "Fehler beim Speichern der Reihenfolge.",
     "noRecentActivity": "Keine aktuellen Aktivitäten",
     "showLess": "Weniger anzeigen",
     "showMore": "Mehr anzeigen",
@@ -1308,6 +1344,8 @@
     "linkCoiffeur": "Coiffeur",
     "linkLastMinute": "Last Minute",
     "linkPublicPage": "Öffentliche Seite",
+    "openAsSalon": "Als Salon öffnen",
+    "opening": "Öffne...",
     "warning": "Test-Salons sind nur für Admin-interne Tests. Sie erscheinen in der Datenbank wie echte Salons — lösche sie nach dem Test. Testbuchungen verwenden dein Admin-Profil als Kunden."
   },
   "errors": {

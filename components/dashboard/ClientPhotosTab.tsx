@@ -62,7 +62,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-6 w-24 rounded-btn" />
+        <Skeleton className="h-6 w-24 rounded-input" />
       </div>
       <div className="grid grid-cols-3 gap-2">
         {Array.from({ length: 6 }).map((_, i) => (

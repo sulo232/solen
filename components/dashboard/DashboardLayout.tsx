@@ -161,6 +161,9 @@ export default function DashboardLayout({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [previewSalonName, setPreviewSalonName] = useState<string | null>(null);
+  const [exitingPreview, setExitingPreview] = useState(false);
 
   // Global Ctrl+K / Cmd+K shortcut to open command palette
   useEffect(() => {
@@ -211,6 +214,17 @@ export default function DashboardLayout({
     return getCategoryNavGroups(salonCategories as any[]);
   }, [salonCategories]);
 
+  const exitPreview = async () => {
+    setExitingPreview(true);
+    try {
+      await fetch("/api/admin/preview-salon", { method: "DELETE" });
+      router.push(`/${locale}/dashboard/admin-sandbox`);
+      router.refresh();
+    } finally {
+      setExitingPreview(false);
+    }
+  };
+
   // Auth guard — role must be salon_owner, admin, or linked staff
   useEffect(() => {
     fetch("/api/profile")
@@ -228,6 +242,10 @@ export default function DashboardLayout({
         } else {
           setRole(p.role);
           setIsStaff(!!(p as any).staff_salon_id && p.role !== "salon_owner" && p.role !== "admin");
+          if ((p as any).is_previewing) {
+            setIsPreviewing(true);
+            setPreviewSalonName((p as any).preview_salon_name ?? null);
+          }
           setAuthChecked(true);
         }
       })
@@ -508,6 +526,24 @@ export default function DashboardLayout({
           </button>
           <NotificationCenter salonId={undefined} />
         </div>
+
+        {/* Admin preview banner */}
+        {isPreviewing && (
+          <div className="sticky top-0 z-30 flex items-center gap-3 px-4 py-2.5 bg-s-amber text-white text-xs font-heading font-semibold">
+            <FlaskConical size={13} className="shrink-0" />
+            <span className="flex-1 truncate">
+              {t("previewBanner")} <span className="font-bold">{previewSalonName}</span>
+            </span>
+            <button
+              onClick={exitPreview}
+              disabled={exitingPreview}
+              className="shrink-0 px-2.5 py-1 rounded-[6px] bg-white/20 hover:bg-white/30 transition-colors text-[11px] font-bold uppercase tracking-[.06em] disabled:opacity-60"
+              aria-label={t("previewExit")}
+            >
+              {t("previewExit")}
+            </button>
+          </div>
+        )}
 
         <main className="flex-1 px-4 sm:px-6 py-6 md:py-8">
           {children}

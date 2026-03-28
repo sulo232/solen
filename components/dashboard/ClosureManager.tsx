@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Calendar, X } from "lucide-react";
+import { Plus, Trash2, Calendar } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import { useTranslations, useLocale } from "next-intl";
 
@@ -26,11 +26,16 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const loadClosures = () => {
     fetch(`/api/salon/closures?salon_id=${salonId}`)
-      .then(r => r.json())
-      .then(d => setClosures(d.closures ?? d.items ?? []))
+      .then((r) => {
+        if (!r.ok) throw new Error("fetch failed");
+        return r.json();
+      })
+      .then((d) => setClosures(d.closures ?? d.items ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   };
@@ -38,27 +43,54 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
   useEffect(() => { loadClosures(); }, [salonId]);
 
   const handleAdd = async () => {
+    setFormError(null);
     if (!startDate || !endDate) return;
+    if (endDate < startDate) {
+      setFormError(t("invalidDates"));
+      return;
+    }
     setSaving(true);
     try {
-      await fetch("/api/salon/closures", {
+      const res = await fetch("/api/salon/closures", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ salon_id: salonId, start_date: startDate, end_date: endDate, reason: reason.trim() }),
+        body: JSON.stringify({
+          salon_id: salonId,
+          start_date: startDate,
+          end_date: endDate,
+          reason: reason.trim(),
+        }),
       });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        setFormError(d.error ?? d.message ?? t("saveError"));
+        return;
+      }
       setShowAdd(false);
       setStartDate("");
       setEndDate("");
       setReason("");
       loadClosures();
-    } catch { /* ignore */ } finally {
+    } catch {
+      setFormError(t("saveError"));
+    } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/salon/closures?id=${id}`, { method: "DELETE" });
-    setClosures(prev => prev.filter(c => c.id !== id));
+    if (!window.confirm(t("confirmDelete"))) return;
+    setDeleteError(null);
+    // Optimistic remove
+    const previous = [...closures];
+    setClosures((prev) => prev.filter((c) => c.id !== id));
+    try {
+      const res = await fetch(`/api/salon/closures?id=${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("delete failed");
+    } catch {
+      setClosures(previous);
+      setDeleteError(t("deleteError"));
+    }
   };
 
   if (loading) return <div className="flex justify-center py-6"><Spinner size="md" /></div>;
@@ -69,36 +101,61 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
         <h3 className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text flex items-center gap-2">
           <Calendar size={14} className="text-s-coral" /> {t("title")}
         </h3>
-        <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
+        <button
+          onClick={() => { setShowAdd(!showAdd); setFormError(null); }}
+          className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors"
+        >
           <Plus size={12} /> {t("add")}
         </button>
       </div>
+
+      {deleteError && (
+        <p role="alert" className="text-xs text-s-coral mb-3">{deleteError}</p>
+      )}
 
       {showAdd && (
         <div className="rounded-[16px] border border-s-coral/20 bg-s-coral/5 p-4 mb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("from")}</label>
-              <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => { setStartDate(e.target.value); setFormError(null); }}
+                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              />
             </div>
             <div>
               <label className="text-xs text-s-ink/50 dark:text-s-dm-text/50 mb-1 block">{t("to")}</label>
-              <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
-                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+              <input
+                type="date"
+                value={endDate}
+                min={startDate || undefined}
+                onChange={(e) => { setEndDate(e.target.value); setFormError(null); }}
+                className="w-full px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              />
             </div>
           </div>
           <input
             type="text"
             value={reason}
-            onChange={e => setReason(e.target.value)}
+            onChange={(e) => setReason(e.target.value)}
             placeholder={t("reason_placeholder")}
             className="w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
           />
+          {formError && <p role="alert" className="text-xs text-s-coral">{formError}</p>}
           <div className="flex gap-2">
-            <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">{t("cancel")}</button>
-            <button onClick={handleAdd} disabled={!startDate || !endDate || saving}
-              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 transition-all">
+            <button
+              onClick={() => { setShowAdd(false); setFormError(null); }}
+              className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60"
+            >
+              {t("cancel")}
+            </button>
+            <button
+              onClick={handleAdd}
+              disabled={!startDate || !endDate || saving}
+              className="px-3 py-1.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-coral-glow transition-[transform,filter] duration-150"
+            >
               {saving && <Spinner size="sm" invert />} {t("save")}
             </button>
           </div>
@@ -109,17 +166,30 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
         <p className="text-xs text-s-ink/30 dark:text-s-dm-text/30 text-center py-4">{t("empty")}</p>
       ) : (
         <div className="space-y-2">
-          {closures.map(c => {
-            const dateLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-US";
+          {closures.map((c) => {
+            const dateLocale =
+              locale === "de" ? "de-CH" :
+              locale === "fr" ? "fr-CH" :
+              locale === "it" ? "it-CH" : "en-US";
             return (
-              <div key={c.id} className="flex items-center justify-between bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3">
+              <div
+                key={c.id}
+                className="flex items-center justify-between bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/5 dark:border-white/5 p-3"
+              >
                 <div>
-                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">{c.reason || t("default_reason")}</p>
+                  <p className="text-sm font-medium text-s-ink dark:text-s-dm-text">
+                    {c.reason || t("default_reason")}
+                  </p>
                   <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40">
-                    {new Date(c.start_date).toLocaleDateString(dateLocale)} — {new Date(c.end_date).toLocaleDateString(dateLocale)}
+                    {new Date(c.start_date).toLocaleDateString(dateLocale)} —{" "}
+                    {new Date(c.end_date).toLocaleDateString(dateLocale)}
                   </p>
                 </div>
-                <button onClick={() => handleDelete(c.id)} className="p-1.5 text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors">
+                <button
+                  onClick={() => handleDelete(c.id)}
+                  aria-label={t("confirmDelete")}
+                  className="p-1.5 text-s-ink/20 dark:text-s-dm-text/20 hover:text-s-coral transition-colors"
+                >
                   <Trash2 size={14} />
                 </button>
               </div>

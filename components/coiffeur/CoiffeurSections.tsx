@@ -168,7 +168,7 @@ export function CoiffeurBelowGrid() {
               <Link
                 key={style.label}
                 href={`/${locale}/discover?q=${encodeURIComponent(style.q)}`}
-                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-warm-xl hover:-translate-y-[5px] transition-all duration-250`}
+                className={`rounded-[14px] bg-gradient-to-br ${style.color} border border-s-ink/5 dark:border-white/5 p-4 h-28 flex flex-col justify-between hover:shadow-warm-xl hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[250ms]`}
               >
                 <span className="text-[9px] font-heading font-bold uppercase tracking-[.10em] rounded-pill px-2 py-0.5 bg-white/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 self-start">
                   {style.tag}
@@ -196,7 +196,7 @@ export function CoiffeurBelowGrid() {
           </div>
           <button
             onClick={() => setAiModalOpen(true)}
-            className="shrink-0 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] transition-all shadow-warm-sm"
+            className="shrink-0 px-4 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150"
           >
             KI-Empfehlung →
           </button>

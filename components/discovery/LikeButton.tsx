@@ -74,7 +74,7 @@ export default function LikeButton({
       <Heart
         size={18}
         className={cn(
-          "transition-all duration-200",
+          "transition-[transform,color] duration-150",
           liked
             ? "fill-red-500 text-red-500"
             : "text-s-ink/30 dark:text-s-dm-text/30 group-hover:text-red-400",

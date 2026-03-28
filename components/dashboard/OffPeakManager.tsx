@@ -23,7 +23,9 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
   const t = useTranslations("dashboard.offPeak") as any;
   const tSchedule = useTranslations("dashboard.schedule");
 
-  const DAYS = (["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const).map(d => tSchedule(d).slice(0, 2));
+  const DAYS = (["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const).map(
+    (d) => tSchedule(d).slice(0, 2)
+  );
 
   const [rules, setRules] = useState<OffPeakRule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,10 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
   useEffect(() => {
     fetch(`/api/off-peak?salon_id=${salonId}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("fetch failed");
+        return r.json();
+      })
       .then((d) => setRules(d.items ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -44,6 +49,10 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
 
   const handleAdd = async () => {
     setError("");
+    if (addEnd <= addStart) {
+      setError(t("invalidTimes"));
+      return;
+    }
     setSaving(true);
     try {
       const res = await fetch("/api/off-peak", {
@@ -58,7 +67,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
         }),
       });
       if (!res.ok) {
-        const d = await res.json();
+        const d = await res.json().catch(() => ({}));
         setError(d.error ?? t("saveError"));
         return;
       }
@@ -72,13 +81,19 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
   };
 
   const handleDelete = async (id: string) => {
-    const res = await fetch("/api/off-peak", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    });
-    if (res.ok) {
-      setRules((prev) => prev.filter((r) => r.id !== id));
+    if (!window.confirm(t("confirmDelete"))) return;
+    const previous = [...rules];
+    setRules((prev) => prev.filter((r) => r.id !== id));
+    try {
+      const res = await fetch("/api/off-peak", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error("delete failed");
+    } catch {
+      setRules(previous);
+      setError(t("deleteError"));
     }
   };
 
@@ -133,7 +148,10 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
         <div className="space-y-1.5">
           <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50">{t("activeRules")}</p>
           {rules.map((r) => (
-            <div key={r.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 dark:bg-s-dm-raised rounded-btn border border-s-ink/5 dark:border-white/5">
+            <div
+              key={r.id}
+              className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 dark:bg-s-dm-raised rounded-btn border border-s-ink/5 dark:border-white/5"
+            >
               <div className="flex items-center gap-2">
                 <Clock size={13} className="text-s-sage" />
                 <span className="text-sm text-s-ink dark:text-s-dm-text">
@@ -143,7 +161,11 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
                   -{r.discount_percent}%
                 </span>
               </div>
-              <button onClick={() => handleDelete(r.id)} className="text-s-ink/30 hover:text-s-coral transition-colors dark:text-s-dm-text/30">
+              <button
+                onClick={() => handleDelete(r.id)}
+                aria-label={t("confirmDelete")}
+                className="text-s-ink/30 hover:text-s-coral transition-colors dark:text-s-dm-text/30"
+              >
                 <Trash2 size={14} />
               </button>
             </div>
@@ -158,37 +180,57 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
         <div className="flex flex-wrap gap-2 items-end">
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("day")}</label>
-            <select value={addDay} onChange={(e) => setAddDay(+e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20">
+            <select
+              value={addDay}
+              onChange={(e) => setAddDay(+e.target.value)}
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            >
               {DAYS.map((d, i) => (<option key={i} value={i}>{d}</option>))}
             </select>
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("from")}</label>
-            <input type="time" value={addStart} onChange={(e) => setAddStart(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+            <input
+              type="time"
+              value={addStart}
+              onChange={(e) => { setAddStart(e.target.value); setError(""); }}
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("to")}</label>
-            <input type="time" value={addEnd} onChange={(e) => setAddEnd(e.target.value)}
-              className="px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+            <input
+              type="time"
+              value={addEnd}
+              onChange={(e) => { setAddEnd(e.target.value); setError(""); }}
+              className="px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            />
           </div>
           <div>
             <label className="block text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mb-1">{t("discount")}</label>
             <div className="flex items-center gap-1">
-              <input type="number" min={5} max={50} step={5} value={addDiscount}
+              <input
+                type="number"
+                min={5}
+                max={50}
+                step={5}
+                value={addDiscount}
                 onChange={(e) => setAddDiscount(Math.min(50, Math.max(5, +e.target.value)))}
-                className="w-16 px-2 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm data-text bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20" />
+                className="w-16 px-2 py-1.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm data-text bg-white dark:bg-s-dm-surface text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              />
               <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40">%</span>
             </div>
           </div>
-          <button onClick={handleAdd} disabled={saving}
-            className="px-4 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1.5 transition-all">
+          <button
+            onClick={handleAdd}
+            disabled={saving}
+            className="px-4 py-1.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1.5 shadow-coral-glow transition-[transform,filter] duration-150"
+          >
             {saving && <Spinner size="sm" invert />}
             {t("add")}
           </button>
         </div>
-        {error && <p className="text-xs text-s-coral">{error}</p>}
+        {error && <p role="alert" className="text-xs text-s-coral">{error}</p>}
       </div>
 
       {rules.length === 0 && (

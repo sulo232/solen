@@ -187,11 +187,11 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button onClick={onClose} className="flex-1 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors">
+          <button onClick={onClose} className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] text-xs font-heading font-bold text-s-ink/50 hover:border-s-ink/20 transition-colors">
             {t.skip}
           </button>
           <button onClick={handleSave}
-            className="flex-1 py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+            className="flex-1 py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
             style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
             {t.save}
           </button>

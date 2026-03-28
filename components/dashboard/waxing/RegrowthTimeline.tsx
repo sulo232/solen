@@ -54,7 +54,7 @@ export default function RegrowthTimeline({ zones }: RegrowthTimelineProps) {
                 />
                 {/* Progress */}
                 <div
-                  className={`absolute top-0 left-0 h-full rounded-full transition-all duration-500 ${
+                  className={`absolute top-0 left-0 h-full rounded-full transition-[width] duration-[350ms] ${
                     isOverdue ? "bg-red-400" : isInWindow ? "bg-s-amber" : "bg-s-sage"
                   }`}
                   style={{ width: `${pct}%` }}

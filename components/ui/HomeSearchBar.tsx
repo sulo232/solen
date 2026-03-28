@@ -40,7 +40,7 @@ const CATEGORIES: { key: SalonCategory; label: string; Icon: typeof Scissors }[]
 // ─────────────────────────────────────────────────────────────────────────────
 
 const pillBase =
-  "px-3.5 py-2 min-h-[36px] rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-all duration-200 border flex items-center gap-1.5";
+  "px-3.5 py-2 min-h-[36px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150 border flex items-center gap-1.5";
 const pillActive =
   "bg-s-coral text-white border-s-coral"
   + " shadow-[0_2px_4px_rgba(232,98,74,.25),0_4px_16px_rgba(232,98,74,.15)]";
@@ -184,7 +184,7 @@ export default function HomeSearchBar() {
             
             {/* Submit Button */}
             <button type="submit" disabled={detecting}
-              className="shrink-0 ml-2 px-6 py-3 md:py-4 rounded-[10px] bg-s-coral text-white font-heading font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-all disabled:opacity-60 min-w-[100px] h-[44px] md:h-[48px]">
+              className="shrink-0 ml-2 px-6 py-3 md:py-4 rounded-pill bg-s-coral text-white font-heading font-bold text-sm md:text-[15px] uppercase tracking-[.04em] flex items-center justify-center gap-2 shadow-coral-glow hover:brightness-[1.06] hover:shadow-coral-glow-hover transition-[transform,filter] duration-150 disabled:opacity-60 min-w-[100px] h-[44px] md:h-[48px]">
               {detecting ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} aria-hidden="true" />}
               <span className="hidden sm:inline">{detecting ? "Suche..." : "Suchen"}</span>
             </button>

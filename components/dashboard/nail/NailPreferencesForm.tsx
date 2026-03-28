@@ -191,7 +191,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
       <button
         onClick={handleSave}
         disabled={saving}
-        className="flex items-center gap-2 px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50"
+        className="flex items-center gap-2 px-4 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
       >
         <Save size={14} />
         {saving ? t("saving") : t("prefs_save")}

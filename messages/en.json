@@ -654,6 +654,8 @@
       "discovery": "Discovery",
       "homepage": "Homepage",
       "sandbox": "Sandbox",
+      "previewBanner": "Preview mode active — viewing dashboard as:",
+      "previewExit": "Exit",
       "barber_tools": "Barber Tools",
       "barber_ops": "Barber Operations",
       "barber_clients": "Barber Clients",
@@ -719,7 +721,10 @@
       "recentPurchases": "Recent Purchases",
       "toggleActiveAriaLabel": "{status} package",
       "activate": "Activate",
-      "deactivate": "Deactivate"
+      "deactivate": "Deactivate",
+      "createError": "Error creating. Please try again.",
+      "toggleError": "Could not change status.",
+      "priceMinError": "Price must be greater than 0."
     },
     "pricing": {
       "title": "Request Price Adjustment",
@@ -778,7 +783,10 @@
       "add": "Add",
       "empty": "No discount times configured.",
       "saveError": "Error saving",
-      "networkError": "Network error"
+      "networkError": "Network error",
+      "confirmDelete": "Really delete this discount time?",
+      "deleteError": "Error deleting.",
+      "invalidTimes": "End time must be after start time."
     },
     "break_manager": {
       "title": "Breaks",
@@ -795,7 +803,11 @@
       "day_3": "Wednesday",
       "day_4": "Thursday",
       "day_5": "Friday",
-      "day_6": "Saturday"
+      "day_6": "Saturday",
+      "confirmDelete": "Really delete this break?",
+      "invalidTimes": "End time must be after start time.",
+      "saveError": "Error saving.",
+      "deleteError": "Error deleting."
     },
     "closure_manager": {
       "title": "Holidays & Closures",
@@ -806,7 +818,11 @@
       "cancel": "Cancel",
       "save": "Save",
       "empty": "No closures planned",
-      "default_reason": "Closure"
+      "default_reason": "Closure",
+      "confirmDelete": "Really delete this closure?",
+      "invalidDates": "End date must be after start date.",
+      "saveError": "Error saving.",
+      "deleteError": "Error deleting."
     },
     "walkin_modal": {
       "title": "Add Walk-in",
@@ -818,6 +834,26 @@
       "create": "Create & SMS",
       "error": "Error"
     },
+    "event_booking_new": "New Appointment",
+    "event_booking_cancelled": "Appointment Cancelled",
+    "event_review_new": "New Review",
+    "event_message_new": "New Message",
+    "event_walkin_new": "Walk-In Joined Queue",
+    "timeJustNow": "Just now",
+    "timeMinAgo": "{n} min ago",
+    "timeHoursAgo": "{n} hrs ago",
+    "timeDaysAgo": "{n} days ago",
+    "gallery_title": "Gallery",
+    "gallery_subtitle": "Show your salon at its best. {count}/{max} photos.",
+    "gallery_upload": "Upload Photo",
+    "gallery_empty_title": "No Photos",
+    "gallery_empty_desc": "Upload high-resolution photos of your salon and your work.",
+    "gallery_confirm_delete": "Really delete this photo?",
+    "gallery_cover": "Cover",
+    "gallery_cover_overlay": "Cover Photo",
+    "gallery_max_error": "Maximum {max} photos allowed.",
+    "gallery_delete_error": "Error deleting photo.",
+    "gallery_reorder_error": "Error saving new order.",
     "noRecentActivity": "No recent activity",
     "showLess": "Show less",
     "showMore": "Show more",
@@ -1297,6 +1333,8 @@
     "linkCoiffeur": "Coiffeur",
     "linkLastMinute": "Last Minute",
     "linkPublicPage": "Public Page",
+    "openAsSalon": "Open as Salon",
+    "opening": "Opening...",
     "warning": "Test salons exist in the real database just like real salons — delete them after testing. Seeded bookings use your admin profile as the customer."
   },
   "errors": {

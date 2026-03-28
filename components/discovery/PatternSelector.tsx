@@ -43,7 +43,7 @@ export default function PatternSelector({ category, selected, onSelect }: Patter
             key={opt.value ?? "all"}
             onClick={() => onSelect(opt.value)}
             className={cn(
-              "px-3 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-all border",
+              "px-3 py-2 rounded-pill text-[10px] font-heading font-bold uppercase tracking-[.06em] whitespace-nowrap transition-[background-color,color,box-shadow] duration-150 border",
               selected === opt.value
                 ? "border-s-coral bg-s-coral/[0.08] text-s-coral"
                 : "border-s-ink/[0.07] dark:border-white/[0.07] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-coral/40"

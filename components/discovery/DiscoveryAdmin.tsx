@@ -233,7 +233,7 @@ function SmartSearchTab() {
               <button
                 key={photo.id}
                 onClick={() => toggleSelect(photo.id)}
-                className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-all ${
+                className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-[transform,box-shadow] duration-[250ms] ${
                   selected.has(photo.id)
                     ? "border-s-coral ring-2 ring-s-coral/30"
                     : "border-transparent hover:border-s-ink/10 dark:hover:border-white/10"
@@ -391,7 +391,7 @@ function CategoryImportTab() {
             key={cat}
             onClick={() => handleImport(cat)}
             disabled={!!importing}
-            className={`flex items-center justify-center gap-2 px-3 py-3 rounded-[16px] border text-sm font-medium transition-all ${
+            className={`flex items-center justify-center gap-2 px-3 py-3 rounded-pill border text-sm font-medium transition-[transform,filter] duration-150 ${
               importing === cat
                 ? "border-s-coral bg-s-coral/10 text-s-coral"
                 : "border-s-ink/10 dark:border-white/10 text-s-ink dark:text-s-dm-text hover:border-s-coral hover:bg-s-coral/5"

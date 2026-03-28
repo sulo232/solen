@@ -74,7 +74,7 @@ export default function AiArtGenerator() {
           </div>
           <div className="h-2 rounded-pill bg-s-sand-subtle dark:bg-s-dm-text/10">
             <div
-              className={`h-full rounded-pill transition-all ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-coral"}`}
+              className={`h-full rounded-pill transition-[width] duration-[350ms] ${budget.percentUsed > 0.8 ? "bg-s-error" : "bg-s-coral"}`}
               style={{ width: `${Math.min(100, budget.percentUsed * 100)}%` }}
             />
           </div>
@@ -86,7 +86,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">{t("shape")}</span>
           <select value={shape} onChange={(e) => setShape(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {SHAPE_OPTIONS.map((s) => <option key={s.value} value={s.value}>{t(`shapes.${s.value}` as any)}</option>)}
           </select>
         </label>
@@ -94,7 +94,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">{t("style")}</span>
           <select value={style} onChange={(e) => setStyle(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {STYLE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -102,7 +102,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">{t("color")}</span>
           <select value={colors} onChange={(e) => setColors(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {COLOR_PRESETS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </label>
@@ -110,7 +110,7 @@ export default function AiArtGenerator() {
         <label className="block">
           <span className="text-xs font-medium text-s-ink/60 dark:text-s-dm-text/60">{t("skin_tone")}</span>
           <select value={skinTone} onChange={(e) => setSkinTone(e.target.value)}
-            className="mt-1 w-full px-3 py-2 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
+            className="mt-1 w-full px-3 py-2 rounded-input border border-s-ink/10 dark:border-s-dm-text/10 bg-white dark:bg-s-dm-surface text-sm text-s-ink dark:text-s-dm-text">
             {SKIN_TONE_PRESETS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>
@@ -133,7 +133,7 @@ export default function AiArtGenerator() {
 
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50">
         <Wand2 size={16} />
         {generating ? t("generating") : t("generate")}
       </button>

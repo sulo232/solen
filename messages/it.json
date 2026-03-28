@@ -631,6 +631,8 @@
       "discovery": "Scoperta",
       "homepage": "Homepage",
       "sandbox": "Sandbox",
+      "previewBanner": "Modalità anteprima attiva — visualizzando la dashboard come:",
+      "previewExit": "Esci",
       "barber_tools": "Strumenti barbiere",
       "barber_ops": "Operazioni barbiere",
       "barber_clients": "Clienti barbiere",
@@ -696,7 +698,10 @@
       "recentPurchases": "Acquisti recenti",
       "toggleActiveAriaLabel": "{status} pacchetto",
       "activate": "Attiva",
-      "deactivate": "Disattiva"
+      "deactivate": "Disattiva",
+      "createError": "Errore durante la creazione. Riprovare.",
+      "toggleError": "Impossibile cambiare stato.",
+      "priceMinError": "Il prezzo deve essere maggiore di 0."
     },
     "pricing": {
       "title": "Richiedi adeguamento prezzo",
@@ -755,7 +760,10 @@
       "add": "Aggiungi",
       "empty": "Nessun orario scontato configurato.",
       "saveError": "Errore di salvataggio",
-      "networkError": "Errore di rete"
+      "networkError": "Errore di rete",
+      "confirmDelete": "Eliminare questo orario scontato?",
+      "deleteError": "Errore durante l'eliminazione.",
+      "invalidTimes": "L'ora di fine deve essere successiva a quella di inizio."
     },
     "break_manager": {
       "title": "Pausa",
@@ -772,7 +780,11 @@
       "day_3": "Mercoledì",
       "day_4": "Giovedì",
       "day_5": "Venerdì",
-      "day_6": "Sabato"
+      "day_6": "Sabato",
+      "confirmDelete": "Eliminare questa pausa?",
+      "invalidTimes": "L'ora di fine deve essere successiva a quella di inizio.",
+      "saveError": "Errore durante il salvataggio.",
+      "deleteError": "Errore durante l'eliminazione."
     },
     "closure_manager": {
       "title": "Vacanze & Chiusure",
@@ -783,7 +795,11 @@
       "cancel": "Annulla",
       "save": "Salva",
       "empty": "Nessuna chiusura prevista",
-      "default_reason": "Chiusura"
+      "default_reason": "Chiusura",
+      "confirmDelete": "Eliminare questa chiusura?",
+      "invalidDates": "La data di fine deve essere successiva alla data di inizio.",
+      "saveError": "Errore durante il salvataggio.",
+      "deleteError": "Errore durante l'eliminazione."
     },
     "walkin_modal": {
       "title": "Aggiungi walk-in",
@@ -795,6 +811,26 @@
       "create": "Crea & SMS",
       "error": "Errore"
     },
+    "event_booking_new": "Nuovo appuntamento",
+    "event_booking_cancelled": "Appuntamento annullato",
+    "event_review_new": "Nuova recensione",
+    "event_message_new": "Nuovo messaggio",
+    "event_walkin_new": "Walk-in in coda",
+    "timeJustNow": "Adesso",
+    "timeMinAgo": "{n} min fa",
+    "timeHoursAgo": "{n} ore fa",
+    "timeDaysAgo": "{n} giorni fa",
+    "gallery_title": "Galleria",
+    "gallery_subtitle": "Mostra il tuo salone al meglio. {count}/{max} foto.",
+    "gallery_upload": "Carica foto",
+    "gallery_empty_title": "Nessuna foto",
+    "gallery_empty_desc": "Carica foto ad alta risoluzione del tuo salone.",
+    "gallery_confirm_delete": "Eliminare davvero questa foto?",
+    "gallery_cover": "Copertina",
+    "gallery_cover_overlay": "Foto di copertina",
+    "gallery_max_error": "Massimo {max} foto consentite.",
+    "gallery_delete_error": "Errore durante l'eliminazione della foto.",
+    "gallery_reorder_error": "Errore durante il salvataggio dell'ordine.",
     "noRecentActivity": "Nessuna attività recente",
     "showLess": "Mostra meno",
     "showMore": "Mostra più",
@@ -1274,6 +1310,8 @@
     "linkCoiffeur": "Coiffeur",
     "linkLastMinute": "Ultimo minuto",
     "linkPublicPage": "Pagina pubblica",
+    "openAsSalon": "Apri come salone",
+    "opening": "Apertura...",
     "warning": "I saloni di test esistono nel database reale — eliminali dopo i test. Le prenotazioni usano il tuo profilo admin come cliente."
   },
   "errors": {

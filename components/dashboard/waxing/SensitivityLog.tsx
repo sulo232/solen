@@ -114,7 +114,7 @@ export default function SensitivityLog({
         <button
           onClick={() => setShowForm(!showForm)}
           aria-label={t("add_entry")}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150"
         >
           {showForm ? <X size={12} /> : <Plus size={12} />}
           {showForm ? t("cancel") : t("add_entry")}
@@ -241,7 +241,7 @@ export default function SensitivityLog({
               onClick={handleSubmit}
               disabled={saving}
               aria-label={t("save")}
-              className="px-4 py-1.5 rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-50"
+              className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
             >
               {saving ? t("saving") : t("save")}
             </button>

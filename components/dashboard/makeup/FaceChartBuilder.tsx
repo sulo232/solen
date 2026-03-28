@@ -168,7 +168,7 @@ export default function FaceChartBuilder({
         </h3>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-[8px] text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] transition-all"
+          className="flex items-center gap-1 px-3 py-1.5 min-h-[44px] rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] bg-s-coral text-white hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150"
           aria-label={t("face_chart_new")}
         >
           <Plus size={12} />
@@ -379,7 +379,7 @@ export default function FaceChartBuilder({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all"
+              className="flex items-center gap-1 px-4 py-2 min-h-[44px] rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150"
               aria-label={saving ? t("saving") : t("save")}
             >
               <Save size={12} />

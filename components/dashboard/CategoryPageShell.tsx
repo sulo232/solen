@@ -76,7 +76,7 @@ export function CategoryPageShell({
 
       {loading ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-10 w-48 bg-s-ink/[0.06] rounded-btn" />
+          <div className="h-10 w-48 bg-s-ink/[0.06] rounded-input" />
           <div className="h-64 bg-s-ink/[0.04] rounded-[12px]" />
         </div>
       ) : !salonId ? (

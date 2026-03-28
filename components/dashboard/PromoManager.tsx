@@ -110,7 +110,7 @@ export default function PromoManager() {
         <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{t("title")}</h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           <Plus className="w-4 h-4" />
           {t("newCode")}
@@ -198,7 +198,7 @@ export default function PromoManager() {
             <button
               type="submit"
               disabled={creating}
-              className="px-4 py-2 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] transition-all disabled:opacity-60 flex items-center gap-1.5"
+              className="px-4 py-2 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] shadow-coral-glow disabled:opacity-60 flex items-center gap-1.5 transition-[transform,filter] duration-150"
             >
               {creating ? <Spinner size="sm" /> : <Plus className="w-3.5 h-3.5" />}
               {t("create")}

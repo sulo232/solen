@@ -75,7 +75,7 @@ export default function RebookAlerts({ salonId }: RebookAlertsProps) {
                 <button
                   onClick={() => sendReminder(c.client_id)}
                   disabled={sent.has(c.client_id)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold transition-all ${
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-[8px] text-[10px] font-heading font-bold transition-[transform,filter] duration-150 ${
                     sent.has(c.client_id)
                       ? "bg-s-sage/20 text-s-sage"
                       : "bg-s-amber/10 text-s-amber hover:bg-s-amber/20"

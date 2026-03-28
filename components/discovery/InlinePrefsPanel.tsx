@@ -63,7 +63,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
   const [saved, setSaved] = useState(false);
 
   const pillClass = (active: boolean) =>
-    `px-3.5 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-all cursor-pointer ${
+    `px-3.5 py-2 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] border transition-[background-color,color,box-shadow] duration-150 cursor-pointer ${
       active
         ? "border-s-coral bg-s-coral/[0.08] text-s-coral"
         : "border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/55 dark:text-s-dm-text/55 hover:border-s-coral/40"
@@ -190,13 +190,13 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={onDismiss}
-                  className="px-4 py-2.5 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-ink/20 transition-colors"
+                  className="px-4 py-2.5 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:border-s-ink/20 transition-colors"
                 >
                   {t.dismiss}
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 py-2.5 rounded-btn text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+                  className="flex-1 py-2.5 rounded-pill text-white text-[10px] font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150"
                   style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" }}
                 >
                   {t.save}

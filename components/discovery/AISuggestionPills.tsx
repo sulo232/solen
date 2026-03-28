@@ -93,7 +93,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
             onSelect(selected === label ? "" : label);
           }}
           className={[
-            "shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap transition-all",
+            "shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
             selected === label
               ? "bg-s-coral text-white shadow-[0_2px_6px_rgba(232,98,74,.3)]"
               : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10] border border-s-ink/[0.06] dark:border-white/[0.06]",

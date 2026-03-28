@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { Plus, Trash2, GripVertical, AlertCircle, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GalleryManagerProps {
   salonId: string;
@@ -17,11 +18,12 @@ export default function GalleryManager({
   coverPhotoUrl,
   onUpdate,
 }: GalleryManagerProps) {
+  const t = useTranslations("dashboard") as any;
   const [urls, setUrls] = useState<string[]>(Array.isArray(galleryUrls) ? galleryUrls : []);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const maxPhotos = 20;
 
@@ -30,7 +32,7 @@ export default function GalleryManager({
     if (!file) return;
 
     if (urls.length >= maxPhotos) {
-      setError(`Maximal ${maxPhotos} Fotos erlaubt.`);
+      setError(t("gallery_max_error", { max: maxPhotos }));
       return;
     }
 
@@ -41,15 +43,13 @@ export default function GalleryManager({
     formData.append("file", file);
 
     try {
-      // Simulate getting the session token from local storage or context if needed
-      // Assuming Next.js app handles auth automatically in the fetch wrapper if needed
       const res = await fetch(`/api/salons/${salonId}/gallery`, {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Upload failed");
       }
 
@@ -65,9 +65,8 @@ export default function GalleryManager({
   };
 
   const handleDelete = async (url: string, index: number) => {
-    if (!confirm("Foto wirklich löschen?")) return;
+    if (!window.confirm(t("gallery_confirm_delete"))) return;
 
-    // Optimistic UI update
     const prevUrls = [...urls];
     setUrls(urls.filter((_, i) => i !== index));
 
@@ -80,10 +79,9 @@ export default function GalleryManager({
 
       if (!res.ok) throw new Error("Delete failed");
       onUpdate();
-    } catch (err) {
-      // Revert on failure
+    } catch {
       setUrls(prevUrls);
-      setError("Fehler beim Löschen des Fotos.");
+      setError(t("gallery_delete_error"));
     }
   };
 
@@ -97,18 +95,14 @@ export default function GalleryManager({
 
     const newUrls = [...urls];
     const draggedItem = newUrls[draggedIndex];
-    
-    // Remove from old pos and insert at new pos
     newUrls.splice(draggedIndex, 1);
     newUrls.splice(index, 0, draggedItem);
-    
     setUrls(newUrls);
     setDraggedIndex(index);
   };
 
   const handleDragEnd = async () => {
     setDraggedIndex(null);
-    
     try {
       const res = await fetch(`/api/salons/${salonId}/gallery`, {
         method: "PATCH",
@@ -118,9 +112,8 @@ export default function GalleryManager({
 
       if (!res.ok) throw new Error("Reorder failed");
       onUpdate();
-    } catch (err) {
-      setError("Fehler beim Speichern der Reihenfolge.");
-      // Could revert here if we tracked original untouched state
+    } catch {
+      setError(t("gallery_reorder_error"));
     }
   };
 
@@ -128,12 +121,14 @@ export default function GalleryManager({
     <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/5 p-6 mb-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Galerie</h2>
+          <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">
+            {t("gallery_title")}
+          </h2>
           <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
-            Zeige deinen Salon von der besten Seite. {urls.length}/{maxPhotos} Fotos.
+            {t("gallery_subtitle", { count: urls.length, max: maxPhotos })}
           </p>
         </div>
-        
+
         <input
           type="file"
           ref={fileInputRef}
@@ -142,19 +137,20 @@ export default function GalleryManager({
           className="hidden"
           disabled={isUploading || urls.length >= maxPhotos}
         />
-        
+
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isUploading || urls.length >= maxPhotos}
-          className="flex items-center gap-2 bg-s-coral text-white px-4 py-2 rounded-btn font-semibold text-sm transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label={t("gallery_upload")}
+          className="flex items-center gap-2 bg-s-coral text-white px-4 py-2 rounded-pill font-semibold text-sm hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter] duration-150"
         >
           {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-          <span className="hidden sm:inline">Foto hochladen</span>
+          <span className="hidden sm:inline">{t("gallery_upload")}</span>
         </button>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm mb-6">
+        <div role="alert" className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm mb-6">
           <AlertCircle size={16} />
           {error}
         </div>
@@ -163,12 +159,13 @@ export default function GalleryManager({
       {urls.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-s-ink/10 dark:border-white/10 rounded-[12px]">
           <div className="w-12 h-12 bg-s-coral/10 text-s-coral rounded-full flex items-center justify-center mx-auto mb-3">
-            <Image src="/images/placeholder.jpg" width={24} height={24} className="opacity-0" alt="" />
             <Plus size={24} />
           </div>
-          <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text mb-1">Keine Fotos</h3>
+          <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text mb-1">
+            {t("gallery_empty_title")}
+          </h3>
           <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 max-w-[250px] mx-auto">
-            Lade hochauflösende Fotos deines Salons und deiner Arbeit hoch.
+            {t("gallery_empty_desc")}
           </p>
         </div>
       ) : (
@@ -191,34 +188,32 @@ export default function GalleryManager({
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
               />
-              
-              {/* Overlay controls - visible on hover */}
+
+              {/* Overlay controls */}
               <div className="absolute inset-0 bg-s-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                 <div className="flex justify-between items-start">
                   <div className="bg-white/90 dark:bg-black/90 text-s-ink dark:text-s-dm-text p-1.5 rounded-md backdrop-blur-sm cursor-grab">
                     <GripVertical size={14} />
                   </div>
-                  
                   <button
                     onClick={() => handleDelete(url, index)}
+                    aria-label={t("gallery_confirm_delete")}
                     className="bg-white/90 dark:bg-black/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-sm transition-colors"
-                    title="Foto löschen"
                   >
                     <Trash2 size={14} />
                   </button>
                 </div>
-                
                 {index === 0 && (
                   <div className="self-center bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-sm">
-                    Titelbild (Cover)
+                    {t("gallery_cover_overlay")}
                   </div>
                 )}
               </div>
-              
-              {/* Permanent Cover indicator if not hovering */}
+
+              {/* Permanent cover badge */}
               {index === 0 && (
                 <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-s-ink/80 text-white text-[10px] font-heading font-bold uppercase tracking-wider px-2 py-1 rounded-sm backdrop-blur-sm group-hover:opacity-0 transition-opacity pointer-events-none">
-                  Cover
+                  {t("gallery_cover")}
                 </div>
               )}
             </div>

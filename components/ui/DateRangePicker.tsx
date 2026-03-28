@@ -66,7 +66,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
     <div ref={ref} className={`relative ${className}`}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-3 py-2 rounded-btn border border-s-ink/[0.10] dark:border-white/10 bg-white dark:bg-s-dm-surface text-[11px] font-heading font-bold text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 rounded-pill border border-s-ink/[0.10] dark:border-white/10 bg-white dark:bg-s-dm-surface text-[11px] font-heading font-bold text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40 transition-colors duration-150"
         aria-label={displayLabel}
       >
         <Calendar size={12} className="text-s-ink/40" />
@@ -104,7 +104,7 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={from}
                 max={to}
                 onChange={(e) => setFrom(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-btn border border-s-ink/[0.10] dark:border-white/10 bg-transparent text-[11px] text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] dark:border-white/10 bg-transparent text-[11px] text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
               />
             </div>
             <div>
@@ -114,13 +114,13 @@ export function DateRangePicker({ value, onChange, className = "" }: DateRangePi
                 value={to}
                 min={from}
                 onChange={(e) => setTo(e.target.value)}
-                className="w-full px-2.5 py-1.5 rounded-btn border border-s-ink/[0.10] dark:border-white/10 bg-transparent text-[11px] text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
+                className="w-full px-2.5 py-1.5 rounded-input border border-s-ink/[0.10] dark:border-white/10 bg-transparent text-[11px] text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral"
               />
             </div>
           </div>
           <button
             onClick={applyCustom}
-            className="w-full py-1.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-all"
+            className="w-full py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
           >
             {t("applyRange")}
           </button>

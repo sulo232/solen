@@ -92,7 +92,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
       <button
         onClick={() => { setOpen((o) => !o); if (!open) fetchNotifications(); }}
         aria-label={t("notifications")}
-        className="relative w-8 h-8 rounded-btn flex items-center justify-center hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.06] transition-colors"
+        className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-ink/[0.05] dark:hover:bg-white/[0.06] transition-colors"
       >
         <Bell size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
         {unread > 0 && (
@@ -128,7 +128,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                     {t("markAllRead")}
                   </button>
                 )}
-                <button onClick={() => setOpen(false)} aria-label={t("close")} className="p-1 rounded-btn hover:bg-s-ink/[0.05] transition-colors">
+                <button onClick={() => setOpen(false)} aria-label={t("close")} className="p-1 rounded-pill hover:bg-s-ink/[0.05] transition-colors">
                   <X size={12} className="text-s-ink/40" />
                 </button>
               </div>

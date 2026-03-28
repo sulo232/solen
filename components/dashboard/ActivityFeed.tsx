@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Calendar, X, Star, MessageCircle, Users, ChevronDown
@@ -14,51 +14,17 @@ interface FeedEvent {
   meta?: Record<string, unknown>;
 }
 
-const EVENT_CONFIG: Record<string, {
-  label: string;
+const EVENT_ICON_MAP: Record<string, {
   Icon: React.ElementType;
   iconBg: string;
   iconColor: string;
 }> = {
-  booking_new: {
-    label: "Neuer Termin",
-    Icon: Calendar,
-    iconBg: "bg-s-coral/10",
-    iconColor: "text-s-coral",
-  },
-  booking_cancelled: {
-    label: "Termin storniert",
-    Icon: X,
-    iconBg: "bg-s-amber/10",
-    iconColor: "text-s-amber",
-  },
-  review_new: {
-    label: "Neue Bewertung",
-    Icon: Star,
-    iconBg: "bg-s-amber/10",
-    iconColor: "text-s-amber",
-  },
-  message_new: {
-    label: "Neue Nachricht",
-    Icon: MessageCircle,
-    iconBg: "bg-s-blue/10",
-    iconColor: "text-s-blue",
-  },
-  walkin_new: {
-    label: "Walk-In eingereiht",
-    Icon: Users,
-    iconBg: "bg-s-coral/10",
-    iconColor: "text-s-coral",
-  },
+  booking_new:       { Icon: Calendar,      iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
+  booking_cancelled: { Icon: X,             iconBg: "bg-s-amber/10", iconColor: "text-s-amber" },
+  review_new:        { Icon: Star,          iconBg: "bg-s-amber/10", iconColor: "text-s-amber" },
+  message_new:       { Icon: MessageCircle, iconBg: "bg-s-blue/10",  iconColor: "text-s-blue" },
+  walkin_new:        { Icon: Users,         iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
 };
-
-function relativeTime(dateStr: string): string {
-  const diff = Math.round((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diff < 60) return "Gerade eben";
-  if (diff < 3600) return `Vor ${Math.floor(diff / 60)} Min.`;
-  if (diff < 86400) return `Vor ${Math.floor(diff / 3600)} Std.`;
-  return `Vor ${Math.floor(diff / 86400)} Tagen`;
-}
 
 interface ActivityFeedProps {
   salonId: string;
@@ -68,25 +34,34 @@ const PREVIEW_COUNT = 8;
 const MOBILE_PREVIEW = 4;
 
 export default function ActivityFeed({ salonId }: ActivityFeedProps) {
-  const locale = useLocale();
-  const t = useTranslations("dashboard");
+  const t = useTranslations("dashboard") as any;
   const [events, setEvents] = useState<FeedEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const channelRef = useRef<ReturnType<typeof createBrowserSupabaseClient>["channel"] | null>(null);
 
-  function loadFeed() {
+  const relativeTime = useCallback((dateStr: string): string => {
+    const diff = Math.round((Date.now() - new Date(dateStr).getTime()) / 1000);
+    if (diff < 60) return t("timeJustNow");
+    if (diff < 3600) return t("timeMinAgo", { n: Math.floor(diff / 60) });
+    if (diff < 86400) return t("timeHoursAgo", { n: Math.floor(diff / 3600) });
+    return t("timeDaysAgo", { n: Math.floor(diff / 86400) });
+  }, [t]);
+
+  const loadFeed = useCallback(() => {
     fetch(`/api/dashboard/activity-feed?salon_id=${salonId}&limit=20`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("feed fetch failed");
+        return r.json();
+      })
       .then((d) => setEvents(d.events ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }
+  }, [salonId]);
 
   useEffect(() => {
     loadFeed();
 
-    // Realtime subscription — refresh feed on any relevant change
     const supabase = createBrowserSupabaseClient();
     const channel = supabase
       .channel(`activity-feed-${salonId}`)
@@ -97,8 +72,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
 
     channelRef.current = channel as unknown as ReturnType<typeof createBrowserSupabaseClient>["channel"];
     return () => { supabase.removeChannel(channel); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [salonId]);
+  }, [salonId, loadFeed]);
 
   const mobileLimit = expanded ? PREVIEW_COUNT : MOBILE_PREVIEW;
   const visibleEvents = events.slice(0, mobileLimit);
@@ -133,16 +107,20 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
     <div>
       <div className="space-y-0">
         {visibleEvents.map((event) => {
-          const cfg = EVENT_CONFIG[event.type] ?? EVENT_CONFIG.booking_new;
+          const cfg = EVENT_ICON_MAP[event.type] ?? EVENT_ICON_MAP.booking_new;
           const Icon = cfg.Icon;
+          const labelKey = `event_${event.type}` as const;
           return (
-            <div key={`${event.type}-${event.id}`} className="flex gap-3 py-2.5 border-b border-s-ink/[0.04] dark:border-white/[0.04] last:border-0">
+            <div
+              key={`${event.type}-${event.id}`}
+              className="flex gap-3 py-2.5 border-b border-s-ink/[0.04] dark:border-white/[0.04] last:border-0"
+            >
               <div className={`w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 ${cfg.iconBg}`}>
                 <Icon size={13} className={cfg.iconColor} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text leading-snug">
-                  {cfg.label}
+                  {t(labelKey)}
                   {event.type === "review_new" && !!event.meta?.rating && (
                     <span className="ml-1 text-s-amber">{"★".repeat(Number(event.meta.rating))}</span>
                   )}

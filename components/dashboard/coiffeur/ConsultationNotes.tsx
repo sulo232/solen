@@ -135,11 +135,11 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
           </div>
 
           <div className="flex gap-2">
-            <button onClick={() => { setShowAdd(false); resetForm(); }} className="px-3 py-1.5 rounded-[8px] border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60" aria-label={t("cancel")}>
+            <button onClick={() => { setShowAdd(false); resetForm(); }} className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-s-dm-text/10 text-xs text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150" aria-label={t("cancel")}>
               {t("cancel")}
             </button>
             <button onClick={handleAdd} disabled={saving}
-              className="px-3 py-1.5 rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 hover:brightness-[1.06] active:scale-[0.98] transition-all"
+              className="px-3 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150"
               aria-label={t("save")}
             >
               {saving && <Spinner size="sm" invert />} {t("save")}

@@ -92,7 +92,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
             </div>
 
             {/* Hover overlay */}
-            <div className="absolute inset-0 bg-s-ink/0 group-hover:bg-s-ink/40 transition-all duration-200 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-s-ink/0 group-hover:bg-s-ink/40 transition-opacity duration-150 flex flex-col justify-end p-2 opacity-0 group-hover:opacity-100">
               <p className="text-[9px] text-white leading-snug line-clamp-2 mb-1.5">
                 {entry.prompt_summary}
               </p>

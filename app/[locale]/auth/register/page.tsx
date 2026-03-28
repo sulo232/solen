@@ -47,7 +47,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 
       {/* Customer choice */}
       <button onClick={onCustomer}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left">
+        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(232,98,74,.10)" }}>
           <User size={20} className="text-s-coral" />
@@ -61,7 +61,7 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
 
       {/* Salon choice */}
       <button onClick={onSalon}
-        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-all text-left">
+        className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40 hover:bg-s-coral/[0.03] transition-[border-color,background-color,box-shadow] duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0"
           style={{ background: "rgba(212,135,10,.10)" }}>
           <Building2 size={20} className="text-s-amber" />
@@ -211,7 +211,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
       <button
         type="submit"
         disabled={!email || !password || (isSalon ? !salonName : !birthday) || saving}
-        className="w-full py-4 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full py-4 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-coral-glow"
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
         {saving && <Spinner size="sm" invert />}
         Registrieren
@@ -277,7 +277,7 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
           placeholder="Avatar-URL (optional)"
           value={avatarUrl}
           onChange={(e) => setAvatarUrl(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+          className="flex-1 px-3 py-2 rounded-input border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] duration-150"
         />
       </div>
 
@@ -287,20 +287,20 @@ function Step1({ onNext }: { onNext: (data: { display_name: string; bio: string;
         required
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all"
+        className="px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] duration-150"
       />
       <textarea
         placeholder="Kurze Bio (optional)"
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         rows={3}
-        className="px-4 py-2.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-all resize-none"
+        className="px-4 py-2.5 rounded-input border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink dark:text-s-dm-text bg-white dark:bg-s-dm-surface outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/10 transition-[border-color,box-shadow] duration-150 resize-none"
       />
 
       <button
         type="submit"
         disabled={!name || saving}
-        className="w-full py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+        className="w-full py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
       >
         {saving && <Spinner size="sm" invert />}
         Weiter
@@ -349,7 +349,7 @@ function SelectPill<T extends string>({
           type="button"
           onClick={() => onChange(o.value)}
           className={[
-            "flex items-center gap-2 px-3.5 py-2.5 rounded-btn border text-xs font-heading font-semibold transition-all duration-150",
+            "flex items-center gap-2 px-3.5 py-2.5 rounded-pill border text-xs font-heading font-semibold transition-[background-color,color,border-color] duration-150",
             value === o.value
               ? "border-s-coral bg-s-coral/[0.08] text-s-coral font-bold"
               : "border-s-ink/[0.08] dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral/40 hover:text-s-coral",
@@ -409,14 +409,14 @@ function Step2({ onNext }: { onNext: () => void }) {
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-[background-color,color,border-color] duration-150"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
+          className="flex-1 py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-sm"
         >
           {saving && <Spinner size="sm" invert />}
           Weiter
@@ -508,14 +508,14 @@ function Step3({ onComplete }: { onComplete: () => void }) {
         <button
           type="button"
           onClick={onComplete}
-          className="flex-1 py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors"
+          className="flex-1 py-3 rounded-pill border border-s-ink/10 dark:border-white/10 text-sm font-body text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-[background-color,color,border-color] duration-150"
         >
           Überspringen
         </button>
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 py-3 rounded-btn bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
+          className="flex-1 py-3 rounded-pill bg-s-coral text-white font-body font-semibold text-sm hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2 shadow-warm-md"
         >
           {saving && <Spinner size="sm" invert />}
           Fertig
@@ -634,7 +634,7 @@ export default function RegisterPage() {
           <div className="mb-5 px-1">
             <div className="flex gap-1">
               {[1, 2, 3].map((s) => (
-                <div key={s} className="flex-1 h-1 rounded-full transition-all duration-300"
+                <div key={s} className="flex-1 h-1 rounded-full transition-[width] duration-[350ms]"
                   style={{ background: (s as number) <= (step as number) ? "#E8624A" : "rgba(26,18,9,.08)" }} />
               ))}
             </div>

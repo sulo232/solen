@@ -73,7 +73,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 px-2 py-1.5 min-h-12 min-w-12 justify-center rounded-btn text-sm font-medium text-s-ink/70 hover:text-s-ink dark:text-s-dm-text/70 dark:hover:text-s-dm-text transition-colors"
+        className="flex items-center gap-1.5 px-2 py-1.5 min-h-12 min-w-12 justify-center rounded-pill text-sm font-medium text-s-ink/70 hover:text-s-ink dark:text-s-dm-text/70 dark:hover:text-s-dm-text transition-colors"
         aria-label="Sprache wählen"
         aria-expanded={open}
       >

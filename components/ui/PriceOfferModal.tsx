@@ -57,7 +57,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("descPlaceholder")}
-            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+            className="w-full px-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-input bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             autoFocus
           />
         </div>
@@ -77,7 +77,7 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-btn bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-s-ink/10 dark:border-white/10 rounded-input bg-white dark:bg-s-dm-surface dark:text-s-dm-text focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20"
             />
           </div>
         </div>
@@ -89,13 +89,13 @@ export default function PriceOfferModal({ open, onClose, onSubmit }: PriceOfferM
         <div className="flex gap-3 justify-end pt-2">
           <button
             onClick={handleClose}
-            className="px-4 py-2 text-sm rounded-btn border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+            className="px-4 py-2 text-sm rounded-pill border border-s-ink/10 dark:border-white/10 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-ink dark:hover:text-s-dm-text transition-colors duration-150"
           >
             {t("cancel")}
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 text-sm rounded-btn active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-all shadow-warm-sm"
+            className="px-4 py-2 text-sm rounded-pill active:scale-[0.98] bg-s-coral text-white hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-coral-glow"
           >
             {t("send")}
           </button>

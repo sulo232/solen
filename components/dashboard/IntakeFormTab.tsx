@@ -169,9 +169,9 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
 
           <div className="flex gap-2">
             <button onClick={() => { setShowForm(false); setAiRec(null); }}
-              className="px-3 py-1.5 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
+              className="px-3 py-1.5 rounded-pill border border-s-ink/10 dark:border-white/10 text-xs text-s-ink/60 dark:text-s-dm-text/60">Abbrechen</button>
             <button onClick={handleSave} disabled={saving}
-              className="px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 transition-all">
+              className="px-3 py-1.5 rounded-pill active:scale-[0.98] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] disabled:opacity-50 flex items-center gap-1 shadow-coral-glow transition-[transform,filter] duration-150">
               {saving && <Spinner size="sm" invert />} Speichern
             </button>
           </div>

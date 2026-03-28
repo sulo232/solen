@@ -612,6 +612,8 @@
       "discovery": "Découverte",
       "homepage": "Page d'accueil",
       "sandbox": "Sandbox",
+      "previewBanner": "Mode aperçu actif — affichage du tableau de bord en tant que :",
+      "previewExit": "Quitter",
       "barber_tools": "Outils barbier",
       "barber_ops": "Opérations barbier",
       "barber_clients": "Clients barbier",
@@ -677,7 +679,10 @@
       "recentPurchases": "Derniers achats",
       "toggleActiveAriaLabel": "{status} forfait",
       "activate": "Activer",
-      "deactivate": "Désactiver"
+      "deactivate": "Désactiver",
+      "createError": "Erreur lors de la création. Veuillez réessayer.",
+      "toggleError": "Impossible de changer le statut.",
+      "priceMinError": "Le prix doit être supérieur à 0."
     },
     "pricing": {
       "title": "Demander un ajustement de prix",
@@ -736,7 +741,10 @@
       "add": "Ajouter",
       "empty": "Aucun créneau réduit configuré.",
       "saveError": "Erreur d'enregistrement",
-      "networkError": "Erreur réseau"
+      "networkError": "Erreur réseau",
+      "confirmDelete": "Supprimer ce créneau réduit ?",
+      "deleteError": "Erreur lors de la suppression.",
+      "invalidTimes": "L'heure de fin doit être après l'heure de début."
     },
     "barber_leaderboard": {
       "title": "Classement Barber",
@@ -772,7 +780,11 @@
       "day_3": "Mercredi",
       "day_4": "Jeudi",
       "day_5": "Vendredi",
-      "day_6": "Samedi"
+      "day_6": "Samedi",
+      "confirmDelete": "Supprimer cette pause ?",
+      "invalidTimes": "L'heure de fin doit être après l'heure de début.",
+      "saveError": "Erreur lors de l'enregistrement.",
+      "deleteError": "Erreur lors de la suppression."
     },
     "closure_manager": {
       "title": "Jours fériés & Fermetures",
@@ -783,7 +795,11 @@
       "cancel": "Annuler",
       "save": "Enregistrer",
       "empty": "Aucune fermeture prévue",
-      "default_reason": "Fermeture"
+      "default_reason": "Fermeture",
+      "confirmDelete": "Supprimer cette fermeture ?",
+      "invalidDates": "La date de fin doit être après la date de début.",
+      "saveError": "Erreur lors de l'enregistrement.",
+      "deleteError": "Erreur lors de la suppression."
     },
     "walkin_modal": {
       "title": "Ajouter un walk-in",
@@ -795,6 +811,26 @@
       "create": "Créer & SMS",
       "error": "Erreur"
     },
+    "event_booking_new": "Nouveau rendez-vous",
+    "event_booking_cancelled": "Rendez-vous annulé",
+    "event_review_new": "Nouvel avis",
+    "event_message_new": "Nouveau message",
+    "event_walkin_new": "Walk-in en file d'attente",
+    "timeJustNow": "À l'instant",
+    "timeMinAgo": "Il y a {n} min",
+    "timeHoursAgo": "Il y a {n} h",
+    "timeDaysAgo": "Il y a {n} j",
+    "gallery_title": "Galerie",
+    "gallery_subtitle": "Montrez votre salon sous son meilleur jour. {count}/{max} photos.",
+    "gallery_upload": "Télécharger une photo",
+    "gallery_empty_title": "Aucune photo",
+    "gallery_empty_desc": "Téléchargez des photos haute résolution de votre salon.",
+    "gallery_confirm_delete": "Supprimer cette photo ?",
+    "gallery_cover": "Couverture",
+    "gallery_cover_overlay": "Photo de couverture",
+    "gallery_max_error": "Maximum {max} photos autorisées.",
+    "gallery_delete_error": "Erreur lors de la suppression.",
+    "gallery_reorder_error": "Erreur lors de la sauvegarde de l'ordre.",
     "noRecentActivity": "Aucune activité récente",
     "showLess": "Afficher moins",
     "showMore": "Afficher plus",
@@ -1274,6 +1310,8 @@
     "linkCoiffeur": "Coiffeur",
     "linkLastMinute": "Dernière minute",
     "linkPublicPage": "Page publique",
+    "openAsSalon": "Ouvrir en tant que salon",
+    "opening": "Ouverture...",
     "warning": "Les salons de test existent dans la vraie base de données — supprimez-les après les tests."
   },
   "errors": {

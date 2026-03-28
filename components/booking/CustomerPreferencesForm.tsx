@@ -118,7 +118,7 @@ export default function CustomerPreferencesForm({
                 key={option}
                 type="button"
                 onClick={() => setStylistGender(option)}
-                className={`flex-1 px-4 py-3 rounded-input border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-all ${
+                className={`flex-1 px-4 py-3 rounded-pill border text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[border-color,background-color,box-shadow,color] duration-150 ${
                   stylistGender === option
                     ? "border-s-coral bg-s-coral text-white shadow-warm-md"
                     : "border-s-ink/[0.08] text-s-ink/60 hover:border-s-coral/40"
@@ -200,7 +200,7 @@ export default function CustomerPreferencesForm({
             <button
               type="button"
               onClick={onSkip}
-              className="flex-1 px-5 py-3.5 rounded-btn border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-ink/20 transition-colors"
+              className="flex-1 px-5 py-3.5 rounded-pill border border-s-ink/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,border-color,color] duration-150"
             >
               {t("skip")}
             </button>
@@ -211,7 +211,7 @@ export default function CustomerPreferencesForm({
             text={saving ? t("saving") : t("save")}
             className={`${
               showSkip ? "flex-1" : "w-full"
-            } py-3.5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60`}
+            } py-3.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-60`}
           />
         </div>
       </form>

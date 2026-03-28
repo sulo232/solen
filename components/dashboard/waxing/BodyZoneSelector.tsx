@@ -247,7 +247,7 @@ export default function BodyZoneSelector({
           onClick={save}
           disabled={saving}
           aria-label={t("save")}
-          className="px-4 py-1.5 rounded-[8px] bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-50"
+          className="px-4 py-1.5 rounded-pill bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] shadow-coral-glow transition-[transform,filter] duration-150 disabled:opacity-50"
         >
           {saving ? t("saving") : t("save")}
         </button>

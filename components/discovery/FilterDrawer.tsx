@@ -74,13 +74,13 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             <div className="px-5 py-4 border-t border-s-ink/[0.06] dark:border-white/[0.06] flex gap-2">
               <button
                 onClick={() => { props.onReset(); setOpen(false); }}
-                className="flex-1 py-3 rounded-btn border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-ink/20 transition-colors"
+                className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-xs font-heading font-bold text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-ink/20 transition-colors"
               >
                 Zurücksetzen
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="flex-1 py-3 rounded-btn text-white text-xs font-heading font-bold active:scale-[0.98] transition-all"
+                className="flex-1 py-3 rounded-pill text-white text-xs font-heading font-bold active:scale-[0.98] transition-[transform,filter] duration-150 shadow-coral-glow"
                 style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
               >
                 Anwenden
