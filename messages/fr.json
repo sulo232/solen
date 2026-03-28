@@ -41,7 +41,8 @@
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
       "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
-      "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?"
+      "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?",
+      "bookings": "Réservations"
     },
     "cta": {
       "findSalon": "Trouver un salon",
@@ -861,7 +862,27 @@
     "forecastTitle": "Prévision de revenus",
     "forecastSubtitle": "4 prochaines semaines (estimation)",
     "forecastDisclaimer": "Basé sur les données historiques",
-    "forecastEstimated": "Estimé"
+    "forecastEstimated": "Estimé",
+    "forecastRevenue": "Revenus",
+    "forecastProjection": "Prévision",
+    "justNow": "À l'instant",
+    "minutesAgo": "Il y a {count} min",
+    "hoursAgo": "Il y a {count} h",
+    "daysAgo": "Il y a {count} jours"
+  },
+  "salonAboutEditor": {
+    "title": "À propos",
+    "description": "Décrivez votre salon. Ce texte apparaît sur votre page de profil.",
+    "save_button": "Enregistrer",
+    "success_message": "Enregistré avec succès.",
+    "error_save": "Erreur lors de l'enregistrement",
+    "error_generic": "Une erreur s'est produite",
+    "placeholder": "Bienvenue dans notre salon ! Nous sommes spécialisés dans..."
+  },
+  "categoryPageShell": {
+    "salon_not_loaded": "Profil du salon non chargé",
+    "select_client": "Sélectionner un client",
+    "select_client_to_continue": "Sélectionnez un client pour continuer"
   },
   "dashboardCoiffeur": {
     "eyebrow": "Coiffeur",

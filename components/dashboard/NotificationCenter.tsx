@@ -30,17 +30,20 @@ const TYPE_CONFIG: Record<string, { Icon: React.ElementType; iconBg: string; ico
   verification: { Icon: ShieldAlert, iconBg: "bg-s-coral/10", iconColor: "text-s-coral" },
 };
 
-function relativeTime(dateStr: string): string {
-  const diff = Math.round((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diff < 60) return "Gerade eben";
-  if (diff < 3600) return `Vor ${Math.floor(diff / 60)} Min.`;
-  if (diff < 86400) return `Vor ${Math.floor(diff / 3600)} Std.`;
-  return `Vor ${Math.floor(diff / 86400)} Tagen`;
+function makeRelativeTime(t: (key: string, opts?: Record<string, unknown>) => string) {
+  return function relativeTime(dateStr: string): string {
+    const diff = Math.round((Date.now() - new Date(dateStr).getTime()) / 1000);
+    if (diff < 60) return t("justNow");
+    if (diff < 3600) return t("minutesAgo", { count: Math.floor(diff / 60) });
+    if (diff < 86400) return t("hoursAgo", { count: Math.floor(diff / 3600) });
+    return t("daysAgo", { count: Math.floor(diff / 86400) });
+  };
 }
 
 export default function NotificationCenter({ salonId, unreadCount = 0, onCountChange }: NotificationCenterProps) {
   const locale = useLocale();
   const t = useTranslations("dashboard");
+  const relativeTime = makeRelativeTime(t as any);
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,7 +62,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
     if (!salonId) return;
     setLoading(true);
     fetch(`/api/notifications?salon_id=${salonId}&limit=20`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error("fetch failed"); return r.json(); })
       .then((d) => {
         setNotifications(d.notifications ?? []);
         const unread = (d.notifications ?? []).filter((n: Notification) => !n.read).length;

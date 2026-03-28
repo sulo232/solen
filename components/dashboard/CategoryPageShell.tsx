@@ -1,6 +1,9 @@
 "use client";
 
+"use client";
+
 import { useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useSalonProfile } from "@/hooks/useSalonProfile";
 
@@ -33,6 +36,7 @@ export function CategoryPageShell({
   clientSelector,
   defaultTab = 0,
 }: CategoryPageShellProps) {
+  const t = useTranslations("categoryPageShell") as any;
   const { salonId, salonName, salonCategories, loading } = useSalonProfile();
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [clientId, setClientId] = useState("");
@@ -64,7 +68,7 @@ export function CategoryPageShell({
               className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-[12px] text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-colors ${
                 activeTab === idx
                   ? "bg-s-coral text-white"
-                  : "bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-ink dark:hover:text-s-dm-text"
+                  : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] text-s-ink/55 dark:text-s-dm-text/55 hover:text-s-ink dark:hover:text-s-dm-text"
               }`}
             >
               {Icon && <Icon size={12} />}
@@ -80,26 +84,26 @@ export function CategoryPageShell({
           <div className="h-64 bg-s-ink/[0.04] rounded-[12px]" />
         </div>
       ) : !salonId ? (
-        <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
+        <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-[--raised] dark:bg-s-dm-surface">
           <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">
-            Salon-Profil nicht geladen
+            {t("salon_not_loaded")}
           </p>
         </div>
       ) : (
         <div className="space-y-4">
           {showClientSelector && clientSelector && (
-            <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
+            <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] p-4">
               <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/35 mb-2">
-                Kunde auswählen
+                {t("select_client")}
               </p>
               {clientSelector(salonId, clientId, setClientId)}
             </div>
           )}
 
           {activeTabDef?.needsClient && !clientId ? (
-            <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-white dark:bg-s-dm-surface">
+            <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-12 text-center bg-[--raised] dark:bg-s-dm-surface">
               <p className="text-xs font-heading text-s-ink/30 uppercase tracking-[.10em]">
-                Kunden auswählen, um weiterzufahren
+                {t("select_client_to_continue")}
               </p>
             </div>
           ) : (

@@ -41,7 +41,8 @@
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
       "nextBooking": "Your next appointment: {date} at {salon}",
-      "welcomeBack": "Welcome back — what are you looking for today?"
+      "welcomeBack": "Welcome back — what are you looking for today?",
+      "bookings": "Bookings"
     },
     "cta": {
       "findSalon": "Find salon",
@@ -884,7 +885,27 @@
     "forecastTitle": "Revenue Forecast",
     "forecastSubtitle": "Next 4 weeks (estimate)",
     "forecastDisclaimer": "Based on historical booking data",
-    "forecastEstimated": "Estimated"
+    "forecastEstimated": "Estimated",
+    "forecastRevenue": "Revenue",
+    "forecastProjection": "Forecast",
+    "justNow": "Just now",
+    "minutesAgo": "{count} min ago",
+    "hoursAgo": "{count} hr ago",
+    "daysAgo": "{count} days ago"
+  },
+  "salonAboutEditor": {
+    "title": "About us",
+    "description": "Describe your salon. This text appears on your profile page.",
+    "save_button": "Save",
+    "success_message": "Successfully saved.",
+    "error_save": "Error saving",
+    "error_generic": "An error occurred",
+    "placeholder": "Welcome to our salon! We specialise in..."
+  },
+  "categoryPageShell": {
+    "salon_not_loaded": "Salon profile not loaded",
+    "select_client": "Select client",
+    "select_client_to_continue": "Select a client to continue"
   },
   "dashboardCoiffeur": {
     "eyebrow": "Coiffeur",

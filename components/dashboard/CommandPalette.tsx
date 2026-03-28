@@ -98,11 +98,12 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4"
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-[200] flex items-start justify-center pt-[10vh] px-4 bg-s-ink/50 backdrop-blur-[4px]"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      style={{ background: "rgba(26,18,9,0.5)", backdropFilter: "blur(4px)" }}
     >
-      <div className="w-full max-w-[560px] bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.08] dark:border-white/[0.08] shadow-[0_20px_60px_rgba(26,18,9,0.2)] overflow-hidden">
+      <div className="w-full max-w-[560px] bg-[--raised] dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.08] dark:border-white/[0.08] shadow-[0_20px_60px_rgba(26,18,9,0.2)] overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06] dark:border-white/[0.06]">
           <Search size={15} className="text-s-ink/30 shrink-0" />

@@ -23,11 +23,13 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/analytics/referrals?salon_id=${salonId}`)
-      .then((r) => r.json())
-      .then((d) => setStats(d))
+      .then((r) => { if (!r.ok || cancelled) return null; return r.json(); })
+      .then((d) => { if (!cancelled && d) setStats(d); })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [salonId]);
 
   if (loading) return <div className="flex justify-center py-6"><Spinner size="md" /></div>;

@@ -178,7 +178,7 @@ export default function GalleryManager({
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
               className={`group relative aspect-[4/3] rounded-[12px] overflow-hidden border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-surface cursor-grab active:cursor-grabbing ${
-                draggedIndex === index ? "opacity-50 scale-95" : "opacity-100 transition-all"
+                draggedIndex === index ? "opacity-50 scale-95" : "opacity-100 transition-[opacity,transform] duration-150"
               }`}
             >
               <Image

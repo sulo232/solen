@@ -30,14 +30,16 @@ export default function PriceAdjustmentModal({
 
   // Check for existing pending dispute
   useEffect(() => {
+    let cancelled = false;
     fetch(`/api/bookings/${bookingId}/dispute`)
-      .then(r => r.json())
+      .then(r => { if (!r.ok || cancelled) return null; return r.json(); })
       .then(d => {
-        if (d.dispute && d.dispute.status === "pending") {
+        if (!cancelled && d?.dispute && d.dispute.status === "pending") {
           setPendingDispute(d.dispute);
         }
       })
       .catch(() => {});
+    return () => { cancelled = true; };
   }, [bookingId]);
 
   useEffect(() => {

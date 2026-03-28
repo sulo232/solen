@@ -47,6 +47,7 @@ export default function PromoManager() {
   const fetchCodes = async () => {
     try {
       const res = await fetch("/api/promo");
+      if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
       setCodes(data.codes ?? []);
     } catch {

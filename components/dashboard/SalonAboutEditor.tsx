@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { AlertCircle, CheckCircle2, Save, Loader2 } from "lucide-react";
 
 interface SalonAboutEditorProps {
@@ -9,6 +10,7 @@ interface SalonAboutEditorProps {
 }
 
 export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorProps) {
+  const t = useTranslations("salonAboutEditor") as any;
   const [activeLang, setActiveLang] = useState<"de" | "en" | "fr" | "it">("de");
   const [texts, setTexts] = useState({
     de: salon.about_text_de || "",
@@ -16,17 +18,17 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
     fr: salon.about_text_fr || "",
     it: salon.about_text_it || "",
   });
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   const maxLength = 500;
-  
+
   const handleSave = async () => {
     setIsSaving(true);
     setStatus("idle");
-    
+
     try {
       const res = await fetch("/api/salons/mine", {
         method: "PATCH",
@@ -38,46 +40,54 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           about_text_it: texts.it,
         }),
       });
-      
-      if (!res.ok) throw new Error("Fehler beim Speichern");
-      
+
+      if (!res.ok) throw new Error(t("error_save"));
+
       setStatus("success");
       onUpdate();
-      
+
       // Auto-hide success message
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err: any) {
       setStatus("error");
-      setErrorMsg(err.message || "Es ist ein Fehler aufgetreten");
+      setErrorMsg(err.message || t("error_generic"));
     } finally {
       setIsSaving(false);
     }
   };
 
+  const LANGS = [
+    { id: "de", label: "Deutsch" },
+    { id: "en", label: "English" },
+    { id: "fr", label: "Français" },
+    { id: "it", label: "Italiano" },
+  ] as const;
+
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/5 p-6 mb-8">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[24px] border border-s-ink/5 dark:border-white/5 p-6 mb-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">Über uns</h2>
+          <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">{t("title")}</h2>
           <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50">
-            Beschreibe deinen Salon. Dieser Text erscheint auf deiner Profilseite.
+            {t("description")}
           </p>
         </div>
-        
+
         <button
           onClick={handleSave}
           disabled={isSaving}
+          aria-label={t("save_button")}
           className="flex items-center justify-center gap-2 bg-s-coral text-white py-2 px-5 rounded-pill font-heading font-bold text-[11px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-coral-glow"
         >
           {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-          Speichern
+          {t("save_button")}
         </button>
       </div>
 
       {status === "success" && (
         <div className="flex items-center gap-2 bg-s-success-bg text-s-success px-3 py-2 rounded-input text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-1 duration-[200ms]">
           <CheckCircle2 size={14} />
-          Erfolgreich gespeichert.
+          {t("success_message")}
         </div>
       )}
 
@@ -90,16 +100,12 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
 
       {/* Language Tabs */}
       <div className="flex gap-2 mb-4 border-b border-s-ink/5 dark:border-white/5 pb-2 overflow-x-auto no-scrollbar">
-        {[
-          { id: "de", label: "Deutsch" },
-          { id: "en", label: "English" },
-          { id: "fr", label: "Français" },
-          { id: "it", label: "Italiano" }
-        ].map((l) => (
+        {LANGS.map((l) => (
           <button
             key={l.id}
-            onClick={() => setActiveLang(l.id as any)}
-            className={`px-3 py-1.5 text-xs font-heading font-semibold uppercase tracking-wider rounded-md transition-colors whitespace-nowrap ${
+            onClick={() => setActiveLang(l.id)}
+            aria-pressed={activeLang === l.id}
+            className={`px-3 py-1.5 text-xs font-heading font-semibold uppercase tracking-wider rounded-md transition-colors duration-150 whitespace-nowrap ${
               activeLang === l.id
                 ? "bg-s-ink/5 dark:bg-white/10 text-s-ink dark:text-white"
                 : "text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink hover:bg-s-ink/5 dark:hover:text-s-dm-text"
@@ -116,7 +122,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           value={texts[activeLang]}
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}
           maxLength={maxLength}
-          placeholder="Willkommen in unserem Salon! Wir spezialisieren uns auf..."
+          placeholder={t("placeholder")}
           className="w-full h-32 p-4 rounded-input border border-s-ink/10 dark:border-white/10 bg-s-bg-surface dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:ring-2 focus:ring-s-coral/15 focus:border-s-coral resize-none transition-[border-color,box-shadow] duration-150 placeholder:text-s-ink/30 dark:placeholder:text-s-dm-text/30"
         />
         <div className="absolute bottom-3 right-3 text-[10px] font-medium text-s-ink/30 dark:text-s-dm-text/30">

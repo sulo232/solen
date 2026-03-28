@@ -62,7 +62,7 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
   ];
 
   return (
-    <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-[8px] bg-s-amber/10 flex items-center justify-center">
@@ -89,7 +89,7 @@ export default function ForecastWidget({ data }: ForecastWidgetProps) {
           <XAxis dataKey="label" tick={{ fontSize: 10, fill: "rgba(26,18,9,0.35)" }} />
           <YAxis tick={{ fontSize: 10, fill: "rgba(26,18,9,0.35)" }} tickFormatter={(v) => `${v}`} width={36} />
           <Tooltip
-            formatter={(v: number, name: string) => [`CHF ${v}`, name === "revenue" ? "Umsatz" : "Prognose"]}
+            formatter={(v: number, name: string) => [`CHF ${v}`, name === "revenue" ? t("forecastRevenue") : t("forecastProjection")]}
             contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid rgba(26,18,9,0.08)" }}
           />
           <Bar dataKey="revenue" fill="#E8624A" radius={[4, 4, 0, 0]} maxBarSize={28} name="revenue" />
