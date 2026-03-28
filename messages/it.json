@@ -25,7 +25,11 @@
     "logout": "Esci",
     "messages": "Messaggi",
     "saved": "Salvati",
-    "registerSalon": "Registra il tuo salone"
+    "registerSalon": "Registra il tuo salone",
+    "homeLink": "Solen.ch – Vai alla homepage",
+    "menuOpen": "Apri il menu",
+    "menuClose": "Chiudi il menu",
+    "categories": "Categorie"
   },
   "home": {
     "hero_title": "Il tuo salone a Basilea",

@@ -74,12 +74,12 @@ import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "COIFFEUR",   count: "42",  Icon: CoiffeurIcon, color: "text-s-coral", bg: "rgba(232,98,74,.05)" },
-  { key: "barbershop", label: "BARBER",     count: "18",  Icon: BarberIcon,   color: "text-s-ink", bg: "rgba(26,18,9,.05)" },
-  { key: "nails",      label: "NAILS",      count: "24",  Icon: NailsIcon,    color: "text-s-amber", bg: "rgba(242,193,68,.05)" },
-  { key: "spa",        label: "SPA",        count: "11",  Icon: SpaIcon,      color: "text-[#7BA688]", bg: "rgba(123,166,136,.05)" },
-  { key: "makeup",     label: "MAKEUP",     count: "8",   Icon: MakeupIcon,   color: "text-[#C9A96E]", bg: "rgba(201,169,110,.05)" },
-  { key: "waxing",     label: "WAXING",     count: "15",  Icon: WaxingIcon,   color: "text-[#4A1E3C]", bg: "rgba(74,30,60,.05)" },
+  { key: "coiffeur",   label: "COIFFEUR",   count: "42",  Icon: CoiffeurIcon, color: "text-s-coral",       bgClass: "bg-s-coral/[0.08] dark:bg-s-coral/[0.15]" },
+  { key: "barbershop", label: "BARBER",     count: "18",  Icon: BarberIcon,   color: "text-s-ink",         bgClass: "bg-s-ink/[0.06] dark:bg-white/[0.08]" },
+  { key: "nails",      label: "NAILS",      count: "24",  Icon: NailsIcon,    color: "text-s-amber",       bgClass: "bg-s-yellow/[0.15] dark:bg-s-yellow/[0.12]" },
+  { key: "spa",        label: "SPA",        count: "11",  Icon: SpaIcon,      color: "text-s-sage",        bgClass: "bg-s-sage/[0.12] dark:bg-s-sage/[0.15]" },
+  { key: "makeup",     label: "MAKEUP",     count: "8",   Icon: MakeupIcon,   color: "text-s-sand",        bgClass: "bg-s-sand/[0.15] dark:bg-s-sand/[0.12]" },
+  { key: "waxing",     label: "WAXING",     count: "15",  Icon: WaxingIcon,   color: "text-s-plum",        bgClass: "bg-s-plum/[0.10] dark:bg-s-plum/[0.20]" },
 ] as const;
 
 
@@ -267,14 +267,14 @@ export default function HomePage({ initialData }: HomePageProps) {
           </h2>
         </div>
         <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-          {CATEGORIES.map(({ key, label, count, Icon, color, bg }) => {
+          {CATEGORIES.map(({ key, label, count, Icon, color, bgClass }) => {
             const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
             return (
               <Link key={key} href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
                 aria-disabled={!isEnabled}
                 className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-[20px] bg-white dark:bg-s-dm-surface overflow-hidden group transition-[transform,box-shadow] duration-[250ms] flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/10 dark:border-s-dm-border ${isEnabled ? 'hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)]' : 'cursor-default'}`}
                 style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 2px 8px rgba(26,18,9,.03)" }}>
-                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300" style={{ backgroundColor: bg }}>
+                <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${bgClass}`}>
                   <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} />
                 </div>
                 <div className="flex flex-col text-center lg:text-left">
@@ -325,8 +325,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                      WebkitBackdropFilter: "blur(16px) saturate(1.2)",
                      border: "1px solid var(--glass-border-subtle)",
                      boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), var(--glass-shadow-inset)" }}>
-            <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
-              style={{ background: "rgba(232,98,74,.12)" }}>
+            <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-coral/[0.12] dark:bg-s-coral/[0.20]">
               <RefreshCw size={18} className="text-s-coral" />
             </div>
             <div className="flex-1 min-w-0">
@@ -714,7 +713,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="max-w-xl text-center md:text-left">
                 <h2 className="font-heading font-bold text-white mb-4 leading-tight"
-                  style={{ fontSize: "clamp(26px, 4vw, 52px)", letterSpacing: "-0.02em" }}>
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
                   {t("partner.title")}
                 </h2>
                 <p className="font-body italic text-white/70 text-lg leading-[1.82]">
@@ -723,7 +722,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               </div>
               <div className="shrink-0">
                 <Link href={`/${locale}/partner`}
-                  className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white text-s-ink font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base hover:-translate-y-px transition-[background-color,transform] duration-150"
+                  className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white dark:bg-s-dm-text text-s-ink dark:text-s-dm-bg font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base dark:hover:bg-s-dm-text/90 hover:-translate-y-px transition-[background-color,transform] duration-150"
                   style={{ boxShadow: "0 2px 4px rgba(26,18,9,.12), 0 4px 16px rgba(26,18,9,.10)" }}
                   aria-label={t("partner.cta")}>
                   {t("partner.cta")} →

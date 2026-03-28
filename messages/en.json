@@ -25,7 +25,11 @@
     "logout": "Sign out",
     "messages": "Messages",
     "saved": "Saved",
-    "registerSalon": "Register your salon"
+    "registerSalon": "Register your salon",
+    "homeLink": "Solen.ch – Go to homepage",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "categories": "Categories"
   },
   "home": {
     "hero_title": "Your salon in Basel",

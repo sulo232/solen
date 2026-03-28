@@ -25,7 +25,11 @@
     "logout": "Abmelden",
     "messages": "Nachrichten",
     "saved": "Gespeichert",
-    "registerSalon": "Salon eintragen"
+    "registerSalon": "Salon eintragen",
+    "homeLink": "Solen.ch – Zur Startseite",
+    "menuOpen": "Menü öffnen",
+    "menuClose": "Menü schliessen",
+    "categories": "Kategorien"
   },
   "home": {
     "hero_title": "Dein Salon in Basel",

@@ -25,7 +25,11 @@
     "logout": "Se déconnecter",
     "messages": "Messages",
     "saved": "Enregistrés",
-    "registerSalon": "Inscrire votre salon"
+    "registerSalon": "Inscrire votre salon",
+    "homeLink": "Solen.ch – Aller à l'accueil",
+    "menuOpen": "Ouvrir le menu",
+    "menuClose": "Fermer le menu",
+    "categories": "Catégories"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",

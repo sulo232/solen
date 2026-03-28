@@ -141,7 +141,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         }}>
           {/* Logo + Sub-site icon */}
           <div className="flex items-center gap-2 shrink-0">
-            <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label="Solen.ch – Zur Startseite">
+            <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
               <img
                 src="/logo.svg"
                 alt="Solen.ch"
@@ -217,7 +217,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             <NotificationBell userId={userId} />
 
             {/* Messages with unread dot */}
-            <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label="Nachrichten">
+            <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label={t("messages")}>
               <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
               {unreadCount > 0 && (
                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
@@ -228,7 +228,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             <button
               onClick={() => setMobileOpen((v) => !v)}
               className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
-              aria-label={mobileOpen ? "Menü schliessen" : "Menü öffnen"}
+              aria-label={mobileOpen ? t("menuClose") : t("menuOpen")}
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -353,7 +353,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
               {/* Category subsites */}
               <p className="text-[10px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 px-3 pt-2">
-                Kategorien
+                {t("categories")}
               </p>
               {[
                 { key: "coiffeur", href: `/${locale}/coiffeur`, icon: CoiffeurIcon },
