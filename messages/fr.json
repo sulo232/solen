@@ -153,6 +153,39 @@
       "formLabel": "Rechercher des salons",
       "cityLabel": "Choisir une ville"
     },
+    "guidedSearch": {
+      "openCta": "Que recherchez-vous?",
+      "placeholder": "Service, salon ou ville...",
+      "close": "Fermer",
+      "back": "Retour",
+      "reset": "Réinitialiser",
+      "showResults": "Voir les résultats",
+      "detecting": "Détection...",
+      "searchDirect": "recherche directe",
+      "steps": {
+        "where": {
+          "title": "Où?",
+          "allSwitzerland": "Toute la Suisse"
+        },
+        "category": {
+          "title": "Quoi?"
+        },
+        "service": {
+          "title": "Quel service?",
+          "skip": "Peu importe / Tous les services"
+        },
+        "date": {
+          "title": "Quand?",
+          "timeTitle": "Moment de la journée",
+          "time": {
+            "any": "N'importe quand",
+            "morning": "Matin",
+            "afternoon": "Après-midi",
+            "evening": "Soirée"
+          }
+        }
+      }
+    },
     "discover": {
       "eyebrow": "Explorer",
       "title": "TROUVEZ VOTRE INSPIRATION",
@@ -429,7 +462,30 @@
     "board_create": "Créer",
     "board_loading": "Chargement des images...",
     "board_empty": "Aucune image dans ce board",
-    "board_select_images": "{count} images sélectionnées"
+    "board_select_images": "{count} images sélectionnées",
+    "stepAppointment": "Rendez-vous",
+    "stepDetails": "Détails",
+    "stepPayment": "Paiement",
+    "paymentInitError": "Le paiement n'a pas pu être initialisé",
+    "bookingError": "Réservation échouée",
+    "bookingErrorAfterPayment": "Votre paiement a réussi, mais la réservation n'a pas pu être créée. Contactez-nous à info@solen.ch avec l'heure de votre rendez-vous.",
+    "paymentSucceededTitle": "Paiement réussi",
+    "errorTitle": "Erreur",
+    "retry": "Réessayer",
+    "paymentFailed": "Paiement échoué",
+    "processing": "Traitement…",
+    "preparing": "Préparation…",
+    "saveCardAndBook": "Enregistrer la carte et réserver",
+    "toPayment": "Procéder au paiement",
+    "bookingConfirmed": "Réservation confirmée",
+    "allGood": "Parfait !",
+    "bookingSuccessMessage": "Votre rendez-vous est réservé. Vous recevrez une confirmation par e-mail.",
+    "myBookings": "Mes réservations",
+    "repeatLastCut": "Répéter la dernière coupe",
+    "sameCut": "Même coupe",
+    "recurringBook": "Réserver régulièrement ?",
+    "recurringTitle": "Réservation récurrente",
+    "stripeUnavailable": "Paiements temporairement indisponibles. Veuillez réessayer plus tard."
   },
   "chat": {
     "send": "Envoyer",

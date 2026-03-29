@@ -153,6 +153,39 @@
       "formLabel": "Cerca saloni",
       "cityLabel": "Seleziona città"
     },
+    "guidedSearch": {
+      "openCta": "Cosa stai cercando?",
+      "placeholder": "Servizio, salone o città...",
+      "close": "Chiudi",
+      "back": "Indietro",
+      "reset": "Reimposta",
+      "showResults": "Mostra risultati",
+      "detecting": "Rilevamento...",
+      "searchDirect": "cerca direttamente",
+      "steps": {
+        "where": {
+          "title": "Dove?",
+          "allSwitzerland": "Tutta la Svizzera"
+        },
+        "category": {
+          "title": "Cosa?"
+        },
+        "service": {
+          "title": "Quale servizio?",
+          "skip": "Qualsiasi / Tutti i servizi"
+        },
+        "date": {
+          "title": "Quando?",
+          "timeTitle": "Momento della giornata",
+          "time": {
+            "any": "Qualsiasi ora",
+            "morning": "Mattina",
+            "afternoon": "Pomeriggio",
+            "evening": "Sera"
+          }
+        }
+      }
+    },
     "discover": {
       "eyebrow": "Esplora",
       "title": "TROVA LA TUA ISPIRAZIONE",
@@ -429,7 +462,30 @@
     "board_create": "Crea",
     "board_loading": "Caricamento immagini...",
     "board_empty": "Nessuna immagine in questo board",
-    "board_select_images": "{count} immagini selezionate"
+    "board_select_images": "{count} immagini selezionate",
+    "stepAppointment": "Appuntamento",
+    "stepDetails": "Dettagli",
+    "stepPayment": "Pagamento",
+    "paymentInitError": "Il pagamento non ha potuto essere inizializzato",
+    "bookingError": "Prenotazione fallita",
+    "bookingErrorAfterPayment": "Il tuo pagamento è andato a buon fine, ma non siamo riusciti a creare la prenotazione. Contattaci a info@solen.ch con l'orario del tuo appuntamento.",
+    "paymentSucceededTitle": "Pagamento riuscito",
+    "errorTitle": "Errore",
+    "retry": "Riprova",
+    "paymentFailed": "Pagamento fallito",
+    "processing": "Elaborazione…",
+    "preparing": "Preparazione…",
+    "saveCardAndBook": "Salva carta e prenota",
+    "toPayment": "Procedi al pagamento",
+    "bookingConfirmed": "Prenotazione confermata",
+    "allGood": "Ottimo!",
+    "bookingSuccessMessage": "Il tuo appuntamento è prenotato. Riceverai una conferma via email.",
+    "myBookings": "Le mie prenotazioni",
+    "repeatLastCut": "Ripeti l'ultimo taglio",
+    "sameCut": "Stesso taglio",
+    "recurringBook": "Prenotare regolarmente?",
+    "recurringTitle": "Prenotazione ricorrente",
+    "stripeUnavailable": "Pagamenti temporaneamente non disponibili. Riprova più tardi."
   },
   "chat": {
     "send": "Invia",

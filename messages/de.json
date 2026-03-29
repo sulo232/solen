@@ -153,6 +153,39 @@
       "formLabel": "Salon suchen",
       "cityLabel": "Stadt wählen"
     },
+    "guidedSearch": {
+      "openCta": "Was suchst du?",
+      "placeholder": "Service, Salon oder Stadt...",
+      "close": "Schliessen",
+      "back": "Zurück",
+      "reset": "Zurücksetzen",
+      "showResults": "Ergebnisse anzeigen",
+      "detecting": "Erkenne...",
+      "searchDirect": "direkt suchen",
+      "steps": {
+        "where": {
+          "title": "Wo?",
+          "allSwitzerland": "Ganze Schweiz"
+        },
+        "category": {
+          "title": "Was?"
+        },
+        "service": {
+          "title": "Welcher Service?",
+          "skip": "Egal / Alle Services"
+        },
+        "date": {
+          "title": "Wann?",
+          "timeTitle": "Tageszeit",
+          "time": {
+            "any": "Egal",
+            "morning": "Morgens",
+            "afternoon": "Nachmittags",
+            "evening": "Abends"
+          }
+        }
+      }
+    },
     "discover": {
       "eyebrow": "Entdecken",
       "title": "FINDE DEINE INSPIRATION",
@@ -462,7 +495,30 @@
     "board_create": "Erstellen",
     "board_loading": "Bilder laden...",
     "board_empty": "Noch keine Bilder in diesem Board",
-    "board_select_images": "{count} Bilder ausgewählt"
+    "board_select_images": "{count} Bilder ausgewählt",
+    "stepAppointment": "Termin",
+    "stepDetails": "Details",
+    "stepPayment": "Zahlung",
+    "paymentInitError": "Zahlung konnte nicht initialisiert werden",
+    "bookingError": "Buchung fehlgeschlagen",
+    "bookingErrorAfterPayment": "Deine Zahlung war erfolgreich, aber die Buchung konnte nicht erstellt werden. Bitte kontaktiere uns unter info@solen.ch mit deiner Buchungszeit.",
+    "paymentSucceededTitle": "Zahlung erfolgreich",
+    "errorTitle": "Fehler",
+    "retry": "Erneut versuchen",
+    "paymentFailed": "Zahlung fehlgeschlagen",
+    "processing": "Verarbeitung…",
+    "preparing": "Wird vorbereitet…",
+    "saveCardAndBook": "Karte speichern & Buchen",
+    "toPayment": "Zur Zahlung",
+    "bookingConfirmed": "Buchung bestätigt",
+    "allGood": "Alles klar!",
+    "bookingSuccessMessage": "Dein Termin ist gebucht. Du erhältst eine Bestätigung per E-Mail.",
+    "myBookings": "Meine Buchungen",
+    "repeatLastCut": "Letzter Schnitt wiederholen",
+    "sameCut": "Gleicher Schnitt",
+    "recurringBook": "Regelmässig buchen?",
+    "recurringTitle": "Serienbuchung",
+    "stripeUnavailable": "Zahlung momentan nicht verfügbar. Bitte versuche es später."
   },
   "chat": {
     "send": "Senden",

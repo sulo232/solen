@@ -153,6 +153,39 @@
       "formLabel": "Search salons",
       "cityLabel": "Select city"
     },
+    "guidedSearch": {
+      "openCta": "What are you looking for?",
+      "placeholder": "Service, salon or city...",
+      "close": "Close",
+      "back": "Back",
+      "reset": "Reset",
+      "showResults": "Show results",
+      "detecting": "Detecting...",
+      "searchDirect": "search directly",
+      "steps": {
+        "where": {
+          "title": "Where?",
+          "allSwitzerland": "All Switzerland"
+        },
+        "category": {
+          "title": "What?"
+        },
+        "service": {
+          "title": "Which service?",
+          "skip": "Any / All services"
+        },
+        "date": {
+          "title": "When?",
+          "timeTitle": "Time of day",
+          "time": {
+            "any": "Any time",
+            "morning": "Morning",
+            "afternoon": "Afternoon",
+            "evening": "Evening"
+          }
+        }
+      }
+    },
     "discover": {
       "eyebrow": "Explore",
       "title": "FIND YOUR INSPIRATION",
@@ -451,7 +484,30 @@
     "board_create": "Create",
     "board_loading": "Loading images...",
     "board_empty": "No images in this board yet",
-    "board_select_images": "{count} images selected"
+    "board_select_images": "{count} images selected",
+    "stepAppointment": "Appointment",
+    "stepDetails": "Details",
+    "stepPayment": "Payment",
+    "paymentInitError": "Payment could not be initialized",
+    "bookingError": "Booking failed",
+    "bookingErrorAfterPayment": "Your payment succeeded, but we couldn't create the booking. Please contact us at info@solen.ch with your appointment time.",
+    "paymentSucceededTitle": "Payment successful",
+    "errorTitle": "Error",
+    "retry": "Try again",
+    "paymentFailed": "Payment failed",
+    "processing": "Processing…",
+    "preparing": "Preparing…",
+    "saveCardAndBook": "Save card & book",
+    "toPayment": "Proceed to payment",
+    "bookingConfirmed": "Booking confirmed",
+    "allGood": "You're all set!",
+    "bookingSuccessMessage": "Your appointment is booked. You'll receive a confirmation by email.",
+    "myBookings": "My bookings",
+    "repeatLastCut": "Repeat last cut",
+    "sameCut": "Same cut",
+    "recurringBook": "Book regularly?",
+    "recurringTitle": "Recurring booking",
+    "stripeUnavailable": "Payments temporarily unavailable. Please try again later."
   },
   "chat": {
     "send": "Send",

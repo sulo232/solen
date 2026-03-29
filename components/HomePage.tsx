@@ -22,8 +22,7 @@ import Footer from "@/components/layout/Footer";
 // StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
 import LastMinuteCard from "@/components/LastMinuteCard";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
-import HomeSearchBar from "@/components/ui/HomeSearchBar";
-import CitySelector from "@/components/ui/CitySelector";
+import GuidedSearch from "@/components/ui/GuidedSearch";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
@@ -239,14 +238,9 @@ export default function HomePage({ initialData }: HomePageProps) {
             </motion.p>
           </motion.div>
 
-          {/* Search bar right under greeting */}
+          {/* Guided search — Airbnb-style step-by-step discovery funnel */}
           <div className="mt-6 w-full max-w-2xl">
-            <HomeSearchBar />
-          </div>
-
-          {/* City selector — mobile only (desktop has it inside HomeSearchBar) */}
-          <div className="mt-3 flex md:hidden">
-            <CitySelector />
+            <GuidedSearch />
           </div>
 
           {/* Trust chips */}
