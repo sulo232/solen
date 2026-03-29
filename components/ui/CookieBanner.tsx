@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { X, Settings, Cookie } from "lucide-react";
+import Link from "next/link";
 
 type ConsentState = {
   necessary: true;
@@ -81,9 +82,9 @@ export default function CookieBanner() {
                 </p>
                 <p className="text-xs text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">
                   {t("description")}{" "}
-                  <a href={`/${locale}/privacy`} className="text-s-coral hover:underline">
+                  <Link href={`/${locale}/privacy`} className="text-s-coral hover:underline">
                     {t("privacyLink")}
-                  </a>.
+                  </Link>.
                 </p>
               </div>
             </div>

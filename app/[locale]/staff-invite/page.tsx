@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Users, Check, AlertTriangle } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
@@ -93,9 +94,9 @@ export default function StaffInvitePage() {
             <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-2">{l.success}</h2>
             {salonName && <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-1">{salonName}</p>}
             <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-6">{l.successDesc}</p>
-            <a href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
+            <Link href={`/${locale}/dashboard`} className="inline-block px-6 py-2.5 rounded-btn bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-colors">
               {l.goToDashboard}
-            </a>
+            </Link>
           </div>
         ) : error ? (
           <div className="text-center">

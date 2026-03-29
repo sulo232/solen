@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useSearchParams, useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import SalonCard from "@/components/SalonCard";
 import CategoryTree from "@/components/ui/CategoryTree";
@@ -142,18 +143,18 @@ export default function TreatmentResultsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 pb-16">
         {/* Breadcrumb */}
         <nav className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-4">
-          <a href={`/${locale}`} className="hover:text-s-coral">Home</a>
+          <Link href={`/${locale}`} className="hover:text-s-coral">Home</Link>
           <span className="mx-1">›</span>
           <span className="text-s-ink/70 dark:text-s-dm-text/70">Behandlungen</span>
           {slugParts.map((part, i) => (
             <span key={i}>
               <span className="mx-1">›</span>
-              <a
+              <Link
                 href={`/${locale}/behandlungen/${slugParts.slice(0, i + 1).join("/")}`}
                 className="capitalize hover:text-s-coral"
               >
                 {part.replace(/-/g, " ")}
-              </a>
+              </Link>
             </span>
           ))}
         </nav>

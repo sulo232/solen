@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, ShieldAlert, AlertTriangle, Star, Calendar, ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 interface Notification {
   id: string;
@@ -185,9 +186,9 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
                           </p>
                         </div>
                         {n.href && (
-                          <a href={`/${locale}${n.href}`} className="shrink-0 mt-1" aria-label="Öffnen">
+                          <Link href={`/${locale}${n.href}`} className="shrink-0 mt-1" aria-label="Öffnen">
                             <ExternalLink size={11} className="text-s-ink/25 hover:text-s-coral transition-colors" />
-                          </a>
+                          </Link>
                         )}
                         {!n.read && (
                           <div className="w-1.5 h-1.5 rounded-full bg-s-coral shrink-0 mt-1.5" />
