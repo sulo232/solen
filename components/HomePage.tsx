@@ -50,7 +50,7 @@ const itemVariants = {
   hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1, y: 0,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
+    transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] },
   },
 } as const;
 
@@ -58,7 +58,7 @@ const fadeUp = {
   hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
   visible: {
     opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { type: "spring", stiffness: 300, damping: 30, mass: 0.8 },
+    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] },
   },
 } as const;
 
@@ -271,7 +271,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             return (
               <Link key={key} href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
                 aria-disabled={!isEnabled}
-                className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-card bg-white dark:bg-s-dm-surface overflow-hidden group transition-all duration-300 ease-out flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 ${isEnabled ? 'hover:-translate-y-[3px] hover:shadow-elevation-3' : 'cursor-default'}`}>
+                className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-card bg-white dark:bg-s-dm-surface overflow-hidden group transition-[transform,box-shadow] duration-300 ease-out flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 ${isEnabled ? 'hover:-translate-y-[3px] hover:shadow-elevation-3' : 'cursor-default'}`}>
                 <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${bgClass}`}>
                   <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} />
                 </div>
@@ -537,7 +537,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             </div>
             <Link
               href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-s-ink dark:bg-white text-white dark:text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:-translate-y-px hover:shadow-elevation-3 active:scale-[0.98] transition-all duration-200 shrink-0"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-s-ink dark:bg-white text-white dark:text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:-translate-y-px hover:shadow-elevation-3 active:scale-[0.98] transition-[transform,box-shadow] duration-200 shrink-0"
             >
               <MapPin className="w-4 h-4" />
               {t("map.openCta")}

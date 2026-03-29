@@ -51,6 +51,8 @@ interface SalonCardProps {
   offPeakToday?: { discount_percent: number } | null;
   aiReason?: string;
   onQuickPreview?: () => void;
+  animated?: boolean;
+  photos?: string[];
 }
 
 const CAT_COLOURS: Record<string, { bg: string; text: string }> = {

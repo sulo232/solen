@@ -77,7 +77,7 @@ export default function FilterBar({
               onClick={() => handlePillClick(pill)}
               className={[
                 'flex items-center gap-1.5 px-4 py-2 rounded-pill text-sm font-heading whitespace-nowrap',
-                'transition-all duration-200 active:scale-[0.96]',
+                'transition-[transform,background-color,border-color,box-shadow,color] duration-200 active:scale-[0.96]',
                 motionClass,
                 hoverLift,
                 active

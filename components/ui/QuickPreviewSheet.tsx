@@ -67,7 +67,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
               drag="y"
               dragConstraints={{ top: 0 }}
               dragElastic={0.2}
@@ -95,7 +95,7 @@ export default function QuickPreviewSheet({ salon, open, onClose }: QuickPreview
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
             >
               <button
                 onClick={onClose}

@@ -92,7 +92,7 @@ export function SidebarLink({ link, active, onClick, badge, className }: Sidebar
         <motion.div
           layoutId="sidebar-indicator"
           className="absolute inset-0 rounded-input bg-s-coral/10"
-          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         />
       )}
       <span className="relative z-10 shrink-0">{link.icon}</span>
