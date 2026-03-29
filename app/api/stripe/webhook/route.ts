@@ -41,6 +41,12 @@ export async function POST(req: NextRequest) {
   switch (event.type) {
     case "payment_intent.succeeded": {
       const pi = event.data.object;
+
+      // Handle voucher purchases before booking handler
+      const { handleVoucherPurchase } = await import("./voucher-handler");
+      const wasVoucherPurchase = await handleVoucherPurchase(pi);
+      if (wasVoucherPurchase) break;
+
       const bookingId = pi.metadata?.booking_id;
       if (bookingId) {
         await admin.from("bookings").update({
