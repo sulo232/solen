@@ -41,9 +41,9 @@ export default function ReviewCarousel() {
       <section className="py-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="h-6 w-48 bg-s-bg-sunken dark:bg-white/10 rounded-btn animate-pulse mb-6" />
-          <div className="flex gap-4 md:grid md:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-4">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="shrink-0 w-[280px] md:w-auto bg-white/80 dark:bg-s-dm-surface/80 rounded-[12px] p-5 space-y-3">
+              <div key={i} className="border border-s-ink/[0.06] dark:border-white/[0.06] rounded-[12px] p-5 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-s-bg-sunken dark:bg-white/10 animate-pulse" />
                   <div className="space-y-1.5 flex-1">
@@ -82,10 +82,7 @@ export default function ReviewCarousel() {
           </p>
         </div>
 
-        <div
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
-          style={{ scrollbarWidth: "none" } as React.CSSProperties}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-4">
           {reviews.map((review, i) => (
             <motion.div
               key={review.id}
@@ -93,14 +90,7 @@ export default function ReviewCarousel() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: i * 0.1 }}
-              className="snap-start shrink-0 w-[280px] md:w-auto rounded-[20px] p-5 hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
-              style={{
-                background: "var(--glass-bg-subtle)",
-                backdropFilter: "blur(16px) saturate(1.2)",
-                WebkitBackdropFilter: "blur(16px) saturate(1.2)",
-                border: "1px solid var(--glass-border-subtle)",
-                boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), var(--glass-shadow-inset)",
-              }}
+              className="rounded-[20px] p-5 border border-s-ink/[0.06] dark:border-white/[0.06] hover:-translate-y-1 transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`w-9 h-9 rounded-full ${COLORS[i % COLORS.length]} flex items-center justify-center text-white text-xs font-bold`}>
