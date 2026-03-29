@@ -39,6 +39,15 @@ interface LoyaltyCard {
   salons: { name: string; slug: string; cover_photo_url: string | null };
 }
 
+interface LoyaltyCardRaw {
+  id: string;
+  salon_id: string;
+  stamps_needed: number;
+  reward_text: string;
+  salons: { name: string; slug: string; cover_photo_url: string | null };
+  loyalty_stamps: { id: string }[];
+}
+
 // ─────────────────────────────────────────
 // Cancel modal
 // ─────────────────────────────────────────
@@ -703,10 +712,20 @@ export default function ProfilePage() {
             .eq("user_id", userId)
             .then(({ data }) => (data ?? []).map((f: any) => f.salons)),
           supabase
-            .from("loyalty_stamps")
-            .select("id, salon_id, stamps_needed, reward_text, stamps_collected, salons!inner(name, slug, cover_photo_url)")
-            .eq("user_id", userId)
-            .then(({ data }) => data ?? []),
+            .from("loyalty_cards")
+            .select(`id, salon_id, stamps_needed, reward_text, salons!inner(name, slug, cover_photo_url), loyalty_stamps!inner(id, customer_id)`)
+            .eq("is_active", true)
+            .eq("loyalty_stamps.customer_id", userId)
+            .then(({ data }) =>
+              ((data ?? []) as unknown as LoyaltyCardRaw[]).map((card) => ({
+                id: card.id,
+                salon_id: card.salon_id,
+                stamps_needed: card.stamps_needed,
+                reward_text: card.reward_text,
+                stamps_collected: (card.loyalty_stamps ?? []).length,
+                salons: card.salons,
+              } as LoyaltyCard))
+            ),
         ]);
 
         setProfile(profileData as Profile);
