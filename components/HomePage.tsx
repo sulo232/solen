@@ -409,8 +409,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             />
           ) : (
             <motion.div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
-              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+              className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
               variants={gridContainerVariants}
               initial="hidden"
               whileInView="visible"
@@ -419,7 +418,6 @@ export default function HomePage({ initialData }: HomePageProps) {
               {salons.map((salon, i) => (
                 <motion.div
                   key={salon.id}
-                  className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink"
                   variants={gridItemVariants}
                   custom={i}
                 >
@@ -462,7 +460,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             </div>
 
           {lastMinuteSlots.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-6">
               {lastMinuteSlots.map((slot) => (
                 <LastMinuteCard key={slot.id} slot={slot} locale={locale} />
               ))}
@@ -508,15 +506,14 @@ export default function HomePage({ initialData }: HomePageProps) {
             </motion.div>
 
             <motion.div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
-              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+              className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
               variants={gridContainerVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
             >
               {trendingSalons.map((salon, i) => (
-                <motion.div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink" variants={gridItemVariants} custom={i}>
+                <motion.div key={salon.id} variants={gridItemVariants} custom={i}>
                   <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} animated={false} />
                 </motion.div>
               ))}
@@ -552,15 +549,14 @@ export default function HomePage({ initialData }: HomePageProps) {
             </motion.div>
 
             <motion.div
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
-              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+              className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
               variants={gridContainerVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
             >
               {nearbySalons.map((salon, i) => (
-                <motion.div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink" variants={gridItemVariants} custom={i}>
+                <motion.div key={salon.id} variants={gridItemVariants} custom={i}>
                   <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} animated={false} />
                 </motion.div>
               ))}
@@ -621,7 +617,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               </div>
             </motion.div>
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
               variants={gridContainerVariants}
               initial="hidden"
               whileInView="visible"
