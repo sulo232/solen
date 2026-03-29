@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import CategoryTabBar from "@/components/discovery/CategoryTabBar";
 import MasonryGrid from "@/components/discovery/MasonryGrid";
 import ItemCard from "@/components/discovery/ItemCard";
@@ -25,6 +25,7 @@ import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, DiscoveryFilter
 function DiscoverPageContent() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("discover");
   const searchParams = useSearchParams();
 
   const [items, setItems] = useState<DiscoveryItem[]>([]);
@@ -190,28 +191,29 @@ function DiscoverPageContent() {
     setSearch("");
   };
 
-  // Build filter pills
+  // Build filter pills — labels from translations (Issues C + D)
+  const tGender = useTranslations("discover.gender");
   const filterPills: FilterPill[] = [
     {
       id: "gender",
-      label: "Gender",
+      label: t("genderPill"),
       subFilters: [
-        { id: "all", label: "All" },
-        { id: "female", label: "Women" },
-        { id: "male", label: "Men" },
-        { id: "unisex", label: "Unisex" },
+        { id: "all",      label: tGender("all") },
+        { id: "female",   label: tGender("women") },
+        { id: "male",     label: tGender("men") },
+        { id: "unisex",   label: tGender("unisex") },
       ],
     },
     {
       id: "texture",
-      label: "Texture",
+      label: t("texturePill"),
       subFilters: [
-        { id: "straight", label: "Straight" },
-        { id: "wavy", label: "Wavy" },
-        { id: "curly", label: "Curly" },
-        { id: "coily", label: "Coily" },
+        { id: "straight",   label: "Straight" },
+        { id: "wavy",       label: "Wavy" },
+        { id: "curly",      label: "Curly" },
+        { id: "coily",      label: "Coily" },
         { id: "protective", label: "Protective" },
-        { id: "bald", label: "Bald" },
+        { id: "bald",       label: "Bald" },
       ],
     },
   ];
@@ -226,7 +228,7 @@ function DiscoverPageContent() {
               solen discover
             </p>
             <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
-              Discover
+              {t("title")}
             </h1>
             <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-1.5">
               Dein nächster Look

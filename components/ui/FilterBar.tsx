@@ -28,9 +28,6 @@ export default function FilterBar({
     : 'transition-none duration-0';
   const hoverLift = (zone === 1 || zone === 2) ? 'hover:-translate-y-px' : '';
 
-  const visiblePills = pills.slice(0, MAX_VISIBLE_DESKTOP);
-  const overflowCount = pills.length - MAX_VISIBLE_DESKTOP;
-
   const isPillActive = (pillId: string) =>
     activeFilters.some((f) => f.pillId === pillId);
 
@@ -65,24 +62,42 @@ export default function FilterBar({
     }
   };
 
+  // Separate sort pill from regular pills — sort renders as a <select> dropdown
+  const sortPill = pills.find((p) => p.id === 'sort');
+  const nonSortPills = pills.filter((p) => p.id !== 'sort');
+  const visibleNonSortPills = nonSortPills.slice(0, MAX_VISIBLE_DESKTOP);
+  const overflowNonSortCount = nonSortPills.length - MAX_VISIBLE_DESKTOP;
+
+  const activeSortFilter = activeFilters.find((f) => f.pillId === 'sort');
+
+  const handleSortChange = (subId: string) => {
+    const withoutSort = activeFilters.filter((f) => f.pillId !== 'sort');
+    if (!subId) {
+      onFilterChange(withoutSort);
+      return;
+    }
+    const label = sortPill?.subFilters?.find((s) => s.id === subId)?.label ?? subId;
+    onFilterChange([...withoutSort, { pillId: 'sort', subId, label }]);
+  };
+
   return (
     <div className={`relative w-full ${className}`}>
       {/* Pill row */}
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {visiblePills.map((pill) => {
+        {visibleNonSortPills.map((pill) => {
           const active = isPillActive(pill.id);
           return (
             <button
               key={pill.id}
               onClick={() => handlePillClick(pill)}
               className={[
-                'flex items-center gap-1.5 px-4 py-2 rounded-pill text-sm font-heading whitespace-nowrap',
-                'transition-[transform,background-color,border-color,box-shadow,color] duration-200 active:scale-[0.96]',
+                'flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0 cursor-pointer',
+                'transition-colors duration-150 active:scale-[0.96]',
                 motionClass,
                 hoverLift,
                 active
-                  ? 'glass-pill-active shadow-coral-glow'
-                  : 'glass-pill text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/30 hover:text-s-ink dark:hover:text-s-dm-text',
+                  ? 'bg-s-coral text-white border border-s-coral'
+                  : 'bg-white/70 dark:bg-s-dm-surface/70 border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/40 hover:text-s-coral dark:hover:text-s-coral',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -90,7 +105,7 @@ export default function FilterBar({
               {pill.label}
               {pill.subFilters?.length ? (
                 <ChevronDown
-                  size={14}
+                  size={13}
                   className={`${motionClass} ${openPillId === pill.id ? 'rotate-180' : ''}`}
                   aria-hidden
                 />
@@ -99,25 +114,42 @@ export default function FilterBar({
           );
         })}
 
-        {/* "Mehr Filter" button — desktop only, Zone 1/2 only when overflow exists */}
-        {overflowCount > 0 && (
+        {/* "Mehr Filter" button — desktop only, when overflow exists */}
+        {overflowNonSortCount > 0 && (
           <button
             onClick={() => setDrawerOpen(true)}
             className={[
-              'hidden md:flex items-center gap-1.5 px-4 py-2 rounded-pill text-sm font-heading whitespace-nowrap',
-              'bg-[--raised] text-s-ink dark:text-s-dm-text shadow-warm-sm border border-s-ink/8',
+              'hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill text-[12px] font-heading font-bold whitespace-nowrap shrink-0',
+              'border border-s-ink/[0.08] bg-white/70 dark:bg-s-dm-surface/70',
               motionClass,
               hoverLift,
               drawerOpen
                 ? 'bg-s-plum-subtle border-s-plum/30 text-s-plum-text'
-                : 'hover:bg-s-coral-subtle',
+                : 'text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/40 hover:text-s-coral',
             ].join(' ')}
             aria-expanded={drawerOpen}
-            aria-label={t('moreFilters', { count: overflowCount })}
+            aria-label={t('moreFilters', { count: overflowNonSortCount })}
           >
-            <SlidersHorizontal size={14} aria-hidden />
-            {overflowCount} {t('more')}
+            <SlidersHorizontal size={13} aria-hidden />
+            {overflowNonSortCount} {t('more')}
           </button>
+        )}
+
+        {/* Sort — styled <select> dropdown, always at the end */}
+        {sortPill && (
+          <div className="shrink-0 ml-auto">
+            <select
+              value={activeSortFilter?.subId ?? ''}
+              onChange={(e) => handleSortChange(e.target.value)}
+              aria-label={sortPill.label}
+              className="text-[13px] font-body font-medium text-s-ink/60 dark:text-s-dm-text/60 bg-transparent border border-s-ink/[0.08] dark:border-white/[0.08] rounded-pill px-3 py-1.5 focus:outline-none focus:border-s-coral/40 cursor-pointer appearance-none"
+            >
+              <option value="">{sortPill.label} ▾</option>
+              {sortPill.subFilters?.map((sf) => (
+                <option key={sf.id} value={sf.id}>{sf.label}</option>
+              ))}
+            </select>
+          </div>
         )}
       </div>
 

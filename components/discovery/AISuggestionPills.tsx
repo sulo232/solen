@@ -14,65 +14,65 @@ interface AISuggestionPillsProps {
   onSelect: (term: string) => void;
 }
 
-const SUGGESTIONS: Record<string, { label: string; emoji: string }[]> = {
+const SUGGESTIONS: Record<string, { label: string }[]> = {
   all: [
-    { label: "Balayage", emoji: "🎨" },
-    { label: "Curtain Bangs", emoji: "✂️" },
-    { label: "Gel Nails", emoji: "💅" },
-    { label: "Herrenschnitt", emoji: "💈" },
-    { label: "Facial", emoji: "🧖" },
-    { label: "Wimpern", emoji: "👁️" },
-    { label: "Locken", emoji: "🌀" },
-    { label: "Braut-Styling", emoji: "👰" },
+    { label: "Balayage" },
+    { label: "Curtain Bangs" },
+    { label: "Gel Nails" },
+    { label: "Herrenschnitt" },
+    { label: "Facial" },
+    { label: "Wimpern" },
+    { label: "Locken" },
+    { label: "Braut-Styling" },
   ],
   haare: [
-    { label: "Balayage", emoji: "🎨" },
-    { label: "Curtain Bangs", emoji: "✂️" },
-    { label: "Bob", emoji: "💇" },
-    { label: "Locken", emoji: "🌀" },
-    { label: "Highlights", emoji: "☀️" },
-    { label: "Braut-Styling", emoji: "👰" },
-    { label: "Pixie Cut", emoji: "✨" },
-    { label: "Toner", emoji: "🧴" },
+    { label: "Balayage" },
+    { label: "Curtain Bangs" },
+    { label: "Bob" },
+    { label: "Locken" },
+    { label: "Highlights" },
+    { label: "Braut-Styling" },
+    { label: "Pixie Cut" },
+    { label: "Toner" },
   ],
   nails: [
-    { label: "Gel Nails", emoji: "💅" },
-    { label: "French Tips", emoji: "🤍" },
-    { label: "Nail Art", emoji: "🎨" },
-    { label: "Maniküre", emoji: "✋" },
-    { label: "Pediküre", emoji: "🦶" },
-    { label: "Chrome Nails", emoji: "🪩" },
-    { label: "Acryl", emoji: "💎" },
+    { label: "Gel Nails" },
+    { label: "French Tips" },
+    { label: "Nail Art" },
+    { label: "Maniküre" },
+    { label: "Pediküre" },
+    { label: "Chrome Nails" },
+    { label: "Acryl" },
   ],
   barbershop: [
-    { label: "Fade", emoji: "💈" },
-    { label: "Buzz Cut", emoji: "⚡" },
-    { label: "Bart-Trim", emoji: "🧔" },
-    { label: "Skin Fade", emoji: "🔪" },
-    { label: "Mullet", emoji: "🎸" },
-    { label: "Line-Up", emoji: "📐" },
+    { label: "Fade" },
+    { label: "Buzz Cut" },
+    { label: "Bart-Trim" },
+    { label: "Skin Fade" },
+    { label: "Mullet" },
+    { label: "Line-Up" },
   ],
   makeup: [
-    { label: "Braut-Makeup", emoji: "👰" },
-    { label: "Contouring", emoji: "🖌️" },
-    { label: "Wimpern", emoji: "👁️" },
-    { label: "Augenbrauen", emoji: "🪮" },
-    { label: "Smokey Eyes", emoji: "💨" },
-    { label: "Natural Glow", emoji: "✨" },
+    { label: "Braut-Makeup" },
+    { label: "Contouring" },
+    { label: "Wimpern" },
+    { label: "Augenbrauen" },
+    { label: "Smokey Eyes" },
+    { label: "Natural Glow" },
   ],
   spa: [
-    { label: "Facial", emoji: "🧖" },
-    { label: "Massage", emoji: "💆" },
-    { label: "Peeling", emoji: "🧼" },
-    { label: "Hot Stone", emoji: "🪨" },
-    { label: "Anti-Aging", emoji: "⏳" },
+    { label: "Facial" },
+    { label: "Massage" },
+    { label: "Peeling" },
+    { label: "Hot Stone" },
+    { label: "Anti-Aging" },
   ],
   waxing: [
-    { label: "Brazilian", emoji: "🌴" },
-    { label: "Beine", emoji: "🦵" },
-    { label: "Gesicht", emoji: "😊" },
-    { label: "Achseln", emoji: "💪" },
-    { label: "Sugaring", emoji: "🍯" },
+    { label: "Brazilian" },
+    { label: "Beine" },
+    { label: "Gesicht" },
+    { label: "Achseln" },
+    { label: "Sugaring" },
   ],
 };
 
@@ -87,7 +87,7 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
         <Sparkles size={11} />
         {t("trending")}
       </span>
-      {pills.map(({ label, emoji }) => (
+      {pills.map(({ label }) => (
         <button
           key={label}
           aria-pressed={selected === label}
@@ -96,13 +96,12 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
             onSelect(selected === label ? "" : label);
           }}
           className={[
-            "shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-pill text-[11px] font-heading font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-150",
+            "shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
             selected === label
-              ? "bg-s-coral text-white shadow-[0_2px_6px_rgba(232,98,74,.3)]"
-              : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10] border border-s-ink/[0.06] dark:border-white/[0.06]",
+              ? "bg-s-coral text-white border border-s-coral shadow-[0_2px_6px_rgba(232,98,74,.3)]"
+              : "border border-s-ink/[0.08] text-s-ink/65 dark:text-s-dm-text/65 bg-white/70 dark:bg-s-dm-surface hover:border-s-coral/40 hover:text-s-coral",
           ].join(" ")}
         >
-          <span className="text-xs">{emoji}</span>
           {label}
         </button>
       ))}
