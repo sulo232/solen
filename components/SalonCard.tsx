@@ -160,7 +160,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
       <Link href={href} className="block w-full h-full">
         {/* Cover photo — V4: image fills card radius, smooth zoom on hover */}
-        <div className="relative w-full aspect-[4/5] bg-s-bg-sunken overflow-hidden rounded-xl img-hover-zoom">
+        <div className="relative w-full aspect-[3/2] bg-s-bg-sunken overflow-hidden rounded-xl img-hover-zoom">
           {allPhotos.length > 0 ? (
             <Image
               src={allPhotos[photoIndex]}
