@@ -49,21 +49,26 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
   };
 
   if (variant === "footer") {
+    const LOCALE_ENTRIES = Object.entries(LOCALE_LABELS);
     return (
-      <div className="flex gap-2 flex-wrap">
-        {Object.entries(LOCALE_LABELS).map(([key, label]) => (
-          <button
-            key={key}
-            onClick={() => switchLocale(key)}
-            aria-label={`Switch to ${label}`}
-            className={`px-5 py-2.5 min-h-[44px] min-w-[44px] rounded-pill text-sm font-heading font-bold transition-colors ${
-              key === locale
-                ? "bg-white/15 text-white border border-white/20"
-                : "bg-transparent text-white/50 hover:text-white/90 hover:bg-white/10 border border-white/10"
-            }`}
-          >
-            {label}
-          </button>
+      <div className="flex items-center flex-wrap gap-y-1">
+        {LOCALE_ENTRIES.map(([loc, label], idx) => (
+          <span key={loc} className="flex items-center">
+            <button
+              onClick={() => switchLocale(loc)}
+              className={`text-xs font-heading font-semibold tracking-wide transition-colors duration-150 ${
+                locale === loc
+                  ? "text-white"
+                  : "text-white/50 hover:text-white/90"
+              }`}
+              aria-label={`Switch language to ${label}`}
+            >
+              {label}
+            </button>
+            {idx < LOCALE_ENTRIES.length - 1 && (
+              <span aria-hidden="true" className="text-white/20 mx-1.5 select-none text-xs">·</span>
+            )}
+          </span>
         ))}
       </div>
     );
