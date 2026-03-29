@@ -81,8 +81,8 @@ export default function FilterBar({
                 motionClass,
                 hoverLift,
                 active
-                  ? 'bg-s-coral text-white border border-s-coral shadow-coral-glow'
-                  : 'bg-white/60 backdrop-blur-sm border border-s-ink/[0.06] text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-coral-subtle hover:border-s-coral/30',
+                  ? 'glass-pill-active shadow-coral-glow'
+                  : 'glass-pill text-s-ink/65 dark:text-s-dm-text/65 hover:border-s-coral/30 hover:text-s-ink dark:hover:text-s-dm-text',
               ].join(' ')}
               aria-pressed={active}
               aria-label={`${t('filter')}: ${pill.label}`}
@@ -127,7 +127,7 @@ export default function FilterBar({
           {activeFilters.map((f) => (
             <span
               key={`${f.pillId}-${f.subId}`}
-              className="flex items-center gap-1 px-3 py-1 rounded-pill bg-s-coral-subtle text-s-coral-text text-xs font-body shadow-warm-md"
+              className="flex items-center gap-1 px-3 py-1 rounded-pill glass-pill-active text-xs font-body"
             >
               {f.label}
               <button

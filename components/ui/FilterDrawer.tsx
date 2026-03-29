@@ -61,7 +61,7 @@ export default function FilterDrawer({
 
   // Rule 31 — Zone-aware surface
   const surfaceClasses = (zone === 1 || zone === 2)
-    ? 'backdrop-blur-[8px] bg-white/[0.62] border border-white/[0.55]'
+    ? 'glass-frost'
     : 'bg-[--raised] border border-s-ink/8';
 
   // Rule 31 — Zone-aware animation
@@ -78,6 +78,7 @@ export default function FilterDrawer({
       aria-modal="true"
       aria-label={t('filter')}
       className={[
+        'overflow-hidden',
         mode === 'inline'
           ? 'absolute z-[40] mt-2 min-w-[220px] rounded-[12px] shadow-warm-md p-4'
           : 'w-full mt-2 rounded-panel shadow-warm-md p-4',
