@@ -155,13 +155,14 @@ solen/
 | `shadow-coral-glow` | Coral CTA glow |
 
 #### V5 Glass System — Intentional, Not Universal
-> **Rule**: Glass = floating UI **only** (header on scroll, search dropdown, modals). Cards = solid white. NEVER glass on content cards.
+> **Rule**: Glass = floating UI **only** (header on scroll, search dropdown, modals, pills, CTAs in Zone 1+2). Cards = solid white. NEVER glass on content listing cards.
 
 | Class | Where | What |
 |---|---|---|
-| `.glass-frost` | Header pill (scrolled), modals, dropdown overlays | `backdrop-blur(20px) saturate(1.4)`, `rgba(255,255,255,0.72)` |
-| `.glass-search` | Search input container | `backdrop-blur(16px) saturate(1.3)`, coral focus ring |
+| `.glass-frost` | Header pill (scrolled), modals, dropdown overlays, bottom tab bar | `backdrop-blur(20px) saturate(1.4)`, `rgba(255,255,255,0.72)` |
+| `.glass-search` | Search input container (always visible, not just hover) | `backdrop-blur(16px) saturate(1.3)`, coral focus ring |
 | `.glass-toolbar` | Sticky filter bar below header | `backdrop-blur(16px) saturate(1.2)`, subtle bottom border |
+| `.glass-pill` | **NEW** — interactive filter pills + cancel/tag buttons in Zone 1+2 | `backdrop-blur(12px)`, `rgba(255,255,255,0.55)`, `border rgba(26,18,9,0.08)` |
 | `.card-v4` | Salon cards, listing cards | **Solid white** `#ffffff`, 16px radius, layered shadow, CSS hover lift |
 
 - **Blobs are RETIRED**: No `<BlobBackground>`, no `.blob-interactive`, no decorative blob shapes.
@@ -179,16 +180,19 @@ solen/
 
 #### V5 Motion Philosophy
 - **Easing**: Custom `cubic-bezier(0.23, 1, 0.32, 1)` for all card/reveal transitions
-- **Stagger**: 50ms between cards on grid reveal
-- **Section headings**: Slide-in from left, 0.5s
-- **NO springs, NO bounce** — buttery deceleration only
+- **Stagger**: 60ms between children on grid + category row reveal (Airbnb-style load animation)
+- **Section headings**: Slide-in from bottom, 0.5s, `cubic-bezier(0.23, 1, 0.32, 1)`
+- **NO springs/bounce in layout transitions** — buttery deceleration only
+- **Springs ALLOWED ONLY for**: category icon micro-animations, heart bounce on favorite, avatar pop. Use `stiffness: 400, damping: 25` max.
+- **Page-load category animation**: When homepage first loads, category row items animate in from `y: 20, opacity: 0` with 60ms stagger (Airbnb pattern)
+- **Icon hover/idle animation**: Category icons play 1-cycle animation on hover (desktop) and on page-load stagger (all devices)
 - **prefers-reduced-motion**: MANDATORY global disable
 
 #### Component Standards
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
 - **Loading**: Use `<Skeleton variant="card" />` for full-page loading. Use `<Spinner>` only for inline/button loading.
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
-- **Mobile nav**: Single top bar architecture. Hamburger menu contains all navigation. Bottom nav is **retired**.
+- **Mobile nav**: **V5 UPDATED** — Mobile uses a **frosted-glass bottom tab bar** with max 4 tabs (Discover, Search, Saved, Account). The hamburger menu is **deprecated on mobile**. Desktop keeps the top pill nav. The bottom tab bar is a NEW component: `components/layout/BottomTabBar.tsx`.
 - **Empty states**: Use `<EmptyState>` with optional `illustration` prop.
 - **Social proof**: `<SocialProofStrip>` between hero and content. `<TrustBadges>` in footer.
 - **Dashboard sidebar**: Animated `<Sidebar>` from `sidebar.tsx` — collapses to 60px icons, expands on hover.
@@ -202,6 +206,8 @@ solen/
 > ⚠️ The old monolith design (wine-red `#9B1D30`, gold, DM Serif Display) is **retired**. It lives in `_archive/monolith-v1.html` for reference only. **ALL new code must use the Next.js design system (Section 3.3).**
 
 ### 3.5 Key Features
+
+> **V5 HOMEPAGE HERO**: The homepage hero uses a **cinematic warm gradient background** (cream → coral blush → plum shadow) — NOT a flat white background. The search bar is ALWAYS visible as a floating glass pill (not hidden until hover). A photo/video background may be swapped in later once licensed assets are available.
 
 1. **Discovery & Booking**: Salon cards + multi-step booking wizard with multi-service, add-ons, guest checkout.
 2. **Direct Messaging**: In-app chat with media upload, price offers, and dispute resolution.

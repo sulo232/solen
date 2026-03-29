@@ -58,12 +58,16 @@
   - **250ms (mid):** Shadow transitions, button press, transform-based hover
   - **400ms (slow):** Card hover lift + shadow. V5 easing: `cubic-bezier(0.23, 1, 0.32, 1)`
   - **500ms (image):** Image zoom inside cards on hover (`img-hover-zoom` → `scale(1.03)`)
-- **V5 Easing:** Standard `cubic-bezier(.4,0,.2,1)`, V5 deceleration `cubic-bezier(0.23, 1, 0.32, 1)` for card/reveal transitions. NO springs, NO bounce.
+- **V5 Easing:** Standard `cubic-bezier(.4,0,.2,1)`, V5 deceleration `cubic-bezier(0.23, 1, 0.32, 1)` for card/reveal transitions.
+- **Springs — ALLOWED ONLY FOR**: Category icon micro-animations, heart bounce on favorite, avatar pop on login. Max params: `stiffness: 400, damping: 25`. Use `framer-motion` spring. **NEVER** use springs for layout/position transitions (page loads, card reveals, grid stagger).
+- **Stagger:** 60ms between children in grids and the category row (Airbnb-style load animation). All items start at `{ opacity: 0, y: 20 }`.
+- **Page-load category animation:** On homepage mount, the category row items animate in sequentially with 60ms stagger. Animation plays once on load, then idles.
+- **Icon idle animation:** Category icons play a 1-cycle micro-animation on page-load stagger. On desktop, it replays on hover. E.g. scissors snip, nails drip, lotus ripples.
 - **V5 Card Hover:** `.card-v4:hover` → `translateY(-4px)` + layered shadow upgrade, 400ms `cubic-bezier(0.23, 1, 0.32, 1)`. Image zoom begins on hover, continues smoothly.
 - **Button Hover:** `hover:brightness-[1.06]`, 150ms. **Active:** `active:scale-[0.98]`, 100ms.
 - **Tab Switching:** Use a smooth **slide left/right** animation (like turning pages), not a simple fade.
   - **Exception — Filter/Category tabs:** When a tab switch changes a **filter state** (not a page section), use a 150ms `opacity` fade on the content grid only — NOT a slide animation.
-- **V5 Stagger Reveals:** Cards stagger with **50ms delay** between children. Section headings slide-in from left, 0.5s. Uses `cubic-bezier(0.23, 1, 0.32, 1)` easing.
+- **V5 Stagger Reveals:** Cards stagger with **60ms delay** between children. Section headings slide-in from bottom, 0.5s. Uses `cubic-bezier(0.23, 1, 0.32, 1)` easing.
 - **Blobs RETIRED:** `.hero-blob`, `.blob-interactive`, all blob animations — completely removed. Ambient backgrounds use `.ambient-v5` static radial gradients.
 - **Zone restrictions:** Reveals/stagger = Zone 1+2. Card hover = Zone 1+2. **NO animation in Zone 3 or Zone 4.**
 - **prefers-reduced-motion:** MANDATORY global wrapper that makes all animations instant. Not optional. Not per-component.
@@ -75,6 +79,7 @@
 - **Global Header:** Must be present and consistent across all Next.js (`app/`) pages. It should transition from transparent to solid (with blur) on scroll.
 - **Loading States:** Use `<Skeleton variant="card" />` for full-page loading (grid of shimmer cards). Use `<Spinner>` only for inline/button loading states.
 - **Empty States:** Use `<EmptyState>` with SVG icons and helpful text. Optional `illustration` prop adds minimal line art SVGs above the icon.
+- **Mobile Navigation (V5 UPDATED):** `<BottomTabBar />` at `components/layout/BottomTabBar.tsx` — max 4 tabs (Discover, Search, Saved, Account). Uses `.glass-frost` with `border-t border-white/20`. The hamburger menu in `Header.tsx` is **deprecated on mobile** — hide it on `md:` breakpoint. Desktop header keeps the pill nav unchanged.
 - **Icons:** Use SVG icons (lucide-react preferred). No raw emojis for functional UI elements (emoji render differently on every OS, don't scale, don't inherit CSS colour). Use SVG icons or gradient colour fills instead.
 
 ## 6. Layout Specifics
@@ -180,13 +185,14 @@ Body default = `font-body` (set on `<body>`). You don't need `font-body` class u
 
 ## 13. V5 Glass System — Intentional, Not Universal
 
-**RULE:** Glass = floating UI **only** (header on scroll, search dropdown, modals). Content cards use solid white. NEVER apply `backdrop-filter` to listing cards.
+**RULE:** Glass = floating UI **only** (header on scroll, search pill, modals, pills/tags in Zone 1+2). Content listing cards use solid white. NEVER apply `backdrop-filter` to listing cards.
 
 | Class | Blur | Background | Border | Usage | Zone |
 |---|---|---|---|---|---|
-| **`.glass-frost`** | `blur(20px) saturate(1.4)` | `rgba(255,255,255,0.72)` | `rgba(255,255,255,0.50)` | Header pill (scrolled), modals, dropdown overlays | Zone 1+2 |
-| **`.glass-search`** | `blur(16px) saturate(1.3)` | `rgba(255,255,255,0.82)` | `rgba(26,18,9,0.06)` + coral focus | Search bar container | Zone 1+2 |
+| **`.glass-frost`** | `blur(20px) saturate(1.4)` | `rgba(255,255,255,0.72)` | `rgba(255,255,255,0.50)` | Header pill (scrolled), modals, dropdown overlays, **bottom tab bar** | Zone 1+2 |
+| **`.glass-search`** | `blur(16px) saturate(1.3)` | `rgba(255,255,255,0.82)` | `rgba(26,18,9,0.06)` + coral focus | Search bar container (ALWAYS visible — not hover-only) | Zone 1+2 |
 | **`.glass-toolbar`** | `blur(16px) saturate(1.2)` | `rgba(255,255,255,0.88)` | bottom `rgba(26,18,9,0.04)` | Sticky filter bar below header | Zone 1+2 |
+| **`.glass-pill`** | `blur(12px) saturate(1.2)` | `rgba(255,255,255,0.55)` | `rgba(26,18,9,0.08)` | **NEW** — Filter pills, cancel tags, chip buttons in Zone 1+2 | Zone 1+2 |
 | **`.card-v4`** | **NONE** | `#ffffff` solid | `rgba(26,18,9,0.05)` | Salon cards, listing cards | ALL zones |
 
 **Dark variants:** All glass classes have `.dark` variants using `rgba(30,23,16,...)` backgrounds.
@@ -194,8 +200,9 @@ Body default = `font-body` (set on `<body>`). You don't need `font-body` class u
 **Performance rules:**
 - Never stack more than 3 glass elements visible simultaneously
 - Always pair `backdrop-filter` with `-webkit-backdrop-filter` for Safari/iOS
+- **glass-pill** is allowed on interactive filter chips and cancel/close buttons in Zone 1+2 only
 - **NO glass in Zone 3** (trust/payment — glass looks unstable) or **Zone 4** (dashboard — glass obscures data)
-- **NO glass on content cards in ANY zone** — use `.card-v4` (solid white) instead
+- **NO glass on content listing cards in ANY zone** — use `.card-v4` (solid white) instead
 
 ## 14. Z-Index Scale
 | Token | Value | Used For |

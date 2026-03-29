@@ -1,6 +1,13 @@
+"use client";
 import React from "react";
 
-export function CoiffeurIcon(props: React.SVGProps<SVGSVGElement>) {
+/**
+ * CoiffeurIcon — animated scissors that snip open/closed when `animate` is true
+ */
+export function CoiffeurIcon({
+  animate = false,
+  ...props
+}: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,14 +19,34 @@ export function CoiffeurIcon(props: React.SVGProps<SVGSVGElement>) {
       strokeLinejoin="round"
       {...props}
     >
+      <style>{`
+        @keyframes scissor-top {
+          0%, 100% { transform-origin: 20px 4px; transform: rotate(0deg); }
+          30% { transform-origin: 20px 4px; transform: rotate(14deg); }
+          60% { transform-origin: 20px 4px; transform: rotate(-4deg); }
+        }
+        @keyframes scissor-bot {
+          0%, 100% { transform-origin: 20px 20px; transform: rotate(0deg); }
+          30% { transform-origin: 20px 20px; transform: rotate(-14deg); }
+          60% { transform-origin: 20px 20px; transform: rotate(4deg); }
+        }
+      `}</style>
+
+      {/* Pivot circles */}
       <circle cx="6" cy="6" r="3" />
       <circle cx="6" cy="18" r="3" />
-      <line x1="20" y1="4" x2="8.12" y2="15.88" />
-      <line x1="14.47" y1="14.48" x2="20" y2="20" />
+
+      {/* Top blade */}
+      <line
+        x1="20" y1="4" x2="8.12" y2="15.88"
+        style={animate ? { animation: "scissor-top 0.55s ease-in-out infinite" } : undefined}
+      />
+      {/* Bot blade */}
+      <line
+        x1="20" y1="20" x2="14.47" y2="14.48"
+        style={animate ? { animation: "scissor-bot 0.55s ease-in-out infinite" } : undefined}
+      />
       <line x1="8.12" y1="8.12" x2="12" y2="12" />
-      
-      {/* Decorative stars */}
-      <path d="M18 10l1-2 2-1-2-1-1-2-1 2-2 1 2 1 1 2z" strokeWidth="1" fill="currentColor" stroke="none" opacity="0.6"/>
     </svg>
   );
 }

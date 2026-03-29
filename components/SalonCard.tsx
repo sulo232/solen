@@ -174,6 +174,15 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           )}
 
+          {/* New salon badge — white overlay on image, only when review_count < 5 and no availableToday pill */}
+          {salon.review_count < 5 && (availableToday == null || availableToday === 0) && (
+            <div className="absolute top-2 left-2 z-[1]">
+              <span className="font-heading font-bold text-[10px] text-s-ink bg-white/95 px-2 py-0.5 rounded-pill">
+                {t("newOnSolen")}
+              </span>
+            </div>
+          )}
+
           {/* Solen tier badge */}
           {solenTier === "gold" && (
             <div className="absolute top-2 right-2 bg-s-yellow-subtle text-s-yellow-text text-xs font-semibold px-2 py-0.5 rounded-pill z-[1]">
@@ -266,7 +275,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
 
         {/* ── Info Section — Compact Airbnb-style ─────────────────────── */}
-        <div className="pt-3 pb-1 px-0.5">
+        <div className="pt-3 pb-1 px-0">
           {/* Name + AI sparkle (same row) */}
           <div className="flex items-start justify-between gap-1">
             <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[13px] leading-snug">
@@ -303,9 +312,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
                 <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
               </>
-            ) : (
-              <span className="text-[10px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill">{t("newOnSolen")}</span>
-            )}
+            ) : null}
             {salon.avg_price != null && salon.avg_price > 0 && (
               <>
                 <span className="text-s-ink/20 font-body">·</span>
