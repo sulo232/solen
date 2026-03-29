@@ -199,18 +199,23 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <CitySelector variant="header" />
             </div>
 
-            <ThemeToggle />
+            {/* Show only for authenticated users */}
+            {!!isLoggedIn && (
+              <>
+                <ThemeToggle />
 
-            {/* Notifications Bell */}
-            <NotificationBell userId={userId} />
+                {/* Notifications Bell */}
+                <NotificationBell userId={userId} />
 
-            {/* Messages with unread dot */}
-            <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label={t("messages")}>
-              <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
-              )}
-            </Link>
+                {/* Messages with unread dot */}
+                <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label={t("messages")}>
+                  <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
+                  )}
+                </Link>
+              </>
+            )}
 
             {/* Mobile hamburger — hidden on all sizes (BottomTabBar handles mobile nav) */}
             <button
