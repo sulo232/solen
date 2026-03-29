@@ -123,7 +123,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       variants={cardReveal}
       initial={animated ? "hidden" : false}
       animate="visible"
-      className={`relative card-v4 overflow-hidden cursor-pointer group ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
+      className={`relative card-listing cursor-pointer group ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
     >
       {/* Date-based availability overlay */}
@@ -144,7 +144,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
       <Link href={href} className="block w-full h-full">
         {/* Cover photo — V4: image fills card radius, smooth zoom on hover */}
-        <div className="relative w-full aspect-[3/2] bg-s-bg-sunken overflow-hidden rounded-t-card img-hover-zoom">
+        <div className="relative w-full aspect-[4/5] bg-s-bg-sunken overflow-hidden rounded-xl img-hover-zoom">
           {allPhotos.length > 0 ? (
             <Image
               src={allPhotos[photoIndex]}
@@ -266,10 +266,10 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
 
         {/* ── Info Section — Compact Airbnb-style ─────────────────────── */}
-        <div className="px-3 py-2.5">
+        <div className="pt-3 pb-1 px-0.5">
           {/* Name + AI sparkle (same row) */}
           <div className="flex items-start justify-between gap-1">
-            <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[14px] leading-tight group-hover:text-s-coral transition-colors duration-150">
+            <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[13px] leading-snug">
               {salon.name}
               {(salon as any).group_name && (
                 <span className="text-s-ink/40 font-normal"> · {(salon as any).group_name}</span>
