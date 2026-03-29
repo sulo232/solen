@@ -248,6 +248,25 @@ export default function HomePage({ initialData }: HomePageProps) {
             <HomeSearchBar />
           </div>
 
+          {/* Trust chips */}
+          <div className="mt-3 flex items-center gap-3 flex-wrap">
+            {[
+              t("trust.freeCancellation"),
+              t("trust.securePayment"),
+              t("trust.swissMade"),
+              t("trust.paymentMethods"),
+            ].map((text, i, arr) => (
+              <span key={text} className="flex items-center gap-1.5">
+                <span className="text-[11px] font-heading text-s-ink/40 dark:text-s-dm-text/40 whitespace-nowrap">
+                  {text}
+                </span>
+                {i < arr.length - 1 && (
+                  <span className="text-s-ink/20 dark:text-s-dm-text/20 text-[11px]">·</span>
+                )}
+              </span>
+            ))}
+          </div>
+
           {/* Small text links — Buchungen only when logged in */}
           {userName && (
             <motion.div variants={fadeUp} initial="hidden" animate="visible"
