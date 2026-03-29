@@ -28,7 +28,8 @@ export async function GET(req: NextRequest) {
     .from("salons")
     .select("*, services(price)")
     .in("id", ids)
-    .eq("is_active", true);
+    .eq("is_active", true)
+    .eq("is_test", false);
 
   if (sErr) return NextResponse.json({ items: [], total: 0 });
 

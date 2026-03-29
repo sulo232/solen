@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Bookmark } from "lucide-react";
+import { Bookmark, AlertCircle } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import EmptyState from "@/components/ui/EmptyState";
 import Skeleton from "@/components/ui/Skeleton";
@@ -14,24 +15,41 @@ export default function SavedPage() {
   const t = useTranslations("savedPage");
   const params = useParams();
   const locale = (params?.locale as string) ?? "de";
+  const pathname = usePathname();
+  const router = useRouter();
 
   const [items, setItems] = useState<SalonCardType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
+        const { createBrowserSupabaseClient } = await import("@/lib/supabase-browser");
+        const supabase = createBrowserSupabaseClient();
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session?.user) {
+          router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname ?? `/${locale}/account/saved`)}`);
+          return;
+        }
+
         const res = await fetch("/api/profile/favorites");
         if (res.ok) {
           const data = await res.json();
           setItems(data.items ?? []);
+        } else {
+          setError(t("errorTitle"));
+          setItems([]);
         }
+      } catch {
+        setError(t("errorTitle"));
       } finally {
         setLoading(false);
       }
     }
     load();
-  }, []);
+  }, [locale, pathname, router, t]);
 
   function handleUnfavorite(salonId: string) {
     // Optimistic remove
@@ -51,7 +69,13 @@ export default function SavedPage() {
           {t("title")}
         </h1>
 
-        {loading ? (
+        {error ? (
+          <EmptyState
+            icon={AlertCircle}
+            title={error}
+            message={t("errorMessage")}
+          />
+        ) : loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} variant="card" />
@@ -65,7 +89,7 @@ export default function SavedPage() {
             action={
               <Link
                 href={`/${locale}/discover`}
-                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading font-semibold text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.98] transition-all"
+                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading font-semibold text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter]"
               >
                 {t("discoverCta")}
               </Link>

@@ -3060,7 +3060,9 @@
   "savedPage": {
     "title": "Saved",
     "emptyTitle": "Nothing saved yet",
-    "emptyMessage": "Tap ♡ on a salon to save it here.",
-    "discoverCta": "Discover salons →"
+    "emptyMessage": "Tap the heart on a salon to save it here.",
+    "discoverCta": "Discover salons →",
+    "errorTitle": "Couldn't load saved salons",
+    "errorMessage": "Please try again later."
   }
 }

@@ -3037,7 +3037,9 @@
   "savedPage": {
     "title": "Salvati",
     "emptyTitle": "Niente salvato ancora",
-    "emptyMessage": "Tocca ♡ su un salone per salvarlo qui.",
-    "discoverCta": "Scopri saloni →"
+    "emptyMessage": "Tocca il cuore di un salone per salvarlo qui.",
+    "discoverCta": "Scopri saloni →",
+    "errorTitle": "Errore di caricamento",
+    "errorMessage": "Riprova più tardi."
   }
 }
