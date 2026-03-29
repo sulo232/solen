@@ -3051,5 +3051,28 @@
     "discoverCta": "Découvrir des salons →",
     "errorTitle": "Erreur de chargement",
     "errorMessage": "Veuillez réessayer plus tard."
+  },
+  "termine": {
+    "title": "Mes rendez-vous",
+    "upcoming": "Prochains",
+    "past": "Passés",
+    "cancel": "Annuler",
+    "reschedule": "Reporter",
+    "rebook": "Réserver à nouveau",
+    "cancelModalTitle": "Annuler le rendez-vous",
+    "cancelPolicy": "Annulation gratuite jusqu'à 24h avant le rendez-vous.",
+    "cancelReasonLabel": "Motif (optionnel)",
+    "cancelReasonPlaceholder": "ex. rendez-vous personnel, maladie...",
+    "cancelBack": "Retour",
+    "cancelConfirm": "Annuler le rendez-vous",
+    "cancelError": "Annulation échouée. Veuillez réessayer.",
+    "statusConfirmed": "Confirmé",
+    "statusCancelled": "Annulé",
+    "statusCompleted": "Terminé",
+    "statusNoShow": "Absent",
+    "statusPending": "En attente",
+    "statusPendingConfirmation": "Confirmation en attente",
+    "daysMo": "Lu", "daysDi": "Ma", "daysMi": "Me", "daysDo": "Je",
+    "daysFr": "Ve", "daysSa": "Sa", "daysSo": "Di"
   }
 }

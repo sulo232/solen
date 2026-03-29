@@ -3074,5 +3074,28 @@
     "discoverCta": "Discover salons →",
     "errorTitle": "Couldn't load saved salons",
     "errorMessage": "Please try again later."
+  },
+  "termine": {
+    "title": "My Appointments",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "cancel": "Cancel",
+    "reschedule": "Reschedule",
+    "rebook": "Book again",
+    "cancelModalTitle": "Cancel appointment",
+    "cancelPolicy": "Free cancellation up to 24h before the appointment.",
+    "cancelReasonLabel": "Reason (optional)",
+    "cancelReasonPlaceholder": "e.g. personal appointment, illness...",
+    "cancelBack": "Go back",
+    "cancelConfirm": "Cancel appointment",
+    "cancelError": "Cancellation failed. Please try again.",
+    "statusConfirmed": "Confirmed",
+    "statusCancelled": "Cancelled",
+    "statusCompleted": "Completed",
+    "statusNoShow": "No show",
+    "statusPending": "Pending",
+    "statusPendingConfirmation": "Awaiting confirmation",
+    "daysMo": "Mo", "daysDi": "Tu", "daysMi": "We", "daysDo": "Th",
+    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "Su"
   }
 }

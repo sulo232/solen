@@ -3085,5 +3085,28 @@
     "discoverCta": "Salons entdecken →",
     "errorTitle": "Fehler beim Laden",
     "errorMessage": "Bitte versuche es später erneut."
+  },
+  "termine": {
+    "title": "Meine Termine",
+    "upcoming": "Nächste Termine",
+    "past": "Vergangene Termine",
+    "cancel": "Absagen",
+    "reschedule": "Verschieben",
+    "rebook": "Nochmal buchen",
+    "cancelModalTitle": "Termin stornieren",
+    "cancelPolicy": "Kostenlose Stornierung bis 24h vor dem Termin.",
+    "cancelReasonLabel": "Grund (optional)",
+    "cancelReasonPlaceholder": "z. B. persönlicher Termin, Krankheit...",
+    "cancelBack": "Abbrechen",
+    "cancelConfirm": "Stornieren",
+    "cancelError": "Stornierung fehlgeschlagen. Bitte versuche es erneut.",
+    "statusConfirmed": "Bestätigt",
+    "statusCancelled": "Storniert",
+    "statusCompleted": "Abgeschlossen",
+    "statusNoShow": "Nicht erschienen",
+    "statusPending": "Ausstehend",
+    "statusPendingConfirmation": "Bestätigung ausstehend",
+    "daysMo": "Mo", "daysDi": "Di", "daysMi": "Mi", "daysDo": "Do",
+    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "So"
   }
 }

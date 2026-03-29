@@ -22,12 +22,6 @@ type BookingWithDetails = Booking & {
   staff_name?: string;
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  confirmed: "Bestätigt",
-  cancelled: "Storniert",
-  completed: "Abgeschlossen",
-  no_show: "Nicht erschienen",
-};
 const STATUS_COLOR: Record<string, string> = {
   confirmed: "text-s-coral",
   cancelled: "text-s-coral",
@@ -56,6 +50,7 @@ function CancelModal({
   onClose: () => void;
   onCancelled: (id: string) => void;
 }) {
+  const t = useTranslations("termine");
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
@@ -71,32 +66,32 @@ function CancelModal({
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? data.message ?? "Stornierung fehlgeschlagen");
+        throw new Error(data.error ?? data.message ?? t("cancelError"));
       }
       onCancelled(bookingId);
       onClose();
-    } catch (e) {
-      setCancelError(e instanceof Error ? e.message : "Stornierung fehlgeschlagen. Bitte erneut versuchen.");
+    } catch {
+      setCancelError(t("cancelError"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <GlassModal open onClose={onClose} title="Termin stornieren">
+    <GlassModal open onClose={onClose} title={t("cancelModalTitle")}>
       <p className="text-sm text-s-ink/60 mb-1">
         {salonName} — {new Date(startsAt).toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" })}{" "}
         um {new Date(startsAt).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
       </p>
-      <p className="text-xs text-s-ink/40 mb-4">Kostenlose Stornierung bis 24h vor dem Termin.</p>
+      <p className="text-xs text-s-ink/40 mb-4">{t("cancelPolicy")}</p>
 
       <div className="mb-5">
-        <label className="block text-xs font-medium text-s-ink/50 mb-1">Grund (optional)</label>
+        <label className="block text-xs font-medium text-s-ink/50 mb-1">{t("cancelReasonLabel")}</label>
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           rows={2}
-          placeholder="z. B. persönlicher Termin, Krankheit..."
+          placeholder={t("cancelReasonPlaceholder")}
           className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
         />
       </div>
@@ -107,7 +102,7 @@ function CancelModal({
 
       <div className="flex gap-2">
         <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:bg-s-bg-surface transition-colors">
-          Abbrechen
+          {t("cancelBack")}
         </button>
         <button
           onClick={handleCancel}
@@ -115,7 +110,7 @@ function CancelModal({
           className="flex-1 py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading && <Spinner size="sm" invert />}
-          Stornieren
+          {t("cancelConfirm")}
         </button>
       </div>
     </GlassModal>
@@ -127,6 +122,7 @@ function CancelModal({
 // ─────────────────────────────────────────
 
 function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
+  const t = useTranslations("termine");
   const [current, setCurrent] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -182,7 +178,7 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
       </div>
 
       <div className="grid grid-cols-7 gap-0.5 text-center">
-        {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((d) => (
+        {[t("daysMo"), t("daysDi"), t("daysMi"), t("daysDo"), t("daysFr"), t("daysSa"), t("daysSo")].map((d) => (
           <span key={d} className="text-[10px] font-medium text-s-ink/30 py-1">{d}</span>
         ))}
         {days.map((d, i) => (
@@ -218,12 +214,22 @@ function MiniCalendar({ bookingDates }: { bookingDates: Set<string> }) {
 export default function TerminePage() {
   const locale = useLocale();
   const tc = useTranslations("common");
+  const t = useTranslations("termine");
   const router = useRouter();
   const pathname = usePathname();
   const [bookings, setBookings] = useState<BookingWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelTarget, setCancelTarget] = useState<BookingWithDetails | null>(null);
   const [pastOpen, setPastOpen] = useState(false);
+
+  const STATUS_LABEL: Record<string, string> = {
+    confirmed: t("statusConfirmed"),
+    cancelled: t("statusCancelled"),
+    completed: t("statusCompleted"),
+    no_show: t("statusNoShow"),
+    pending: t("statusPending"),
+    pending_confirmation: t("statusPendingConfirmation"),
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -304,7 +310,7 @@ export default function TerminePage() {
           className="font-heading font-bold text-xl text-s-ink mb-6 flex items-center gap-2"
         >
           <Calendar size={20} className="text-s-coral" />
-          Meine Termine
+          {t("title")}
         </motion.h1>
 
         <div className="flex flex-col lg:flex-row gap-6">
@@ -318,7 +324,7 @@ export default function TerminePage() {
               className="mb-6"
             >
               <h2 className="text-sm font-bold text-s-ink/60 uppercase tracking-wide mb-3">
-                Nächste Termine ({upcoming.length})
+                {t("upcoming")} ({upcoming.length})
               </h2>
               <AnimatePresence mode="wait">
               {upcoming.length === 0 ? (
@@ -370,13 +376,13 @@ export default function TerminePage() {
                               onClick={() => setCancelTarget(b)}
                               className="px-3 py-1.5 rounded-btn border border-s-coral/30 text-xs text-s-coral hover:bg-s-coral/5 transition-colors"
                             >
-                              Absagen
+                              {t("cancel")}
                             </button>
                           )}
                           {tooLate && (
                             <div className="relative group">
                               <button disabled className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/20 cursor-not-allowed">
-                                Absagen
+                                {t("cancel")}
                               </button>
                               <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-s-ink text-white text-xs rounded-btn px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                 Stornierung nicht mehr möglich (weniger als 24h)
@@ -388,7 +394,7 @@ export default function TerminePage() {
                               href={`/${locale}/salon/${b.salon_slug}?service=${b.service_id}&reschedule=${b.id}`}
                               className="px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors"
                             >
-                              Verschieben
+                              {t("reschedule")}
                             </Link>
                           )}
                         </div>
@@ -411,7 +417,7 @@ export default function TerminePage() {
                 onClick={() => setPastOpen(!pastOpen)}
                 className="w-full flex items-center justify-between text-sm font-bold text-s-ink/60 uppercase tracking-wide mb-3"
               >
-                <span>Vergangene Termine ({past.length})</span>
+                <span>{t("past")} ({past.length})</span>
                 {pastOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
               <AnimatePresence mode="wait">
@@ -455,7 +461,7 @@ export default function TerminePage() {
                               className="flex items-center gap-1.5 px-3 py-1.5 rounded-btn border border-s-ink/10 text-xs text-s-ink/50 hover:text-s-coral hover:border-s-coral transition-colors w-fit"
                             >
                               <RotateCcw size={12} />
-                              Nochmal buchen
+                              {t("rebook")}
                             </Link>
                           </div>
                         )}
