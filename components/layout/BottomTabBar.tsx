@@ -47,11 +47,8 @@ export default function BottomTabBar() {
               aria-label={t(key as any)}
               aria-current={isActive ? "page" : undefined}
             >
-              {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[2px] rounded-full bg-s-coral" />
-              )}
               <Icon
-                className={cn("w-5 h-5 transition-transform duration-150", isActive && "scale-110")}
+                className="w-5 h-5"
                 strokeWidth={isActive ? 2.2 : 1.6}
               />
               <span className={cn(
