@@ -23,6 +23,7 @@ import Footer from "@/components/layout/Footer";
 import LastMinuteCard from "@/components/LastMinuteCard";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
+import CitySelector from "@/components/ui/CitySelector";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
@@ -60,13 +61,6 @@ const categoryItemVariants = {
   }),
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1] },
-  },
-} as const;
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
@@ -110,6 +104,7 @@ type HomePageProps = {
     trendingSalons: SalonCardType[];
     categoryCounts: Record<string, number>;
     sections: Record<string, boolean>;
+    salonsWithCoords?: number;
   }
 };
 
@@ -127,6 +122,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   const [locationError, setLocationError] = useState(false);
   const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(initialData?.categoryCounts || {});
+  const salonsWithCoords = initialData?.salonsWithCoords ?? 0;
 
   const [salons, setSalons] = useState<SalonCardType[]>(initialData?.salons || []);
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>(initialData?.lastMinuteSlots || []);
@@ -246,6 +242,11 @@ export default function HomePage({ initialData }: HomePageProps) {
           {/* Search bar right under greeting */}
           <div className="mt-6 w-full max-w-2xl">
             <HomeSearchBar />
+          </div>
+
+          {/* City selector — mobile only (desktop has it inside HomeSearchBar) */}
+          <div className="mt-3 flex md:hidden">
+            <CitySelector />
           </div>
 
           {/* Trust chips */}
@@ -554,42 +555,44 @@ export default function HomePage({ initialData }: HomePageProps) {
       )}
 
       {/* ── Map CTA — visual card with map-tint bg ─────────────────────── */}
-      <section className="py-10 md:py-14">
-        <div className="max-w-5xl mx-auto px-4">
-          <Link
-            href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-            className="block relative overflow-hidden rounded-card-lg group"
-            style={{
-              background: "linear-gradient(135deg, rgba(107,163,200,0.18) 0%, rgba(107,163,200,0.08) 50%, rgba(232,98,74,0.06) 100%)",
-              border: "1px solid rgba(107,163,200,0.20)",
-            }}
-          >
-            {/* Map grid pattern overlay */}
-            <div className="absolute inset-0 opacity-[0.06]" style={{
-              backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(107,163,200,0.8) 28px, rgba(107,163,200,0.8) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(107,163,200,0.8) 28px, rgba(107,163,200,0.8) 29px)",
-            }} aria-hidden />
-            {/* Pin decoration */}
-            <div className="absolute top-4 right-6 opacity-20" aria-hidden>
-              <MapPin className="w-16 h-16 text-s-blue" />
-            </div>
-            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 sm:p-8">
-              <div>
-                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-blue/70 mb-1">
-                  {t("map.eyebrow")}
-                </span>
-                <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(18px, 2.5vw, 24px)" }}>
-                  {t("map.title")}
-                </h2>
+      {salonsWithCoords >= 3 && (
+        <section className="py-10 md:py-14">
+          <div className="max-w-5xl mx-auto px-4">
+            <Link
+              href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
+              className="block relative overflow-hidden rounded-card-lg group"
+              style={{
+                background: "linear-gradient(135deg, rgba(107,163,200,0.18) 0%, rgba(107,163,200,0.08) 50%, rgba(232,98,74,0.06) 100%)",
+                border: "1px solid rgba(107,163,200,0.20)",
+              }}
+            >
+              {/* Map grid pattern overlay */}
+              <div className="absolute inset-0 opacity-[0.06]" style={{
+                backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(107,163,200,0.8) 28px, rgba(107,163,200,0.8) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(107,163,200,0.8) 28px, rgba(107,163,200,0.8) 29px)",
+              }} aria-hidden />
+              {/* Pin decoration */}
+              <div className="absolute top-4 right-6 opacity-20" aria-hidden>
+                <MapPin className="w-16 h-16 text-s-blue" />
               </div>
-              <span className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-white/90 dark:bg-s-dm-surface/90 text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] group-hover:-translate-y-px transition-[transform,box-shadow] duration-200"
-                style={{ boxShadow: "0 2px 8px rgba(26,18,9,.10)" }}>
-                <MapPin className="w-3.5 h-3.5 text-s-coral" />
-                {t("map.openCta")}
-              </span>
-            </div>
-          </Link>
-        </div>
-      </section>
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 sm:p-8">
+                <div>
+                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-blue/70 mb-1">
+                    {t("map.eyebrow")}
+                  </span>
+                  <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(18px, 2.5vw, 24px)" }}>
+                    {t("map.title")}
+                  </h2>
+                </div>
+                <span className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-white/90 dark:bg-s-dm-surface/90 text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] group-hover:-translate-y-px transition-[transform,box-shadow] duration-200"
+                  style={{ boxShadow: "0 2px 8px rgba(26,18,9,.10)" }}>
+                  <MapPin className="w-3.5 h-3.5 text-s-coral" />
+                  {t("map.openCta")}
+                </span>
+              </div>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* ── Review Carousel ──────────────────────────────────────────────── */}
       {sections.reviews && <ReviewCarousel />}
@@ -643,31 +646,45 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
       {sections.partner_cta && (
-      <section className="py-10 md:py-14 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-6 sm:p-8 rounded-card-lg"
-            style={{ background: "linear-gradient(135deg, rgba(232,98,74,0.06) 0%, rgba(212,135,10,0.04) 100%)", border: "1px solid rgba(232,98,74,0.10)" }}>
-            <div className="max-w-sm">
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-2">
-                {t("partner.eyebrow") || "Für Salons"}
-              </span>
-              <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text leading-tight"
-                style={{ fontSize: "clamp(18px, 2.5vw, 26px)" }}>
-                {t("partner.title")}
-              </h2>
-              <p className="font-body text-s-ink/45 dark:text-s-dm-text/45 text-sm mt-2 leading-relaxed">
-                {t("partner.subtitle")}
-              </p>
+        <section className="py-10 md:py-14 px-4 bg-s-ink dark:bg-s-dm-bg">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 py-2">
+              <div className="max-w-sm">
+                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-3">
+                  {t("partner.eyebrow") || "Für Salons"}
+                </span>
+                <h2
+                  className="font-display uppercase leading-[0.88] text-white"
+                  style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+                >
+                  <span className="text-s-coral">{t("partner.headlinePart1")}</span>{" "}
+                  {t("partner.headlinePart2")}<br />
+                  {t("partner.headlinePart3")}<br />
+                  {t("partner.headlinePart4")}
+                </h2>
+                <ul className="mt-5 space-y-2">
+                  {[
+                    t("partner.feature1"),
+                    t("partner.feature2"),
+                    t("partner.feature3"),
+                  ].map((feat) => (
+                    <li key={feat} className="flex items-center gap-2 text-sm font-body text-white/65">
+                      <Check size={14} className="text-s-coral shrink-0" aria-hidden="true" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Link
+                href={`/${locale}/partner`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.05em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0 shadow-coral-glow"
+                aria-label={t("partner.cta")}
+              >
+                {t("partner.cta")} →
+              </Link>
             </div>
-            <Link href={`/${locale}/partner`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.05em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0"
-              style={{ boxShadow: "0 2px 8px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}
-              aria-label={t("partner.cta")}>
-              {t("partner.cta")} →
-            </Link>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* ── Trust Strip ──────────────────────────────────────────────────── */}

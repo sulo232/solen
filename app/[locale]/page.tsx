@@ -34,13 +34,15 @@ export default async function Page() {
     { data: lastMinuteData, error: lmError },
     { data: newSalonsData, error: nsError },
     { data: sectionsData },
-    { data: categoryCountsData, error: ccError }
+    { data: categoryCountsData, error: ccError },
+    { count: coordsCount }
   ] = await Promise.all([
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, min_price").eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(8),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier, min_price").eq("is_active", true).eq("is_test", false).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, min_price").eq("is_active", true).eq("is_test", false).order("created_at", { ascending: false }).limit(6),
     supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })),
-    supabase.from("salons").select("categories").eq("is_active", true).eq("is_test", false)
+    supabase.from("salons").select("categories").eq("is_active", true).eq("is_test", false),
+    supabase.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false).not("latitude", "is", null).gt("latitude", 0),
   ]);
 
   if (pError) console.error("SSR popular salons query failed:", pError.message);
@@ -63,6 +65,7 @@ export default async function Page() {
     newSalons: (newSalonsData as unknown as any[]) ?? [],
     trendingSalons: (popularData as unknown as any[]) ?? [],
     categoryCounts,
+    salonsWithCoords: coordsCount ?? 0,
     sections: (sectionsData?.value as Record<string, boolean>) ?? {
       trending: true, nearby: true, new_salons: true,
       rebook: true, reviews: true, last_minute: true, featured: true,
