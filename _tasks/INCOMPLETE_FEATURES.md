@@ -340,5 +340,16 @@ case "payment_intent.succeeded": {
 
 ---
 
-**Last Updated:** 2026-03-26
+---
+
+## Salon Photo Gallery (Dashboard Upload)
+
+- **Backend**: `salon.photos[]` column needed in DB (does not yet exist)
+- **Frontend**: Photo carousel works in `SalonCard.tsx` once `photos[]` prop is populated; `photoIndex` state + dot indicators already implemented
+- **Missing**: Dashboard upload UI for additional salon photos (after cover photo); DB migration to add `photos text[]` column to `salons` table
+- **Priority**: MEDIUM
+
+---
+
+**Last Updated:** 2026-03-29
 **Maintained By:** All AI agents (Dev 1, Dev 2, Dev 3, Bug Agent)

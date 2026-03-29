@@ -65,7 +65,7 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
 };
 
 
-export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = true, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason }: SalonCardProps) {
+export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, animated = true, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
   const router = useRouter();
   const prefetched = useRef(false);
@@ -82,6 +82,10 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     }
     prevFavorited.current = isFavorited;
   }, [isFavorited]);
+
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const allPhotos = [salon.cover_photo_url, ...(photos || [])].filter(Boolean) as string[];
+  const hasMultiple = allPhotos.length > 1;
 
   /* ── Compact variant ─────────────────────────────────────────────── */
   if (variant === "compact") {
@@ -117,7 +121,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
   return (
     <motion.div
       variants={cardReveal}
-      initial="hidden"
+      initial={animated ? "hidden" : false}
       animate="visible"
       className={`relative card-v4 overflow-hidden cursor-pointer group ${solenTier === "gold" ? "ring-2 ring-s-yellow/50" : ""}`}
       onMouseEnter={() => { if (!prefetched.current) { prefetched.current = true; router.prefetch(href); } }}
@@ -141,9 +145,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       <Link href={href} className="block w-full h-full">
         {/* Cover photo — V4: image fills card radius, smooth zoom on hover */}
         <div className="relative w-full aspect-[3/2] bg-s-bg-sunken overflow-hidden rounded-t-card img-hover-zoom">
-          {salon.cover_photo_url ? (
+          {allPhotos.length > 0 ? (
             <Image
-              src={salon.cover_photo_url}
+              src={allPhotos[photoIndex]}
               alt={salon.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -245,53 +249,36 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               </span>
             </div>
           )}
+
+          {/* Photo carousel dot indicators */}
+          {hasMultiple && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+              {allPhotos.slice(0, 5).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPhotoIndex(i); }}
+                  className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-2 h-2 bg-white" : "w-1.5 h-1.5 bg-white/60"}`}
+                  aria-label={`Photo ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* ── Info Section — Clean Airbnb-style ─────────────────────── */}
-        <div className="p-4">
-          {/* Name — hover reveals coral */}
-          <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[15px] leading-tight group-hover:text-s-coral transition-colors duration-200">{salon.name}</h3>
-
-          {/* Brand line */}
-          {(salon as any).group_name && (
-            <span className="inline-flex items-center gap-1 text-[10px] text-s-coral font-medium mt-0.5">
-              {t("partOfBrand", { brand: (salon as any).group_name })}
-            </span>
-          )}
-
-          {/* Address + Distance — single clean line */}
-          <div className="flex items-center gap-1 mt-1.5 text-s-ink/45 dark:text-s-dm-text/45">
-            <MapPin className="w-3 h-3 shrink-0" />
-            <span className="text-xs font-body truncate">{salon.address}</span>
-            {showDistance && salon.distance_km != null && (
-              <span className="text-xs text-s-ink/40 dark:text-s-dm-text/40 font-body shrink-0 ml-auto">{salon.distance_km.toFixed(1)} km</span>
-            )}
-          </div>
-
-          {/* Rating + Avg Price — single summary line */}
-          <div className="flex items-center gap-1.5 mt-2">
-            {salon.review_count >= 5 ? (
-              <>
-                <Star className="w-3.5 h-3.5 fill-s-coral text-s-coral" />
-                <span className="text-sm data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
-                <span className="text-xs text-s-ink/35 dark:text-s-dm-text/35 font-body">({salon.review_count})</span>
-              </>
-            ) : (
-              <span className="text-[11px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill">{t("newOnSolen")}</span>
-            )}
-
-            {salon.avg_price != null && salon.avg_price > 0 && (
-              <>
-                <span className="text-xs text-s-ink/20 dark:text-s-dm-text/20 font-body">·</span>
-                <span className="text-xs data-text text-s-ink/55 dark:text-s-dm-text/55">Ø {formatCurrency(salon.avg_price, locale)}</span>
-              </>
-            )}
-
-            {/* AI sparkle */}
+        {/* ── Info Section — Compact Airbnb-style ─────────────────────── */}
+        <div className="px-3 py-2.5">
+          {/* Name + AI sparkle (same row) */}
+          <div className="flex items-start justify-between gap-1">
+            <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[14px] leading-tight group-hover:text-s-coral transition-colors duration-150">
+              {salon.name}
+              {(salon as any).group_name && (
+                <span className="text-s-ink/40 font-normal"> · {(salon as any).group_name}</span>
+              )}
+            </h3>
             {aiReason && (
-              <div className="relative group/ai ml-auto">
-                <Sparkles className="w-3.5 h-3.5 text-s-coral cursor-help" />
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-white dark:bg-s-dm-surface rounded-card shadow-elevation-3 border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover/ai:opacity-100 group-hover/ai:pointer-events-auto transition-[opacity,transform] duration-200 group-hover/ai:-translate-y-1 z-10">
+              <div className="relative group/ai shrink-0 mt-0.5">
+                <Sparkles className="w-3 h-3 text-s-coral cursor-help" />
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 glass-frost rounded-card shadow-elevation-3 border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover/ai:opacity-100 group-hover/ai:pointer-events-auto transition-[opacity,transform] duration-200 group-hover/ai:-translate-y-1 z-10">
                   {aiReason}
                   <div className="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-white dark:border-t-s-dm-surface" />
                 </div>
@@ -299,58 +286,73 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             )}
           </div>
 
-          {/* Badges — max 3, clean row */}
-          {salon.badges && salon.badges.length > 0 && (
-            <div className="flex items-center gap-1 mt-2 flex-wrap">
-              {salon.badges.slice(0, 2).map((b, i) => {
-                const Ic = BADGE_ICONS[b.icon] ?? Star;
-                return (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-medium"
-                    style={{ color: b.color, backgroundColor: b.bg_color }}
-                  >
-                    <Ic size={10} />
-                    {b.name_de}
-                  </span>
-                );
-              })}
-              {salon.badges.length > 2 && (
-                <span className="px-1.5 py-0.5 rounded-pill bg-s-bg-sunken dark:bg-white/5 text-s-ink/35 dark:text-s-dm-text/35 text-[10px] font-medium">
-                  +{salon.badges.length - 2}
-                </span>
-              )}
-            </div>
-          )}
+          {/* Address + Distance */}
+          <div className="flex items-center gap-1 mt-1 text-s-ink/40 dark:text-s-dm-text/40">
+            <MapPin className="w-3 h-3 shrink-0" />
+            <span className="text-[11px] font-body truncate">{salon.address}</span>
+            {showDistance && salon.distance_km != null && (
+              <span className="text-[11px] text-s-ink/30 font-body shrink-0 ml-auto">{salon.distance_km.toFixed(1)} km</span>
+            )}
+          </div>
 
-          {/* Availability + Stamps + Off-peak — secondary info row */}
-          {(showAvailability || stampProgress || offPeakToday || salon.pricing_surcharge) && (
-            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-              {showAvailability && salon.next_available_slot && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-s-sage-text dark:text-s-sage bg-s-sage-subtle dark:bg-s-sage/10 px-2 py-0.5 rounded-pill">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                  </svg>
+          {/* Rating + Avg Price */}
+          <div className="flex items-center gap-1.5 mt-1.5">
+            {salon.review_count >= 5 ? (
+              <>
+                <Star className="w-3 h-3 fill-s-coral text-s-coral" />
+                <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
+                <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
+              </>
+            ) : (
+              <span className="text-[10px] font-body font-medium text-s-coral bg-s-coral-subtle dark:bg-s-coral/10 px-2 py-0.5 rounded-pill">{t("newOnSolen")}</span>
+            )}
+            {salon.avg_price != null && salon.avg_price > 0 && (
+              <>
+                <span className="text-s-ink/20 font-body">·</span>
+                <span className="text-[11px] data-text text-s-ink/50 dark:text-s-dm-text/50">Ø {formatCurrency(salon.avg_price, locale)}</span>
+              </>
+            )}
+          </div>
+
+          {/* 1 badge MAX */}
+          {salon.badges && salon.badges.length > 0 && (() => {
+            const b = salon.badges[0];
+            const Ic = BADGE_ICONS[b.icon] ?? Star;
+            return (
+              <div className="mt-1.5">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-medium" style={{ color: b.color, backgroundColor: b.bg_color }}>
+                  <Ic size={9} />
+                  {b.name_de}
+                </span>
+              </div>
+            );
+          })()}
+
+          {/* Single signal pill — priority: availability > off-peak > stamps */}
+          {(() => {
+            if (showAvailability && salon.next_available_slot) {
+              return (
+                <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold text-s-sage-text bg-s-sage-subtle dark:bg-s-sage/10 px-2 py-0.5 rounded-pill">
                   {salon.next_available_slot}
                 </span>
-              )}
-              {stampProgress && stampProgress.current > 0 && (
-                <span className="inline-flex items-center gap-1 text-xs bg-s-amber-subtle dark:bg-s-amber/10 text-s-amber-text px-2 py-0.5 rounded-pill">
-                  <Star size={12} className="fill-s-amber text-s-amber" /> {stampProgress.current}/{stampProgress.total}
-                </span>
-              )}
-              {offPeakToday && (
-                <span className="inline-flex items-center gap-1 text-[11px] bg-s-sage-subtle dark:bg-s-sage/10 text-s-sage-text dark:text-s-sage px-2 py-0.5 rounded-pill font-medium">
+              );
+            }
+            if (offPeakToday) {
+              return (
+                <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] bg-s-sage-subtle text-s-sage-text dark:bg-s-sage/10 px-2 py-0.5 rounded-pill font-medium">
                   Off-Peak -{offPeakToday.discount_percent}%
                 </span>
-              )}
-              {salon.pricing_surcharge && (
-                <span className="inline-flex items-center gap-1 text-[11px] bg-s-coral-subtle dark:bg-s-coral/10 text-s-coral-text dark:text-s-coral px-2 py-0.5 rounded-pill font-medium">
-                  {salon.pricing_surcharge.label}
+              );
+            }
+            if (stampProgress && stampProgress.current > 0) {
+              return (
+                <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] bg-s-amber-subtle text-s-amber-text px-2 py-0.5 rounded-pill">
+                  <Star size={9} className="fill-s-amber text-s-amber" /> {stampProgress.current}/{stampProgress.total}
                 </span>
-              )}
-            </div>
-          )}
+              );
+            }
+            return null;
+          })()}
         </div>
       </Link>
     </motion.div>
