@@ -73,6 +73,12 @@ const CATEGORY_FALLBACK_GRADIENTS: Record<string, [string, string]> = {
   waxing:     ["rgba(107,163,200,0.12)", "rgba(250,246,239,0.98)"],
 };
 
+function getCategoryFallbackGradient(categories?: string[]): string {
+  const cat = (categories?.[0] ?? "coiffeur").toLowerCase();
+  const [from, to] = CATEGORY_FALLBACK_GRADIENTS[cat] ?? CATEGORY_FALLBACK_GRADIENTS.coiffeur;
+  return `linear-gradient(135deg, ${from} 0%, ${to} 100%)`;
+}
+
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, animated = true, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
@@ -167,13 +173,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           ) : (
             <div
               className="absolute inset-0 flex flex-col items-center justify-center gap-2"
-              style={{
-                background: (() => {
-                  const cat = (salon.categories?.[0] ?? "coiffeur").toLowerCase();
-                  const [from, to] = CATEGORY_FALLBACK_GRADIENTS[cat] ?? CATEGORY_FALLBACK_GRADIENTS.coiffeur;
-                  return `linear-gradient(135deg, ${from} 0%, ${to} 100%)`;
-                })()
-              }}
+              style={{ background: getCategoryFallbackGradient(salon.categories) }}
             >
               <Scissors className="w-10 h-10 text-s-ink/20" />
               <span className="text-xs font-body font-medium text-s-ink/25 uppercase tracking-wider">
