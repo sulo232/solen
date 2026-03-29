@@ -33,12 +33,12 @@ const categoryLabels: Record<SalonCategory, string> = {
 };
 
 const categoryGradients: Record<SalonCategory, string> = {
-  coiffeur:   "from-[rgba(232,98,74,0.12)] via-[rgba(250,246,239,0.80)] to-transparent",
-  barbershop: "from-[rgba(74,30,60,0.10)] via-[rgba(250,246,239,0.80)] to-transparent",
-  nails:      "from-[rgba(232,98,74,0.10)] via-[rgba(242,193,68,0.06)] to-transparent",
-  spa:        "from-[rgba(123,166,136,0.14)] via-[rgba(250,246,239,0.80)] to-transparent",
-  makeup:     "from-[rgba(212,135,10,0.12)] via-[rgba(250,246,239,0.80)] to-transparent",
-  waxing:     "from-[rgba(107,163,200,0.12)] via-[rgba(250,246,239,0.80)] to-transparent",
+  coiffeur:   "from-[rgba(232,98,74,0.06)] via-[rgba(250,246,239,0.80)] to-transparent",
+  barbershop: "from-[rgba(74,30,60,0.05)] via-[rgba(250,246,239,0.80)] to-transparent",
+  nails:      "from-[rgba(232,98,74,0.05)] via-[rgba(242,193,68,0.03)] to-transparent",
+  spa:        "from-[rgba(123,166,136,0.07)] via-[rgba(250,246,239,0.80)] to-transparent",
+  makeup:     "from-[rgba(212,135,10,0.06)] via-[rgba(250,246,239,0.80)] to-transparent",
+  waxing:     "from-[rgba(107,163,200,0.06)] via-[rgba(250,246,239,0.80)] to-transparent",
 };
 
 interface CategoryPageProps {
@@ -282,7 +282,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   }, [currentPathname, routerNav, searchParams]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg ambient-v5 relative overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-s-dm-bg relative overflow-x-hidden">
       {/* Hero — category gradient + Bebas Neue H1 */}
       <div className="pt-16 pb-6 md:pt-20 md:pb-8 relative z-10 overflow-hidden">
         {/* Category gradient overlay */}
@@ -445,7 +445,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             />
           </div>
         ) : loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
             {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
           </div>
         ) : salons.length === 0 && dirEntries.length === 0 ? (
@@ -461,7 +461,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
             >
               {(selectedDate
                 ? [...salons].sort((a, b) => {
