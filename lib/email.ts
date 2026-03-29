@@ -166,6 +166,26 @@ export function recurringFailed(
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
 
+export function salonNewBooking(
+  to: string,
+  vars: { customerName: string; service: string; date: string; time: string; price: number },
+  locale: EmailLocale = "de"
+): EmailPayload {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Neue Buchung: ${vars.service} am ${vars.date}`,
+    en: `New booking: ${vars.service} on ${vars.date}`,
+    fr: `Nouvelle réservation: ${vars.service} le ${vars.date}`,
+    it: `Nuova prenotazione: ${vars.service} il ${vars.date}`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Hallo,</p><p>Sie haben eine neue Buchung erhalten:</p><ul><li><strong>Kunde:</strong> ${vars.customerName}</li><li><strong>Service:</strong> ${vars.service}</li><li><strong>Datum:</strong> ${vars.date} um ${vars.time} Uhr</li><li><strong>Preis:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Bitte loggen Sie sich in Ihr Dashboard auf <a href="https://solen.ch">solen.ch</a> ein.</p>`,
+    en: `<p>Hello,</p><p>You have received a new booking:</p><ul><li><strong>Customer:</strong> ${vars.customerName}</li><li><strong>Service:</strong> ${vars.service}</li><li><strong>Date:</strong> ${vars.date} at ${vars.time}</li><li><strong>Price:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Please log in to your dashboard at <a href="https://solen.ch">solen.ch</a>.</p>`,
+    fr: `<p>Bonjour,</p><p>Vous avez reçu une nouvelle réservation:</p><ul><li><strong>Client:</strong> ${vars.customerName}</li><li><strong>Service:</strong> ${vars.service}</li><li><strong>Date:</strong> ${vars.date} à ${vars.time}</li><li><strong>Prix:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Connectez-vous à votre tableau de bord sur <a href="https://solen.ch">solen.ch</a>.</p>`,
+    it: `<p>Ciao,</p><p>Hai ricevuto una nuova prenotazione:</p><ul><li><strong>Cliente:</strong> ${vars.customerName}</li><li><strong>Servizio:</strong> ${vars.service}</li><li><strong>Data:</strong> ${vars.date} alle ${vars.time}</li><li><strong>Prezzo:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Accedi alla tua dashboard su <a href="https://solen.ch">solen.ch</a>.</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
 export function salonVerificationRequest(
   to: string,
   vars: { salon: string; confirmUrl: string },
