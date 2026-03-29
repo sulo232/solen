@@ -223,55 +223,51 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* ── Hero (compact) ──────────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14">
         <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-left">
             {/* Greeting / headline */}
             <motion.h1 variants={fadeUp}
               className="font-display uppercase text-s-ink dark:text-s-dm-text"
-              style={{ fontSize: "clamp(40px, 7vw, 80px)", letterSpacing: "0.01em", lineHeight: "0.9" }}>
+              style={{ fontSize: "clamp(32px, 5vw, 60px)", letterSpacing: "0.01em", lineHeight: "0.92" }}>
               {userName ? (
                 <>{t("hero.hello")} <span className="text-s-coral">{userName}</span></>
               ) : (
                 <>{t("hero.headlineWord1")}<span className="text-s-coral">.</span> {t("hero.headlineWord2")}<span className="text-s-coral">.</span></>
               )}
             </motion.h1>
-            <motion.p variants={fadeUp}
-              className="mt-3 font-body italic text-s-ink/60 dark:text-s-dm-text/60 leading-[1.7] max-w-md mx-auto"
-              style={{ fontSize: "15px" }}>
+            <motion.p
+              variants={fadeUp}
+              className="mt-2 font-body text-s-ink/45 dark:text-s-dm-text/45"
+              style={{ fontSize: "14px" }}
+            >
               {userName && nextBooking
                 ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
-                : userName
-                  ? t("hero.welcomeBack")
-                  : t("hero.subtitle")}
+                : t("hero.aiTagline")}
             </motion.p>
           </motion.div>
 
           {/* Search bar right under greeting */}
-          <div className="mt-10 max-w-4xl mx-auto relative">
-            <div aria-hidden className="absolute -inset-3 md:-inset-5 bg-gradient-to-r from-s-coral/8 via-s-plum/6 to-s-amber/8 rounded-[40px] blur-2xl opacity-40 -z-10" />
+          <div className="mt-6 w-full max-w-2xl">
             <HomeSearchBar />
           </div>
 
-          {/* City selector — mobile only */}
-          <div className="mt-3 flex justify-center md:hidden">
+          {/* City selector — persistent */}
+          <div className="mt-3">
             <CitySelector />
           </div>
 
-          {/* Small text links (Angebote, Buchungen, Partner) */}
+          {/* Small text links — Angebote always, Buchungen only when logged in */}
           <motion.div variants={fadeUp} initial="hidden" animate="visible"
-            className="mt-4 flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
+            className="mt-5 flex items-center gap-5 flex-wrap">
             <Link href={`/${locale}/angebote`}
-              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors"
-              aria-label={t("cta.lastMinute")}>
+              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
               {t("cta.lastMinute")} →
             </Link>
-            <Link href={`/${locale}/account/bookings`}
-              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors">
-              {t("hero.bookings")} →
-            </Link>
-            <Link href={`/${locale}/partner`}
-              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors">
-              {t("cta.partner")} →
-            </Link>
+            {userName && (
+              <Link href={`/${locale}/account/bookings`}
+                className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
+                {t("hero.bookings")} →
+              </Link>
+            )}
           </motion.div>
         </div>
       </section>
