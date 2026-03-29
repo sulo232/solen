@@ -526,7 +526,8 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error((await res.json()).message ?? t("bookingError"));
       const data = await res.json();
-      setConfirmedBookingId(data.data?.id ?? null);
+      // Regular bookings: data.data.id; recurring bookings: data.data.first_booking.id
+      setConfirmedBookingId(data.data?.id ?? data.data?.first_booking?.id ?? null);
       setConfirmed(true);
     } catch (e) {
       // Payment succeeded but booking creation failed — user has been charged.
@@ -559,7 +560,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error((await res.json()).message ?? t("bookingError"));
       const data = await res.json();
-      setConfirmedBookingId(data.data?.id ?? null);
+      setConfirmedBookingId(data.data?.id ?? data.data?.first_booking?.id ?? null);
       setConfirmed(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("bookingError"));
@@ -569,10 +570,10 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
   };
 
   if (confirmed) {
-    if (confirmedBookingId && salonName && salonSlug && selectedSlot) {
+    if (salonName && salonSlug && selectedSlot) {
       return (
         <BookingSuccess
-          bookingId={confirmedBookingId}
+          bookingId={confirmedBookingId ?? "pending"}
           salonName={salonName}
           salonSlug={salonSlug}
           serviceName={locale === "en" ? (selectedSlot.services?.name_en ?? "") : (selectedSlot.services?.name_de ?? "")}

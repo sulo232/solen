@@ -78,7 +78,7 @@ export async function handleVoucherPurchase(pi: any): Promise<boolean> {
     return true; // Successfully handled, stop processing other handlers
   } catch (error) {
     console.error("[webhook/voucher] Error processing voucher purchase:", error);
-    return true; // Stop processing to avoid double-handling
+    throw error; // Re-throw so Stripe receives a non-200 and retries the event
   }
 }
 
