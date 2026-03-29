@@ -28,11 +28,11 @@
     --radius: 12px;
 
     /* Base / raised surface tokens */
-    --bg: #FAF6EF;
-    --base: #FAF6EF;
+    --bg: #F7F5F2;
+    --base: #F7F5F2;
 
     /* Glass CSS custom properties */
-    --glass-bg: rgba(250,246,239,.82);
+    --glass-bg: rgba(247,245,242,.82);
     --glass-bg-strong: rgba(255,255,255,.92);
     --glass-bg-card: rgba(255,255,255,.80);
     --glass-bg-subtle: rgba(255,255,255,.62);
@@ -88,6 +88,7 @@
 
   body {
     font-family: "DM Sans", sans-serif;
+    background-color: var(--base);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -479,7 +480,7 @@
   background:
     radial-gradient(ellipse 60% 50% at 15% 70%, rgba(232, 98, 74, 0.05) 0%, transparent 70%),
     radial-gradient(ellipse 50% 40% at 85% 25%, rgba(242, 193, 68, 0.04) 0%, transparent 60%),
-    #fafaf9;
+    #F7F5F2;
 }
 .dark .hero-cinematic {
   background:
