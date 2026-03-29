@@ -19,7 +19,6 @@ import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
 import Footer from "@/components/layout/Footer";
-import SocialProofStrip from "@/components/ui/SocialProofStrip";
 // StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
 import LastMinuteCard from "@/components/LastMinuteCard";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
@@ -273,7 +272,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
-      <section id="tour-services" className="py-10 md:py-14 bg-[--base]">
+      <section id="tour-services" className="py-10 md:py-14">
         <div className="max-w-5xl mx-auto px-4">
           <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
             <div className="mb-6 text-center">
@@ -320,7 +319,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
-      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden bg-[--raised]">
+      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 mb-2 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
@@ -344,7 +343,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       {sections.rebook && lastBookedSalon && (
         <section className="max-w-5xl mx-auto px-4 pt-6">
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-            className="flex items-center gap-4 p-4 card-v4">
+            className="flex items-center gap-4 p-4 border border-s-ink/[0.05] dark:border-white/[0.05] rounded-xl bg-s-bg-base/40 dark:bg-s-dm-surface/20">
             <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-coral/[0.12] dark:bg-s-coral/[0.20]">
               <RefreshCw size={18} className="text-s-coral" />
             </div>
@@ -367,7 +366,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
       {sections.featured && (
-        <section className="py-10 md:py-14 bg-[--base]">
+        <section className="py-10 md:py-14">
           <div className="max-w-5xl mx-auto px-4">
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
@@ -436,20 +435,20 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Deals ────────────────────────────────────────── */}
       {sections.last_minute && (
-      <section id="tour-last-minute" className="py-10 md:py-14 overflow-hidden relative bg-s-plum">
-        <div className="max-w-5xl mx-auto px-4 relative z-10">
+      <section id="tour-last-minute" className="py-10 md:py-14">
+        <div className="max-w-5xl mx-auto px-4">
             <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
               <div>
-                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] mb-2 text-s-yellow">
+                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] mb-2 text-s-amber">
                   {t("lastMinute.eyebrow")}
                 </span>
-                <h2 className="font-body font-bold text-white"
+                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
                   style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
                   {t("lastMinute.title")}
                 </h2>
               </div>
               <Link href={`/${locale}/deals`}
-                className="text-sm font-body text-white/60 border border-white/20 px-4 py-2 rounded-pill hover:border-white/40 hover:text-white transition-colors duration-150 shrink-0"
+                className="text-sm font-body text-s-ink/50 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/30 hover:text-s-coral transition-colors duration-150 shrink-0"
                 aria-label={t("lastMinute.viewAll")}>
                 {t("lastMinute.viewAll")} →
               </Link>
@@ -467,10 +466,10 @@ export default function HomePage({ initialData }: HomePageProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="rounded-[12px] bg-white/[0.08] border border-white/[0.12] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
+              className="rounded-[12px] border border-s-ink/[0.06] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
             >
               <div className="flex-1 w-full text-center sm:text-left">
-                <p className="text-sm text-white/60 font-body">
+                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
                   {t("lastMinute.emptyMessage")}
                 </p>
               </div>
@@ -482,7 +481,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Trending Section ────────────────────────────────────────────────── */}
       {sections.trending && trendingSalons.length > 0 && (
-        <section className="py-10 md:py-14 bg-[--raised]">
+        <section className="py-10 md:py-14">
           <div className="max-w-5xl mx-auto px-4">
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
@@ -520,7 +519,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Near You Section ────────────────────────────────────────────────── */}
       {sections.nearby && (showNearby || nearbySalons.length > 0) && (
-        <section className="py-10 md:py-14 bg-[--base]">
+        <section className="py-10 md:py-14">
           <div className="max-w-5xl mx-auto px-4">
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
@@ -562,9 +561,9 @@ export default function HomePage({ initialData }: HomePageProps) {
       )}
 
       {/* ── Map CTA — V4 Clean ──────────────────────────────────────────── */}
-      <section className="py-10 md:py-14 bg-[--raised]">
+      <section className="py-10 md:py-14">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="card-v4 p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="border-t border-s-ink/[0.04] dark:border-white/[0.04] pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <div className="w-14 h-14 rounded-full bg-s-coral/[0.08] dark:bg-s-coral/[0.15] flex items-center justify-center shrink-0">
                 <MapPin className="w-6 h-6 text-s-coral" />
@@ -594,7 +593,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
       {sections.new_salons && newSalons.length > 0 && (
-        <section className="py-10 md:py-14 bg-[--base]">
+        <section className="py-10 md:py-14">
           <div className="max-w-5xl mx-auto px-4">
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
@@ -641,32 +640,28 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
       {sections.partner_cta && (
-      <section className="py-10 sm:py-14 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }} transition={{ duration: 0.5 }}
-            className="rounded-card-lg overflow-hidden relative bg-gradient-to-br from-s-amber via-s-coral to-s-plum"
-            style={{ boxShadow: "0 24px 72px rgba(26,18,9,.18)" }}>
-            <div className="relative z-10 p-8 sm:p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="max-w-xl text-center md:text-left">
-                <h2 className="font-heading font-bold text-white mb-4 leading-tight"
-                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
-                  {t("partner.title")}
-                </h2>
-                <p className="font-body italic text-white/70 text-lg leading-[1.82]">
-                  {t("partner.subtitle")}
-                </p>
-              </div>
-              <div className="shrink-0">
-                <Link href={`/${locale}/partner`}
-                  className="inline-flex items-center gap-2 px-10 py-4 rounded-pill bg-white dark:bg-s-dm-text text-s-ink dark:text-s-dm-bg font-heading font-bold text-sm uppercase tracking-[.04em] hover:bg-s-bg-base dark:hover:bg-s-dm-text/90 hover:-translate-y-px transition-[background-color,transform] duration-150"
-                  style={{ boxShadow: "0 2px 4px rgba(26,18,9,.12), 0 4px 16px rgba(26,18,9,.10)" }}
-                  aria-label={t("partner.cta")}>
-                  {t("partner.cta")} →
-                </Link>
-              </div>
+      <section className="py-10 md:py-14">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-8 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
+            <div className="max-w-sm">
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-2">
+                {t("partner.eyebrow") || "Für Salons"}
+              </span>
+              <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text leading-tight"
+                style={{ fontSize: "clamp(18px, 2.5vw, 26px)" }}>
+                {t("partner.title")}
+              </h2>
+              <p className="font-body text-s-ink/45 dark:text-s-dm-text/45 text-sm mt-2 leading-relaxed">
+                {t("partner.subtitle")}
+              </p>
             </div>
-          </motion.div>
+            <Link href={`/${locale}/partner`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-ink dark:bg-white text-white dark:text-s-ink font-heading font-bold text-xs uppercase tracking-[.05em] hover:-translate-y-px transition-[transform,box-shadow] duration-200 shrink-0"
+              style={{ boxShadow: "0 2px 8px rgba(26,18,9,.10), 0 4px 24px rgba(26,18,9,.06)" }}
+              aria-label={t("partner.cta")}>
+              {t("partner.cta")} →
+            </Link>
+          </div>
         </div>
       </section>
       )}
@@ -674,7 +669,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* ── Trust Strip ──────────────────────────────────────────────────── */}
       <div className="px-4 pb-10">
         <div className="max-w-5xl mx-auto">
-          <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1">
+          <div className="flex gap-5 flex-wrap items-center border-t border-s-ink/[0.04] dark:border-white/[0.04] pt-8 pb-4">
             {[
               { icon: <Lock size={14} aria-hidden="true" />, label: t("trust.securePayment") },
               { icon: <Shield size={14} aria-hidden="true" />, label: t("trust.swissMade") },
