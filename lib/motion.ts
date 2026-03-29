@@ -2,6 +2,7 @@
 // Single source of truth for all Framer Motion variants used across the app.
 // Import from this file — never inline duplicate variant objects.
 
+// Used by category pages — see _tasks/roadmap-v5-zone8-category-pages.md
 export const EASE_V5 = [0.23, 1, 0.32, 1] as const;
 
 /** Stagger container for salon card grids (Featured, Trending, Nearby, New) */
