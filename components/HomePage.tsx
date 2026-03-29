@@ -90,12 +90,12 @@ import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "COIFFEUR",   Icon: CoiffeurIcon, color: "text-s-coral",       bgClass: "bg-s-coral/[0.08] dark:bg-s-coral/[0.15]" },
-  { key: "barbershop", label: "BARBER",     Icon: BarberIcon,   color: "text-s-ink",         bgClass: "bg-s-ink/[0.06] dark:bg-white/[0.08]" },
-  { key: "nails",      label: "NAILS",      Icon: NailsIcon,    color: "text-s-amber",       bgClass: "bg-s-yellow/[0.15] dark:bg-s-yellow/[0.12]" },
-  { key: "spa",        label: "SPA",        Icon: SpaIcon,      color: "text-s-sage",        bgClass: "bg-s-sage/[0.12] dark:bg-s-sage/[0.15]" },
-  { key: "makeup",     label: "MAKEUP",     Icon: MakeupIcon,   color: "text-s-sand",        bgClass: "bg-s-sand/[0.15] dark:bg-s-sand/[0.12]" },
-  { key: "waxing",     label: "WAXING",     Icon: WaxingIcon,   color: "text-s-plum",        bgClass: "bg-s-plum/[0.10] dark:bg-s-plum/[0.20]" },
+  { key: "coiffeur",   label: "Coiffeur",   Icon: CoiffeurIcon, color: "text-s-coral",       bgClass: "bg-s-coral/[0.08] dark:bg-s-coral/[0.15]" },
+  { key: "barbershop", label: "Barber",     Icon: BarberIcon,   color: "text-s-ink",         bgClass: "bg-s-ink/[0.06] dark:bg-white/[0.08]" },
+  { key: "nails",      label: "Nails",      Icon: NailsIcon,    color: "text-s-amber",       bgClass: "bg-s-yellow/[0.15] dark:bg-s-yellow/[0.12]" },
+  { key: "spa",        label: "Spa",        Icon: SpaIcon,      color: "text-s-sage",        bgClass: "bg-s-sage/[0.12] dark:bg-s-sage/[0.15]" },
+  { key: "makeup",     label: "Makeup",     Icon: MakeupIcon,   color: "text-s-sand",        bgClass: "bg-s-sand/[0.15] dark:bg-s-sand/[0.12]" },
+  { key: "waxing",     label: "Waxing",     Icon: WaxingIcon,   color: "text-s-plum",        bgClass: "bg-s-plum/[0.10] dark:bg-s-plum/[0.20]" },
 ] as const;
 
 
@@ -275,7 +275,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       <section id="tour-services" className="py-10 md:py-14">
         <div className="max-w-5xl mx-auto px-4">
           <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
-            <div className="mb-6 text-center">
+            <div className="mb-6">
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
                 {t("categories.label")}
               </span>
@@ -320,10 +320,10 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
       <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4 mb-2 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
-            <h2 className="font-display text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(32px, 5vw, 48px)", letterSpacing: "0.01em", lineHeight: "0.95" }}>
+            <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em", lineHeight: "1.0" }}>
               {t("discover.title")}
             </h2>
           </div>
@@ -365,7 +365,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       <RecentlyViewed />
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
-      {sections.featured && (
+      {sections.featured && salons.length > 0 && (
         <section className="py-10 md:py-14">
           <div className="max-w-5xl mx-auto px-4">
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
@@ -434,16 +434,16 @@ export default function HomePage({ initialData }: HomePageProps) {
       )}
 
       {/* ── Deals ────────────────────────────────────────── */}
-      {sections.last_minute && (
+      {sections.last_minute && lastMinuteSlots.length > 0 && (
       <section id="tour-last-minute" className="py-10 md:py-14">
         <div className="max-w-5xl mx-auto px-4">
             <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
               <div>
-                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] mb-2 text-s-amber">
+                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] mb-2 text-s-amber">
                   {t("lastMinute.eyebrow")}
                 </span>
-                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
+                <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
                   {t("lastMinute.title")}
                 </h2>
               </div>
@@ -454,27 +454,11 @@ export default function HomePage({ initialData }: HomePageProps) {
               </Link>
             </div>
 
-          {lastMinuteSlots.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-6">
               {lastMinuteSlots.map((slot) => (
                 <LastMinuteCard key={slot.id} slot={slot} locale={locale} />
               ))}
             </div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="rounded-[12px] border border-s-ink/[0.06] px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
-            >
-              <div className="flex-1 w-full text-center sm:text-left">
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body">
-                  {t("lastMinute.emptyMessage")}
-                </p>
-              </div>
-            </motion.div>
-          )}
         </div>
       </section>
       )}
