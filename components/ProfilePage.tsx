@@ -995,6 +995,39 @@ export default function ProfilePage() {
 
           {activeTab === 'einstellungen' && (
             <div className="space-y-6">
+              {/* Quick links — referral & gift cards */}
+              <div className="space-y-2">
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/30 dark:text-s-dm-text/30">{t("creditAndReferral")}</p>
+                <Link
+                  href={`/${locale}/profile/referral`}
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  aria-label={t("inviteFriends")}
+                >
+                  <div className="flex items-center gap-3">
+                    <Gift size={16} className="text-s-coral shrink-0" />
+                    <div className="text-left">
+                      <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{t("inviteFriends")}</p>
+                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("bothGetCredit")}</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors" />
+                </Link>
+                <Link
+                  href={`/${locale}/profile/gift-cards`}
+                  className="w-full flex items-center justify-between px-4 py-3 rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] bg-[--raised] dark:bg-s-dm-surface hover:border-s-coral/30 transition-colors group"
+                  aria-label={t("myGiftCards")}
+                >
+                  <div className="flex items-center gap-3">
+                    <Wallet size={16} className="text-s-coral shrink-0" />
+                    <div className="text-left">
+                      <p className="text-sm font-heading font-medium text-s-ink dark:text-s-dm-text">{t("myGiftCards")}</p>
+                      <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">{t("myGiftCardsDesc")}</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-s-ink/20 dark:text-s-dm-text/20 group-hover:text-s-coral transition-colors" />
+                </Link>
+              </div>
+
               <SettingsSection profile={profile} onSave={handleSaveProfile} />
 
               {/* Payment Methods */}
