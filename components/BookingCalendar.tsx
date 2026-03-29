@@ -20,6 +20,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import GuestBookingForm, { type GuestInfo } from "@/components/booking/GuestBookingForm";
 import PackageRedeemBanner from "@/components/booking/PackageRedeemBanner";
 import NailBookingSteps, { type NailOptions } from "@/components/nail/NailBookingSteps";
+import BookingSuccess from "@/components/BookingSuccess";
 
 // ─────────────────────────────────────────
 // Stripe setup
@@ -39,6 +40,8 @@ interface SlotWithRelations extends AvailabilitySlot {
 
 export interface BookingCalendarProps {
   salonId: string;
+  salonName?: string;
+  salonSlug?: string;
   serviceId?: string;
   staffMemberId?: string;
   slotId?: string;
@@ -148,7 +151,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
 // Component
 // ─────────────────────────────────────────
 
-export default function BookingCalendar({ salonId, serviceId, staffMemberId, slotId }: BookingCalendarProps) {
+export default function BookingCalendar({ salonId, salonName, salonSlug, serviceId, staffMemberId, slotId }: BookingCalendarProps) {
   const locale = useLocale();
   const tc = useTranslations("common");
   const router = useRouter();
@@ -173,6 +176,7 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [confirmedBookingId, setConfirmedBookingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fullyBookedDates, setFullyBookedDates] = useState<Set<string>>(new Set());
   const [showWaitlist, setShowWaitlist] = useState(false);
@@ -514,6 +518,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       if (recurring) body.frequency = recurringFreq;
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      const data = await res.json();
+      setConfirmedBookingId(data.data?.id ?? null);
       setConfirmed(true);
     } catch (e) {
       // Payment succeeded but booking creation failed — user has been charged.
@@ -544,6 +550,8 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       if (recurring) body.frequency = recurringFreq;
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      const data = await res.json();
+      setConfirmedBookingId(data.data?.id ?? null);
       setConfirmed(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Buchung fehlgeschlagen");
@@ -553,9 +561,22 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
   };
 
   if (confirmed) {
+    if (confirmedBookingId && salonName && salonSlug && selectedSlot) {
+      return (
+        <BookingSuccess
+          bookingId={confirmedBookingId}
+          salonName={salonName}
+          salonSlug={salonSlug}
+          serviceName={locale === "en" ? (selectedSlot.services?.name_en ?? "") : (selectedSlot.services?.name_de ?? "")}
+          dateTime={selectedSlot.starts_at}
+          duration={selectedSlot.services?.duration_minutes ?? 60}
+          price={selectedSlot.price_override ?? selectedSlot.services?.price ?? 0}
+        />
+      );
+    }
+    // Fallback: props not available (e.g. embedded without salonName/salonSlug)
     return (
       <div className="text-center px-4 py-8 space-y-4">
-        {/* Success icon */}
         <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center"
           style={{ background: "rgba(76,175,111,.12)" }}>
           <PartyPopper size={28} className="text-[#4CAF6F]" />

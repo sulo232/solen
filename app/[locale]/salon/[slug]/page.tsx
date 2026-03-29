@@ -1157,6 +1157,8 @@ export default function SalonProfilePage() {
                   ) : (
                     <BookingCalendar
                       salonId={salon.id}
+                      salonName={salon.name}
+                      salonSlug={slug}
                       serviceId={selectedService}
                       staffMemberId={selectedStaff}
                     />
@@ -1183,6 +1185,8 @@ export default function SalonProfilePage() {
         <BottomSheet isOpen={mobileSheetOpen} onClose={() => setMobileSheetOpen(false)} title="Termin buchen">
           <BookingCalendar
             salonId={salon.id}
+            salonName={salon.name}
+            salonSlug={slug}
             serviceId={selectedService}
             staffMemberId={selectedStaff}
           />
