@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { usePostHog } from "posthog-js/react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -109,7 +110,13 @@ type HomePageProps = {
 
 export default function HomePage({ initialData }: HomePageProps) {
   useCityDetection();
-  
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    posthog?.capture("homepage_viewed");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();

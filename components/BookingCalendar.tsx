@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { RotateCcw, Info, ClipboardList, PartyPopper, CreditCard, ChevronDown, CalendarX2 } from "lucide-react";
@@ -21,6 +22,7 @@ import GuestBookingForm, { type GuestInfo } from "@/components/booking/GuestBook
 import PackageRedeemBanner from "@/components/booking/PackageRedeemBanner";
 import NailBookingSteps, { type NailOptions } from "@/components/nail/NailBookingSteps";
 import BookingSuccess from "@/components/BookingSuccess";
+import { usePostHog } from "posthog-js/react";
 
 // ─────────────────────────────────────────
 // Stripe setup
@@ -102,6 +104,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
   const stripe = useStripe();
   const elements = useElements();
   const [processing, setProcessing] = useState(false);
+  const t = useTranslations("booking");
 
   const handleSubmit = async () => {
     if (!stripe || !elements) return;
@@ -112,7 +115,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
       redirect: "if_required",
     });
     if (error) {
-      onError(error.message ?? "Zahlung fehlgeschlagen");
+      onError(error.message ?? t("paymentFailed"));
     } else {
       onSuccess();
     }
@@ -121,7 +124,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
 
   return (
     <div className="space-y-5">
-      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">Zahlung</p>
+      <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-ink/40 dark:text-s-dm-text/40">{t("stepPayment")}</p>
 
       {/* Stripe sandbox — wrapper only */}
       <div className="rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4"
@@ -137,7 +140,7 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
-        {processing ? "Verarbeitung…" : "Jetzt bezahlen"}
+        {processing ? t("processing") : "Jetzt bezahlen"}
       </button>
 
       <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 text-center">
@@ -154,7 +157,9 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
 export default function BookingCalendar({ salonId, salonName, salonSlug, serviceId, staffMemberId, slotId }: BookingCalendarProps) {
   const locale = useLocale();
   const tc = useTranslations("common");
+  const t = useTranslations("booking");
   const router = useRouter();
+  const posthog = usePostHog();
 
   const todayDate = new Date();
   todayDate.setHours(0, 0, 0, 0);
@@ -178,6 +183,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
   const [confirmed, setConfirmed] = useState(false);
   const [confirmedBookingId, setConfirmedBookingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [paymentSucceeded, setPaymentSucceeded] = useState(false);
   const [fullyBookedDates, setFullyBookedDates] = useState<Set<string>>(new Set());
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [waitlistDate, setWaitlistDate] = useState<string | null>(null);
@@ -450,7 +456,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       }
       setCheckoutStep("payment");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Zahlung konnte nicht initialisiert werden");
+      setError(e instanceof Error ? e.message : t("paymentInitError"));
     } finally {
       setConfirming(false);
     }
@@ -495,7 +501,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       setClientSecret(data.client_secret ?? data.clientSecret);
       setCheckoutStep("payment");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Zahlung konnte nicht initialisiert werden");
+      setError(e instanceof Error ? e.message : t("paymentInitError"));
     } finally {
       setConfirming(false);
     }
@@ -504,6 +510,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
   // After successful payment → create booking
   const handlePaymentSuccess = async () => {
     if (!selectedSlot) return;
+    setPaymentSucceeded(true);  // mark BEFORE booking attempt
     setConfirming(true);
     try {
       const endpoint = recurring ? "/api/bookings/recurring" : "/api/bookings";
@@ -517,7 +524,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       };
       if (recurring) body.frequency = recurringFreq;
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      if (!res.ok) throw new Error((await res.json()).message ?? t("bookingError"));
       const data = await res.json();
       setConfirmedBookingId(data.data?.id ?? null);
       setConfirmed(true);
@@ -525,8 +532,9 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       // Payment succeeded but booking creation failed — user has been charged.
       // Show a clear message so they can contact support rather than retry the payment.
       setError(
-        "Deine Zahlung wurde verarbeitet, aber die Buchung konnte nicht erstellt werden. " +
-        "Bitte kontaktiere uns unter hallo@solen.ch mit deiner E-Mail-Adresse — wir klären das sofort."
+        paymentSucceeded
+          ? t("bookingErrorAfterPayment")
+          : (e instanceof Error ? e.message : t("bookingError"))
       );
     } finally {
       setConfirming(false);
@@ -549,12 +557,12 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       };
       if (recurring) body.frequency = recurringFreq;
       const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
+      if (!res.ok) throw new Error((await res.json()).message ?? t("bookingError"));
       const data = await res.json();
       setConfirmedBookingId(data.data?.id ?? null);
       setConfirmed(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Buchung fehlgeschlagen");
+      setError(e instanceof Error ? e.message : t("bookingError"));
     } finally {
       setConfirming(false);
     }
@@ -583,17 +591,17 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
         </div>
         <div>
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-[#4CAF6F] mb-2">
-            Buchung bestätigt
+            {t("bookingConfirmed")}
           </p>
-          <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">Alles klar!</p>
+          <p className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text">{t("allGood")}</p>
           <p className="font-body italic text-s-ink/50 dark:text-s-dm-text/50 text-sm mt-1 leading-relaxed">
-            Dein Termin ist gebucht. Du erhältst eine Bestätigung per E-Mail.
+            {t("bookingSuccessMessage")}
           </p>
         </div>
-        <a href={`/${locale}/profile`}
+        <Link href={`/${locale}/profile`}
           className="flex items-center justify-center gap-2 w-full py-3 rounded-btn border border-s-ink/10 dark:border-white/10 text-xs font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral hover:text-s-coral transition-colors">
-          Meine Buchungen
-        </a>
+          {t("myBookings")}
+        </Link>
       </div>
     );
   }
@@ -603,7 +611,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       {/* P2 — Step progress bar */}
       <div className="px-4 pt-4 pb-2">
         <div className="flex gap-1.5">
-          {(["Termin", "Details", "Zahlung"] as const).map((label, i) => {
+          {[t("stepAppointment"), t("stepDetails"), t("stepPayment")].map((label, i) => {
             const stepIndex = checkoutStep === "payment" ? 2 : checkoutStep === "guest" ? 1 : selectedSlot ? 1 : 0;
             return (
               <div key={label} className="flex-1">
@@ -744,7 +752,10 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                           key={slot.id}
                           whileTap={{ scale: 0.95 }}
                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                          onClick={() => { setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null); }}
+                          onClick={() => {
+                            if (!isSelected) posthog?.capture("booking_started", { salon_id: salonId, service_id: slot.service_id });
+                            setSelectedSlot(isSelected ? null : slot); setCheckoutStep("select"); setClientSecret(null);
+                          }}
                           className={[
                             "px-4 py-2.5 rounded-[12px] text-xs font-heading font-bold transition-all duration-150 border",
                             isSelected
@@ -905,10 +916,21 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           </div>
 
           {error && (
-            <div role="alert" className="flex items-center gap-2 px-3 py-3 rounded-[10px] border border-s-coral/20"
-              style={{ background: "rgba(232,98,74,.06)" }}>
-              <CalendarX2 size={15} className="text-s-coral shrink-0" />
-              <p className="text-xs font-body text-s-coral">{error}</p>
+            <div role="alert" className={`p-3 rounded-input text-xs ${paymentSucceeded ? 'bg-s-amber/10 border border-s-amber/30' : 'bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800'}`}>
+              <p className={`font-heading font-semibold mb-1 ${paymentSucceeded ? 'text-s-amber' : 'text-red-600 dark:text-red-400'}`}>
+                {paymentSucceeded ? t("paymentSucceededTitle") : t("errorTitle")}
+              </p>
+              <p className="text-s-ink/60 dark:text-s-dm-text/60 leading-relaxed">{error}</p>
+              {paymentSucceeded && (
+                <a href="mailto:info@solen.ch" className="mt-2 inline-block text-s-coral underline text-xs">
+                  info@solen.ch
+                </a>
+              )}
+              {!paymentSucceeded && (
+                <button onClick={() => setError(null)} className="mt-2 text-s-coral underline text-xs">
+                  {t("retry")}
+                </button>
+              )}
             </div>
           )}
 
@@ -921,12 +943,18 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
             )}
             {checkoutStep === "payment" && clientSecret && (
               <motion.div key="payment" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-                <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
-                  <StripePaymentForm
-                    onSuccess={handlePaymentSuccess}
-                    onError={(msg) => setError(msg)}
-                  />
-                </Elements>
+                {stripePromise === null ? (
+                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 text-center p-4">
+                    {t("stripeUnavailable")}
+                  </p>
+                ) : (
+                  <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: "stripe", variables: { colorPrimary: "#E8624A" } } }}>
+                    <StripePaymentForm
+                      onSuccess={handlePaymentSuccess}
+                      onError={(msg) => setError(msg)}
+                    />
+                  </Elements>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -940,7 +968,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
               style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
             >
               {confirming && <Spinner size="sm" invert />}
-              {confirming ? "Wird vorbereitet…" : isMoreThan7Days ? "Karte speichern & Buchen" : "Zur Zahlung"}
+              {confirming ? t("preparing") : isMoreThan7Days ? t("saveCardAndBook") : t("toPayment")}
             </button>
           )}
           </div>
