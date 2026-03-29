@@ -1,8 +1,8 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase";
-import { sendEmail, bookingConfirmation } from "@/lib/email";
+import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { sendEmail, bookingConfirmation, salonNewBooking } from "@/lib/email";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createBookingSchema } from "@/lib/validations";
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   const { data: validated, error: valError } = validateBody(createBookingSchema, body);
   if (valError) return NextResponse.json({ message: valError.message, code: "VALIDATION_ERROR" }, { status: 400 });
 
-  const { slot_id, service_id, staff_member_id, is_first_visit } = validated;
+  const { slot_id, service_id, staff_member_id, is_first_visit, referral_code } = validated;
 
   // 1. Verify slot is available
   const { data: slot, error: slotError } = await supabase
@@ -105,22 +105,126 @@ export async function POST(request: NextRequest) {
     .update({ status: "booked", booked_by: user.id, booking_id: booking.id })
     .eq("id", slot_id);
 
-  // 5. Send confirmation email
+  // 5. Send confirmation email to customer
   const locale = (profile?.locale ?? "de") as "de" | "en";
   const serviceNameKey = locale === "de" ? "name_de" : "name_en";
+  const serviceName = slot.services?.[serviceNameKey] ?? "Service";
+  const salonName = slot.salons?.name ?? "Salon";
+  const bookingDate = new Date(slot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB");
+  const bookingTime = new Date(slot.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" });
+
   try {
     const emailData = bookingConfirmation(
       user.email!,
-      {
-        service: slot.services?.[serviceNameKey] ?? "Service",
-        salon: slot.salons?.name ?? "Salon",
-        date: new Date(slot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB"),
-        time: new Date(slot.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" }),
-      },
+      { service: serviceName, salon: salonName, date: bookingDate, time: bookingTime },
       locale
     );
     await sendEmail(emailData);
   } catch { /* email failure shouldn't break booking */ }
+
+  // 6. Notify salon owner about the new booking
+  try {
+    const ownerId = (slot.salons as any)?.owner_id;
+    if (ownerId) {
+      const admin = createAdminSupabaseClient();
+      const { data: ownerProfile } = await admin
+        .from("profiles")
+        .select("id")
+        .eq("id", ownerId)
+        .single();
+      // Fetch the owner's auth email via admin auth API
+      const { data: ownerAuthUser } = await admin.auth.admin.getUserById(ownerId);
+      const ownerEmail = ownerAuthUser?.user?.email;
+      if (ownerEmail && ownerProfile) {
+        const ownerEmailData = salonNewBooking(
+          ownerEmail,
+          {
+            customerName: user.email!,
+            service: serviceName,
+            date: bookingDate,
+            time: bookingTime,
+            price,
+          },
+          "de" // salon owners use DE by default; profile locale not fetched here
+        );
+        await sendEmail(ownerEmailData);
+      }
+    }
+  } catch { /* owner notification failure must not break booking */ }
+
+  // 7. Complete referral on first booking (if a referral_code was provided)
+  if (referral_code) {
+    try {
+      const admin = createAdminSupabaseClient();
+
+      // Only reward on first completed booking for this user
+      const { count: bookingCount } = await admin
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("status", "confirmed");
+
+      // bookingCount includes the booking we just created — first booking = count of 1
+      const isFirstBooking = (bookingCount ?? 0) <= 1;
+
+      if (isFirstBooking) {
+        // Ensure user hasn't already received a referral reward
+        const { data: existingReferral } = await admin
+          .from("referrals")
+          .select("id")
+          .eq("referred_user_id", user.id)
+          .eq("status", "completed")
+          .maybeSingle();
+
+        if (!existingReferral) {
+          // Find the pending referral matching the provided code
+          const { data: referral } = await admin
+            .from("referrals")
+            .select("id, referrer_id, reward_amount")
+            .eq("referral_code", referral_code)
+            .is("referred_user_id", null)
+            .eq("status", "pending")
+            .maybeSingle();
+
+          if (referral && referral.referrer_id !== user.id) {
+            const rewardAmount = referral.reward_amount ?? 10;
+            const creditExpiry = new Date();
+            creditExpiry.setMonth(creditExpiry.getMonth() + 6);
+
+            // Mark referral complete
+            await admin
+              .from("referrals")
+              .update({
+                referred_user_id: user.id,
+                status: "completed",
+                completed_at: new Date().toISOString(),
+              })
+              .eq("id", referral.id);
+
+            // Credit referrer
+            await admin.from("user_credits").insert({
+              user_id: referral.referrer_id,
+              amount: rewardAmount,
+              remaining: rewardAmount,
+              source: "referral",
+              source_id: referral.id,
+              expires_at: creditExpiry.toISOString(),
+            });
+
+            // Credit referee
+            await admin.from("user_credits").insert({
+              user_id: user.id,
+              amount: rewardAmount,
+              remaining: rewardAmount,
+              source: "referral",
+              source_id: referral.id,
+              expires_at: creditExpiry.toISOString(),
+            });
+          }
+        }
+      }
+    } catch { /* referral failure must not break booking */ }
+  }
 
   return NextResponse.json({ data: booking }, { status: 201 });
 }
