@@ -1,3 +1,5 @@
-export async function register() {
-  // Instrumentation placeholder — Sentry removed due to build issues
+import { registerOTel } from "@vercel/otel";
+
+export function register() {
+  registerOTel({ serviceName: "solen" });
 }
