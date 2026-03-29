@@ -30,6 +30,8 @@ interface SolenDatePickerProps {
   maxValue?: DateValue;
   isDateUnavailable?: (date: DateValue) => boolean;
   className?: string;
+  /** BCP 47 locale string — defaults to "de-CH" (Swiss German, dd.mm.yyyy) */
+  locale?: string;
 }
 
 export default function SolenDatePicker({
@@ -40,9 +42,10 @@ export default function SolenDatePicker({
   maxValue,
   isDateUnavailable,
   className,
+  locale = "de-CH",
 }: SolenDatePickerProps) {
   return (
-    <I18nProvider locale="de-CH">
+    <I18nProvider locale={locale}>
     <DatePicker
       value={value}
       onChange={(v) => v && onChange?.(v)}
