@@ -23,7 +23,6 @@ import Footer from "@/components/layout/Footer";
 import LastMinuteCard from "@/components/LastMinuteCard";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
-import CitySelector from "@/components/ui/CitySelector";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
@@ -249,25 +248,16 @@ export default function HomePage({ initialData }: HomePageProps) {
             <HomeSearchBar />
           </div>
 
-          {/* City selector — persistent */}
-          <div className="mt-3">
-            <CitySelector />
-          </div>
-
-          {/* Small text links — Angebote always, Buchungen only when logged in */}
-          <motion.div variants={fadeUp} initial="hidden" animate="visible"
-            className="mt-5 flex items-center gap-5 flex-wrap">
-            <Link href={`/${locale}/angebote`}
-              className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
-              {t("cta.lastMinute")} →
-            </Link>
-            {userName && (
+          {/* Small text links — Buchungen only when logged in */}
+          {userName && (
+            <motion.div variants={fadeUp} initial="hidden" animate="visible"
+              className="mt-5 flex items-center gap-5 flex-wrap">
               <Link href={`/${locale}/account/bookings`}
                 className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
                 {t("hero.bookings")} →
               </Link>
-            )}
-          </motion.div>
+            </motion.div>
+          )}
         </div>
       </section>
 
