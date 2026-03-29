@@ -290,9 +290,9 @@ export default function HomePage({ initialData }: HomePageProps) {
             </div>
           </motion.div>
 
-          {/* Mobile: horizontal scroll row */}
+          {/* Unified squircle category row — all viewports */}
           <motion.div
-            className="flex md:hidden overflow-x-auto scrollbar-hide -mx-4 px-4 gap-6 pb-2"
+            className="flex overflow-x-auto scrollbar-hide -mx-4 px-4 gap-5 pb-1"
             variants={categoryContainerVariants}
             initial="hidden"
             whileInView="visible"
@@ -301,55 +301,20 @@ export default function HomePage({ initialData }: HomePageProps) {
             {CATEGORIES.map(({ key, label, Icon, color, bgClass }, i) => {
               const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
               return (
-                <motion.div key={key} variants={categoryItemVariants} custom={i}>
+                <motion.div key={key} variants={categoryItemVariants} custom={i} className="flex-shrink-0">
                   <Link
                     href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
                     aria-disabled={!isEnabled}
-                    className="flex flex-col items-center gap-2 min-w-[72px]"
+                    className="flex flex-col items-center gap-2 w-[68px]"
                   >
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center ${bgClass}`}>
-                      <Icon className={`w-7 h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} animate />
+                    <div
+                      className={`w-16 h-16 rounded-2xl flex items-center justify-center ${bgClass} ${isEnabled ? 'transition-transform duration-200 hover:scale-[1.05] active:scale-[0.97]' : 'opacity-40'}`}
+                    >
+                      <Icon className={`w-7 h-7 ${isEnabled ? color : 'text-s-ink/30'}`} animate />
                     </div>
-                    <span className={`font-display text-[14px] leading-none text-center whitespace-nowrap ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/40 dark:text-s-dm-text/40'}`}>
+                    <span className={`font-body text-[11px] font-medium text-center leading-tight whitespace-nowrap ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/35'}`}>
                       {label}
                     </span>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-
-          {/* Desktop: 6-col grid */}
-          <motion.div
-            className="hidden md:grid grid-cols-6 gap-4"
-            variants={categoryContainerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {CATEGORIES.map(({ key, label, Icon, color, bgClass }, i) => {
-              const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
-              return (
-                <motion.div key={key} variants={categoryItemVariants} custom={i}>
-                  <Link
-                    href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
-                    aria-disabled={!isEnabled}
-                    className={`relative flex flex-col items-center p-4 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 gap-3 ${isEnabled ? 'hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms]' : 'cursor-default'}`}
-                  >
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${bgClass}`}>
-                      <Icon className={`w-6 h-6 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} animate />
-                    </div>
-                    <div className="flex flex-col items-center text-center gap-2">
-                      <span className={`font-display text-[18px] leading-none ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/40 dark:text-s-dm-text/40'}`}>
-                        {label}
-                      </span>
-                      <span className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50">
-                        {isEnabled ? (categoryCounts[key] != null ? `${categoryCounts[key]} ${t("categories.salonsCount")}` : t("categories.salonsCount")) : t("categories.comingSoon")}
-                      </span>
-                    </div>
-                    {!isEnabled && (
-                      <div className="absolute inset-0 bg-white/50 dark:bg-s-dm-surface/50 rounded-card" aria-hidden="true" />
-                    )}
                   </Link>
                 </motion.div>
               );
