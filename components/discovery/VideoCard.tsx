@@ -50,6 +50,13 @@ export default memo(function VideoCard({
   const iframeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoId = extractTiktokId(item.tiktok_url);
 
+  // Reset iframeError when card is re-expanded so iframe gets a fresh attempt
+  useEffect(() => {
+    if (isExpanded) {
+      setIframeError(false);
+    }
+  }, [isExpanded]);
+
   // Fallback: if iframe hasn't loaded within 5s, revert to thumbnail
   useEffect(() => {
     if (isExpanded && videoId && !iframeError) {
