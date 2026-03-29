@@ -25,7 +25,8 @@ import NailBookingSteps, { type NailOptions } from "@/components/nail/NailBookin
 // Stripe setup
 // ─────────────────────────────────────────
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "");
+const STRIPE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
 // ─────────────────────────────────────────
 // Types
@@ -399,6 +400,10 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
   // Create PaymentIntent or SetupIntent and proceed to payment
   const handleProceedToPayment = async () => {
+    if (!stripePromise) {
+      setError("Zahlung ist momentan nicht verfügbar. Bitte kontaktiere uns unter hallo@solen.ch.");
+      return;
+    }
     if (!selectedSlot) return;
 
     // Check if guest or authenticated
@@ -459,6 +464,10 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
 
   const handleProceedToPaymentWithGuest = async (info: GuestInfo) => {
     if (!selectedSlot) return;
+    if (!stripePromise) {
+      setError("Zahlung ist momentan nicht verfügbar. Bitte kontaktiere uns unter hallo@solen.ch.");
+      return;
+    }
     setConfirming(true);
     setError(null);
     try {
@@ -507,7 +516,12 @@ export default function BookingCalendar({ salonId, serviceId, staffMemberId, slo
       if (!res.ok) throw new Error((await res.json()).message ?? "Fehler");
       setConfirmed(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Buchung fehlgeschlagen");
+      // Payment succeeded but booking creation failed — user has been charged.
+      // Show a clear message so they can contact support rather than retry the payment.
+      setError(
+        "Deine Zahlung wurde verarbeitet, aber die Buchung konnte nicht erstellt werden. " +
+        "Bitte kontaktiere uns unter hallo@solen.ch mit deiner E-Mail-Adresse — wir klären das sofort."
+      );
     } finally {
       setConfirming(false);
     }

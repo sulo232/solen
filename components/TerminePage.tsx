@@ -58,18 +58,26 @@ function CancelModal({
 }) {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   const handleCancel = async () => {
     setLoading(true);
+    setCancelError(null);
     try {
-      await fetch(`/api/bookings/${bookingId}/cancel`, {
+      const res = await fetch(`/api/bookings/${bookingId}/cancel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason: reason.trim() || null }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? data.message ?? "Stornierung fehlgeschlagen");
+      }
       onCancelled(bookingId);
       onClose();
-    } catch { /* ignore */ } finally {
+    } catch (e) {
+      setCancelError(e instanceof Error ? e.message : "Stornierung fehlgeschlagen. Bitte erneut versuchen.");
+    } finally {
       setLoading(false);
     }
   };
@@ -92,6 +100,10 @@ function CancelModal({
           className="w-full px-3 py-2 rounded-btn border border-s-ink/10 text-sm focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/20 resize-none"
         />
       </div>
+
+      {cancelError && (
+        <p className="text-xs text-red-500 mb-3 px-1">{cancelError}</p>
+      )}
 
       <div className="flex gap-2">
         <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-ink/10 text-sm text-s-ink/60 hover:bg-s-bg-surface transition-colors">
