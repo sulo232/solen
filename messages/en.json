@@ -388,7 +388,8 @@
     "no_reviews": "No reviews yet",
     "write_review": "Write a review",
     "instagram": "View Instagram",
-    "similarSalons": "Similar Salons"
+    "similarSalons": "Similar Salons",
+    "priceFrom": "From"
   },
   "booking": {
     "cart": {

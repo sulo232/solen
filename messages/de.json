@@ -399,7 +399,8 @@
     "removeFromFavorites": "Von Favoriten entfernen",
     "addToFavorites": "Zu Favoriten hinzufügen",
     "partOfBrand": "Teil von",
-    "newOnSolen": "Neu auf Solen"
+    "newOnSolen": "Neu auf Solen",
+    "priceFrom": "Ab"
   },
   "booking": {
     "cart": {

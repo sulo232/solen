@@ -366,7 +366,8 @@
     "no_reviews": "Ancora nessuna recensione",
     "write_review": "Scrivi una recensione",
     "instagram": "Vedi Instagram",
-    "similarSalons": "Saloni simili"
+    "similarSalons": "Saloni simili",
+    "priceFrom": "Da"
   },
   "booking": {
     "cart": {
