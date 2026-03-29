@@ -81,7 +81,7 @@ export default function FilterBar({
   };
 
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={`relative w-full scroll-fade-right ${className}`}>
       {/* Pill row */}
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
         {visibleNonSortPills.map((pill) => {

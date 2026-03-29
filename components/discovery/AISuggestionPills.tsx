@@ -82,29 +82,31 @@ export default function AISuggestionPills({ category, onSelect }: AISuggestionPi
   const pills = SUGGESTIONS[category] ?? SUGGESTIONS.all;
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
-      <span className="shrink-0 flex items-center gap-1 text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral/70">
-        <Sparkles size={11} />
-        {t("trending")}
-      </span>
-      {pills.map(({ label }) => (
-        <button
-          key={label}
-          aria-pressed={selected === label}
-          onClick={() => {
-            setSelected(selected === label ? null : label);
-            onSelect(selected === label ? "" : label);
-          }}
-          className={[
-            "shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
-            selected === label
-              ? "bg-s-coral text-white border border-s-coral shadow-[0_2px_6px_rgba(232,98,74,.3)]"
-              : "border border-s-ink/[0.08] text-s-ink/65 dark:text-s-dm-text/65 bg-white/70 dark:bg-s-dm-surface hover:border-s-coral/40 hover:text-s-coral",
-          ].join(" ")}
-        >
-          {label}
-        </button>
-      ))}
+    <div className="relative scroll-fade-right">
+      <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1">
+        <span className="shrink-0 flex items-center gap-1 text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral/70">
+          <Sparkles size={11} />
+          {t("trending")}
+        </span>
+        {pills.map(({ label }) => (
+          <button
+            key={label}
+            aria-pressed={selected === label}
+            onClick={() => {
+              setSelected(selected === label ? null : label);
+              onSelect(selected === label ? "" : label);
+            }}
+            className={[
+              "shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold whitespace-nowrap transition-[background-color,color,border-color,box-shadow] duration-150",
+              selected === label
+                ? "bg-s-coral text-white border border-s-coral shadow-[0_2px_6px_rgba(232,98,74,.3)]"
+                : "border border-s-ink/[0.08] text-s-ink/65 dark:text-s-dm-text/65 bg-white/70 dark:bg-s-dm-surface hover:border-s-coral/40 hover:text-s-coral",
+            ].join(" ")}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
