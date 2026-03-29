@@ -332,11 +332,11 @@ export default function TerminePage() {
                   <EmptyState
                     icon={Calendar}
                     title={tc("noUpcoming")}
-                    message="Buche deinen nächsten Termin!"
+                    message={t("emptyMessage")}
                     illustration="no-results"
                     action={
                       <Link href={`/${locale}/coiffeur`} className="text-s-coral text-xs hover:underline">
-                        Termin buchen →
+                        {t("bookCta")}
                       </Link>
                     }
                   />
@@ -385,7 +385,7 @@ export default function TerminePage() {
                                 {t("cancel")}
                               </button>
                               <div className="absolute bottom-full left-0 mb-1.5 w-44 bg-s-ink text-white text-xs rounded-btn px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                Stornierung nicht mehr möglich (weniger als 24h)
+                                {t("cancelNotPossible")}
                               </div>
                             </div>
                           )}

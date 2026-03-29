@@ -519,7 +519,19 @@
     "sameCut": "Gleicher Schnitt",
     "recurringBook": "Regelmässig buchen?",
     "recurringTitle": "Serienbuchung",
-    "stripeUnavailable": "Zahlung momentan nicht verfügbar. Bitte versuche es später."
+    "stripeUnavailable": "Zahlung momentan nicht verfügbar. Bitte versuche es später.",
+    "groupMorning": "Morgens",
+    "groupAfternoon": "Nachmittags",
+    "groupEvening": "Abends",
+    "freqWeekly": "Wöchentlich",
+    "freqBiweekly": "Zweiwöchentlich",
+    "freqMonthly": "Monatlich",
+    "payNow": "Jetzt bezahlen",
+    "stripeEncrypted": "Verschlüsselt durch Stripe · nDSG-konform",
+    "chooseDate": "Datum wählen",
+    "cancellationPolicy": "Kostenlose Stornierung bis {hours}h vor dem Termin. Danach werden {fee}% einbehalten.",
+    "waitlistSubmitting": "Wird eingetragen…",
+    "notifyMe": "Benachrichtige mich"
   },
   "chat": {
     "send": "Senden",
@@ -3164,6 +3176,9 @@
     "statusPending": "Ausstehend",
     "statusPendingConfirmation": "Bestätigung ausstehend",
     "daysMo": "Mo", "daysDi": "Di", "daysMi": "Mi", "daysDo": "Do",
-    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "So"
+    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "So",
+    "emptyMessage": "Buche deinen nächsten Termin!",
+    "bookCta": "Termin buchen →",
+    "cancelNotPossible": "Stornierung nicht mehr möglich (weniger als 24h)"
   }
 }

@@ -78,13 +78,6 @@ function getTimeGroup(iso: string): "morning" | "afternoon" | "evening" {
   return "evening";
 }
 
-const GROUP_LABELS = { morning: "Morgens", afternoon: "Nachmittags", evening: "Abends" };
-
-const FREQ_OPTIONS: { value: RecurringFrequency; label: string }[] = [
-  { value: "weekly", label: "Wöchentlich" },
-  { value: "biweekly", label: "Zweiwöchentlich" },
-  { value: "monthly", label: "Monatlich" },
-];
 
 const ACQUISITION_SOURCES = [
   { value: "", label_de: "Wie hast du von uns erfahren?", label_en: "How did you find us?" },
@@ -140,11 +133,11 @@ function StripePaymentForm({ onSuccess, onError }: { onSuccess: () => void; onEr
         style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.30), 0 6px 20px rgba(232,98,74,.20)" }}
       >
         {processing ? <Spinner size="sm" invert /> : <CreditCard size={14} />}
-        {processing ? t("processing") : "Jetzt bezahlen"}
+        {processing ? t("processing") : t("payNow")}
       </button>
 
       <p className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 text-center">
-        Verschlüsselt durch Stripe · nDSG-konform
+        {t("stripeEncrypted")}
       </p>
     </div>
   );
@@ -159,6 +152,14 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
   const tc = useTranslations("common");
   const t = useTranslations("booking");
   const router = useRouter();
+
+  const GROUP_LABELS = { morning: t("groupMorning"), afternoon: t("groupAfternoon"), evening: t("groupEvening") };
+
+  const FREQ_OPTIONS: { value: RecurringFrequency; label: string }[] = [
+    { value: "weekly", label: t("freqWeekly") },
+    { value: "biweekly", label: t("freqBiweekly") },
+    { value: "monthly", label: t("freqMonthly") },
+  ];
   const posthog = usePostHog();
 
   const todayDate = new Date();
@@ -683,7 +684,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
         className="px-4 py-4"
       >
         <SolenDatePicker
-          label="Datum wählen"
+          label={t("chooseDate")}
           value={toCalendarDate(selectedDate)}
           onChange={(d) => setSelectedDate(fromCalendarDate(d))}
           minValue={ariaMinDate}
@@ -901,7 +902,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           {/* Cancellation policy */}
           <div className="flex items-center gap-1.5 text-xs text-s-coral bg-s-coral/[0.06] rounded-[10px] px-3 py-2.5">
             <Info className="w-3.5 h-3.5 shrink-0" />
-            Kostenlose Stornierung bis {cancelWindowHours}h vor dem Termin. Danach werden {cancelFeePercent}% einbehalten.
+            {t("cancellationPolicy", { hours: cancelWindowHours, fee: cancelFeePercent })}
           </div>
 
           {isMoreThan7Days && (
@@ -1002,7 +1003,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
                   disabled={waitlistSubmitting}
                   className="w-full py-2.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all disabled:opacity-50"
                 >
-                  {waitlistSubmitting ? "Wird eingetragen…" : "Benachrichtige mich"}
+                  {waitlistSubmitting ? t("waitlistSubmitting") : t("notifyMe")}
                 </button>
               </>
             )}

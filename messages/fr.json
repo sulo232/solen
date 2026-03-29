@@ -486,7 +486,19 @@
     "sameCut": "Même coupe",
     "recurringBook": "Réserver régulièrement ?",
     "recurringTitle": "Réservation récurrente",
-    "stripeUnavailable": "Paiements temporairement indisponibles. Veuillez réessayer plus tard."
+    "stripeUnavailable": "Paiements temporairement indisponibles. Veuillez réessayer plus tard.",
+    "groupMorning": "Matin",
+    "groupAfternoon": "Après-midi",
+    "groupEvening": "Soir",
+    "freqWeekly": "Hebdomadaire",
+    "freqBiweekly": "Toutes les deux semaines",
+    "freqMonthly": "Mensuel",
+    "payNow": "Payer maintenant",
+    "stripeEncrypted": "Chiffré par Stripe · conforme nDSG",
+    "chooseDate": "Choisir une date",
+    "cancellationPolicy": "Annulation gratuite jusqu'à {hours}h avant. {fee}% retenus après.",
+    "waitlistSubmitting": "Enregistrement…",
+    "notifyMe": "Me notifier"
   },
   "chat": {
     "send": "Envoyer",
@@ -3130,6 +3142,9 @@
     "statusPending": "En attente",
     "statusPendingConfirmation": "Confirmation en attente",
     "daysMo": "Lu", "daysDi": "Ma", "daysMi": "Me", "daysDo": "Je",
-    "daysFr": "Ve", "daysSa": "Sa", "daysSo": "Di"
+    "daysFr": "Ve", "daysSa": "Sa", "daysSo": "Di",
+    "emptyMessage": "Réservez votre prochain rendez-vous !",
+    "bookCta": "Prendre rendez-vous →",
+    "cancelNotPossible": "Annulation impossible (moins de 24h)"
   }
 }

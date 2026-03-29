@@ -508,7 +508,19 @@
     "sameCut": "Same cut",
     "recurringBook": "Book regularly?",
     "recurringTitle": "Recurring booking",
-    "stripeUnavailable": "Payments temporarily unavailable. Please try again later."
+    "stripeUnavailable": "Payments temporarily unavailable. Please try again later.",
+    "groupMorning": "Morning",
+    "groupAfternoon": "Afternoon",
+    "groupEvening": "Evening",
+    "freqWeekly": "Weekly",
+    "freqBiweekly": "Every two weeks",
+    "freqMonthly": "Monthly",
+    "payNow": "Pay now",
+    "stripeEncrypted": "Encrypted by Stripe · nDSG compliant",
+    "chooseDate": "Choose date",
+    "cancellationPolicy": "Free cancellation up to {hours}h before appointment. {fee}% retained after.",
+    "waitlistSubmitting": "Adding you…",
+    "notifyMe": "Notify me"
   },
   "chat": {
     "send": "Send",
@@ -3153,6 +3165,9 @@
     "statusPending": "Pending",
     "statusPendingConfirmation": "Awaiting confirmation",
     "daysMo": "Mo", "daysDi": "Tu", "daysMi": "We", "daysDo": "Th",
-    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "Su"
+    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "Su",
+    "emptyMessage": "Book your next appointment!",
+    "bookCta": "Book appointment →",
+    "cancelNotPossible": "Cancellation no longer possible (less than 24h)"
   }
 }
