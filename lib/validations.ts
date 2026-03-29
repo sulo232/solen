@@ -26,6 +26,7 @@ export const createBookingSchema = z.object({
   service_id: uuid,
   staff_member_id: uuid.optional(),
   is_first_visit: z.boolean().optional(),
+  referral_code: z.string().min(1).max(30).transform((v) => v.toUpperCase().trim()).optional(),
 });
 
 export const createReviewSchema = z.object({
@@ -921,4 +922,10 @@ export const offPeakSlotSchema = z.object({
 
 export const offPeakDeleteSchema = z.object({
   id: uuid,
+});
+
+export const waitlistSchema = z.object({
+  salon_id: uuid,
+  service_id: uuid.optional(),
+  preferred_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });

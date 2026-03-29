@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { NextResponse } from "next/server";
+import { waitlistSchema, validateBody } from "@/lib/validations";
 
 export async function POST(req: Request) {
   try {
@@ -11,11 +12,11 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { salon_id, service_id, preferred_date } = body;
-
-    if (!salon_id || !preferred_date) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    const validation = validateBody(waitlistSchema, body);
+    if (validation.error) {
+      return NextResponse.json({ error: validation.error.message }, { status: 400 });
     }
+    const { salon_id, service_id, preferred_date } = validation.data;
 
     const { data, error } = await supabase
       .from("booking_waitlist")
