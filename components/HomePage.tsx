@@ -434,7 +434,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             </h2>
           </div>
           <Link href={`/${locale}/discover`}
-            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink/70 dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-pill hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,color,border-color] duration-150 shrink-0">
+            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-white bg-s-ink dark:bg-s-dm-raised px-6 py-3 rounded-pill hover:brightness-[1.08] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0">
             {t("discover.catalogCta")} →
           </Link>
         </div>
