@@ -128,6 +128,7 @@ export interface Salon {
   average_rating: number;
   review_count: number;
   is_active: boolean;
+  is_test?: boolean;
   last_verified_at: string;
   verification_warnings: number;
   last_minute_discount_percent: number;
