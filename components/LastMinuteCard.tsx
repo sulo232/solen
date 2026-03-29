@@ -56,11 +56,10 @@ export default function LastMinuteCard({ slot, locale = "de" }: LastMinuteCardPr
       <Link
         href={`/${locale}/salon/${slot.salon.slug}?slot=${slot.id}`}
         className={cn(
-          "flex flex-col justify-between rounded-card bg-white dark:bg-s-dm-surface shadow-elevation-2 overflow-hidden h-52 border-l-2 hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
-          isUrgent
-            ? "border-s-coral animate-coral-pulse"
-            : "border-s-coral/40"
+          "flex flex-col justify-between rounded-card overflow-hidden h-52 border border-s-ink/[0.05] dark:border-white/[0.05] border-l-2 hover:-translate-y-1 transition-[transform] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]",
+          isUrgent && "animate-coral-pulse"
         )}
+        style={{ borderLeftColor: isUrgent ? "#E8624A" : "rgba(232, 98, 74, 0.4)" }}
       >
         <div className="p-4 flex-1">
           <div className="flex items-start justify-between gap-2">
