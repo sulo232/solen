@@ -64,6 +64,15 @@ const CAT_COLOURS: Record<string, { bg: string; text: string }> = {
   waxing:     { bg: "rgba(107,163,200,.15)", text: "#1A4D72" },
 };
 
+const CATEGORY_FALLBACK_GRADIENTS: Record<string, [string, string]> = {
+  coiffeur:   ["rgba(212,135,10,0.10)",  "rgba(250,246,239,0.98)"],
+  barbershop: ["rgba(74,30,60,0.08)",    "rgba(250,246,239,0.98)"],
+  nails:      ["rgba(232,98,74,0.10)",   "rgba(250,246,239,0.98)"],
+  spa:        ["rgba(123,166,136,0.14)", "rgba(250,246,239,0.98)"],
+  makeup:     ["rgba(201,169,110,0.12)", "rgba(250,246,239,0.98)"],
+  waxing:     ["rgba(107,163,200,0.12)", "rgba(250,246,239,0.98)"],
+};
+
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, animated = true, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
@@ -156,13 +165,19 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               className="object-cover"
             />
           ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2"
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2"
               style={{
-                background: `linear-gradient(135deg, ${CAT_COLOURS[salon.categories[0]]?.bg || 'rgba(232,98,74,.08)'} 0%, rgba(250,246,239,0.95) 100%)`
-              }}>
-              <Scissors className="w-8 h-8 text-s-ink/15" />
+                background: (() => {
+                  const cat = (salon.categories?.[0] ?? "coiffeur").toLowerCase();
+                  const [from, to] = CATEGORY_FALLBACK_GRADIENTS[cat] ?? CATEGORY_FALLBACK_GRADIENTS.coiffeur;
+                  return `linear-gradient(135deg, ${from} 0%, ${to} 100%)`;
+                })()
+              }}
+            >
+              <Scissors className="w-10 h-10 text-s-ink/20" />
               <span className="text-xs font-body font-medium text-s-ink/25 uppercase tracking-wider">
-                {salon.categories[0] || 'Salon'}
+                {salon.categories?.[0] || "Salon"}
               </span>
             </div>
           )}
