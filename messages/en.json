@@ -3049,5 +3049,18 @@
     "save": "Save",
     "cardEndingIn": "Credit card •••• {last4}",
     "expires": "Expires"
+  },
+  "referral": {
+    "headline": "You've been invited!",
+    "subtitle": "Your friend gifted you CHF 10 off your first booking.",
+    "codeLabel": "Your invitation code",
+    "cta": "Discover now",
+    "redirect": "Redirecting in {seconds} seconds…"
+  },
+  "savedPage": {
+    "title": "Saved",
+    "emptyTitle": "Nothing saved yet",
+    "emptyMessage": "Tap ♡ on a salon to save it here.",
+    "discoverCta": "Discover salons →"
   }
 }

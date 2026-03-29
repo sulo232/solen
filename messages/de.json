@@ -3060,5 +3060,18 @@
     "save": "Speichern",
     "cardEndingIn": "Kreditkarte •••• {last4}",
     "expires": "Läuft ab"
+  },
+  "referral": {
+    "headline": "Du wurdest eingeladen!",
+    "subtitle": "Dein Freund hat dir CHF 10 Rabatt auf deine erste Buchung geschenkt.",
+    "codeLabel": "Dein Einladungscode",
+    "cta": "Jetzt entdecken",
+    "redirect": "Weiterleitung in {seconds} Sekunden…"
+  },
+  "savedPage": {
+    "title": "Gespeichert",
+    "emptyTitle": "Noch nichts gespeichert",
+    "emptyMessage": "Tippe ♡ auf einem Salon, um ihn hier zu speichern.",
+    "discoverCta": "Salons entdecken →"
   }
 }

@@ -3026,5 +3026,18 @@
     "save": "Salva",
     "cardEndingIn": "Carta di credito •••• {last4}",
     "expires": "Scadenza"
+  },
+  "referral": {
+    "headline": "Sei stato invitato!",
+    "subtitle": "Il tuo amico ti ha regalato CHF 10 di sconto sulla tua prima prenotazione.",
+    "codeLabel": "Il tuo codice di invito",
+    "cta": "Scopri ora",
+    "redirect": "Reindirizzamento in {seconds} secondi…"
+  },
+  "savedPage": {
+    "title": "Salvati",
+    "emptyTitle": "Niente salvato ancora",
+    "emptyMessage": "Tocca ♡ su un salone per salvarlo qui.",
+    "discoverCta": "Scopri saloni →"
   }
 }

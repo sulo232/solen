@@ -3026,5 +3026,18 @@
     "save": "Enregistrer",
     "cardEndingIn": "Carte de crédit •••• {last4}",
     "expires": "Expire le"
+  },
+  "referral": {
+    "headline": "Vous avez été invité !",
+    "subtitle": "Votre ami vous a offert CHF 10 de réduction sur votre première réservation.",
+    "codeLabel": "Votre code d'invitation",
+    "cta": "Découvrir maintenant",
+    "redirect": "Redirection dans {seconds} secondes…"
+  },
+  "savedPage": {
+    "title": "Enregistrés",
+    "emptyTitle": "Rien d'enregistré pour l'instant",
+    "emptyMessage": "Appuyez sur ♡ sur un salon pour l'enregistrer ici.",
+    "discoverCta": "Découvrir des salons →"
   }
 }

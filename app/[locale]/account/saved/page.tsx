@@ -1,0 +1,90 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { Bookmark } from "lucide-react";
+import SalonCard from "@/components/SalonCard";
+import EmptyState from "@/components/ui/EmptyState";
+import Skeleton from "@/components/ui/Skeleton";
+import type { SalonCard as SalonCardType } from "@/lib/types";
+
+export default function SavedPage() {
+  const t = useTranslations("savedPage");
+  const params = useParams();
+  const locale = (params?.locale as string) ?? "de";
+
+  const [items, setItems] = useState<SalonCardType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch("/api/profile/favorites");
+        if (res.ok) {
+          const data = await res.json();
+          setItems(data.items ?? []);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, []);
+
+  function handleUnfavorite(salonId: string) {
+    // Optimistic remove
+    setItems((prev) => prev.filter((s) => s.id !== salonId));
+    fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch(() => {
+      // If it fails, re-fetch to restore correct state
+      fetch("/api/profile/favorites")
+        .then((r) => r.json())
+        .then((d) => setItems(d.items ?? []));
+    });
+  }
+
+  return (
+    <main className="min-h-screen bg-[--base] pb-24">
+      <div className="max-w-5xl mx-auto px-4 pt-6 pb-4">
+        <h1 className="font-heading text-2xl font-bold text-s-ink dark:text-s-dm-text mb-6">
+          {t("title")}
+        </h1>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} variant="card" />
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <EmptyState
+            icon={Bookmark}
+            title={t("emptyTitle")}
+            message={t("emptyMessage")}
+            action={
+              <Link
+                href={`/${locale}/discover`}
+                className="inline-flex items-center gap-2 bg-s-coral text-white font-heading font-semibold text-sm px-5 py-2.5 rounded-btn hover:brightness-[1.06] active:scale-[0.98] transition-all"
+              >
+                {t("discoverCta")}
+              </Link>
+            }
+          />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {items.map((salon) => (
+              <SalonCard
+                key={salon.id}
+                salon={salon}
+                locale={locale}
+                isFavorited
+                onFavoriteToggle={handleUnfavorite}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
