@@ -81,13 +81,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   // Phase 7: Email notification to salon owner
-  if (salonOwnerId) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.warn("[booking-disputes] RESEND_API_KEY not set — skipping email notification");
+  }
+  if (salonOwnerId && resendApiKey) {
     const { data: owner } = await supabase.from("profiles").select("email").eq("id", salonOwnerId).single();
     if (owner?.email) {
       try {
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
             from: 'support@solen.ch',
             to: owner.email,

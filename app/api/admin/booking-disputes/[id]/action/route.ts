@@ -61,12 +61,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         .select("id, email")
         .in("id", [dispute.reporter_id, dispute.reported_id]);
         
-      if (parties && parties.length > 0) {
+      const resendApiKey = process.env.RESEND_API_KEY;
+      if (!resendApiKey) {
+        console.warn("[booking-disputes] RESEND_API_KEY not set — skipping email notification");
+      }
+      if (parties && parties.length > 0 && resendApiKey) {
         const emails = parties.map(p => p.email).filter(Boolean) as string[];
         if (emails.length > 0) {
           await fetch('https://api.resend.com/emails', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
               from: 'support@solen.ch',
               to: emails,
