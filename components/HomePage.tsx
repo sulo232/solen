@@ -83,12 +83,12 @@ import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "Coiffeur",   Icon: CoiffeurIcon, color: "text-s-coral",       bgClass: "bg-s-coral/[0.08] dark:bg-s-coral/[0.15]" },
-  { key: "barbershop", label: "Barber",     Icon: BarberIcon,   color: "text-s-ink",         bgClass: "bg-s-ink/[0.06] dark:bg-white/[0.08]" },
-  { key: "nails",      label: "Nails",      Icon: NailsIcon,    color: "text-s-amber",       bgClass: "bg-s-yellow/[0.15] dark:bg-s-yellow/[0.12]" },
-  { key: "spa",        label: "Spa",        Icon: SpaIcon,      color: "text-s-sage",        bgClass: "bg-s-sage/[0.12] dark:bg-s-sage/[0.15]" },
-  { key: "makeup",     label: "Makeup",     Icon: MakeupIcon,   color: "text-s-sand",        bgClass: "bg-s-sand/[0.15] dark:bg-s-sand/[0.12]" },
-  { key: "waxing",     label: "Waxing",     Icon: WaxingIcon,   color: "text-s-plum",        bgClass: "bg-s-plum/[0.10] dark:bg-s-plum/[0.20]" },
+  { key: "coiffeur",   label: "Coiffeur",   Icon: CoiffeurIcon },
+  { key: "barbershop", label: "Barber",     Icon: BarberIcon   },
+  { key: "nails",      label: "Nails",      Icon: NailsIcon    },
+  { key: "spa",        label: "Spa",        Icon: SpaIcon      },
+  { key: "makeup",     label: "Makeup",     Icon: MakeupIcon   },
+  { key: "waxing",     label: "Waxing",     Icon: WaxingIcon   },
 ] as const;
 
 
@@ -303,7 +303,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {CATEGORIES.map(({ key, label, Icon, color, bgClass }, i) => {
+            {CATEGORIES.map(({ key, label, Icon }, i) => {
               const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
               return (
                 <motion.div key={key} variants={categoryItemVariants} custom={i} className="flex-shrink-0">
@@ -313,9 +313,9 @@ export default function HomePage({ initialData }: HomePageProps) {
                     className="flex flex-col items-center gap-2 w-[68px]"
                   >
                     <div
-                      className={`w-16 h-16 rounded-2xl flex items-center justify-center ${bgClass} ${isEnabled ? 'transition-transform duration-200 hover:scale-[1.05] active:scale-[0.97]' : 'opacity-40'}`}
+                      className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-[#F0EDE8] dark:bg-white/[0.06] ${isEnabled ? 'transition-transform duration-200 hover:scale-[1.05] active:scale-[0.97]' : 'opacity-40'}`}
                     >
-                      <Icon className={`w-7 h-7 ${isEnabled ? color : 'text-s-ink/30'}`} animate />
+                      <Icon className={`w-6 h-6 ${isEnabled ? 'text-s-coral' : 'text-s-ink/30'}`} animate={isEnabled} />
                     </div>
                     <span className={`font-body text-[11px] font-medium text-center leading-tight whitespace-nowrap ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/35'}`}>
                       {label}
@@ -326,25 +326,6 @@ export default function HomePage({ initialData }: HomePageProps) {
             })}
           </motion.div>
         </div>
-      </section>
-
-      {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
-      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
-            <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em", lineHeight: "1.0" }}>
-              {t("discover.title")}
-            </h2>
-          </div>
-          <Link href={`/${locale}/discover`}
-            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink/70 dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-pill hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,color,border-color] duration-150 shrink-0">
-            {t("discover.catalogCta")} →
-          </Link>
-        </div>
-        
-        {/* The new horizontal swiper component replaces the static subset */}
-        <DiscoverCarousel locale={locale} />
       </section>
 
       {/* WeatherBanner removed — Phase 0.3 */}
@@ -442,6 +423,25 @@ export default function HomePage({ initialData }: HomePageProps) {
         </div>
       </section>
       )}
+
+      {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
+      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden">
+        <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
+            <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em", lineHeight: "1.0" }}>
+              {t("discover.title")}
+            </h2>
+          </div>
+          <Link href={`/${locale}/discover`}
+            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-s-ink/70 dark:text-s-dm-text border border-s-ink/10 dark:border-s-dm-border px-6 py-3 rounded-pill hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-[transform,color,border-color] duration-150 shrink-0">
+            {t("discover.catalogCta")} →
+          </Link>
+        </div>
+
+        {/* The new horizontal swiper component replaces the static subset */}
+        <DiscoverCarousel locale={locale} />
+      </section>
 
       {/* ── Deals ────────────────────────────────────────── */}
       {sections.last_minute && lastMinuteSlots.length > 0 && (
