@@ -101,6 +101,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
   const [photoIndex, setPhotoIndex] = useState(0);
   const allPhotos = [salon.cover_photo_url, ...(photos || [])].filter(Boolean) as string[];
   const hasMultiple = allPhotos.length > 1;
+  const priceToShow = salon.min_price ?? salon.avg_price;
 
   /* ── Compact variant ─────────────────────────────────────────────── */
   if (variant === "compact") {
@@ -189,8 +190,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           )}
 
-          {/* New salon badge — white overlay on image, only when review_count < 5 and no availableToday pill */}
-          {salon.review_count < 5 && (availableToday == null || availableToday === 0) && (
+          {/* New salon badge — white overlay on image, only when review_count === 0 and no availableToday pill */}
+          {salon.review_count === 0 && (availableToday == null || availableToday === 0) && (
             <div className="absolute top-2 left-2 z-[1]">
               <span className="font-heading font-bold text-[10px] text-s-ink bg-white/95 px-2 py-0.5 rounded-pill">
                 {t("newOnSolen")}
@@ -320,26 +321,21 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
 
           {/* Rating + Price */}
-          {(() => {
-            const priceToShow = salon.min_price ?? salon.avg_price;
-            return (
-              <div className="flex items-center gap-1.5 mt-1.5">
-                {(salon.average_rating > 0 || salon.review_count > 0) ? (
-                  <>
-                    <Star className="w-3 h-3 fill-s-coral text-s-coral" />
-                    <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
-                    <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
-                  </>
-                ) : null}
-                {priceToShow != null && priceToShow > 0 && (
-                  <>
-                    <span className="text-s-ink/20 font-body">·</span>
-                    <span className="text-[11px] data-text text-s-ink/50 dark:text-s-dm-text/50">Ab {formatCurrency(priceToShow, locale)}</span>
-                  </>
-                )}
-              </div>
-            );
-          })()}
+          <div className="flex items-center gap-1.5 mt-1.5">
+            {(salon.average_rating > 0 || salon.review_count > 0) ? (
+              <>
+                <Star className="w-3 h-3 fill-s-coral text-s-coral" />
+                <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
+                <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
+              </>
+            ) : null}
+            {priceToShow != null && priceToShow > 0 && (
+              <>
+                <span className="text-s-ink/20 font-body">·</span>
+                <span className="text-[11px] data-text text-s-ink/50 dark:text-s-dm-text/50">{t("priceFrom")} {formatCurrency(priceToShow, locale)}</span>
+              </>
+            )}
+          </div>
 
           {/* Neighborhood */}
           {salon.quartier && (
