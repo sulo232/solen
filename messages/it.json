@@ -110,7 +110,14 @@
       "eyebrow": "Per i saloni",
       "title": "Hai un salone?",
       "subtitle": "Porta la tua attività al livello successivo — raggiungi migliaia di clienti a Basilea.",
-      "cta": "Diventa partner"
+      "cta": "Diventa partner",
+      "headlinePart1": "0%",
+      "headlinePart2": "per i clienti abituali.",
+      "headlinePart3": "15% sulle nuove prenotazioni.",
+      "headlinePart4": "Mai più.",
+      "feature1": "Nessuna tariffa mensile",
+      "feature2": "Online in 24 ore",
+      "feature3": "Migliaia di clienti a Basilea"
     },
     "trust": {
       "securePayment": "Pagamento sicuro — crittografato Stripe",

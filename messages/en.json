@@ -110,7 +110,14 @@
       "eyebrow": "For Salons",
       "title": "Own a salon?",
       "subtitle": "Take your business to the next level — reach thousands of customers in Basel.",
-      "cta": "Become a partner"
+      "cta": "Become a partner",
+      "headlinePart1": "0%",
+      "headlinePart2": "for regulars.",
+      "headlinePart3": "15% on new bookings.",
+      "headlinePart4": "Never again.",
+      "feature1": "No monthly fees",
+      "feature2": "Live in 24 hours",
+      "feature3": "Thousands of clients in Basel"
     },
     "trust": {
       "securePayment": "Secure payment — Stripe encrypted",

@@ -110,7 +110,14 @@
       "eyebrow": "Pour les salons",
       "title": "Vous avez un salon?",
       "subtitle": "Faites passer votre entreprise au niveau supérieur — touchez des milliers de clients à Bâle.",
-      "cta": "Devenir partenaire"
+      "cta": "Devenir partenaire",
+      "headlinePart1": "0%",
+      "headlinePart2": "pour les habitués.",
+      "headlinePart3": "15% sur les nouvelles réservations.",
+      "headlinePart4": "Plus jamais.",
+      "feature1": "Pas de frais mensuels",
+      "feature2": "En ligne en 24h",
+      "feature3": "Des milliers de clients à Bâle"
     },
     "trust": {
       "securePayment": "Paiement sécurisé — chiffrement Stripe",
