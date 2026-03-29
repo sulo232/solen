@@ -24,6 +24,7 @@ import SocialProofStrip from "@/components/ui/SocialProofStrip";
 import LastMinuteCard from "@/components/LastMinuteCard";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
 import HomeSearchBar from "@/components/ui/HomeSearchBar";
+import CitySelector from "@/components/ui/CitySelector";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
@@ -33,6 +34,7 @@ import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { CLIENT_FEATURE_FLAGS } from "@/lib/feature-flags";
 import { getPersistedCity } from "@/lib/city-cookie";
 import { type CitySlug } from "@/lib/cities";
+import { gridContainerVariants, gridItemVariants, headingVariants } from "@/lib/motion";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -42,9 +44,23 @@ import { type CitySlug } from "@/lib/cities";
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.07 },
+    transition: { staggerChildren: 0.06 },
   },
 } as const;
+
+const categoryContainerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+} as const;
+
+const categoryItemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: i * 0.06 },
+  }),
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 16 },
@@ -202,10 +218,10 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-s-dm-bg ambient-v5 relative overflow-x-hidden">
+    <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
       {/* ── Hero (compact) ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-10 sm:pt-16 pb-6 sm:pb-10">
+      <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14">
         <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-center">
             {/* Greeting / headline */}
@@ -230,9 +246,14 @@ export default function HomePage({ initialData }: HomePageProps) {
           </motion.div>
 
           {/* Search bar right under greeting */}
-          <div className="mt-8 max-w-4xl mx-auto relative group">
-            <div className="absolute -inset-3 md:-inset-5 bg-gradient-to-r from-s-coral/8 via-s-plum/6 to-s-amber/8 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-60 transition-opacity duration-[400ms] -z-10" />
+          <div className="mt-10 max-w-4xl mx-auto relative">
+            <div aria-hidden className="absolute -inset-3 md:-inset-5 bg-gradient-to-r from-s-coral/8 via-s-plum/6 to-s-amber/8 rounded-[40px] blur-2xl opacity-40 -z-10" />
             <HomeSearchBar />
+          </div>
+
+          {/* City selector — mobile only */}
+          <div className="mt-3 flex justify-center md:hidden">
+            <CitySelector />
           </div>
 
           {/* Small text links (Angebote, Buchungen, Partner) */}
@@ -256,45 +277,89 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
-      <section id="tour-services" className="max-w-5xl mx-auto px-4 py-16 md:py-24">
-        <div className="mb-6 text-center">
-          <span className="font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber dark:text-s-amber block mb-1">
-            {t("categories.label")}
-          </span>
-          <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
-            {t("categories.title")}
-          </h2>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-          {CATEGORIES.map(({ key, label, Icon, color, bgClass }) => {
-            const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
-            return (
-              <Link key={key} href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
-                aria-disabled={!isEnabled}
-                className={`relative w-[calc(50%-6px)] sm:w-[calc(33.333%-11px)] lg:w-[calc(16.666%-14px)] aspect-auto min-h-[140px] lg:min-h-[100px] rounded-card bg-white dark:bg-s-dm-surface overflow-hidden group transition-[transform,box-shadow] duration-300 ease-out flex flex-col lg:flex-row items-center justify-center lg:justify-start lg:px-5 lg:py-4 p-4 gap-3 lg:gap-4 border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 ${isEnabled ? 'hover:-translate-y-[3px] hover:shadow-elevation-3' : 'cursor-default'}`}>
-                <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${bgClass}`}>
-                  <Icon className={`w-6 h-6 lg:w-7 lg:h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} />
-                </div>
-                <div className="flex flex-col text-center lg:text-left">
-                  <div className={`font-display text-[18px] lg:text-[20px] leading-none ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/40 dark:text-s-dm-text/40'}`}>
-                    {label}
-                  </div>
-                  <div className="text-[10px] lg:text-[11px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50 mt-1.5 lg:mt-1">
-                    {isEnabled ? (categoryCounts[key] != null ? `${categoryCounts[key]} ${t("categories.salonsCount")}` : t("categories.salonsCount")) : t("categories.comingSoon")}
-                  </div>
-                </div>
-                {/* Coming-soon overlay for disabled categories */}
-                {!isEnabled && (
-                  <div className="absolute inset-0 bg-white/50 dark:bg-s-dm-surface/50 rounded-[20px]" aria-hidden="true" />
-                )}
-              </Link>
-            );
-          })}
+      <section id="tour-services" className="py-10 md:py-14 bg-[--base]">
+        <div className="max-w-5xl mx-auto px-4">
+          <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
+            <div className="mb-6 text-center">
+              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                {t("categories.label")}
+              </span>
+              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
+                {t("categories.title")}
+              </h2>
+            </div>
+          </motion.div>
+
+          {/* Mobile: horizontal scroll row */}
+          <motion.div
+            className="flex md:hidden overflow-x-auto scrollbar-hide -mx-4 px-4 gap-6 pb-2"
+            variants={categoryContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {CATEGORIES.map(({ key, label, Icon, color, bgClass }, i) => {
+              const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
+              return (
+                <motion.div key={key} variants={categoryItemVariants} custom={i}>
+                  <Link
+                    href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
+                    aria-disabled={!isEnabled}
+                    className="flex flex-col items-center gap-2 min-w-[72px]"
+                  >
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center ${bgClass}`}>
+                      <Icon className={`w-7 h-7 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} animate />
+                    </div>
+                    <span className={`font-display text-[14px] leading-none text-center whitespace-nowrap ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/40 dark:text-s-dm-text/40'}`}>
+                      {label}
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          {/* Desktop: 6-col grid */}
+          <motion.div
+            className="hidden md:grid grid-cols-6 gap-4"
+            variants={categoryContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {CATEGORIES.map(({ key, label, Icon, color, bgClass }, i) => {
+              const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
+              return (
+                <motion.div key={key} variants={categoryItemVariants} custom={i}>
+                  <Link
+                    href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
+                    aria-disabled={!isEnabled}
+                    className={`relative flex flex-col items-center p-4 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1 gap-3 ${isEnabled ? 'hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-[400ms]' : 'cursor-default'}`}
+                  >
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${bgClass}`}>
+                      <Icon className={`w-6 h-6 ${isEnabled ? color : 'text-s-ink/30 dark:text-s-dm-text/30'}`} animate />
+                    </div>
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <span className={`font-display text-[18px] leading-none ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/40 dark:text-s-dm-text/40'}`}>
+                        {label}
+                      </span>
+                      <span className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50 dark:text-s-dm-text/50">
+                        {isEnabled ? (categoryCounts[key] != null ? `${categoryCounts[key]} ${t("categories.salonsCount")}` : t("categories.salonsCount")) : t("categories.comingSoon")}
+                      </span>
+                    </div>
+                    {!isEnabled && (
+                      <div className="absolute inset-0 bg-white/50 dark:bg-s-dm-surface/50 rounded-card" aria-hidden="true" />
+                    )}
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
         </div>
       </section>
 
       {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
-      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden section-alt">
+      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden bg-[--raised]">
         <div className="max-w-5xl mx-auto px-4 mb-2 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
@@ -341,28 +406,30 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Featured Salons ────────────────────────────────────────────────── */}
       {sections.featured && (
-        <section className="py-16 md:py-24">
+        <section className="py-10 md:py-14 bg-[--base]">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
-              <div>
-                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
-                  {t("featured.eyebrow")}
-                </span>
-                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
-                  {t("featured.title")}
-                </h2>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
-                  {t("featured.subtitle")}
-                </p>
+            <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
+              <div className="flex items-end justify-between mb-6">
+                <div>
+                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                    {t("featured.eyebrow")}
+                  </span>
+                  <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                    style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
+                    {t("featured.title")}
+                  </h2>
+                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
+                    {t("featured.subtitle")}
+                  </p>
+                </div>
+                <Link
+                  href={`/${locale}/coiffeur`}
+                  className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0"
+                  aria-label={t("featured.viewAll")}>
+                  {t("featured.viewAll")} →
+                </Link>
               </div>
-              <Link
-                href={`/${locale}/coiffeur`}
-                className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0"
-                aria-label={t("featured.viewAll")}>
-                {t("featured.viewAll")} →
-              </Link>
-            </div>
+            </motion.div>
 
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -376,14 +443,20 @@ export default function HomePage({ initialData }: HomePageProps) {
               message={t("featured.emptyMessage")}
             />
           ) : (
-            <div
+            <motion.div
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+              variants={gridContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
             >
-              {salons.map((salon) => (
-                <div
+              {salons.map((salon, i) => (
+                <motion.div
                   key={salon.id}
                   className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink"
+                  variants={gridItemVariants}
+                  custom={i}
                 >
                   <SalonCard
                     salon={salon}
@@ -392,10 +465,11 @@ export default function HomePage({ initialData }: HomePageProps) {
                     showDistance
                     isFavorited={favoriteIds.has(salon.id)}
                     onFavoriteToggle={handleFavoriteToggle}
+                    animated={false}
                   />
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
@@ -403,7 +477,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Deals ────────────────────────────────────────── */}
       {sections.last_minute && (
-      <section id="tour-last-minute" className="py-16 md:py-24 overflow-hidden relative bg-s-plum">
+      <section id="tour-last-minute" className="py-10 md:py-14 overflow-hidden relative bg-s-plum">
         <div className="max-w-5xl mx-auto px-4 relative z-10">
             <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
               <div>
@@ -449,77 +523,89 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Trending Section ────────────────────────────────────────────────── */}
       {sections.trending && trendingSalons.length > 0 && (
-        <section className="py-16 md:py-24">
+        <section className="py-10 md:py-14 bg-[--raised]">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
-              <div>
-                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
-                  {t("trending.eyebrow")}
-                </span>
-                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
-                  {t("trending.title")}
-                </h2>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
-                  {t("trending.subtitle")}
-                </p>
+            <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
+              <div className="flex items-end justify-between mb-6">
+                <div>
+                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                    {t("trending.eyebrow")}
+                  </span>
+                  <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                    style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
+                    {t("trending.title")}
+                  </h2>
+                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+                    {t("trending.subtitle")}
+                  </p>
+                </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+              variants={gridContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
             >
-              {trendingSalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink">
-                  <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
-                </div>
+              {trendingSalons.map((salon, i) => (
+                <motion.div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink" variants={gridItemVariants} custom={i}>
+                  <SalonCard salon={salon} locale={locale} isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} animated={false} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
       )}
 
       {/* ── Near You Section ────────────────────────────────────────────────── */}
       {sections.nearby && (showNearby || nearbySalons.length > 0) && (
-        <section className="py-16 md:py-24">
+        <section className="py-10 md:py-14 bg-[--base]">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
-              <div>
-                <span className="block font-body font-bold text-[11px] uppercase tracking-[.10em] text-s-amber mb-2">
-                  {t("nearby.eyebrow")}
-                </span>
-                <h2 className="font-body font-bold text-s-ink dark:text-s-dm-text"
-                  style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.04em" }}>
-                  {t("nearby.title")}
-                </h2>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
-                  {t("nearby.subtitle")}
-                </p>
+            <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
+              <div className="flex items-end justify-between mb-6">
+                <div>
+                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                    {t("nearby.eyebrow")}
+                  </span>
+                  <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                    style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
+                    {t("nearby.title")}
+                  </h2>
+                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-1">
+                    {t("nearby.subtitle")}
+                  </p>
+                </div>
+                {nearbySalons.length > 0 && (
+                  <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0" aria-label={t("nearby.viewAll")}>
+                    {t("nearby.viewAll")} →
+                  </Link>
+                )}
               </div>
-              {nearbySalons.length > 0 && (
-                <Link href={`/${locale}/coiffeur`} className="text-sm font-body text-s-ink/60 border border-s-ink/10 px-4 py-2 rounded-pill hover:border-s-coral/40 hover:text-s-coral transition-colors duration-150 shrink-0" aria-label={t("nearby.viewAll")}>
-                  {t("nearby.viewAll")} →
-                </Link>
-              )}
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+              variants={gridContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
             >
-              {nearbySalons.map((salon) => (
-                <div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink">
-                  <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} />
-                </div>
+              {nearbySalons.map((salon, i) => (
+                <motion.div key={salon.id} className="snap-start shrink-0 w-[280px] sm:w-[300px] md:w-auto md:shrink" variants={gridItemVariants} custom={i}>
+                  <SalonCard salon={salon} locale={locale} showDistance isFavorited={favoriteIds.has(salon.id)} onFavoriteToggle={handleFavoriteToggle} animated={false} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
       )}
 
       {/* ── Map CTA — V4 Clean ──────────────────────────────────────────── */}
-      <section className="py-16 md:py-24">
+      <section className="py-10 md:py-14 bg-[--raised]">
         <div className="max-w-5xl mx-auto px-4">
           <div className="card-v4 p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-5">
@@ -551,31 +637,43 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Neue Salons Section ─────────────────────────────────────────────── */}
       {sections.new_salons && newSalons.length > 0 && (
-        <section className="py-16 md:py-24">
+        <section className="py-10 md:py-14 bg-[--base]">
           <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-6">
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">
-                {t("newSalons.eyebrow")}
-              </span>
-              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
-                style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
-                {t("newSalons.title")}
-              </h2>
-              <p className="text-sm text-s-ink/50 mt-1 font-body">
-                {t("newSalons.subtitle")}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {newSalons.map((salon) => (
-                <SalonCard
-                  key={salon.id}
-                  salon={salon}
-                  locale={locale}
-                  isFavorited={favoriteIds.has(salon.id)}
-                  onFavoriteToggle={handleFavoriteToggle}
-                />
+            <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
+              <div className="flex items-end justify-between mb-6">
+                <div>
+                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                    {t("newSalons.eyebrow")}
+                  </span>
+                  <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
+                    style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
+                    {t("newSalons.title")}
+                  </h2>
+                  <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mt-1 font-body">
+                    {t("newSalons.subtitle")}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              variants={gridContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
+            >
+              {newSalons.map((salon, i) => (
+                <motion.div key={salon.id} variants={gridItemVariants} custom={i}>
+                  <SalonCard
+                    salon={salon}
+                    locale={locale}
+                    isFavorited={favoriteIds.has(salon.id)}
+                    onFavoriteToggle={handleFavoriteToggle}
+                    animated={false}
+                  />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
       )}
@@ -586,7 +684,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
       {sections.partner_cta && (
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
+      <section className="py-10 sm:py-14 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }} transition={{ duration: 0.5 }}
@@ -617,7 +715,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       )}
 
       {/* ── Trust Strip ──────────────────────────────────────────────────── */}
-      <div className="px-4 pb-16">
+      <div className="px-4 pb-10">
         <div className="max-w-5xl mx-auto">
           <div className="flex gap-4 flex-wrap items-center px-5 py-4 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.06] shadow-elevation-1">
             {[
