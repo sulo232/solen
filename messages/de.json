@@ -50,7 +50,8 @@
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deiner Stadt.",
       "nextBooking": "Dein nächster Termin: {date} bei {salon}",
       "welcomeBack": "Willkommen zurück — was darf's heute sein?",
-      "bookings": "Buchungen"
+      "bookings": "Buchungen",
+      "aiTagline": "KI findet deinen perfekten Termin — sofort."
     },
     "cta": {
       "findSalon": "Salon finden",
@@ -107,6 +108,7 @@
       "soon": "Bald hier"
     },
     "partner": {
+      "eyebrow": "Für Salons",
       "title": "Hast du einen Salon?",
       "subtitle": "Bring dein Business auf das nächste Level — erreiche tausende Kund:innen in Basel.",
       "cta": "Partner werden"

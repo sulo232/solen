@@ -50,7 +50,8 @@
       "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
       "nextBooking": "Your next appointment: {date} at {salon}",
       "welcomeBack": "Welcome back — what are you looking for today?",
-      "bookings": "Bookings"
+      "bookings": "Bookings",
+      "aiTagline": "AI finds your perfect appointment — instantly."
     },
     "cta": {
       "findSalon": "Find salon",
@@ -107,6 +108,7 @@
       "soon": "Coming soon"
     },
     "partner": {
+      "eyebrow": "For Salons",
       "title": "Own a salon?",
       "subtitle": "Take your business to the next level — reach thousands of customers in Basel.",
       "cta": "Become a partner"

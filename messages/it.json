@@ -50,7 +50,8 @@
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nella tua città.",
       "nextBooking": "Il tuo prossimo appuntamento: {date} presso {salon}",
       "welcomeBack": "Bentornato — cosa stai cercando oggi?",
-      "bookings": "Prenotazioni"
+      "bookings": "Prenotazioni",
+      "aiTagline": "L'IA trova il tuo appuntamento perfetto — subito."
     },
     "cta": {
       "findSalon": "Trova salone",
@@ -107,6 +108,7 @@
       "soon": "Presto qui"
     },
     "partner": {
+      "eyebrow": "Per i saloni",
       "title": "Hai un salone?",
       "subtitle": "Porta la tua attività al livello successivo — raggiungi migliaia di clienti a Basilea.",
       "cta": "Diventa partner"

@@ -50,7 +50,8 @@
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
       "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
       "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?",
-      "bookings": "Réservations"
+      "bookings": "Réservations",
+      "aiTagline": "L'IA trouve ton rendez-vous parfait — instantanément."
     },
     "cta": {
       "findSalon": "Trouver un salon",
@@ -107,6 +108,7 @@
       "soon": "Bientôt ici"
     },
     "partner": {
+      "eyebrow": "Pour les salons",
       "title": "Vous avez un salon?",
       "subtitle": "Faites passer votre entreprise au niveau supérieur — touchez des milliers de clients à Bâle.",
       "cta": "Devenir partenaire"
