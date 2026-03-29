@@ -117,7 +117,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         <div className="min-w-0">
           <p className="font-heading font-medium text-sm text-s-ink dark:text-s-dm-text truncate group-hover:text-s-coral transition-colors duration-200">{salon.name}</p>
           <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 font-body truncate">{salon.address}</p>
-          {salon.review_count >= 5 ? (
+          {(salon.average_rating > 0 || salon.review_count > 0) ? (
             <div className="flex items-center gap-1 mt-0.5">
               <Star className="w-3 h-3 fill-s-coral text-s-coral" />
               <span className="text-xs data-text text-s-ink/70 dark:text-s-dm-text/70">{salon.average_rating.toFixed(1)}</span>
@@ -319,22 +319,34 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             )}
           </div>
 
-          {/* Rating + Avg Price */}
-          <div className="flex items-center gap-1.5 mt-1.5">
-            {salon.review_count >= 5 ? (
-              <>
-                <Star className="w-3 h-3 fill-s-coral text-s-coral" />
-                <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
-                <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
-              </>
-            ) : null}
-            {salon.avg_price != null && salon.avg_price > 0 && (
-              <>
-                <span className="text-s-ink/20 font-body">·</span>
-                <span className="text-[11px] data-text text-s-ink/50 dark:text-s-dm-text/50">Ø {formatCurrency(salon.avg_price, locale)}</span>
-              </>
-            )}
-          </div>
+          {/* Rating + Price */}
+          {(() => {
+            const priceToShow = salon.min_price ?? salon.avg_price;
+            return (
+              <div className="flex items-center gap-1.5 mt-1.5">
+                {(salon.average_rating > 0 || salon.review_count > 0) ? (
+                  <>
+                    <Star className="w-3 h-3 fill-s-coral text-s-coral" />
+                    <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
+                    <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
+                  </>
+                ) : null}
+                {priceToShow != null && priceToShow > 0 && (
+                  <>
+                    <span className="text-s-ink/20 font-body">·</span>
+                    <span className="text-[11px] data-text text-s-ink/50 dark:text-s-dm-text/50">Ab {formatCurrency(priceToShow, locale)}</span>
+                  </>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Neighborhood */}
+          {salon.quartier && (
+            <span className="text-[11px] font-body text-s-ink/35 dark:text-s-dm-text/35 truncate block mt-0.5">
+              {salon.quartier}
+            </span>
+          )}
 
           {/* 1 badge MAX */}
           {salon.badges && salon.badges.length > 0 && (() => {

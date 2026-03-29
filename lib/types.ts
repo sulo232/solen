@@ -384,6 +384,9 @@ export interface SalonCard extends Salon {
   staff?: StaffMember[];
   reviews?: Review[];
   avg_price?: number | null;
+  min_price?: number | null;
+  quartier?: string | null;
+  solen_score?: number | null;
   badges?: SalonBadge[];
   next_available_slot?: string;
   distance_km?: number;
