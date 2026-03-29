@@ -10,6 +10,7 @@ import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
 import TosPrompt from "@/components/auth/TosPrompt";
 import TOSUpdateBanner from "@/components/global/TOSUpdateBanner";
 import { CompareProvider } from "@/components/compare/CompareContext";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -39,6 +40,7 @@ export default async function LocaleLayout({
           <Header locale={locale} />
           <CompareProvider>
             <main id="main-content" tabIndex={-1} className="pb-[calc(58px+env(safe-area-inset-bottom))] md:pb-0">
+              <Breadcrumb />
               {children}
             </main>
           </CompareProvider>
