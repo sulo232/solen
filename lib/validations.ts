@@ -924,8 +924,3 @@ export const offPeakDeleteSchema = z.object({
   id: uuid,
 });
 
-export const waitlistSchema = z.object({
-  salon_id: uuid,
-  service_id: uuid.optional(),
-  preferred_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-});
