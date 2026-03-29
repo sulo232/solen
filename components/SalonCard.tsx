@@ -92,7 +92,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card card-v4 group"
+        className="flex items-center gap-3 p-3 rounded-card bg-white dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.05] group"
       >
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0 bg-s-bg-sunken img-hover-zoom">
           {salon.cover_photo_url && (
