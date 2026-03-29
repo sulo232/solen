@@ -27,7 +27,7 @@ export default function Footer() {
         <h2 className="font-display text-7xl md:text-8xl tracking-wider text-white/90">
           SO<span className="text-s-coral">.</span>LEN
         </h2>
-        <p className="font-body italic mt-3 text-sm text-white/40">
+        <p className="font-display tracking-wider mt-4 text-2xl md:text-3xl text-white/50">
           {t("tagline")}
         </p>
       </div>

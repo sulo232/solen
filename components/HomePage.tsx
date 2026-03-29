@@ -235,8 +235,8 @@ export default function HomePage({ initialData }: HomePageProps) {
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mt-2 font-body text-s-ink/45 dark:text-s-dm-text/45"
-              style={{ fontSize: "14px" }}
+              className="mt-3 font-body font-medium text-s-ink/50 dark:text-s-dm-text/50"
+              style={{ fontSize: "18px" }}
             >
               {userName && nextBooking
                 ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
@@ -544,31 +544,41 @@ export default function HomePage({ initialData }: HomePageProps) {
         </section>
       )}
 
-      {/* ── Map CTA — V4 Clean ──────────────────────────────────────────── */}
+      {/* ── Map CTA — visual card with map-tint bg ─────────────────────── */}
       <section className="py-10 md:py-14">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="border-t border-s-ink/[0.04] dark:border-white/[0.04] pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-5">
-              <div className="w-14 h-14 rounded-full bg-s-coral/[0.08] dark:bg-s-coral/[0.15] flex items-center justify-center shrink-0">
-                <MapPin className="w-6 h-6 text-s-coral" />
-              </div>
+          <Link
+            href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
+            className="block relative overflow-hidden rounded-card-lg group"
+            style={{
+              background: "linear-gradient(135deg, rgba(107,163,200,0.18) 0%, rgba(107,163,200,0.08) 50%, rgba(232,98,74,0.06) 100%)",
+              border: "1px solid rgba(107,163,200,0.20)",
+            }}
+          >
+            {/* Map grid pattern overlay */}
+            <div className="absolute inset-0 opacity-[0.06]" style={{
+              backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(107,163,200,0.8) 28px, rgba(107,163,200,0.8) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(107,163,200,0.8) 28px, rgba(107,163,200,0.8) 29px)",
+            }} aria-hidden />
+            {/* Pin decoration */}
+            <div className="absolute top-4 right-6 opacity-20" aria-hidden>
+              <MapPin className="w-16 h-16 text-s-blue" />
+            </div>
+            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 sm:p-8">
               <div>
-                <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-lg">
+                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-blue/70 mb-1">
+                  {t("map.eyebrow")}
+                </span>
+                <h2 className="font-heading font-bold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(18px, 2.5vw, 24px)" }}>
                   {t("map.title")}
                 </h2>
-                <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 font-body mt-0.5">
-                  {t("map.eyebrow")}
-                </p>
               </div>
+              <span className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-white/90 dark:bg-s-dm-surface/90 text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] group-hover:-translate-y-px transition-[transform,box-shadow] duration-200"
+                style={{ boxShadow: "0 2px 8px rgba(26,18,9,.10)" }}>
+                <MapPin className="w-3.5 h-3.5 text-s-coral" />
+                {t("map.openCta")}
+              </span>
             </div>
-            <Link
-              href={`/${locale}/search?view=map${persistedCity ? `&city=${persistedCity}` : ''}`}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-s-ink dark:bg-white text-white dark:text-s-ink font-heading font-bold text-xs uppercase tracking-[.06em] hover:-translate-y-px hover:shadow-elevation-3 active:scale-[0.98] transition-[transform,box-shadow] duration-200 shrink-0"
-            >
-              <MapPin className="w-4 h-4" />
-              {t("map.openCta")}
-            </Link>
-          </div>
+          </Link>
         </div>
       </section>
 
@@ -624,9 +634,10 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
       {sections.partner_cta && (
-      <section className="py-10 md:py-14">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-8 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
+      <section className="py-10 md:py-14 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-6 sm:p-8 rounded-card-lg"
+            style={{ background: "linear-gradient(135deg, rgba(232,98,74,0.06) 0%, rgba(212,135,10,0.04) 100%)", border: "1px solid rgba(232,98,74,0.10)" }}>
             <div className="max-w-sm">
               <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-2">
                 {t("partner.eyebrow") || "Für Salons"}
@@ -640,8 +651,8 @@ export default function HomePage({ initialData }: HomePageProps) {
               </p>
             </div>
             <Link href={`/${locale}/partner`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-ink dark:bg-white text-white dark:text-s-ink font-heading font-bold text-xs uppercase tracking-[.05em] hover:-translate-y-px transition-[transform,box-shadow] duration-200 shrink-0"
-              style={{ boxShadow: "0 2px 8px rgba(26,18,9,.10), 0 4px 24px rgba(26,18,9,.06)" }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-coral text-white font-heading font-bold text-xs uppercase tracking-[.05em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0"
+              style={{ boxShadow: "0 2px 8px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}
               aria-label={t("partner.cta")}>
               {t("partner.cta")} →
             </Link>
