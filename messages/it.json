@@ -1426,6 +1426,9 @@
       "unisex": "Unisex"
     },
     "empty": "Nessuno stile trovato. Prova a cambiare i filtri.",
+    "emptyTitle": "Nessun contenuto ancora",
+    "emptyMessage": "Sii il primo a condividere qualcosa.",
+    "resetFilters": "Reimposta filtri",
     "loading": "Caricamento stili...",
     "like": "Mi piace",
     "save": "Salva",

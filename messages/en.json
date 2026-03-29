@@ -1449,6 +1449,9 @@
       "unisex": "Unisex"
     },
     "empty": "No styles found. Try adjusting your filters.",
+    "emptyTitle": "No posts yet",
+    "emptyMessage": "Be the first to share something.",
+    "resetFilters": "Reset filters",
     "loading": "Loading styles...",
     "like": "Like",
     "save": "Save",

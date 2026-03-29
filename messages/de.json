@@ -1460,6 +1460,9 @@
       "unisex": "Unisex"
     },
     "empty": "Keine Styles gefunden. Probiere andere Filter.",
+    "emptyTitle": "Noch keine Beiträge",
+    "emptyMessage": "Sei der Erste, der etwas teilt.",
+    "resetFilters": "Filter zurücksetzen",
     "loading": "Styles laden...",
     "like": "Gefällt mir",
     "save": "Speichern",

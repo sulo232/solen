@@ -1426,6 +1426,9 @@
       "unisex": "Unisexe"
     },
     "empty": "Aucun style trouvé. Essayez d'autres filtres.",
+    "emptyTitle": "Aucun contenu pour l'instant",
+    "emptyMessage": "Soyez le premier à partager quelque chose.",
+    "resetFilters": "Réinitialiser les filtres",
     "loading": "Chargement des styles...",
     "like": "J'aime",
     "save": "Enregistrer",
