@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import type { DiscoveryItem } from "@/lib/types";
 import { Play } from "lucide-react";
 import LikeButton from "./LikeButton";
@@ -46,7 +46,21 @@ export default memo(function VideoCard({
     item.tiktok_thumbnail_url || item.image_url || null
   );
   const [imgError, setImgError] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+  const iframeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const videoId = extractTiktokId(item.tiktok_url);
+
+  // Fallback: if iframe hasn't loaded within 5s, revert to thumbnail
+  useEffect(() => {
+    if (isExpanded && videoId && !iframeError) {
+      iframeTimerRef.current = setTimeout(() => {
+        setIframeError(true);
+      }, 5000);
+    }
+    return () => {
+      if (iframeTimerRef.current) clearTimeout(iframeTimerRef.current);
+    };
+  }, [isExpanded, videoId, iframeError]);
 
   // If no stored thumbnail, or stored one fails, try oEmbed for fresh one
   useEffect(() => {
@@ -73,7 +87,8 @@ export default memo(function VideoCard({
     >
       {/* Full-bleed image */}
       <div className="absolute inset-0 bg-s-ink overflow-hidden">
-        {thumbnailUrl && !imgError && (!isExpanded || !videoId) ? (
+        {/* Thumbnail — always visible as background layer (also fallback when iframe fails) */}
+        {thumbnailUrl && !imgError ? (
           <img
             src={thumbnailUrl}
             alt={item.alt_text || item.style_name || ""}
@@ -83,20 +98,24 @@ export default memo(function VideoCard({
           />
         ) : null}
 
-        {/* Lazy load TikTok iframe when hovered / centered */}
-        {isExpanded && videoId && (
+        {/* TikTok iframe — only when expanded and no error; sits on top of thumbnail */}
+        {isExpanded && videoId && !iframeError && (
           <iframe
             src={`https://www.tiktok.com/embed/v2/${videoId}?autoplay=1&muted=1`}
-            className="absolute inset-0 w-[120%] h-[120%] -top-[10%] -left-[10%] object-cover pointer-events-none"
+            className="absolute inset-0 w-full h-full"
             allow="autoplay; encrypted-media"
-            style={{ border: "none", overflow: "hidden" }}
+            style={{ border: "none" }}
+            onLoad={() => {
+              if (iframeTimerRef.current) clearTimeout(iframeTimerRef.current);
+            }}
+            onError={() => setIframeError(true)}
           />
         )}
 
-        {/* Play button overlay — hidden when playing */}
-        {!isExpanded && (
+        {/* Play button overlay — shown when not expanded or when iframe failed */}
+        {(!isExpanded || iframeError) && (
           <div className="absolute inset-0 flex items-center justify-center bg-s-ink/20">
-            <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-[6px] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-s-coral/90 backdrop-blur-[6px] flex items-center justify-center shadow-coral-glow">
               <Play size={16} className="text-white ml-0.5" fill="white" />
             </div>
           </div>
