@@ -484,6 +484,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                   <SalonCard
                     salon={salon}
                     locale={locale}
+                    showCompare
                     isFavorited={favoriteIds.has(salon.id)}
                     onFavoriteToggle={handleFavoriteToggle}
                     {...(selectedDate

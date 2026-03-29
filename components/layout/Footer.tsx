@@ -86,6 +86,7 @@ export default function Footer() {
                 { label: t("agb"),       href: `/${locale}/agb` },
                 { label: t("privacy"),   href: `/${locale}/datenschutz` },
                 { label: t("help"),      href: `/${locale}/help` },
+                { label: t("compareSalons") || "Salons vergleichen", href: `/${locale}/compare` },
               ].map(({ label, href }) => (
                 <li key={href}>
                   <Link

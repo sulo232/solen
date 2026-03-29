@@ -155,6 +155,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
                 <SalonCard
                   salon={salon}
                   locale={locale}
+                  showCompare
                   isFavorited={favoriteIds.has(salon.id)}
                   onFavoriteToggle={handleFavoriteToggle}
                 />
