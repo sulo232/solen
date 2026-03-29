@@ -29,7 +29,9 @@
     "homeLink": "Solen.ch – Aller à l'accueil",
     "menuOpen": "Ouvrir le menu",
     "menuClose": "Fermer le menu",
-    "categories": "Catégories"
+    "categories": "Catégories",
+    "search": "Rechercher",
+    "mobileNavigation": "Navigation"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",

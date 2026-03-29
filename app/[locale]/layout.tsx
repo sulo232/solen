@@ -4,6 +4,7 @@ import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import Header from "@/components/layout/Header";
+import BottomTabBar from "@/components/layout/BottomTabBar";
 import CookieBanner from "@/components/ui/CookieBanner";
 import PWAInstallPrompt from "@/components/ui/PWAInstallPrompt";
 import TosPrompt from "@/components/auth/TosPrompt";
@@ -37,10 +38,11 @@ export default async function LocaleLayout({
           </a>
           <Header locale={locale} />
           <CompareProvider>
-            <main id="main-content" tabIndex={-1}>
+            <main id="main-content" tabIndex={-1} className="pb-[calc(58px+env(safe-area-inset-bottom))] md:pb-0">
               {children}
             </main>
           </CompareProvider>
+          <BottomTabBar />
           <CookieBanner />
           <PWAInstallPrompt />
           <TosPrompt />

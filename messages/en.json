@@ -29,7 +29,9 @@
     "homeLink": "Solen.ch – Go to homepage",
     "menuOpen": "Open menu",
     "menuClose": "Close menu",
-    "categories": "Categories"
+    "categories": "Categories",
+    "search": "Search",
+    "mobileNavigation": "Navigation"
   },
   "home": {
     "hero_title": "Your salon in Basel",

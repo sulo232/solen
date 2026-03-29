@@ -29,7 +29,9 @@
     "homeLink": "Solen.ch – Vai alla homepage",
     "menuOpen": "Apri il menu",
     "menuClose": "Chiudi il menu",
-    "categories": "Categorie"
+    "categories": "Categorie",
+    "search": "Cerca",
+    "mobileNavigation": "Navigazione"
   },
   "home": {
     "hero_title": "Il tuo salone a Basilea",

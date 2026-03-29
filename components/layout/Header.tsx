@@ -6,12 +6,11 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut, Building2,
-  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles, Bookmark,
+  Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut,
+  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import CitySelector from "@/components/ui/CitySelector";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
@@ -49,7 +48,6 @@ const CATEGORY_ICONS: Record<string, { icon: typeof Scissors; label: string }> =
 
 export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const t = useTranslations("navigation") as any;
-  const tCities = useTranslations("cities");
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -126,8 +124,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         <div className={cn(
           "flex items-center justify-between rounded-full transition-[max-width,padding,min-height,background-color,border-color,box-shadow] duration-300 ease-out w-full",
           scrolled
-            ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost"
-            : "mt-3 max-w-5xl min-h-[60px] py-2.5 px-5 sm:px-8 bg-white/85 backdrop-blur-sm border border-s-ink/[0.05] shadow-elevation-1"
+            ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg"
+            : "mt-3 max-w-5xl min-h-[60px] py-2.5 px-5 sm:px-8 glass-frost shadow-warm-sm"
         )}>
           {/* Logo + Sub-site icon */}
           <div className="flex items-center gap-2 shrink-0">
@@ -214,10 +212,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               )}
             </Link>
 
-            {/* Mobile hamburger */}
+            {/* Mobile hamburger — hidden on all sizes (BottomTabBar handles mobile nav) */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="md:hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
+              className="hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
               aria-label={mobileOpen ? t("menuClose") : t("menuOpen")}
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -294,139 +292,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
-            className="md:hidden mt-2 rounded-card p-4 overflow-hidden glass-frost shadow-v5-float"
-          >
-            <nav className="flex flex-col gap-2">
-              {/* Mobile nav items — complete set including category subsites */}
-              {[
-                // Core navigation:
-                { key: "discover", href: `/${locale}/discover`, icon: Compass },
-              ].map(({ key, href, icon: Icon }) => {
-                const active = pathname === href || pathname.startsWith(href + "/");
-                return (
-                  <Link
-                    key={key}
-                    href={href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 py-3 px-3 text-sm font-heading font-semibold transition-colors rounded-[10px] min-h-[44px]",
-                      active ? "text-s-coral bg-s-coral/[0.05]" : "text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                    )}
-                  >
-                    <Icon size={18} className="shrink-0" strokeWidth={active ? 2.2 : 1.8} />
-                    {t(key as any)}
-                  </Link>
-                );
-              })}
-
-              {/* Category subsites */}
-              <p className="text-[10px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 px-3 pt-2">
-                {t("categories")}
-              </p>
-              {[
-                { key: "coiffeur", href: `/${locale}/coiffeur`, icon: CoiffeurIcon },
-                { key: "barbershop", href: `/${locale}/barbershop`, icon: BarberIcon },
-                { key: "nails", href: `/${locale}/nails`, icon: NailsIcon },
-                { key: "spa", href: `/${locale}/spa`, icon: SpaIcon },
-                { key: "makeup", href: `/${locale}/makeup`, icon: MakeupIcon },
-                { key: "waxing", href: `/${locale}/waxing`, icon: WaxingIcon },
-              ].map(({ key, href, icon: Icon }) => {
-                const active = pathname === href || pathname.startsWith(href + "/");
-                return (
-                  <Link
-                    key={key}
-                    href={href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 py-2.5 px-3 text-sm font-heading font-medium transition-colors rounded-[10px] min-h-[40px]",
-                      active ? "text-s-coral bg-s-coral/[0.05]" : "text-s-ink/55 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                    )}
-                  >
-                    <Icon width={16} height={16} className="shrink-0" />
-                    {t(key as any)}
-                  </Link>
-                );
-              })}
-
-              <div className="border-t border-s-ink/[0.06] my-1" />
-
-              {/* Angebote + Account links */}
-              {[
-                { key: "angebote", href: `/${locale}/angebote`, icon: CalendarDays },
-                { key: "bookings", href: `/${locale}/bookings`, icon: CalendarDays },
-                { key: "favorites", href: `/${locale}/favorites`, icon: Heart },
-                { key: "saved", href: `/${locale}/account/saved`, icon: Bookmark },
-                { key: "messages", href: `/${locale}/account/messages`, icon: MessageCircle },
-              ].map(({ key, href, icon: Icon }) => {
-                const active = pathname === href || pathname.startsWith(href + "/");
-                return (
-                  <Link
-                    key={key}
-                    href={href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 py-3 px-3 text-sm font-heading font-semibold transition-colors rounded-[10px] min-h-[44px]",
-                      active ? "text-s-coral bg-s-coral/[0.05]" : "text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03]"
-                    )}
-                  >
-                    <Icon size={18} className="shrink-0" strokeWidth={active ? 2.2 : 1.8} />
-                    {t(key as any)}
-                  </Link>
-                );
-              })}
-
-              {/* Divider */}
-              <div className="border-t border-s-ink/[0.06] my-2" />
-
-              {/* City selector — mobile menu */}
-              <div className="px-4 py-2">
-                <p className="text-[10px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
-                  {tCities("label")}
-                </p>
-                <CitySelector variant="menu" />
-              </div>
-
-              {/* Logged in: profile shortcut */}
-              {isLoggedIn && (
-                <Link
-                  href={`/${locale}/profile`}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 py-3 px-3 text-sm font-heading font-semibold text-s-ink/65 hover:text-s-ink hover:bg-s-ink/[0.03] transition-colors rounded-[10px] min-h-[44px]"
-                >
-                  <User size={18} className="shrink-0" strokeWidth={1.8} />
-                  {t("account")}
-                </Link>
-              )}
-
-              {/* Salon Eintragen CTA */}
-              <div className="pt-2">
-                <Link
-                  href={`/${locale}/partner`}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-pill bg-s-coral text-white text-sm font-heading font-bold transition-colors hover:brightness-[1.06] active:scale-[0.98] min-h-[44px]"
-                  style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}
-                >
-                  <Building2 size={16} />
-                  {t("registerSalon")}
-                </Link>
-              </div>
-
-              {/* Language switcher — mobile menu */}
-              <div className="mt-2 flex justify-center pb-2">
-                <LanguageSwitcher locale={locale} variant="menu" />
-              </div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }
