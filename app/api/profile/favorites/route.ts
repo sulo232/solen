@@ -42,3 +42,26 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ items, total: items.length });
 }
+
+export async function DELETE(req: NextRequest) {
+  const supabase = await createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rateLimitResponse = await applyRateLimit(generalLimiter, { userId: user.id });
+  if (rateLimitResponse) return rateLimitResponse;
+
+  const { searchParams } = new URL(req.url);
+  const salonId = searchParams.get("salon_id");
+  if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+
+  const { error } = await supabase
+    .from("favorites")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("salon_id", salonId);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
+}
