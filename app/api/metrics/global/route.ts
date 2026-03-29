@@ -17,7 +17,7 @@ export async function GET() {
     const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
     const [salonsResult, bookingsResult, ratingResult] = await Promise.all([
-      admin.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true),
+      admin.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false),
       admin
         .from("bookings")
         .select("*", { count: "exact", head: true })

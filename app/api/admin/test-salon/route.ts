@@ -93,6 +93,7 @@ export async function POST(request: NextRequest) {
       latitude: 47.5596 + (Math.random() - 0.5) * 0.02,
       longitude: 7.5886 + (Math.random() - 0.5) * 0.02,
       is_active: true,
+      is_test: true,
       registration_completed: true,
       approved_at: new Date().toISOString(),
     })

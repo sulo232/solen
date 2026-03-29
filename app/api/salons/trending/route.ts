@@ -13,6 +13,7 @@ export async function GET() {
       .from("salons")
       .select("id, name, slug, cover_photo_url, city, rating, review_count")
       .eq("status", "active")
+      .eq("is_test", false)
       .limit(10);
       
     if (error) throw error;

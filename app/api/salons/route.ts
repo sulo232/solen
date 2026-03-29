@@ -35,7 +35,8 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from("salons")
       .select("*, services(price)", { count: "exact" })
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .eq("is_test", false);
 
     if (category) query = query.contains("categories", [category]);
     
