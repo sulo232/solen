@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
+import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import PartnerSignupForm from "@/components/partner/PartnerSignupForm";
 
@@ -184,6 +184,9 @@ export default function PartnerPage() {
             <div className="hidden md:block absolute top-10 left-[16.6%] right-[16.6%] h-0.5 border-t-2 border-dashed border-s-coral/20" aria-hidden="true" />
             {/* Connecting line — vertical on mobile */}
             <div className="md:hidden absolute top-10 bottom-10 left-6 w-0.5 border-l-2 border-dashed border-s-coral/20" aria-hidden="true" />
+            {/* Chevron arrows — desktop only, positioned over the connecting line */}
+            <ChevronRight className="hidden md:block absolute top-[18px] left-[calc(33.3%-12px)] w-5 h-5 text-s-ink/30" aria-hidden="true" />
+            <ChevronRight className="hidden md:block absolute top-[18px] left-[calc(66.6%-12px)] w-5 h-5 text-s-ink/30" aria-hidden="true" />
 
             {/* Step 1 */}
             <div className="relative text-center md:text-center pl-16 md:pl-0">
@@ -280,16 +283,19 @@ export default function PartnerPage() {
 
           {/* Testimonials */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {["testimonial_1", "testimonial_2", "testimonial_3"].map((key) => (
+            {([
+              { key: "testimonial_1", avatarClass: "bg-s-coral" },
+              { key: "testimonial_2", avatarClass: "bg-s-amber" },
+              { key: "testimonial_3", avatarClass: "bg-s-sage" },
+            ] as const).map(({ key, avatarClass }) => (
               <div key={key} className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[16px] p-6 border border-s-ink/[0.05] dark:border-white/[0.06]">
                 <Quote className="w-5 h-5 text-s-coral/30 mb-3" />
                 <p className="text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed mb-4 italic">
                   &ldquo;{t(`${key}_quote` as any)}&rdquo;
                 </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                    style={{ background: "rgba(232,98,74,.12)" }}>
-                    <span className="text-xs font-heading font-bold text-s-coral">{t(`${key}_initial` as any)}</span>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${avatarClass}`}>
+                    <span className="text-sm font-heading font-bold text-white">{t(`${key}_initial` as any)}</span>
                   </div>
                   <div>
                     <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t(`${key}_name` as any)}</p>
@@ -334,6 +340,8 @@ export default function PartnerPage() {
                 <span className="font-heading font-bold text-4xl text-s-coral">1%</span>
                 <span className="text-s-ink/50 dark:text-s-dm-text/50 text-sm">{t("pricing_per_booking")}</span>
               </div>
+              <p className="text-[11px] font-body text-s-ink/55 dark:text-s-dm-text/55 mb-0.5">{t("pricing_intro_model")}</p>
+              <p className="text-[10px] font-body text-s-amber italic mb-5">{t("pricing_intro_qualifier")}</p>
               <p className="text-xs text-s-ink/40 dark:text-s-dm-text/40 mb-6">{t("pricing_no_fixed")}</p>
 
               {/* Feature checklist */}
@@ -472,6 +480,16 @@ export default function PartnerPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Sticky bottom CTA */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-s-dm-surface border-t border-s-ink/[0.06] dark:border-white/[0.06] shadow-[0_-2px_12px_rgba(26,18,9,.06)] p-3 flex justify-center z-50">
+        <a
+          href="#contact"
+          className="bg-s-coral text-white font-heading font-semibold text-sm px-7 py-3 rounded-btn hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
+        >
+          {t("sticky_cta")}
+        </a>
       </div>
 
       {/* JSON-LD FAQPage structured data */}

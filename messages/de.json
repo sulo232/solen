@@ -2309,6 +2309,8 @@
     "pricing_label": "Provision pro Buchung",
     "pricing_per_booking": "pro erfolgreiche Buchung",
     "pricing_no_fixed": "Keine monatlichen Gebühren · Kein Vertrag · Jederzeit kündbar",
+    "pricing_intro_model": "15% auf Neubuchungen · 0% auf Wiederkäufer",
+    "pricing_intro_qualifier": "Einführungspreis (befristet)",
     "pricing_feature_1": "Unbegrenztes Salon-Profil",
     "pricing_feature_2": "Online-Buchungskalender",
     "pricing_feature_3": "Dashboard & Analytics",
@@ -2384,7 +2386,8 @@
     "cat_makeup_title": "Makeup",
     "cat_makeup_desc": "Bridal-Packages, Vorher/Nachher-Galerie und Event-Buchungen.",
     "cat_waxing_title": "Waxing",
-    "cat_waxing_desc": "Zonen-basierte Preise, Behandlungs-Erinnerungen und Intervalle."
+    "cat_waxing_desc": "Zonen-basierte Preise, Behandlungs-Erinnerungen und Intervalle.",
+    "sticky_cta": "Kostenlos starten →"
   },
   "filters": {
     "filter": "Filter",
@@ -2420,6 +2423,9 @@
     "add": "filtern"
   },
   "discover": {
+    "title": "Entdecken",
+    "genderPill": "Für wen?",
+    "texturePill": "Textur",
     "tabs": {
       "all": "Alle",
       "hair": "Hair",

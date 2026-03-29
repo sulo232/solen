@@ -2275,6 +2275,8 @@
     "pricing_label": "Commission par réservation",
     "pricing_per_booking": "par réservation réussie",
     "pricing_no_fixed": "Pas de frais mensuels · Pas de contrat · Résiliable à tout moment",
+    "pricing_intro_model": "15% sur les nouvelles réservations · 0% sur les habitués",
+    "pricing_intro_qualifier": "Prix d'introduction (durée limitée)",
     "pricing_feature_1": "Profil salon illimité",
     "pricing_feature_2": "Calendrier de réservation en ligne",
     "pricing_feature_3": "Tableau de bord & analytics",
@@ -2350,7 +2352,8 @@
     "cat_makeup_title": "Maquillage",
     "cat_makeup_desc": "Forfaits mariée, galerie avant/après et réservations événements.",
     "cat_waxing_title": "Épilation",
-    "cat_waxing_desc": "Tarifs par zone, rappels de traitement et intervalles."
+    "cat_waxing_desc": "Tarifs par zone, rappels de traitement et intervalles.",
+    "sticky_cta": "Commencer gratuitement →"
   },
   "filters": {
     "filter": "Filtre",
@@ -2386,6 +2389,9 @@
     "add": "filtrer"
   },
   "discover": {
+    "title": "Découvrir",
+    "genderPill": "Pour qui ?",
+    "texturePill": "Texture",
     "tabs": {
       "all": "Tout",
       "hair": "Cheveux",

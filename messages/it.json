@@ -2275,6 +2275,8 @@
     "pricing_label": "Commissione per prenotazione",
     "pricing_per_booking": "per prenotazione riuscita",
     "pricing_no_fixed": "Nessun costo mensile · Nessun contratto · Cancellabile in qualsiasi momento",
+    "pricing_intro_model": "15% sulle nuove prenotazioni · 0% sui clienti abituali",
+    "pricing_intro_qualifier": "Prezzo introduttivo (tempo limitato)",
     "pricing_feature_1": "Profilo salone illimitato",
     "pricing_feature_2": "Calendario prenotazioni online",
     "pricing_feature_3": "Dashboard & analytics",
@@ -2350,7 +2352,8 @@
     "cat_makeup_title": "Trucco",
     "cat_makeup_desc": "Pacchetti sposa, galleria prima/dopo e prenotazioni eventi.",
     "cat_waxing_title": "Ceretta",
-    "cat_waxing_desc": "Prezzi per zona, promemoria trattamenti e intervalli."
+    "cat_waxing_desc": "Prezzi per zona, promemoria trattamenti e intervalli.",
+    "sticky_cta": "Inizia gratis →"
   },
   "filters": {
     "filter": "Filtro",
@@ -2386,6 +2389,9 @@
     "add": "filtra"
   },
   "discover": {
+    "title": "Scoprire",
+    "genderPill": "Per chi?",
+    "texturePill": "Texture",
     "tabs": {
       "all": "Tutto",
       "hair": "Capelli",
