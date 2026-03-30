@@ -4,6 +4,26 @@
 
 ---
 
+## 🚨 LESSONS LEARNED — READ AND MAINTAIN (MANDATORY)
+
+**File: `_rules/LESSONS_LEARNED.md`**
+
+This file contains a living log of every real bug, footgun, and non-obvious pattern discovered in this codebase. It is updated by every agent, every session.
+
+**You MUST:**
+1. **READ** `_rules/LESSONS_LEARNED.md` before starting any task — it will save you from repeating past mistakes
+2. **APPEND** a new entry to `_rules/LESSONS_LEARNED.md` whenever you:
+   - Cause a bug and fix it
+   - Discover a surprising behavior (DB, CSS, Next.js, Supabase, i18n)
+   - Fix a bug someone else caused
+   - Notice a pattern that tripped up a previous agent
+3. Use the exact format defined at the top of that file
+4. Never delete existing entries — only append
+
+**This is not optional.** If you break something and don't document it, the next agent will break it again.
+
+---
+
 ## ⚡ TERMINAL COMMAND AUTONOMY (READ THIS FIRST)
 
 **Execute all standard development commands IMMEDIATELY without asking for permission.**
