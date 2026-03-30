@@ -197,6 +197,7 @@ solen/
 ```
 - Easing: `cubic-bezier(0.23, 1, 0.32, 1)` — 400ms
 - Image zoom: `.img-hover-zoom` → `scale(1.03)` over 500ms
+- Tap feedback: Implemented via `active:scale-[0.98]` for tactile, native-app interaction feeling. (See `docs/superpowers/specs/2026-03-30-airbnb-micro-interactions.md`)
 
 #### V5 Motion Philosophy
 - **Easing**: Custom `cubic-bezier(0.23, 1, 0.32, 1)` for all card/reveal transitions
@@ -210,7 +211,9 @@ solen/
 
 #### Component Standards
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
-- **Loading**: Use `<Skeleton variant="card" />` for full-page loading. Use `<Spinner>` only for inline/button loading.
+- **Loading**: Use `<Skeleton variant="card" />` for full-page loading. Skeletons MUST have pixel-perfect dimensional parity (exact aspect ratios and border radii) with their populated counterparts to prevent CLS. (See `docs/superpowers/specs/2026-03-30-airbnb-skeleton-loaders.md`)
+- **Image Ratios**: Strictly enforce `aspect-[20/19]` on mobile and `md:aspect-square` on desktop for all image cards. No arbitrary heights. (See `docs/superpowers/specs/2026-03-30-airbnb-image-aspect-ratio.md`)
+- **Pagination**: Image carousels on cards must use scroll-snap with native pagination dots indicating the current index. (See `docs/superpowers/specs/2026-03-30-airbnb-pagination-dots.md`)
 - **CTAs**: Use `<InteractiveHoverButton>` for all primary CTA buttons.
 - **Mobile nav**: **V5 UPDATED** — Mobile uses a **frosted-glass bottom tab bar** with max 4 tabs (Discover, Search, Saved, Account). The hamburger menu is **deprecated on mobile**. Desktop keeps the top pill nav. The bottom tab bar is a NEW component: `components/layout/BottomTabBar.tsx`.
 - **Empty states**: Use `<EmptyState>` with optional `illustration` prop.

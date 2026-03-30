@@ -159,18 +159,31 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full">
-        {/* Cover photo — V4: image fills card radius, smooth zoom on hover */}
-        <div className="relative w-full aspect-[3/2] bg-s-bg-sunken overflow-hidden rounded-xl img-hover-zoom">
+        {/* Cover photo — V4: image fills card radius, native swipe carousel */}
+        <div className="relative w-full aspect-[20/19] md:aspect-square bg-s-bg-sunken overflow-hidden rounded-xl group/carousel">
           {allPhotos.length > 0 ? (
-            <Image
-              src={allPhotos[photoIndex]}
-              alt={salon.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              placeholder="blur"
-              blurDataURL={BLUR_PLACEHOLDER}
-              className="object-cover"
-            />
+            <div 
+              className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                const idx = Math.round(el.scrollLeft / el.clientWidth);
+                if (idx !== photoIndex) setPhotoIndex(idx);
+              }}
+            >
+              {allPhotos.map((photo, i) => (
+                <div key={i} className="relative w-full h-full flex-none snap-center">
+                  <Image
+                    src={photo}
+                    alt={`${salon.name} - Photo ${i + 1}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDER}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           ) : (
             <div
               className="absolute inset-0 flex flex-col items-center justify-center gap-2"
@@ -183,47 +196,44 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           )}
 
-          {/* Available today pill */}
-          {availableToday != null && availableToday > 0 && (
-            <div className="absolute top-2 left-2 bg-s-success text-white text-xs font-semibold px-2 py-0.5 rounded-pill shadow-elevation-1 z-[1]">
-              {t("appointmentsToday", { count: availableToday })}
-            </div>
-          )}
+          {/* Airbnb-style Overlay Badges (Guest Favorite, Neu, Top Rated) */}
+          {(() => {
+            const isGuestFavorite = salon.average_rating >= 4.9 && salon.review_count > 50;
+            const isNew = salon.review_count === 0 && (availableToday == null || availableToday === 0);
+            const isTopRated = salon.average_rating >= 4.8 && salon.review_count > 20;
 
-          {/* New salon badge — white overlay on image, only when review_count === 0 and no availableToday pill */}
-          {salon.review_count === 0 && (availableToday == null || availableToday === 0) && (
-            <div className="absolute top-2 left-2 z-[1]">
-              <span className="font-heading font-bold text-[10px] text-s-ink bg-white/95 px-2 py-0.5 rounded-pill">
-                {t("newOnSolen")}
-              </span>
-            </div>
-          )}
+            if (isGuestFavorite) {
+              return (
+                <div className="absolute top-2 left-2 z-[1]">
+                  <span className="flex items-center gap-1 font-heading font-semibold text-[11px] text-s-ink bg-white/95 px-2 py-1 rounded-pill shadow-elevation-1 uppercase tracking-wider">
+                    <Award size={12} className="text-s-coral" /> {t("guestFavorite", { fallback: "Guest Favorite" })}
+                  </span>
+                </div>
+              );
+            }
+            if (isNew) {
+              return (
+                <div className="absolute top-2 left-2 z-[1]">
+                  <span className="font-heading font-semibold text-[11px] text-white bg-s-coral px-2.5 py-1 rounded-pill shadow-elevation-1">
+                    {t("newOnSolen")}
+                  </span>
+                </div>
+              );
+            }
+            if (isTopRated) {
+              return (
+                <div className="absolute top-2 left-2 z-[1]">
+                  <span className="font-heading font-semibold text-[11px] text-s-ink bg-white/95 px-2.5 py-1 rounded-pill shadow-elevation-1 uppercase tracking-wider">
+                    {t("topRated", { fallback: "Top Rated" })}
+                  </span>
+                </div>
+              );
+            }
+            return null;
+          })()}
 
-          {/* Solen tier badge */}
-          {solenTier === "gold" && (
-            <div className="absolute top-2 right-2 bg-s-yellow-subtle text-s-yellow-text text-xs font-semibold px-2 py-0.5 rounded-pill z-[1]">
-              {t("topSalon")}
-            </div>
-          )}
+          {/* Category pills on photo — glass style kept here only if no badge? Let's just remove them as they clutter the image in Airbnb style. */}
 
-          {/* Top Pick badge */}
-          {salon.is_top_pick && !solenTier && (
-            <div className="absolute top-2 right-2 bg-s-yellow-subtle text-s-yellow-text px-2.5 py-1 rounded-btn text-[10px] font-heading font-bold uppercase tracking-[.08em] z-[1]">
-              {t("solenTopPick")}
-            </div>
-          )}
-
-          {/* Category pills on photo — glass style kept here only */}
-          <div className="absolute bottom-2 left-2 flex gap-1.5 flex-wrap">
-            {salon.categories.slice(0, 2).map((cat) => (
-              <span
-                key={cat}
-                className="px-2 py-0.5 rounded-pill bg-s-ink/45 backdrop-blur-[8px] text-white text-[10px] font-body font-medium capitalize border border-white/10"
-              >
-                {cat}
-              </span>
-            ))}
-          </div>
 
           {/* Compare checkbox */}
           {showCompare && (
@@ -281,8 +291,13 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               {allPhotos.slice(0, 5).map((_, i) => (
                 <button
                   key={i}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPhotoIndex(i); }}
-                  className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-2 h-2 bg-white" : "w-1.5 h-1.5 bg-white/60"}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); 
+                    const container = e.currentTarget.parentElement?.parentElement?.querySelector('.overflow-x-auto');
+                    if (container) {
+                      container.scrollTo({ left: i * container.clientWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-1.5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/50 hover:bg-white/80"}`}
                   aria-label={`Photo ${i + 1}`}
                 />
               ))}
@@ -291,72 +306,43 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
 
         {/* ── Info Section — Compact Airbnb-style ─────────────────────── */}
-        <div className="pt-3 pb-1 px-0">
-          {/* Name + AI sparkle (same row) */}
-          <div className="flex items-start justify-between gap-1">
-            <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[13px] leading-snug">
+        <div className="pt-3 pb-1 px-1">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text text-[15px] leading-snug truncate">
               {salon.name}
-              {(salon as any).group_name && (
-                <span className="text-s-ink/40 font-normal"> · {(salon as any).group_name}</span>
-              )}
+              {(salon as any).group_name && <span className="text-s-ink/40 font-normal"> · {(salon as any).group_name}</span>}
             </h3>
-            {aiReason && (
-              <div className="relative group/ai shrink-0 mt-0.5">
-                <Sparkles className="w-3 h-3 text-s-coral cursor-help" />
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 glass-frost rounded-card shadow-elevation-3 border border-s-ink/5 dark:border-white/5 text-xs text-s-ink dark:text-s-dm-text w-48 opacity-0 pointer-events-none group-hover/ai:opacity-100 group-hover/ai:pointer-events-auto transition-[opacity,transform] duration-200 group-hover/ai:-translate-y-1 z-10">
-                  {aiReason}
-                  <div className="absolute top-full right-4 -mt-1 border-4 border-transparent border-t-white dark:border-t-s-dm-surface" />
-                </div>
+            
+            {/* Rating inline with name (right side) */}
+            {(salon.average_rating > 0) ? (
+              <div className="flex items-center gap-1 shrink-0 mt-0.5">
+                <Star className="w-3.5 h-3.5 fill-s-ink dark:fill-s-dm-text text-s-ink dark:text-s-dm-text" />
+                <span className="text-[14px] data-text text-s-ink dark:text-s-dm-text font-medium">{salon.average_rating.toFixed(2)}</span>
               </div>
-            )}
-          </div>
-
-          {/* Address + Distance */}
-          <div className="flex items-center gap-1 mt-1 text-s-ink/40 dark:text-s-dm-text/40">
-            <MapPin className="w-3 h-3 shrink-0" />
-            <span className="text-[11px] font-body truncate">{salon.address}</span>
-            {showDistance && salon.distance_km != null && (
-              <span className="text-[11px] text-s-ink/30 font-body shrink-0 ml-auto">{salon.distance_km.toFixed(1)} km</span>
-            )}
-          </div>
-
-          {/* Rating + Price */}
-          <div className="flex items-center gap-1.5 mt-1.5">
-            {(salon.average_rating > 0 || salon.review_count > 0) ? (
-              <>
-                <Star className="w-3 h-3 fill-s-coral text-s-coral" />
-                <span className="text-[12px] data-text font-medium text-s-ink dark:text-s-dm-text">{salon.average_rating.toFixed(1)}</span>
-                <span className="text-[11px] text-s-ink/30 dark:text-s-dm-text/30 font-body">({salon.review_count})</span>
-              </>
+            ) : salon.review_count === 0 ? (
+              <div className="flex items-center gap-1 shrink-0 mt-0.5 text-[13px] text-s-ink/60 font-body">Neu</div>
             ) : null}
-            {priceToShow != null && priceToShow > 0 && (
-              <>
-                <span className="text-s-ink/20 font-body">·</span>
-                <span className="text-[11px] data-text text-s-ink/50 dark:text-s-dm-text/50">{t("priceFrom")} {formatCurrency(priceToShow, locale)}</span>
-              </>
-            )}
           </div>
 
-          {/* Neighborhood */}
-          {salon.quartier && (
-            <span className="text-[11px] font-body text-s-ink/35 dark:text-s-dm-text/35 truncate block mt-0.5">
-              {salon.quartier}
-            </span>
-          )}
+          <p className="text-[14px] text-s-ink/60 dark:text-s-dm-text/60 font-body truncate mt-[2px]">
+            {/* Display formatted distance or fallback address */}
+            {showDistance && salon.distance_km != null 
+              ? `${salon.quartier ? salon.quartier + ", " : ""}${salon.distance_km.toFixed(1)} km entfernt` 
+              : <>{salon.address}</>}
+          </p>
 
-          {/* 1 badge MAX */}
-          {salon.badges && salon.badges.length > 0 && (() => {
-            const b = salon.badges[0];
-            const Ic = BADGE_ICONS[b.icon] ?? Star;
-            return (
-              <div className="mt-1.5">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-[10px] font-medium" style={{ color: b.color, backgroundColor: b.bg_color }}>
-                  <Ic size={9} />
-                  {b.name_de}
-                </span>
-              </div>
-            );
-          })()}
+          {/* Pricing indicator & Category */}
+          <div className="mt-[2px] flex items-center gap-1.5">
+            <span className="text-[14px] font-body text-s-ink dark:text-s-dm-text">
+              <span className="font-medium">
+                {priceToShow != null && priceToShow < 40 ? "$" : priceToShow != null && priceToShow <= 80 ? "$$" : priceToShow != null ? "$$$" : "$$"}
+              </span>
+            </span>
+            <span className="text-[14px] font-body text-s-ink/60 dark:text-s-dm-text/60">·</span>
+            <span className="text-[14px] font-body text-s-ink/60 dark:text-s-dm-text/60 capitalize">
+              {salon.categories?.[0] || t("salon")}
+            </span>
+          </div>
 
           {/* Single signal pill — priority: availability > off-peak > stamps */}
           {(() => {

@@ -31,6 +31,8 @@ import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { getPersistedCity } from "@/lib/city-cookie";
 import { type CitySlug } from "@/lib/cities";
 import { gridContainerVariants, gridItemVariants, headingVariants } from "@/lib/motion";
+import { useRecentVisits } from "@/hooks/useRecentVisits";
+import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -66,276 +68,6 @@ const fadeUp = {
     transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] },
   },
 } as const;
-
-import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
-import { BarberIcon } from "@/components/icons/category/BarberIcon";
-import { NailsIcon } from "@/components/icons/category/NailsIcon";
-import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
-import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
-import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Airbnb-style category cards (photo bg + Bebas Neue name + badge + price)
-// ─────────────────────────────────────────────────────────────────────────────
-
-const BASE_CATEGORY_CARDS = [
-  {
-    key: "discover",
-    label: "Entdecken",
-    badge: "Inspiration",
-    area: "Discovery Feed",
-    price: null as string | null,
-    Icon: Compass,
-    gradient: "135deg, #6BA3C8 0%, #4A1E3C 100%",
-    imgSrc: null as string | null,
-  },
-  {
-    key: "coiffeur",
-    label: "Coiffeur",
-    badge: "Beliebt",
-    area: "Basel · 4051",
-    price: "$$",
-    Icon: CoiffeurIcon as React.ElementType,
-    gradient: "160deg, #C85A42 0%, #1A1209 100%",
-    imgSrc: "/images/categories/coiffeur.jpg",
-  },
-  {
-    key: "nails",
-    label: "Nägel",
-    badge: "Trending",
-    area: "Basel · 4051",
-    price: "$",
-    Icon: NailsIcon as React.ElementType,
-    gradient: "160deg, #C4910A 0%, #2A1A00 100%",
-    imgSrc: "/images/categories/nails.jpg",
-  },
-  {
-    key: "barbershop",
-    label: "Barbershop",
-    badge: "Gefragt",
-    area: "Basel · 4053",
-    price: "$",
-    Icon: BarberIcon as React.ElementType,
-    gradient: "160deg, #3A1630 0%, #1A1209 100%",
-    imgSrc: "/images/categories/barbershop.jpg",
-  },
-  {
-    key: "makeup",
-    label: "Makeup",
-    badge: "Beliebt",
-    area: "Basel · 4051",
-    price: "$$",
-    Icon: MakeupIcon as React.ElementType,
-    gradient: "160deg, #B8720A 0%, #1A1209 100%",
-    imgSrc: null,
-  },
-  {
-    key: "waxing",
-    label: "Waxing",
-    badge: "Schnell",
-    area: "Basel · 4058",
-    price: "$$",
-    Icon: WaxingIcon as React.ElementType,
-    gradient: "160deg, #5A8A66 0%, #1A1209 100%",
-    imgSrc: null,
-  },
-];
-
-// ─────────────────────────────────────────────────────────────────────────────
-// AirbnbCategoryCard — full-bleed photo card with gradient fallback
-// ─────────────────────────────────────────────────────────────────────────────
-
-type AirbnbCategoryCardProps = {
-  catKey: string;
-  label: string;
-  href: string;
-  badge: string;
-  area: string;
-  price: string | null;
-  Icon: React.ElementType;
-  gradient: string;
-  imgSrc: string | null;
-  animationIndex: number;
-  isRecent: boolean;
-};
-
-function AirbnbCategoryCard({
-  catKey, label, href, badge, area, price, Icon, gradient, imgSrc, animationIndex, isRecent,
-}: AirbnbCategoryCardProps) {
-  const [imgLoaded, setImgLoaded] = useState(false);
-  const [imgError, setImgError] = useState(false);
-
-  const hasPhoto = !!imgSrc && !imgError;
-
-  const handleClick = () => {
-    if (catKey !== "discover") {
-      try { localStorage.setItem("solen_recent_category", catKey); } catch {}
-    }
-  };
-
-  return (
-    <motion.div
-      variants={categoryItemVariants}
-      custom={animationIndex}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      style={{ flexShrink: 0, scrollSnapAlign: "start" }}
-    >
-      <Link
-        href={href}
-        onClick={handleClick}
-        aria-label={label}
-        style={{ display: "block", textDecoration: "none" }}
-        className="active:scale-[0.97] transition-transform duration-[120ms] ease-out"
-      >
-        <div
-          style={{
-            position: "relative",
-            width: "155px",
-            height: "200px",
-            borderRadius: "16px",
-            overflow: "hidden",
-          }}
-        >
-          {/* Gradient base */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: `linear-gradient(${gradient})`,
-            }}
-          />
-
-          {/* Photo (fades in over gradient) */}
-          {hasPhoto && (
-            <img
-              src={imgSrc!}
-              alt={label}
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                opacity: imgLoaded ? 1 : 0,
-                transition: "opacity 400ms ease",
-              }}
-              onLoad={() => setImgLoaded(true)}
-              onError={() => setImgError(true)}
-              loading={animationIndex < 2 ? "eager" : "lazy"}
-            />
-          )}
-
-          {/* Icon (shows when no photo or photo loading) */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: hasPhoto && imgLoaded ? 0 : 0.28,
-              transition: "opacity 400ms ease",
-              pointerEvents: "none",
-            }}
-          >
-            <Icon size={52} color="#FFFFFF" />
-          </div>
-
-          {/* Bottom gradient for text legibility */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.22) 55%, rgba(0,0,0,0) 100%)",
-              pointerEvents: "none",
-            }}
-          />
-
-          {/* Badge — top left */}
-          <div
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              background: "rgba(255,255,255,0.90)",
-              backdropFilter: "blur(6px)",
-              borderRadius: "9999px",
-              padding: "3px 9px",
-              fontSize: "9px",
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              color: "#1A1209",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
-            {badge}
-          </div>
-
-          {/* Recently visited dot — top right */}
-          {isRecent && (
-            <div
-              style={{
-                position: "absolute",
-                top: 12,
-                right: 12,
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "#E8624A",
-                boxShadow: "0 0 0 2px rgba(255,255,255,0.8)",
-              }}
-            />
-          )}
-
-          {/* Bottom info */}
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "10px 12px 12px" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "21px",
-                color: "#FFFFFF",
-                margin: 0,
-                lineHeight: 0.95,
-                letterSpacing: "0.02em",
-              }}
-            >
-              {label.toUpperCase()}
-            </p>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 4 }}>
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "10px",
-                  color: "rgba(255,255,255,0.65)",
-                  margin: 0,
-                }}
-              >
-                {area}
-              </p>
-              {price && (
-                <p
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "11px",
-                    color: "rgba(255,255,255,0.80)",
-                    margin: 0,
-                    fontWeight: 700,
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {price}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component
@@ -394,21 +126,26 @@ export default function HomePage({ initialData }: HomePageProps) {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  // Recently visited category (persisted in localStorage)
-  const [recentCategory, setRecentCategory] = useState<string | null>(null);
-  useEffect(() => {
-    try { setRecentCategory(localStorage.getItem("solen_recent_category")); } catch {}
-  }, []);
+  const { visits, recordVisit } = useRecentVisits();
 
-  // Sort recently visited category to position 1 (after Entdecken)
-  const orderedCategories = useMemo(() => {
-    if (!recentCategory) return BASE_CATEGORY_CARDS;
-    const discover = BASE_CATEGORY_CARDS[0];
-    const recent = BASE_CATEGORY_CARDS.find((c) => c.key === recentCategory);
-    if (!recent || recent.key === "discover") return BASE_CATEGORY_CARDS;
-    const rest = BASE_CATEGORY_CARDS.filter((c) => c.key !== "discover" && c.key !== recentCategory);
-    return [discover, recent, ...rest];
-  }, [recentCategory]);
+  // Sort categories: bubble up topCategory, rest keep original order
+  // Order: Entdecken (trending), then category carousels
+  const orderedSectionKeys = useMemo(() => {
+    const baseKeys = [
+      { key: "coiffeur", label: tNav("coiffeur") as string },
+      { key: "nails", label: tNav("nails") as string },
+      { key: "barbershop", label: tNav("barbershop") as string },
+      { key: "makeup", label: tNav("makeup") as string },
+      { key: "waxing", label: tNav("waxing") as string },
+    ];
+    if (!visits.topCategory) return baseKeys;
+
+    const topKey = baseKeys.find((k) => k.key === visits.topCategory);
+    if (!topKey) return baseKeys;
+
+    const rest = baseKeys.filter((k) => k.key !== visits.topCategory);
+    return [topKey, ...rest];
+  }, [visits.topCategory, tNav]);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [sections, setSections] = useState<Record<string, boolean>>(
@@ -526,18 +263,37 @@ export default function HomePage({ initialData }: HomePageProps) {
         className="animate-in pt-6"
         style={{ animationDelay: "120ms" }}
       >
-        {[
-          { key: "coiffeur",   label: tNav("coiffeur")   as string },
-          { key: "nails",      label: tNav("nails")      as string },
-          { key: "barbershop", label: tNav("barbershop") as string },
-          { key: "makeup",     label: tNav("makeup")     as string },
-          { key: "waxing",     label: tNav("waxing")     as string },
-        ].map(({ key, label }) => {
-          const catSalons = categorySalons[key] ?? [];
+        {/* Entdecken — trending salons across all categories */}
+        {trendingSalons.length > 0 && (
+          <CityCarouselSection
+            title={t("featured.entdecken")}
+            viewAllHref={`/${locale}/discover`}
+            viewAllLabel={t("featured.viewAll")}
+            salons={trendingSalons}
+            locale={locale}
+            favoriteIds={favoriteIds}
+            onFavoriteToggle={handleFavoriteToggle}
+          />
+        )}
+
+        {orderedSectionKeys.map(({ key, label }) => {
+          let catSalons = categorySalons[key] ?? [];
           if (catSalons.length === 0) return null;
+          
+          // Bubble up last visited salon to first position
+          if (key === visits.topCategory && visits.lastVisitedSalonByCategory[key]) {
+            const lastVisitedId = visits.lastVisitedSalonByCategory[key];
+            const lastVisitedIndex = catSalons.findIndex(s => s.id === lastVisitedId);
+            if (lastVisitedIndex > 0) {
+              const lastVisited = catSalons[lastVisitedIndex];
+              const others = catSalons.filter(s => s.id !== lastVisitedId);
+              catSalons = [lastVisited, ...others];
+            }
+          }
+          
           const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
           const handleVisit = () => {
-            try { localStorage.setItem("solen_recent_category", key); } catch {}
+            recordVisit(key);
           };
           return (
             <CityCarouselSection
