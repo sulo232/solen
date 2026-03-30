@@ -31,6 +31,7 @@
     "menuClose": "Menü schliessen",
     "categories": "Kategorien",
     "search": "Suchen",
+    "searchCompact": "Was · Wo · Wann",
     "mobileNavigation": "Navigation",
     "loginToSave": "Melde dich an, um Salons zu speichern",
     "loginToProfile": "Melde dich an, um dein Profil zu sehen",
@@ -146,6 +147,12 @@
       "quartiers": "Entdecke dein Quartier",
       "quartiers_label": "DEIN QUARTIER",
       "quartiers_all": "Alle ansehen →"
+    },
+    "heroCarousel": {
+      "label": "Beliebt in deiner Nähe",
+      "empty": "Bald verfügbar in deiner Stadt",
+      "newBadge": "Neu",
+      "fromPrice": "Ab CHF {amount}"
     },
     "search": {
       "placeholder": "Suche Salon in Basel...",

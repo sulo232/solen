@@ -31,6 +31,7 @@
     "menuClose": "Close menu",
     "categories": "Categories",
     "search": "Search",
+    "searchCompact": "What · Where · When",
     "mobileNavigation": "Navigation",
     "loginToSave": "Sign in to save salons",
     "loginToProfile": "Sign in to view your profile",
@@ -146,6 +147,12 @@
       "quartiers": "Discover your city",
       "quartiers_label": "YOUR CITY",
       "quartiers_all": "View all →"
+    },
+    "heroCarousel": {
+      "label": "Popular near you",
+      "empty": "Coming soon in your city",
+      "newBadge": "New",
+      "fromPrice": "From CHF {amount}"
     },
     "search": {
       "placeholder": "Search salons in Basel...",

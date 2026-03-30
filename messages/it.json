@@ -31,6 +31,7 @@
     "menuClose": "Chiudi il menu",
     "categories": "Categorie",
     "search": "Cerca",
+    "searchCompact": "Cosa · Dove · Quando",
     "mobileNavigation": "Navigazione",
     "loginToSave": "Accedi per salvare i saloni",
     "loginToProfile": "Accedi per vedere il tuo profilo",
@@ -146,6 +147,12 @@
       "quartiers": "Scopri la tua città",
       "quartiers_label": "LA TUA CITTÀ",
       "quartiers_all": "Vedi tutto →"
+    },
+    "heroCarousel": {
+      "label": "Popolari vicino a te",
+      "empty": "Prossimamente nella tua città",
+      "newBadge": "Nuovo",
+      "fromPrice": "Da CHF {amount}"
     },
     "search": {
       "placeholder": "Cerca un salone a Basilea...",

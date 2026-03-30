@@ -31,6 +31,7 @@
     "menuClose": "Fermer le menu",
     "categories": "Catégories",
     "search": "Rechercher",
+    "searchCompact": "Quoi · Où · Quand",
     "mobileNavigation": "Navigation",
     "loginToSave": "Connecte-toi pour enregistrer des salons",
     "loginToProfile": "Connecte-toi pour voir ton profil",
@@ -146,6 +147,12 @@
       "quartiers": "Découvrez votre ville",
       "quartiers_label": "VOTRE VILLE",
       "quartiers_all": "Voir tout →"
+    },
+    "heroCarousel": {
+      "label": "Populaire près de chez vous",
+      "empty": "Bientôt disponible dans votre ville",
+      "newBadge": "Nouveau",
+      "fromPrice": "Dès CHF {amount}"
     },
     "search": {
       "placeholder": "Rechercher un salon à Bâle...",
