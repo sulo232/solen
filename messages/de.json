@@ -120,7 +120,8 @@
       "headlinePart4": "Nie mehr.",
       "feature1": "Keine monatlichen Gebühren",
       "feature2": "Live in 24 Stunden",
-      "feature3": "In 5 Minuten online"
+      "feature3": "In 5 Minuten online",
+      "teaserPrompt": "Du bist Salon-Inhaber?"
     },
     "trust": {
       "securePayment": "Sichere Zahlung — Stripe verschlüsselt",

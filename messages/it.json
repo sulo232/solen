@@ -120,7 +120,8 @@
       "headlinePart4": "Mai più.",
       "feature1": "Nessuna tariffa mensile",
       "feature2": "Online in 24 ore",
-      "feature3": "Online in 5 minuti"
+      "feature3": "Online in 5 minuti",
+      "teaserPrompt": "Sei un proprietario di salone?"
     },
     "trust": {
       "securePayment": "Pagamento sicuro — crittografato Stripe",

@@ -120,7 +120,8 @@
       "headlinePart4": "Plus jamais.",
       "feature1": "Pas de frais mensuels",
       "feature2": "En ligne en 24h",
-      "feature3": "En ligne en 5 minutes"
+      "feature3": "En ligne en 5 minutes",
+      "teaserPrompt": "Vous êtes propriétaire de salon?"
     },
     "trust": {
       "securePayment": "Paiement sécurisé — chiffrement Stripe",

@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import {
   Scissors,
   RefreshCw,
-  Check,
   MapPin,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
@@ -335,35 +334,29 @@ export default function HomePage({ initialData }: HomePageProps) {
             </div>
           </motion.div>
 
-          {/* Unified squircle category row — all viewports */}
+          {/* Unified category row — all viewports */}
           <motion.div
-            className="flex overflow-x-auto scrollbar-hide -mx-4 px-4 gap-5 pb-1"
+            className="flex overflow-x-auto scrollbar-hide -mx-4 px-4 gap-6 pb-1"
             variants={categoryContainerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {CATEGORIES.map(({ key, label, Icon }, i) => {
-              const isEnabled = key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled;
-              return (
+            {CATEGORIES
+              .filter(({ key }) => key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled)
+              .map(({ key, label, Icon }, i) => (
                 <motion.div key={key} variants={categoryItemVariants} custom={i} className="flex-shrink-0">
                   <Link
-                    href={isEnabled ? (persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`) : '#'}
-                    aria-disabled={!isEnabled}
-                    className="flex flex-col items-center gap-2 w-[68px]"
+                    href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
+                    className="flex flex-col items-center gap-2.5 w-[62px] transition-transform duration-200 hover:scale-[1.05] active:scale-[0.97]"
                   >
-                    <div
-                      className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-[#F0EDE8] dark:bg-white/[0.06] ${isEnabled ? 'transition-transform duration-200 hover:scale-[1.05] active:scale-[0.97]' : 'opacity-40'}`}
-                    >
-                      <Icon className={`w-6 h-6 ${isEnabled ? 'text-s-coral' : 'text-s-ink/30'}`} animate={isEnabled} />
-                    </div>
-                    <span className={`font-body text-[11px] font-medium text-center leading-tight whitespace-nowrap ${isEnabled ? 'text-s-ink dark:text-s-dm-text' : 'text-s-ink/35'}`}>
+                    <Icon className="w-7 h-7 text-s-coral" animate />
+                    <span className="font-body text-[11px] font-medium text-center leading-tight whitespace-nowrap text-s-ink dark:text-s-dm-text">
                       {label}
                     </span>
                   </Link>
                 </motion.div>
-              );
-            })}
+              ))}
           </motion.div>
         </div>
       </section>
@@ -474,7 +467,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             </h2>
           </div>
           <Link href={`/${locale}/discover`}
-            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-white bg-s-ink dark:bg-s-dm-raised px-6 py-3 rounded-pill hover:brightness-[1.08] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0">
+            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-white bg-s-ink dark:bg-s-dm-raised px-6 py-3 rounded-pill hover:brightness-[1.08] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0 self-start">
             {t("discover.catalogCta")} →
           </Link>
         </div>
@@ -684,48 +677,20 @@ export default function HomePage({ initialData }: HomePageProps) {
 
 
 
-      {/* ── Partner Banner ─────────────────────────────────────────────────── */}
-      {sections.partner_cta && (
-        <section className="py-10 md:py-14 px-4 bg-s-ink dark:bg-s-dm-bg border-t-2 border-s-coral/20 mt-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 py-2">
-              <div className="max-w-sm">
-                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-3">
-                  {t("partner.eyebrow") || "Für Salons"}
-                </span>
-                <h2
-                  className="font-display uppercase leading-[0.88] text-white"
-                  style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
-                >
-                  <span className="text-s-coral">{t("partner.headlinePart1")}</span>{" "}
-                  {t("partner.headlinePart2")}<br />
-                  {t("partner.headlinePart3")}<br />
-                  {t("partner.headlinePart4")}
-                </h2>
-                <ul className="mt-5 space-y-2">
-                  {[
-                    t("partner.feature1"),
-                    t("partner.feature2"),
-                    t("partner.feature3"),
-                  ].map((feat) => (
-                    <li key={feat} className="flex items-center gap-2 text-sm font-body text-white/65">
-                      <Check size={14} className="text-s-coral shrink-0" aria-hidden="true" />
-                      {feat}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Link
-                href={`/${locale}/partner`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.05em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0 shadow-coral-glow"
-                aria-label={t("partner.cta")}
-              >
-                {t("partner.cta")} →
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ── Partner Teaser (slim) ────────────────────────────────────────── */}
+      <section className="py-8 px-4 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-sm font-body text-s-ink/50 dark:text-s-dm-text/50">
+            {t("partner.teaserPrompt")}{" "}
+            <Link
+              href={`/${locale}/partner`}
+              className="font-heading font-bold text-s-coral hover:brightness-[1.06] transition-[filter] duration-150"
+            >
+              {t("partner.cta")} →
+            </Link>
+          </p>
+        </div>
+      </section>
 
 
       {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}

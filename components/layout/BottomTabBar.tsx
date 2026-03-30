@@ -68,7 +68,7 @@ export default function BottomTabBar() {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label={t("mobileNavigation") ?? "Navigation"}
       >
-        <div className="flex items-stretch h-[58px]">
+        <div className="flex items-stretch h-[56px]">
           {TABS.map(({ key, href, Icon, requiresAuth }) => {
             const fullHref = `/${locale}${href}`;
             const isActive = pathname === fullHref || pathname.startsWith(fullHref + "/");

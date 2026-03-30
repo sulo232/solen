@@ -5,11 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut,
-  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles, Search,
+  Menu, X, User, Compass, CalendarDays, Heart, LogOut, Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 import CategoryStickyRow from "@/components/layout/CategoryStickyRow";
@@ -37,15 +35,6 @@ const NAV_LINKS = [
   { key: "last_minute", href: "/angebote", Icon: CalendarDays },
 ];
 
-// Category icons for sub-site indicator
-const CATEGORY_ICONS: Record<string, { icon: typeof Scissors; label: string }> = {
-  coiffeur: { icon: Scissors, label: "Coiffeur" },
-  barbershop: { icon: ScissorsLineDashed, label: "Barbershop" },
-  nails: { icon: Paintbrush, label: "Nails" },
-  spa: { icon: Droplets, label: "Spa" },
-  makeup: { icon: Palette, label: "Makeup" },
-  waxing: { icon: Sparkles, label: "Waxing" },
-};
 
 export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const t = useTranslations("navigation") as any;
@@ -119,7 +108,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           "flex items-center justify-between rounded-full transition-[max-width,padding,min-height,background-color,border-color,box-shadow] duration-300 ease-out w-full",
           scrolled
             ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg"
-            : "mt-3 max-w-5xl min-h-[60px] py-2.5 px-5 sm:px-8 glass-frost shadow-warm-sm"
+            : "mt-3 max-w-5xl min-h-[56px] py-2.5 px-5 sm:px-8 glass-frost shadow-warm-sm"
         )}>
           {/* Logo */}
           <div className="flex items-center shrink-0">
@@ -192,20 +181,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
             {/* Show only for authenticated users */}
             {!!isLoggedIn && (
-              <>
-                <ThemeToggle />
-
-                {/* Notifications Bell */}
-                <NotificationBell userId={userId} />
-
-                {/* Messages with unread dot */}
-                <Link href={`/${locale}/account/messages`} className="relative p-1.5 min-h-12 min-w-12 flex items-center justify-center rounded-full hover:bg-s-ink/5 dark:hover:bg-white/5 transition-colors" id="tour-messages" aria-label={t("messages")}>
-                  <MessageCircle className="w-5 h-5 text-s-ink/70 dark:text-s-dm-text/70" />
-                  {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-s-coral" />
-                  )}
-                </Link>
-              </>
+              <NotificationBell userId={userId} />
             )}
 
             {/* Mobile hamburger — hidden on all sizes (BottomTabBar handles mobile nav) */}

@@ -120,7 +120,8 @@
       "headlinePart4": "Never again.",
       "feature1": "No monthly fees",
       "feature2": "Live in 24 hours",
-      "feature3": "Online in 5 minutes"
+      "feature3": "Online in 5 minutes",
+      "teaserPrompt": "Are you a salon owner?"
     },
     "trust": {
       "securePayment": "Secure payment — Stripe encrypted",
