@@ -39,7 +39,7 @@ export default async function LocaleLayout({
           </a>
           <Header locale={locale} />
           <CompareProvider>
-            <main id="main-content" tabIndex={-1} className="pb-[calc(58px+env(safe-area-inset-bottom))] md:pb-0">
+            <main id="main-content" tabIndex={-1} className="pb-[calc(58px+env(safe-area-inset-bottom))] md:pb-0 isolate">
               <Breadcrumb />
               {children}
             </main>
