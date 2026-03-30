@@ -570,14 +570,14 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                       className="shrink-0 flex items-center justify-center"
                                       style={{ width: 40, height: 40, borderRadius: 12, background: "#F5F0EB" }}
                                     >
-                                      <cat.Icon width={20} height={20} style={{ color: "#E8735A" }} />
+                                      <cat.Icon width={20} height={20} className="text-s-coral" />
                                     </div>
                                     {/* Text */}
                                     <div className="flex-1 min-w-0">
-                                      <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "15px", color: "#1A1A1A", margin: 0, lineHeight: 1.2 }}>
+                                      <p className="font-heading font-bold text-[15px] text-s-ink dark:text-s-dm-text leading-tight">
                                         {tNav(cat.key as Parameters<typeof tNav>[0])}
                                       </p>
-                                      <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#8A8178", margin: "2px 0 0", lineHeight: 1.2 }} className="truncate">
+                                      <p className="font-body text-[13px] text-s-ink/50 dark:text-s-dm-text/50 leading-tight mt-0.5 truncate">
                                         {getCatSub(cat)}
                                       </p>
                                     </div>
