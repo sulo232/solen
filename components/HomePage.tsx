@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { usePostHog } from "posthog-js/react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
@@ -217,6 +217,26 @@ export default function HomePage({ initialData }: HomePageProps) {
     });
   }, []);
 
+  // ── Category grid visibility observer → drives header sticky row ──────
+  const categoryRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = categoryRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        window.dispatchEvent(
+          new CustomEvent("categoryGridVisibility", {
+            detail: { visible: entry.isIntersecting },
+          })
+        );
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
@@ -283,7 +303,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── Category Grid ──────────────────────────────────────────────────── */}
-      <section id="tour-services" className="py-10 md:py-14">
+      <section id="tour-services" ref={categoryRef} className="py-10 md:py-14">
         <div className="max-w-5xl mx-auto px-4">
           <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
             <div className="mb-6">

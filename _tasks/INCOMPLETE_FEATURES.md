@@ -360,5 +360,14 @@ case "payment_intent.succeeded": {
 
 ---
 
+## Category Sticky Row — Deferred Items (2026-03-30)
+
+- **Snap scrolling on mobile** — `scroll-snap-type: x mandatory` for category row items on small screens. Deferred.
+- **Category row on search results page** — should the row appear when browsing `/search` with a category param? Currently only appears on homepage (via observer) and category pages. Deferred.
+- **Keyboard navigation** — left/right arrow key navigation within the sticky row. Deferred.
+- **Search page integration** — when navigating to `/search?category=nails`, the sticky row should highlight "Nails". Currently only URL path-based detection. Deferred.
+
+---
+
 **Last Updated:** 2026-03-30
 **Maintained By:** All AI agents (Dev 1, Dev 2, Dev 3, Bug Agent)

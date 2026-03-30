@@ -202,6 +202,7 @@ solen/
 - **Beauty Icons**: Custom SVG icon library in `components/ui/beauty-icons.tsx` — 20+ icons for hair/nail/skin/style. NOT lucide.
 - **Search Criteria Chips**: `<SearchCriteriaChips>` in `components/search/SearchCriteriaChips.tsx` — reads URL params (`category`, `q`, `date`, `time`) and renders removable pill chips. Used in `SplitView.tsx` and `CategoryPage.tsx` above `FilterBar`. Zone 3 only (no glass, no animations).
 - **Inline Calendar**: `<SolenDatePicker inline>` renders an inline calendar without popover. Used inside the GuidedSearch bottom sheet (Step 3 / Wann). The `inline` prop skips the `<Popover>` and renders the `<Calendar>` directly.
+- **CategoryStickyRow**: `<CategoryStickyRow>` in `components/layout/CategoryStickyRow.tsx` — Airbnb-style category icon row that appears in the header when the homepage category grid scrolls out of view. Listens for `CustomEvent("categoryGridVisibility")` dispatched by `HomePage.tsx` IntersectionObserver. On category pages (`/coiffeur`, `/nails`, etc.) it's always visible. Zone 1 only (glass + animation allowed).
 
 ### 3.4 Design System (Legacy — ARCHIVED, DO NOT USE)
 

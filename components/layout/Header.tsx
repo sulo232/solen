@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import CitySelector from "@/components/ui/CitySelector";
+import CategoryStickyRow from "@/components/layout/CategoryStickyRow";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
 import { BarberIcon } from "@/components/icons/category/BarberIcon";
@@ -313,6 +314,9 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           )}
         </div>
       </div>
+
+      {/* Airbnb-style inline category row — appears when homepage grid scrolls out of view */}
+      <CategoryStickyRow locale={locale} />
 
     </header>
   );
