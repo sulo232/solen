@@ -24,6 +24,7 @@ import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
 import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
+import FeaturedSalonCarousel from "@/components/ui/FeaturedSalonCarousel";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { CLIENT_FEATURE_FLAGS } from "@/lib/feature-flags";
 import { getPersistedCity } from "@/lib/city-cookie";
@@ -243,7 +244,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             {/* Greeting / headline */}
             <motion.h1 variants={fadeUp}
               className="font-display uppercase text-s-ink dark:text-s-dm-text"
-              style={{ fontSize: "clamp(32px, 5vw, 60px)", letterSpacing: "0.01em", lineHeight: "0.92" }}>
+              style={{ fontSize: "clamp(42px, 5vw, 60px)", letterSpacing: "0.01em", lineHeight: "0.92" }}>
               {userName ? (
                 <>{t("hero.hello")} <span className="text-s-coral">{userName}</span></>
               ) : (
@@ -252,8 +253,8 @@ export default function HomePage({ initialData }: HomePageProps) {
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mt-3 font-body font-medium text-s-ink/50 dark:text-s-dm-text/50"
-              style={{ fontSize: "18px" }}
+              className="mt-3 font-body font-normal text-s-ink/50 dark:text-s-dm-text/50"
+              style={{ fontSize: "17px" }}
             >
               {userName && nextBooking
                 ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
@@ -285,6 +286,9 @@ export default function HomePage({ initialData }: HomePageProps) {
             ))}
           </div>
 
+          {/* Hero carousel — featured salons */}
+          <FeaturedSalonCarousel salons={salons} locale={locale} />
+
           {/* Small text links — Buchungen only when logged in */}
           {userName && (
             <motion.div variants={fadeUp} initial="hidden" animate="visible"
@@ -303,7 +307,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <div className="max-w-5xl mx-auto px-4">
           <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
             <div className="mb-6">
-              <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+              <span className="block font-body font-semibold text-[12px] uppercase mb-1" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
                 {t("categories.label")}
               </span>
               <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
@@ -373,7 +377,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
                 <div>
-                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                  <span className="block font-body font-semibold text-[12px] uppercase mb-1" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
                     {t("featured.eyebrow")}
                   </span>
                   <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
@@ -439,7 +443,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-2">{t("discover.eyebrow")}</span>
+            <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>{t("discover.eyebrow")}</span>
             <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em", lineHeight: "1.0" }}>
               {t("discover.title")}
             </h2>
@@ -460,7 +464,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <div className="max-w-5xl mx-auto px-4">
             <div className="flex items-end justify-between mb-7 flex-wrap gap-3">
               <div>
-                <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] mb-2 text-s-amber">
+                <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
                   {t("lastMinute.eyebrow")}
                 </span>
                 <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
@@ -491,7 +495,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
                 <div>
-                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                  <span className="block font-body font-semibold text-[12px] uppercase mb-1" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
                     {t("trending.eyebrow")}
                   </span>
                   <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
@@ -529,7 +533,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
                 <div>
-                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                  <span className="block font-body font-semibold text-[12px] uppercase mb-1" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
                     {t("nearby.eyebrow")}
                   </span>
                   <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
@@ -615,7 +619,7 @@ export default function HomePage({ initialData }: HomePageProps) {
             <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
               <div className="flex items-end justify-between mb-6">
                 <div>
-                  <span className="block font-heading font-bold text-[11px] uppercase tracking-[.20em] text-s-amber mb-1">
+                  <span className="block font-body font-semibold text-[12px] uppercase mb-1" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
                     {t("newSalons.eyebrow")}
                   </span>
                   <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text"
