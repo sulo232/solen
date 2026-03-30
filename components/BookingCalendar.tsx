@@ -515,12 +515,16 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
     setConfirming(true);
     try {
       const endpoint = recurring ? "/api/bookings/recurring" : "/api/bookings";
+      const storedReferralCode = typeof window !== "undefined"
+        ? (localStorage.getItem("solen_referral_code") ?? undefined)
+        : undefined;
       const body: Record<string, unknown> = {
         slot_id: selectedSlot.id,
         service_id: serviceId ?? selectedSlot.service_id,
         staff_member_id: selectedStaff !== "any" ? selectedStaff : selectedSlot.staff_member_id,
         is_first_visit: isFirstVisit,
         acquisition_source: acquisitionSource || undefined,
+        ...(storedReferralCode ? { referral_code: storedReferralCode } : {}),
         ...(guestInfo ? { guest_name: guestInfo.name, guest_phone: guestInfo.phone, guest_email: guestInfo.email } : {}),
       };
       if (recurring) body.frequency = recurringFreq;
@@ -530,6 +534,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
       // Regular bookings: data.data.id; recurring bookings: data.data.first_booking.id
       setConfirmedBookingId(data.data?.id ?? data.data?.first_booking?.id ?? null);
       setConfirmed(true);
+      if (storedReferralCode) localStorage.removeItem("solen_referral_code");
     } catch (e) {
       // Payment succeeded but booking creation failed — user has been charged.
       // Show a clear message so they can contact support rather than retry the payment.
