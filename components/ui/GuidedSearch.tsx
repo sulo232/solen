@@ -14,12 +14,12 @@ import {
 import { CITIES, CITY_SLUGS, type CitySlug } from "@/lib/cities";
 import { getPersistedCity } from "@/lib/city-cookie";
 import type { SalonCategory } from "@/lib/types";
-import CoiffeurIcon from "@/components/icons/category/CoiffeurIcon";
-import BarberIcon from "@/components/icons/category/BarberIcon";
-import NailsIcon from "@/components/icons/category/NailsIcon";
-import SpaIcon from "@/components/icons/category/SpaIcon";
-import MakeupIcon from "@/components/icons/category/MakeupIcon";
-import WaxingIcon from "@/components/icons/category/WaxingIcon";
+import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
+import { BarberIcon } from "@/components/icons/category/BarberIcon";
+import { NailsIcon } from "@/components/icons/category/NailsIcon";
+import { SpaIcon } from "@/components/icons/category/SpaIcon";
+import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
+import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & static data
@@ -70,7 +70,7 @@ export default function GuidedSearch() {
   const [inputFocused,  setInputFocused]  = useState(false);
 
   const inputRef     = useRef<HTMLInputElement>(null);
-  const cityTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const cityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Pre-fill city from localStorage → cookie → default Basel
   useEffect(() => {
