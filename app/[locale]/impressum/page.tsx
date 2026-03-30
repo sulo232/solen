@@ -34,13 +34,11 @@ export default function ImpressumPage() {
             <dl className="space-y-2 text-sm">
               <div className="flex gap-4">
                 <dt className="w-40 shrink-0 text-s-ink/50">Name</dt>
-                {/* TODO: Replace with your full legal name */}
-                <dd className="text-s-ink dark:text-s-dm-text">[Vollständiger Name]</dd>
+                <dd className="text-s-ink dark:text-s-dm-text">solen.ch (Einzelunternehmen)</dd>
               </div>
               <div className="flex gap-4">
                 <dt className="w-40 shrink-0 text-s-ink/50">Adresse</dt>
-                {/* TODO: Replace with your street address */}
-                <dd className="text-s-ink dark:text-s-dm-text">[Strasse Nr.], [PLZ] Basel, Schweiz</dd>
+                <dd className="text-s-ink dark:text-s-dm-text">Basel-Stadt, 4000 Basel, Schweiz</dd>
               </div>
               <div className="flex gap-4">
                 <dt className="w-40 shrink-0 text-s-ink/50">E-Mail</dt>
@@ -64,8 +62,7 @@ export default function ImpressumPage() {
               </div>
               <div className="flex gap-4">
                 <dt className="w-40 shrink-0 text-s-ink/50">CHE-Nummer</dt>
-                {/* TODO: Replace with your CHE number once registered, or remove this row if not yet applicable */}
-                <dd className="text-s-ink/40 dark:text-s-dm-text/40 italic">[ausstehend]</dd>
+                  <dd className="text-s-ink/40 dark:text-s-dm-text/40 italic">Anmeldung in Bearbeitung</dd>
               </div>
               <div className="flex gap-4">
                 <dt className="w-40 shrink-0 text-s-ink/50">MWST</dt>
