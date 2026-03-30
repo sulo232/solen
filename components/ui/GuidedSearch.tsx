@@ -416,40 +416,51 @@ export default function GuidedSearch() {
                 boxShadow: "0 -4px 32px rgba(0,0,0,.12)",
               }}
             >
-              {/* Drag handle */}
-              <div className="flex justify-center pt-3 pb-0 shrink-0">
-                <div className="w-9 h-1 rounded-full bg-s-ink/15 dark:bg-white/15" aria-hidden="true" />
-              </div>
-
-              {/* Step tab bar */}
-              <div className="flex items-stretch border-b border-s-ink/[0.08] dark:border-white/[0.08] shrink-0 mt-1">
-                {([
-                  { s: 1 as const, label: t("segWas" as Parameters<typeof t>[0]),  value: wasLabel ?? null },
-                  { s: 2 as const, label: t("segWo" as Parameters<typeof t>[0]),   value: city ? getCityLabel(city) : null },
-                  { s: 3 as const, label: t("segWann" as Parameters<typeof t>[0]), value: (wannLabel && wannLabel !== wannDefault) ? wannLabel : null },
-                ]).map(({ s, label, value }) => (
+              {/* Sticky sheet header — title + close */}
+              <div
+                className="shrink-0 sticky top-0 z-[1] bg-white dark:bg-s-dm-surface"
+                style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}
+              >
+                <div className="flex items-center justify-between px-6 pt-4 pb-3">
+                  <span className="font-heading font-bold text-[20px] text-s-ink dark:text-s-dm-text leading-tight">
+                    {t("steps.was.title" as Parameters<typeof t>[0])}
+                  </span>
                   <button
-                    key={s}
-                    onClick={() => setStep(s)}
-                    className={cn(
-                      "flex-1 flex flex-col items-center justify-center gap-0.5 py-3 relative transition-colors",
-                      step === s ? "text-s-coral" : value ? "text-s-ink/70 dark:text-s-dm-text/70" : "text-s-ink/35 dark:text-s-dm-text/35"
-                    )}
+                    onClick={close}
+                    aria-label={t("reset" as Parameters<typeof t>[0])}
+                    className="flex items-center justify-center rounded-full hover:bg-s-ink/[0.05] transition-colors"
+                    style={{ width: 44, height: 44 }}
                   >
-                    <span className="text-[10px] font-heading font-semibold uppercase tracking-wider leading-none">
-                      {label}
-                    </span>
-                    <span className="text-xs font-body leading-none truncate max-w-[80px]">
-                      {value ?? "—"}
-                    </span>
-                    {step === s && (
-                      <motion.div
-                        layoutId="stepTabIndicator"
-                        className="absolute bottom-0 left-3 right-3 h-0.5 bg-s-coral rounded-full"
-                      />
-                    )}
+                    <X size={24} style={{ color: "#8A8178" }} aria-hidden="true" />
                   </button>
-                ))}
+                </div>
+
+                {/* Step indicator pills */}
+                <div className="flex gap-2 px-6 pb-3">
+                  {([
+                    { s: 1 as const, label: t("segWas" as Parameters<typeof t>[0]) },
+                    { s: 2 as const, label: t("segWo" as Parameters<typeof t>[0]) },
+                    { s: 3 as const, label: t("segWann" as Parameters<typeof t>[0]) },
+                  ]).map(({ s, label }) => {
+                    const isActive = s === step;
+                    const isCompleted = s < step;
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => setStep(s)}
+                        className="rounded-pill font-body font-medium text-[12px] transition-all duration-150"
+                        style={{
+                          padding: "4px 12px",
+                          background: isActive ? "#1A1A1A" : isCompleted ? "#E8735A" : "#EDE8E2",
+                          color: isActive ? "#FFFFFF" : isCompleted ? "#FFFFFF" : "#8A8178",
+                        }}
+                        aria-current={isActive ? "step" : undefined}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Scrollable content area */}
@@ -529,10 +540,6 @@ export default function GuidedSearch() {
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-sm font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 mt-3 mb-3">
-                          {t("steps.was.title" as Parameters<typeof t>[0])}
-                        </p>
-
                         {/* Category list OR service drill-down */}
                         {!showServices ? (
                           <>
@@ -605,7 +612,7 @@ export default function GuidedSearch() {
                             {/* Text search input */}
                             <div
                               className="relative flex items-center mb-4"
-                              style={{ border: `1.5px solid ${inputFocused ? "#E8624A" : "rgba(26,18,9,0.12)"}`, borderRadius: "12px" }}
+                              style={{ border: `${inputFocused ? "1.5px" : "1px"} solid ${inputFocused ? "#1A1A1A" : "rgba(0,0,0,0.10)"}`, borderRadius: "12px", transition: "border-color 150ms ease" }}
                             >
                               <Search size={15} className="absolute left-3.5 text-s-ink/35 dark:text-s-dm-text/35 shrink-0 pointer-events-none" aria-hidden="true" />
                               <input
@@ -676,13 +683,14 @@ export default function GuidedSearch() {
                           </div>
                         )}
 
-                        {/* Skip step link */}
-                        <div className="flex justify-center py-3">
+                        {/* All categories CTA — replaces "Überspringen" */}
+                        <div style={{ padding: "16px 0 24px", textAlign: "center" }}>
                           <button
-                            onClick={() => setStep(2)}
-                            className="text-[12px] font-body text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                            onClick={() => { close(); router.push(`/${locale}/search`); }}
+                            className="font-body font-medium text-[14px] hover:brightness-[1.06] transition-[filter] duration-150"
+                            style={{ color: "#E8735A" }}
                           >
-                            {t("skipStep" as Parameters<typeof t>[0])} →
+                            {t("allCategories" as Parameters<typeof t>[0])} →
                           </button>
                         </div>
                       </motion.div>

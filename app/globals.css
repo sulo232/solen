@@ -273,6 +273,12 @@
   }
 }
 
+/* ── Category card skeleton shimmer (2 cycles, then stops) ─────────── */
+@keyframes skeletonShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ── Stamp card animations ─────────────────────────────────────────── */
 @keyframes stampBounce {
   0%   { opacity: 0; transform: translateY(4px); }

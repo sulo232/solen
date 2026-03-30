@@ -13,42 +13,16 @@ interface FeaturedSalonCarouselProps {
 export default function FeaturedSalonCarousel({ salons, locale }: FeaturedSalonCarouselProps) {
   const t = useTranslations("home") as any;
 
-  // Empty state: fewer than 3 salons with photos
   const salonsWithPhotos = salons.filter(
     (s) => !!s.cover_photo_url || (s.gallery_urls && s.gallery_urls.length > 0)
   );
 
-  if (salonsWithPhotos.length < 3) {
-    return (
-      <div
-        className="relative mt-6 mx-0 rounded-card overflow-hidden"
-        style={{ aspectRatio: "16/9" }}
-      >
-        <img
-          src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1200&auto=format&fit=crop"
-          alt=""
-          className="w-full h-full object-cover"
-          loading="eager"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to bottom, transparent 30%, rgba(245,240,235,0.6) 100%)",
-          }}
-          aria-hidden="true"
-        />
-        <p className="absolute bottom-4 left-4 font-body font-medium text-[15px] text-s-ink/70">
-          {t("heroCarousel.empty")}
-        </p>
-      </div>
-    );
-  }
+  // Threshold = 3: all-skeleton or all-real (never mixed)
+  const useReal = salonsWithPhotos.length >= 3;
 
   return (
     <div className="mt-6 -mx-4">
-      {/* Section label */}
+      {/* Section label — always visible */}
       <p
         className="px-4 mb-4 font-body font-semibold text-[12px] uppercase text-s-coral"
         style={{ letterSpacing: "2.5px" }}
@@ -56,20 +30,103 @@ export default function FeaturedSalonCarousel({ salons, locale }: FeaturedSalonC
         {t("heroCarousel.label")}
       </p>
 
-      {/* Horizontal scroll container */}
+      {/* Horizontal scroll container — always renders 4 slots */}
       <div
         className="flex gap-4 overflow-x-auto scrollbar-hide px-4 pb-2 snap-x snap-mandatory"
         style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
       >
-        {salonsWithPhotos.slice(0, 8).map((salon, index) => (
-          <SalonHeroCard key={salon.id} salon={salon} locale={locale} index={index} />
-        ))}
+        {useReal
+          ? salonsWithPhotos.slice(0, 8).map((salon, index) => (
+              <SalonHeroCard key={salon.id} salon={salon} locale={locale} index={index} />
+            ))
+          : Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonSalonCard key={i} index={i} />
+            ))}
       </div>
     </div>
   );
 }
 
-// ── Individual card ────────────────────────────────────────────────────────────
+// ── Skeleton card (A.3) ────────────────────────────────────────────────────────
+
+function SkeletonSalonCard({ index }: { index: number }) {
+  return (
+    <div
+      className="flex-shrink-0 snap-start"
+      aria-hidden="true"
+      style={{
+        width: 260,
+        borderRadius: "16px",
+        overflow: "hidden",
+        background: "#FFFFFF",
+        border: "1px solid rgba(0,0,0,0.06)",
+        boxShadow: "none",
+        pointerEvents: "none",
+      }}
+    >
+      {/* Photo area — 3:2 skeleton */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: 173,
+          borderRadius: "16px 16px 0 0",
+          overflow: "hidden",
+        }}
+      >
+        {/* Base gradient */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(135deg, #EDE8E2 0%, #E3DDD6 100%)",
+          }}
+        />
+        {/* Shimmer — 2 cycles */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(90deg, transparent 0%, rgba(245,240,235,0.7) 40%, transparent 80%)",
+            backgroundSize: "200% 100%",
+            animation: `skeletonShimmer 1.8s ease-in-out ${index === 0 ? "2" : "2"} ${index * 0.15}s`,
+            animationFillMode: "both",
+          }}
+        />
+        {/* "Demnächst" pill */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(8px)",
+            borderRadius: "999px",
+            padding: "4px 12px",
+            fontSize: "11px",
+            fontFamily: "var(--font-body)",
+            fontWeight: 500,
+            color: "#8A8178",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Demnächst
+        </div>
+      </div>
+
+      {/* Content area — placeholder lines */}
+      <div style={{ padding: "12px 16px 16px" }}>
+        <div style={{ width: "65%", height: 14, borderRadius: 6, background: "#EDE8E2" }} />
+        <div style={{ width: "45%", height: 12, borderRadius: 6, background: "#EDE8E2", marginTop: 8 }} />
+        <div style={{ width: "30%", height: 12, borderRadius: 6, background: "#EDE8E2", marginTop: 8 }} />
+      </div>
+    </div>
+  );
+}
+
+// ── Real card ────────────────────────────────────────────────────────────────
 
 interface SalonHeroCardProps {
   salon: SalonCard;

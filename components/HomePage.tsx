@@ -10,6 +10,11 @@ import {
   Scissors,
   RefreshCw,
   MapPin,
+  Paintbrush,
+  Droplets,
+  Sparkles,
+  Flame,
+  ScissorsLineDashed,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -75,18 +80,141 @@ import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Category grid data
+// Category card data (A.2 — photo cards with skeleton-first)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CATEGORIES = [
-  { key: "coiffeur",   label: "Coiffeur",   Icon: CoiffeurIcon },
-  { key: "barbershop", label: "Barber",     Icon: BarberIcon   },
-  { key: "nails",      label: "Nails",      Icon: NailsIcon    },
-  { key: "spa",        label: "Spa",        Icon: SpaIcon      },
-  { key: "makeup",     label: "Makeup",     Icon: MakeupIcon   },
-  { key: "waxing",     label: "Waxing",     Icon: WaxingIcon   },
+  { key: "coiffeur",   label: "Coiffeur", LucideIcon: Scissors          },
+  { key: "barbershop", label: "Barber",   LucideIcon: ScissorsLineDashed },
+  { key: "nails",      label: "Nails",    LucideIcon: Paintbrush         },
+  { key: "spa",        label: "Spa",      LucideIcon: Droplets           },
+  { key: "makeup",     label: "Makeup",   LucideIcon: Sparkles           },
+  { key: "waxing",     label: "Waxing",   LucideIcon: Flame              },
 ] as const;
 
+// Drop a jpg into /public/images/categories/ to upgrade any card instantly
+const CATEGORY_IMAGES: Record<string, string | null> = {
+  coiffeur:   "/images/categories/coiffeur.jpg",
+  barbershop: "/images/categories/barbershop.jpg",
+  nails:      "/images/categories/nails.jpg",
+  spa:        null,
+  makeup:     null,
+  waxing:     null,
+};
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CategoryPhotoCard (A.2 — skeleton-first photo card)
+// ─────────────────────────────────────────────────────────────────────────────
+
+type CategoryPhotoCardProps = {
+  href: string;
+  label: string;
+  LucideIcon: React.ElementType;
+  imgSrc: string | null;
+  count: number;
+  populated: boolean;
+  animationIndex: number;
+};
+
+function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, animationIndex }: CategoryPhotoCardProps) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const showPopulatedState = populated && imgSrc && !imgError;
+
+  return (
+    <motion.div
+      variants={categoryItemVariants}
+      custom={animationIndex}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      style={{ flexShrink: 0, scrollSnapAlign: "start" }}
+    >
+      <Link
+        href={href}
+        style={{
+          display: "block",
+          width: "140px",
+          borderRadius: "14px",
+          overflow: "hidden",
+          background: "#FFFFFF",
+          border: "1px solid rgba(0,0,0,0.06)",
+          boxShadow: "none",
+          textDecoration: "none",
+        }}
+        className="active:scale-[0.97] active:opacity-85 transition-[transform,opacity] duration-[120ms] ease-out"
+        aria-label={label}
+      >
+        {/* Photo area — 4:3 */}
+        <div style={{ position: "relative", width: "140px", height: "105px", borderRadius: "14px 14px 0 0", overflow: "hidden" }}>
+          {/* Skeleton gradient (always behind) */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(135deg, #EDE8E2 0%, #E3DDD6 100%)",
+            }}
+          />
+          {/* Shimmer overlay — 2 cycles then stops */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "linear-gradient(90deg, transparent 0%, rgba(245,240,235,0.7) 40%, transparent 80%)",
+              backgroundSize: "200% 100%",
+              animation: "skeletonShimmer 1.8s ease-in-out 2",
+            }}
+          />
+          {/* Curated/dynamic image */}
+          {showPopulatedState && (
+            <img
+              src={imgSrc!}
+              alt={label}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: imgLoaded ? 1 : 0,
+                transition: "opacity 300ms ease",
+              }}
+              onLoad={() => setImgLoaded(true)}
+              onError={() => setImgError(true)}
+              loading={animationIndex < 2 ? "eager" : "lazy"}
+            />
+          )}
+          {/* Category icon centered */}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: showPopulatedState && imgLoaded ? 0 : 0.6,
+            transition: "opacity 300ms ease",
+          }}>
+            <LucideIcon size={32} strokeWidth={1.5} color="#C4BBB2" />
+          </div>
+        </div>
+
+        {/* Content area */}
+        <div style={{ padding: "10px 12px 12px" }}>
+          <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "14px", color: "#1A1A1A", margin: 0, lineHeight: 1.2 }}>
+            {label}
+          </p>
+          <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: showPopulatedState ? "#8A8178" : "#B5AFA8", margin: "4px 0 0", lineHeight: 1.2 }}>
+            {showPopulatedState
+              ? (count === 1 ? "1 Salon" : `${count} Salons`)
+              : "Bald verfügbar"}
+          </p>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HomePage component
@@ -302,44 +430,46 @@ export default function HomePage({ initialData }: HomePageProps) {
         </div>
       </section>
 
-      {/* ── Category Grid ──────────────────────────────────────────────────── */}
-      <section id="tour-services" ref={categoryRef} className="py-10 md:py-14">
-        <div className="max-w-5xl mx-auto px-4">
-          <motion.div variants={headingVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
-            <div className="mb-6">
-              <span className="block font-body font-semibold text-[12px] uppercase mb-1" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
-                {t("categories.label")}
-              </span>
-              <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3vw, 38px)", letterSpacing: "-0.02em" }}>
-                {t("categories.title")}
-              </h2>
-            </div>
-          </motion.div>
+      {/* ── Category Cards (A.2 — skeleton-first photo cards) ──────────────── */}
+      <section id="tour-services" ref={categoryRef} className="pt-8 pb-6 relative z-[1]">
+        <div className="max-w-5xl mx-auto">
+          <span className="block font-body font-semibold text-[12px] uppercase mb-4 px-6" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
+            {t("categories.label")}
+          </span>
 
-          {/* Unified category row — all viewports */}
-          <motion.div
-            className="flex overflow-x-auto scrollbar-hide -mx-4 px-4 gap-6 pb-1"
-            variants={categoryContainerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+          {/* Horizontal scroll row */}
+          <div
+            className="flex overflow-x-auto gap-[14px] pb-1"
+            style={{
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              padding: "0 24px",
+            }}
           >
             {CATEGORIES
               .filter(({ key }) => key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled)
-              .map(({ key, label, Icon }, i) => (
-                <motion.div key={key} variants={categoryItemVariants} custom={i} className="flex-shrink-0">
-                  <Link
-                    href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-                    className="flex flex-col items-center gap-2.5 w-[62px] transition-transform duration-200 hover:scale-[1.05] active:scale-[0.97]"
-                  >
-                    <Icon className="w-7 h-7 text-s-coral" animate />
-                    <span className="font-body text-[11px] font-medium text-center leading-tight whitespace-nowrap text-s-ink dark:text-s-dm-text">
-                      {label}
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
-          </motion.div>
+              .map(({ key, label, LucideIcon }, i) => {
+                const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
+                const imgSrc = CATEGORY_IMAGES[key];
+                const count = categoryCounts[key] ?? 0;
+                const hasPhoto = !!imgSrc; // file existence checked at runtime via onError
+                const populated = hasPhoto || count > 0;
+
+                return (
+                  <CategoryPhotoCard
+                    key={key}
+                    href={href}
+                    label={label}
+                    LucideIcon={LucideIcon}
+                    imgSrc={imgSrc}
+                    count={count}
+                    populated={populated}
+                    animationIndex={i}
+                  />
+                );
+              })}
+          </div>
         </div>
       </section>
 
@@ -440,7 +570,8 @@ export default function HomePage({ initialData }: HomePageProps) {
       )}
 
       {/* ── Discover Preview (Phase 3 Carousel) ─────────────────────────────────── */}
-      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden">
+      {/* z-[2] + opaque bg blocks any bleed from category icons above (A.5) */}
+      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden relative z-[2]" style={{ background: "#F5F0EB" }}>
         <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>{t("discover.eyebrow")}</span>
