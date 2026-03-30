@@ -18,6 +18,7 @@ import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
 import { type CitySlug, getCityName } from "@/lib/cities";
+import SearchCriteriaChips from "@/components/search/SearchCriteriaChips";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -332,6 +333,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>
+          <SearchCriteriaChips locale={locale} />
           <FilterBar
             pills={pills}
             activeFilters={activeFilters}

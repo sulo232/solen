@@ -2611,7 +2611,15 @@
       "aiSuggestions": "AI Suggestions",
       "didYouMean": "Did you mean",
       "switch": "Switch",
-      "noResults": "No results for \"{query}\""
+      "noResults": "No results for \"{query}\"",
+      "removeFilter": "Remove",
+      "clearAll": "Clear all",
+      "time": {
+        "any": "Any time",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      }
     },
     "priceSlider": {
       "minPrice": "Minimum price",

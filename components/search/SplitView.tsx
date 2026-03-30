@@ -9,6 +9,7 @@ import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
 import { getSearchFilterPills } from "@/lib/search-filter-pills";
 import SearchResultGrid from "@/components/search/SearchResultGrid";
 import MobileViewToggle from "@/components/search/MobileViewToggle";
+import SearchCriteriaChips from "@/components/search/SearchCriteriaChips";
 import QuickPreviewSheet from "@/components/ui/QuickPreviewSheet";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
 
@@ -182,6 +183,7 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>
+          <SearchCriteriaChips locale={locale} />
           <FilterBar
             pills={pills}
             activeFilters={activeFilters}

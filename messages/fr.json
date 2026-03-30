@@ -2588,7 +2588,15 @@
       "aiSuggestions": "Suggestions IA",
       "didYouMean": "Vouliez-vous dire",
       "switch": "Changer",
-      "noResults": "Aucun résultat pour \"{query}\""
+      "noResults": "Aucun résultat pour \"{query}\"",
+      "removeFilter": "Supprimer",
+      "clearAll": "Tout effacer",
+      "time": {
+        "any": "N'importe quand",
+        "morning": "Matin",
+        "afternoon": "Après-midi",
+        "evening": "Soir"
+      }
     },
     "priceSlider": {
       "minPrice": "Prix minimum",

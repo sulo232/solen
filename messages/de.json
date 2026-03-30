@@ -2622,7 +2622,15 @@
       "aiSuggestions": "KI-Vorschläge",
       "didYouMean": "Meintest du",
       "switch": "Wechseln",
-      "noResults": "Keine Ergebnisse für \"{query}\""
+      "noResults": "Keine Ergebnisse für \"{query}\"",
+      "removeFilter": "Entfernen",
+      "clearAll": "Alle löschen",
+      "time": {
+        "any": "Jederzeit",
+        "morning": "Morgens",
+        "afternoon": "Nachmittags",
+        "evening": "Abends"
+      }
     },
     "priceSlider": {
       "minPrice": "Mindestpreis",
