@@ -24,7 +24,7 @@ export default function FeaturedSalonCarousel({ salons, locale }: FeaturedSalonC
     <div className="mt-6 -mx-4">
       {/* Section label — always visible */}
       <p
-        className="px-4 mb-4 font-body font-semibold text-[12px] uppercase text-s-coral"
+        className="px-6 mb-4 font-body font-semibold text-[12px] uppercase text-s-coral"
         style={{ letterSpacing: "2.5px" }}
       >
         {t("heroCarousel.label")}

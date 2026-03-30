@@ -486,7 +486,7 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
                       >
                         <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
                           <div>
-                            <div className="text-[10px] font-heading font-bold uppercase tracking-[.07em] text-s-ink/40 dark:text-s-dm-text/40">
+                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "#8A8178" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
                             </div>
                             <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
@@ -518,7 +518,7 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
                       >
                         <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
                           <div>
-                            <div className="text-[10px] font-heading font-bold uppercase tracking-[.07em] text-s-ink/40 dark:text-s-dm-text/40">
+                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "#8A8178" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
                             </div>
                             <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
@@ -584,7 +584,7 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
                                     key={cat.key}
                                     onClick={() => selectCategory(cat.key)}
                                     aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
-                                    className="w-full flex items-center text-left transition-[background-color] duration-100"
+                                    className="w-full flex items-center text-left transition-[background-color] duration-100 hover:bg-[rgba(0,0,0,0.03)]"
                                     style={{
                                       padding: "14px 24px",
                                       gap: "14px",
