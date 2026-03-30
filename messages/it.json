@@ -208,7 +208,8 @@
       "openWo": "Apri ricerca dove",
       "openWann": "Apri ricerca quando",
       "change": "Cambia",
-      "skipStep": "Salta"
+      "skipStep": "Salta",
+      "orSearch": "o cerca per servizio"
     },
     "discover": {
       "eyebrow": "Esplora",

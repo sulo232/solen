@@ -208,7 +208,8 @@
       "openWo": "Ouvrir recherche où",
       "openWann": "Ouvrir recherche quand",
       "change": "Modifier",
-      "skipStep": "Passer"
+      "skipStep": "Passer",
+      "orSearch": "ou rechercher par service"
     },
     "discover": {
       "eyebrow": "Explorer",

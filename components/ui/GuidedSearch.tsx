@@ -413,101 +413,110 @@ export default function GuidedSearch() {
                         exit={{ opacity: 0, x: -16 }}
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                       >
-                        <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mt-4 mb-3">
+                        <p className="text-sm font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 mt-3 mb-3">
                           {t("steps.was.title" as Parameters<typeof t>[0])}
                         </p>
 
-                        {/* Text search input */}
-                        <div
-                          className="relative flex items-center mb-4"
-                          style={{ border: `1.5px solid ${inputFocused ? "#E8624A" : "rgba(26,18,9,0.12)"}`, borderRadius: "12px" }}
-                        >
-                          <Search size={15} className="absolute left-3.5 text-s-ink/35 dark:text-s-dm-text/35 shrink-0 pointer-events-none" aria-hidden="true" />
-                          <input
-                            ref={inputRef}
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && navigate()}
-                            onFocus={() => setInputFocused(true)}
-                            onBlur={() => setInputFocused(false)}
-                            placeholder={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
-                            aria-label={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
-                            className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none"
-                          />
-                          {query && (
-                            <button
-                              onClick={() => setQuery("")}
-                              aria-label={t("reset")}
-                              className="absolute right-3 flex items-center justify-center w-5 h-5 rounded-full bg-s-ink/10 hover:bg-s-ink/20 transition-colors"
-                            >
-                              <X size={10} className="text-s-ink dark:text-s-dm-text" />
-                            </button>
-                          )}
-                        </div>
-
-                        {/* Back to categories link */}
-                        {showServices && (
-                          <button
-                            onClick={() => setShowServices(false)}
-                            className="flex items-center gap-1.5 text-[12px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text transition-colors mb-3"
-                          >
-                            <ChevronLeft size={14} aria-hidden="true" />
-                            {t("steps.was.backToCategories" as Parameters<typeof t>[0])}
-                          </button>
-                        )}
-
                         {/* Category list OR service drill-down */}
                         {!showServices ? (
-                          <div className="pb-2">
-                            {/* Skip / Alle Services */}
-                            <button
-                              onClick={() => selectService(null)}
-                              className="w-full flex items-center gap-3 py-3.5 border-t border-[#F5F5F5] dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
-                            >
-                              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-s-ink/[0.05] dark:bg-white/[0.05] shrink-0" aria-hidden="true">
-                                <Star size={20} className="text-s-ink/40 dark:text-s-dm-text/40" />
-                              </div>
-                              <div>
-                                <div className="font-heading font-bold text-[14px] text-s-ink dark:text-s-dm-text">
-                                  {t("steps.was.skip" as Parameters<typeof t>[0])}
-                                </div>
-                                <div className="text-[12px] text-s-ink/50 dark:text-s-dm-text/50">
-                                  {t("steps.was.skipSub" as Parameters<typeof t>[0])}
-                                </div>
-                              </div>
-                            </button>
-                            {CATEGORY_LIST.map((cat) => (
+                          <>
+                            {/* 2-col category card grid */}
+                            <div className="grid grid-cols-2 gap-2 mb-4">
+                              {/* All services card first */}
                               <button
-                                key={cat.key}
-                                onClick={() => selectCategory(cat.key)}
-                                aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
-                                className={`w-full flex items-center gap-3 py-3.5 border-t border-[#F5F5F5] dark:border-white/[0.06] text-left transition-colors ${
-                                  category === cat.key
-                                    ? "bg-s-coral/[0.04] dark:bg-s-coral/[0.08]"
-                                    : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
-                                }`}
-                              >
-                                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-s-coral/[0.08] shrink-0" aria-hidden="true">
-                                  <cat.Icon width={20} height={20} className="text-s-coral" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="font-heading font-bold text-[14px] text-s-ink dark:text-s-dm-text">
-                                    {tNav(cat.key as Parameters<typeof tNav>[0])}
-                                  </div>
-                                  <div className="text-[12px] text-s-ink/50 dark:text-s-dm-text/50 truncate">
-                                    {getCatSub(cat)}
-                                  </div>
-                                </div>
-                                {category === cat.key && (
-                                  <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />
+                                onClick={() => selectService(null)}
+                                className={cn(
+                                  "flex items-center gap-3 px-4 py-3.5 rounded-card border transition-all text-left",
+                                  !category
+                                    ? "border-s-coral bg-s-coral/5 text-s-coral"
+                                    : "border-s-ink/10 bg-white dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40"
                                 )}
+                                aria-label={t("steps.was.skip" as Parameters<typeof t>[0])}
+                              >
+                                <Star size={18} className="shrink-0" aria-hidden="true" />
+                                <div>
+                                  <p className="text-sm font-heading font-semibold leading-tight">
+                                    {t("steps.was.skip" as Parameters<typeof t>[0])}
+                                  </p>
+                                </div>
                               </button>
-                            ))}
-                          </div>
+
+                              {CATEGORY_LIST.map((cat) => (
+                                <button
+                                  key={cat.key}
+                                  onClick={() => selectCategory(cat.key)}
+                                  aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
+                                  className={cn(
+                                    "flex items-center gap-3 px-4 py-3.5 rounded-card border transition-all text-left",
+                                    category === cat.key
+                                      ? "border-s-coral bg-s-coral/5 text-s-coral"
+                                      : "border-s-ink/10 bg-white dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40"
+                                  )}
+                                >
+                                  <cat.Icon width={18} height={18} className="shrink-0" />
+                                  <div>
+                                    <p className="text-sm font-heading font-semibold leading-tight">
+                                      {tNav(cat.key as Parameters<typeof tNav>[0])}
+                                    </p>
+                                    <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 leading-tight mt-0.5 truncate">
+                                      {getCatSub(cat)}
+                                    </p>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+
+                            {/* Divider */}
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="flex-1 h-px bg-s-ink/8 dark:bg-white/8" />
+                              <span className="text-[10px] text-s-ink/35 dark:text-s-dm-text/35 font-body uppercase tracking-wider whitespace-nowrap">
+                                {t("orSearch" as Parameters<typeof t>[0])}
+                              </span>
+                              <div className="flex-1 h-px bg-s-ink/8 dark:bg-white/8" />
+                            </div>
+
+                            {/* Text search input */}
+                            <div
+                              className="relative flex items-center mb-4"
+                              style={{ border: `1.5px solid ${inputFocused ? "#E8624A" : "rgba(26,18,9,0.12)"}`, borderRadius: "12px" }}
+                            >
+                              <Search size={15} className="absolute left-3.5 text-s-ink/35 dark:text-s-dm-text/35 shrink-0 pointer-events-none" aria-hidden="true" />
+                              <input
+                                ref={inputRef}
+                                type="text"
+                                value={query}
+                                onChange={(e) => {
+                                  setQuery(e.target.value);
+                                  setShowServices(e.target.value.length > 0);
+                                }}
+                                onKeyDown={(e) => e.key === "Enter" && navigate()}
+                                onFocus={() => setInputFocused(true)}
+                                onBlur={() => setInputFocused(false)}
+                                placeholder={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
+                                aria-label={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
+                                className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none"
+                              />
+                              {query && (
+                                <button
+                                  onClick={() => { setQuery(""); setShowServices(false); }}
+                                  aria-label={t("reset")}
+                                  className="absolute right-3 flex items-center justify-center w-5 h-5 rounded-full bg-s-ink/10 hover:bg-s-ink/20 transition-colors"
+                                >
+                                  <X size={10} className="text-s-ink dark:text-s-dm-text" />
+                                </button>
+                              )}
+                            </div>
+                          </>
                         ) : (
                           /* Service drill-down */
                           <div className="pb-2">
+                            <button
+                              onClick={() => { setQuery(""); setShowServices(false); }}
+                              className="flex items-center gap-1.5 text-[12px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral dark:hover:text-s-coral transition-colors mb-3"
+                            >
+                              <ChevronLeft size={14} aria-hidden="true" />
+                              {t("steps.was.backToCategories" as Parameters<typeof t>[0])}
+                            </button>
                             <button
                               onClick={() => selectService(null)}
                               className="w-full flex items-center gap-3 py-3.5 border-t border-[#F5F5F5] dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
