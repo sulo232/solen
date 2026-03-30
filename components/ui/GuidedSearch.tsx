@@ -439,45 +439,67 @@ export default function GuidedSearch() {
                 <div className="px-6">
 
                   {/* ── Collapsed Was row (step 2+3) ── */}
-                  {step > 1 && (
-                    <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
-                      <div>
-                        <div className="text-[10px] font-heading font-bold uppercase tracking-[.07em] text-s-ink/40 dark:text-s-dm-text/40">
-                          {t("segWas" as Parameters<typeof t>[0])}
-                        </div>
-                        <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
-                          {category ? tNav(category as Parameters<typeof tNav>[0]) : t("segWasPlaceholder" as Parameters<typeof t>[0])}
-                          {service ? ` · ${service}` : ""}
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => { setStep(1); setShowServices(false); }}
-                        className="text-[11px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 underline underline-offset-2 hover:text-s-ink dark:hover:text-s-dm-text transition-colors ml-4"
+                  <AnimatePresence>
+                    {step > 1 && (
+                      <motion.div
+                        key="collapsed-was"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                        className="overflow-hidden"
                       >
-                        {t("change" as Parameters<typeof t>[0])}
-                      </button>
-                    </div>
-                  )}
+                        <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
+                          <div>
+                            <div className="text-[10px] font-heading font-bold uppercase tracking-[.07em] text-s-ink/40 dark:text-s-dm-text/40">
+                              {t("segWas" as Parameters<typeof t>[0])}
+                            </div>
+                            <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
+                              {category ? tNav(category as Parameters<typeof tNav>[0]) : t("segWasPlaceholder" as Parameters<typeof t>[0])}
+                              {service ? ` · ${service}` : ""}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => { setStep(1); setShowServices(false); }}
+                            className="text-[11px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 underline underline-offset-2 hover:text-s-ink dark:hover:text-s-dm-text transition-colors ml-4"
+                          >
+                            {t("change" as Parameters<typeof t>[0])}
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* ── Collapsed Wo row (step 3) ── */}
-                  {step > 2 && (
-                    <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
-                      <div>
-                        <div className="text-[10px] font-heading font-bold uppercase tracking-[.07em] text-s-ink/40 dark:text-s-dm-text/40">
-                          {t("segWo" as Parameters<typeof t>[0])}
-                        </div>
-                        <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
-                          {city ? getCityLabel(city) : t("steps.where.allSwitzerland")}
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setStep(2)}
-                        className="text-[11px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 underline underline-offset-2 hover:text-s-ink dark:hover:text-s-dm-text transition-colors ml-4"
+                  <AnimatePresence>
+                    {step > 2 && (
+                      <motion.div
+                        key="collapsed-wo"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                        className="overflow-hidden"
                       >
-                        {t("change" as Parameters<typeof t>[0])}
-                      </button>
-                    </div>
-                  )}
+                        <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
+                          <div>
+                            <div className="text-[10px] font-heading font-bold uppercase tracking-[.07em] text-s-ink/40 dark:text-s-dm-text/40">
+                              {t("segWo" as Parameters<typeof t>[0])}
+                            </div>
+                            <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
+                              {city ? getCityLabel(city) : t("steps.where.allSwitzerland")}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => setStep(2)}
+                            className="text-[11px] font-heading font-semibold text-s-ink/50 dark:text-s-dm-text/50 underline underline-offset-2 hover:text-s-ink dark:hover:text-s-dm-text transition-colors ml-4"
+                          >
+                            {t("change" as Parameters<typeof t>[0])}
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* ═══ STEP 1: WAS ════════════════════════════════════════ */}
                   <AnimatePresence mode="wait" initial={false}>
