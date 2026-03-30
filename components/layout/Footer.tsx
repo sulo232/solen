@@ -18,10 +18,10 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-s-ink text-white">
+    <footer className="bg-[#2C2825] text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
 
-        {/* Row 1: Logo · Legal links · Language switcher */}
+        {/* Row 1: Logo · Legal links + Instagram · Language switcher */}
         <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
 
           {/* Logo */}
@@ -35,7 +35,7 @@ export default function Footer() {
             />
           </Link>
 
-          {/* Legal links */}
+          {/* Legal links + Instagram icon inline */}
           <nav aria-label="Rechtliches" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             {legalLinks.map(({ label, href }) => (
               <Link
@@ -46,13 +46,22 @@ export default function Footer() {
                 {label}
               </Link>
             ))}
+            <a
+              href="https://instagram.com/solen.ch"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="solen.ch auf Instagram"
+              className="text-white/35 hover:text-white/70 transition-colors duration-150"
+            >
+              <Instagram size={16} />
+            </a>
           </nav>
 
           {/* Language switcher */}
           <LanguageSwitcher locale={locale} variant="footer" />
         </div>
 
-        {/* Row 2: Copyright · nDSG note · Instagram */}
+        {/* Row 2: Copyright · nDSG note */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-4">
           <div className="flex items-center gap-3">
             <p className="text-[11px] font-heading text-white/30">
@@ -66,16 +75,6 @@ export default function Footer() {
               </p>
             </div>
           </div>
-
-          <a
-            href="https://instagram.com/solen.ch"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="solen.ch auf Instagram"
-            className="text-white/35 hover:text-white/70 transition-colors duration-150"
-          >
-            <Instagram size={18} />
-          </a>
         </div>
 
       </div>
