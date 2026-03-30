@@ -32,7 +32,14 @@ export default function Breadcrumb() {
 
   // Don't show on homepage, dashboard, auth, booking, checkout, onboarding
   const EXCLUDED = ["/dashboard", "/auth", "/booking", "/checkout", "/onboarding", "/walk-in-pay", "/tip"];
-  if (withoutLocale === "/" || withoutLocale === "") return null;
+  // Belt-and-suspenders: also check the raw pathname to catch any locale-stripping edge cases
+  if (
+    pathname === `/${locale}` ||
+    pathname === `/${locale}/` ||
+    pathname === "/" ||
+    withoutLocale === "/" ||
+    withoutLocale === ""
+  ) return null;
   if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
 
   const segments = withoutLocale.split("/").filter(Boolean);
