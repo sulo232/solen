@@ -326,9 +326,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
           <p className="text-[14px] text-s-ink/60 dark:text-s-dm-text/60 font-body truncate mt-[2px]">
             {/* Display formatted distance or fallback address */}
-            {showDistance && salon.distance_km != null 
-              ? `${salon.quartier ? salon.quartier + ", " : ""}${salon.distance_km.toFixed(1)} km entfernt` 
-              : <>{salon.address}</>}
+            {showDistance && salon.distance_km != null
+              ? `${salon.quartier ? salon.quartier + ", " : ""}${salon.distance_km.toFixed(1)} km entfernt`
+              : <>{salon.postal_code ? `${salon.postal_code} ` : ""}{salon.address}</>}
           </p>
 
           {/* Pricing indicator & Category */}

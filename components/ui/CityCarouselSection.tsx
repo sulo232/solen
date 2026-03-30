@@ -157,24 +157,38 @@ export default function CityCarouselSection({
   return (
     <section className="pb-8">
       {/* Section header */}
-      <div className="max-w-5xl mx-auto px-6 mb-3 flex items-center justify-between">
-        <span
-          className="font-body font-semibold text-[12px] uppercase text-s-coral"
-          style={{ letterSpacing: "2.5px" }}
-        >
-          {title}
-        </span>
+      <div className="max-w-5xl mx-auto px-6 mb-4 flex items-end justify-between gap-4">
+        {viewAllHref ? (
+          <Link
+            href={viewAllHref}
+            onClick={onViewAll}
+            className="font-heading font-extrabold text-s-ink dark:text-s-dm-text hover:text-s-coral dark:hover:text-s-coral transition-colors duration-150 leading-none"
+            style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em" }}
+          >
+            {title}
+          </Link>
+        ) : (
+          <h2
+            className="font-heading font-extrabold text-s-ink dark:text-s-dm-text leading-none"
+            style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em" }}
+          >
+            {title}
+          </h2>
+        )}
         {viewAllLabel && salons.length > 4 && (
           viewAllHref ? (
             <Link
               href={viewAllHref}
               onClick={onViewAll}
-              className="font-heading font-semibold text-[12px] text-s-ink/50 hover:text-s-ink transition-colors"
+              className="font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors shrink-0 pb-1"
             >
               {viewAllLabel} →
             </Link>
           ) : (
-            <span className="font-heading font-semibold text-[12px] text-s-ink/50 hover:text-s-ink transition-colors cursor-pointer" onClick={onViewAll}>
+            <span
+              className="font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors cursor-pointer shrink-0 pb-1"
+              onClick={onViewAll}
+            >
               {viewAllLabel} →
             </span>
           )

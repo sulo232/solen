@@ -2,36 +2,28 @@
 
 /**
  * CategorySkeleton — pulse skeleton matching CityCarouselSection dimensions.
- * Prevents CLS: card aspect-[20/19] at 240px wide, exact heading height.
+ * Strict parity: w-[280px] md:w-[320px], aspect-[20/19] md:aspect-square.
+ * Prevents CLS when category carousels hydrate.
  */
 export default function CategorySkeleton() {
   return (
-    <div className="max-w-5xl mx-auto px-4 py-4" aria-hidden="true">
-      {/* Section heading row */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="h-7 w-36 bg-s-ink/[0.07] dark:bg-white/[0.07] rounded-lg animate-pulse" />
+    <div className="max-w-5xl mx-auto px-6 py-4" aria-hidden="true">
+      {/* Section heading skeleton — mirrors clamp(24px,3.5vw,42px) heading */}
+      <div className="flex items-end justify-between mb-4">
+        <div className="h-8 w-40 bg-s-ink/[0.07] dark:bg-white/[0.07] rounded-lg animate-pulse" />
         <div className="h-4 w-20 bg-s-ink/[0.05] dark:bg-white/[0.05] rounded-full animate-pulse" />
       </div>
 
       {/* Horizontal card strip */}
       <div className="flex gap-4 overflow-hidden">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i}
-            className="flex-shrink-0"
-            style={{ width: 240 }}
-          >
-            {/* Image area — aspect-[20/19] = 240 × 228 */}
-            <div
-              className="w-full rounded-xl bg-s-ink/[0.07] dark:bg-white/[0.07] animate-pulse"
-              style={{ aspectRatio: "20/19" }}
-            />
+          <div key={i} className="flex-shrink-0 w-[280px] md:w-[320px]">
+            {/* Image — aspect-[20/19] mobile, aspect-square desktop */}
+            <div className="w-full aspect-[20/19] md:aspect-square bg-s-ink/[0.07] dark:bg-white/[0.07] animate-pulse rounded-xl mb-3" />
             {/* Name line */}
-            <div className="mt-3 h-4 w-3/4 bg-s-ink/[0.07] dark:bg-white/[0.07] rounded-md animate-pulse" />
+            <div className="h-5 w-3/4 bg-s-ink/[0.07] dark:bg-white/[0.07] rounded-md animate-pulse mb-2" />
             {/* Sub line */}
-            <div className="mt-1.5 h-3 w-1/2 bg-s-ink/[0.05] dark:bg-white/[0.05] rounded-md animate-pulse" />
-            {/* Price tier line */}
-            <div className="mt-1.5 h-3 w-1/3 bg-s-ink/[0.05] dark:bg-white/[0.05] rounded-md animate-pulse" />
+            <div className="h-4 w-1/2 bg-s-ink/[0.05] dark:bg-white/[0.05] rounded-md animate-pulse" />
           </div>
         ))}
       </div>

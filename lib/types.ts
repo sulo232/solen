@@ -118,6 +118,7 @@ export interface Salon {
   categories: SalonCategory[];
   city_id: string | null; // References cities.id
   address: string;
+  postal_code?: string | null;
   latitude: number;
   longitude: number;
   phone: string | null;
