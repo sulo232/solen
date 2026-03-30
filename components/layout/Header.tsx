@@ -115,8 +115,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg"
             : "mt-3 max-w-5xl min-h-[56px] py-2.5 px-5 sm:px-8 glass-frost shadow-warm-sm"
         )}>
-          {/* Logo */}
-          <div className="flex items-center shrink-0">
+          {/* Logo — hidden on mobile when scrolled (replaced by compact search pill) */}
+          <div className={cn("items-center shrink-0", scrolled ? "hidden sm:flex" : "flex")}>
             <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
               <img
                 src="/logo.svg"
@@ -159,13 +159,26 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             })}
           </nav>}
 
-          {/* Compact search pill — desktop only, visible when scrolled */}
+          {/* Compact search pill — MOBILE: replaces logo when scrolled */}
           {scrolled && (
             <button
               onClick={() =>
-                window.dispatchEvent(
-                  new CustomEvent("openSearchSheet", { detail: { step: 1 } })
-                )
+                window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))
+              }
+              aria-label={t("search")}
+              className="flex sm:hidden items-center gap-2 px-4 py-2.5 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/20 hover:text-s-ink transition-[border-color,color] backdrop-blur-sm flex-1 max-w-xs"
+              style={{ fontSize: 13, boxShadow: "0 1px 4px rgba(0,0,0,.06)" }}
+            >
+              <Search size={14} className="text-s-coral shrink-0" aria-hidden="true" />
+              <span className="font-heading font-bold truncate">{t("searchCompact")}</span>
+            </button>
+          )}
+
+          {/* Compact search pill — DESKTOP: visible when scrolled */}
+          {scrolled && (
+            <button
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))
               }
               aria-label={t("search")}
               className="hidden md:flex items-center gap-2 px-4 py-2 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-s-dm-surface/60 text-[12px] font-heading font-bold text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/20 dark:hover:border-white/20 hover:text-s-ink dark:hover:text-s-dm-text transition-[border-color,color] backdrop-blur-sm"
