@@ -15,6 +15,7 @@ import {
   Sparkles,
   Flame,
   ScissorsLineDashed,
+  Search,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -372,11 +373,31 @@ export default function HomePage({ initialData }: HomePageProps) {
   return (
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
-      {/* GuidedSearch sheet — hidden trigger, opened via header search icon on mobile */}
+      {/* GuidedSearch sheet — sheet-only, trigger rendered inline below */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
+      {/* ── Mobile Search Bar (Airbnb-style tappable pill, opens GuidedSearch sheet) ── */}
+      <div className="md:hidden px-4 pt-4 pb-1">
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
+          aria-label={tNav("search")}
+          className="w-full flex items-center gap-3 bg-[--raised] rounded-search border border-s-ink/[0.10] active:scale-[0.98] transition-transform duration-100 card-tap"
+          style={{ height: 56, boxShadow: "0 2px 12px rgba(26,18,9,.08), 0 1px 4px rgba(26,18,9,.04)", padding: "0 6px 0 20px" }}
+        >
+          <Search size={16} className="text-s-coral shrink-0" />
+          <div className="flex-1 flex items-center gap-0 text-left min-w-0">
+            <span className="font-body font-medium text-[14px] text-s-ink/40 truncate">
+              {tNav("searchCompact")}
+            </span>
+          </div>
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral shrink-0">
+            <Search size={15} className="text-white" />
+          </div>
+        </button>
+      </div>
+
       {/* ── Desktop Expanded Search Bar (Airbnb-style, hidden on scroll) ── */}
-      <div className="max-w-4xl mx-auto px-6 pt-5 pb-2">
+      <div className="hidden md:block max-w-4xl mx-auto px-6 pt-5 pb-2">
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
@@ -401,15 +422,23 @@ export default function HomePage({ initialData }: HomePageProps) {
           ].map(({ key, Icon }) => {
             const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
             const label = tNav(key) as string;
+            const isActive = typeof window !== "undefined" && window.location.pathname.includes(`/${key}`);
             return (
               <Link
                 key={key}
                 href={href}
-                className="flex flex-col items-center gap-1.5 px-3 py-2 min-w-[72px] rounded-xl transition-colors duration-150 hover:bg-s-ink/[0.04] active:bg-s-ink/[0.07] shrink-0"
+                className="flex flex-col items-center gap-2 py-3 shrink-0 active:scale-[0.96] transition-transform duration-100 card-tap group"
+                style={{ minWidth: 80 }}
                 aria-label={label}
               >
-                <Icon width={26} height={26} className="text-s-ink/60" />
-                <span className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 whitespace-nowrap leading-none">
+                {/* Icon card */}
+                <div
+                  className="flex items-center justify-center w-14 h-14 rounded-xl border border-s-ink/[0.08] bg-[--raised] group-hover:border-s-coral/40 group-hover:bg-s-coral/[0.04] transition-colors duration-200"
+                  style={{ boxShadow: "0 1px 4px rgba(26,18,9,.05)" }}
+                >
+                  <Icon width={28} height={28} className="text-s-ink/60 group-hover:text-s-coral transition-colors duration-200" />
+                </div>
+                <span className="text-[11px] font-heading font-semibold text-s-ink/55 whitespace-nowrap leading-none group-hover:text-s-coral transition-colors duration-200">
                   {label}
                 </span>
               </Link>

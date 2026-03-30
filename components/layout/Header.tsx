@@ -115,16 +115,13 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg border border-black/[0.06]"
             : "mt-3 max-w-5xl min-h-[56px] py-2.5 px-5 sm:px-8 bg-transparent border border-transparent"
         )}>
-          {/* Logo — hidden on mobile when scrolled (replaced by compact search pill) */}
-          <div className={cn("items-center shrink-0", scrolled ? "hidden sm:flex" : "flex")}>
+          {/* Logo — hidden on mobile entirely, visible on sm+ */}
+          <div className={cn("items-center shrink-0", scrolled ? "hidden sm:flex" : "hidden sm:flex")}>
             <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
-              {/* Mobile: just the "S" monogram */}
-              <span className="sm:hidden font-display text-[22px] leading-none text-s-ink dark:text-s-dm-text tracking-tight">S</span>
-              {/* Desktop: full logo */}
               <img
                 src="/logo.svg"
                 alt="Solen.ch"
-                className="hidden sm:block h-8 w-auto dark:invert"
+                className="h-8 w-auto dark:invert"
                 width={96}
                 height={32}
               />
@@ -199,15 +196,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             <div className="hidden md:block">
               <LanguageSwitcher locale={locale} variant="header" />
             </div>
-
-            {/* Search icon — mobile only, always visible (opens GuidedSearch sheet) */}
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
-              aria-label={t("search")}
-              className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full text-s-ink/60 hover:text-s-ink transition-colors duration-150"
-            >
-              <Search className="w-5 h-5" strokeWidth={1.6} />
-            </button>
 
             {/* Saved/bookmarks icon — mobile only, always visible in header */}
             <Link
