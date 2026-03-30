@@ -116,6 +116,15 @@
 - **What happened**: `Header.tsx` dispatches `openSearchSheet` and `CategoryStickyRow` listens for `categoryGridVisibility`. If either listener component is unmounted (e.g. removed from the render tree during a refactor), the events fire silently with no effect.
 - **Fix**: Before removing or conditionally rendering a component, grep for the event names it listens to: `grep -rn "addEventListener.*customEventName" components/`. If other parts of the app dispatch that event, the listener must stay mounted.
 
+### When a roadmap says "render X containing Y", open the file and verify Y is actually being rendered
+- **Date**: 2026-03-31
+- **File(s)**: `components/ui/CityCarouselSection.tsx`
+- **What happened**: Roadmap Phase 3 R1 said "`CityCarouselSection` containing the `SalonCard` components". Instead of opening `CityCarouselSection.tsx` to confirm it renders `SalonCard`, I assumed it did and only addressed R2 (typography). `CityCarouselSection` was actually rendering its own inline `AirbnbSalonCard` — a stripped-down card with no image carousel, no pagination dots, no Airbnb badges.
+- **Why it happened**: Surface-level assessment instead of code verification. Read the roadmap requirement, ticked it off mentally, moved on without checking the actual file.
+- **Fix / Rule**: When a roadmap spec says "component A must contain/use component B", **open component A's file and grep for `import B` or `<B`** before marking it done. Never assume a wrapper component is rendering the right child — verify it. If the import isn't there, it needs to be added.
+
+---
+
 ### Home tab active state needs special handling for locale-prefixed routes
 - **Date**: 2026-03-30
 - **File(s)**: `components/layout/BottomTabBar.tsx`
