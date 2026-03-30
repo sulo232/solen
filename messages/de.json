@@ -165,7 +165,9 @@
       "steps": {
         "where": {
           "title": "Wo?",
-          "allSwitzerland": "Ganze Schweiz"
+          "allSwitzerland": "Ganze Schweiz",
+          "subtitle": "Stadt wählen",
+          "allSub": "Alle Städte"
         },
         "category": {
           "title": "Was?"
@@ -183,8 +185,30 @@
             "afternoon": "Nachmittags",
             "evening": "Abends"
           }
+        },
+        "was": {
+          "title": "Was suchst du?",
+          "searchPlaceholder": "Service suchen…",
+          "skip": "Egal / Alle Services",
+          "skipSub": "Alle Kategorien durchsuchen",
+          "backToCategories": "Alle Kategorien"
+        },
+        "wann": {
+          "title": "Wann?",
+          "subtitle": "Datum wählen",
+          "timeLabel": "Tageszeit"
         }
-      }
+      },
+      "segWas": "Was",
+      "segWo": "Wo",
+      "segWann": "Wann",
+      "segWasPlaceholder": "Coiffeur, Nails…",
+      "wannDefault": "Flexibel",
+      "openWas": "Was suchen öffnen",
+      "openWo": "Wo suchen öffnen",
+      "openWann": "Wann suchen öffnen",
+      "change": "Ändern",
+      "skipStep": "Überspringen"
     },
     "discover": {
       "eyebrow": "Entdecken",
@@ -3175,8 +3199,13 @@
     "statusNoShow": "Nicht erschienen",
     "statusPending": "Ausstehend",
     "statusPendingConfirmation": "Bestätigung ausstehend",
-    "daysMo": "Mo", "daysDi": "Di", "daysMi": "Mi", "daysDo": "Do",
-    "daysFr": "Fr", "daysSa": "Sa", "daysSo": "So",
+    "daysMo": "Mo",
+    "daysDi": "Di",
+    "daysMi": "Mi",
+    "daysDo": "Do",
+    "daysFr": "Fr",
+    "daysSa": "Sa",
+    "daysSo": "So",
     "emptyMessage": "Buche deinen nächsten Termin!",
     "bookCta": "Termin buchen →",
     "cancelNotPossible": "Stornierung nicht mehr möglich (weniger als 24h)"

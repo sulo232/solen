@@ -165,7 +165,9 @@
       "steps": {
         "where": {
           "title": "Dove?",
-          "allSwitzerland": "Tutta la Svizzera"
+          "allSwitzerland": "Tutta la Svizzera",
+          "subtitle": "Scegli città",
+          "allSub": "Tutte le città"
         },
         "category": {
           "title": "Cosa?"
@@ -183,8 +185,30 @@
             "afternoon": "Pomeriggio",
             "evening": "Sera"
           }
+        },
+        "was": {
+          "title": "Cosa stai cercando?",
+          "searchPlaceholder": "Cerca servizio…",
+          "skip": "Qualsiasi / Tutti i servizi",
+          "skipSub": "Sfoglia tutte le categorie",
+          "backToCategories": "Tutte le categorie"
+        },
+        "wann": {
+          "title": "Quando?",
+          "subtitle": "Scegli data",
+          "timeLabel": "Ora del giorno"
         }
-      }
+      },
+      "segWas": "Cosa",
+      "segWo": "Dove",
+      "segWann": "Quando",
+      "segWasPlaceholder": "Parrucchiere, Unghie…",
+      "wannDefault": "Flessibile",
+      "openWas": "Apri ricerca cosa",
+      "openWo": "Apri ricerca dove",
+      "openWann": "Apri ricerca quando",
+      "change": "Cambia",
+      "skipStep": "Salta"
     },
     "discover": {
       "eyebrow": "Esplora",
@@ -3141,8 +3165,13 @@
     "statusNoShow": "Non presentato",
     "statusPending": "In attesa",
     "statusPendingConfirmation": "Conferma in attesa",
-    "daysMo": "Lu", "daysDi": "Ma", "daysMi": "Me", "daysDo": "Gi",
-    "daysFr": "Ve", "daysSa": "Sa", "daysSo": "Do",
+    "daysMo": "Lu",
+    "daysDi": "Ma",
+    "daysMi": "Me",
+    "daysDo": "Gi",
+    "daysFr": "Ve",
+    "daysSa": "Sa",
+    "daysSo": "Do",
     "emptyMessage": "Prenota il tuo prossimo appuntamento!",
     "bookCta": "Prenota appuntamento →",
     "cancelNotPossible": "Annullamento non più possibile (meno di 24h)"
