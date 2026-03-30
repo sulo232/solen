@@ -2495,7 +2495,15 @@
     "cat_makeup_desc": "Bridal-Packages, Vorher/Nachher-Galerie und Event-Buchungen.",
     "cat_waxing_title": "Waxing",
     "cat_waxing_desc": "Zonen-basierte Preise, Behandlungs-Erinnerungen und Intervalle.",
-    "sticky_cta": "Kostenlos starten →"
+    "sticky_cta": "Kostenlos starten →",
+    "for_owners": "Für Saloninhaber",
+    "section_features": "Funktionen",
+    "section_categories": "Kategorien",
+    "section_how_it_works": "Wie es funktioniert",
+    "section_testimonials": "Partner sagen",
+    "section_pricing": "Preise",
+    "section_faq": "Häufige Fragen",
+    "section_start": "Jetzt starten"
   },
   "filters": {
     "filter": "Filter",
@@ -2532,14 +2540,15 @@
   },
   "discover": {
     "title": "Entdecken",
+    "subtitle": "Dein nächster Look",
     "genderPill": "Für wen?",
     "texturePill": "Textur",
     "tabs": {
       "all": "Alle",
-      "hair": "Hair",
-      "nails": "Nails",
-      "lashes": "Lashes",
-      "brows": "Brows",
+      "hair": "Haare",
+      "nails": "Nägel",
+      "lashes": "Wimpern",
+      "brows": "Augenbrauen",
       "makeup": "Makeup",
       "waxing": "Waxing"
     },

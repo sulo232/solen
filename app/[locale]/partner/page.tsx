@@ -46,7 +46,7 @@ export default function PartnerPage() {
           {/* Left — Text + CTA */}
           <div className="text-center lg:text-left">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-3">
-              Für Saloninhaber
+              {t("for_owners")}
             </p>
             <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-s-ink dark:text-s-dm-text mb-4 leading-tight">
               {t("hero_title_1")}{" "}
@@ -88,17 +88,7 @@ export default function PartnerPage() {
               </div>
             </div>
 
-            {/* Floating value badges — desktop only */}
-            <div className="hidden lg:flex absolute top-4 -left-2 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
-              style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
-              <TrendingUp className="w-4 h-4 text-s-sage" />
-              <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_bookings")}</span>
-            </div>
-            <div className="hidden lg:flex absolute bottom-12 -left-4 bg-white dark:bg-s-dm-surface rounded-[12px] px-3 py-2 border border-s-ink/[0.06] items-center gap-2"
-              style={{ boxShadow: "0 2px 8px rgba(26,18,9,.08)" }} aria-hidden="true">
-              <Star className="w-4 h-4 text-s-yellow" />
-              <span className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{t("badge_rating")}</span>
-            </div>
+
           </div>
         </div>
       </div>
@@ -107,7 +97,7 @@ export default function PartnerPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="text-center mb-10">
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-            Funktionen
+            {t("section_features")}
           </p>
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
             {t("features_title")}
@@ -135,7 +125,7 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-              Kategorien
+              {t("section_categories")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("cat_title")}
@@ -168,7 +158,7 @@ export default function PartnerPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-              Wie es funktioniert
+              {t("section_how_it_works")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("hiw_title")}
@@ -256,7 +246,7 @@ export default function PartnerPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-              Partner sagen
+              {t("section_testimonials")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("social_title")}
@@ -281,30 +271,7 @@ export default function PartnerPage() {
             ))}
           </div>
 
-          {/* Testimonials */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {([
-              { key: "testimonial_1", avatarClass: "bg-s-coral" },
-              { key: "testimonial_2", avatarClass: "bg-s-amber" },
-              { key: "testimonial_3", avatarClass: "bg-s-sage" },
-            ] as const).map(({ key, avatarClass }) => (
-              <div key={key} className="bg-s-bg-surface dark:bg-s-dm-surface rounded-[16px] p-6 border border-s-ink/[0.05] dark:border-white/[0.06]">
-                <Quote className="w-5 h-5 text-s-coral/30 mb-3" />
-                <p className="text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed mb-4 italic">
-                  &ldquo;{t(`${key}_quote` as any)}&rdquo;
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${avatarClass}`}>
-                    <span className="text-sm font-heading font-bold text-white">{t(`${key}_initial` as any)}</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text">{t(`${key}_name` as any)}</p>
-                    <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50">{t(`${key}_role` as any)}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+
         </div>
       </div>
 
@@ -314,7 +281,7 @@ export default function PartnerPage() {
           {/* Section header */}
           <div className="text-center mb-12">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-              Preise
+              {t("section_pricing")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("pricing_title")}
@@ -337,7 +304,7 @@ export default function PartnerPage() {
               {/* Price */}
               <p className="text-sm font-body text-s-ink/50 dark:text-s-dm-text/50 mb-1">{t("pricing_label")}</p>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="font-heading font-bold text-4xl text-s-coral">1%</span>
+                <span className="font-heading font-bold text-4xl text-s-coral">15%</span>
                 <span className="text-s-ink/50 dark:text-s-dm-text/50 text-sm">{t("pricing_per_booking")}</span>
               </div>
               <p className="text-[11px] font-body text-s-ink/55 dark:text-s-dm-text/55 mb-0.5">{t("pricing_intro_model")}</p>
@@ -376,12 +343,12 @@ export default function PartnerPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-body font-semibold text-s-coral">solen.ch</span>
-                    <span className="text-sm font-body font-bold text-s-coral">1%</span>
+                    <span className="text-sm font-body font-bold text-s-coral">15%</span>
                   </div>
                   <div className="h-8 w-full bg-s-ink/5 dark:bg-s-dm-text/5 rounded-btn overflow-hidden">
                     <div
                       className="h-full bg-s-coral rounded-btn"
-                      style={{ width: "3.3%" }}
+                      style={{ width: "33%" }}
                     />
                   </div>
                 </div>
@@ -433,7 +400,7 @@ export default function PartnerPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8">
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-              Häufige Fragen
+              {t("section_faq")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
               {t("faq_title")}
@@ -516,7 +483,7 @@ export default function PartnerPage() {
         style={{ background: "linear-gradient(180deg, rgba(26,18,9,.025) 0%, rgba(232,98,74,.05) 100%)" }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">
-            Jetzt starten
+            {t("section_start")}
           </p>
           <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
             {t("cta_title")}

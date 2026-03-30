@@ -2461,7 +2461,15 @@
     "cat_makeup_desc": "Forfaits mariée, galerie avant/après et réservations événements.",
     "cat_waxing_title": "Épilation",
     "cat_waxing_desc": "Tarifs par zone, rappels de traitement et intervalles.",
-    "sticky_cta": "Commencer gratuitement →"
+    "sticky_cta": "Commencer gratuitement →",
+    "for_owners": "Pour les propriétaires de salons",
+    "section_features": "Fonctionnalités",
+    "section_categories": "Catégories",
+    "section_how_it_works": "Comment ça marche",
+    "section_testimonials": "Nos partenaires témoignent",
+    "section_pricing": "Tarifs",
+    "section_faq": "Questions fréquentes",
+    "section_start": "Commencer maintenant"
   },
   "filters": {
     "filter": "Filtre",
@@ -2498,6 +2506,7 @@
   },
   "discover": {
     "title": "Découvrir",
+    "subtitle": "Ton prochain look",
     "genderPill": "Pour qui ?",
     "texturePill": "Texture",
     "tabs": {

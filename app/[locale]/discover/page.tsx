@@ -224,14 +224,11 @@ function DiscoverPageContent() {
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-coral mb-2">
-              solen discover
-            </p>
             <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.05] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">
               {t("title")}
             </h1>
             <p className="text-xs font-heading uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40 mt-1.5">
-              Dein nächster Look
+              {t("subtitle")}
             </p>
           </div>
           {/* Mobile filter drawer trigger */}

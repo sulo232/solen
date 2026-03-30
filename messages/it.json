@@ -2461,7 +2461,15 @@
     "cat_makeup_desc": "Pacchetti sposa, galleria prima/dopo e prenotazioni eventi.",
     "cat_waxing_title": "Ceretta",
     "cat_waxing_desc": "Prezzi per zona, promemoria trattamenti e intervalli.",
-    "sticky_cta": "Inizia gratis →"
+    "sticky_cta": "Inizia gratis →",
+    "for_owners": "Per i proprietari di saloni",
+    "section_features": "Funzionalità",
+    "section_categories": "Categorie",
+    "section_how_it_works": "Come funziona",
+    "section_testimonials": "I partner dicono",
+    "section_pricing": "Prezzi",
+    "section_faq": "Domande frequenti",
+    "section_start": "Inizia ora"
   },
   "filters": {
     "filter": "Filtro",
@@ -2498,6 +2506,7 @@
   },
   "discover": {
     "title": "Scoprire",
+    "subtitle": "Il tuo prossimo look",
     "genderPill": "Per chi?",
     "texturePill": "Texture",
     "tabs": {
