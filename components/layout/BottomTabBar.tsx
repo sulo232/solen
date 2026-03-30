@@ -69,7 +69,7 @@ export default function BottomTabBar() {
   return (
     <>
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass-frost border-t border-white/20 dark:border-s-dm-text/10"
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass-frost border-t border-black/[0.06] dark:border-s-dm-text/10"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label={t("mobileNavigation") ?? "Navigation"}
       >
@@ -89,7 +89,7 @@ export default function BottomTabBar() {
                 aria-label={t(key as any)}
                 aria-current={isActive ? "page" : undefined}
               >
-                <Icon className="w-5 h-5" strokeWidth={isActive ? 2.2 : 1.6} />
+                <Icon className="w-6 h-6" strokeWidth={isActive ? 2.2 : 1.6} />
                 <span className={cn(
                   "text-[10px] font-heading font-semibold tracking-[.04em] leading-none",
                   isActive ? "text-s-coral" : "text-s-ink/40 dark:text-s-dm-text/40"
