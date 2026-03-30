@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Compass, Search, Bookmark, User, X, Chrome } from "lucide-react";
+import { Home, Compass, Search, User, X, Chrome } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { Session } from "@supabase/supabase-js";
 
 const TABS = [
+  { key: "home",     href: "/",         Icon: Home,    requiresAuth: false },
   { key: "discover", href: "/discover", Icon: Compass, requiresAuth: false },
   { key: "search",   href: "/search",   Icon: Search,  requiresAuth: false },
-  { key: "saved",    href: "/account/saved", Icon: Bookmark, requiresAuth: true },
   { key: "account",  href: "/profile",  Icon: User,    requiresAuth: true },
 ] as const;
 
@@ -25,7 +25,7 @@ export default function BottomTabBar() {
   const t = useTranslations("navigation") as any;
 
   const [session, setSession] = useState<Session | null>(null);
-  const [loginSheet, setLoginSheet] = useState<{ open: boolean; context: TabKey }>({ open: false, context: "saved" });
+  const [loginSheet, setLoginSheet] = useState<{ open: boolean; context: TabKey }>({ open: false, context: "account" });
 
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
@@ -62,9 +62,7 @@ export default function BottomTabBar() {
     });
   };
 
-  const contextMessage = loginSheet.context === "saved"
-    ? t("loginToSave") ?? "Melde dich an, um Salons zu speichern"
-    : t("loginToProfile") ?? "Melde dich an, um dein Profil zu sehen";
+  const contextMessage = t("loginToProfile") ?? "Melde dich an, um dein Profil zu sehen";
 
   return (
     <>
@@ -75,8 +73,10 @@ export default function BottomTabBar() {
       >
         <div className="flex items-stretch h-[56px]">
           {TABS.map(({ key, href, Icon, requiresAuth }) => {
-            const fullHref = `/${locale}${href}`;
-            const isActive = pathname === fullHref || pathname.startsWith(fullHref + "/");
+            const fullHref = href === "/" ? `/${locale}` : `/${locale}${href}`;
+            const isActive = href === "/"
+              ? pathname === `/${locale}` || pathname === `/${locale}/`
+              : pathname === fullHref || pathname.startsWith(fullHref + "/");
             return (
               <Link
                 key={key}

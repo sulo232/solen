@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  Menu, X, User, Compass, CalendarDays, Heart, LogOut, Search, MessageCircle,
+  Menu, X, User, Compass, CalendarDays, Heart, LogOut, Search, MessageCircle, Bookmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
@@ -195,6 +195,15 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             <div className="hidden md:block">
               <LanguageSwitcher locale={locale} variant="header" />
             </div>
+
+            {/* Saved/bookmarks icon — mobile only, always visible in header */}
+            <Link
+              href={`/${locale}/account/saved`}
+              aria-label={t("saved")}
+              className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full text-s-ink/60 hover:text-s-ink transition-colors duration-150"
+            >
+              <Bookmark className="w-5 h-5" strokeWidth={1.6} />
+            </Link>
 
             {/* Show only for authenticated users */}
             {!!isLoggedIn && (
