@@ -273,6 +273,56 @@
   }
 }
 
+/* ── B.7: Override global coral focus ring inside GuidedSearch sheet ── */
+#gs-sheet input:focus-visible,
+#gs-sheet textarea:focus-visible {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ── P.1: Page-load stagger animation ──────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  opacity: 0;
+  animation: fadeSlideUp 500ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+/* ── P.3: Horizontal scroll containers — right-edge fade gradient ───── */
+.scroll-fade-right {
+  position: relative;
+}
+.scroll-fade-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  background: linear-gradient(to left, #F5F0EB, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── P.4: Kill tap highlight on cards ──────────────────────────────── */
+.card-tap {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── P.10: Tab bar dot pop keyframe ────────────────────────────────── */
+@keyframes dotPop {
+  from { transform: translateX(-50%) scale(0); }
+  to   { transform: translateX(-50%) scale(1); }
+}
+
+/* ── P.11: Smooth scroll ────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
 /* ── Category card skeleton shimmer (2 cycles, then stops) ─────────── */
 @keyframes skeletonShimmer {
   0%   { background-position: 200% 0; }

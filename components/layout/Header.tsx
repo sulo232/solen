@@ -10,7 +10,6 @@ import {
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
-import CategoryStickyRow from "@/components/layout/CategoryStickyRow";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
 import { BarberIcon } from "@/components/icons/category/BarberIcon";
@@ -48,7 +47,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
   // Scroll morph — pill shrinks after scrolling
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 50);
+    const handler = () => setScrolled(window.scrollY > 200);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
@@ -112,8 +111,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         <div className={cn(
           "flex items-center justify-between rounded-full transition-[max-width,padding,min-height,background-color,border-color,box-shadow] duration-300 ease-out w-full",
           scrolled
-            ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg"
-            : "mt-3 max-w-5xl min-h-[56px] py-2.5 px-5 sm:px-8 glass-frost shadow-warm-sm"
+            ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg border border-black/[0.06]"
+            : "mt-3 max-w-5xl min-h-[56px] py-2.5 px-5 sm:px-8 bg-transparent border border-transparent"
         )}>
           {/* Logo — hidden on mobile when scrolled (replaced by compact search pill) */}
           <div className={cn("items-center shrink-0", scrolled ? "hidden sm:flex" : "flex")}>
@@ -281,9 +280,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           )}
         </div>
       </div>
-
-      {/* Airbnb-style inline category row — appears when homepage grid scrolls out of view */}
-      <CategoryStickyRow locale={locale} />
 
     </header>
   );

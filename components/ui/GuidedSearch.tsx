@@ -72,7 +72,6 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
   const [query,        setQuery]        = useState("");
   const [showServices,  setShowServices]  = useState(false);
   const [inputFocused,  setInputFocused]  = useState(false);
-  const [scrolled,      setScrolled]      = useState(false);
   const [showCalendar,  setShowCalendar]  = useState(false);
   const [specificDate,  setSpecificDate]  = useState<CalendarDate | null>(null);
   const [flashedCat,    setFlashedCat]    = useState<string | null>(null);
@@ -139,12 +138,6 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
     return () => window.visualViewport?.removeEventListener("resize", handler);
   }, [isOpen]);
 
-  // Track scroll position for compact pill
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -266,50 +259,8 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
           TRIGGER PILL — compact (scrolled) or full (top of page)
           ════════════════════════════════════════════════════════════════════ */}
       <AnimatePresence mode="wait" initial={false}>
-        {!isOpen && scrolled ? (
-          /* ── COMPACT PILL (scrolled > 80px) ─────────────────────────────── */
-          <motion.div
-            key="compact"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.15 }}
-            className="w-full flex items-center gap-2 px-4 bg-white dark:bg-s-dm-raised border border-s-ink/10 shadow-elevation-1"
-            style={{ borderRadius: "999px", height: "46px" }}
-          >
-            <button
-              onClick={() => open(1)}
-              aria-label={t("openWas" as Parameters<typeof t>[0])}
-              className="flex items-center gap-2 flex-1 min-w-0"
-            >
-              <Search size={15} className="text-s-coral shrink-0" aria-hidden="true" />
-              <span className="flex-1 text-left text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 truncate">
-                {[
-                  wasLabel ?? t("segWas" as Parameters<typeof t>[0]),
-                  city ? getCityLabel(city) : t("segWo" as Parameters<typeof t>[0]),
-                  (wannLabel && wannLabel !== wannDefault) ? wannLabel : t("segWann" as Parameters<typeof t>[0]),
-                ].join("  ·  ")}
-              </span>
-            </button>
-            {(wasLabel || city) && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCategory(null);
-                  setCity("basel");
-                  setDateKey("any");
-                  setTimeKey("any");
-                  setQuery("");
-                }}
-                className="p-1.5 rounded-full hover:bg-s-ink/5 shrink-0"
-                aria-label={t("reset" as Parameters<typeof t>[0])}
-              >
-                <X size={13} className="text-s-ink/40 dark:text-s-dm-text/40" />
-              </button>
-            )}
-          </motion.div>
-        ) : !isOpen ? (
-          /* ── FULL 3-SEGMENT PILL (top of page) ──────────────────────────── */
+        {!isOpen ? (
+          /* ── FULL 3-SEGMENT PILL ─────────────────────────────────────────── */
           <motion.div
             key="full"
             initial={{ opacity: 0, scale: 0.97 }}
@@ -399,7 +350,7 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/40"
+              className="fixed inset-0 z-[60] bg-black/40"
               style={{ backdropFilter: "blur(2px)" }}
               onClick={close}
               aria-hidden="true"
@@ -415,7 +366,7 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
               initial={{ y: "100%" }}
               animate={{ y: 0, transition: { duration: 0.32, ease: [0.32, 0.72, 0, 1] } }}
               exit={{ y: "100%", transition: { duration: 0.24, ease: "easeIn" } }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-s-dm-surface flex flex-col"
+              className="fixed bottom-0 left-0 right-0 z-[70] bg-white dark:bg-s-dm-surface flex flex-col"
               style={{
                 borderRadius: "24px 24px 0 0",
                 maxHeight: "88svh",

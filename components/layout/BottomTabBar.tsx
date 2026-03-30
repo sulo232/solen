@@ -89,7 +89,23 @@ export default function BottomTabBar() {
                 aria-label={t(key as any)}
                 aria-current={isActive ? "page" : undefined}
               >
-                <Icon className="w-6 h-6" strokeWidth={isActive ? 2.2 : 1.6} />
+                <Icon
+                  className="w-6 h-6 transition-transform duration-200 ease-out"
+                  style={{ transform: isActive ? "translateY(-1px)" : "translateY(0)" }}
+                  strokeWidth={isActive ? 2.2 : 1.6}
+                />
+                {isActive && (
+                  <span
+                    className="absolute bottom-[8px] left-1/2"
+                    style={{
+                      width: 4, height: 4, borderRadius: 2,
+                      background: "#E8735A",
+                      transform: "translateX(-50%) scale(1)",
+                      animation: "dotPop 200ms cubic-bezier(0.34,1.56,0.64,1)",
+                    }}
+                    aria-hidden="true"
+                  />
+                )}
                 <span className={cn(
                   "text-[10px] font-heading font-semibold tracking-[.04em] leading-none",
                   isActive ? "text-s-coral" : "text-s-ink/40 dark:text-s-dm-text/40"

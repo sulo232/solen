@@ -32,8 +32,8 @@ export default function FeaturedSalonCarousel({ salons, locale }: FeaturedSalonC
 
       {/* Horizontal scroll container — always renders 4 slots */}
       <div
-        className="flex gap-4 overflow-x-auto scrollbar-hide px-4 pb-2 snap-x snap-mandatory"
-        style={{ WebkitOverflowScrolling: "touch" } as React.CSSProperties}
+        className="flex gap-4 overflow-x-auto scrollbar-hide px-6 pb-2 snap-x snap-mandatory"
+        style={{ WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain", scrollPaddingLeft: "24px" } as React.CSSProperties}
       >
         {useReal
           ? salonsWithPhotos.slice(0, 8).map((salon, index) => (

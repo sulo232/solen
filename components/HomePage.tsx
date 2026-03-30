@@ -130,7 +130,7 @@ function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
-      style={{ flexShrink: 0, scrollSnapAlign: "start" }}
+      style={{ flexShrink: 0, scrollSnapAlign: "start", width: 140 }}
     >
       <Link
         href={href}
@@ -144,7 +144,7 @@ function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, 
           boxShadow: "none",
           textDecoration: "none",
         }}
-        className="active:scale-[0.97] active:opacity-85 transition-[transform,opacity] duration-[120ms] ease-out"
+        className="card-tap active:scale-[0.97] active:opacity-85 transition-[transform,opacity] duration-[120ms] ease-out"
         aria-label={label}
       >
         {/* Photo area — 4:3 */}
@@ -205,10 +205,8 @@ function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, 
           <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "14px", color: "#1A1A1A", margin: 0, lineHeight: 1.2 }}>
             {label}
           </p>
-          <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: showPopulatedState ? "#8A8178" : "#B5AFA8", margin: "4px 0 0", lineHeight: 1.2 }}>
-            {showPopulatedState
-              ? (count === 1 ? "1 Salon" : `${count} Salons`)
-              : "Bald verfügbar"}
+          <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: count > 0 ? "#8A8178" : "#B5AFA8", margin: "4px 0 0", lineHeight: 1.2 }}>
+            {count > 0 ? (count === 1 ? "1 Salon" : `${count} Salons`) : "Bald verfügbar"}
           </p>
         </div>
       </Link>
@@ -365,9 +363,9 @@ export default function HomePage({ initialData }: HomePageProps) {
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
       {/* ── Hero (compact) ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14 min-h-[500px] flex flex-col justify-end bg-[#F5F0EB] dark:bg-s-dm-bg">
+      <section className="animate-in relative overflow-hidden pt-6 pb-10 sm:pb-14 bg-[#F5F0EB] dark:bg-s-dm-bg" style={{ animationDelay: "0ms" }}>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full mt-auto">
+        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-left">
             {/* Greeting / headline */}
             <motion.h1 variants={fadeUp}
@@ -428,7 +426,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── Category Cards (A.2 — skeleton-first photo cards) ──────────────── */}
-      <section id="tour-services" ref={categoryRef} className="pt-8 pb-6 relative z-[1]">
+      <section id="tour-services" ref={categoryRef} className="animate-in pt-8 pb-6 relative z-[1]" style={{ animationDelay: "160ms" }}>
         <div className="max-w-5xl mx-auto">
           <span className="block font-body font-semibold text-[12px] uppercase mb-4 px-6" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
             {t("categories.label")}
@@ -436,13 +434,15 @@ export default function HomePage({ initialData }: HomePageProps) {
 
           {/* Horizontal scroll row */}
           <div
-            className="flex overflow-x-auto gap-[14px] pb-1"
+            className="scroll-fade-right flex overflow-x-auto gap-[14px] pb-1"
             style={{
               scrollSnapType: "x mandatory",
               WebkitOverflowScrolling: "touch",
               scrollbarWidth: "none",
               padding: "0 24px",
-            }}
+              scrollPaddingLeft: "24px",
+              overscrollBehaviorX: "contain",
+            } as React.CSSProperties}
           >
             {CATEGORIES
               .filter(({ key }) => key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled)
@@ -471,7 +471,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       </section>
 
       {/* ── "BELIEBT IN DEINER NÄHE" salon carousel (A.3 — step 4) ─────────── */}
-      <section className="pb-8 relative z-[1]">
+      <section className="animate-in pb-8 relative z-[1]" style={{ animationDelay: "240ms" }}>
         <FeaturedSalonCarousel salons={salons} locale={locale} />
       </section>
 
@@ -504,7 +504,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Discover Preview — step 5 per A.6 ──────────────────────────────── */}
       {/* z-[2] + opaque bg blocks any bleed from category icons above (A.5) */}
-      <section className="max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden relative z-[2]" style={{ background: "#F5F0EB" }}>
+      <section className="animate-in max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden relative z-[2]" style={{ background: "#F5F0EB", animationDelay: "320ms" }}>
         <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>{t("discover.eyebrow")}</span>
