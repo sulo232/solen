@@ -42,10 +42,15 @@ export default function BottomTabBar() {
 
   if (isHidden) return null;
 
-  const handleTabClick = (key: TabKey, requiresAuth: boolean, e: React.MouseEvent) => {
+  const handleTabClick = (key: TabKey, requiresAuth: boolean, isActive: boolean, e: React.MouseEvent) => {
     if (requiresAuth && !session) {
       e.preventDefault();
       setLoginSheet({ open: true, context: key });
+      return;
+    }
+    if (isActive) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -76,7 +81,7 @@ export default function BottomTabBar() {
               <Link
                 key={key}
                 href={fullHref}
-                onClick={(e) => handleTabClick(key, requiresAuth, e)}
+                onClick={(e) => handleTabClick(key, requiresAuth, isActive, e)}
                 className={cn(
                   "relative flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[44px] transition-colors duration-150",
                   isActive ? "text-s-coral" : "text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-ink/70"

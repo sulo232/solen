@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  Menu, X, User, Compass, CalendarDays, Heart, LogOut, Search,
+  Menu, X, User, Compass, CalendarDays, Heart, LogOut, Search, MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
@@ -76,6 +76,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   // Hide global header on dashboard and auth pages (they have their own navigation)
   const isHidden = pathname.includes("/dashboard") || pathname.includes("/auth/");
 
+  // Hide category nav on non-category/non-discovery pages (partner, compare, legal, help, etc.)
+  const withoutLocale = pathname.replace(/^\/[a-z]{2}/, "") || "/";
+  const CATEGORY_PATHS = ["/coiffeur", "/barbershop", "/nails", "/spa", "/makeup", "/waxing", "/discover", "/angebote", "/search"];
+  const showCategoryNav = withoutLocale === "/" || CATEGORY_PATHS.some((p) => withoutLocale.startsWith(p));
+
   // Check session for profile/login redirect — uses browser client directly (API routes timeout on custom domain)
   useEffect(() => {
     import("@/lib/supabase-browser").then(({ createBrowserSupabaseClient }) => {
@@ -123,8 +128,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             </Link>
           </div>
 
-          {/* Desktop nav — V4: always visible */}
-          <nav className="hidden md:flex items-center gap-1.5 transition-opacity duration-300" aria-label="Hauptnavigation">
+          {/* Desktop nav — only on homepage + category/discovery pages */}
+          {showCategoryNav && <nav className="hidden md:flex items-center gap-1.5 transition-opacity duration-300" aria-label="Hauptnavigation">
             {NAV_LINKS.map(({ key, href, Icon }) => {
               const isActive = pathname.includes(href);
               return (
@@ -152,7 +157,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 </Link>
               );
             })}
-          </nav>
+          </nav>}
 
           {/* Compact search pill — desktop only, visible when scrolled */}
           {scrolled && (
