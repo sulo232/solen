@@ -1,21 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { usePostHog } from "posthog-js/react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Scissors,
   RefreshCw,
-  MapPin,
-  Paintbrush,
-  Droplets,
-  Sparkles,
-  Flame,
-  ScissorsLineDashed,
   Search,
+  Compass,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
 import Skeleton from "@/components/ui/Skeleton";
@@ -34,7 +28,6 @@ import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import FeaturedSalonCarousel from "@/components/ui/FeaturedSalonCarousel";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
-import { CLIENT_FEATURE_FLAGS } from "@/lib/feature-flags";
 import { getPersistedCity } from "@/lib/city-cookie";
 import { type CitySlug } from "@/lib/cities";
 import { gridContainerVariants, gridItemVariants, headingVariants } from "@/lib/motion";
@@ -77,54 +70,108 @@ const fadeUp = {
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
 import { BarberIcon } from "@/components/icons/category/BarberIcon";
 import { NailsIcon } from "@/components/icons/category/NailsIcon";
-import { SpaIcon } from "@/components/icons/category/SpaIcon";
 import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
 import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Category card data (A.2 — photo cards with skeleton-first)
+// Airbnb-style category cards (photo bg + Bebas Neue name + badge + price)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const CATEGORIES = [
-  { key: "coiffeur",   label: "Coiffeur", LucideIcon: Scissors          },
-  { key: "barbershop", label: "Barber",   LucideIcon: ScissorsLineDashed },
-  { key: "nails",      label: "Nails",    LucideIcon: Paintbrush         },
-  { key: "spa",        label: "Spa",      LucideIcon: Droplets           },
-  { key: "makeup",     label: "Makeup",   LucideIcon: Sparkles           },
-  { key: "waxing",     label: "Waxing",   LucideIcon: Flame              },
-] as const;
-
-// Drop a jpg into /public/images/categories/ to upgrade any card instantly
-const CATEGORY_IMAGES: Record<string, string | null> = {
-  coiffeur:   "/images/categories/coiffeur.jpg",
-  barbershop: "/images/categories/barbershop.jpg",
-  nails:      "/images/categories/nails.jpg",
-  spa:        null,
-  makeup:     null,
-  waxing:     null,
-};
-
+const BASE_CATEGORY_CARDS = [
+  {
+    key: "discover",
+    label: "Entdecken",
+    badge: "Inspiration",
+    area: "Discovery Feed",
+    price: null as string | null,
+    Icon: Compass,
+    gradient: "135deg, #6BA3C8 0%, #4A1E3C 100%",
+    imgSrc: null as string | null,
+  },
+  {
+    key: "coiffeur",
+    label: "Coiffeur",
+    badge: "Beliebt",
+    area: "Basel · 4051",
+    price: "$$",
+    Icon: CoiffeurIcon as React.ElementType,
+    gradient: "160deg, #C85A42 0%, #1A1209 100%",
+    imgSrc: "/images/categories/coiffeur.jpg",
+  },
+  {
+    key: "nails",
+    label: "Nägel",
+    badge: "Trending",
+    area: "Basel · 4051",
+    price: "$",
+    Icon: NailsIcon as React.ElementType,
+    gradient: "160deg, #C4910A 0%, #2A1A00 100%",
+    imgSrc: "/images/categories/nails.jpg",
+  },
+  {
+    key: "barbershop",
+    label: "Barbershop",
+    badge: "Gefragt",
+    area: "Basel · 4053",
+    price: "$",
+    Icon: BarberIcon as React.ElementType,
+    gradient: "160deg, #3A1630 0%, #1A1209 100%",
+    imgSrc: "/images/categories/barbershop.jpg",
+  },
+  {
+    key: "makeup",
+    label: "Makeup",
+    badge: "Beliebt",
+    area: "Basel · 4051",
+    price: "$$",
+    Icon: MakeupIcon as React.ElementType,
+    gradient: "160deg, #B8720A 0%, #1A1209 100%",
+    imgSrc: null,
+  },
+  {
+    key: "waxing",
+    label: "Waxing",
+    badge: "Schnell",
+    area: "Basel · 4058",
+    price: "$$",
+    Icon: WaxingIcon as React.ElementType,
+    gradient: "160deg, #5A8A66 0%, #1A1209 100%",
+    imgSrc: null,
+  },
+];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CategoryPhotoCard (A.2 — skeleton-first photo card)
+// AirbnbCategoryCard — full-bleed photo card with gradient fallback
 // ─────────────────────────────────────────────────────────────────────────────
 
-type CategoryPhotoCardProps = {
-  href: string;
+type AirbnbCategoryCardProps = {
+  catKey: string;
   label: string;
-  LucideIcon: React.ElementType;
+  href: string;
+  badge: string;
+  area: string;
+  price: string | null;
+  Icon: React.ElementType;
+  gradient: string;
   imgSrc: string | null;
-  count: number;
-  populated: boolean;
   animationIndex: number;
+  isRecent: boolean;
 };
 
-function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, animationIndex }: CategoryPhotoCardProps) {
+function AirbnbCategoryCard({
+  catKey, label, href, badge, area, price, Icon, gradient, imgSrc, animationIndex, isRecent,
+}: AirbnbCategoryCardProps) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const showPopulatedState = populated && imgSrc && !imgError;
+  const hasPhoto = !!imgSrc && !imgError;
+
+  const handleClick = () => {
+    if (catKey !== "discover") {
+      try { localStorage.setItem("solen_recent_category", catKey); } catch {}
+    }
+  };
 
   return (
     <motion.div
@@ -133,45 +180,35 @@ function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
-      style={{ flexShrink: 0, scrollSnapAlign: "start", width: 140 }}
+      style={{ flexShrink: 0, scrollSnapAlign: "start" }}
     >
       <Link
         href={href}
-        style={{
-          display: "block",
-          width: "140px",
-          borderRadius: "14px",
-          overflow: "hidden",
-          background: "#FFFFFF",
-          border: "1px solid rgba(0,0,0,0.06)",
-          boxShadow: "none",
-          textDecoration: "none",
-        }}
-        className="card-tap active:scale-[0.97] active:opacity-85 transition-[transform,opacity] duration-[120ms] ease-out"
+        onClick={handleClick}
         aria-label={label}
+        style={{ display: "block", textDecoration: "none" }}
+        className="active:scale-[0.97] transition-transform duration-[120ms] ease-out"
       >
-        {/* Photo area — 4:3 */}
-        <div style={{ position: "relative", width: "140px", height: "105px", borderRadius: "14px 14px 0 0", overflow: "hidden" }}>
-          {/* Skeleton gradient (always behind) */}
+        <div
+          style={{
+            position: "relative",
+            width: "155px",
+            height: "200px",
+            borderRadius: "16px",
+            overflow: "hidden",
+          }}
+        >
+          {/* Gradient base */}
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: "linear-gradient(135deg, #EDE8E2 0%, #E3DDD6 100%)",
+              background: `linear-gradient(${gradient})`,
             }}
           />
-          {/* Shimmer overlay — 2 cycles then stops */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: "linear-gradient(90deg, transparent 0%, rgba(245,240,235,0.7) 40%, transparent 80%)",
-              backgroundSize: "200% 100%",
-              animation: "skeletonShimmer 1.8s ease-in-out 2",
-            }}
-          />
-          {/* Curated/dynamic image */}
-          {showPopulatedState && (
+
+          {/* Photo (fades in over gradient) */}
+          {hasPhoto && (
             <img
               src={imgSrc!}
               alt={label}
@@ -182,35 +219,118 @@ function CategoryPhotoCard({ href, label, LucideIcon, imgSrc, count, populated, 
                 height: "100%",
                 objectFit: "cover",
                 opacity: imgLoaded ? 1 : 0,
-                transition: "opacity 300ms ease",
+                transition: "opacity 400ms ease",
               }}
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
               loading={animationIndex < 2 ? "eager" : "lazy"}
             />
           )}
-          {/* Category icon centered */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: showPopulatedState && imgLoaded ? 0 : 0.6,
-            transition: "opacity 300ms ease",
-          }}>
-            <LucideIcon size={32} strokeWidth={1.5} color="#C4BBB2" />
-          </div>
-        </div>
 
-        {/* Content area */}
-        <div style={{ padding: "10px 12px 12px" }}>
-          <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "14px", color: "#1A1A1A", margin: 0, lineHeight: 1.2 }}>
-            {label}
-          </p>
-          <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: count > 0 ? "#8A8178" : "#B5AFA8", margin: "4px 0 0", lineHeight: 1.2 }}>
-            {count > 0 ? (count === 1 ? "1 Salon" : `${count} Salons`) : "Bald verfügbar"}
-          </p>
+          {/* Icon (shows when no photo or photo loading) */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: hasPhoto && imgLoaded ? 0 : 0.28,
+              transition: "opacity 400ms ease",
+              pointerEvents: "none",
+            }}
+          >
+            <Icon size={52} color="#FFFFFF" />
+          </div>
+
+          {/* Bottom gradient for text legibility */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.22) 55%, rgba(0,0,0,0) 100%)",
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Badge — top left */}
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              background: "rgba(255,255,255,0.90)",
+              backdropFilter: "blur(6px)",
+              borderRadius: "9999px",
+              padding: "3px 9px",
+              fontSize: "9px",
+              fontFamily: "var(--font-heading)",
+              fontWeight: 700,
+              color: "#1A1209",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            {badge}
+          </div>
+
+          {/* Recently visited dot — top right */}
+          {isRecent && (
+            <div
+              style={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#E8624A",
+                boxShadow: "0 0 0 2px rgba(255,255,255,0.8)",
+              }}
+            />
+          )}
+
+          {/* Bottom info */}
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "10px 12px 12px" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "21px",
+                color: "#FFFFFF",
+                margin: 0,
+                lineHeight: 0.95,
+                letterSpacing: "0.02em",
+              }}
+            >
+              {label.toUpperCase()}
+            </p>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 4 }}>
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "10px",
+                  color: "rgba(255,255,255,0.65)",
+                  margin: 0,
+                }}
+              >
+                {area}
+              </p>
+              {price && (
+                <p
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "11px",
+                    color: "rgba(255,255,255,0.80)",
+                    margin: 0,
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {price}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </Link>
     </motion.div>
@@ -271,6 +391,22 @@ export default function HomePage({ initialData }: HomePageProps) {
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
+
+  // Recently visited category (persisted in localStorage)
+  const [recentCategory, setRecentCategory] = useState<string | null>(null);
+  useEffect(() => {
+    try { setRecentCategory(localStorage.getItem("solen_recent_category")); } catch {}
+  }, []);
+
+  // Sort recently visited category to position 1 (after Entdecken)
+  const orderedCategories = useMemo(() => {
+    if (!recentCategory) return BASE_CATEGORY_CARDS;
+    const discover = BASE_CATEGORY_CARDS[0];
+    const recent = BASE_CATEGORY_CARDS.find((c) => c.key === recentCategory);
+    if (!recent || recent.key === "discover") return BASE_CATEGORY_CARDS;
+    const rest = BASE_CATEGORY_CARDS.filter((c) => c.key !== "discover" && c.key !== recentCategory);
+    return [discover, recent, ...rest];
+  }, [recentCategory]);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [sections, setSections] = useState<Record<string, boolean>>(
@@ -401,52 +537,39 @@ export default function HomePage({ initialData }: HomePageProps) {
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
-      {/* ── Category Icon Row (Airbnb-style) ────────────────────────────── */}
-      <section id="tour-services" ref={categoryRef} className="animate-in pt-3 pb-2 relative z-[1]" style={{ animationDelay: "80ms" }}>
+      {/* ── Category Photo Cards (Airbnb-style) ─────────────────────────── */}
+      <section id="tour-services" ref={categoryRef} className="animate-in pt-4 pb-0 relative z-[1]" style={{ animationDelay: "80ms" }}>
         <div
-          className="flex overflow-x-auto gap-1 pb-1"
+          className="flex overflow-x-auto gap-3 pb-4"
           style={{
             scrollbarWidth: "none",
             WebkitOverflowScrolling: "touch",
-            padding: "0 16px",
+            padding: "0 16px 12px",
             overscrollBehaviorX: "contain",
+            scrollSnapType: "x mandatory",
           } as React.CSSProperties}
         >
-          {[
-            { key: "coiffeur",   Icon: CoiffeurIcon },
-            { key: "barbershop", Icon: BarberIcon   },
-            { key: "nails",      Icon: NailsIcon    },
-            ...(CLIENT_FEATURE_FLAGS.isMassageSpaEnabled ? [{ key: "spa", Icon: SpaIcon }] : []),
-            { key: "makeup",     Icon: MakeupIcon   },
-            { key: "waxing",     Icon: WaxingIcon   },
-          ].map(({ key, Icon }) => {
-            const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
-            const label = tNav(key) as string;
-            const isActive = typeof window !== "undefined" && window.location.pathname.includes(`/${key}`);
-            return (
-              <Link
-                key={key}
-                href={href}
-                className="flex flex-col items-center gap-2 py-3 shrink-0 active:scale-[0.96] transition-transform duration-100 card-tap group"
-                style={{ minWidth: 80 }}
-                aria-label={label}
-              >
-                {/* Icon card */}
-                <div
-                  className="flex items-center justify-center w-14 h-14 rounded-xl border border-s-ink/[0.08] bg-[--raised] group-hover:border-s-coral/40 group-hover:bg-s-coral/[0.04] transition-colors duration-200"
-                  style={{ boxShadow: "0 1px 4px rgba(26,18,9,.05)" }}
-                >
-                  <Icon width={28} height={28} className="text-s-ink/60 group-hover:text-s-coral transition-colors duration-200" />
-                </div>
-                <span className="text-[11px] font-heading font-semibold text-s-ink/55 whitespace-nowrap leading-none group-hover:text-s-coral transition-colors duration-200">
-                  {label}
-                </span>
-              </Link>
-            );
-          })}
+          {orderedCategories.map(({ key, label, badge, area, price, Icon, gradient, imgSrc }, i) => (
+            <AirbnbCategoryCard
+              key={key}
+              catKey={key}
+              label={label}
+              href={key === "discover"
+                ? `/${locale}/discover`
+                : persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
+              badge={badge}
+              area={area}
+              price={price}
+              Icon={Icon}
+              gradient={gradient}
+              imgSrc={imgSrc}
+              animationIndex={i}
+              isRecent={recentCategory === key}
+            />
+          ))}
         </div>
-        {/* Bottom border line under category row */}
-        <div className="border-b border-s-ink/[0.06] mt-1" />
+        {/* Bottom divider */}
+        <div className="border-b border-s-ink/[0.06] mx-4" />
       </section>
 
       {/* ── Per-city Salon Carousels (Airbnb-style cards) ───────────────── */}

@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List } from "lucide-react";
+import { ChevronRight, Phone, Globe, Building2, Star, Scissors, Map as MapIcon, List, MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 import FilterBar from "@/components/ui/FilterBar";
 import SearchAutocomplete from "@/components/ui/SearchAutocomplete";
@@ -17,7 +17,7 @@ import SolenExclusiveBadge from "@/components/ui/SolenExclusiveBadge";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
 import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
-import { type CitySlug, getCityName } from "@/lib/cities";
+import { type CitySlug, getCityName, CITY_SLUGS, CITIES } from "@/lib/cities";
 import SearchCriteriaChips from "@/components/search/SearchCriteriaChips";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
@@ -330,6 +330,48 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       {/* Search + Filters */}
       <div className="sticky top-[56px] sm:top-[60px] z-40 glass-toolbar">
         <div className="max-w-5xl mx-auto px-3 sm:px-6 py-2 sm:py-3">
+
+          {/* City selector pills */}
+          <div
+            className="flex gap-2 overflow-x-auto pb-2"
+            style={{ scrollbarWidth: "none" } as React.CSSProperties}
+          >
+            {/* All cities */}
+            <button
+              onClick={() => routerNav.push(`/${locale}/${category}`)}
+              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
+              style={{
+                border: !city ? "1.5px solid #1A1209" : "1.5px solid rgba(26,18,9,0.12)",
+                background: !city ? "#1A1209" : "var(--raised)",
+                color: !city ? "#FFFFFF" : "rgba(26,18,9,0.55)",
+              }}
+            >
+              <MapPin size={10} />
+              Alle Städte
+            </button>
+
+            {/* Per-city pills */}
+            {CITY_SLUGS.map((slug) => {
+              const isActive = city === slug;
+              const cityLabel = getCityName(slug, locale);
+              return (
+                <button
+                  key={slug}
+                  onClick={() => routerNav.push(`/${locale}/${slug}/${category}`)}
+                  className="shrink-0 px-3 py-1.5 rounded-pill text-[11px] font-heading font-bold uppercase tracking-[.06em] transition-[background-color,color,border-color] duration-150"
+                  style={{
+                    border: isActive ? "1.5px solid #E8624A" : "1.5px solid rgba(26,18,9,0.12)",
+                    background: isActive ? "#E8624A" : "var(--raised)",
+                    color: isActive ? "#FFFFFF" : "rgba(26,18,9,0.55)",
+                    boxShadow: isActive ? "0 2px 6px rgba(232,98,74,.25)" : undefined,
+                  }}
+                >
+                  {cityLabel}
+                </button>
+              );
+            })}
+          </div>
+
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>
