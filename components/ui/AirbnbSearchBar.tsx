@@ -59,7 +59,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
           className="hidden md:block"
         >
           <div
-            className="flex items-stretch bg-[--raised] rounded-search border border-s-ink/[0.08] shadow-elevation-2 overflow-visible relative"
+            className="flex items-stretch bg-[--raised] rounded-search border border-s-ink/[0.08] shadow-elevation-2 hover:shadow-elevation-3 hover:scale-[1.005] transition-[box-shadow,transform] duration-[250ms] ease-[cubic-bezier(0.23,1,0.32,1)] overflow-visible relative"
             style={{ height: 64 }}
           >
             {/* Segment 1: Was */}

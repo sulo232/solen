@@ -28,7 +28,7 @@ export default async function Page() {
   // SSR Critical Data
   const supabase = await createServerSupabaseClient();
   
-  const SALON_COLS = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code";
+  const SALON_COLS = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, services(price)";
 
   // Parallel DB queries
   const [
@@ -72,6 +72,17 @@ export default async function Page() {
   // Build city slug lookup map
   const cityMap: Record<string, string> = {};
   (citiesData ?? []).forEach((c: { id: string; slug: string }) => { cityMap[c.id] = c.slug; });
+
+  // Process salons: add city_slug + compute min_price from joined services, then strip services
+  const processSalons = (salons: any[]) => salons.map((s) => {
+    const prices = (s.services ?? []).map((sv: { price: number }) => sv.price).filter((p: number) => typeof p === "number" && p > 0);
+    const min_price = prices.length > 0 ? Math.min(...prices) : null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { services: _services, ...rest } = s;
+    return { ...rest, min_price, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null };
+  });
+
+  // Backwards-compat alias for queries that don't join services
   const addCitySlug = (salons: any[]) => salons.map((s) => ({ ...s, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null }));
 
   // Deduplicate trending against popular
@@ -101,11 +112,11 @@ export default async function Page() {
       social_proof: true, partner_cta: true,
     },
     categorySalons: {
-      coiffeur:   addCitySlug((coiffeurData   as unknown as any[]) ?? []),
-      nails:      addCitySlug((nailsData      as unknown as any[]) ?? []),
-      barbershop: addCitySlug((barbershopData as unknown as any[]) ?? []),
-      makeup:     addCitySlug((makeupData     as unknown as any[]) ?? []),
-      waxing:     addCitySlug((waxingData     as unknown as any[]) ?? []),
+      coiffeur:   processSalons((coiffeurData   as unknown as any[]) ?? []),
+      nails:      processSalons((nailsData      as unknown as any[]) ?? []),
+      barbershop: processSalons((barbershopData as unknown as any[]) ?? []),
+      makeup:     processSalons((makeupData     as unknown as any[]) ?? []),
+      waxing:     processSalons((waxingData     as unknown as any[]) ?? []),
     },
   };
 

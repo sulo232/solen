@@ -48,21 +48,21 @@ export default function CityCarouselSection({
             {title}
           </h2>
         )}
-        {viewAllLabel && salons.length > 4 && (
+        {viewAllLabel && salons.length > 2 && (
           viewAllHref ? (
             <Link
               href={viewAllHref}
               onClick={onViewAll}
-              className="font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors shrink-0 pb-1"
+              className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors shrink-0 pb-1"
             >
-              {viewAllLabel} →
+              {viewAllLabel} <span className="inline-block transition-transform duration-150 group-hover:translate-x-1">→</span>
             </Link>
           ) : (
             <span
-              className="font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors cursor-pointer shrink-0 pb-1"
+              className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors cursor-pointer shrink-0 pb-1"
               onClick={onViewAll}
             >
-              {viewAllLabel} →
+              {viewAllLabel} <span className="inline-block transition-transform duration-150 group-hover:translate-x-1">→</span>
             </span>
           )
         )}

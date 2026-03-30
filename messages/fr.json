@@ -220,6 +220,8 @@
       "segWann": "Quand",
       "segWasPlaceholder": "Coiffeur, Ongles…",
       "wannDefault": "Aujourd'hui",
+      "tomorrow": "Demain",
+      "thisWeekend": "Ce week-end",
       "openWas": "Ouvrir recherche quoi",
       "openWo": "Ouvrir recherche où",
       "openWann": "Ouvrir recherche quand",

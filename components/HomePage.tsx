@@ -256,6 +256,29 @@ export default function HomePage({ initialData }: HomePageProps) {
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
+      {/* ── Category Anchor Strip (GAP-3) ───────────────────────────────── */}
+      {orderedSectionKeys.some(({ key }) => (categorySalons[key] ?? []).length > 0) && (
+        <div className="max-w-5xl mx-auto px-6 pt-4 pb-2">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            {orderedSectionKeys.map(({ key, label }) => {
+              if ((categorySalons[key] ?? []).length === 0) return null;
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    const el = document.getElementById(`carousel-${key}`);
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="flex-shrink-0 px-4 py-1.5 rounded-pill text-[13px] font-heading font-semibold bg-s-ink/[0.05] text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/[0.09] hover:text-s-ink dark:hover:text-s-dm-text transition-all duration-150 whitespace-nowrap"
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* ── Per-category Salon Carousels ────────────────────────────────── */}
       <div
         id="tour-services"
@@ -296,17 +319,18 @@ export default function HomePage({ initialData }: HomePageProps) {
             recordVisit(key);
           };
           return (
-            <CityCarouselSection
-              key={key}
-              title={label}
-              viewAllHref={href}
-              viewAllLabel={t("featured.viewAll")}
-              salons={catSalons}
-              locale={locale}
-              favoriteIds={favoriteIds}
-              onFavoriteToggle={handleFavoriteToggle}
-              onViewAll={handleVisit}
-            />
+            <div key={key} id={`carousel-${key}`}>
+              <CityCarouselSection
+                title={label}
+                viewAllHref={href}
+                viewAllLabel={t("featured.viewAll")}
+                salons={catSalons}
+                locale={locale}
+                favoriteIds={favoriteIds}
+                onFavoriteToggle={handleFavoriteToggle}
+                onViewAll={handleVisit}
+              />
+            </div>
           );
         })}
       </div>

@@ -297,7 +297,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                       container.scrollTo({ left: i * container.clientWidth, behavior: 'smooth' });
                     }
                   }}
-                  className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-1.5 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/50 hover:bg-white/80"}`}
+                  className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-2 h-2 bg-white" : "w-2 h-2 bg-white/50 hover:bg-white/80"}`}
                   aria-label={`Photo ${i + 1}`}
                 />
               ))}
@@ -318,6 +318,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               <div className="flex items-center gap-1 shrink-0 mt-0.5">
                 <Star className="w-3.5 h-3.5 fill-s-ink dark:fill-s-dm-text text-s-ink dark:text-s-dm-text" />
                 <span className="text-[14px] data-text text-s-ink dark:text-s-dm-text font-medium">{salon.average_rating.toFixed(2)}</span>
+                {salon.review_count > 0 && (
+                  <span className="text-[13px] text-s-ink/50 dark:text-s-dm-text/50 font-body">({salon.review_count})</span>
+                )}
               </div>
             ) : salon.review_count === 0 ? (
               <div className="flex items-center gap-1 shrink-0 mt-0.5 text-[13px] text-s-ink/60 font-body">Neu</div>
