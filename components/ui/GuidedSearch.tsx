@@ -115,6 +115,24 @@ export default function GuidedSearch() {
     if (isOpen && step === 1) setTimeout(() => inputRef.current?.focus(), 120);
   }, [isOpen, step]);
 
+  // Adjust sheet height when mobile keyboard opens
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = () => {
+      const viewport = window.visualViewport;
+      if (!viewport) return;
+      const keyboardHeight = window.innerHeight - viewport.height;
+      const sheet = document.getElementById("gs-sheet");
+      if (sheet) {
+        sheet.style.maxHeight = keyboardHeight > 100
+          ? `${viewport.height - 20}px`
+          : "88svh";
+      }
+    };
+    window.visualViewport?.addEventListener("resize", handler);
+    return () => window.visualViewport?.removeEventListener("resize", handler);
+  }, [isOpen]);
+
   // Track scroll position for compact pill
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -365,6 +383,7 @@ export default function GuidedSearch() {
 
             {/* Sheet */}
             <motion.div
+              id="gs-sheet"
               key="gs-sheet"
               role="dialog"
               aria-modal="true"
@@ -416,7 +435,7 @@ export default function GuidedSearch() {
               </div>
 
               {/* Scrollable content area */}
-              <div className="flex-1 overflow-y-auto overscroll-contain">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
                 <div className="px-6">
 
                   {/* ── Collapsed Was row (step 2+3) ── */}
