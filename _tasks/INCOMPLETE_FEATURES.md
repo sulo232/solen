@@ -351,5 +351,14 @@ case "payment_intent.succeeded": {
 
 ---
 
-**Last Updated:** 2026-03-29
+## Search Flow — Deferred Items (2026-03-30)
+
+- **Swipe-to-close gesture** for bottom sheet — requires `@use-gesture/react`, separate task.
+- **Autocomplete suggestions** in Was step while typing — requires `/api/search/suggest` endpoint, separate task.
+- **Desktop popover variant** — bottom sheet is used on all screen sizes currently; a dedicated desktop dropdown experience is deferred.
+- **Re-open with pre-filled context** — when landing on results page, clicking the header search pill should re-open the sheet with current URL params pre-filled. Requires reading `searchParams` and hydrating GuidedSearch state.
+
+---
+
+**Last Updated:** 2026-03-30
 **Maintained By:** All AI agents (Dev 1, Dev 2, Dev 3, Bug Agent)
