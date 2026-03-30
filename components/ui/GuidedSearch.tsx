@@ -496,25 +496,31 @@ export default function GuidedSearch() {
                         {/* Category list OR service drill-down */}
                         {!showServices ? (
                           <>
-                            {/* 2-col category card grid */}
-                            <div className="grid grid-cols-2 gap-2 mb-4">
-                              {/* All services card first */}
+                            {/* Vertical category list */}
+                            <div className="flex flex-col divide-y divide-[#F5F5F5] dark:divide-white/[0.06] mb-2">
+                              {/* All services row */}
                               <button
                                 onClick={() => selectService(null)}
-                                className={cn(
-                                  "flex items-center gap-3 px-4 py-3.5 rounded-card border transition-all text-left",
-                                  !category
-                                    ? "border-s-coral bg-s-coral/5 text-s-coral"
-                                    : "border-s-ink/10 bg-white dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40"
-                                )}
                                 aria-label={t("steps.was.skip" as Parameters<typeof t>[0])}
+                                className={cn(
+                                  "w-full flex items-center gap-4 py-4 text-left transition-colors",
+                                  !category
+                                    ? "text-s-coral"
+                                    : "text-s-ink/70 dark:text-s-dm-text/70 hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
+                                )}
                               >
-                                <Star size={18} className="shrink-0" aria-hidden="true" />
-                                <div>
-                                  <p className="text-sm font-heading font-semibold leading-tight">
+                                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-ink/[0.04] dark:bg-white/[0.06] shrink-0">
+                                  <Star size={18} aria-hidden="true" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[14px] font-heading font-bold leading-tight">
                                     {t("steps.was.skip" as Parameters<typeof t>[0])}
                                   </p>
+                                  <p className="text-[12px] text-s-ink/45 dark:text-s-dm-text/45 leading-tight mt-0.5">
+                                    {t("steps.was.skipSub" as Parameters<typeof t>[0])}
+                                  </p>
                                 </div>
+                                {!category && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
                               </button>
 
                               {CATEGORY_LIST.map((cat) => (
@@ -523,21 +529,26 @@ export default function GuidedSearch() {
                                   onClick={() => selectCategory(cat.key)}
                                   aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
                                   className={cn(
-                                    "flex items-center gap-3 px-4 py-3.5 rounded-card border transition-all text-left",
+                                    "w-full flex items-center gap-4 py-4 text-left transition-colors",
                                     category === cat.key
-                                      ? "border-s-coral bg-s-coral/5 text-s-coral"
-                                      : "border-s-ink/10 bg-white dark:bg-s-dm-surface text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/40"
+                                      ? "bg-s-coral/[0.04] dark:bg-s-coral/[0.08]"
+                                      : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
                                   )}
                                 >
-                                  <cat.Icon width={18} height={18} className="shrink-0" />
-                                  <div>
-                                    <p className="text-sm font-heading font-semibold leading-tight">
+                                  <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-coral/[0.06] shrink-0">
+                                    <cat.Icon width={20} height={20} className={cn(category === cat.key ? "text-s-coral" : "text-s-ink/60 dark:text-s-dm-text/60")} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className={cn("text-[14px] font-heading font-bold leading-tight", category === cat.key ? "text-s-coral" : "text-s-ink dark:text-s-dm-text")}>
                                       {tNav(cat.key as Parameters<typeof tNav>[0])}
                                     </p>
-                                    <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 leading-tight mt-0.5 truncate">
+                                    <p className="text-[12px] text-s-ink/45 dark:text-s-dm-text/45 leading-tight mt-0.5 truncate">
                                       {getCatSub(cat)}
                                     </p>
                                   </div>
+                                  {category === cat.key && (
+                                    <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />
+                                  )}
                                 </button>
                               ))}
                             </div>
