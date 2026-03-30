@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, ChevronLeft, MapPin, Check, Star } from "lucide-react";
+import { Search, X, ChevronLeft, MapPin, Check, Star, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_SERVICES,
@@ -15,6 +15,9 @@ import {
 import { CITIES, CITY_SLUGS, type CitySlug } from "@/lib/cities";
 import { getPersistedCity } from "@/lib/city-cookie";
 import type { SalonCategory } from "@/lib/types";
+import { today, getLocalTimeZone } from "@internationalized/date";
+import type { CalendarDate } from "@internationalized/date";
+import SolenDatePicker from "@/components/ui/date-picker";
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
 import { BarberIcon } from "@/components/icons/category/BarberIcon";
 import { NailsIcon } from "@/components/icons/category/NailsIcon";
@@ -70,6 +73,8 @@ export default function GuidedSearch() {
   const [showServices,  setShowServices]  = useState(false);
   const [inputFocused,  setInputFocused]  = useState(false);
   const [scrolled,      setScrolled]      = useState(false);
+  const [showCalendar,  setShowCalendar]  = useState(false);
+  const [specificDate,  setSpecificDate]  = useState<CalendarDate | null>(null);
 
   const inputRef     = useRef<HTMLInputElement>(null);
   const cityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -186,7 +191,9 @@ export default function GuidedSearch() {
     const params = new URLSearchParams();
     if (service)                           params.set("q", service);
     else if (!category && query.trim())    params.set("q", query.trim());
-    const dateParam = dateKey !== "any" ? datePickToParam(dateKey) : null;
+    const dateParam = dateKey !== "any"
+      ? (/^\d{4}-\d{2}-\d{2}$/.test(dateKey) ? dateKey : datePickToParam(dateKey))
+      : null;
     if (dateParam)                         params.set("date", dateParam);
     if (timeKey !== "any")                 params.set("time", timeKey);
 
@@ -760,7 +767,11 @@ export default function GuidedSearch() {
                             return (
                               <button
                                 key={pick.key}
-                                onClick={() => setDateKey(pick.key)}
+                                onClick={() => {
+                                  setDateKey(pick.key);
+                                  setSpecificDate(null);
+                                  setShowCalendar(false);
+                                }}
                                 aria-label={label}
                                 aria-pressed={isSelected}
                                 className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-all duration-150"
@@ -775,6 +786,32 @@ export default function GuidedSearch() {
                             );
                           })}
                         </div>
+
+                        {/* Specific date toggle */}
+                        <button
+                          onClick={() => setShowCalendar(!showCalendar)}
+                          className="flex items-center gap-2 text-[13px] font-heading font-semibold text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral transition-colors mb-3 mt-1"
+                        >
+                          <CalendarIcon size={14} aria-hidden="true" />
+                          {t("steps.wann.specificDate" as Parameters<typeof t>[0])}
+                          <ChevronDown size={12} className={cn("transition-transform duration-200", showCalendar && "rotate-180")} />
+                        </button>
+
+                        {showCalendar && (
+                          <div className="mb-4 rounded-card border border-s-ink/[0.08] dark:border-white/[0.08] bg-white dark:bg-s-dm-surface overflow-hidden">
+                            <SolenDatePicker
+                              inline
+                              value={specificDate}
+                              onChange={(v) => {
+                                const cal = v as CalendarDate;
+                                setSpecificDate(cal);
+                                setDateKey(cal.toString());
+                              }}
+                              minValue={today(getLocalTimeZone())}
+                              locale={locale === "de" ? "de-CH" : locale}
+                            />
+                          </div>
+                        )}
 
                         {/* Time of day */}
                         <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mb-3">

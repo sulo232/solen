@@ -196,7 +196,8 @@
         "wann": {
           "title": "Wann?",
           "subtitle": "Datum wählen",
-          "timeLabel": "Tageszeit"
+          "timeLabel": "Tageszeit",
+          "specificDate": "Bestimmtes Datum wählen"
         }
       },
       "segWas": "Was",

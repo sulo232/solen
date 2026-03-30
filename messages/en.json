@@ -196,7 +196,8 @@
         "wann": {
           "title": "When?",
           "subtitle": "Choose date",
-          "timeLabel": "Time of day"
+          "timeLabel": "Time of day",
+          "specificDate": "Choose specific date"
         }
       },
       "segWas": "What",

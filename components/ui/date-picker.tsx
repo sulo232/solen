@@ -32,6 +32,8 @@ interface SolenDatePickerProps {
   className?: string;
   /** BCP 47 locale string — defaults to "de-CH" (Swiss German, dd.mm.yyyy) */
   locale?: string;
+  /** Render the calendar inline (no popover trigger) */
+  inline?: boolean;
 }
 
 export default function SolenDatePicker({
@@ -43,7 +45,65 @@ export default function SolenDatePicker({
   isDateUnavailable,
   className,
   locale = "de-CH",
+  inline,
 }: SolenDatePickerProps) {
+  if (inline) {
+    return (
+      <I18nProvider locale={locale ?? "de-CH"}>
+        <Calendar
+          value={value ?? undefined}
+          onChange={(v) => v && onChange?.(v)}
+          minValue={minValue}
+          maxValue={maxValue}
+          isDateUnavailable={isDateUnavailable}
+          className={cn("w-full p-3", className)}
+        >
+          <header className="flex items-center justify-between mb-2">
+            <Button
+              slot="previous"
+              className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4 text-s-ink/60" />
+            </Button>
+            <Heading className="text-sm font-heading font-semibold text-s-ink" />
+            <Button
+              slot="next"
+              className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
+            >
+              <ChevronRight className="w-4 h-4 text-s-ink/60" />
+            </Button>
+          </header>
+          <CalendarGrid className="w-full">
+            <CalendarGridHeader>
+              {(day) => (
+                <CalendarHeaderCell className="text-[10px] font-medium text-s-ink/40 pb-2 w-9 text-center">
+                  {day}
+                </CalendarHeaderCell>
+              )}
+            </CalendarGridHeader>
+            <CalendarGridBody>
+              {(date) => (
+                <CalendarCell
+                  date={date}
+                  className={({ isSelected, isDisabled, isUnavailable, isFocusVisible }) =>
+                    cn(
+                      "w-9 h-9 flex items-center justify-center rounded-btn text-sm data-text transition-colors cursor-pointer outline-none",
+                      isSelected && "bg-s-coral text-white font-semibold",
+                      !isSelected && !isDisabled && !isUnavailable && "hover:bg-s-coral/10 text-s-ink",
+                      isUnavailable && "text-s-ink/20 bg-s-bg-sunken cursor-default line-through",
+                      isDisabled && !isUnavailable && "text-s-ink/20 cursor-default",
+                      isFocusVisible && "ring-2 ring-s-coral ring-offset-1"
+                    )
+                  }
+                />
+              )}
+            </CalendarGridBody>
+          </CalendarGrid>
+        </Calendar>
+      </I18nProvider>
+    );
+  }
+
   return (
     <I18nProvider locale={locale}>
     <DatePicker

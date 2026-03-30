@@ -196,7 +196,8 @@
         "wann": {
           "title": "Quand ?",
           "subtitle": "Choisir une date",
-          "timeLabel": "Moment de la journée"
+          "timeLabel": "Moment de la journée",
+          "specificDate": "Choisir une date précise"
         }
       },
       "segWas": "Quoi",
