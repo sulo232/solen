@@ -159,20 +159,18 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             })}
           </nav>}
 
-          {/* Compact search pill — MOBILE: replaces logo when scrolled */}
-          {scrolled && (
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))
-              }
-              aria-label={t("search")}
-              className="flex sm:hidden items-center gap-2 px-4 py-2.5 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-s-dm-surface/60 text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/20 hover:text-s-ink transition-[border-color,color] backdrop-blur-sm flex-1 max-w-xs"
-              style={{ fontSize: 13, boxShadow: "0 1px 4px rgba(0,0,0,.06)" }}
-            >
-              <Search size={14} className="text-s-coral shrink-0" aria-hidden="true" />
-              <span className="font-heading font-bold truncate">{t("searchCompact")}</span>
-            </button>
-          )}
+          {/* Search pill — MOBILE: always visible, fills available width */}
+          <button
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))
+            }
+            aria-label={t("search")}
+            className="flex sm:hidden items-center gap-2 px-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/70 dark:bg-s-dm-surface/60 text-s-ink/55 dark:text-s-dm-text/55 active:scale-[0.98] transition-[border-color,color,transform] duration-150 flex-1"
+            style={{ height: 38, fontSize: 13, boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}
+          >
+            <Search size={13} className="text-s-coral shrink-0" aria-hidden="true" />
+            <span className="font-heading font-semibold truncate">{t("searchCompact")}</span>
+          </button>
 
           {/* Compact search pill — DESKTOP: visible when scrolled */}
           {scrolled && (
@@ -190,14 +188,14 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           )}
 
           {/* Right actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
 
             {/* Language toggle — always visible, desktop only */}
             <div className="hidden md:block">
               <LanguageSwitcher locale={locale} variant="header" />
             </div>
 
-            {/* Saved/bookmarks icon — mobile only, always visible in header */}
+            {/* Saved/bookmarks icon — mobile only */}
             <Link
               href={`/${locale}/account/saved`}
               aria-label={t("saved")}

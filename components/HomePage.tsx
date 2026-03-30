@@ -514,26 +514,6 @@ export default function HomePage({ initialData }: HomePageProps) {
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline below */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
-      {/* ── Mobile Search Bar (Airbnb-style tappable pill, opens GuidedSearch sheet) ── */}
-      <div className="md:hidden px-4 pt-4 pb-1">
-        <button
-          onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
-          aria-label={tNav("search")}
-          className="w-full flex items-center gap-3 bg-[--raised] rounded-search border border-s-ink/[0.10] active:scale-[0.98] transition-transform duration-100 card-tap"
-          style={{ height: 56, boxShadow: "0 2px 12px rgba(26,18,9,.08), 0 1px 4px rgba(26,18,9,.04)", padding: "0 6px 0 20px" }}
-        >
-          <Search size={16} className="text-s-coral shrink-0" />
-          <div className="flex-1 flex items-center gap-0 text-left min-w-0">
-            <span className="font-body font-medium text-[14px] text-s-ink/40 truncate">
-              {tNav("searchCompact")}
-            </span>
-          </div>
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral shrink-0">
-            <Search size={15} className="text-white" />
-          </div>
-        </button>
-      </div>
-
       {/* ── Desktop Expanded Search Bar (Airbnb-style, hidden on scroll) ── */}
       <div className="hidden md:block max-w-4xl mx-auto px-6 pt-5 pb-2">
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
