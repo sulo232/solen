@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
@@ -183,7 +183,9 @@ export default function SplitView({ locale, initialFilters }: SplitViewProps) {
           <div className="mb-3">
             <SearchAutocomplete category={category} />
           </div>
-          <SearchCriteriaChips locale={locale} />
+          <Suspense fallback={null}>
+            <SearchCriteriaChips locale={locale} />
+          </Suspense>
           <FilterBar
             pills={pills}
             activeFilters={activeFilters}

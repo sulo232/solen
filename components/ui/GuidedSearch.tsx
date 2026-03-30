@@ -229,7 +229,18 @@ export default function GuidedSearch() {
   const wannLabel = dateKey !== "any"
     ? (() => {
         const pick = DATE_QUICK_PICKS.find(p => p.key === dateKey);
-        return pick ? getLocalizedLabel(pick, locale) : wannDefault;
+        if (pick) return getLocalizedLabel(pick, locale);
+        // Specific date (ISO format like "2026-04-15") — format nicely
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
+          try {
+            const d = new Date(dateKey + "T00:00:00");
+            return new Intl.DateTimeFormat(locale === "de" ? "de-CH" : locale, {
+              day: "numeric",
+              month: "short",
+            }).format(d);
+          } catch { return dateKey; }
+        }
+        return wannDefault;
       })()
     : wannDefault;
 
