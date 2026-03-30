@@ -31,7 +31,10 @@
     "menuClose": "Fermer le menu",
     "categories": "Catégories",
     "search": "Rechercher",
-    "mobileNavigation": "Navigation"
+    "mobileNavigation": "Navigation",
+    "loginToSave": "Connecte-toi pour enregistrer des salons",
+    "loginToProfile": "Connecte-toi pour voir ton profil",
+    "loginCta": "Se connecter"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",

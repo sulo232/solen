@@ -31,7 +31,10 @@
     "menuClose": "Menü schliessen",
     "categories": "Kategorien",
     "search": "Suchen",
-    "mobileNavigation": "Navigation"
+    "mobileNavigation": "Navigation",
+    "loginToSave": "Melde dich an, um Salons zu speichern",
+    "loginToProfile": "Melde dich an, um dein Profil zu sehen",
+    "loginCta": "Jetzt anmelden"
   },
   "home": {
     "hero_title": "Dein Salon in Basel",

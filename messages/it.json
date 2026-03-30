@@ -31,7 +31,10 @@
     "menuClose": "Chiudi il menu",
     "categories": "Categorie",
     "search": "Cerca",
-    "mobileNavigation": "Navigazione"
+    "mobileNavigation": "Navigazione",
+    "loginToSave": "Accedi per salvare i saloni",
+    "loginToProfile": "Accedi per vedere il tuo profilo",
+    "loginCta": "Accedi ora"
   },
   "home": {
     "hero_title": "Il tuo salone a Basilea",
