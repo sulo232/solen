@@ -56,7 +56,7 @@ const TIME_KEYS: TimeKey[] = ["any", "morning", "afternoon", "evening"];
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?: Record<string, number> }) {
+export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false }: { categoryCounts?: Record<string, number>; hideTrigger?: boolean }) {
   const router = useRouter();
   const locale = useLocale();
   const t      = useTranslations("home.guidedSearch");
@@ -280,7 +280,7 @@ export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?:
           TRIGGER PILL — compact (scrolled) or full (top of page)
           ════════════════════════════════════════════════════════════════════ */}
       <AnimatePresence mode="wait" initial={false}>
-        {!isOpen ? (
+        {!isOpen && !hideTrigger ? (
           /* ── FULL 3-SEGMENT PILL ─────────────────────────────────────────── */
           <motion.div
             key="full"

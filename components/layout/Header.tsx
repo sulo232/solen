@@ -200,6 +200,15 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <LanguageSwitcher locale={locale} variant="header" />
             </div>
 
+            {/* Search icon — mobile only, always visible (opens GuidedSearch sheet) */}
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
+              aria-label={t("search")}
+              className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full text-s-ink/60 hover:text-s-ink transition-colors duration-150"
+            >
+              <Search className="w-5 h-5" strokeWidth={1.6} />
+            </button>
+
             {/* Saved/bookmarks icon — mobile only, always visible in header */}
             <Link
               href={`/${locale}/account/saved`}

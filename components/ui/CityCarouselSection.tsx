@@ -128,9 +128,9 @@ function AirbnbSalonCard({
                 <span className="font-body text-[11px] text-s-ink/35 uppercase tracking-wide">Neu</span>
               )}
             </div>
-            {(salon.min_price ?? (salon as any).minimum_price) && (
+            {salon.min_price != null && (
               <span className="font-body text-[12px] text-s-ink/60">
-                Ab CHF {((salon.min_price ?? (salon as any).minimum_price) as number).toFixed(0)}
+                Ab CHF {salon.min_price.toFixed(0)}
               </span>
             )}
           </div>

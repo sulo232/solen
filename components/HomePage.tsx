@@ -372,8 +372,11 @@ export default function HomePage({ initialData }: HomePageProps) {
   return (
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
+      {/* GuidedSearch sheet — hidden trigger, opened via header search icon on mobile */}
+      <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
+
       {/* ── Desktop Expanded Search Bar (Airbnb-style, hidden on scroll) ── */}
-      <div className="hidden md:block max-w-4xl mx-auto px-6 pt-5 pb-2">
+      <div className="max-w-4xl mx-auto px-6 pt-5 pb-2">
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
