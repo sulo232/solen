@@ -69,6 +69,7 @@ export default function GuidedSearch() {
   const [query,        setQuery]        = useState("");
   const [showServices,  setShowServices]  = useState(false);
   const [inputFocused,  setInputFocused]  = useState(false);
+  const [scrolled,      setScrolled]      = useState(false);
 
   const inputRef     = useRef<HTMLInputElement>(null);
   const cityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -113,6 +114,13 @@ export default function GuidedSearch() {
   useEffect(() => {
     if (isOpen && step === 1) setTimeout(() => inputRef.current?.focus(), 120);
   }, [isOpen, step]);
+
+  // Track scroll position for compact pill
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -213,79 +221,128 @@ export default function GuidedSearch() {
   return (
     <div className="w-full relative">
       {/* ════════════════════════════════════════════════════════════════════
-          3-SEGMENT TRIGGER PILL
+          TRIGGER PILL — compact (scrolled) or full (top of page)
           ════════════════════════════════════════════════════════════════════ */}
-      <div
-        className="w-full flex items-center bg-white dark:bg-s-dm-raised"
-        style={{
-          borderRadius: "999px",
-          border: "1px solid rgba(26,18,9,0.10)",
-          boxShadow: "0 2px 12px rgba(26,18,9,0.10), 0 1px 4px rgba(26,18,9,0.04)",
-          height: "56px",
-          opacity: isOpen ? 0 : 1,
-          pointerEvents: isOpen ? "none" : "auto",
-          transition: "opacity 150ms ease",
-        }}
-        role="search"
-      >
-        {/* Was segment */}
-        <button
-          onClick={() => open(1)}
-          aria-label={t("openWas" as Parameters<typeof t>[0])}
-          className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
-        >
-          <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
-            {t("segWas" as Parameters<typeof t>[0])}
-          </span>
-          <span className={`text-[12px] font-body truncate ${wasLabel ? "font-semibold text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
-            {wasLabel ?? t("segWasPlaceholder" as Parameters<typeof t>[0])}
-          </span>
-        </button>
+      <AnimatePresence mode="wait" initial={false}>
+        {!isOpen && scrolled ? (
+          /* ── COMPACT PILL (scrolled > 80px) ─────────────────────────────── */
+          <motion.div
+            key="compact"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="w-full flex items-center gap-2 px-4 bg-white dark:bg-s-dm-raised border border-s-ink/10 shadow-elevation-1"
+            style={{ borderRadius: "999px", height: "46px" }}
+          >
+            <button
+              onClick={() => open(1)}
+              aria-label={t("openWas" as Parameters<typeof t>[0])}
+              className="flex items-center gap-2 flex-1 min-w-0"
+            >
+              <Search size={15} className="text-s-coral shrink-0" aria-hidden="true" />
+              <span className="flex-1 text-left text-sm font-body text-s-ink/70 dark:text-s-dm-text/70 truncate">
+                {[
+                  wasLabel ?? t("segWas" as Parameters<typeof t>[0]),
+                  city ? getCityLabel(city) : t("segWo" as Parameters<typeof t>[0]),
+                  (wannLabel && wannLabel !== wannDefault) ? wannLabel : t("segWann" as Parameters<typeof t>[0]),
+                ].join("  ·  ")}
+              </span>
+            </button>
+            {(wasLabel || city) && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCategory(null);
+                  setCity("basel");
+                  setDateKey("any");
+                  setTimeKey("any");
+                  setQuery("");
+                }}
+                className="p-1.5 rounded-full hover:bg-s-ink/5 shrink-0"
+                aria-label={t("reset" as Parameters<typeof t>[0])}
+              >
+                <X size={13} className="text-s-ink/40 dark:text-s-dm-text/40" />
+              </button>
+            )}
+          </motion.div>
+        ) : !isOpen ? (
+          /* ── FULL 3-SEGMENT PILL (top of page) ──────────────────────────── */
+          <motion.div
+            key="full"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="w-full flex items-center bg-white dark:bg-s-dm-raised"
+            style={{
+              borderRadius: "999px",
+              border: "1px solid rgba(26,18,9,0.10)",
+              boxShadow: "0 2px 12px rgba(26,18,9,0.10), 0 1px 4px rgba(26,18,9,0.04)",
+              height: "56px",
+            }}
+            role="search"
+          >
+            {/* Was segment */}
+            <button
+              onClick={() => open(1)}
+              aria-label={t("openWas" as Parameters<typeof t>[0])}
+              className="flex-1 flex flex-col justify-center px-4 py-2 rounded-l-full hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
+            >
+              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
+                {t("segWas" as Parameters<typeof t>[0])}
+              </span>
+              <span className={`text-[12px] font-body truncate ${wasLabel ? "font-semibold text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+                {wasLabel ?? t("segWasPlaceholder" as Parameters<typeof t>[0])}
+              </span>
+            </button>
 
-        {/* Divider */}
-        <div className="w-px h-6 bg-s-ink/10 dark:bg-white/10 shrink-0" aria-hidden="true" />
+            {/* Divider */}
+            <div className="w-px h-6 bg-s-ink/10 dark:bg-white/10 shrink-0" aria-hidden="true" />
 
-        {/* Wo segment */}
-        <button
-          onClick={() => open(2)}
-          aria-label={t("openWo" as Parameters<typeof t>[0])}
-          className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
-        >
-          <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
-            {t("segWo" as Parameters<typeof t>[0])}
-          </span>
-          <span className="text-[12px] font-body font-semibold text-s-ink dark:text-s-dm-text truncate">
-            {woLabel}
-          </span>
-        </button>
+            {/* Wo segment */}
+            <button
+              onClick={() => open(2)}
+              aria-label={t("openWo" as Parameters<typeof t>[0])}
+              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
+            >
+              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
+                {t("segWo" as Parameters<typeof t>[0])}
+              </span>
+              <span className="text-[12px] font-body font-semibold text-s-ink dark:text-s-dm-text truncate">
+                {woLabel}
+              </span>
+            </button>
 
-        {/* Divider */}
-        <div className="w-px h-6 bg-s-ink/10 dark:bg-white/10 shrink-0" aria-hidden="true" />
+            {/* Divider */}
+            <div className="w-px h-6 bg-s-ink/10 dark:bg-white/10 shrink-0" aria-hidden="true" />
 
-        {/* Wann segment */}
-        <button
-          onClick={() => open(3)}
-          aria-label={t("openWann" as Parameters<typeof t>[0])}
-          className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
-        >
-          <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
-            {t("segWann" as Parameters<typeof t>[0])}
-          </span>
-          <span className={`text-[12px] font-body truncate ${dateKey !== "any" ? "font-semibold text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
-            {wannLabel}
-          </span>
-        </button>
+            {/* Wann segment */}
+            <button
+              onClick={() => open(3)}
+              aria-label={t("openWann" as Parameters<typeof t>[0])}
+              className="flex-1 flex flex-col justify-center px-4 py-2 hover:bg-s-ink/[0.03] dark:hover:bg-white/[0.03] transition-colors min-w-0"
+            >
+              <span className="text-[9px] font-heading font-bold uppercase tracking-[.07em] text-s-ink dark:text-s-dm-text">
+                {t("segWann" as Parameters<typeof t>[0])}
+              </span>
+              <span className={`text-[12px] font-body truncate ${dateKey !== "any" ? "font-semibold text-s-ink dark:text-s-dm-text" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
+                {wannLabel}
+              </span>
+            </button>
 
-        {/* Search button */}
-        <button
-          onClick={() => (category || query.trim()) ? navigate() : open(1)}
-          aria-label={t("showResults")}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral hover:brightness-[1.06] active:scale-[0.96] transition-[transform,filter] duration-150 mx-2 shrink-0"
-          style={{ boxShadow: "0 2px 8px rgba(232,98,74,.30)" }}
-        >
-          <Search size={16} className="text-white" aria-hidden="true" />
-        </button>
-      </div>
+            {/* Search button */}
+            <button
+              onClick={() => (category || query.trim()) ? navigate() : open(1)}
+              aria-label={t("showResults" as Parameters<typeof t>[0])}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-coral hover:brightness-[1.06] active:scale-[0.96] transition-[transform,filter] duration-150 mx-2 shrink-0"
+              style={{ boxShadow: "0 2px 8px rgba(232,98,74,.30)" }}
+            >
+              <Search size={16} className="text-white" aria-hidden="true" />
+            </button>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       {/* ════════════════════════════════════════════════════════════════════
           BOTTOM SHEET MODAL
