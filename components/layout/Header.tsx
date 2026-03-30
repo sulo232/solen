@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut,
-  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles,
+  Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles, Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -191,6 +191,23 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               );
             })}
           </nav>
+
+          {/* Compact search pill — desktop only, visible when scrolled */}
+          {scrolled && (
+            <button
+              onClick={() =>
+                window.dispatchEvent(
+                  new CustomEvent("openSearchSheet", { detail: { step: 1 } })
+                )
+              }
+              aria-label={t("search")}
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-s-dm-surface/60 text-[12px] font-heading font-bold text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/20 dark:hover:border-white/20 hover:text-s-ink dark:hover:text-s-dm-text transition-[border-color,color] backdrop-blur-sm"
+              style={{ boxShadow: "0 1px 4px rgba(0,0,0,.06)" }}
+            >
+              <Search size={13} className="text-s-coral" aria-hidden="true" />
+              {t("search")}
+            </button>
+          )}
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
