@@ -43,10 +43,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/30 dark:text-s-dm-text/30">
             Noch kein Konto?{" "}
           </span>
-          <a href={`/${locale}/auth/register`}
+          <Link href={`/${locale}/auth/register`}
             className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
             Registrieren
-          </a>
+          </Link>
         </p>
       </div>
     </div>

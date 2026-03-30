@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Rocket, CheckCircle2, Image, CreditCard, Scissors } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import Spinner from "@/components/ui/Spinner";
 
 interface GoLiveStatus {
@@ -110,9 +111,9 @@ export default function GoLiveGate() {
               </span>
             </div>
             {!done && (
-              <a href={href} className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral shrink-0">
+              <Link href={href} className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-coral shrink-0">
                 {t("configure")}
-              </a>
+              </Link>
             )}
           </div>
         ))}

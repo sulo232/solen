@@ -240,10 +240,10 @@ export default function DashboardPage() {
                     <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Verifizierung überfällig</p>
                     <p className="text-[10px] text-s-ink/45 mt-0.5">Seit über 90 Tagen nicht verifiziert.</p>
                   </div>
-                  <a href={`/${locale}/dashboard/settings?tab=verification`}
+                  <Link href={`/${locale}/dashboard/settings?tab=verification`}
                     className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral shrink-0">
                     Verifizieren →
-                  </a>
+                  </Link>
                 </div>
               )}
               {stats.low_slots_warning && (
@@ -254,10 +254,10 @@ export default function DashboardPage() {
                     <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">Wenig freie Slots</p>
                     <p className="text-[10px] text-s-ink/45 mt-0.5">Weniger als 5 Slots in den nächsten 7 Tagen.</p>
                   </div>
-                  <a href={`/${locale}/dashboard/calendar`}
+                  <Link href={`/${locale}/dashboard/calendar`}
                     className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-coral shrink-0">
                     Erstellen →
-                  </a>
+                  </Link>
                 </div>
               )}
               {stats.pending_cancellations > 0 && (
@@ -267,10 +267,10 @@ export default function DashboardPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text">{stats.pending_cancellations} Stornierungsanfragen</p>
                   </div>
-                  <a href={`/${locale}/dashboard/bookings?status=cancelled`}
+                  <Link href={`/${locale}/dashboard/bookings?status=cancelled`}
                     className="text-[10px] font-heading font-bold uppercase tracking-[.04em] text-s-amber shrink-0">
                     Anzeigen →
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -278,7 +278,7 @@ export default function DashboardPage() {
 
           {/* Unread messages */}
           {unread > 0 && (
-            <a href={`/${locale}/dashboard/messages`}
+            <Link href={`/${locale}/dashboard/messages`}
               className="block rounded-[12px] border border-s-ink/[0.06] dark:border-white/[0.06] p-4 bg-white dark:bg-s-dm-surface hover:border-s-coral/40 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center">
@@ -289,7 +289,7 @@ export default function DashboardPage() {
                   <p className="text-[10px] text-s-ink/40 dark:text-s-dm-text/40 mt-0.5">Jetzt antworten →</p>
                 </div>
               </div>
-            </a>
+            </Link>
           )}
 
           {/* Two-column layout: Today's bookings + Activity feed */}

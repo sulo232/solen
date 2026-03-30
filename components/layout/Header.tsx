@@ -33,7 +33,7 @@ const NAV_LINKS = [
   { key: "spa", href: "/spa", Icon: SpaIcon },
   { key: "makeup", href: "/makeup", Icon: MakeupIcon },
   { key: "waxing", href: "/waxing", Icon: WaxingIcon },
-  { key: "last_minute", href: "/angebote", Icon: CalendarDays },
+  { key: "last_minute", href: "/last-minute", Icon: CalendarDays },
 ];
 
 // Category icons for sub-site indicator
@@ -272,8 +272,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   <nav className="py-1" role="menu">
                     {[
                       { label: t("account"), href: `/${locale}/profile`, icon: User },
-                      { label: t("bookings"), href: `/${locale}/bookings`, icon: CalendarDays },
-                      { label: t("favorites"), href: `/${locale}/favorites`, icon: Heart },
+                      { label: t("bookings"), href: `/${locale}/profile`, icon: CalendarDays },
+                      { label: t("favorites"), href: `/${locale}/account/saved`, icon: Heart },
                       { label: t("messages"), href: `/${locale}/account/messages`, icon: MessageCircle },
                     ].map(({ label, href, icon: Icon }) => (
                       <Link

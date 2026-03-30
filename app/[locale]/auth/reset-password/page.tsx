@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useLocale } from "next-intl";
 import { Lock, Eye, EyeOff, Check } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
@@ -97,10 +98,10 @@ export default function ResetPasswordPage() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
-          <a href={`/${locale}`}
+          <Link href={`/${locale}`}
             className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity">
             solen<span className="text-s-coral">.</span>ch
-          </a>
+          </Link>
         </div>
 
         {/* Auth card — Zone 3, warm shadow */}
@@ -186,10 +187,10 @@ export default function ResetPasswordPage() {
         </div>
 
         <p className="text-center mt-6">
-          <a href={`/${locale}/auth/login`}
+          <Link href={`/${locale}/auth/login`}
             className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
             Zurück zur Anmeldung
-          </a>
+          </Link>
         </p>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -623,10 +624,10 @@ export default function RegisterPage() {
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-amber mb-3">
             solen.ch
           </p>
-          <a href={`/${locale}`}
+          <Link href={`/${locale}`}
             className="inline-block font-heading font-bold text-[32px] text-s-ink dark:text-s-dm-text leading-none hover:opacity-80 transition-opacity">
             solen<span className="text-s-coral">.</span>ch
-          </a>
+          </Link>
         </div>
 
         {/* Progress bar — linear track */}
@@ -688,10 +689,10 @@ export default function RegisterPage() {
             <span className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/30 dark:text-s-dm-text/30">
               Bereits registriert?{" "}
             </span>
-            <a href={`/${locale}/auth/login`}
+            <Link href={`/${locale}/auth/login`}
               className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-coral hover:underline">
               Anmelden
-            </a>
+            </Link>
           </p>
         )}
       </div>

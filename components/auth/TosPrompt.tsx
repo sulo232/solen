@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { motion, AnimatePresence } from "framer-motion";
 import Spinner from "@/components/ui/Spinner";
@@ -90,14 +91,14 @@ export default function TosPrompt() {
 
         <div className="p-6 bg-s-bg-sunken dark:bg-s-dm-bg">
           <div className="flex flex-col gap-3">
-            <a href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
+            <Link href={`/${locale}/legal/terms`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
               <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("termsLink")}</span>
               <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
-            </a>
-            <a href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
+            </Link>
+            <Link href={`/${locale}/legal/privacy`} target="_blank" className="flex items-center justify-between p-3 rounded-btn bg-[--raised] dark:bg-s-dm-raised border border-s-ink/10 dark:border-white/10 hover:border-s-coral transition-colors group">
               <span className="text-sm font-medium text-s-ink dark:text-s-dm-text">{t("privacyLink")}</span>
               <span className="text-xs text-s-coral group-hover:underline">{t("readCta")}</span>
-            </a>
+            </Link>
           </div>
         </div>
 

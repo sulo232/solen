@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useLocale } from "next-intl";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -273,10 +274,10 @@ export default function CheckoutPage() {
           </div>
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-coral mb-1">Fehler</p>
           <p className="text-xs font-body text-s-ink/55 mb-5">{error ?? "Etwas ist schiefgelaufen."}</p>
-          <a href={`/${locale}`}
+          <Link href={`/${locale}`}
             className="inline-flex items-center gap-1.5 px-5 py-3 rounded-btn border border-s-ink/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-colors">
             Zurück zur Startseite
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -304,11 +305,11 @@ export default function CheckoutPage() {
               <p className="font-heading font-bold text-xl text-s-ink">Termin fixiert!</p>
               <p className="text-xs font-body text-s-ink/50 mt-1 leading-relaxed">Du zahlst direkt im Salon. Bis bald!</p>
             </div>
-            <a href={`/${locale}/profile`}
+            <Link href={`/${locale}/profile`}
               className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] transition-[transform,filter] hover:brightness-[1.06]"
               style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}>
               Meine Buchungen
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -324,10 +325,10 @@ export default function CheckoutPage() {
     >
       {/* P15 — Breadcrumb */}
       <div className="max-w-lg mx-auto mb-4 flex items-center gap-1.5">
-        <a href={`/${locale}`}
+        <Link href={`/${locale}`}
           className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/30 hover:text-s-coral transition-colors">
           Startseite
-        </a>
+        </Link>
         <ChevronRight className="w-2.5 h-2.5 text-s-ink/20" />
         <span className="text-[10px] font-heading font-semibold uppercase tracking-[.10em] text-s-ink/50">
           Checkout

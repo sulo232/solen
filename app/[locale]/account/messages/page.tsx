@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import Spinner from "@/components/ui/Spinner";
@@ -83,11 +84,11 @@ export default function MessagesPage() {
         <p className="text-sm font-body text-s-ink/45 max-w-xs leading-relaxed">
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
-        <a href={`/${locale}/coiffeur`}
+        <Link href={`/${locale}/coiffeur`}
           className="mt-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
           style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}>
           Salons entdecken
-        </a>
+        </Link>
       </div>
     );
   }
