@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, ChevronLeft, MapPin, Check } from "lucide-react";
+import { Search, X, ChevronLeft, MapPin, Check, Star } from "lucide-react";
 import {
   CATEGORY_SERVICES,
   DATE_QUICK_PICKS,
@@ -14,6 +14,12 @@ import {
 import { CITIES, CITY_SLUGS, type CitySlug } from "@/lib/cities";
 import { getPersistedCity } from "@/lib/city-cookie";
 import type { SalonCategory } from "@/lib/types";
+import CoiffeurIcon from "@/components/icons/category/CoiffeurIcon";
+import BarberIcon from "@/components/icons/category/BarberIcon";
+import NailsIcon from "@/components/icons/category/NailsIcon";
+import SpaIcon from "@/components/icons/category/SpaIcon";
+import MakeupIcon from "@/components/icons/category/MakeupIcon";
+import WaxingIcon from "@/components/icons/category/WaxingIcon";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types & static data
@@ -22,20 +28,22 @@ import type { SalonCategory } from "@/lib/types";
 type Step = 1 | 2 | 3;
 type TimeKey = "any" | "morning" | "afternoon" | "evening";
 
-const CATEGORY_LIST: {
+type CategoryItem = {
   key: SalonCategory;
-  icon: string;
+  Icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
   subDe: string;
   subEn: string;
   subFr: string;
   subIt: string;
-}[] = [
-  { key: "coiffeur",   icon: "✂️", subDe: "Haarschnitt, Farbe, Styling",  subEn: "Haircut, Color, Styling",   subFr: "Coupe, Couleur, Coiffage",   subIt: "Taglio, Colore, Styling" },
-  { key: "barbershop", icon: "💈", subDe: "Haarschnitt, Bart, Rasur",      subEn: "Haircut, Beard, Shave",     subFr: "Coupe, Barbe, Rasage",       subIt: "Taglio, Barba, Rasatura" },
-  { key: "nails",      icon: "💅", subDe: "Maniküre, Gel, Acryl",          subEn: "Manicure, Gel, Acrylic",    subFr: "Manucure, Gel, Acrylique",   subIt: "Manicure, Gel, Acrilico" },
-  { key: "spa",        icon: "🌿", subDe: "Massage, Gesichtsbehandlung",   subEn: "Massage, Facial",           subFr: "Massage, Soin du visage",    subIt: "Massaggio, Trattamento viso" },
-  { key: "makeup",     icon: "💄", subDe: "Make-up, Schminken",            subEn: "Makeup, Beauty",            subFr: "Maquillage, Beauté",         subIt: "Trucco, Bellezza" },
-  { key: "waxing",     icon: "🪡", subDe: "Haarentfernung",                subEn: "Hair Removal",              subFr: "Épilation",                  subIt: "Epilazione" },
+};
+
+const CATEGORY_LIST: CategoryItem[] = [
+  { key: "coiffeur",   Icon: CoiffeurIcon, subDe: "Haarschnitt, Farbe, Styling",  subEn: "Haircut, Color, Styling",   subFr: "Coupe, Couleur, Coiffage",   subIt: "Taglio, Colore, Styling" },
+  { key: "barbershop", Icon: BarberIcon,   subDe: "Haarschnitt, Bart, Rasur",      subEn: "Haircut, Beard, Shave",     subFr: "Coupe, Barbe, Rasage",       subIt: "Taglio, Barba, Rasatura" },
+  { key: "nails",      Icon: NailsIcon,    subDe: "Maniküre, Gel, Acryl",          subEn: "Manicure, Gel, Acrylic",    subFr: "Manucure, Gel, Acrylique",   subIt: "Manicure, Gel, Acrilico" },
+  { key: "spa",        Icon: SpaIcon,      subDe: "Massage, Gesichtsbehandlung",   subEn: "Massage, Facial",           subFr: "Massage, Soin du visage",    subIt: "Massaggio, Trattamento viso" },
+  { key: "makeup",     Icon: MakeupIcon,   subDe: "Make-up, Schminken",            subEn: "Makeup, Beauty",            subFr: "Maquillage, Beauté",         subIt: "Trucco, Bellezza" },
+  { key: "waxing",     Icon: WaxingIcon,   subDe: "Haarentfernung",                subEn: "Hair Removal",              subFr: "Épilation",                  subIt: "Epilazione" },
 ];
 
 const TIME_KEYS: TimeKey[] = ["any", "morning", "afternoon", "evening"];
@@ -58,9 +66,11 @@ export default function GuidedSearch() {
   const [dateKey,      setDateKey]      = useState<string>("any");
   const [timeKey,      setTimeKey]      = useState<TimeKey>("any");
   const [query,        setQuery]        = useState("");
-  const [showServices, setShowServices] = useState(false);
+  const [showServices,  setShowServices]  = useState(false);
+  const [inputFocused,  setInputFocused]  = useState(false);
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef     = useRef<HTMLInputElement>(null);
+  const cityTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   // Pre-fill city from localStorage → cookie → default Basel
   useEffect(() => {
@@ -88,6 +98,16 @@ export default function GuidedSearch() {
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
+  // ESC key to close the sheet
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [isOpen]);
+
   // Focus input when step 1 opens
   useEffect(() => {
     if (isOpen && step === 1) setTimeout(() => inputRef.current?.focus(), 120);
@@ -101,7 +121,10 @@ export default function GuidedSearch() {
     setIsOpen(true);
   };
 
-  const close = () => setIsOpen(false);
+  const close = () => {
+    clearTimeout(cityTimerRef.current);
+    setIsOpen(false);
+  };
 
   const reset = () => {
     setCategory(null);
@@ -135,7 +158,7 @@ export default function GuidedSearch() {
 
     const params = new URLSearchParams();
     if (service)                           params.set("q", service);
-    else if (!category && query.trim())    params.set("q", encodeURIComponent(query.trim()));
+    else if (!category && query.trim())    params.set("q", query.trim());
     const dateParam = dateKey !== "any" ? datePickToParam(dateKey) : null;
     if (dateParam)                         params.set("date", dateParam);
     if (timeKey !== "any")                 params.set("time", timeKey);
@@ -161,12 +184,13 @@ export default function GuidedSearch() {
 
   const selectCity = (c: CitySlug | null) => {
     setCity(c);
-    setTimeout(() => setStep(3), 150);
+    clearTimeout(cityTimerRef.current);
+    cityTimerRef.current = setTimeout(() => setStep(3), 150);
   };
 
   // ── Derived display values for the trigger pill ────────────────────────────
   const wasLabel  = category ? tNav(category as Parameters<typeof tNav>[0]) : null;
-  const woLabel   = city ? getCityLabel(city) : "Basel";
+  const woLabel   = city ? getCityLabel(city) : getCityLabel("basel");
   const wannDefault = t("wannDefault" as Parameters<typeof t>[0]);
   const wannLabel = dateKey !== "any"
     ? (() => {
@@ -373,7 +397,7 @@ export default function GuidedSearch() {
                         {/* Text search input */}
                         <div
                           className="relative flex items-center mb-4"
-                          style={{ border: "1.5px solid #E8E8E8", borderRadius: "12px" }}
+                          style={{ border: `1.5px solid ${inputFocused ? "#E8624A" : "rgba(26,18,9,0.12)"}`, borderRadius: "12px" }}
                         >
                           <Search size={15} className="absolute left-3.5 text-s-ink/35 dark:text-s-dm-text/35 shrink-0 pointer-events-none" aria-hidden="true" />
                           <input
@@ -382,8 +406,8 @@ export default function GuidedSearch() {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && navigate()}
-                            onFocus={(e) => { (e.currentTarget.parentElement as HTMLDivElement).style.borderColor = "#E8624A"; }}
-                            onBlur={(e)  => { (e.currentTarget.parentElement as HTMLDivElement).style.borderColor = "#E8E8E8"; }}
+                            onFocus={() => setInputFocused(true)}
+                            onBlur={() => setInputFocused(false)}
                             placeholder={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
                             aria-label={t("steps.was.searchPlaceholder" as Parameters<typeof t>[0])}
                             className="w-full pl-10 pr-4 py-3 text-[13px] font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 dark:placeholder:text-s-dm-text/40 bg-transparent focus:outline-none"
@@ -418,7 +442,9 @@ export default function GuidedSearch() {
                               onClick={() => selectService(null)}
                               className="w-full flex items-center gap-3 py-3.5 border-t border-[#F5F5F5] dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                             >
-                              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-base bg-s-ink/[0.05] dark:bg-white/[0.05] shrink-0" aria-hidden="true">✨</div>
+                              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-s-ink/[0.05] dark:bg-white/[0.05] shrink-0" aria-hidden="true">
+                                <Star size={20} className="text-s-ink/40 dark:text-s-dm-text/40" />
+                              </div>
                               <div>
                                 <div className="font-heading font-bold text-[14px] text-s-ink dark:text-s-dm-text">
                                   {t("steps.was.skip" as Parameters<typeof t>[0])}
@@ -439,8 +465,8 @@ export default function GuidedSearch() {
                                     : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
                                 }`}
                               >
-                                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center text-base bg-s-coral/[0.08] shrink-0" aria-hidden="true">
-                                  {cat.icon}
+                                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-s-coral/[0.08] shrink-0" aria-hidden="true">
+                                  <cat.Icon width={20} height={20} className="text-s-coral" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="font-heading font-bold text-[14px] text-s-ink dark:text-s-dm-text">
@@ -528,7 +554,7 @@ export default function GuidedSearch() {
                               : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-ink/20 dark:hover:border-white/20"
                           }`}
                         >
-                          <span className="text-[20px]" aria-hidden="true">🇨🇭</span>
+                          <MapPin size={20} className={city === null ? "text-s-coral" : "text-s-ink/40 dark:text-s-dm-text/40"} aria-hidden="true" />
                           <span className="flex-1 text-left text-[14px] font-body font-medium text-s-ink dark:text-s-dm-text">
                             {t("steps.where.allSwitzerland")}
                           </span>
