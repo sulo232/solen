@@ -117,10 +117,13 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           {/* Logo — hidden on mobile when scrolled (replaced by compact search pill) */}
           <div className={cn("items-center shrink-0", scrolled ? "hidden sm:flex" : "flex")}>
             <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
+              {/* Mobile: just the "S" monogram */}
+              <span className="sm:hidden font-display text-[22px] leading-none text-s-ink dark:text-s-dm-text tracking-tight">S</span>
+              {/* Desktop: full logo */}
               <img
                 src="/logo.svg"
                 alt="Solen.ch"
-                className="h-8 w-auto dark:invert"
+                className="hidden sm:block h-8 w-auto dark:invert"
                 width={96}
                 height={32}
               />
