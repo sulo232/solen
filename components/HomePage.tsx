@@ -24,6 +24,8 @@ import Footer from "@/components/layout/Footer";
 import LastMinuteCard from "@/components/LastMinuteCard";
 // BlobBackground removed — V5 uses ambient-v5 CSS class
 import GuidedSearch from "@/components/ui/GuidedSearch";
+import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
+import CityCarouselSection from "@/components/ui/CityCarouselSection";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
 // WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
@@ -243,12 +245,14 @@ export default function HomePage({ initialData }: HomePageProps) {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("home") as any;
+  const tNav = useTranslations("navigation") as any;
   const [loading, setLoading] = useState(false);
   const [lastBookedSalon, setLastBookedSalon] = useState<{ name: string; slug: string } | null>(null);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
   const [locationError, setLocationError] = useState(false);
   const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
+  const [scrolledPast80, setScrolledPast80] = useState(false);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(initialData?.categoryCounts || {});
   const salonsWithCoords = initialData?.salonsWithCoords ?? 0;
 
@@ -259,6 +263,12 @@ export default function HomePage({ initialData }: HomePageProps) {
 
   useEffect(() => {
     setPersistedCity(getPersistedCity());
+  }, []);
+
+  useEffect(() => {
+    const h = () => setScrolledPast80(window.scrollY > 80);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
   }, []);
   const [userName, setUserName] = useState<string | null>(null);
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
@@ -362,118 +372,90 @@ export default function HomePage({ initialData }: HomePageProps) {
   return (
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
-      {/* ── Hero (compact) ──────────────────────────────────────────────── */}
-      <section className="animate-in relative overflow-hidden pt-6 pb-10 sm:pb-14 bg-[#F5F0EB] dark:bg-s-dm-bg" style={{ animationDelay: "0ms" }}>
+      {/* ── Desktop Expanded Search Bar (Airbnb-style, hidden on scroll) ── */}
+      <div className="hidden md:block max-w-4xl mx-auto px-6 pt-5 pb-2">
+        <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
+      </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-left">
-            {/* Greeting / headline */}
-            <motion.h1 variants={fadeUp}
-              className="font-display uppercase text-s-ink dark:text-s-dm-text"
-              style={{ fontSize: "clamp(42px, 5vw, 60px)", letterSpacing: "0.01em", lineHeight: "0.92" }}>
-              {userName ? (
-                <>{t("hero.hello")} <span className="text-s-coral">{userName}</span></>
-              ) : (
-                <>{t("hero.headlineWord1")}<span className="text-s-coral">.</span> {t("hero.headlineWord2")}<span className="text-s-coral">.</span></>
-              )}
-            </motion.h1>
-            <motion.p
-              variants={fadeUp}
-              className="mt-3 font-body font-normal text-s-ink/50 dark:text-s-dm-text/50"
-              style={{ fontSize: "17px" }}
-            >
-              {userName && nextBooking
-                ? t("hero.nextBooking", { date: nextBooking.date, salon: nextBooking.salon })
-                : t("hero.aiTagline")}
-            </motion.p>
-          </motion.div>
-
-          {/* Guided search — Airbnb-style step-by-step discovery funnel */}
-          <div className="mt-6 w-full max-w-2xl">
-            <GuidedSearch categoryCounts={categoryCounts} />
-          </div>
-
-          {/* Trust chips */}
-          <div className="mt-3 flex items-center gap-3 flex-wrap">
-            {[
-              t("trust.freeCancellation"),
-              t("trust.securePayment"),
-              t("trust.swissMade"),
-              t("trust.paymentMethods"),
-            ].map((text, i, arr) => (
-              <span key={text} className="flex items-center gap-1.5">
-                <span className="text-[11px] font-heading text-s-ink/40 dark:text-s-dm-text/40 whitespace-nowrap">
-                  {text}
+      {/* ── Category Icon Row (Airbnb-style) ────────────────────────────── */}
+      <section id="tour-services" ref={categoryRef} className="animate-in pt-3 pb-2 relative z-[1]" style={{ animationDelay: "80ms" }}>
+        <div
+          className="flex overflow-x-auto gap-1 pb-1"
+          style={{
+            scrollbarWidth: "none",
+            WebkitOverflowScrolling: "touch",
+            padding: "0 16px",
+            overscrollBehaviorX: "contain",
+          } as React.CSSProperties}
+        >
+          {[
+            { key: "coiffeur",   Icon: CoiffeurIcon },
+            { key: "barbershop", Icon: BarberIcon   },
+            { key: "nails",      Icon: NailsIcon    },
+            ...(CLIENT_FEATURE_FLAGS.isMassageSpaEnabled ? [{ key: "spa", Icon: SpaIcon }] : []),
+            { key: "makeup",     Icon: MakeupIcon   },
+            { key: "waxing",     Icon: WaxingIcon   },
+          ].map(({ key, Icon }) => {
+            const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
+            const label = tNav(key) as string;
+            return (
+              <Link
+                key={key}
+                href={href}
+                className="flex flex-col items-center gap-1.5 px-3 py-2 min-w-[72px] rounded-xl transition-colors duration-150 hover:bg-s-ink/[0.04] active:bg-s-ink/[0.07] shrink-0"
+                aria-label={label}
+              >
+                <Icon width={26} height={26} className="text-s-ink/60" />
+                <span className="text-[10px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 whitespace-nowrap leading-none">
+                  {label}
                 </span>
-                {i < arr.length - 1 && (
-                  <span className="text-s-ink/20 dark:text-s-dm-text/20 text-[11px]">·</span>
-                )}
-              </span>
-            ))}
-          </div>
-
-          {/* Small text links — Buchungen only when logged in */}
-          {userName && (
-            <motion.div variants={fadeUp} initial="hidden" animate="visible"
-              className="mt-5 flex items-center gap-5 flex-wrap">
-              <Link href={`/${locale}/account/bookings`}
-                className="text-xs font-heading font-bold uppercase tracking-[.06em] text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-coral transition-colors">
-                {t("hero.bookings")} →
               </Link>
-            </motion.div>
-          )}
+            );
+          })}
         </div>
+        {/* Bottom border line under category row */}
+        <div className="border-b border-s-ink/[0.06] mt-1" />
       </section>
 
-      {/* ── Category Cards (A.2 — skeleton-first photo cards) ──────────────── */}
-      <section id="tour-services" ref={categoryRef} className="animate-in pt-8 pb-6 relative z-[1]" style={{ animationDelay: "160ms" }}>
-        <div className="max-w-5xl mx-auto">
-          <span className="block font-body font-semibold text-[12px] uppercase mb-4 px-6" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>
-            {t("categories.label")}
-          </span>
-
-          {/* Horizontal scroll row */}
-          <div
-            className="scroll-fade-right flex overflow-x-auto gap-[14px] pb-1"
-            style={{
-              scrollSnapType: "x mandatory",
-              WebkitOverflowScrolling: "touch",
-              scrollbarWidth: "none",
-              padding: "0 24px",
-              scrollPaddingLeft: "24px",
-              overscrollBehaviorX: "contain",
-            } as React.CSSProperties}
-          >
-            {CATEGORIES
-              .filter(({ key }) => key !== 'spa' || CLIENT_FEATURE_FLAGS.isMassageSpaEnabled)
-              .map(({ key, label, LucideIcon }, i) => {
-                const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
-                const imgSrc = CATEGORY_IMAGES[key];
-                const count = categoryCounts[key] ?? 0;
-                const hasPhoto = !!imgSrc; // file existence checked at runtime via onError
-                const populated = hasPhoto || count > 0;
-
-                return (
-                  <CategoryPhotoCard
-                    key={key}
-                    href={href}
-                    label={label}
-                    LucideIcon={LucideIcon}
-                    imgSrc={imgSrc}
-                    count={count}
-                    populated={populated}
-                    animationIndex={i}
-                  />
-                );
-              })}
+      {/* ── Per-city Salon Carousels (Airbnb-style cards) ───────────────── */}
+      {(() => {
+        const baselSalons = salons.filter((s: any) => s.city_slug === "basel");
+        const zuerichSalons = salons.filter((s: any) => s.city_slug === "zuerich");
+        const bernSalons = salons.filter((s: any) => s.city_slug === "bern");
+        const noCity = baselSalons.length === 0 && zuerichSalons.length === 0 && bernSalons.length === 0;
+        return (
+          <div className="animate-in pt-6" style={{ animationDelay: "160ms" }}>
+            <CityCarouselSection
+              title={t("featured.beliebtInBasel")}
+              salons={noCity ? salons : baselSalons}
+              locale={locale}
+              viewAllLabel={t("featured.viewAll")}
+              favoriteIds={favoriteIds}
+              onFavoriteToggle={handleFavoriteToggle}
+            />
+            {!noCity && zuerichSalons.length > 0 && (
+              <CityCarouselSection
+                title={t("featured.beliebtInZuerich")}
+                salons={zuerichSalons}
+                locale={locale}
+                viewAllLabel={t("featured.viewAll")}
+                favoriteIds={favoriteIds}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+            )}
+            {!noCity && bernSalons.length > 0 && (
+              <CityCarouselSection
+                title={t("featured.beliebtInBern")}
+                salons={bernSalons}
+                locale={locale}
+                viewAllLabel={t("featured.viewAll")}
+                favoriteIds={favoriteIds}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+            )}
           </div>
-        </div>
-      </section>
-
-      {/* ── "BELIEBT IN DEINER NÄHE" salon carousel (A.3 — step 4) ─────────── */}
-      <section className="animate-in pb-8 relative z-[1]" style={{ animationDelay: "240ms" }}>
-        <FeaturedSalonCarousel salons={salons} locale={locale} />
-      </section>
+        );
+      })()}
 
       {/* WeatherBanner removed — Phase 0.3 */}
 

@@ -79,7 +79,10 @@
       "subtitle": "Die bestbewerteten Salons in Basel",
       "viewAll": "Alle ansehen",
       "emptyTitle": "Wir wachsen gerade",
-      "emptyMessage": "Bald mehr Salons in deiner Nähe"
+      "emptyMessage": "Bald mehr Salons in deiner Nähe",
+      "beliebtInBasel": "Beliebt in Basel",
+      "beliebtInZuerich": "Beliebt in Zürich",
+      "beliebtInBern": "Beliebt in Bern"
     },
     "lastMinute": {
       "eyebrow": "Angebote",

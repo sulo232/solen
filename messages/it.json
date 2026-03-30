@@ -79,7 +79,10 @@
       "subtitle": "I saloni più votati a Basilea",
       "viewAll": "Vedi tutto",
       "emptyTitle": "In crescita",
-      "emptyMessage": "Presto più saloni vicino a te"
+      "emptyMessage": "Presto più saloni vicino a te",
+      "beliebtInBasel": "Popolare a Basilea",
+      "beliebtInZuerich": "Popolare a Zurigo",
+      "beliebtInBern": "Popolare a Berna"
     },
     "lastMinute": {
       "eyebrow": "Offerte",

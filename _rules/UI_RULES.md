@@ -988,3 +988,31 @@ grep -rn '"ease-in"\\|ease-in[^-]' components/ app/ --include="*.tsx"
 # Expected for all: 0 results (except decorative animations like confetti)
 ```
 
+## 22. Homepage UI/UX Overhaul Spec (V5)
+
+> **CONTEXT:** The following rules enforce the new V5 design standards introduced for the homepage overhaul.
+
+### 22a. Core Aesthetics
+- **Shapes & Shadows:** No shadows on cards (use simple 1px borders). ALL interactive elements must be pill shapes (`rounded-pill` / `rounded-btn`).
+- **Blobs & Splashes:** Blobs are strictly retired. Use `.ambient-v5` gradients for empty space.
+- **Backgrounds:** Set the page background to Warm Beige (`#F5F0EB`) instead of stark white.
+
+### 22b. Header & Navigation Refinements
+- **1.1 Zurück (Back) Button:** Must NEVER render on the root (homepage) path. Ensure the Breadcrumb skips rendering.
+- **1.3 Sticky Header:**
+  - Height: Target max height `56px`.
+  - Background: `#F5F0EB` with `backdrop-filter: blur(12px)` and `1px solid rgba(0,0,0,0.06)` border. (No shadow).
+  - Navigation Collapse: Delete `<CategoryStickyRow />` entirely from the header component.
+  - Morphing state: When the hero search bar scrolls out of view, the header must morph into a centered Search Pill (`[🔍 Was · Basel · Wann]`).
+
+### 22c. Hero & Category Grid
+- **Hero Background:** Delete the static background image and fade-up animations. The hero uses a solid `#F5F0EB` background.
+- **Hero Title:** Must use Bebas Neue 42px header (`DEIN NÄCHSTER. TERMIN.`) + DM Sans 17px subhead.
+- **Featured Salon Carousel:** Must feature an Airbnb-style horizontal scroll carousel (`width: 260px`, `scroll-snap-type: x mandatory`).
+- **Category Icons:** Icons (`SpaIcon.tsx`, `MakeupIcon.tsx`, etc) must render perfectly solid in Coral (`#E8735A`) with no opacity layers.
+- **Category Grid:** Strip out the old rounded box backgrounds wrapping the icons; icons should float over their labels natively.
+
+### 22d. Footer & Tab Bars
+- **Footer Cleanup:** Set background solid `#2C2825`, remove leftover trust badge grids, reposition Instagram into legal links, and strip redundant boilerplate links.
+- **Mobile Bottom Tab Bar:** `backdrop-filter` on `#FFFFFF`, top border `1px solid rgba(0,0,0,0.06)` (no shadow). Ensure `z-index: 50` and exclusively use Coral (`#E8735A`) for active states.
+

@@ -37,14 +37,16 @@ export default async function Page() {
     { data: categoryCountsData, error: ccError },
     { count: coordsCount },
     { data: trendingData },
+    { data: citiesData },
   ] = await Promise.all([
-    supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(8),
+    supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, minimum_price").eq("is_active", true).eq("is_test", false).order("average_rating", { ascending: false }).limit(24),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, last_minute_discount_percent, quartier").eq("is_active", true).eq("is_test", false).gt("last_minute_discount_percent", 0).order("last_minute_discount_percent", { ascending: false }).limit(4),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier").eq("is_active", true).eq("is_test", false).order("created_at", { ascending: false }).limit(6),
     supabase.from("site_settings").select("value").eq("key", "homepage_sections").single().then((res) => ({ data: res.error ? null : res.data })),
     supabase.from("salons").select("categories").eq("is_active", true).eq("is_test", false),
     supabase.from("salons").select("*", { count: "exact", head: true }).eq("is_active", true).eq("is_test", false).not("latitude", "is", null).gt("latitude", 0),
     supabase.from("salons").select("id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, solen_score, is_active").eq("is_active", true).eq("is_test", false).order("solen_score", { ascending: false, nullsFirst: false }).limit(8),
+    supabase.from("cities").select("id, slug"),
   ]);
 
   if (pError) console.error("SSR popular salons query failed:", pError.message);
@@ -52,6 +54,11 @@ export default async function Page() {
   if (nsError) console.error("SSR new salons query failed:", nsError.message);
 
   if (ccError) console.error("SSR category counts query failed:", ccError.message);
+
+  // Build city slug lookup map
+  const cityMap: Record<string, string> = {};
+  (citiesData ?? []).forEach((c: { id: string; slug: string }) => { cityMap[c.id] = c.slug; });
+  const addCitySlug = (salons: any[]) => salons.map((s) => ({ ...s, city_slug: s.city_id ? (cityMap[s.city_id] ?? null) : null }));
 
   // Deduplicate trending against popular
   const popularIds = new Set((popularData ?? []).map((s: any) => s.id));
@@ -68,7 +75,7 @@ export default async function Page() {
   });
 
   const initialData = {
-    salons: (popularData as unknown as any[]) ?? [],
+    salons: addCitySlug((popularData as unknown as any[]) ?? []),
     lastMinuteSlots: (lastMinuteData as unknown as any[]) ?? [],
     newSalons: (newSalonsData as unknown as any[]) ?? [],
     trendingSalons: dedupedTrending as unknown as any[],

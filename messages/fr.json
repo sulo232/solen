@@ -79,7 +79,10 @@
       "subtitle": "Les salons les mieux notés à Bâle",
       "viewAll": "Voir tout",
       "emptyTitle": "En croissance",
-      "emptyMessage": "Bientôt plus de salons près de chez vous"
+      "emptyMessage": "Bientôt plus de salons près de chez vous",
+      "beliebtInBasel": "Populaire à Bâle",
+      "beliebtInZuerich": "Populaire à Zurich",
+      "beliebtInBern": "Populaire à Berne"
     },
     "lastMinute": {
       "eyebrow": "Offres",

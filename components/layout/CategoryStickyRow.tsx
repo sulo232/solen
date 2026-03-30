@@ -93,7 +93,7 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
             role="tablist"
             aria-label={t("categories" as Parameters<typeof t>[0])}
           >
-            {CATEGORIES.map(({ key, Icon }) => {
+            {CATEGORIES.map(({ key }) => {
               const isActive = currentCategory === key;
               return (
                 <Link
@@ -103,20 +103,19 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
                   aria-selected={isActive}
                   aria-label={t(key as Parameters<typeof t>[0])}
                   className={cn(
-                    "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg shrink-0 transition-colors relative",
+                    "relative flex items-center px-4 py-2 shrink-0 transition-colors duration-150 whitespace-nowrap",
                     isActive
-                      ? "text-s-coral"
-                      : "text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-ink dark:hover:text-s-dm-text"
+                      ? "text-s-ink dark:text-s-dm-text font-semibold"
+                      : "text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text"
                   )}
                 >
-                  <Icon width={18} height={18} className="shrink-0" />
-                  <span className="text-[9px] font-heading font-bold uppercase tracking-wider whitespace-nowrap leading-none">
+                  <span className="text-[13px] font-heading font-semibold">
                     {t(key as Parameters<typeof t>[0])}
                   </span>
                   {isActive && (
                     <motion.div
                       layoutId="cat-sticky-underline"
-                      className="absolute -bottom-0.5 left-2 right-2 h-[2px] rounded-full bg-s-coral"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-s-ink dark:bg-s-dm-text"
                       transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                     />
                   )}

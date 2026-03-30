@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import CategoryStickyRow from "@/components/layout/CategoryStickyRow";
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
 import { BarberIcon } from "@/components/icons/category/BarberIcon";
 import { NailsIcon } from "@/components/icons/category/NailsIcon";
@@ -293,6 +294,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         </div>
       </div>
 
+      {/* Category sticky row — text tabs, appears when homepage category row scrolls out */}
+      {showCategoryNav && <CategoryStickyRow locale={locale} />}
     </header>
   );
 }

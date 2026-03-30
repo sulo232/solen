@@ -79,7 +79,10 @@
       "subtitle": "Top-rated salons in Basel",
       "viewAll": "View all",
       "emptyTitle": "Growing quickly",
-      "emptyMessage": "More salons coming soon"
+      "emptyMessage": "More salons coming soon",
+      "beliebtInBasel": "Popular in Basel",
+      "beliebtInZuerich": "Popular in Zurich",
+      "beliebtInBern": "Popular in Berne"
     },
     "lastMinute": {
       "eyebrow": "Offers",
