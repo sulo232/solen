@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, ChevronLeft, MapPin, Check, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   CATEGORY_SERVICES,
   DATE_QUICK_PICKS,
@@ -221,6 +222,9 @@ export default function GuidedSearch() {
           border: "1px solid rgba(26,18,9,0.10)",
           boxShadow: "0 2px 12px rgba(26,18,9,0.10), 0 1px 4px rgba(26,18,9,0.04)",
           height: "56px",
+          opacity: isOpen ? 0 : 1,
+          pointerEvents: isOpen ? "none" : "auto",
+          transition: "opacity 150ms ease",
         }}
         role="search"
       >
@@ -323,15 +327,34 @@ export default function GuidedSearch() {
                 <div className="w-9 h-1 rounded-full bg-s-ink/15 dark:bg-white/15" aria-hidden="true" />
               </div>
 
-              {/* Step progress dots */}
-              <div className="flex items-center justify-center gap-2 pt-3 pb-2 shrink-0" aria-hidden="true">
-                {([1, 2, 3] as Step[]).map((s) => (
-                  <motion.div
+              {/* Step tab bar */}
+              <div className="flex items-stretch border-b border-s-ink/[0.08] dark:border-white/[0.08] shrink-0 mt-1">
+                {([
+                  { s: 1 as const, label: t("segWas" as Parameters<typeof t>[0]),  value: wasLabel ?? null },
+                  { s: 2 as const, label: t("segWo" as Parameters<typeof t>[0]),   value: city ? getCityLabel(city) : null },
+                  { s: 3 as const, label: t("segWann" as Parameters<typeof t>[0]), value: (wannLabel && wannLabel !== wannDefault) ? wannLabel : null },
+                ]).map(({ s, label, value }) => (
+                  <button
                     key={s}
-                    animate={stepDot(s)}
-                    transition={{ duration: 0.2 }}
-                    className="h-1.5 rounded-full"
-                  />
+                    onClick={() => setStep(s)}
+                    className={cn(
+                      "flex-1 flex flex-col items-center justify-center gap-0.5 py-3 relative transition-colors",
+                      step === s ? "text-s-coral" : value ? "text-s-ink/70 dark:text-s-dm-text/70" : "text-s-ink/35 dark:text-s-dm-text/35"
+                    )}
+                  >
+                    <span className="text-[10px] font-heading font-semibold uppercase tracking-wider leading-none">
+                      {label}
+                    </span>
+                    <span className="text-xs font-body leading-none truncate max-w-[80px]">
+                      {value ?? "—"}
+                    </span>
+                    {step === s && (
+                      <motion.div
+                        layoutId="stepTabIndicator"
+                        className="absolute bottom-0 left-3 right-3 h-0.5 bg-s-coral rounded-full"
+                      />
+                    )}
+                  </button>
                 ))}
               </div>
 
