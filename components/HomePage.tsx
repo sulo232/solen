@@ -350,6 +350,7 @@ type HomePageProps = {
     categoryCounts: Record<string, number>;
     sections: Record<string, boolean>;
     salonsWithCoords?: number;
+    categorySalons?: Record<string, SalonCardType[]>;
   }
 };
 
@@ -378,6 +379,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   const salonsWithCoords = initialData?.salonsWithCoords ?? 0;
 
   const [salons, setSalons] = useState<SalonCardType[]>(initialData?.salons || []);
+  const [categorySalons] = useState<Record<string, SalonCardType[]>>(initialData?.categorySalons ?? {});
   const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>(initialData?.lastMinuteSlots || []);
   const [newSalons, setNewSalons] = useState<SalonCardType[]>(initialData?.newSalons || []);
   const [trendingSalons, setTrendingSalons] = useState<SalonCardType[]>(initialData?.trendingSalons || []);
@@ -537,80 +539,41 @@ export default function HomePage({ initialData }: HomePageProps) {
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
-      {/* ── Category Photo Cards (Airbnb-style) ─────────────────────────── */}
-      <section id="tour-services" ref={categoryRef} className="animate-in pt-4 pb-0 relative z-[1]" style={{ animationDelay: "80ms" }}>
-        <div
-          className="flex overflow-x-auto gap-3 pb-4"
-          style={{
-            scrollbarWidth: "none",
-            WebkitOverflowScrolling: "touch",
-            padding: "0 16px 12px",
-            overscrollBehaviorX: "contain",
-            scrollSnapType: "x mandatory",
-          } as React.CSSProperties}
-        >
-          {orderedCategories.map(({ key, label, badge, area, price, Icon, gradient, imgSrc }, i) => (
-            <AirbnbCategoryCard
-              key={key}
-              catKey={key}
-              label={label}
-              href={key === "discover"
-                ? `/${locale}/discover`
-                : persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
-              badge={badge}
-              area={area}
-              price={price}
-              Icon={Icon}
-              gradient={gradient}
-              imgSrc={imgSrc}
-              animationIndex={i}
-              isRecent={recentCategory === key}
-            />
-          ))}
-        </div>
-        {/* Bottom divider */}
-        <div className="border-b border-s-ink/[0.06] mx-4" />
-      </section>
-
-      {/* ── Per-city Salon Carousels (Airbnb-style cards) ───────────────── */}
-      {(() => {
-        const baselSalons = salons.filter((s: any) => s.city_slug === "basel");
-        const zuerichSalons = salons.filter((s: any) => s.city_slug === "zuerich");
-        const bernSalons = salons.filter((s: any) => s.city_slug === "bern");
-        const noCity = baselSalons.length === 0 && zuerichSalons.length === 0 && bernSalons.length === 0;
-        return (
-          <div className="animate-in pt-6" style={{ animationDelay: "160ms" }}>
+      {/* ── Per-category Salon Carousels ────────────────────────────────── */}
+      <div
+        id="tour-services"
+        ref={categoryRef}
+        className="animate-in pt-6"
+        style={{ animationDelay: "120ms" }}
+      >
+        {[
+          { key: "coiffeur",   label: tNav("coiffeur")   as string },
+          { key: "nails",      label: tNav("nails")      as string },
+          { key: "barbershop", label: tNav("barbershop") as string },
+          { key: "makeup",     label: tNav("makeup")     as string },
+          { key: "waxing",     label: tNav("waxing")     as string },
+        ].map(({ key, label }) => {
+          const catSalons = categorySalons[key] ?? [];
+          if (catSalons.length === 0) return null;
+          const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
+          const handleVisit = () => {
+            try { localStorage.setItem("solen_recent_category", key); } catch {}
+          };
+          return (
             <CityCarouselSection
-              title={t("featured.beliebtInBasel")}
-              salons={noCity ? salons : baselSalons}
-              locale={locale}
+              key={key}
+              title={label}
+              viewAllHref={href}
               viewAllLabel={t("featured.viewAll")}
+              salons={catSalons}
+              locale={locale}
               favoriteIds={favoriteIds}
               onFavoriteToggle={handleFavoriteToggle}
+              onViewAll={handleVisit}
             />
-            {!noCity && zuerichSalons.length > 0 && (
-              <CityCarouselSection
-                title={t("featured.beliebtInZuerich")}
-                salons={zuerichSalons}
-                locale={locale}
-                viewAllLabel={t("featured.viewAll")}
-                favoriteIds={favoriteIds}
-                onFavoriteToggle={handleFavoriteToggle}
-              />
-            )}
-            {!noCity && bernSalons.length > 0 && (
-              <CityCarouselSection
-                title={t("featured.beliebtInBern")}
-                salons={bernSalons}
-                locale={locale}
-                viewAllLabel={t("featured.viewAll")}
-                favoriteIds={favoriteIds}
-                onFavoriteToggle={handleFavoriteToggle}
-              />
-            )}
-          </div>
-        );
-      })()}
+          );
+        })}
+      </div>
 
       {/* WeatherBanner removed — Phase 0.3 */}
 

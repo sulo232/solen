@@ -11,6 +11,8 @@ interface CityCarouselSectionProps {
   salons: SalonCardType[];
   locale: string;
   viewAllLabel?: string;
+  viewAllHref?: string;
+  onViewAll?: () => void;
   favoriteIds: Set<string>;
   onFavoriteToggle: (id: string) => void;
 }
@@ -145,6 +147,8 @@ export default function CityCarouselSection({
   salons,
   locale,
   viewAllLabel,
+  viewAllHref,
+  onViewAll,
   favoriteIds,
   onFavoriteToggle,
 }: CityCarouselSectionProps) {
@@ -161,9 +165,19 @@ export default function CityCarouselSection({
           {title}
         </span>
         {viewAllLabel && salons.length > 4 && (
-          <span className="font-heading font-semibold text-[12px] text-s-ink/50 hover:text-s-ink transition-colors cursor-pointer">
-            {viewAllLabel} →
-          </span>
+          viewAllHref ? (
+            <Link
+              href={viewAllHref}
+              onClick={onViewAll}
+              className="font-heading font-semibold text-[12px] text-s-ink/50 hover:text-s-ink transition-colors"
+            >
+              {viewAllLabel} →
+            </Link>
+          ) : (
+            <span className="font-heading font-semibold text-[12px] text-s-ink/50 hover:text-s-ink transition-colors cursor-pointer" onClick={onViewAll}>
+              {viewAllLabel} →
+            </span>
+          )
         )}
       </div>
 
