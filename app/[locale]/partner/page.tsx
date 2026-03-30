@@ -9,14 +9,14 @@ import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import PartnerSignupForm from "@/components/partner/PartnerSignupForm";
 
 const FEATURES = [
-  { icon: Calendar, title: "feat_bookings_title", desc: "feat_bookings_desc" },
-  { icon: BarChart3, title: "feat_dashboard_title", desc: "feat_dashboard_desc" },
-  { icon: Users, title: "feat_crm_title", desc: "feat_crm_desc" },
-  { icon: UserPlus, title: "feat_team_title", desc: "feat_team_desc" },
-  { icon: Star, title: "feat_reviews_title", desc: "feat_reviews_desc" },
-  { icon: Clock, title: "feat_lastminute_title", desc: "feat_lastminute_desc" },
-  { icon: TrendingUp, title: "feat_analytics_title", desc: "feat_analytics_desc" },
-  { icon: Bell, title: "feat_reminders_title", desc: "feat_reminders_desc" },
+  { icon: Calendar, title: "feat_bookings_title", desc: "feat_bookings_desc", live: true },
+  { icon: BarChart3, title: "feat_dashboard_title", desc: "feat_dashboard_desc", live: true },
+  { icon: Users, title: "feat_crm_title", desc: "feat_crm_desc", live: true },
+  { icon: UserPlus, title: "feat_team_title", desc: "feat_team_desc", live: true },
+  { icon: Star, title: "feat_reviews_title", desc: "feat_reviews_desc", live: true },
+  { icon: Clock, title: "feat_lastminute_title", desc: "feat_lastminute_desc", live: true },
+  { icon: TrendingUp, title: "feat_analytics_title", desc: "feat_analytics_desc", live: false },
+  { icon: Bell, title: "feat_reminders_title", desc: "feat_reminders_desc", live: false },
 ];
 
 const FAQ_KEYS = [
@@ -108,7 +108,12 @@ export default function PartnerPage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {FEATURES.map((f, i) => (
-            <div key={i} className="p-5 rounded-[14px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
+            <div key={i} className="relative p-5 rounded-[14px] bg-s-bg-surface dark:bg-s-dm-surface border border-s-ink/[0.05] dark:border-white/[0.06] hover:shadow-warm-sm transition-[border-color,box-shadow] duration-200">
+              {!f.live && (
+                <span className="absolute top-3 right-3 text-[9px] font-heading font-bold uppercase tracking-[.06em] px-2 py-0.5 rounded-pill bg-s-coral/10 text-s-coral">
+                  {t("coming_soon")}
+                </span>
+              )}
               <div className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3"
                 style={{ background: "rgba(232,98,74,.09)" }}>
                 <f.icon className="w-5 h-5 text-s-coral" />

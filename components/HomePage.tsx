@@ -9,11 +9,7 @@ import { motion } from "framer-motion";
 import {
   Scissors,
   RefreshCw,
-  Lock,
   Check,
-  RotateCcw,
-  CreditCard,
-  Shield,
   MapPin,
 } from "lucide-react";
 import SalonCard from "@/components/SalonCard";
@@ -241,8 +237,31 @@ export default function HomePage({ initialData }: HomePageProps) {
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
       {/* ── Hero (compact) ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14">
-        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full">
+      <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14 min-h-[500px] flex flex-col justify-end">
+        {/* Background Image & Gradient */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=2874&auto=format&fit=crop')",
+          }}
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute inset-0 z-0 dark:hidden"
+          style={{ 
+            background: "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(245,240,235,0.8) 50%, #F5F0EB 100%)"
+          }}
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute inset-0 z-0 hidden dark:block"
+          style={{ 
+            background: "linear-gradient(180deg, rgba(18,18,18,0.3) 0%, rgba(18,18,18,0.9) 60%, #121212 100%)"
+          }}
+          aria-hidden="true"
+        />
+        
+        <div className="relative z-10 max-w-5xl mx-auto px-4 w-full mt-auto">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-left">
             {/* Greeting / headline */}
             <motion.h1 variants={fadeUp}
@@ -667,7 +686,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
       {/* ── Partner Banner ─────────────────────────────────────────────────── */}
       {sections.partner_cta && (
-        <section className="py-10 md:py-14 px-4 bg-s-ink dark:bg-s-dm-bg">
+        <section className="py-10 md:py-14 px-4 bg-s-ink dark:bg-s-dm-bg border-t-2 border-s-coral/20 mt-8">
           <div className="max-w-5xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 py-2">
               <div className="max-w-sm">
@@ -708,25 +727,6 @@ export default function HomePage({ initialData }: HomePageProps) {
         </section>
       )}
 
-      {/* ── Trust Strip ──────────────────────────────────────────────────── */}
-      <div className="px-4 pb-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex gap-5 flex-wrap items-center border-t border-s-ink/[0.04] dark:border-white/[0.04] pt-8 pb-4">
-            {[
-              { icon: <Lock size={14} aria-hidden="true" />, label: t("trust.securePayment") },
-              { icon: <Shield size={14} aria-hidden="true" />, label: t("trust.swissMade") },
-              { icon: <Check size={14} aria-hidden="true" />, label: t("trust.gdprCompliant") },
-              { icon: <RotateCcw size={14} aria-hidden="true" />, label: t("trust.freeCancellation") },
-              { icon: <CreditCard size={14} aria-hidden="true" />, label: t("trust.paymentMethods") },
-            ].map(({ icon, label }) => (
-              <div key={label} className="flex items-center gap-2 text-xs text-s-ink/70 dark:text-s-dm-text/70">
-                <div className="w-7 h-7 rounded-[8px] bg-s-bg-sunken dark:bg-s-dm-bg/50 flex items-center justify-center text-s-ink/50 dark:text-s-dm-text/50 shrink-0">{icon}</div>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}
       {/* StickyMobileCTA removed — Phase 2 */}

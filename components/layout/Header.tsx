@@ -4,14 +4,14 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu, X, MessageCircle, User, Compass, CalendarDays, Heart, LogOut,
   Scissors, ScissorsLineDashed, Paintbrush, Droplets, Palette, Sparkles, Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import CitySelector from "@/components/ui/CitySelector";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+
 import CategoryStickyRow from "@/components/layout/CategoryStickyRow";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
@@ -34,7 +34,7 @@ const NAV_LINKS = [
   { key: "spa", href: "/spa", Icon: SpaIcon },
   { key: "makeup", href: "/makeup", Icon: MakeupIcon },
   { key: "waxing", href: "/waxing", Icon: WaxingIcon },
-  { key: "last_minute", href: "/last-minute", Icon: CalendarDays },
+  { key: "last_minute", href: "/angebote", Icon: CalendarDays },
 ];
 
 // Category icons for sub-site indicator
@@ -111,13 +111,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
   if (isHidden) return null;
 
-  // Detect current category for sub-site icon
-  const currentCategory = Object.keys(CATEGORY_ICONS).find((cat) =>
-    pathname.includes(`/${cat}`)
-  );
-  const categoryInfo = currentCategory ? CATEGORY_ICONS[currentCategory] : null;
-  const CategoryIcon = categoryInfo?.icon;
-
   return (
     <header className="sticky top-0 z-50 w-full px-4">
       <div className="flex items-center justify-center gap-3">
@@ -128,8 +121,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
             ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg"
             : "mt-3 max-w-5xl min-h-[60px] py-2.5 px-5 sm:px-8 glass-frost shadow-warm-sm"
         )}>
-          {/* Logo + Sub-site icon */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Logo */}
+          <div className="flex items-center shrink-0">
             <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
               <img
                 src="/logo.svg"
@@ -139,27 +132,6 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 height={32}
               />
             </Link>
-            {CategoryIcon && categoryInfo && (
-              <div className="flex items-center gap-1.5 text-s-coral ml-1">
-                <span className="text-s-ink/20 dark:text-s-dm-text/20">|</span>
-                <CategoryIcon size={18} />
-                <AnimatePresence>
-                  {!scrolled && (
-                    <motion.span
-                      key="category-label"
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: "auto" }}
-                      exit={{ opacity: 0, width: 0 }}
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                      style={{ willChange: "width" }}
-                      className="text-xs font-heading font-semibold hidden sm:inline overflow-hidden whitespace-nowrap text-s-coral"
-                    >
-                      {categoryInfo.label}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
           </div>
 
           {/* Desktop nav — V4: always visible */}
@@ -212,9 +184,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
-            {/* City selector — desktop only */}
-            <div className="hidden lg:flex items-center">
-              <CitySelector variant="header" />
+
+            {/* Language toggle — always visible, desktop only */}
+            <div className="hidden md:block">
+              <LanguageSwitcher locale={locale} variant="header" />
             </div>
 
             {/* Show only for authenticated users */}

@@ -46,15 +46,15 @@
     "no_results": "Aucun salon trouvé",
     "hero": {
       "byline": "Ta plateforme suisse de salons",
-      "headlineWord1": "BEAUTÉ",
-      "headlineWord2": "RÉSERVER",
+      "headlineWord1": "VOTRE PROCHAIN",
+      "headlineWord2": "RENDEZ-VOUS",
       "hello": "Bonjour",
       "welcome": "Bienvenue {name}",
       "subtitle": "Coiffeur, barbier, ongles & spa — réservez maintenant dans votre ville.",
       "nextBooking": "Votre prochain rendez-vous: {date} chez {salon}",
       "welcomeBack": "Bienvenue — que cherchez-vous aujourd'hui?",
       "bookings": "Réservations",
-      "aiTagline": "Coiffeur, Barber, Ongles & Spa — réservez maintenant à Bâle."
+      "aiTagline": "Coiffeur, Barber, Ongles & Spa près de chez vous."
     },
     "cta": {
       "findSalon": "Trouver un salon",
@@ -120,7 +120,7 @@
       "headlinePart4": "Plus jamais.",
       "feature1": "Pas de frais mensuels",
       "feature2": "En ligne en 24h",
-      "feature3": "Des milliers de clients à Bâle"
+      "feature3": "En ligne en 5 minutes"
     },
     "trust": {
       "securePayment": "Paiement sécurisé — chiffrement Stripe",
@@ -2378,7 +2378,7 @@
     "cta_consult_subject": "Conseil pour l'inscription salon sur solen.ch",
     "cta_counter": "Déjà utilisé par des salons à Bâle",
     "pricing_title": "Transparent & Équitable",
-    "pricing_subtitle": "Seulement 1% de commission par réservation. Pas de frais cachés, pas de contrat, pas de risque.",
+    "pricing_subtitle": "15% sur les nouvelles réservations · 0% sur les clients fidèles. Pas de frais cachés, pas de contrat.",
     "pricing_badge": "Meilleure offre",
     "pricing_label": "Commission par réservation",
     "pricing_per_booking": "par réservation réussie",
@@ -2401,7 +2401,7 @@
     "faq_title": "Questions fréquentes",
     "faq_subtitle": "Tout ce que les propriétaires de salons veulent savoir",
     "faq_cost_q": "Combien coûte Solen ?",
-    "faq_cost_a": "Solen prélève seulement 1% de commission par réservation réussie. Pas de frais mensuels, pas de frais d'installation, pas de coûts cachés.",
+    "faq_cost_a": "Solen prélève 15% sur les nouvelles réservations et 0% sur les clients fidèles. Pas de frais mensuels, pas de frais d'installation, pas de coûts cachés. Vous ne payez que lorsque vous gagnez de nouveaux clients.",
     "faq_contract_q": "Ai-je besoin d'un contrat ?",
     "faq_contract_a": "Non. Vous pouvez utiliser Solen sans contrat et mettre en pause ou désactiver votre profil à tout moment — sans préavis.",
     "faq_payments_q": "Comment fonctionnent les paiements ?",
@@ -2443,7 +2443,7 @@
     "testimonial_2_name": "Marco R.",
     "testimonial_2_role": "Propriétaire de barbershop, Kleinbasel",
     "testimonial_2_initial": "M",
-    "testimonial_3_quote": "1% de commission — c'est une fraction de ce qu'on payait avant. Et le service est meilleur.",
+    "testimonial_3_quote": "0% sur les clients fidèles — ça change tout. Nos habitués reviennent sans que la plateforme nous coûte quoi que ce soit.",
     "testimonial_3_name": "Sarah K.",
     "testimonial_3_role": "Studio d'ongles, Gundeldingen",
     "testimonial_3_initial": "S",
@@ -2462,6 +2462,7 @@
     "cat_waxing_title": "Épilation",
     "cat_waxing_desc": "Tarifs par zone, rappels de traitement et intervalles.",
     "sticky_cta": "Commencer gratuitement →",
+    "coming_soon": "Bientôt disponible",
     "for_owners": "Pour les propriétaires de salons",
     "section_features": "Fonctionnalités",
     "section_categories": "Catégories",

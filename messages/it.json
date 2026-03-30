@@ -46,15 +46,15 @@
     "no_results": "Nessun salone trovato",
     "hero": {
       "byline": "La tua piattaforma svizzera di saloni",
-      "headlineWord1": "BELLEZZA",
-      "headlineWord2": "PRENOTA",
+      "headlineWord1": "IL TUO PROSSIMO",
+      "headlineWord2": "APPUNTAMENTO",
       "hello": "Ciao",
       "welcome": "Benvenuto {name}",
       "subtitle": "Parrucchiere, barbiere, unghie & spa — prenota ora nella tua città.",
       "nextBooking": "Il tuo prossimo appuntamento: {date} presso {salon}",
       "welcomeBack": "Bentornato — cosa stai cercando oggi?",
       "bookings": "Prenotazioni",
-      "aiTagline": "Coiffeur, Barber, Unghie & Spa — prenota ora a Basilea."
+      "aiTagline": "Coiffeur, Barber, Unghie & Spa vicino a te."
     },
     "cta": {
       "findSalon": "Trova salone",
@@ -120,7 +120,7 @@
       "headlinePart4": "Mai più.",
       "feature1": "Nessuna tariffa mensile",
       "feature2": "Online in 24 ore",
-      "feature3": "Migliaia di clienti a Basilea"
+      "feature3": "Online in 5 minuti"
     },
     "trust": {
       "securePayment": "Pagamento sicuro — crittografato Stripe",
@@ -2378,7 +2378,7 @@
     "cta_consult_subject": "Consulenza per registrazione salone su solen.ch",
     "cta_counter": "Già scelto da saloni a Basilea",
     "pricing_title": "Trasparente & Equo",
-    "pricing_subtitle": "Solo 1% di commissione per prenotazione. Nessun costo nascosto, nessun contratto, nessun rischio.",
+    "pricing_subtitle": "15% sulle nuove prenotazioni · 0% sui clienti abituali. Nessun costo nascosto, nessun contratto.",
     "pricing_badge": "Miglior offerta",
     "pricing_label": "Commissione per prenotazione",
     "pricing_per_booking": "per prenotazione riuscita",
@@ -2401,7 +2401,7 @@
     "faq_title": "Domande frequenti",
     "faq_subtitle": "Tutto ciò che i proprietari di saloni vogliono sapere",
     "faq_cost_q": "Quanto costa Solen?",
-    "faq_cost_a": "Solen applica solo l'1% di commissione per prenotazione riuscita. Nessun costo mensile, nessun costo di setup, nessun costo nascosto.",
+    "faq_cost_a": "Solen applica il 15% sulle nuove prenotazioni e lo 0% sui clienti abituali. Nessun costo mensile, nessun costo di setup, nessun costo nascosto. Paghi solo quando acquisisci nuovi clienti.",
     "faq_contract_q": "Ho bisogno di un contratto?",
     "faq_contract_a": "No. Puoi usare Solen in qualsiasi momento senza contratto e mettere in pausa o disattivare il tuo profilo quando vuoi — senza preavviso.",
     "faq_payments_q": "Come funzionano i pagamenti?",
@@ -2443,7 +2443,7 @@
     "testimonial_2_name": "Marco R.",
     "testimonial_2_role": "Proprietario barbershop, Kleinbasel",
     "testimonial_2_initial": "M",
-    "testimonial_3_quote": "1% di commissione — è una frazione di quello che pagavamo prima. E il servizio è migliore.",
+    "testimonial_3_quote": "0% sui clienti abituali — questo cambia tutto. I nostri fidelizzati tornano senza che la piattaforma ci costi nulla.",
     "testimonial_3_name": "Sarah K.",
     "testimonial_3_role": "Studio unghie, Gundeldingen",
     "testimonial_3_initial": "S",
@@ -2462,6 +2462,7 @@
     "cat_waxing_title": "Ceretta",
     "cat_waxing_desc": "Prezzi per zona, promemoria trattamenti e intervalli.",
     "sticky_cta": "Inizia gratis →",
+    "coming_soon": "Prossimamente",
     "for_owners": "Per i proprietari di saloni",
     "section_features": "Funzionalità",
     "section_categories": "Categorie",

@@ -46,15 +46,15 @@
     "no_results": "No salons found",
     "hero": {
       "byline": "Your Swiss Salon Platform",
-      "headlineWord1": "BEAUTY",
-      "headlineWord2": "BOOK",
+      "headlineWord1": "YOUR NEXT",
+      "headlineWord2": "APPOINTMENT",
       "hello": "Hello",
       "welcome": "Welcome {name}",
       "subtitle": "Hair, Barber, Nails & Spa — book now in your city.",
       "nextBooking": "Your next appointment: {date} at {salon}",
       "welcomeBack": "Welcome back — what are you looking for today?",
       "bookings": "Bookings",
-      "aiTagline": "Coiffeur, Barber, Nails & Spa — book now in Basel."
+      "aiTagline": "Coiffeur, Barber, Nails & Spa near you."
     },
     "cta": {
       "findSalon": "Find salon",
@@ -120,7 +120,7 @@
       "headlinePart4": "Never again.",
       "feature1": "No monthly fees",
       "feature2": "Live in 24 hours",
-      "feature3": "Thousands of clients in Basel"
+      "feature3": "Online in 5 minutes"
     },
     "trust": {
       "securePayment": "Secure payment — Stripe encrypted",
@@ -2401,7 +2401,7 @@
     "cta_consult_subject": "Consultation for salon registration on solen.ch",
     "cta_counter": "Already trusted by salons in Basel",
     "pricing_title": "Transparent & Fair",
-    "pricing_subtitle": "Only 1% commission per booking. No hidden fees, no contracts, no risk.",
+    "pricing_subtitle": "15% on new bookings · 0% on returning clients. No hidden fees, no contracts.",
     "pricing_badge": "Best deal",
     "pricing_label": "Commission per booking",
     "pricing_per_booking": "per successful booking",
@@ -2424,7 +2424,7 @@
     "faq_title": "Frequently Asked Questions",
     "faq_subtitle": "Everything salon owners want to know",
     "faq_cost_q": "How much does Solen cost?",
-    "faq_cost_a": "Solen charges only 1% commission per successful booking. No monthly fees, no setup costs, no hidden charges. You only pay when you actually gain clients.",
+    "faq_cost_a": "Solen charges 15% on new bookings and 0% on returning clients. No monthly fees, no setup costs, no hidden charges. You only pay when you actually gain new clients.",
     "faq_contract_q": "Do I need a contract?",
     "faq_contract_a": "No. You can use Solen anytime without a contract and pause or deactivate your profile whenever you want — no notice period required.",
     "faq_payments_q": "How do payments work?",
@@ -2466,7 +2466,7 @@
     "testimonial_2_name": "Marco R.",
     "testimonial_2_role": "Barbershop owner, Kleinbasel",
     "testimonial_2_initial": "M",
-    "testimonial_3_quote": "1% commission — that's a fraction of what we used to pay. And the service is better.",
+    "testimonial_3_quote": "0% on returning clients — that changes everything. Our regulars come back without costing us a penny.",
     "testimonial_3_name": "Sarah K.",
     "testimonial_3_role": "Nail Studio, Gundeldingen",
     "testimonial_3_initial": "S",
@@ -2485,6 +2485,7 @@
     "cat_waxing_title": "Waxing",
     "cat_waxing_desc": "Zone-based pricing, treatment reminders and intervals.",
     "sticky_cta": "Get started free →",
+    "coming_soon": "Coming soon",
     "for_owners": "For salon owners",
     "section_features": "Features",
     "section_categories": "Categories",

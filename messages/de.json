@@ -46,15 +46,15 @@
     "no_results": "Keine Salons gefunden",
     "hero": {
       "byline": "Deine Schweizer Salon-Plattform",
-      "headlineWord1": "BEAUTY",
-      "headlineWord2": "BUCHEN",
+      "headlineWord1": "DEIN NÄCHSTER",
+      "headlineWord2": "TERMIN",
       "hello": "Hallo",
       "welcome": "Willkommen {name}",
       "subtitle": "Coiffeur, Barber, Nails & Spa — buche jetzt in deiner Stadt.",
       "nextBooking": "Dein nächster Termin: {date} bei {salon}",
       "welcomeBack": "Willkommen zurück — was darf's heute sein?",
       "bookings": "Buchungen",
-      "aiTagline": "Coiffeur, Barber, Nails & Spa — buche jetzt in Basel."
+      "aiTagline": "Coiffeur, Barber, Nails & Spa in deiner Nähe."
     },
     "cta": {
       "findSalon": "Salon finden",
@@ -112,7 +112,7 @@
     "partner": {
       "eyebrow": "Für Salons",
       "title": "Hast du einen Salon?",
-      "subtitle": "Bring dein Business auf das nächste Level — erreiche tausende Kund:innen in Basel.",
+      "subtitle": "Bring dein Business auf das nächste Level — sei einer der ersten Salons auf Solen.",
       "cta": "Partner werden",
       "headlinePart1": "0%",
       "headlinePart2": "für Stammkunden.",
@@ -120,7 +120,7 @@
       "headlinePart4": "Nie mehr.",
       "feature1": "Keine monatlichen Gebühren",
       "feature2": "Live in 24 Stunden",
-      "feature3": "Tausende Kunden in Basel"
+      "feature3": "In 5 Minuten online"
     },
     "trust": {
       "securePayment": "Sichere Zahlung — Stripe verschlüsselt",
@@ -2412,7 +2412,7 @@
     "cta_consult_subject": "Beratung für Salon-Registrierung auf solen.ch",
     "cta_counter": "Bereits von Salons in Basel vertraut",
     "pricing_title": "Transparent & Fair",
-    "pricing_subtitle": "Nur 1% Provision pro Buchung. Keine versteckten Kosten, keine Verträge, kein Risiko.",
+    "pricing_subtitle": "15% auf Neubuchungen · 0% auf Stammkunden. Keine versteckten Kosten, keine Verträge.",
     "pricing_badge": "Bestes Angebot",
     "pricing_label": "Provision pro Buchung",
     "pricing_per_booking": "pro erfolgreiche Buchung",
@@ -2435,7 +2435,7 @@
     "faq_title": "Häufige Fragen",
     "faq_subtitle": "Alles, was Salon-Besitzer wissen möchten",
     "faq_cost_q": "Was kostet Solen?",
-    "faq_cost_a": "Solen erhebt nur 1% Provision pro erfolgreiche Buchung. Keine monatlichen Gebühren, keine Setup-Kosten, keine versteckten Kosten. Du zahlst nur, wenn du tatsächlich Kunden gewinnst.",
+    "faq_cost_a": "Solen erhebt 15% Provision auf Neubuchungen und 0% auf Stammkunden. Keine monatlichen Gebühren, keine Setup-Kosten, keine versteckten Kosten. Du zahlst nur, wenn du tatsächlich Kunden gewinnst.",
     "faq_contract_q": "Brauche ich einen Vertrag?",
     "faq_contract_a": "Nein. Du kannst Solen jederzeit ohne Vertragsbindung nutzen und auch jederzeit pausieren oder deaktivieren — ohne Kündigungsfrist.",
     "faq_payments_q": "Wie funktionieren die Zahlungen?",
@@ -2477,7 +2477,7 @@
     "testimonial_2_name": "Marco R.",
     "testimonial_2_role": "Barbershop-Besitzer, Kleinbasel",
     "testimonial_2_initial": "M",
-    "testimonial_3_quote": "1% Provision — das ist ein Bruchteil von dem, was wir vorher gezahlt haben. Und der Service ist besser.",
+    "testimonial_3_quote": "0% auf Stammkunden — das ändert alles. Unsere Stammkunden kommen, ohne dass uns die Plattform etwas kostet.",
     "testimonial_3_name": "Sarah K.",
     "testimonial_3_role": "Nail Studio, Gundeldingen",
     "testimonial_3_initial": "S",
@@ -2496,6 +2496,7 @@
     "cat_waxing_title": "Waxing",
     "cat_waxing_desc": "Zonen-basierte Preise, Behandlungs-Erinnerungen und Intervalle.",
     "sticky_cta": "Kostenlos starten →",
+    "coming_soon": "Bald verfügbar",
     "for_owners": "Für Saloninhaber",
     "section_features": "Funktionen",
     "section_categories": "Kategorien",
