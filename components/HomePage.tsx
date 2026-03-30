@@ -236,30 +236,8 @@ export default function HomePage({ initialData }: HomePageProps) {
     <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
 
       {/* ── Hero (compact) ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14 min-h-[500px] flex flex-col justify-end">
-        {/* Background Image & Gradient */}
-        <div 
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=2874&auto=format&fit=crop')",
-          }}
-          aria-hidden="true"
-        />
-        <div 
-          className="absolute inset-0 z-0 dark:hidden"
-          style={{ 
-            background: "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(245,240,235,0.8) 50%, #F5F0EB 100%)"
-          }}
-          aria-hidden="true"
-        />
-        <div 
-          className="absolute inset-0 z-0 hidden dark:block"
-          style={{ 
-            background: "linear-gradient(180deg, rgba(18,18,18,0.3) 0%, rgba(18,18,18,0.9) 60%, #121212 100%)"
-          }}
-          aria-hidden="true"
-        />
-        
+      <section className="relative overflow-hidden pt-14 sm:pt-20 pb-10 sm:pb-14 min-h-[500px] flex flex-col justify-end bg-[#F5F0EB] dark:bg-s-dm-bg">
+
         <div className="relative z-10 max-w-5xl mx-auto px-4 w-full mt-auto">
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="text-left">
             {/* Greeting / headline */}
