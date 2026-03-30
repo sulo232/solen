@@ -392,7 +392,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
           {/* Guided search — Airbnb-style step-by-step discovery funnel */}
           <div className="mt-6 w-full max-w-2xl">
-            <GuidedSearch />
+            <GuidedSearch categoryCounts={categoryCounts} />
           </div>
 
           {/* Trust chips */}
@@ -413,9 +413,6 @@ export default function HomePage({ initialData }: HomePageProps) {
               </span>
             ))}
           </div>
-
-          {/* Hero carousel — featured salons */}
-          <FeaturedSalonCarousel salons={salons} locale={locale} />
 
           {/* Small text links — Buchungen only when logged in */}
           {userName && (
@@ -471,6 +468,11 @@ export default function HomePage({ initialData }: HomePageProps) {
               })}
           </div>
         </div>
+      </section>
+
+      {/* ── "BELIEBT IN DEINER NÄHE" salon carousel (A.3 — step 4) ─────────── */}
+      <section className="pb-8 relative z-[1]">
+        <FeaturedSalonCarousel salons={salons} locale={locale} />
       </section>
 
       {/* WeatherBanner removed — Phase 0.3 */}

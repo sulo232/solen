@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, ChevronLeft, MapPin, Check, Star, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
+import { Search, X, ChevronLeft, ChevronRight, MapPin, Check, Star, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_SERVICES,
@@ -56,7 +56,7 @@ const TIME_KEYS: TimeKey[] = ["any", "morning", "afternoon", "evening"];
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function GuidedSearch() {
+export default function GuidedSearch({ categoryCounts = {} }: { categoryCounts?: Record<string, number> }) {
   const router = useRouter();
   const locale = useLocale();
   const t      = useTranslations("home.guidedSearch");
@@ -75,6 +75,7 @@ export default function GuidedSearch() {
   const [scrolled,      setScrolled]      = useState(false);
   const [showCalendar,  setShowCalendar]  = useState(false);
   const [specificDate,  setSpecificDate]  = useState<CalendarDate | null>(null);
+  const [flashedCat,    setFlashedCat]    = useState<string | null>(null);
 
   const inputRef     = useRef<HTMLInputElement>(null);
   const cityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -205,9 +206,14 @@ export default function GuidedSearch() {
   };
 
   const selectCategory = (cat: SalonCategory) => {
-    setCategory(cat);
-    setService(null);
-    setShowServices(true);
+    // Row flash: rgba(232,115,90,0.08) for 200ms, then advance to WO step
+    setFlashedCat(cat);
+    setTimeout(() => {
+      setFlashedCat(null);
+      setCategory(cat);
+      setService(null);
+      setStep(2);
+    }, 200);
   };
 
   const selectService = (svc: string | null) => {
@@ -570,34 +576,50 @@ export default function GuidedSearch() {
                                 {!category && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
                               </button>
 
-                              {CATEGORY_LIST.map((cat) => (
-                                <button
-                                  key={cat.key}
-                                  onClick={() => selectCategory(cat.key)}
-                                  aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
-                                  className={cn(
-                                    "w-full flex items-center gap-4 py-4 text-left transition-colors",
-                                    category === cat.key
-                                      ? "bg-s-coral/[0.04] dark:bg-s-coral/[0.08]"
-                                      : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
-                                  )}
-                                >
-                                  <div className="w-10 h-10 rounded-[12px] flex items-center justify-center bg-s-coral/[0.06] shrink-0">
-                                    <cat.Icon width={20} height={20} className={cn(category === cat.key ? "text-s-coral" : "text-s-ink/60 dark:text-s-dm-text/60")} />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className={cn("text-[14px] font-heading font-bold leading-tight", category === cat.key ? "text-s-coral" : "text-s-ink dark:text-s-dm-text")}>
-                                      {tNav(cat.key as Parameters<typeof tNav>[0])}
-                                    </p>
-                                    <p className="text-[12px] text-s-ink/45 dark:text-s-dm-text/45 leading-tight mt-0.5 truncate">
-                                      {getCatSub(cat)}
-                                    </p>
-                                  </div>
-                                  {category === cat.key && (
-                                    <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />
-                                  )}
-                                </button>
-                              ))}
+                              {CATEGORY_LIST.map((cat) => {
+                                const count = categoryCounts[cat.key] ?? 0;
+                                const isFlashing = flashedCat === cat.key;
+                                return (
+                                  <button
+                                    key={cat.key}
+                                    onClick={() => selectCategory(cat.key)}
+                                    aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
+                                    className="w-full flex items-center text-left transition-[background-color] duration-100"
+                                    style={{
+                                      padding: "14px 24px",
+                                      gap: "14px",
+                                      borderBottom: "1px solid rgba(0,0,0,0.04)",
+                                      minHeight: "56px",
+                                      background: isFlashing ? "rgba(232,115,90,0.08)" : "transparent",
+                                    }}
+                                  >
+                                    {/* Icon container */}
+                                    <div
+                                      className="shrink-0 flex items-center justify-center"
+                                      style={{ width: 40, height: 40, borderRadius: 12, background: "#F5F0EB" }}
+                                    >
+                                      <cat.Icon width={20} height={20} style={{ color: "#E8735A" }} />
+                                    </div>
+                                    {/* Text */}
+                                    <div className="flex-1 min-w-0">
+                                      <p style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "15px", color: "#1A1A1A", margin: 0, lineHeight: 1.2 }}>
+                                        {tNav(cat.key as Parameters<typeof tNav>[0])}
+                                      </p>
+                                      <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#8A8178", margin: "2px 0 0", lineHeight: 1.2 }} className="truncate">
+                                        {getCatSub(cat)}
+                                      </p>
+                                    </div>
+                                    {/* Right side: count or chevron */}
+                                    {count > 0 ? (
+                                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#8A8178", whiteSpace: "nowrap", flexShrink: 0 }}>
+                                        {count} {count === 1 ? "Salon" : "Salons"}
+                                      </span>
+                                    ) : (
+                                      <ChevronRight size={18} style={{ color: "#C4BBB2", flexShrink: 0 }} aria-hidden="true" />
+                                    )}
+                                  </button>
+                                );
+                              })}
                             </div>
 
                             {/* Divider */}
