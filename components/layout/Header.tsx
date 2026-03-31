@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import CategoryStickyRow from "@/components/layout/CategoryStickyRow";
@@ -18,6 +19,7 @@ import { NailsIcon } from "@/components/icons/category/NailsIcon";
 import { SpaIcon } from "@/components/icons/category/SpaIcon";
 import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
 import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
+import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
 
 interface HeaderProps {
   locale: string;
@@ -106,191 +108,165 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   if (isHidden) return null;
 
   return (
-    <header className="sticky top-0 z-50 w-full px-4">
-      <div className="flex items-center justify-center gap-3">
-        {/* Main nav pill */}
-        <div className={cn(
-          "flex items-center justify-between rounded-full transition-[max-width,padding,min-height,background-color,border-color,box-shadow] duration-300 ease-out w-full",
-          scrolled
-            ? "mt-2 max-w-4xl min-h-[52px] py-1.5 px-4 sm:px-6 glass-frost shadow-warm-lg border border-black/[0.06]"
-            : "mt-3 max-w-5xl min-h-[56px] py-2.5 px-5 sm:px-8 bg-transparent border border-transparent"
-        )}>
-          {/* Logo — hidden on mobile entirely, visible on sm+ */}
-          <div className={cn("items-center shrink-0", scrolled ? "hidden sm:flex" : "hidden sm:flex")}>
-            <Link href={`/${locale}`} className="flex items-center shrink-0" aria-label={t("homeLink")}>
-              <img
-                src="/logo.svg"
-                alt="Solen.ch"
-                className="h-8 w-auto dark:invert"
-                width={96}
-                height={32}
-              />
-            </Link>
-          </div>
+    <header className={cn(
+      "sticky top-0 z-50 w-full transition-[background-color,border-color,box-shadow,padding-bottom] duration-300",
+      scrolled 
+        ? "bg-white/95 dark:bg-s-dm-surface/95 border-b border-s-ink/[0.08] dark:border-white/[0.08] shadow-sm backdrop-blur-md pb-0"
+        : "bg-white dark:bg-transparent border-transparent pb-0"
+    )}>
+      {/* ── Top Row: Logo, Search Bar, Profile ── */}
+      <div className={cn(
+        "max-w-[2520px] mx-auto px-4 sm:px-6 flex items-start justify-between gap-4 transition-[padding-top] duration-300 relative z-[60]",
+        scrolled ? "pt-4" : "pt-6"
+      )}>
+        {/* Left: Logo */}
+        <div className="flex-1 shrink-0 flex items-center justify-start h-14">
+          <Link href={`/${locale}`} className="hidden sm:block" aria-label={t("homeLink")}>
+            <img
+              src="/logo.svg"
+              alt="Solen.ch"
+              className="h-8 w-auto dark:invert"
+              width={96}
+              height={32}
+            />
+          </Link>
+        </div>
 
-          {/* Desktop nav — only on homepage + category/discovery pages */}
-          {showCategoryNav && <nav className="hidden md:flex items-center gap-1.5 transition-opacity duration-300" aria-label="Hauptnavigation">
-            {NAV_LINKS.map(({ key, href, Icon }) => {
-              const isActive = pathname.includes(href);
-              return (
-                <Link
-                  key={key}
-                  href={`/${locale}${href}`}
-                  aria-label={t(key as any)}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "group relative flex flex-col items-center justify-center transition-colors duration-200 rounded-full",
-                    scrolled ? "p-2" : "p-2.5",
-                    isActive
-                      ? "text-white bg-s-ink dark:text-s-ink dark:bg-white shadow-elevation-2"
-                      : "text-s-ink/60 hover:text-s-ink hover:bg-s-ink/5 dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/5"
-                  )}
-                >
-                  <Icon width={20} height={20} className="w-5 h-5 shrink-0" />
-                  {isActive && (
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-s-coral" />
-                  )}
-                  {/* Tooltip */}
-                  <span className="absolute top-[120%] left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-s-ink text-white dark:bg-white dark:text-s-ink text-[10px] font-heading font-medium tracking-wide uppercase px-2.5 py-1.5 rounded-md shadow-elevation-3 whitespace-nowrap z-50">
-                    {t(key as any)}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>}
-
-          {/* Search pill — MOBILE: always visible, fills available width */}
+        {/* Center: AirbnbSearchBar (Desktop) & Mobile Pill */}
+        <div className="flex-[0_1_850px] shrink-1 w-full" style={{ transformOrigin: 'top center' }}>
+          {/* Desktop Search */}
+          <AirbnbSearchBar scrolledPast80={scrolled} locale={locale} />
+          
+          {/* Mobile Search/Filter Pill */}
           <button
             onClick={() =>
               window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))
             }
             aria-label={t("search")}
-            className="flex sm:hidden items-center gap-2 px-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/70 dark:bg-s-dm-surface/60 text-s-ink/55 dark:text-s-dm-text/55 active:scale-[0.98] transition-[border-color,color,transform] duration-150 flex-1"
-            style={{ height: 38, fontSize: 13, boxShadow: "0 1px 3px rgba(0,0,0,.05)" }}
+            className="flex md:hidden items-center gap-3 px-4 w-full h-[52px] rounded-[100px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:bg-s-dm-surface/60 transition-[transform] duration-150"
           >
-            <Search size={13} className="text-s-coral shrink-0" aria-hidden="true" />
-            <span className="font-heading font-semibold truncate">{t("searchCompact")}</span>
-          </button>
-
-          {/* Compact search pill — DESKTOP: visible when scrolled */}
-          {scrolled && (
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))
-              }
-              aria-label={t("search")}
-              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-s-dm-surface/60 text-[12px] font-heading font-bold text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-ink/20 dark:hover:border-white/20 hover:text-s-ink dark:hover:text-s-dm-text transition-[border-color,color] backdrop-blur-sm"
-              style={{ boxShadow: "0 1px 4px rgba(0,0,0,.06)" }}
-            >
-              <Search size={13} className="text-s-coral" aria-hidden="true" />
-              {t("search")}
-            </button>
-          )}
-
-          {/* Right actions */}
-          <div className="flex items-center gap-2">
-
-            {/* Language toggle — always visible, desktop only */}
-            <div className="hidden md:block">
-              <LanguageSwitcher locale={locale} variant="header" />
+            <Search size={18} className="text-[#222222] shrink-0" strokeWidth={2.5} aria-hidden="true" />
+            <div className="flex flex-col items-start min-w-0 text-left">
+              <span className="font-heading font-semibold text-[#222222] text-[13px] leading-[14px]">Was suchen?</span>
+              <span className="font-body text-[#717171] text-[11px] leading-[14px] truncate">Ort • Woche</span>
             </div>
-
-            {/* Saved/bookmarks icon — mobile only */}
-            <Link
-              href={`/${locale}/account/saved`}
-              aria-label={t("saved")}
-              className="sm:hidden flex items-center justify-center w-9 h-9 rounded-full text-s-ink/60 hover:text-s-ink transition-colors duration-150"
-            >
-              <Bookmark className="w-5 h-5" strokeWidth={1.6} />
-            </Link>
-
-            {/* Show only for authenticated users */}
-            {!!isLoggedIn && (
-              <NotificationBell userId={userId} />
-            )}
-
-            {/* Mobile hamburger — hidden on all sizes (BottomTabBar handles mobile nav) */}
-            <button
-              onClick={() => setMobileOpen((v) => !v)}
-              className="hidden p-1.5 min-h-12 min-w-12 flex items-center justify-center text-s-ink/70 dark:text-s-dm-text/70"
-              aria-label={mobileOpen ? t("menuClose") : t("menuOpen")}
-            >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
+          </button>
         </div>
 
-        {/* Profile button — outside nav pill */}
-        <div className={cn("hidden sm:block relative shrink-0", scrolled ? "mt-3" : "mt-2")} ref={profileRef}>
-          {isLoggedIn ? (
-            <>
-              {/* Logged-in: button opens dropdown */}
-              <button
-                onClick={() => setProfileOpen(prev => !prev)}
-                aria-label={t("account")}
-                aria-expanded={profileOpen}
-                className={cn(
-                  "flex items-center justify-center w-10 h-10 rounded-full bg-s-coral text-white",
-                  "active:scale-[0.98] transition-transform duration-200",
-                  profileOpen && "ring-2 ring-s-coral/30"
-                )}
-                style={{ boxShadow: "0 2px 4px rgba(232,98,74,.30)" }}
-              >
-                <User className="w-4 h-4" />
-              </button>
+        {/* Right: Actions */}
+        <div className="flex-1 shrink-0 flex items-center justify-end gap-2 h-14" ref={profileRef}>
+          {/* Dark mode & Language toggle — desktop only */}
+          <div className="hidden md:flex items-center gap-2 pr-2">
+            <ThemeToggle />
+            <LanguageSwitcher locale={locale} variant="header" />
+          </div>
 
-              {/* Dropdown panel */}
-              {profileOpen && (
-                <div
-                  className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-input z-[60] overflow-hidden glass-frost shadow-v5-float"
+          {/* Profile button */}
+          <div className="relative shrink-0">
+            {isLoggedIn ? (
+              <>
+                <button
+                  onClick={() => setProfileOpen(prev => !prev)}
+                  aria-label={t("account")}
+                  aria-expanded={profileOpen}
+                  className={cn(
+                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-[#717171] border border-[#dddddd] hover:shadow-elevation-2 bg-white",
+                    "transition-[box-shadow,transform] duration-200"
+                  )}
                 >
-                  <nav className="py-1" role="menu">
-                    {[
-                      { label: t("account"), href: `/${locale}/profile`, icon: User },
-                      { label: t("bookings"), href: `/${locale}/profile`, icon: CalendarDays },
-                      { label: t("favorites"), href: `/${locale}/account/saved`, icon: Heart },
-                      { label: t("messages"), href: `/${locale}/account/messages`, icon: MessageCircle },
-                    ].map(({ label, href, icon: Icon }) => (
-                      <Link
-                        key={href}
-                        href={href}
-                        onClick={() => setProfileOpen(false)}
+                  <Menu className="w-4 h-4 mr-1" />
+                  <div className="bg-[#717171] text-white rounded-full w-6 h-6 flex items-center justify-center">
+                    <User className="w-[14px] h-[14px]" />
+                  </div>
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-2xl z-[60] overflow-hidden bg-white shadow-[0_8px_28px_rgba(0,0,0,0.15)] ring-1 ring-black/5">
+                    <nav className="py-2" role="menu">
+                      {[
+                        { label: t("account"), href: `/${locale}/profile` },
+                        { label: t("bookings"), href: `/${locale}/profile` },
+                        { label: t("favorites"), href: `/${locale}/account/saved` },
+                        { label: t("messages"), href: `/${locale}/account/messages` },
+                      ].map(({ label, href }) => (
+                        <Link
+                          key={href}
+                          href={href}
+                          onClick={() => setProfileOpen(false)}
+                          role="menuitem"
+                          className="flex items-center px-4 py-2.5 text-[14px] font-body text-[#222222] hover:bg-[#f7f7f7] transition-colors"
+                        >
+                          {label}
+                        </Link>
+                      ))}
+                      <div className="border-t border-[#dddddd] my-2" />
+                      <button
+                        onClick={handleSignOut}
                         role="menuitem"
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm font-heading font-medium text-s-ink/70 hover:text-s-ink hover:bg-s-ink/[0.03] transition-colors min-h-[40px]"
+                        className="flex items-center w-full px-4 py-2.5 text-[14px] font-body text-[#222222] hover:bg-[#f7f7f7] transition-colors"
                       >
-                        <Icon size={15} className="shrink-0 text-s-ink/40" />
-                        {label}
-                      </Link>
-                    ))}
-                    <div className="border-t border-s-ink/[0.06] my-1" />
-                    {/* Sign out */}
-                    <button
-                      onClick={handleSignOut}
-                      role="menuitem"
-                      className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-heading font-medium text-s-coral hover:bg-s-coral/[0.04] transition-colors min-h-[40px]"
-                    >
-                      <LogOut size={15} className="shrink-0" />
-                      {t("logout")}
-                    </button>
-                  </nav>
+                        {t("logout")}
+                      </button>
+                    </nav>
+                  </div>
+                )}
+              </>
+            ) : (
+              <Link
+                href={`/${locale}/auth/login`}
+                aria-label={t("login")}
+                className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#dddddd] hover:shadow-elevation-2 bg-white text-[#222222] transition-[box-shadow] duration-200"
+              >
+                <Menu strokeWidth={2} className="w-4 h-4 ml-1" />
+                <div className="bg-[#717171] text-white rounded-full w-[26px] h-[26px] flex items-center justify-center">
+                  <User className="w-[14px] h-[14px]" />
                 </div>
-              )}
-            </>
-          ) : (
-            /* Logged-out: direct link to login */
-            <Link
-              href={`/${locale}/auth/login`}
-              aria-label={t("login")}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-s-ink/[0.06] text-s-ink hover:bg-s-ink/[0.10] active:scale-[0.98] transition-[background-color,transform] duration-200"
-            >
-              <User className="w-4 h-4" />
-            </Link>
-          )}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Category sticky row — text tabs, appears when homepage category row scrolls out */}
-      {showCategoryNav && <CategoryStickyRow locale={locale} />}
+      {/* ── Bottom Row: 3D Category Strip (Hidden on Scroll, or sticky? Sticky under header keeps context) ── */}
+      {showCategoryNav && (
+        <div className={cn(
+          "max-w-[2520px] mx-auto px-6 overflow-hidden transition-[height,opacity,margin-top,padding-top] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] relative z-50 border-b border-s-ink/[0.06] dark:border-white/[0.06]",
+          scrolled ? "h-[42px] mt-[10px] opacity-100 border-t border-s-ink/[0.06] pt-0" : "h-[84px] mt-4 opacity-100"
+        )}>
+          <div className="flex gap-8 overflow-x-auto scrollbar-hide items-center justify-start h-full pb-2">
+            {[
+              { key: "all", href: "/", icon: "✨", label: "Entdecken" },
+              { key: "coiffeur", href: "/coiffeur", icon: "✂️", label: "Coiffeur" },
+              { key: "nails", href: "/nails", icon: "💅", label: "Nails" },
+              { key: "barbershop", href: "/barbershop", icon: "💈", label: "Barbershop" },
+              { key: "makeup", href: "/makeup", icon: "💄", label: "Makeup" },
+              { key: "waxing", href: "/waxing", icon: "🍯", label: "Waxing" },
+            ].map(({ key, href, icon, label }) => {
+              const isActive = withoutLocale === href || withoutLocale.startsWith(href) && href !== "/";
+              return (
+                <Link
+                  key={key}
+                  href={`/${locale}${href}`}
+                  className="flex flex-col items-center justify-end flex-shrink-0 group cursor-pointer h-full"
+                >
+                  <div className={cn(
+                    "text-[28px] transition-all duration-300 origin-bottom flex items-end hover:scale-110",
+                    scrolled ? "h-0 opacity-0 scale-50 mb-0" : "h-[32px] opacity-100 scale-100 mb-[6px]"
+                  )}>
+                    {icon}
+                  </div>
+                  <span className={cn(
+                    "text-[12px] font-body font-semibold transition-colors duration-200 pb-2 border-b-2", 
+                    isActive ? "text-[#222222] border-[#222222] dark:text-white dark:border-white" : "text-[#717171] border-transparent group-hover:text-[#222222] group-hover:border-[#dddddd] dark:text-[#a0a0a0] dark:group-hover:text-white dark:group-hover:border-[#333333]"
+                  )}>
+                    {label}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
