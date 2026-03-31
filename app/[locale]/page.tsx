@@ -28,7 +28,7 @@ export default async function Page() {
   // SSR Critical Data
   const supabase = await createServerSupabaseClient();
   
-  const SALON_COLS = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, services(price)";
+  const SALON_COLS = "id, name, slug, city_id, categories, average_rating, review_count, cover_photo_url, quartier, postal_code, booking_confirmation_mode, services(price)";
 
   // Parallel DB queries
   const [

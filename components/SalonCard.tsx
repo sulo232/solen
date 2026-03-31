@@ -82,6 +82,7 @@ function getCategoryFallbackGradient(categories?: string[]): string {
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, animated = true, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
+  const tEmpty = useTranslations("emptyStates");
   const router = useRouter();
   const prefetched = useRef(false);
   const href = `/${locale}/salon/${salon.slug}`;
@@ -345,6 +346,12 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <span className="text-[14px] font-body text-s-ink/60 dark:text-s-dm-text/60 capitalize">
               {salon.categories?.[0] || t("salon")}
             </span>
+            {salon.booking_confirmation_mode === "instant" && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-s-coral/80 font-heading font-semibold">
+                <Zap size={10} className="fill-s-coral/60 text-s-coral/60" />
+                {tEmpty("instantBookBadge")}
+              </span>
+            )}
           </div>
 
           {/* Single signal pill — priority: availability > off-peak > stamps */}
