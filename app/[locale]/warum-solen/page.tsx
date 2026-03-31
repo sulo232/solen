@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   MessageCircle, Camera, BarChart3, Star, MapPin,
   ChevronDown, Send, Check, ArrowRight,
@@ -60,6 +60,7 @@ function Section({
 // Mock chat UI for Section 1
 // ─────────────────────────────────────────
 function MockChat() {
+  const t = useTranslations("whySolen");
   return (
     <div className="w-full max-w-xs mx-auto bg-white dark:bg-s-dm-surface rounded-[16px] border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden"
       style={{ boxShadow: "0 4px 8px rgba(26,18,9,.09), 0 8px 32px rgba(26,18,9,.07)" }}>
@@ -75,23 +76,23 @@ function MockChat() {
       <div className="px-4 py-3 space-y-2.5 min-h-[180px]">
         <div className="flex justify-end">
           <div className="bg-s-coral text-white text-xs px-3 py-2 rounded-2xl rounded-br-md max-w-[75%]">
-            Hallo! Habt ihr morgen noch einen Termin für Balayage frei?
+            {t("chatMsg1")}
           </div>
         </div>
         <div className="flex">
           <div className="bg-s-bg-sunken dark:bg-white/10 text-s-ink dark:text-s-dm-text text-xs px-3 py-2 rounded-2xl rounded-bl-md max-w-[75%]">
-            Hi! Ja, um 14:00 oder 16:30 — welche Zeit passt dir besser? 😊
+            {t("chatReply")}
           </div>
         </div>
         <div className="flex justify-end">
           <div className="bg-s-coral text-white text-xs px-3 py-2 rounded-2xl rounded-br-md max-w-[75%]">
-            14:00 wäre perfekt!
+            {t("chatMsg2")}
           </div>
         </div>
       </div>
       {/* Input bar */}
       <div className="flex items-center gap-2 px-3 py-2.5 border-t border-s-ink/5 dark:border-white/10">
-        <div className="flex-1 bg-s-bg-surface dark:bg-white/5 rounded-full px-3 py-1.5 text-xs text-s-ink/30 dark:text-s-dm-text/30">Nachricht...</div>
+        <div className="flex-1 bg-s-bg-surface dark:bg-white/5 rounded-full px-3 py-1.5 text-xs text-s-ink/30 dark:text-s-dm-text/30">{t("chatInputPlaceholder")}</div>
         <div className="w-7 h-7 rounded-full bg-s-coral flex items-center justify-center">
           <Send className="w-3.5 h-3.5 text-white" />
         </div>
@@ -104,6 +105,7 @@ function MockChat() {
 // Mock compare table for Section 3
 // ─────────────────────────────────────────
 function MockCompare() {
+  const t = useTranslations("whySolen");
   const salons = [
     { name: "Studio Bella", rating: 4.8, price: 85, highlight: true },
     { name: "Hair Lounge", rating: 4.5, price: 95, highlight: false },
@@ -119,7 +121,7 @@ function MockCompare() {
           >
             {s.highlight && (
               <span className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full bg-s-coral text-white text-[8px] px-2 py-0.5 rounded-t-[6px] font-heading font-bold uppercase tracking-[.08em]">
-                Empfehlung
+                {t("compareRecommendation")}
               </span>
             )}
             <p className="text-xs font-heading font-semibold text-s-ink dark:text-s-dm-text truncate">{s.name}</p>
@@ -177,6 +179,7 @@ function MockMap() {
 
 export default function WarumSolenPage() {
   const locale = useLocale();
+  const t = useTranslations("whySolen");
 
   return (
     <div className="min-h-screen bg-white dark:bg-s-dm-bg">
@@ -186,20 +189,20 @@ export default function WarumSolenPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.12)_0%,_transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,_rgba(232,98,74,0.08)_0%,_transparent_70%)]" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-4">
-            warum solen
+            {t("heroEyebrow")}
           </p>
           <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-s-ink dark:text-s-dm-text leading-tight">
-            Was <span className="text-s-coral">Solen</span> anders macht
+            {t("heroTitle1")} <span className="text-s-coral">Solen</span> {t("heroTitle2")}
           </h1>
           <p className="mt-4 text-xl sm:text-2xl text-s-ink/55 dark:text-s-dm-text/55 font-body max-w-xl mx-auto leading-relaxed">
-            Nicht nur buchen — sondern erleben.
+            {t("heroSubtitle")}
           </p>
           <button
             onClick={() => document.getElementById("section-chat")?.scrollIntoView({ behavior: "smooth" })}
             className="mt-8 inline-flex items-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter]"
             style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
           >
-            Jetzt entdecken
+            {t("heroCta")}
             <ChevronDown className="w-4 h-4 animate-bounce" />
           </button>
         </div>
@@ -216,23 +219,23 @@ export default function WarumSolenPage() {
                   <MessageCircle size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Salon — nur bei Solen!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Direkte Kommunikation</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t("chatEyebrow")}</p>
                 <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
-                  Chatte direkt mit deinem Salon
+                  {t("chatTitle")}
                 </h2>
               </div>
               <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Frag nach Verfügbarkeit, Preisen oder besonderen Wünschen
+                  {t("chatBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Smarte Vorlagen für häufige Fragen
+                  {t("chatBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  KI-gestützte Antwortvorschläge für Salons
+                  {t("chatBullet3")}
                 </p>
               </div>
             </div>
@@ -270,23 +273,23 @@ export default function WarumSolenPage() {
                   <Camera size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Schick ein Foto und erhalte einen individuellen Preis!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Foto-Preisangebot</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t("photoEyebrow")}</p>
                 <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
-                  Schick ein Foto, bekomm einen Preis
+                  {t("photoTitle")}
                 </h2>
               </div>
               <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Lade ein Foto deines Wunsch-Looks hoch
+                  {t("photoBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Erhalte ein individuelles Preisangebot direkt im Chat
+                  {t("photoBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Sicher bezahlen — alles in der App
+                  {t("photoBullet3")}
                 </p>
               </div>
             </div>
@@ -303,12 +306,12 @@ export default function WarumSolenPage() {
               <BarChart3 size={14} className="text-s-coral" />
               <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Salons — nur bei Solen!" />
             </div>
-            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Salon-Vergleich</p>
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t("compareEyebrow")}</p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text mb-3">
-              Vergleiche Salons nebeneinander
+              {t("compareTitle")}
             </h2>
             <p className="text-s-ink/55 dark:text-s-dm-text/55 font-body max-w-md mx-auto">
-              Preise, Bewertungen und Verfügbarkeit auf einen Blick.
+              {t("compareDesc")}
             </p>
           </div>
           <MockCompare />
@@ -326,23 +329,23 @@ export default function WarumSolenPage() {
                   <Star size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Treueprogramm</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t("loyaltyEyebrow")}</p>
                 <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
-                  Sammle Stempel, bekomm Belohnungen
+                  {t("loyaltyTitle")}
                 </h2>
               </div>
               <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Bei jedem Besuch automatisch einen Stempel sammeln
+                  {t("loyaltyBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Jeder Salon definiert eigene Belohnungen
+                  {t("loyaltyBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Fortschritt jederzeit im Profil einsehen
+                  {t("loyaltyBullet3")}
                 </p>
               </div>
             </div>
@@ -371,23 +374,23 @@ export default function WarumSolenPage() {
                   <MapPin size={14} className="text-s-coral" />
                   <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
                 </div>
-                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">Preiskarte</p>
+                <p className="text-[9px] font-heading font-bold uppercase tracking-[.22em] text-s-ink/30 dark:text-s-dm-text/30 mb-2">{t("mapEyebrow")}</p>
                 <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink dark:text-s-dm-text">
-                  Preise direkt auf der Karte
+                  {t("mapTitle")}
                 </h2>
               </div>
               <div className="space-y-3 text-s-ink/60 dark:text-s-dm-text/60 font-body">
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Sieh sofort, was Salons in deiner Nähe kosten
+                  {t("mapBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Gold-Pins markieren Top-bewertete Salons
+                  {t("mapBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-s-coral shrink-0 mt-0.5" />
-                  Filtern nach Quartier, Preis und Verfügbarkeit
+                  {t("mapBullet3")}
                 </p>
               </div>
             </div>
@@ -409,13 +412,13 @@ export default function WarumSolenPage() {
           <div className="relative rounded-[20px] bg-white p-8 sm:p-10 text-center"
             style={{ boxShadow: "0 24px 72px rgba(26,18,9,.48)" }}>
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.24em] text-s-coral mb-3">
-              Dein nächster Schritt
+              {t("ctaEyebrow")}
             </p>
             <h2 className="font-heading font-bold text-2xl sm:text-3xl text-s-ink mb-3">
-              Bereit für bessere Beauty-Termine?
+              {t("ctaTitle")}
             </h2>
             <p className="text-s-ink/55 font-body mb-8 text-sm leading-relaxed">
-              Entdecke Basels beste Salons — mit Chat, Stempelkarten und mehr.
+              {t("ctaDesc")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
@@ -423,14 +426,14 @@ export default function WarumSolenPage() {
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter]"
                 style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 6px 20px rgba(232,98,74,.18)" }}
               >
-                Jetzt ausprobieren
+                {t("ctaBtn")}
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
               <Link
                 href={`/${locale}/partner`}
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-btn border border-s-ink/[0.10] text-xs font-heading font-bold uppercase tracking-[.04em] text-s-ink/60 hover:border-s-coral/50 hover:text-s-coral transition-colors"
               >
-                Bist du ein Salon?
+                {t("ctaSalonBtn")}
               </Link>
             </div>
           </div>
