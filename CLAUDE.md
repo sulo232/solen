@@ -582,6 +582,24 @@ curl -s -o /dev/null -w "%{http_code}" https://www.solen.ch/de/
 
 ---
 
+## 11a. 🚨 ERROR HANDLING RULES (MANDATORY)
+
+- **NEVER** use `.catch(() => {})` — always log with `console.error("[ComponentName] description:", err)`
+- For fire-and-forget calls (analytics, tracking, welcome emails): log silently with `console.error`
+- For user-facing fetches (data loading): log + show error state
+- For auth flows: log + redirect to login
+- For payment flows: log + show user-visible error with retry option
+
+```tsx
+// ✅ CORRECT
+.catch((err) => console.error("[DashboardBookings] Failed to load bookings:", err))
+
+// ❌ BANNED — silent catch swallows errors forever
+.catch(() => {})
+```
+
+---
+
 ## 11. 🔒 SECURITY RULES (MANDATORY — ALL API ROUTES)
 
 > ➡️ **Moved to `_rules/SECURITY_RULES.md`**
