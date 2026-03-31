@@ -28,7 +28,7 @@ export default function CityCarouselSection({
   if (salons.length === 0) return null;
 
   return (
-    <section className="pb-6">
+    <section className="pb-5">
       {/* Section header — Airbnb-style restrained heading */}
       <div className="max-w-5xl mx-auto px-6 mb-3 flex items-center justify-between gap-4">
         {viewAllHref ? (
@@ -51,14 +51,14 @@ export default function CityCarouselSection({
               onClick={onViewAll}
               className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors shrink-0 pb-1"
             >
-              {viewAllLabel} <span className="inline-block transition-transform duration-150 group-hover:translate-x-1">→</span>
+              {viewAllLabel} <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1.5">→</span>
             </Link>
           ) : (
             <span
               className="group font-heading font-semibold text-[13px] text-s-ink/50 hover:text-s-coral dark:text-s-dm-text/50 dark:hover:text-s-coral transition-colors cursor-pointer shrink-0 pb-1"
               onClick={onViewAll}
             >
-              {viewAllLabel} <span className="inline-block transition-transform duration-150 group-hover:translate-x-1">→</span>
+              {viewAllLabel} <span className="inline-block transition-transform duration-200 ease-out group-hover:translate-x-1.5">→</span>
             </span>
           )
         )}

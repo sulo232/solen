@@ -9,9 +9,11 @@ import { motion } from "framer-motion";
 import {
   Star, MapPin, TrendingUp, Sparkles, ShieldCheck, Award, Heart, Crown,
   Flame, Zap, ThumbsUp, BadgeCheck, Trophy, Gem, Medal, Scissors,
+  ChevronLeft, ChevronRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
+import { getNeighborhood } from "@/lib/basel-neighborhoods";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 import { useCompare } from "@/components/compare/CompareContext";
 
@@ -85,6 +87,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
   const tEmpty = useTranslations("emptyStates");
   const router = useRouter();
   const prefetched = useRef(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const href = `/${locale}/salon/${salon.slug}`;
   const { toggleCompare, isInCompare } = useCompare();
   const compareSelected = isInCompare(salon.id);
@@ -161,9 +164,10 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
       <Link href={href} className="block w-full h-full">
         {/* Cover photo — V4: image fills card radius, native swipe carousel */}
-        <div className="relative w-full aspect-[20/19] md:aspect-square bg-s-bg-sunken overflow-hidden rounded-xl group/carousel">
+        <div className="relative w-full aspect-[20/19] md:aspect-square bg-s-bg-sunken overflow-hidden rounded-xl group/carousel img-hover-zoom">
           {allPhotos.length > 0 ? (
-            <div 
+            <div
+              ref={scrollContainerRef}
               className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide"
               onScroll={(e) => {
                 const el = e.currentTarget;
@@ -292,17 +296,40 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               {allPhotos.slice(0, 5).map((_, i) => (
                 <button
                   key={i}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); 
-                    const container = e.currentTarget.parentElement?.parentElement?.querySelector('.overflow-x-auto');
-                    if (container) {
-                      container.scrollTo({ left: i * container.clientWidth, behavior: 'smooth' });
-                    }
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation();
+                    scrollContainerRef.current?.scrollTo({ left: i * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
                   }}
                   className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-2 h-2 bg-white" : "w-2 h-2 bg-white/50 hover:bg-white/80"}`}
                   aria-label={`Photo ${i + 1}`}
                 />
               ))}
             </div>
+          )}
+
+          {/* Left/right arrows — desktop hover only */}
+          {hasMultiple && photoIndex > 0 && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation();
+                scrollContainerRef.current?.scrollTo({ left: (photoIndex - 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
+              }}
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
+              aria-label="Previous photo"
+            >
+              <ChevronLeft size={14} />
+            </button>
+          )}
+          {hasMultiple && photoIndex < Math.min(allPhotos.length - 1, 4) && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation();
+                scrollContainerRef.current?.scrollTo({ left: (photoIndex + 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
+              }}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
+              aria-label="Next photo"
+            >
+              <ChevronRight size={14} />
+            </button>
           )}
         </div>
 
@@ -320,7 +347,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                 <Star className="w-3.5 h-3.5 fill-s-ink dark:fill-s-dm-text text-s-ink dark:text-s-dm-text" />
                 <span className="text-[14px] data-text text-s-ink dark:text-s-dm-text font-medium">{salon.average_rating.toFixed(2)}</span>
                 {salon.review_count > 0 && (
-                  <span className="text-[13px] text-s-ink/50 dark:text-s-dm-text/50 font-body">({salon.review_count})</span>
+                  <span className="text-[13px] text-s-ink/40 dark:text-s-dm-text/40 font-body">({salon.review_count})</span>
                 )}
               </div>
             ) : salon.review_count === 0 ? (
@@ -329,10 +356,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </div>
 
           <p className="text-[14px] text-s-ink/60 dark:text-s-dm-text/60 font-body truncate mt-[2px]">
-            {/* Display formatted distance or fallback address */}
             {showDistance && salon.distance_km != null
               ? `${salon.quartier ? salon.quartier + ", " : ""}${salon.distance_km.toFixed(1)} km entfernt`
-              : <>{salon.postal_code ? `${salon.postal_code} ` : ""}{salon.address}</>}
+              : `${getNeighborhood(salon.postal_code)} · ${salon.categories?.[0] || "Salon"}`}
           </p>
 
           {/* Pricing indicator & Category */}
