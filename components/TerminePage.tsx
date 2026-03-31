@@ -234,10 +234,17 @@ export default function TerminePage() {
   useEffect(() => {
     let cancelled = false;
     fetch("/api/profile")
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => {
+        if (!r.ok) {
+          // Any non-200 means not authenticated — redirect to login
+          if (!cancelled) router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
+          return null;
+        }
+        return r.json();
+      })
       .then((p) => {
-        if (cancelled) return;
-        if (!p?.id) {
+        if (cancelled || !p) return;
+        if (!p.id) {
           router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
           return;
         }
@@ -247,7 +254,10 @@ export default function TerminePage() {
         if (cancelled) return;
         if (d) setBookings(d.bookings ?? []);
       })
-      .catch(() => { if (!cancelled) router.push(`/${locale}/auth/login`); })
+      .catch((err) => {
+        console.error("[TerminePage] Auth/booking fetch error:", err);
+        if (!cancelled) router.push(`/${locale}/auth/login`);
+      })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [locale, router, pathname]);
