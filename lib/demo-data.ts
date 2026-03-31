@@ -48,11 +48,17 @@ export const DEMO_SALONS: SalonCard[] = [
   } as unknown as SalonCard,
 ];
 
+export interface DemoDiscoverItem {
+  id: string;
+  image: string;
+  label: string;
+}
+
 /**
  * Demo discover items shown in DiscoverCarousel when /api/discovery/feed returns empty.
  * These match the 9:16 TikTok-card format used by the carousel.
  */
-export const DEMO_DISCOVER_ITEMS = [
+export const DEMO_DISCOVER_ITEMS: DemoDiscoverItem[] = [
   { id: "dd-1", image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80", label: "Coiffeur" },
   { id: "dd-2", image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80", label: "Nails" },
   { id: "dd-3", image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=80", label: "Barbershop" },

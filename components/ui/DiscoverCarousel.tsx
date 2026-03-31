@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import ItemCard from "@/components/discovery/ItemCard";
@@ -9,16 +10,6 @@ import Skeleton from "@/components/ui/Skeleton";
 import type { DiscoveryItem } from "@/lib/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DEMO_DISCOVER_ITEMS } from "@/lib/demo-data";
-
-// Helper to shuffle array
-function shuffleArray<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
 
 export default function DiscoverCarousel({ locale }: { locale: string }) {
   const t = useTranslations("home.discover");
@@ -126,18 +117,21 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
             return (
               <div
                 key={item.id}
-                className="shrink-0 snap-center relative w-[44vw] max-w-[200px] aspect-[9/16]"
+                aria-hidden="true"
+                className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16]"
               >
                 <div
-                  className={`w-full h-full rounded-[16px] overflow-hidden transition-[transform,opacity] duration-[250ms] origin-center
+                  className={`relative w-full h-full rounded-[16px] overflow-hidden transition-[transform,opacity] duration-[250ms] origin-center
                     ${isExpanded ? "scale-[1.03] opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
                   `}
                 >
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.label}
-                    className="w-full h-full object-cover"
-                    loading={index < 2 ? "eager" : "lazy"}
+                    fill
+                    sizes="200px"
+                    className="object-cover"
+                    priority={index < 2}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <span className="absolute bottom-3 left-3 font-heading font-semibold text-[13px] text-white">
@@ -183,10 +177,10 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         >
           <div
             className={`w-full h-full rounded-[16px] overflow-hidden bg-s-coral/10 dark:bg-s-coral/5 border-2 border-dashed border-s-coral/30 shadow-warm-sm transition-[transform,opacity,border-color] duration-[250ms] flex flex-col items-center justify-center p-6 text-center transform origin-center
-              ${activeIndex === items.length ? "scale-105 z-10 opacity-100 border-s-coral" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
+              ${activeIndex === (items.length > 0 ? items.length : DEMO_DISCOVER_ITEMS.length) ? "scale-105 z-10 opacity-100 border-s-coral" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
             `}
           >
-            <div className={`w-12 h-12 rounded-full bg-s-coral text-white flex items-center justify-center mb-4 transition-transform ${activeIndex === items.length ? "scale-110" : ""}`}>
+            <div className={`w-12 h-12 rounded-full bg-s-coral text-white flex items-center justify-center mb-4 transition-transform ${activeIndex === (items.length > 0 ? items.length : DEMO_DISCOVER_ITEMS.length) ? "scale-110" : ""}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </div>
             <h3 className={`font-heading font-semibold text-base leading-tight transition-colors duration-150 ${activeIndex === items.length ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>
