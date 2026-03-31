@@ -23,6 +23,14 @@ export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  const descriptionMap: Record<string, string> = {
+    vouchers: t("description_vouchers"),
+    loyalty: t("description_loyalty"),
+    referral: t("description_referral"),
+    behandlungen: t("description_behandlungen"),
+  };
+  const description = descriptionMap[feature] ?? t("descriptionDefault");
+
   const handleNotify = async () => {
     if (!email.includes("@")) return;
     try {
@@ -60,7 +68,7 @@ export default function ComingSoonPage() {
           {t("title")}
         </h1>
         <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-8 leading-relaxed">
-          {t(`description_${feature}`, { defaultValue: t("descriptionDefault") })}
+          {description}
         </p>
 
         {!submitted ? (
