@@ -8,6 +8,7 @@ import VideoCard from "@/components/discovery/VideoCard";
 import Skeleton from "@/components/ui/Skeleton";
 import type { DiscoveryItem } from "@/lib/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DEMO_DISCOVER_ITEMS } from "@/lib/demo-data";
 
 // Helper to shuffle array
 function shuffleArray<T>(array: T[]): T[] {
@@ -114,11 +115,39 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         {isLoading ? (
           // Skeletons matching the TikTok aspect ratio styling
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="shrink-0 snap-center w-[155px] h-[275px] md:w-[200px] md:h-[355px] rounded-[16px]">
+            <div key={i} className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] rounded-2xl">
               <Skeleton className="w-full h-full rounded-[16px]" />
             </div>
           ))
-        ) : items.length > 0 ? (
+        ) : items.length === 0 ? (
+          // DEMO — shown when no discovery content is seeded yet
+          DEMO_DISCOVER_ITEMS.map((item, index) => {
+            const isExpanded = activeIndex === index;
+            return (
+              <div
+                key={item.id}
+                className="shrink-0 snap-center relative w-[44vw] max-w-[200px] aspect-[9/16]"
+              >
+                <div
+                  className={`w-full h-full rounded-[16px] overflow-hidden transition-[transform,opacity] duration-[250ms] origin-center
+                    ${isExpanded ? "scale-[1.03] opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
+                  `}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.label}
+                    className="w-full h-full object-cover"
+                    loading={index < 2 ? "eager" : "lazy"}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute bottom-3 left-3 font-heading font-semibold text-[13px] text-white">
+                    {item.label}
+                  </span>
+                </div>
+              </div>
+            );
+          })
+        ) : (
           items.map((item, index) => {
             const isExpanded = hoveredIndex !== null ? hoveredIndex === index : activeIndex === index;
             return (
@@ -126,7 +155,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
                 href={`/${locale}/discover?id=${item.id}`}
                 prefetch={false}
                 key={item.id}
-                className="shrink-0 snap-center group relative block w-[155px] h-[275px] md:w-[200px] md:h-[355px]"
+                className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[9/16]"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
@@ -145,12 +174,12 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
               </Link>
             );
           })
-        ) : null}
+        )}
 
         {/* 11th item: "Go to Entdecken" card */}
         <Link
           href={`/${locale}/discover`}
-          className="shrink-0 snap-center group relative block w-[155px] h-[275px] md:w-[200px] md:h-[355px]"
+          className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[9/16]"
         >
           <div
             className={`w-full h-full rounded-[16px] overflow-hidden bg-s-coral/10 dark:bg-s-coral/5 border-2 border-dashed border-s-coral/30 shadow-warm-sm transition-[transform,opacity,border-color] duration-[250ms] flex flex-col items-center justify-center p-6 text-center transform origin-center
@@ -160,7 +189,7 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
             <div className={`w-12 h-12 rounded-full bg-s-coral text-white flex items-center justify-center mb-4 transition-transform ${activeIndex === items.length ? "scale-110" : ""}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </div>
-            <h3 className={`font-display text-xl leading-tight transition-colors duration-150 ${activeIndex === items.length ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>
+            <h3 className={`font-heading font-semibold text-base leading-tight transition-colors duration-150 ${activeIndex === items.length ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>
               {t("browseAll")}
             </h3>
             <p className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 mt-2">
