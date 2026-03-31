@@ -3247,5 +3247,20 @@
     "emptyMessage": "Buche deinen nächsten Termin!",
     "bookCta": "Termin buchen →",
     "cancelNotPossible": "Stornierung nicht mehr möglich (weniger als 24h)"
+  },
+  "emptyStates": {
+    "searchNoResults": "Keine Ergebnisse",
+    "searchSuggestion": "Versuche andere Suchbegriffe oder ändere deine Filter.",
+    "searchTryRemoveFilters": "Filter zurücksetzen",
+    "searchPopularTitle": "Beliebte Salons in deiner Nähe",
+    "searchTrySuggestions": "Oder probiere:",
+    "lastMinuteNoSlots": "Gerade keine Last-Minute Slots",
+    "lastMinuteNotifyMe": "Benachrichtigen wenn verfügbar",
+    "lastMinuteSuggestedTitle": "Diese Salons bieten oft Last-Minute Slots an",
+    "offersEmpty": "Aktuell keine Angebote",
+    "offersEmptyMessage": "Neue Angebote kommen bald. Schau regelmässig vorbei!",
+    "offersSubscribe": "Über neue Angebote informiert werden",
+    "recentlyViewedTitle": "Zuletzt besucht",
+    "instantBookBadge": "Sofort buchbar"
   }
 }

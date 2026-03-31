@@ -3236,5 +3236,20 @@
     "emptyMessage": "Book your next appointment!",
     "bookCta": "Book appointment →",
     "cancelNotPossible": "Cancellation no longer possible (less than 24h)"
+  },
+  "emptyStates": {
+    "searchNoResults": "No results",
+    "searchSuggestion": "Try different search terms or adjust your filters.",
+    "searchTryRemoveFilters": "Reset filters",
+    "searchPopularTitle": "Popular salons near you",
+    "searchTrySuggestions": "Or try:",
+    "lastMinuteNoSlots": "No last-minute slots right now",
+    "lastMinuteNotifyMe": "Notify me when available",
+    "lastMinuteSuggestedTitle": "These salons often have last-minute slots",
+    "offersEmpty": "No current offers",
+    "offersEmptyMessage": "New offers are coming soon. Check back regularly!",
+    "offersSubscribe": "Get notified about new offers",
+    "recentlyViewedTitle": "Recently viewed",
+    "instantBookBadge": "Instant book"
   }
 }

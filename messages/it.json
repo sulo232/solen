@@ -3213,5 +3213,20 @@
     "emptyMessage": "Prenota il tuo prossimo appuntamento!",
     "bookCta": "Prenota appuntamento →",
     "cancelNotPossible": "Annullamento non più possibile (meno di 24h)"
+  },
+  "emptyStates": {
+    "searchNoResults": "Nessun risultato",
+    "searchSuggestion": "Prova termini di ricerca diversi o modifica i filtri.",
+    "searchTryRemoveFilters": "Reimposta filtri",
+    "searchPopularTitle": "Saloni popolari vicino a te",
+    "searchTrySuggestions": "Oppure prova:",
+    "lastMinuteNoSlots": "Nessun posto last minute al momento",
+    "lastMinuteNotifyMe": "Avvisami quando disponibile",
+    "lastMinuteSuggestedTitle": "Questi saloni offrono spesso posti last minute",
+    "offersEmpty": "Nessuna offerta al momento",
+    "offersEmptyMessage": "Nuove offerte in arrivo. Torna presto!",
+    "offersSubscribe": "Ricevi notifiche per nuove offerte",
+    "recentlyViewedTitle": "Visti di recente",
+    "instantBookBadge": "Prenotazione immediata"
   }
 }
