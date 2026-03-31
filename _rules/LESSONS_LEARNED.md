@@ -136,3 +136,14 @@
     : pathname === fullHref || pathname.startsWith(fullHref + "/");
   ```
   This is already in `BottomTabBar.tsx` — use it as reference when adding locale-aware tabs.
+
+---
+
+## API Routes
+
+### `/api/waitlist` is a booking waitlist, NOT a generic email capture
+- **Date**: 2026-03-31
+- **File(s)**: `app/api/waitlist/route.ts`, `app/[locale]/coming-soon/page.tsx`
+- **What happened**: Roadmap said "verify `/api/waitlist` accepts `{ email, feature }`". The actual route requires auth + `salon_id`/`service_id`/`preferred_date` fields — it's for booking waitlists, not email signups.
+- **Why it happened**: The roadmap assumed a generic waitlist endpoint existed.
+- **Fix**: Created a dedicated `/api/coming-soon-notify/route.ts` that accepts `{ email, feature }` without auth. The Coming Soon page uses this endpoint. If the `coming_soon_signups` table doesn't exist yet, the route fails silently so the UX still works.
