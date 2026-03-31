@@ -20,6 +20,16 @@ interface RecentSalon {
 const STORAGE_KEY = "solen_recently_viewed";
 const MAX_ITEMS = 5;
 
+/** Read recently viewed salons from localStorage — safe to call outside useEffect only with SSR guard */
+export function getRecentlyViewed(): RecentSalon[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as RecentSalon[];
+  } catch {
+    return [];
+  }
+}
+
 /** Save a salon view to localStorage */
 export function trackSalonView(salon: {
   id: string;
