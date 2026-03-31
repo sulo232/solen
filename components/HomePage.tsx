@@ -252,13 +252,13 @@ export default function HomePage({ initialData }: HomePageProps) {
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
       {/* ── Desktop Expanded Search Bar (Airbnb-style, hidden on scroll) ── */}
-      <div className="hidden md:block max-w-4xl mx-auto px-6 pt-5 pb-2">
+      <div className="hidden md:block max-w-4xl mx-auto px-6 pt-3 pb-1">
         <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
       </div>
 
       {/* ── Category Anchor Strip (GAP-3) ───────────────────────────────── */}
       {orderedSectionKeys.some(({ key }) => (categorySalons[key] ?? []).length > 0) && (
-        <div className="max-w-5xl mx-auto px-6 pt-4 pb-2">
+        <div className="max-w-5xl mx-auto px-6 pt-2 pb-1">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
             {orderedSectionKeys.map(({ key, label }) => {
               if ((categorySalons[key] ?? []).length === 0) return null;
@@ -283,7 +283,7 @@ export default function HomePage({ initialData }: HomePageProps) {
       <div
         id="tour-services"
         ref={categoryRef}
-        className="animate-in pt-6"
+        className="animate-in pt-3"
         style={{ animationDelay: "120ms" }}
       >
         {/* Entdecken — trending salons across all categories */}
