@@ -10,27 +10,20 @@ import {
   RefreshCw,
   Search,
   Compass,
+  ArrowRight,
 } from "lucide-react";
-import SalonCard from "@/components/SalonCard";
-import Skeleton from "@/components/ui/Skeleton";
-import EmptyState from "@/components/ui/EmptyState";
 import Footer from "@/components/layout/Footer";
-// StickyMobileCTA removed — user requested removal of mobile "Salon entdecken" button
-import LastMinuteCard from "@/components/LastMinuteCard";
-// BlobBackground removed — V5 uses ambient-v5 CSS class
 import GuidedSearch from "@/components/ui/GuidedSearch";
-import AirbnbSearchBar from "@/components/ui/AirbnbSearchBar";
 import CityCarouselSection from "@/components/ui/CityCarouselSection";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
-// WeatherBanner removed — doesn't contribute to conversion (Phase 0.3)
 import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import FeaturedSalonCarousel from "@/components/ui/FeaturedSalonCarousel";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { getPersistedCity } from "@/lib/city-cookie";
+import { cn } from "@/lib/utils";
 import { type CitySlug } from "@/lib/cities";
-import { gridContainerVariants, gridItemVariants, headingVariants } from "@/lib/motion";
 import { useRecentVisits } from "@/hooks/useRecentVisits";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 
@@ -126,9 +119,9 @@ export default function HomePage({ initialData }: HomePageProps) {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  const { visits, recordVisit } = useRecentVisits();
+  const { recentCats, visitCategory, bubbleRank, isMounted } = useRecentVisits();
 
-  // Sort categories: bubble up topCategory, rest keep original order
+  // Sort categories: bubble up according to recentCats ranking
   // Order: Entdecken (trending), then category carousels
   const orderedSectionKeys = useMemo(() => {
     const baseKeys = [
@@ -138,15 +131,21 @@ export default function HomePage({ initialData }: HomePageProps) {
       { key: "makeup", label: tNav("makeup") as string },
       { key: "waxing", label: tNav("waxing") as string },
     ];
-    if (!visits.topCategory) return baseKeys;
-
-    const topKey = baseKeys.find((k) => k.key === visits.topCategory);
-    if (!topKey) return baseKeys;
-
-    const rest = baseKeys.filter((k) => k.key !== visits.topCategory);
-    return [topKey, ...rest];
-  }, [visits.topCategory, tNav]);
+    
+    // Sort the keys based on the recentCats array ranking
+    const sortedKeysData = bubbleRank(baseKeys.map(k => k.key as any));
+    
+    // Rebuild the array of objects in the new sorted order
+    const result = [];
+    for (const key of sortedKeysData) {
+      const found = baseKeys.find(k => k.key === key);
+      if (found) result.push(found);
+    }
+    
+    return result;
+  }, [bubbleRank, tNav]);
   const [userName, setUserName] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
   const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [sections, setSections] = useState<Record<string, boolean>>(
     initialData?.sections || {
@@ -225,181 +224,106 @@ export default function HomePage({ initialData }: HomePageProps) {
     });
   }, []);
 
-  // ── Category grid visibility observer → drives header sticky row ──────
-  const categoryRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = categoryRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        window.dispatchEvent(
-          new CustomEvent("categoryGridVisibility", {
-            detail: { visible: entry.isIntersecting },
-          })
-        );
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <div className="min-h-screen hero-cinematic relative overflow-x-hidden">
-
-      {/* GuidedSearch sheet — sheet-only, trigger rendered inline below */}
+    <div className="min-h-screen relative overflow-x-hidden bg-white dark:bg-s-dm-bg">
+      {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
-      {/* ── Desktop Expanded Search Bar (Airbnb-style, hidden on scroll) ── */}
-      <div className="hidden md:block max-w-4xl mx-auto px-6 pt-3 pb-1">
-        <AirbnbSearchBar scrolledPast80={scrolledPast80} locale={locale} categoryCounts={categoryCounts} />
-      </div>
-
-      {/* ── Category Anchor Strip (GAP-3) ───────────────────────────────── */}
-      {orderedSectionKeys.some(({ key }) => (categorySalons[key] ?? []).length > 0) && (
-        <div className="max-w-5xl mx-auto px-6 pt-2 pb-1">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            {orderedSectionKeys.map(({ key, label }) => {
-              if ((categorySalons[key] ?? []).length === 0) return null;
-              return (
-                <button
-                  key={key}
-                  onClick={() => {
-                    const el = document.getElementById(`carousel-${key}`);
-                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                  className="flex-shrink-0 px-4 py-1.5 rounded-pill text-[13px] font-heading font-semibold bg-s-ink/[0.05] text-s-ink/60 dark:text-s-dm-text/60 hover:bg-s-ink/[0.09] hover:text-s-ink dark:hover:text-s-dm-text transition-all duration-150 whitespace-nowrap"
-                >
-                  {label}
-                </button>
-              );
-            })}
+      <main className="max-w-[2520px] mx-auto pb-16">
+        
+        {/* ── 1. Entdecken block (Algorithmic feed) ── */}
+        <section className="animate-in mx-auto px-4 sm:px-6 pt-6 pb-8 md:py-12 relative z-[2]" style={{ animationDelay: "120ms" }}>
+          <div className="mb-4 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>{t("discover.eyebrow")}</span>
+              <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222] dark:text-white" style={{ lineHeight: "1.1" }}>
+                {t("discover.title")}
+              </h2>
+            </div>
+            <Link href={`/${locale}/discover`}
+              className="inline-flex items-center gap-2 text-[14px] font-body font-semibold text-[#222222] dark:text-white rounded-pill border border-s-ink/15 dark:border-white/15 px-5 py-2.5 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-all duration-150 shrink-0 self-start">
+              {t("discover.catalogCta")}
+            </Link>
           </div>
-        </div>
-      )}
 
-      {/* ── Per-category Salon Carousels ────────────────────────────────── */}
-      <div
-        id="tour-services"
-        ref={categoryRef}
-        className="animate-in pt-3"
-        style={{ animationDelay: "120ms" }}
-      >
-        {/* Entdecken — trending salons across all categories */}
-        {trendingSalons.length > 0 && (
-          <CityCarouselSection
-            title={t("featured.entdecken")}
-            viewAllHref={`/${locale}/discover`}
-            viewAllLabel={t("featured.viewAll")}
-            salons={trendingSalons}
-            locale={locale}
-            favoriteIds={favoriteIds}
-            onFavoriteToggle={handleFavoriteToggle}
-          />
+          <DiscoverCarousel locale={locale} />
+        </section>
+
+        {/* ── 2. Category Snapshot Rows ── */}
+        <section className="px-4 sm:px-6 py-6 pb-12 space-y-12">
+          {orderedSectionKeys.map(({ key, label }) => {
+            const salonsForCategory = categorySalons[key] || [];
+            // No null guard — FeaturedSalonCarousel shows demo cards when salonsForCategory is empty
+
+            return (
+              <div key={key}>
+                {/* We removed the inline H3 here since FeaturedSalonCarousel handles its own labeling now via title prop */}
+                <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 relative">
+                  <FeaturedSalonCarousel salons={salonsForCategory} locale={locale} title={label} />
+                  <div className="mt-2 text-right px-6">
+                    <Link href={`/${locale}/${key}`} className="group inline-flex items-center gap-1.5 text-[14px] font-body font-semibold text-[#222222] dark:text-white hover:text-s-coral transition-colors duration-150">
+                      Alle {label} ansehen
+                      <ArrowRight size={14} className="transition-transform duration-150 group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </section>
+
+        {/* ── 3. Wieder buchen? (logged-in users with past booking) ── */}
+        {sections.rebook && lastBookedSalon && (
+          <section className="px-4 sm:px-6 pt-6 pb-10">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+              className="flex items-center gap-4 p-4 border border-s-ink/[0.05] dark:border-white/[0.05] rounded-xl bg-[#f7f7f7] dark:bg-s-dm-surface/20">
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-[#E8735A]/10">
+                <RefreshCw size={18} className="text-[#E8735A]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-heading font-bold text-[#222222] dark:text-white text-[15px]">{t("rebook.title")}</p>
+                <p className="text-sm text-[#717171] font-body truncate">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
+              </div>
+              <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
+                className="shrink-0 px-4 py-2 rounded-lg bg-[#E8735A] text-white text-sm font-heading font-bold transition-transform hover:scale-[1.02]"
+                aria-label={t("rebook.cta")}>
+                {t("rebook.cta")}
+              </Link>
+            </motion.div>
+          </section>
         )}
 
-        {orderedSectionKeys.map(({ key, label }) => {
-          let catSalons = categorySalons[key] ?? [];
-          if (catSalons.length === 0) return null;
-          
-          // Bubble up last visited salon to first position
-          if (key === visits.topCategory && visits.lastVisitedSalonByCategory[key]) {
-            const lastVisitedId = visits.lastVisitedSalonByCategory[key];
-            const lastVisitedIndex = catSalons.findIndex(s => s.id === lastVisitedId);
-            if (lastVisitedIndex > 0) {
-              const lastVisited = catSalons[lastVisitedIndex];
-              const others = catSalons.filter(s => s.id !== lastVisitedId);
-              catSalons = [lastVisited, ...others];
-            }
-          }
-          
-          const href = persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`;
-          const handleVisit = () => {
-            recordVisit(key);
-          };
-          return (
-            <div key={key} id={`carousel-${key}`}>
-              <CityCarouselSection
-                title={label}
-                viewAllHref={href}
-                viewAllLabel={t("featured.viewAll")}
-                salons={catSalons}
-                locale={locale}
-                favoriteIds={favoriteIds}
-                onFavoriteToggle={handleFavoriteToggle}
-                onViewAll={handleVisit}
-              />
+        {/* ── 4. Recently Viewed ── */}
+        <div className="px-4 sm:px-6">
+           <RecentlyViewed />
+        </div>
+
+        {/* ── 5. High-Conversion Partner CTA ── */}
+        <section className="mt-16 sm:px-6 px-4">
+          <div className="bg-[#222222] rounded-[16px] overflow-hidden text-white flex flex-col md:flex-row relative">
+            <div className="p-10 md:p-16 flex-1 flex flex-col justify-center relative z-10">
+              <h2 className="font-heading font-extrabold text-[32px] md:text-[48px] leading-[1.1] tracking-tight mb-4 text-white">
+                Solen für Salons
+              </h2>
+              <p className="font-body text-[16px] md:text-[18px] text-white/80 mb-8 max-w-[400px]">
+                {t("partner.teaserPrompt") || "Erreichen Sie Tausende von Kunden, füllen Sie Ihren Kalender und verwalten Sie Ihr Geschäft mit Leichtigkeit."}
+              </p>
+              <Link
+                href={`/${locale}/partner`}
+                className="inline-flex items-center justify-center h-12 px-8 rounded-pill bg-s-coral text-white font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-all duration-150 self-start whitespace-nowrap"
+              >
+                {t("partner.cta")}
+              </Link>
             </div>
-          );
-        })}
-      </div>
-
-      {/* WeatherBanner removed — Phase 0.3 */}
-
-      {/* ── Wieder buchen? (logged-in users with past booking) ───────────── */}
-      {sections.rebook && lastBookedSalon && (
-        <section className="max-w-5xl mx-auto px-4 pt-6">
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-            className="flex items-center gap-4 p-4 border border-s-ink/[0.05] dark:border-white/[0.05] rounded-xl bg-s-bg-base/40 dark:bg-s-dm-surface/20">
-            <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-coral/[0.12] dark:bg-s-coral/[0.20]">
-              <RefreshCw size={18} className="text-s-coral" />
+            {/* Ambient decoration */}
+            <div className="hidden md:block absolute right-0 top-0 bottom-0 w-1/2 overflow-hidden select-none pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#222222] to-transparent z-10" />
+                <div className="w-full h-full bg-[#333] opacity-50" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-heading font-bold text-s-ink dark:text-s-dm-text text-sm">{t("rebook.title")}</p>
-              <p className="text-xs text-s-ink/50 font-body truncate">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
-            </div>
-            <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-              className="shrink-0 px-4 py-2 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.04em]"
-              style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}
-              aria-label={t("rebook.cta")}>
-              {t("rebook.cta")}
-            </Link>
-          </motion.div>
-        </section>
-      )}
-
-      {/* ── Recently Viewed (returning users) ────────────────────────────── */}
-      <RecentlyViewed />
-
-      {/* ── Discover Preview — step 5 per A.6 ──────────────────────────────── */}
-      {/* z-[2] + opaque bg blocks any bleed from category icons above (A.5) */}
-      <section className="animate-in max-w-base mx-auto px-0 py-8 md:py-12 overflow-hidden relative z-[2]" style={{ background: "#F5F0EB", animationDelay: "320ms" }}>
-        <div className="max-w-5xl mx-auto px-4 mb-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>{t("discover.eyebrow")}</span>
-            <h2 className="font-heading font-extrabold text-s-ink dark:text-s-dm-text" style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em", lineHeight: "1.0" }}>
-              {t("discover.title")}
-            </h2>
           </div>
-          <Link href={`/${locale}/discover`}
-            className="inline-flex items-center gap-2 text-sm font-heading font-bold text-white bg-s-ink dark:bg-s-dm-raised px-6 py-3 rounded-pill hover:brightness-[1.08] active:scale-[0.98] transition-[transform,filter] duration-150 shrink-0 self-start">
-            {t("discover.catalogCta")} →
-          </Link>
-        </div>
+        </section>
 
-        {/* The new horizontal swiper component replaces the static subset */}
-        <DiscoverCarousel locale={locale} />
-      </section>
-
-      {/* ── Partner Teaser (slim) ────────────────────────────────────────── */}
-      <section className="py-8 px-4 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
-        <div className="max-w-5xl mx-auto text-center">
-          <p className="text-sm font-body text-s-ink/50 dark:text-s-dm-text/50">
-            {t("partner.teaserPrompt")}{" "}
-            <Link
-              href={`/${locale}/partner`}
-              className="font-heading font-bold text-s-coral hover:brightness-[1.06] transition-[filter] duration-150"
-            >
-              {t("partner.cta")} →
-            </Link>
-          </p>
-        </div>
-      </section>
-
-
-      {/* ── Sticky Mobile CTA ────────────────────────────────────────────── */}
-      {/* StickyMobileCTA removed — Phase 2 */}
+      </main>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <Footer />
