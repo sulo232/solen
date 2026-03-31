@@ -139,6 +139,26 @@
 
 ---
 
+## Roadmaps can describe problems already solved by a prior agent
+
+### Check if a feature already exists before building it
+- **Date**: 2026-03-31
+- **File(s)**: `components/HomePage.tsx:363`, `components/RecentlyViewed.tsx`
+- **What happened**: Phase 4 of `roadmap-empty-states-discovery.md` assumed "Recently Viewed" was never surfaced. But `<RecentlyViewed />` was already imported and rendered in `HomePage.tsx`. Another agent had implemented it between when the roadmap was written and when it was executed.
+- **Why it happened**: Roadmaps are written at a point in time. Parallel agents can implement features that a roadmap assumed were missing.
+- **Fix / What to do instead**: Before implementing any roadmap phase, grep for the target feature in the codebase. If it exists, assess whether the existing implementation satisfies the goal — if yes, skip or extend rather than rebuild.
+
+---
+
+### Windows local build failures don't block pushes when pre-existing
+- **Date**: 2026-03-31
+- **File(s)**: `.next/`, `package.json`
+- **What happened**: `npm run build` on Windows consistently fails with webpack chunk ID race conditions (`Cannot find module './8548.js'`) when run multiple times in the same session. The error does not occur on Vercel (Linux, clean build environment).
+- **Why it happened**: Windows file system behavior + Next.js webpack incremental cache = chunk IDs change between runs, causing the second build to fail when it can't find chunks from the first.
+- **Fix / What to do instead**: Confirm the error exists on the original unmodified codebase (do a git stash and build). If it does, the error is pre-existing and safe to push — Vercel will build cleanly. Always check Vercel deployment status after push to confirm.
+
+---
+
 ## API Routes
 
 ### `/api/waitlist` is a booking waitlist, NOT a generic email capture
