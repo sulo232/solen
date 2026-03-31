@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -29,10 +30,10 @@ interface ComparePageClientProps {
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
-function getTodayHours(salon: CompareSalon): string {
+function getTodayHours(salon: CompareSalon, closedLabel: string): string {
   const key = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()];
   const hours = salon.opening_hours?.[key] as { open: string; close: string } | null | undefined;
-  return hours ? `${hours.open}–${hours.close}` : "Geschlossen";
+  return hours ? `${hours.open}–${hours.close}` : closedLabel;
 }
 
 function getBestValueIndex(salons: CompareSalon[]): number {
@@ -60,10 +61,19 @@ type Row = {
   render: (s: CompareSalon, isHighlighted: boolean) => React.ReactNode;
 };
 
-function buildRows(locale: string): Row[] {
+interface RowLabels {
+  rating: string;
+  reviewCount: string;
+  cheapestService: string;
+  todayHours: string;
+  distance: string;
+  closed: string;
+}
+
+function buildRows(locale: string, labels: RowLabels): Row[] {
   return [
     {
-      label: "Bewertung",
+      label: labels.rating,
       Icon: Star,
       render: (s) => (
         <div className="flex items-center justify-center gap-1.5">
@@ -75,7 +85,7 @@ function buildRows(locale: string): Row[] {
       ),
     },
     {
-      label: "Anzahl Bewertungen",
+      label: labels.reviewCount,
       Icon: MessageCircle,
       render: (s) => (
         <span className="tabular-nums text-s-ink dark:text-s-dm-text">
@@ -84,7 +94,7 @@ function buildRows(locale: string): Row[] {
       ),
     },
     {
-      label: "Günstigster Service",
+      label: labels.cheapestService,
       Icon: Trophy,
       render: (s) => (
         <span className="font-semibold tabular-nums text-s-ink dark:text-s-dm-text">
@@ -93,16 +103,16 @@ function buildRows(locale: string): Row[] {
       ),
     },
     {
-      label: "Öffnungszeiten heute",
+      label: labels.todayHours,
       Icon: Clock,
       render: (s) => (
         <span className="text-s-ink/70 dark:text-s-dm-text/70 text-xs">
-          {getTodayHours(s)}
+          {getTodayHours(s, labels.closed)}
         </span>
       ),
     },
     {
-      label: "Entfernung",
+      label: labels.distance,
       Icon: MapPin,
       render: (s) => (
         <span className="tabular-nums text-s-ink dark:text-s-dm-text">
@@ -145,6 +155,7 @@ function SalonPhoto({ salon }: { salon: CompareSalon }) {
 // ─── main component ───────────────────────────────────────────────────────────
 
 export default function ComparePageClient({ locale, initialIds }: ComparePageClientProps) {
+  const t = useTranslations("compare");
   const [salons, setSalons] = useState<CompareSalon[]>([]);
   const [loading, setLoading] = useState(initialIds.length > 0);
   const [error, setError] = useState(false);
@@ -174,7 +185,14 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
       .finally(() => setLoading(false));
   }, [initialIds.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const rows = buildRows(locale);
+  const rows = buildRows(locale, {
+    rating: t("rating"),
+    reviewCount: t("reviewCount"),
+    cheapestService: t("cheapestService"),
+    todayHours: t("todayHours"),
+    distance: t("distance"),
+    closed: t("closed"),
+  });
   const bestIdx = getBestValueIndex(salons);
 
   return (
@@ -187,21 +205,19 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-4">
           <Link
             href={`/${locale}`}
-            aria-label="Zurück zur Startseite"
+            aria-label={t("back")}
             className="flex items-center gap-1.5 text-s-ink/60 dark:text-s-dm-text/60 hover:text-s-coral dark:hover:text-s-coral transition-colors duration-150 text-sm"
           >
             <ArrowLeft size={16} />
-            {/* TODO i18n */}
-            <span>Zurück</span>
+            <span>{t("back")}</span>
           </Link>
           <span className="text-s-ink/20 dark:text-white/20">/</span>
-          {/* TODO i18n */}
           <h1 className="font-heading font-bold text-s-ink dark:text-s-dm-text text-base">
-            Salons vergleichen
+            {t("title")}
           </h1>
           {salons.length > 0 && (
             <span className="ml-auto text-xs text-s-ink/40 dark:text-s-dm-text/40">
-              {salons.length} Salons
+              {t("salonCount", { count: salons.length })}
             </span>
           )}
         </div>
@@ -214,10 +230,9 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
             <div
               className="w-8 h-8 rounded-full border-2 border-s-coral/30 border-t-s-coral animate-spin"
               role="status"
-              aria-label="Lade Salons"
+              aria-label={t("loading")}
             />
-            {/* TODO i18n */}
-            <p className="text-s-ink/50 dark:text-s-dm-text/50 text-sm">Salons werden geladen…</p>
+            <p className="text-s-ink/50 dark:text-s-dm-text/50 text-sm">{t("loading")}</p>
           </div>
         )}
 
@@ -225,16 +240,14 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
         {!loading && error && (
           <EmptyState
             icon={GitCompare}
-            /* TODO i18n */
-            title="Fehler beim Laden"
-            message="Die Salondetails konnten nicht geladen werden. Bitte versuche es erneut."
+            title={t("errorTitle")}
+            message={t("errorMessage")}
             action={
               <Link
                 href={`/${locale}`}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
               >
-                {/* TODO i18n */}
-                Salons entdecken
+                {t("discover")}
               </Link>
             }
           />
@@ -244,16 +257,14 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
         {!loading && !error && salons.length === 0 && initialIds.length === 0 && (
           <EmptyState
             icon={GitCompare}
-            /* TODO i18n */
-            title="Keine Salons ausgewählt"
-            message="Wähle bis zu 4 Salons auf der Entdecken-Seite aus, um sie hier direkt zu vergleichen."
+            title={t("noSelectionTitle")}
+            message={t("noSelectionMessage")}
             action={
               <Link
                 href={`/${locale}`}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
               >
-                {/* TODO i18n */}
-                Salons entdecken
+                {t("discover")}
               </Link>
             }
           />
@@ -263,16 +274,14 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
         {!loading && !error && salons.length === 0 && initialIds.length > 0 && (
           <EmptyState
             icon={GitCompare}
-            /* TODO i18n */
-            title="Salons nicht gefunden"
-            message="Die verlinkten Salons konnten nicht gefunden werden. Möglicherweise sind sie nicht mehr aktiv."
+            title={t("notFoundTitle")}
+            message={t("notFoundMessage")}
             action={
               <Link
                 href={`/${locale}`}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-btn bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
               >
-                {/* TODO i18n */}
-                Salons entdecken
+                {t("discover")}
               </Link>
             }
           />
@@ -307,8 +316,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                     {/* Best value ribbon */}
                     {i === bestIdx && (
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 px-3 py-0.5 rounded-b-lg bg-s-coral text-white text-[10px] font-bold whitespace-nowrap shadow-sm">
-                        {/* TODO i18n */}
-                        Empfehlung
+                        {t("recommendation")}
                       </div>
                     )}
 
@@ -378,18 +386,16 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
                   )}
                 >
                   <div className="px-4 py-4 text-xs text-s-ink/30 dark:text-s-dm-text/30 font-medium">
-                    {/* TODO i18n */}
-                    Buchen
+                    {t("bookLabel")}
                   </div>
                   {salons.map((salon) => (
                     <div key={salon.id} className="px-4 py-4 text-center">
                       <Link
                         href={`/${locale}/salon/${salon.slug}`}
-                        aria-label={`Jetzt bei ${salon.name} buchen`}
+                        aria-label={`${t("bookNow")} ${salon.name}`}
                         className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-coral text-white text-xs font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150 whitespace-nowrap"
                       >
-                        {/* TODO i18n */}
-                        Jetzt buchen
+                        {t("bookNow")}
                         <ExternalLink size={11} />
                       </Link>
                     </div>
@@ -399,8 +405,7 @@ export default function ComparePageClient({ locale, initialIds }: ComparePageCli
 
               {/* Hint below table */}
               <p className="text-center text-xs text-s-ink/30 dark:text-s-dm-text/30 mt-4">
-                {/* TODO i18n */}
-                Die Empfehlung basiert auf Bewertungen, Anzahl Rezensionen und Preisen.
+                {t("hint")}
               </p>
             </div>
           </div>
