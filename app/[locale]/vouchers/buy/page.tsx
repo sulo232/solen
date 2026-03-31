@@ -96,22 +96,22 @@ export default function VoucherBuyPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // For demo: Get user ID from session
-  // In production, this would come from Supabase auth
-  const [userId, setUserId] = useState<string | null>(null);
+  // Optional user profile — vouchers work for guests too
+  const [user, setUser] = useState<{ id: string; email?: string; name?: string } | null>(null);
 
   useEffect(() => {
-    // TODO: Replace with actual Supabase session check
-    const demoUserId = "00000000-0000-0000-0000-000000000000";
-    setUserId(demoUserId);
+    fetch("/api/profile")
+      .then((r) => {
+        if (!r.ok) return null;
+        return r.json();
+      })
+      .then((p) => {
+        if (p?.id) setUser(p);
+      })
+      .catch((err) => console.error("[VoucherBuy] Profile fetch error:", err));
   }, []);
 
   const handleCreateVoucher = async () => {
-    if (!userId) {
-      setError("Bitte melde dich an, um einen Gutschein zu kaufen");
-      return;
-    }
-
     if (discountValue <= 0) {
       setError("Bitte gib einen gültigen Betrag ein");
       return;
@@ -128,7 +128,7 @@ export default function VoucherBuyPage() {
           discountType,
           discountValue,
           recipientEmail: isGift ? recipientEmail : undefined,
-          customerId: userId,
+          customerId: user?.id ?? null,
         }),
       });
 
@@ -146,29 +146,6 @@ export default function VoucherBuyPage() {
       setLoading(false);
     }
   };
-
-  if (!userId) {
-    return (
-      <div className="min-h-screen bg-s-cream dark:bg-s-dm-bg px-4 py-16">
-        <div className="max-w-md mx-auto text-center">
-          <div className="rounded-[18px] bg-white dark:bg-s-dm-surface p-8 shadow-[0_1px_3px_rgba(26,18,9,.05),0_4px_20px_rgba(26,18,9,.07)]">
-            <h1 className="font-heading font-bold text-2xl text-s-ink dark:text-s-dm-text mb-4">
-              Anmeldung erforderlich
-            </h1>
-            <p className="text-s-ink/70 dark:text-s-dm-text/70 mb-6">
-              Bitte melde dich an, um Gutscheine zu kaufen.
-            </p>
-            <button
-              onClick={() => router.push("/auth/login")}
-              className="rounded-pill bg-s-coral hover:brightness-[1.06] px-8 py-3 font-heading font-bold uppercase text-xs tracking-[.04em] text-white"
-            >
-              Anmelden
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-s-cream dark:bg-s-dm-bg px-4 py-16">
