@@ -1,5 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 
 import { motion } from "framer-motion";
 import { SearchX } from "lucide-react";
@@ -21,6 +23,8 @@ interface SearchResultGridProps {
   onSelect?: (id: string) => void;
 }
 
+const CATEGORY_PILLS = ["coiffeur", "nails", "barbershop", "spa", "makeup", "waxing"] as const;
+
 export default function SearchResultGrid({
   salons,
   loading,
@@ -31,7 +35,10 @@ export default function SearchResultGrid({
   selectedId,
   onSelect,
 }: SearchResultGridProps) {
-  const tc = useTranslations("common");
+  const t = useTranslations("emptyStates");
+  const router = useRouter();
+  const pathname = usePathname();
+
   if (loading) {
     return (
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -47,10 +54,37 @@ export default function SearchResultGrid({
       <div className="p-8">
         <EmptyState
           icon={SearchX}
-          title={tc("noResults")}
-          message="Versuche andere Suchbegriffe oder ändere deine Filter."
+          title={t("searchNoResults")}
+          message={t("searchSuggestion")}
           illustration="no-results"
         />
+
+        {/* Fallback: category suggestion pills */}
+        <div className="mt-8">
+          <p className="text-sm text-s-ink/50 dark:text-s-dm-text/50 mb-3 font-body">
+            {t("searchTrySuggestions")}
+          </p>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {CATEGORY_PILLS.map((cat) => (
+              <Link
+                key={cat}
+                href={`/${locale}/${cat}`}
+                className="px-4 py-2 rounded-pill bg-s-ink/[0.05] text-s-ink/60 text-sm font-heading font-semibold hover:bg-s-ink/[0.09] hover:text-s-ink dark:bg-s-dm-text/[0.08] dark:text-s-dm-text/60 dark:hover:bg-s-dm-text/[0.14] dark:hover:text-s-dm-text transition-all duration-150"
+              >
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </Link>
+            ))}
+          </div>
+
+          {/* Reset filters */}
+          <button
+            onClick={() => router.push(pathname, { scroll: false })}
+            className="text-sm text-s-coral hover:underline"
+            aria-label={t("searchTryRemoveFilters")}
+          >
+            {t("searchTryRemoveFilters")}
+          </button>
+        </div>
       </div>
     );
   }
