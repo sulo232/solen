@@ -83,6 +83,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Ghost page redirects → Coming Soon
+  const COMING_SOON_ROUTES = ["/vouchers", "/loyalty", "/referral", "/behandlungen"];
+  const pathWithoutLocale = pathname.replace(/^\/(de|en|fr|it)/, "");
+  if (COMING_SOON_ROUTES.includes(pathWithoutLocale)) {
+    const locale = pathname.match(/^\/(de|en|fr|it)/)?.[1] ?? "de";
+    return NextResponse.redirect(new URL(`/${locale}/coming-soon?feature=${pathWithoutLocale.slice(1)}`, request.url));
+  }
+
+  // /hilfe → /help redirect
+  if (pathWithoutLocale === "/hilfe") {
+    const locale = pathname.match(/^\/(de|en|fr|it)/)?.[1] ?? "de";
+    return NextResponse.redirect(new URL(`/${locale}/help`, request.url));
+  }
+
   // Step 2: Supabase session refresh on every request
   let response = NextResponse.next({ request });
 

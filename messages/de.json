@@ -3340,5 +3340,17 @@
     "todayHours": "Öffnungszeiten heute",
     "distance": "Entfernung",
     "closed": "Geschlossen"
+  },
+  "comingSoon": {
+    "title": "Kommt bald",
+    "descriptionDefault": "Wir arbeiten an etwas Tollem. Lass dich benachrichtigen, wenn es soweit ist!",
+    "description_vouchers": "Gutscheine & Geschenkkarten sind bald verfügbar. Verschenke Beauty-Erlebnisse!",
+    "description_loyalty": "Unser Treueprogramm mit Stempelkarten kommt bald. Sammle Punkte bei jedem Besuch!",
+    "description_referral": "Empfiehl Solen an Freunde und erhalte Guthaben. Das Empfehlungsprogramm startet bald!",
+    "description_behandlungen": "Entdecke bald alle Behandlungen und finde den perfekten Salon dafür.",
+    "emailPlaceholder": "deine@email.ch",
+    "notify": "Benachrichtigen",
+    "notifySuccess": "Du wirst benachrichtigt, wenn es losgeht!",
+    "backHome": "Zur Startseite"
   }
 }

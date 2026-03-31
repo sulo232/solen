@@ -3329,5 +3329,17 @@
     "todayHours": "Today's hours",
     "distance": "Distance",
     "closed": "Closed"
+  },
+  "comingSoon": {
+    "title": "Coming Soon",
+    "descriptionDefault": "We're working on something great. Get notified when it's ready!",
+    "description_vouchers": "Gift vouchers are coming soon. Give the gift of beauty!",
+    "description_loyalty": "Our stamp card loyalty program is launching soon. Earn rewards with every visit!",
+    "description_referral": "Refer friends and earn credit. Our referral program is starting soon!",
+    "description_behandlungen": "Discover all treatments and find the perfect salon. Coming soon!",
+    "emailPlaceholder": "your@email.ch",
+    "notify": "Notify Me",
+    "notifySuccess": "We'll notify you when it's ready!",
+    "backHome": "Back to Home"
   }
 }

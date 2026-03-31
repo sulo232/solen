@@ -3306,5 +3306,17 @@
     "todayHours": "Orari di oggi",
     "distance": "Distanza",
     "closed": "Chiuso"
+  },
+  "comingSoon": {
+    "title": "In arrivo",
+    "descriptionDefault": "Stiamo lavorando a qualcosa di fantastico. Ricevi una notifica quando è pronto!",
+    "description_vouchers": "I buoni regalo sono in arrivo. Regala un'esperienza di bellezza!",
+    "description_loyalty": "Il nostro programma fedeltà con carte timbri arriva presto!",
+    "description_referral": "Invita amici e guadagna credito. Il programma referral parte presto!",
+    "description_behandlungen": "Scopri tutti i trattamenti e trova il salone perfetto. In arrivo!",
+    "emailPlaceholder": "tua@email.ch",
+    "notify": "Avvisami",
+    "notifySuccess": "Ti avviseremo quando sarà pronto!",
+    "backHome": "Torna alla home"
   }
 }
