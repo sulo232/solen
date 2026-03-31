@@ -46,7 +46,7 @@ export default function CoiffeurCRMPage() {
         setSalonName(p?.salon_name);
         setSalonCategories(p?.salon_categories);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardCoiffeurCRM] failed to fetch profile:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -56,7 +56,7 @@ export default function CoiffeurCRMPage() {
     fetch(`/api/dashboard/coiffeur/cycle-metrics?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d) setCycleMetrics(d); })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardCoiffeurCRM] failed to fetch cycle metrics:", err))
       .finally(() => setMetricsLoading(false));
   }, [salonId, activeTab]);
 

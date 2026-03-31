@@ -34,7 +34,7 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
         );
         setServices(coiffeurSvcs);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[ColourCycleConfig] failed to load coiffeur services:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

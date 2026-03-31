@@ -51,7 +51,7 @@ export default function ScheduleGrid({ staffMemberId }: ScheduleGridProps) {
             : { day_of_week: day.value, start_time: "09:00", end_time: "18:00", active: false };
         }));
       })
-      .catch(() => {})
+      .catch((err) => console.error("[ScheduleGrid] failed to load staff schedule:", err))
       .finally(() => setLoading(false));
   }, [staffMemberId]);
 

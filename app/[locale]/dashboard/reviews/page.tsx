@@ -44,7 +44,7 @@ export default function SalonReviewsPage() {
       .then((d) => {
         if (d.salon?.id) setSalonId(d.salon.id);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[DashboardReviews] Failed to fetch salon ID:", err));
   }, []);
 
   const fetchReviews = useCallback(() => {

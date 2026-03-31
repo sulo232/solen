@@ -21,7 +21,7 @@ export default function ReferralPage() {
     fetch("/api/referral")
       .then((r) => r.json())
       .then(setData)
-      .catch(() => {})
+      .catch((err) => console.error("[Referral] failed to load referral data:", err))
       .finally(() => setLoading(false));
   }, []);
 

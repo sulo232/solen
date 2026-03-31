@@ -31,7 +31,7 @@ export default function AiArtGenerator() {
     fetch("/api/admin/nail/generate")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d) setBudget(d); })
-      .catch(() => {});
+      .catch((err) => console.error("[AiArtGenerator] failed to load AI art budget:", err));
   }, []);
 
   const handleGenerate = async () => {

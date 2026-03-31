@@ -137,7 +137,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       url: `https://www.solen.ch/${locale}/salon/${props.salonSlug}`,
     };
     if (navigator.share) {
-      await navigator.share(shareData).catch(() => {});
+      await navigator.share(shareData).catch((err) => console.error("[BookingSuccess] navigator.share failed:", err));
     } else {
       await navigator.clipboard.writeText(shareData.url);
     }

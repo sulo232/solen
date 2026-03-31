@@ -46,7 +46,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
           setClients(data.clients);
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("[ClientSelectorDropdown] failed to load salon clients:", err))
       .finally(() => setLoading(false));
   }, [salonId, isOpen, clients.length]);
 

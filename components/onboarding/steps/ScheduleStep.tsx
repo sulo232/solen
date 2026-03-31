@@ -29,7 +29,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
             }
           });
       })
-      .catch(() => {});
+      .catch((err) => console.error("[ScheduleStep] failed to load salon schedule data:", err));
   }, []);
 
   const handleApply = async () => {

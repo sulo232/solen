@@ -62,7 +62,7 @@ export default function KitInventory({ salonId }: { salonId: string }) {
     fetch(`/api/dashboard/makeup/kit?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.data) setItems(d.data); })
-      .catch(() => {})
+      .catch((err) => console.error("[KitInventory] failed to load kit inventory:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

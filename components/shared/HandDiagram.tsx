@@ -36,7 +36,7 @@ export default function HandDiagram({ selectedNails, onNailSelect }: HandDiagram
           setSvgSource(inner);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[HandDiagram] failed to load hand zones SVG:", err));
   }, []);
 
   const zoneLabelMap: Record<string, string> = {};

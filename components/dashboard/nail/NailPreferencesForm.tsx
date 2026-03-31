@@ -37,7 +37,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
           setAllergyNotes(p.allergy_notes || "");
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("[NailPreferencesForm] failed to load nail preferences:", err))
       .finally(() => setLoading(false));
   }, [customerId]);
 

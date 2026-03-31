@@ -29,7 +29,7 @@ export default function ApprovalsPage() {
     fetch("/api/admin/salons?status=pending")
       .then((r) => r.json())
       .then((d) => setSalons(d.salons ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardApprovals] failed to fetch pending salons:", err))
       .finally(() => setLoading(false));
   }, []);
 

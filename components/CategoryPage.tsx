@@ -151,7 +151,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         const favs = data?.favorites ?? [];
         setFavoriteIds(new Set(favs.map((f: { salon_id: string }) => f.salon_id)));
       })
-      .catch(() => {});
+      .catch((err) => console.error("[CategoryPage] failed to fetch favorites:", err));
   }, []);
 
   const handleFavoriteToggle = useCallback((salonId: string) => {
@@ -159,14 +159,14 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       const next = new Set(prev);
       if (next.has(salonId)) {
         next.delete(salonId);
-        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch(() => {});
+        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch((err) => console.error("[CategoryPage] failed to remove favorite:", err));
       } else {
         next.add(salonId);
         fetch("/api/profile/favorites", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ salon_id: salonId }),
-        }).catch(() => {});
+        }).catch((err) => console.error("[CategoryPage] failed to add favorite:", err));
       }
       return next;
     });

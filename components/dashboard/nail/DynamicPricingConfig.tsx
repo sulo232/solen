@@ -65,7 +65,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
     fetch(`/api/nail/pricing?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.rules) setRules(d.rules); })
-      .catch(() => {})
+      .catch((err) => console.error("[DynamicPricingConfig] failed to load pricing rules:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

@@ -28,7 +28,7 @@ export default function GiftCardPage() {
     fetch(`/api/salons/by-slug/${slug}`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setSalon(d.salon ?? d); })
-      .catch(() => {})
+      .catch((err) => console.error("[GiftCard] failed to load salon:", err))
       .finally(() => setLoading(false));
   }, [slug]);
 

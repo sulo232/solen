@@ -33,7 +33,7 @@ export default function SetupPage() {
         setSteps(d.steps ?? []);
         setSalonId(d.salon_id ?? null);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardSetup] Failed to fetch setup progress:", err))
       .finally(() => setLoading(false));
   }, []);
 

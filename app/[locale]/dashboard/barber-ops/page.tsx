@@ -39,7 +39,7 @@ export default function BarberOpsPage() {
         setSalonName(p?.salon_name);
         setSalonCategories(p?.salon_categories);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardBarberOps] failed to fetch profile:", err))
       .finally(() => setLoading(false));
   }, []);
 

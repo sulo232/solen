@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
       try {
         const Stripe = (await import("stripe")).default;
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-02-25.clover" });
-        await stripe.paymentIntents.cancel(booking.payment_intent_id).catch(() => {});
+        await stripe.paymentIntents.cancel(booking.payment_intent_id).catch((err) => console.error("[CronPendingTimeout] failed to cancel Stripe payment intent:", err));
       } catch { /* ignore */ }
     }
 

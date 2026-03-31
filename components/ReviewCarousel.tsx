@@ -32,7 +32,7 @@ export default function ReviewCarousel() {
     fetch("/api/reviews/featured")
       .then((r) => r.json())
       .then((d) => setReviews(d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[ReviewCarousel] failed to fetch featured reviews:", err))
       .finally(() => setLoaded(true));
   }, []);
 

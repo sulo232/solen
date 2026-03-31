@@ -23,7 +23,7 @@ export default function DesignHistoryTimeline({ customerId, salonId, locale = "d
     fetch(`/api/clients/${customerId}/nail-history?limit=20`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d?.history) setDesigns(d.history); })
-      .catch(() => {})
+      .catch((err) => console.error("[DesignHistoryTimeline] failed to load nail design history:", err))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [customerId]);

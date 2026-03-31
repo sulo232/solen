@@ -26,7 +26,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     fetch(`/api/dashboard/nail/ai-history?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.history) setEntries(d.history); })
-      .catch(() => {})
+      .catch((err) => console.error("[AiArtGallery] failed to load AI art history:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

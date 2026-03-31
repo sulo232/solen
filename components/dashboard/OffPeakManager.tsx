@@ -43,7 +43,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
         return r.json();
       })
       .then((d) => setRules(d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[OffPeakManager] failed to load off-peak rules:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

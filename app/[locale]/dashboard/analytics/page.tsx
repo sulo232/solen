@@ -88,7 +88,7 @@ export default function AnalyticsPage() {
 
     Promise.all([main, prior])
       .then(([d, p]) => { if (d) setData(d); setPriorData(p); })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardAnalytics] failed to fetch analytics data:", err))
       .finally(() => setLoading(false));
   }
 
@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
         if (sid) fetchAnalytics(sid, dateRange);
         else setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => { console.error("[DashboardAnalytics] failed to fetch profile:", err); setLoading(false); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -122,7 +122,7 @@ export default function AnalyticsPage() {
         fetch(buildUrl(salonId, { from: priorFrom, to: priorTo }))
           .then((r) => r.json())
           .then((p) => setPriorData(p))
-          .catch(() => {});
+          .catch((err) => console.error("[DashboardAnalytics] failed to fetch comparison period data:", err));
       } else {
         setPriorData(null);
       }

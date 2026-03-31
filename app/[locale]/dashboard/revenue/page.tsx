@@ -48,7 +48,7 @@ export default function RevenuePage() {
     fetch(`/api/admin/revenue?period=${period}`)
       .then((r) => r.json())
       .then((d) => setData(d ?? null))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardRevenue] Failed to fetch revenue data:", err))
       .finally(() => setLoading(false));
   }, [period]);
 

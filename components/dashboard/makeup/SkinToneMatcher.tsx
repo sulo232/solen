@@ -46,7 +46,7 @@ export default function SkinToneMatcher({ clientId, salonId, onSave }: SkinToneM
     fetch(`/api/dashboard/makeup/skin-tone-analytics?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d) setAnalytics(d); })
-      .catch(() => {});
+      .catch((err) => console.error("[SkinToneMatcher] failed to load skin tone analytics:", err));
   }, [salonId]);
 
   const handleSave = () => {

@@ -25,7 +25,7 @@ export default function GoLiveGate() {
     fetch("/api/salon/go-live")
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d && !d.error) setStatus(d); })
-      .catch(() => {});
+      .catch((err) => console.error("[GoLiveGate] failed to load go-live status:", err));
   };
 
   useEffect(() => { load(); }, []);

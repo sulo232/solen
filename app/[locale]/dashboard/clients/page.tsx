@@ -71,7 +71,7 @@ export default function ClientsPage() {
         return { clients: [] };
       })
       .then((d) => setClients(d.clients ?? d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardClients] failed to fetch clients:", err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -220,14 +220,14 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
     fetch(`/api/bookings?user_id=${client.user_id}&salon_id=${salonId}`)
       .then((r) => r.json())
       .then((d) => setBookings(d.bookings ?? d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardClients] failed to fetch client bookings:", err))
       .finally(() => setLoadingBookings(false));
 
     // Load notes
     fetch(`/api/client-notes?salon_id=${salonId}&customer_id=${client.user_id}`)
       .then((r) => r.json())
       .then((d) => setNotes(d.notes ?? d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardClients] failed to fetch client notes:", err))
       .finally(() => setLoadingNotes(false));
   }, [client.user_id, salonId]);
 

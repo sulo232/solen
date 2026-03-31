@@ -52,7 +52,7 @@ export default function SolenScoreCard({ salonId }: { salonId: string }) {
     fetch(`/api/salons/${salonId}/score`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d) setData(d); })
-      .catch(() => {})
+      .catch((err) => console.error("[SolenScoreCard] failed to load salon score:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

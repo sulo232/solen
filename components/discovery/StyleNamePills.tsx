@@ -17,7 +17,7 @@ export default function StyleNamePills({ selected, onSelect }: StyleNamePillsPro
     fetch("/api/discovery/style-names")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d?.styles) setStyles(d.styles); })
-      .catch(() => {});
+      .catch((err) => console.error("[StyleNamePills] failed to load style names:", err));
     return () => { cancelled = true; };
   }, []);
 

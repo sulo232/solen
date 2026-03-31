@@ -217,7 +217,7 @@ export default function SalonPackagesPage() {
       .then((d) => {
         if (d?.items) setPackages(d.items);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[Packages] failed to load packages:", err))
       .finally(() => setLoading(false));
   }, [slug]);
 

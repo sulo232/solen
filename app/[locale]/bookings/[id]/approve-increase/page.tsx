@@ -34,7 +34,7 @@ export default function ApproveIncreasePage() {
     fetch(`/api/bookings/${bookingId}/dispute`)
       .then((r) => r.json())
       .then((d) => setDispute(d.dispute ?? null))
-      .catch(() => {})
+      .catch((err) => console.error("[ApproveIncrease] failed to load dispute:", err))
       .finally(() => setLoading(false));
   }, [bookingId]);
 

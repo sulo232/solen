@@ -85,7 +85,7 @@ export default function ChatWindow({ conversationId, perspective, currentUserId,
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message_ids: unreadIds }),
-    }).catch(() => {});
+    }).catch((err) => console.error("[ChatWindow] failed to mark messages as read:", err));
 
     // Update local state
     setMessages((prev) =>

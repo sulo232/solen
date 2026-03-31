@@ -40,7 +40,7 @@ export default function WaxingAdminPage() {
         setSalonName(p?.salon_name);
         setSalonCategories(p?.salon_categories);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardWaxingAdmin] Failed to fetch salon profile:", err))
       .finally(() => setLoading(false));
   }, []);
 

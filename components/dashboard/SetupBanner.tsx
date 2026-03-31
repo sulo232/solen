@@ -28,7 +28,7 @@ export default function SetupBanner() {
       .then((d) => {
         if (d.percentage < 100) setData(d);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[SetupBanner] failed to load setup progress:", err));
   }, []);
 
   if (!data || dismissed) return null;

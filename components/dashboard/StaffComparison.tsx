@@ -27,7 +27,7 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
     fetch(`/api/analytics/staff-comparison?salon_id=${salonId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setData(d.staff ?? d.items ?? []); })
-      .catch(() => {})
+      .catch((err) => console.error("[StaffComparison] failed to load staff comparison data:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

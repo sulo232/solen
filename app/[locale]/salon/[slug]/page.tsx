@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -68,8 +68,6 @@ interface SalonDetail extends Salon {
 // ─────────────────────────────────────────────────
 
 const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-const DAYS_DE = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
-const DAYS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const CATEGORY_ICONS: Record<SalonCategory, React.FC<{ className?: string }>> = {
   coiffeur: Scissors, barbershop: User, nails: Sparkles,
@@ -104,6 +102,7 @@ function Stars({ rating, size = "md" }: { rating: number; size?: "sm" | "md" }) 
 // ─────────────────────────────────────────────────
 
 function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember; locale: string; onBook: (id: string) => void }) {
+  const t = useTranslations("salonDetail");
   const [previewImages, setPreviewImages] = useState<{ id: string; image_url: string }[]>([]);
 
   useEffect(() => {
@@ -151,13 +150,13 @@ function NailArtistPreviewCard({ member, locale, onBook }: { member: StaffMember
           href={`/${locale}/nail-tech/${member.id}`}
           className="flex-1 text-center text-xs py-1.5 rounded-btn border border-s-ink/10 dark:border-s-dm-text/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 transition-colors duration-150"
         >
-          Alle Designs ansehen
+          {t("viewAllDesigns")}
         </Link>
         <button
           onClick={() => onBook(member.id)}
           className="flex-1 text-center text-xs py-1.5 rounded-btn bg-s-coral text-white hover:brightness-[1.06] transition-colors duration-150"
         >
-          Buchen
+          {t("book")}
         </button>
       </div>
     </div>
@@ -191,6 +190,7 @@ interface OffPeakSlot {
 }
 
 function OffPeakCountdown({ salonId }: { salonId: string }) {
+  const t = useTranslations("salonDetail");
   const [slot, setSlot] = useState<OffPeakSlot | null>(null);
   const [remaining, setRemaining] = useState("");
 
@@ -236,15 +236,15 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-heading font-bold text-sm text-s-ink dark:text-s-dm-text">
-          Off-Peak: {slot.discount_percent}% Rabatt
+          {t("offPeakDiscount", { percent: slot.discount_percent })}
         </p>
         <p className="text-xs text-s-ink/50 mt-0.5">
-          Heute {slot.start_time}–{slot.end_time} Uhr
+          {t("offPeakToday", { start: slot.start_time, end: slot.end_time })}
         </p>
       </div>
       <div className="shrink-0 text-right">
         <div className="font-display text-[32px] leading-none text-s-coral">{remaining}</div>
-        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/35 mt-0.5">verbleibend</div>
+        <div className="text-[10px] font-heading font-semibold uppercase tracking-[.14em] text-s-ink/35 mt-0.5">{t("remaining")}</div>
       </div>
     </div>
   );
@@ -254,20 +254,22 @@ function OffPeakCountdown({ salonId }: { salonId: string }) {
 // Page
 // ─────────────────────────────────────────────────
 
-const TABS = [
-  { key: "angebot", label: "Angebot" },
-  { key: "bewertungen", label: "Bewertungen" },
-  { key: "team", label: "Team" },
-  { key: "fotos", label: "Fotos" },
-  { key: "portfolio", label: "Portfolio" },
-  { key: "standort", label: "Standort" },
-  { key: "info", label: "Info" },
-];
-
 export default function SalonProfilePage() {
   const { slug } = useParams<{ slug: string }>();
   const locale = useLocale();
+  const t = useTranslations("salonDetail");
   const posthog = usePostHog();
+
+  const TABS = [
+    { key: "angebot", label: t("services") },
+    { key: "bewertungen", label: t("reviews") },
+    { key: "team", label: t("team") },
+    { key: "fotos", label: t("photos") },
+    { key: "portfolio", label: t("portfolio") },
+    { key: "standort", label: t("location") },
+    { key: "info", label: t("info") },
+  ];
+  const DAYS = [t("sun"), t("mon"), t("tue"), t("wed"), t("thu"), t("fri"), t("sat")];
 
   const [salon, setSalon] = useState<SalonDetail | null>(null);
   const [loading, setLoading] = useState(true);

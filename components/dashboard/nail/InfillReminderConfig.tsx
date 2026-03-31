@@ -37,7 +37,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
         const nailSvcs = (d?.services ?? []).filter((s: { category?: string }) => s.category === "nails");
         setServices(nailSvcs);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[InfillReminderConfig] failed to load nail services:", err))
       .finally(() => setLoading(false));
 
     // Fetch due clients
@@ -46,13 +46,13 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       .then((d) => {
         if (d?.due_clients) setDueClients(d.due_clients);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[InfillReminderConfig] failed to load due clients:", err));
 
     // Fetch reminder metrics
     fetch(`/api/dashboard/nail/reminder-metrics?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d) setMetrics({ sent: d.sent, booked: d.booked, conversion_rate: d.conversion_rate }); })
-      .catch(() => {});
+      .catch((err) => console.error("[InfillReminderConfig] failed to load reminder metrics:", err));
   }, [salonId]);
 
   const updateCycle = async (serviceId: string, days: number | null) => {

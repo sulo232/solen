@@ -57,7 +57,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
     fetch(`/api/clients/${clientId}/formulas`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => setFormulas(d?.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[FormulaBook] failed to load client formulas:", err))
       .finally(() => setLoading(false));
   }, [clientId]);
 

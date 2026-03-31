@@ -365,7 +365,7 @@ export async function POST(request: NextRequest) {
     // Send welcome email (fire-and-forget)
     const ownerEmail = email || user.email;
     if (ownerEmail) {
-      sendEmail(onboardingWelcome(ownerEmail, { salonName: name }, "de")).catch(() => {});
+      sendEmail(onboardingWelcome(ownerEmail, { salonName: name }, "de")).catch((err) => console.error("[SalonsRoute] failed to send onboarding welcome email:", err));
     }
 
     return NextResponse.json({ id: salonId, slug });

@@ -27,7 +27,7 @@ export default function MessagesPage() {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((p) => setCurrentUserId(p?.id ?? null))
-      .catch(() => {});
+      .catch((err) => console.error("[AccountMessages] failed to load current user profile:", err));
 
     // Load conversations
     fetch("/api/conversations")
@@ -37,7 +37,7 @@ export default function MessagesPage() {
         setConversations(convs);
         if (convs.length > 0) setSelected(convs[0].id);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[AccountMessages] failed to load conversations:", err))
       .finally(() => setLoading(false));
   }, []);
 

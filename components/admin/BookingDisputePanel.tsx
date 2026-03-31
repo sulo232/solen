@@ -42,7 +42,7 @@ export default function BookingDisputePanel() {
     fetch("/api/admin/booking-disputes")
       .then((r) => r.json())
       .then((d) => setDisputes(d.disputes ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[BookingDisputePanel] failed to fetch booking disputes:", err))
       .finally(() => setLoading(false));
   }, []);
 

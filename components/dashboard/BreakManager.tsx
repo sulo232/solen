@@ -35,7 +35,7 @@ export default function BreakManager({ staffMemberId }: BreakManagerProps) {
         return r.json();
       })
       .then((d) => setBreaks(d.breaks ?? d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[BreakManager] failed to load breaks:", err))
       .finally(() => setLoading(false));
   };
 

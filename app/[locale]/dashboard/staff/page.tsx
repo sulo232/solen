@@ -51,7 +51,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
         const ids = new Set<string>((d.items ?? []).map((s: any) => s.service_id));
         setAssignedServices(ids);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardStaff] Failed to fetch assigned services:", err))
       .finally(() => setLoadingServices(false));
 
     // Load permissions from staff member
@@ -370,7 +370,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
     fetch(`/api/staff/invite?salon_id=${salonId}`)
       .then(r => r.json())
       .then(d => setInvites(d.invites ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardStaff] Failed to fetch staff invites:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 
@@ -424,7 +424,7 @@ export default function StaffPage() {
         setStaff(staffData?.staff ?? []);
         setServices(svcData?.items ?? svcData?.services ?? []);
       });
-    }).catch(() => {}).finally(() => setLoading(false));
+    }).catch((err) => console.error("[DashboardStaff] Failed to load staff and services:", err)).finally(() => setLoading(false));
   };
 
   useEffect(() => { loadStaff(); }, []);

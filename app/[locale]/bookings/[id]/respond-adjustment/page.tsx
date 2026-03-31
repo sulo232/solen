@@ -37,7 +37,7 @@ export default function RespondAdjustmentPage() {
     fetch(`/api/bookings/${bookingId}/dispute`)
       .then((r) => r.json())
       .then((d) => setDispute(d.dispute ?? null))
-      .catch(() => {})
+      .catch((err) => console.error("[RespondAdjustment] failed to load dispute:", err))
       .finally(() => setLoading(false));
   }, [bookingId]);
 

@@ -193,7 +193,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         }
         if (Array.isArray(data.favorites)) setFavoriteIds(new Set(data.favorites as string[]));
       })
-      .catch(() => {});
+      .catch((err) => console.error("[HomePage] failed to fetch user data:", err));
 
     // Try to passively fetch nearby if geolocation permission already granted
     if (navigator.permissions) {
@@ -201,7 +201,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         if (result.state === 'granted') {
           fetchNearby();
         }
-      }).catch(() => {});
+      }).catch((err) => console.error("[HomePage] geolocation permission query failed:", err));
     }
   }, [locale, fetchNearby]);
 
@@ -212,14 +212,14 @@ export default function HomePage({ initialData }: HomePageProps) {
       const next = new Set(prev);
       if (next.has(salonId)) {
         next.delete(salonId);
-        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch(() => {});
+        fetch(`/api/profile/favorites?salon_id=${salonId}`, { method: "DELETE" }).catch((err) => console.error("[HomePage] failed to remove favorite:", err));
       } else {
         next.add(salonId);
         fetch("/api/profile/favorites", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ salon_id: salonId }),
-        }).catch(() => {});
+        }).catch((err) => console.error("[HomePage] failed to add favorite:", err));
       }
       return next;
     });

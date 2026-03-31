@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
                 locale,
                 vars: { service: serviceName, salon: salonName, date: dateStr, time: timeStr }
               }
-            }).catch(() => {});
+            }).catch((err) => console.error("[StripeWebhook] failed to send booking confirmation notification:", err));
           }
         }
       }
@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
             const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
             const serviceName = (booking.services as any)?.name_de ?? "Service";
             const salonName = (booking.salons as any)?.name ?? "Salon";
-            await sendEmail(paymentFailedNotification(email, { service: serviceName, salon: salonName, date: dateStr }, locale)).catch(() => {});
+            await sendEmail(paymentFailedNotification(email, { service: serviceName, salon: salonName, date: dateStr }, locale)).catch((err) => console.error("[StripeWebhook] failed to send payment failure notification:", err));
           }
         }
       }
@@ -185,7 +185,7 @@ export async function POST(req: NextRequest) {
         to: adminEmail,
         subject: `[solen.ch] Stripe Dispute: CHF ${(dispute.amount / 100).toFixed(2)}`,
         html: `<p>A new Stripe dispute has been opened.</p><ul><li><strong>Dispute ID:</strong> ${dispute.id}</li><li><strong>Amount:</strong> CHF ${(dispute.amount / 100).toFixed(2)}</li><li><strong>Reason:</strong> ${dispute.reason}</li><li><strong>Status:</strong> ${dispute.status}</li></ul><p><a href="https://dashboard.stripe.com/disputes/${dispute.id}">View in Stripe →</a></p>`,
-      }).catch(() => {});
+      }).catch((err) => console.error("[StripeWebhook] failed to send dispute admin notification:", err));
       break;
     }
 
@@ -214,7 +214,7 @@ export async function POST(req: NextRequest) {
         to: adminEmail,
         subject: `[solen.ch] Stripe Connect: Account deauthorized`,
         html: `<p>A salon has disconnected their Stripe account.</p><p><strong>Account ID:</strong> ${account.id}</p>`,
-      }).catch(() => {});
+      }).catch((err) => console.error("[StripeWebhook] failed to send account deauthorized admin notification:", err));
       break;
     }
 

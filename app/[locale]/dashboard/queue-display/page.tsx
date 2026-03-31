@@ -20,7 +20,7 @@ export default function QueueDisplayPage() {
     fetch("/api/profile")
       .then((r) => r.json())
       .then((p) => { setSalonId(p?.salon_id); })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardQueueDisplay] Failed to fetch salon profile:", err))
       .finally(() => setLoading(false));
   }, []);
 

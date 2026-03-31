@@ -396,7 +396,7 @@ export default function CalendarPage() {
     }).then(([svcData, staffData]) => {
       setServices(svcData?.services ?? []);
       setStaff(staffData?.staff ?? []);
-    }).catch(() => {});
+    }).catch((err) => console.error("[DashboardCalendar] failed to fetch services or staff:", err));
   }, []);
 
   useEffect(() => { loadSlots(); }, [loadSlots]);

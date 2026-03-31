@@ -48,7 +48,7 @@ export default function BodyDiagram({
           setSvgSource(inner);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[BodyDiagram] failed to load body zones SVG:", err));
   }, []);
 
   const fillColor = mode === "spa" ? "#DC2626" : "var(--coral, #E8624A)";

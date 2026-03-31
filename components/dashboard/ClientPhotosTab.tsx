@@ -29,7 +29,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
     fetch(`/api/clients/${customerId}/photos`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (!cancelled && d) setPhotos(d.items ?? []); })
-      .catch(() => {})
+      .catch((err) => console.error("[ClientPhotosTab] failed to load client photos:", err))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [customerId]);

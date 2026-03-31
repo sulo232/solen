@@ -146,7 +146,7 @@ const ReferralSection = memo(function ReferralSection({ locale }: { locale: stri
         setCode(d.referral_code ?? null);
         setStats({ friends_invited: d.friends_invited ?? 0, total_earned: d.total_earned ?? 0 });
       })
-      .catch(() => {})
+      .catch((err) => console.error("[ProfilePage] failed to fetch referral data:", err))
       .finally(() => setLoading(false));
   }, []);
 

@@ -43,7 +43,7 @@ export default function HomepageAdminPage() {
         return r.json();
       })
       .then((data) => setSections(data.sections ?? {}))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardHomepageAdmin] failed to fetch homepage sections:", err))
       .finally(() => setLoading(false));
   }, []);
 

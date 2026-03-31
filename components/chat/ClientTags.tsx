@@ -46,7 +46,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
     fetch(`/api/salons/${salonId}/client-tags?customer_id=${customerId}`)
       .then((r) => r.json())
       .then((d) => setTags(d.tags ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[ClientTags] failed to fetch client tags:", err))
       .finally(() => setLoading(false));
   }, [salonId, customerId]);
 

@@ -82,7 +82,7 @@ export default memo(function VideoCard({
           setImgError(false);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[VideoCard] failed to load TikTok oEmbed thumbnail:", err));
   }, [thumbnailUrl, imgError, item.tiktok_url]);
 
   const categoryBg = CATEGORY_COLORS[item.category] ?? "bg-white/50 dark:bg-white/20";

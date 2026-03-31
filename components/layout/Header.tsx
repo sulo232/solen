@@ -91,7 +91,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
           setUserId(session.user.id);
         }
       });
-    }).catch(() => {});
+    }).catch((err) => console.error("[Header] failed to load Supabase browser client or get session:", err));
   }, []);
 
   // Sign out handler

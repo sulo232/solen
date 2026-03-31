@@ -48,7 +48,7 @@ export default function FaceDiagram({ zoneSelections, onZoneClick }: FaceDiagram
           setSvgSource(inner);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[FaceDiagram] failed to load face zones SVG:", err));
   }, []);
 
   const selectedZones = Object.keys(zoneSelections);

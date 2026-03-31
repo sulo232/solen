@@ -48,7 +48,7 @@ export default function BridalPlanner({ salonId }: { salonId: string }) {
     fetch(`/api/dashboard/makeup/bridal?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.data) setWorkflows(d.data); })
-      .catch(() => {})
+      .catch((err) => console.error("[BridalPlanner] failed to load bridal workflows:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

@@ -36,7 +36,7 @@ export default function ClosureManager({ salonId }: ClosureManagerProps) {
         return r.json();
       })
       .then((d) => setClosures(d.closures ?? d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[ClosureManager] failed to load closures:", err))
       .finally(() => setLoading(false));
   };
 

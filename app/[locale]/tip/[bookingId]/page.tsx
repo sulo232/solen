@@ -34,7 +34,7 @@ export default function TipPage() {
     fetch(`/api/bookings/${bookingId}`)
       .then((r) => r.json())
       .then((d) => setBooking(d.booking ?? d))
-      .catch(() => {})
+      .catch((err) => console.error("[Tip] failed to load booking:", err))
       .finally(() => setLoading(false));
   }, [bookingId]);
 

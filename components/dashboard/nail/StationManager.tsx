@@ -26,7 +26,7 @@ export default function StationManager({ salonId }: { salonId: string }) {
         if (configData?.station) setConfig(configData.station);
         if (typeof utilData?.active_bookings === "number") setActiveBookings(utilData.active_bookings);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[StationManager] failed to load station config and utilization:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

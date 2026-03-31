@@ -43,7 +43,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
     fetch(`/api/dashboard/coiffeur/consultations?client_id=${clientId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => setNotesList(d?.data ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[ConsultationNotes] failed to load consultation notes:", err))
       .finally(() => setLoading(false));
   }, [clientId]);
 

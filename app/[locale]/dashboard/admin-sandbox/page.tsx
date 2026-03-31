@@ -63,7 +63,7 @@ export default function AdminSandboxPage() {
         setSalonName(p?.salon_name);
         setSalonCategories(p?.salon_categories);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[DashboardAdminSandbox] failed to fetch profile:", err));
   }, []);
 
   const loadSalons = useCallback(async () => {

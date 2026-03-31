@@ -31,7 +31,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
     fetch(`/api/nail/retail?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.products) setProducts(d.products); })
-      .catch(() => {})
+      .catch((err) => console.error("[RetailManager] failed to load retail products:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

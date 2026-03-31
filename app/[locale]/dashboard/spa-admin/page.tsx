@@ -37,7 +37,7 @@ export default function SpaAdminPage() {
         setSalonName(p?.salon_name);
         setSalonCategories(p?.salon_categories);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardSpaAdmin] Failed to fetch salon profile:", err))
       .finally(() => setLoading(false));
   }, []);
 

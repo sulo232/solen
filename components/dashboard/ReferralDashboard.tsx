@@ -27,7 +27,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
     fetch(`/api/analytics/referrals?salon_id=${salonId}`)
       .then((r) => { if (!r.ok || cancelled) return null; return r.json(); })
       .then((d) => { if (!cancelled && d) setStats(d); })
-      .catch(() => {})
+      .catch((err) => console.error("[ReferralDashboard] failed to load referral stats:", err))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [salonId]);

@@ -38,7 +38,7 @@ export default function PriceAdjustmentModal({
           setPendingDispute(d.dispute);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[PriceAdjustmentModal] failed to load dispute data:", err));
     return () => { cancelled = true; };
   }, [bookingId]);
 

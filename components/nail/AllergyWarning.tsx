@@ -25,7 +25,7 @@ export default function AllergyWarning({ customerId }: AllergyWarningProps) {
     fetch(`/api/clients/${customerId}/nail-allergies`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d) setData(d); })
-      .catch(() => {});
+      .catch((err) => console.error("[AllergyWarning] failed to load nail allergy data:", err));
     return () => { cancelled = true; };
   }, [customerId]);
 

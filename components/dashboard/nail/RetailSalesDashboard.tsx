@@ -47,7 +47,7 @@ export default function RetailSalesDashboard({ salonId }: RetailSalesDashboardPr
           setTopProducts(d.top_products ?? []);
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("[RetailSalesDashboard] failed to load retail sales data:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

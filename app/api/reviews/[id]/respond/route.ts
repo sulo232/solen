@@ -68,7 +68,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ review_id: id, reply_text: replyText })
-  }).catch(() => {});
+  }).catch((err) => console.error("[ReviewRespond] failed to send review-replied notification:", err));
 
   return NextResponse.json({ ok: true });
 }

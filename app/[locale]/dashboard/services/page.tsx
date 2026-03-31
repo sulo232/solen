@@ -337,7 +337,7 @@ export default function ServicesPage() {
       setSalonId(p?.salon_id ?? null);
       setSalonCategories(p?.salon_categories ?? []);
       return fetch(`/api/services?salon_id=${p?.salon_id}`).then((r) => r.json());
-    }).then((d) => setServices(d?.services ?? [])).catch(() => {}).finally(() => setLoading(false));
+    }).then((d) => setServices(d?.services ?? [])).catch((err) => console.error("[DashboardServices] Failed to fetch services:", err)).finally(() => setLoading(false));
   };
 
   useEffect(() => { loadServices(); }, []);

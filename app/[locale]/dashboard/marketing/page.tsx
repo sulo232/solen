@@ -22,7 +22,7 @@ export default function MarketingPage() {
     fetch("/api/salon/mine")
       .then((r) => r.json())
       .then((d) => setSalonId(d.salon?.id ?? d.id ?? null))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardMarketing] failed to fetch salon id:", err))
       .finally(() => setLoadingSalon(false));
   }, []);
 

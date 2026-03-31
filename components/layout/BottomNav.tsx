@@ -30,7 +30,7 @@ export default function BottomNav() {
           setIsLoggedIn(true);
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[BottomNav] failed to fetch user profile/role:", err));
   }, []);
 
   // Scroll-hide: Instagram-style hide on scroll down, show on scroll up

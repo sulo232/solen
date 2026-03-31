@@ -179,7 +179,7 @@ export default function CheckoutPage() {
         // but for now we can show earned amount as available
         if (data.total_earned) setUserCredits(data.total_earned);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[Checkout] failed to load referral credits:", err));
   }, []);
 
   // Validate promo code

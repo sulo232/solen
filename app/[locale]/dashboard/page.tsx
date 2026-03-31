@@ -107,7 +107,7 @@ export default function DashboardPage() {
           setUnread(convos.reduce((sum, c) => sum + (c.unread_count_salon ?? 0), 0));
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("[Dashboard] Failed to fetch dashboard data:", err))
       .finally(() => setLoading(false));
   }, []);
 

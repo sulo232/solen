@@ -48,7 +48,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
           return r.json();
         })
         .then(d => { if (!cancelled && d?.items) setAddons(prev => ({ ...prev, [svc.id]: d.items })); })
-        .catch(() => {})
+        .catch((err) => console.error("[ServiceCart] failed to fetch addons for service:", err))
     );
     return () => { cancelled = true; };
   }, [services]);

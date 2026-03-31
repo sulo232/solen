@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ review_id: data.id })
-  }).catch(() => {});
+  }).catch((err) => console.error("[ReviewsRoute] failed to send review-posted notification:", err));
 
   if (data) {
     trackServerEvent(user.id, "review_submitted", {

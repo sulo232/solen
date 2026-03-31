@@ -50,7 +50,7 @@ export default function MessagesPage() {
       .then((data) => {
         if (data) setConvos(data.conversations ?? []);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardMessages] Failed to fetch conversations:", err))
       .finally(() => setLoading(false));
   }, []);
 

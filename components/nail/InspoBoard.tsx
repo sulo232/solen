@@ -48,7 +48,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
     fetch("/api/nail-inspo/boards")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d?.boards) setBoards(d.boards); })
-      .catch(() => {})
+      .catch((err) => console.error("[InspoBoard] failed to load inspo boards:", err))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [open]);
@@ -62,7 +62,7 @@ export default function InspoBoard({ open, onClose, onSelect }: InspoBoardProps)
     fetch(`/api/nail-inspo/images?${params}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d?.images) setImages(d.images); })
-      .catch(() => {});
+      .catch((err) => console.error("[InspoBoard] failed to load inspo images:", err));
     return () => { cancelled = true; };
   }, [open, activeBoard]);
 

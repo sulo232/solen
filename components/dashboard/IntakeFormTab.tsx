@@ -42,7 +42,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
     fetch(`/api/clients/${customerId}/intake`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (!cancelled && d) setHistory(d.items ?? []); })
-      .catch(() => {})
+      .catch((err) => console.error("[IntakeFormTab] failed to load intake history:", err))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [customerId]);

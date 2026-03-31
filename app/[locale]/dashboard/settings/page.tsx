@@ -888,7 +888,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
     fetch(`/api/salon/closures?salon_id=${salon.id}`)
       .then((r) => r.json())
       .then((d) => setClosures(d.closures ?? d.items ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardSettings] failed to fetch salon closures:", err))
       .finally(() => setLoading(false));
   }, [salon.id]);
 
@@ -1045,7 +1045,7 @@ function CommissionTab({ salon }: { salon: Salon }) {
         const members = d.staff ?? d.items ?? [];
         setStaff(members.map((s: any) => ({ id: s.id, name: s.name, commission_pct: s.commission_pct ?? 0 })));
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardSettings] failed to fetch staff for commission:", err))
       .finally(() => setLoading(false));
   }, [salon.id]);
 
@@ -1117,7 +1117,7 @@ export default function SettingsPage() {
         return null;
       })
       .then((d) => { if (d) setSalon(d); })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardSettings] failed to fetch salon profile:", err))
       .finally(() => setLoading(false));
   }, []);
 

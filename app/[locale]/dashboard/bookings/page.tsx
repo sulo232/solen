@@ -146,7 +146,7 @@ export default function BookingsPage() {
           });
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardBookings] Failed to fetch bookings:", err))
       .finally(() => setLoading(false));
   }, [statusFilter]);
 

@@ -35,7 +35,7 @@ export default function PhotoGallery({ conversationId, isSalonOwner, isNailSalon
         const msgs = (d.messages ?? []) as PhotoMessage[];
         setPhotos(msgs.filter((m: { message_type?: string; image_url?: string | null }) => m.message_type === "image" && m.image_url));
       })
-      .catch(() => {})
+      .catch((err) => console.error("[PhotoGallery] failed to fetch conversation photos:", err))
       .finally(() => setLoading(false));
   }, [conversationId]);
 

@@ -80,7 +80,7 @@ export default function NailBookingSteps({
     fetch(`/api/clients/${customerId}/repeat-last`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d?.design) setRepeatLast(d.design); })
-      .catch(() => {});
+      .catch((err) => console.error("[NailBookingSteps] failed to load repeat-last design:", err));
     return () => { cancelled = true; };
   }, [customerId]);
 
@@ -91,7 +91,7 @@ export default function NailBookingSteps({
     fetch(`/api/salon/stations?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (!cancelled && d?.station) setStationInfo({ available: d.station.total_stations - 0, used: 0, total: d.station.total_stations }); })
-      .catch(() => {});
+      .catch((err) => console.error("[NailBookingSteps] failed to load station availability:", err));
     return () => { cancelled = true; };
   }, [salonId]);
 

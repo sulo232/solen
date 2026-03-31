@@ -36,7 +36,7 @@ export default function MakeupAdminPage() {
         setSalonName(p?.salon_name);
         setSalonCategories(p?.salon_categories);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardMakeupAdmin] failed to fetch profile:", err))
       .finally(() => setLoading(false));
   }, []);
 

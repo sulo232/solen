@@ -82,7 +82,7 @@ export default function SalonEarningsPage() {
     fetch(`/api/earnings/staff?salon_id=${salonId}`)
       .then(r => r.json())
       .then(d => setStaffEarnings(d.staff ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[DashboardEarnings] failed to fetch staff earnings:", err))
       .finally(() => setStaffLoading(false));
   }, [salonId]);
 

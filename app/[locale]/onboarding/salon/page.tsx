@@ -378,7 +378,7 @@ export default function SalonOnboardingPage() {
           draft_data: { basics, quickWin },
           current_step: step,
         }),
-      }).catch(() => {}); // fire-and-forget
+      }).catch((err) => console.error("[OnboardingSalon] draft autosave failed:", err)); // fire-and-forget
     }, 2000);
     return () => clearTimeout(timer);
   }, [hydrated, basics, quickWin, step]);
@@ -470,7 +470,7 @@ export default function SalonOnboardingPage() {
         return;
       }
       sessionStorage.removeItem("solen_wizard");
-      fetch("/api/salon-draft", { method: "DELETE" }).catch(() => {});
+      fetch("/api/salon-draft", { method: "DELETE" }).catch((err) => console.error("[OnboardingSalon] draft delete on submit failed:", err));
       setDone(true);
       setTimeout(() => router.push(`/${locale}/dashboard?onboarded=1`), 1500);
     } catch {

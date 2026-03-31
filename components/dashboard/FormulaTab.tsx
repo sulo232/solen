@@ -36,7 +36,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
     fetch(`/api/clients/${customerId}/formulas`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (!cancelled && d) setFormulas(d.items ?? []); })
-      .catch(() => {})
+      .catch((err) => console.error("[FormulaTab] failed to load formulas:", err))
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [customerId]);

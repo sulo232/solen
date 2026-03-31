@@ -231,7 +231,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
         if (d.cancellation_window_hours) setCancelWindowHours(d.cancellation_window_hours);
         if (d.cancellation_fee_percent) setCancelFeePercent(d.cancellation_fee_percent);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch salon cancellation policy:", err));
   }, [salonId]);
 
   // Fetch active packages for user
@@ -247,7 +247,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
         );
         if (matching) setActivePackage(matching);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch active packages:", err));
   }, [salonId, serviceId, isAuthenticated]);
 
   // Fetch fully booked dates for the 30-day window
@@ -270,7 +270,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           }
         }
       })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch fully booked dates:", err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salonId]);
 
@@ -302,7 +302,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
     fetch(`/api/salons/${salonId}`)
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d) setStaffList(d.staff ?? []); })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch staff list:", err));
   }, [salonId]);
 
   // Fetch profile for first-visit default
@@ -310,7 +310,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
     fetch("/api/profile")
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d?.is_first_visit_default != null) setIsFirstVisit(d.is_first_visit_default); })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch profile first-visit default:", err));
   }, []);
 
   // Fetch service category for nail detection
@@ -322,7 +322,7 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
         const svc = (d?.services ?? []).find((s: { id: string; category?: string }) => s.id === serviceId);
         if (svc?.category) setServiceCategory(svc.category);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch service category:", err));
   }, [serviceId, salonId]);
 
   // Fetch barbershop-specific data when service is barbershop + user is authenticated
@@ -331,11 +331,11 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
     fetch(`/api/clients/${userId}/repeat-last-cut`)
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d?.lastCut) setLastBarberCut(d.lastCut); })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch last barber cut:", err));
     fetch(`/api/salon/chairs?salon_id=${salonId}`)
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d?.chair_count) setBarberChairs({ chair_count: d.chair_count, buffer_minutes: d.buffer_minutes ?? 5 }); })
-      .catch(() => {});
+      .catch((err) => console.error("[BookingCalendar] failed to fetch barber chair config:", err));
   }, [serviceCategory, userId, salonId]);
 
   // Fetch slots

@@ -290,7 +290,7 @@ function InspoGallery({ customerId }: { customerId: string }) {
     fetch(`/api/nail-inspo/images?customer_id=${customerId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.images) setImages(d.images); })
-      .catch(() => {})
+      .catch((err) => console.error("[NailClientTab] failed to load nail inspo images:", err))
       .finally(() => setLoading(false));
   }, [customerId]);
 

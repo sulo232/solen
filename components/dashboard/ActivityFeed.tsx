@@ -55,7 +55,7 @@ export default function ActivityFeed({ salonId }: ActivityFeedProps) {
         return r.json();
       })
       .then((d) => setEvents(d.events ?? []))
-      .catch(() => {})
+      .catch((err) => console.error("[ActivityFeed] failed to load activity feed:", err))
       .finally(() => setLoading(false));
   }, [salonId]);
 

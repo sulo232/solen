@@ -69,7 +69,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
         const unread = (d.notifications ?? []).filter((n: Notification) => !n.read).length;
         onCountChange?.(unread);
       })
-      .catch(() => {})
+      .catch((err) => console.error("[NotificationCenter] failed to load notifications:", err))
       .finally(() => setLoading(false));
   }
 
@@ -85,7 +85,7 @@ export default function NotificationCenter({ salonId, unreadCount = 0, onCountCh
         setNotifications((n) => n.map((x) => ({ ...x, read: true })));
         onCountChange?.(0);
       })
-      .catch(() => {});
+      .catch((err) => console.error("[NotificationCenter] failed to mark notifications as read:", err));
   }
 
   const unread = notifications.filter((n) => !n.read).length;

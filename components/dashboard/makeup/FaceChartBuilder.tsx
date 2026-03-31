@@ -76,7 +76,7 @@ export default function FaceChartBuilder({
     fetch(`/api/dashboard/makeup/face-charts?salon_id=${salonId}&client_id=${clientId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.data) setCharts(d.data); })
-      .catch(() => {})
+      .catch((err) => console.error("[FaceChartBuilder] failed to load face charts:", err))
       .finally(() => setLoading(false));
   }, [salonId, clientId]);
 
@@ -85,7 +85,7 @@ export default function FaceChartBuilder({
     fetch(`/api/dashboard/makeup/kit?salon_id=${salonId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (d?.data) setKitItems(d.data); })
-      .catch(() => {});
+      .catch((err) => console.error("[FaceChartBuilder] failed to load kit items for autocomplete:", err));
   }, [salonId]);
 
   const handleProductInput = (val: string) => {
