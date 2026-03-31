@@ -336,7 +336,16 @@
     "dashboard": "Dashboard",
     "compliance": "nDSG-konform · Daten in der Schweiz",
     "changeLanguage": "Sprache ändern",
-    "fadpCompliant": "nDSG-konform · Schweizer Datenschutz"
+    "fadpCompliant": "nDSG-konform · Schweizer Datenschutz",
+    "platform": "Plattform",
+    "platformDiscover": "Entdecken",
+    "platformSearch": "Suchen",
+    "platformOffers": "Angebote",
+    "platformLastMinute": "Last Minute",
+    "forSalonsTitle": "Für Salons",
+    "forSalonsPartner": "Partner werden",
+    "forSalonsDashboard": "Dashboard",
+    "legalTitle": "Rechtliches"
   },
   "cookie": {
     "title": "Wir verwenden Cookies",

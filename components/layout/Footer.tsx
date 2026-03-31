@@ -10,59 +10,85 @@ export default function Footer() {
   const locale = useLocale();
   const t = useTranslations("footer") as any;
 
-  const legalLinks = [
-    { label: t("impressum"), href: `/${locale}/impressum` },
-    { label: t("agb"),       href: `/${locale}/agb` },
-    { label: t("privacy"),   href: `/${locale}/datenschutz` },
-    { label: t("help"),      href: `/${locale}/help` },
-  ];
-
   return (
     <footer className="bg-[#2C2825] text-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
 
-        {/* Row 1: Logo · Legal links + Instagram · Language switcher */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
-
-          {/* Logo */}
+        {/* ── Logo + tagline ── */}
+        <div className="mb-10">
           <Link href={`/${locale}`} aria-label="solen.ch — Startseite">
-            <Image
-              src="/logo.svg"
-              alt="solen.ch"
-              width={80}
-              height={24}
-              className="brightness-0 invert"
-            />
+            <Image src="/logo.svg" alt="solen.ch" width={80} height={24} className="brightness-0 invert mb-3" />
           </Link>
-
-          {/* Legal links + Instagram icon inline */}
-          <nav aria-label="Rechtliches" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
-            {legalLinks.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className="text-[12px] font-heading font-medium text-white/45 hover:text-white/80 transition-colors duration-150 whitespace-nowrap"
-              >
-                {label}
-              </Link>
-            ))}
-            <a
-              href="https://instagram.com/solen.ch"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="solen.ch auf Instagram"
-              className="text-white/35 hover:text-white/70 transition-colors duration-150"
-            >
-              <Instagram size={16} />
-            </a>
-          </nav>
-
-          {/* Language switcher */}
-          <LanguageSwitcher locale={locale} variant="footer" />
+          <p className="text-[13px] font-body text-white/40">{t("tagline")}</p>
         </div>
 
-        {/* Row 2: Copyright · nDSG note */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-4">
+        {/* ── 3 columns ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pb-10 border-b border-white/[0.08]">
+
+          {/* Column 1: Platform */}
+          <div>
+            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-[1.5px] text-white/40 mb-4">
+              {t("platform")}
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: t("platformDiscover"), href: `/${locale}/discover` },
+                { label: t("platformSearch"), href: `/${locale}/search` },
+                { label: t("platformOffers"), href: `/${locale}/angebote` },
+                { label: t("platformLastMinute"), href: `/${locale}/angebote` },
+              ].map(({ label, href }) => (
+                <li key={label}>
+                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white/90 transition-colors duration-150">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 2: Für Salons */}
+          <div>
+            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-[1.5px] text-white/40 mb-4">
+              {t("forSalonsTitle")}
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: t("forSalonsPartner"), href: `/${locale}/partner` },
+                { label: t("forSalonsDashboard"), href: `/${locale}/dashboard` },
+              ].map(({ label, href }) => (
+                <li key={label}>
+                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white/90 transition-colors duration-150">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Legal */}
+          <div>
+            <h3 className="font-heading font-semibold text-[12px] uppercase tracking-[1.5px] text-white/40 mb-4">
+              {t("legalTitle")}
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: t("help"), href: `/${locale}/help` },
+                { label: t("impressum"), href: `/${locale}/impressum` },
+                { label: t("agb"), href: `/${locale}/agb` },
+                { label: t("privacy"), href: `/${locale}/datenschutz` },
+              ].map(({ label, href }) => (
+                <li key={label}>
+                  <Link href={href} className="font-body text-[13px] text-white/60 hover:text-white/90 transition-colors duration-150">
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* ── Bottom row: copyright + Instagram + language ── */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6">
           <div className="flex items-center gap-3">
             <p className="text-[11px] font-heading text-white/30">
               {t("copyright", { year: new Date().getFullYear() })}
@@ -74,6 +100,18 @@ export default function Footer() {
                 {t("fadpCompliant")}
               </p>
             </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://instagram.com/solen.ch"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="solen.ch auf Instagram"
+              className="text-white/35 hover:text-white/70 transition-colors duration-150"
+            >
+              <Instagram size={16} />
+            </a>
+            <LanguageSwitcher locale={locale} variant="footer" />
           </div>
         </div>
 

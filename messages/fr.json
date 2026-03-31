@@ -336,7 +336,16 @@
     "dashboard": "Tableau de bord",
     "compliance": "Conforme à la protection des données suisse",
     "changeLanguage": "Changer de langue",
-    "fadpCompliant": "Conforme nLPD · Protection des données suisse"
+    "fadpCompliant": "Conforme nLPD · Protection des données suisse",
+    "platform": "Plateforme",
+    "platformDiscover": "Découvrir",
+    "platformSearch": "Rechercher",
+    "platformOffers": "Offres",
+    "platformLastMinute": "Dernière minute",
+    "forSalonsTitle": "Pour les salons",
+    "forSalonsPartner": "Devenir partenaire",
+    "forSalonsDashboard": "Tableau de bord",
+    "legalTitle": "Mentions légales"
   },
   "cookie": {
     "title": "Nous utilisons des cookies",

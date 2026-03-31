@@ -336,7 +336,16 @@
     "dashboard": "Dashboard",
     "compliance": "Swiss data protection compliant",
     "changeLanguage": "Change language",
-    "fadpCompliant": "FADP-compliant · Swiss data protection"
+    "fadpCompliant": "FADP-compliant · Swiss data protection",
+    "platform": "Platform",
+    "platformDiscover": "Discover",
+    "platformSearch": "Search",
+    "platformOffers": "Offers",
+    "platformLastMinute": "Last Minute",
+    "forSalonsTitle": "For Salons",
+    "forSalonsPartner": "Become a Partner",
+    "forSalonsDashboard": "Dashboard",
+    "legalTitle": "Legal"
   },
   "cookie": {
     "title": "We use cookies",
