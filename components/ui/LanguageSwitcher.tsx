@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { Globe } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const LOCALE_LABELS: Record<string, string> = {
   de: "DE",
@@ -78,12 +78,12 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 px-2 py-1.5 min-h-12 min-w-12 justify-center rounded-pill text-sm font-medium text-s-ink/70 hover:text-s-ink dark:text-s-dm-text/70 dark:hover:text-s-dm-text transition-colors"
+        className="flex items-center gap-0.5 px-2 py-1.5 min-h-10 rounded-pill text-[13px] font-medium text-s-ink/60 hover:text-s-ink dark:text-s-dm-text/60 dark:hover:text-s-dm-text transition-colors"
         aria-label="Sprache wählen"
         aria-expanded={open}
       >
-        <Globe className="w-4 h-4" />
-        <span className="hidden sm:inline">{LOCALE_LABELS[locale] ?? "DE"}</span>
+        <span>{LOCALE_LABELS[locale] ?? "DE"}</span>
+        <ChevronDown className="w-3 h-3 opacity-60" />
       </button>
 
       {open && (

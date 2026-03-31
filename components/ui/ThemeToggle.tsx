@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon } from "lucide-react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -53,7 +53,11 @@ export default function ThemeToggle() {
       aria-label={isDark ? "Helles Design aktivieren" : "Dunkles Design aktivieren"}
       title={theme === "system" ? "System" : theme === "dark" ? "Dunkel" : "Hell"}
     >
-      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      {isDark ? (
+        <Moon size={18} className="fill-current" />
+      ) : (
+        <Moon size={18} />
+      )}
     </button>
   );
 }
