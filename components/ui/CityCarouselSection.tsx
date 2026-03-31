@@ -28,23 +28,19 @@ export default function CityCarouselSection({
   if (salons.length === 0) return null;
 
   return (
-    <section className="pb-8">
-      {/* Section header — extrabold clamp heading, title is a clickable link */}
-      <div className="max-w-5xl mx-auto px-6 mb-4 flex items-end justify-between gap-4">
+    <section className="pb-6">
+      {/* Section header — Airbnb-style restrained heading */}
+      <div className="max-w-5xl mx-auto px-6 mb-3 flex items-center justify-between gap-4">
         {viewAllHref ? (
           <Link
             href={viewAllHref}
             onClick={onViewAll}
-            className="font-heading font-extrabold text-s-ink dark:text-s-dm-text hover:text-s-coral dark:hover:text-s-coral transition-colors duration-150 leading-none"
-            style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em" }}
+            className="font-heading font-semibold text-[18px] text-s-ink dark:text-s-dm-text hover:text-s-coral dark:hover:text-s-coral transition-colors duration-150 leading-snug tracking-tight"
           >
             {title}
           </Link>
         ) : (
-          <h2
-            className="font-heading font-extrabold text-s-ink dark:text-s-dm-text leading-none"
-            style={{ fontSize: "clamp(24px, 3.5vw, 42px)", letterSpacing: "-0.02em" }}
-          >
+          <h2 className="font-heading font-semibold text-[18px] text-s-ink dark:text-s-dm-text leading-snug tracking-tight">
             {title}
           </h2>
         )}
