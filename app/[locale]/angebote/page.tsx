@@ -20,6 +20,7 @@ const PAGE_SIZE = 20;
 export default function LastMinutePage() {
   const locale = useLocale();
   const t = useTranslations('filters') as any;
+  const tEmpty = useTranslations('emptyStates');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -256,20 +257,49 @@ export default function LastMinutePage() {
             ))}
           </div>
         ) : filteredSlots.length === 0 ? (
-          <EmptyState
-            icon={Clock}
-            title="Gerade keine Last-Minute Slots"
-            message="Heute sind keine Last-Minute Angebote verfügbar. Schau später noch einmal rein."
-            action={
-              <Link
-                href={`/${locale}/coiffeur`}
-                className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150"
-                style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}
+          <div>
+            <EmptyState
+              icon={Clock}
+              title={tEmpty("lastMinuteNoSlots")}
+              message="Heute sind keine Last-Minute Angebote verfügbar. Schau später noch einmal rein."
+            />
+
+            {/* Suggested categories */}
+            <div className="mt-6">
+              <h3 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">
+                {tEmpty("lastMinuteSuggestedTitle")}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {["coiffeur", "nails", "barbershop"].map((cat) => (
+                  <Link
+                    key={cat}
+                    href={`/${locale}/${cat}`}
+                    className="px-4 py-2.5 rounded-pill bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 hover:text-s-coral transition-all duration-150"
+                  >
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Notify me */}
+              <button
+                onClick={async () => {
+                  const email = prompt(tEmpty("lastMinuteNotifyMe"));
+                  if (email && email.includes("@")) {
+                    await fetch("/api/waitlist", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email, feature: "last-minute" }),
+                    }).catch((err) => console.error("[LastMinute] Waitlist error:", err));
+                  }
+                }}
+                className="mt-4 text-sm text-s-coral hover:underline"
+                aria-label={tEmpty("lastMinuteNotifyMe")}
               >
-                Coiffeure entdecken
-              </Link>
-            }
-          />
+                {tEmpty("lastMinuteNotifyMe")}
+              </button>
+            </div>
+          </div>
         ) : (
           <>
             <motion.div
