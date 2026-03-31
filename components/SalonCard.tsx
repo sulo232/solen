@@ -207,7 +207,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               return (
                 <div className="absolute top-2 left-2 z-[1]">
                   <span className="flex items-center gap-1 font-heading font-semibold text-[11px] text-s-ink bg-white/95 px-2 py-1 rounded-pill shadow-elevation-1 uppercase tracking-wider">
-                    <Award size={12} className="text-s-coral" /> {t("guestFavorite", { fallback: "Guest Favorite" })}
+                    <Award size={12} className="text-s-coral" /> {t("guestFavorite")}
                   </span>
                 </div>
               );
@@ -225,7 +225,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               return (
                 <div className="absolute top-2 left-2 z-[1]">
                   <span className="font-heading font-semibold text-[11px] text-s-ink bg-white/95 px-2.5 py-1 rounded-pill shadow-elevation-1 uppercase tracking-wider">
-                    {t("topRated", { fallback: "Top Rated" })}
+                    {t("topRated")}
                   </span>
                 </div>
               );
