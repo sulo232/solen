@@ -1033,3 +1033,38 @@ echo "=== Done ==="
 4. **Icons:** Category SVG icons must render perfectly solid in Coral (`#E8735A`) without any opacity layers.
 5. **Footer:** Background is strictly `#2C2825`. Leftover trust pills are removed. Instagram natively inside legal links.
 6. **Mobile Tab Bar:** Background `#FFFFFF` glass frost, 1px top border (no shadow), active states Coral (`#E8735A`), `z-index: 50`.
+
+---
+
+## 16. 🔄 ESTABLISHED PATTERNS (MANDATORY)
+
+### Pattern A: Coming Soon Page
+`app/[locale]/coming-soon/page.tsx` is the standard template for features that exist in the codebase but are not yet ready for production.
+- New features that aren't complete should redirect here via `middleware.ts` using the `COMING_SOON_ROUTES` array.
+- Add `?feature=featureName` to the redirect URL so the page shows the correct icon, color, and description.
+- Email capture POSTs to `/api/coming-soon-notify` (does NOT require auth — best-effort capture).
+
+### Pattern B: Auth Guard on Profile Fetches
+Always check `r.ok` BEFORE calling `r.json()` on any `/api/profile` fetch. Never `.catch(() => {})` silently on auth flows.
+
+```tsx
+// ✅ CORRECT — redirect immediately, log errors
+fetch("/api/profile")
+  .then((r) => {
+    if (!r.ok) {
+      if (!cancelled) router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(pathname)}`);
+      return null;
+    }
+    return r.json();
+  })
+  .then((p) => { if (cancelled || !p) return; /* use p */ })
+  .catch((err) => {
+    console.error("[PageName] Auth fetch error:", err);
+    if (!cancelled) router.push(`/${locale}/auth/login`);
+  });
+
+// ❌ WRONG — swallows errors silently
+fetch("/api/profile")
+  .then((r) => r.json())  // crashes on 401 HTML response
+  .catch(() => {});        // hides the failure
+```
