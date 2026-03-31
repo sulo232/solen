@@ -293,7 +293,7 @@ export default function SalonProfilePage() {
   const [flagLoading, setFlagLoading] = useState(false);
   const [flagSuccess, setFlagSuccess] = useState(false);
 
-  const sectionIds = useMemo(() => TABS.map(t => `section-${t.key}`), []);
+  const sectionIds = useMemo(() => ["angebot", "bewertungen", "team", "fotos", "portfolio", "standort", "info"].map(key => `section-${key}`), []);
   const activeSection = useSectionObserver(sectionIds);
 
   const handleTabClick = (key: string) => {
@@ -373,14 +373,14 @@ export default function SalonProfilePage() {
     return (
       <div className="min-h-screen bg-s-bg-base flex flex-col items-center justify-center gap-6 px-4">
         <div className="font-display text-[80px] leading-none text-s-ink/10">404</div>
-        <p className="font-heading font-bold text-s-ink text-2xl">Salon nicht gefunden</p>
+        <p className="font-heading font-bold text-s-ink text-2xl">{t("notFound")}</p>
         <p className="font-body text-s-ink/50 text-sm text-center max-w-xs">
-          Dieser Salon wurde möglicherweise entfernt oder umbenannt.
+          {t("notFoundMessage")}
         </p>
         <Link href={`/${locale}/coiffeur`}
           className="px-6 py-3 rounded-btn bg-s-coral text-white font-heading font-bold text-sm uppercase tracking-[.04em]"
           style={{ boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
-          Alle Salons ansehen
+          {t("viewAllSalons")}
         </Link>
       </div>
     );
@@ -504,7 +504,7 @@ export default function SalonProfilePage() {
               <>
                 {/* Left nav */}
                 <button onClick={() => setPhotoIndex(i => (i - 1 + photos.length) % photos.length)}
-                  aria-label="Vorheriges Foto"
+                  aria-label={t("previousPhoto")}
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-[transform] hover:scale-110"
                   style={{ background: "rgba(255,255,255,.75)", backdropFilter: "blur(8px)",
                            WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,.50)",
@@ -513,7 +513,7 @@ export default function SalonProfilePage() {
                 </button>
                 {/* Right nav */}
                 <button onClick={() => setPhotoIndex(i => (i + 1) % photos.length)}
-                  aria-label="Nächstes Foto"
+                  aria-label={t("nextPhoto")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center transition-[transform] hover:scale-110"
                   style={{ background: "rgba(255,255,255,.75)", backdropFilter: "blur(8px)",
                            WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,.50)",
@@ -549,7 +549,7 @@ export default function SalonProfilePage() {
                   <h1 className="font-heading font-bold text-[clamp(28px,4vw,44px)] leading-[1.1] tracking-[-0.02em] text-s-ink dark:text-s-dm-text">{salon.name}</h1>
                   <span className={`flex items-center gap-1.5 text-xs font-medium ${isOpen ? "text-s-success" : "text-s-ink/40 dark:text-s-dm-text/40"}`}>
                     <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-s-success" : "bg-s-ink/20 dark:bg-white/20"}`} />
-                    {isOpen ? "Geöffnet" : "Geschlossen"}
+                    {isOpen ? t("open") : t("closed")}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
@@ -633,7 +633,7 @@ export default function SalonProfilePage() {
                 {(salon.about_text_de || salon.about_text_en || salon.about_text_fr || salon.about_text_it) && (
                   <div className="mb-8 p-6 rounded-[20px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 shadow-elevation-1">
                     <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3">
-                      Über uns
+                      {t("aboutUs")}
                     </h2>
                     <p className="text-sm text-s-ink/70 dark:text-s-dm-text/70 leading-relaxed whitespace-pre-wrap">
                       {(salon as any)[`about_text_${locale}`] || salon.about_text_en || salon.about_text_de}
@@ -650,7 +650,7 @@ export default function SalonProfilePage() {
                            border: "1px solid rgba(255,255,255,.55)",
                            boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)" }}>
                   <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-s-coral" />Öffnungszeiten
+                    <Clock className="w-4 h-4 text-s-coral" />{t("openingHours")}
                   </h2>
                   {/* Mobile: today preview + expand */}
                   <div className="md:hidden">
@@ -660,7 +660,7 @@ export default function SalonProfilePage() {
                     >
                       <span className="flex items-center gap-2 text-s-ink/70 dark:text-s-dm-text/70">
                         <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? "bg-s-success shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30 dark:bg-s-dm-text/30"}`} />
-                        Heute: {todayHours ? `${todayHours.open}–${todayHours.close}` : "Geschlossen"}
+                        {t("todayPrefix")}: {todayHours ? `${todayHours.open}–${todayHours.close}` : t("closed")}
                       </span>
                       <ChevronDown className={`w-4 h-4 text-s-ink/40 dark:text-s-dm-text/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`} />
                     </button>
@@ -669,7 +669,7 @@ export default function SalonProfilePage() {
                         {DAY_KEYS.map((key, i) => {
                           const h = salon.opening_hours[key];
                           const isToday = key === dayKey;
-                          const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
+                          const label = DAYS[i];
                           return (
                             <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
                               <div className="flex items-center gap-2">
@@ -677,7 +677,7 @@ export default function SalonProfilePage() {
                                 <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
                               </div>
                               <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
-                                {h ? `${h.open}–${h.close}` : "Geschlossen"}
+                                {h ? `${h.open}–${h.close}` : t("closed")}
                               </span>
                             </div>
                           );
@@ -690,7 +690,7 @@ export default function SalonProfilePage() {
                     {DAY_KEYS.map((key, i) => {
                       const h = salon.opening_hours[key];
                       const isToday = key === dayKey;
-                      const label = locale === "de" ? DAYS_DE[i] : DAYS_EN[i];
+                      const label = DAYS[i];
                       return (
                         <div key={key} className={`flex justify-between items-center text-sm py-1.5 px-2 rounded-[8px] ${isToday ? "bg-s-coral/[0.08]" : ""}`}>
                           <div className="flex items-center gap-2">
@@ -698,7 +698,7 @@ export default function SalonProfilePage() {
                             <span className={`${isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50 dark:text-s-dm-text/50"}`}>{label}</span>
                           </div>
                           <span className={`data-text ${h ? (isToday ? "font-bold text-s-coral" : "text-s-ink dark:text-s-dm-text") : "text-s-ink/20"}`}>
-                            {h ? `${h.open}–${h.close}` : "Geschlossen"}
+                            {h ? `${h.open}–${h.close}` : t("closed")}
                           </span>
                         </div>
                       );
@@ -711,7 +711,7 @@ export default function SalonProfilePage() {
               {((salon as any).atmosphere || (salon as any).expertise || (salon as any).products || (salon as any).nearest_transport) && (
                 <div>
                   <h2 className="font-heading font-semibold text-base text-s-ink dark:text-s-dm-text mb-3 flex items-center gap-2">
-                    <Info className="w-4 h-4 text-s-coral" />Saloninfo
+                    <Info className="w-4 h-4 text-s-coral" />{t("salonInfo")}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {(salon as any).atmosphere && (
@@ -725,7 +725,7 @@ export default function SalonProfilePage() {
                           <Sparkles className="w-4 h-4 text-s-coral" />
                         </div>
                         <div>
-                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">Atmosphäre</p>
+                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">{t("atmosphere")}</p>
                           <p className="text-sm text-s-ink dark:text-s-dm-text leading-snug">{(salon as any).atmosphere}</p>
                         </div>
                       </div>
@@ -741,7 +741,7 @@ export default function SalonProfilePage() {
                           <Award className="w-4 h-4 text-s-coral" />
                         </div>
                         <div>
-                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">Expertise</p>
+                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">{t("expertise")}</p>
                           <p className="text-sm text-s-ink dark:text-s-dm-text leading-snug">{(salon as any).expertise}</p>
                         </div>
                       </div>
@@ -757,7 +757,7 @@ export default function SalonProfilePage() {
                           <Droplets className="w-4 h-4 text-s-coral" />
                         </div>
                         <div>
-                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">Produkte</p>
+                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">{t("products")}</p>
                           <p className="text-sm text-s-ink dark:text-s-dm-text leading-snug">{(salon as any).products}</p>
                         </div>
                       </div>
@@ -773,7 +773,7 @@ export default function SalonProfilePage() {
                           <Bus className="w-4 h-4 text-s-coral" />
                         </div>
                         <div>
-                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">ÖV-Anbindung</p>
+                          <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 mb-1">{t("publicTransport")}</p>
                           <p className="text-sm text-s-ink dark:text-s-dm-text leading-snug">{(salon as any).nearest_transport}</p>
                         </div>
                       </div>
@@ -917,7 +917,7 @@ export default function SalonProfilePage() {
                                 <span className="data-text font-semibold text-sm text-s-ink dark:text-s-dm-text">{formatCurrency(svc.price, locale)}</span>
                                 <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-coral px-2.5 py-1 rounded-input"
                                   style={{ background: "rgba(232,98,74,.10)" }}>
-                                  Buchen
+                                  {t("book")}
                                 </span>
                               </div>
                             </button>
@@ -985,7 +985,7 @@ export default function SalonProfilePage() {
                           onClick={() => setShowReviewForm(true)}
                           className="w-full sm:w-auto py-2.5 px-6 rounded-btn bg-s-coral text-white font-medium text-sm transition-colors duration-150 shadow-warm-sm"
                         >
-                          Bewertung schreiben
+                          {t("writeReview")}
                         </motion.button>
                       </div>
                     )}
@@ -1003,7 +1003,7 @@ export default function SalonProfilePage() {
                               : "bg-s-bg-raised border border-s-ink/[0.08] text-s-ink/60 hover:border-s-ink/20"
                           }`}
                         >
-                          {s === "newest" ? "Neueste" : s === "highest" ? "Beste" : "Schlechteste"}
+                          {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
                         </button>
                       ))}
                     </div>
@@ -1042,7 +1042,7 @@ export default function SalonProfilePage() {
                                     <textarea
                                       value={flagReason}
                                       onChange={(e) => setFlagReason(e.target.value)}
-                                      placeholder="Bitte beschreibe deinen Grund (min. 5 Zeichen)…"
+                                      placeholder={t("flagReasonPlaceholder")}
                                       rows={2}
                                       className="w-full text-xs font-body text-s-ink dark:text-s-dm-text bg-transparent border border-s-ink/10 dark:border-white/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-s-ink/30 transition-colors duration-150"
                                     />
@@ -1051,14 +1051,14 @@ export default function SalonProfilePage() {
                                         onClick={() => setFlaggingReviewId(null)}
                                         className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
                                       >
-                                        Abbrechen
+                                        {t("flagCancel")}
                                       </button>
                                       <button
                                         onClick={submitFlag}
                                         disabled={flagLoading || flagReason.trim().length < 5}
                                         className="text-xs text-white font-heading font-bold uppercase tracking-[.08em] px-4 py-1.5 rounded-btn bg-s-coral disabled:opacity-50 transition-[transform,filter] shadow-coral-glow"
                                       >
-                                        {flagLoading ? "…" : "Melden"}
+                                        {flagLoading ? "…" : t("flagSubmit")}
                                       </button>
                                     </div>
                                   </>
@@ -1069,7 +1069,7 @@ export default function SalonProfilePage() {
                                 onClick={() => handleFlagReview(rev.id)}
                                 className="text-xs text-s-ink/30 hover:text-s-coral transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
                               >
-                                Melden
+                                {t("flagReview")}
                               </button>
                             )}
                           </div>
@@ -1113,7 +1113,7 @@ export default function SalonProfilePage() {
                     {salon.reviews.length > reviewsVisible.length && (
                       <button onClick={() => setReviewPage((p) => p + 1)}
                         className="mt-4 w-full py-2.5 border border-s-ink/10 dark:border-white/10 rounded-btn text-sm text-s-ink/60 dark:text-s-dm-text/60 hover:border-s-coral transition-colors duration-150">
-                        Mehr Bewertungen
+                        {t("showMoreReviews")}
                       </button>
                     )}
                   </>
@@ -1153,7 +1153,7 @@ export default function SalonProfilePage() {
                         onClick={() => setCalendarOpen(true)}
                         className="w-full py-4 rounded-[16px] bg-s-coral text-white font-body font-semibold text-base hover:brightness-[1.06] transition-colors duration-150 shadow-warm-md"
                       >
-                        Jetzt buchen
+                        {t("bookNow")}
                       </motion.button>
                     </div>
                   ) : (
@@ -1175,7 +1175,7 @@ export default function SalonProfilePage() {
         <button onClick={() => setMobileSheetOpen(true)}
           className="fixed bottom-5 left-4 right-4 lg:hidden py-4 rounded-btn text-white font-heading font-bold text-sm uppercase tracking-[.04em] z-40 flex items-center justify-center gap-2"
           style={{ background: "#E8624A", boxShadow: "0 4px 8px rgba(232,98,74,.32), 0 8px 28px rgba(232,98,74,.22)" }}>
-          Jetzt buchen
+          {t("bookNow")}
           {salon.services.length > 0 && (
             <span className="flex items-center justify-center px-1.5 min-w-[20px] h-5 rounded-full bg-white/20 text-[10px] tabular-nums">
               {activeCategory ? (filteredServicesByCategory[activeCategory]?.length || 0) : salon.services.length}
