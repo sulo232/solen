@@ -32,15 +32,14 @@ export default function Breadcrumb() {
 
   // Don't show on homepage, dashboard, auth, booking, checkout, onboarding
   const EXCLUDED = ["/dashboard", "/auth", "/booking", "/checkout", "/onboarding", "/walk-in-pay", "/tip"];
-  // Belt-and-suspenders: catch all homepage variants across all locales
+  // More robust homepage detection
+  const normalizedPath = pathname.replace(/\/$/, ""); // strip trailing slash
   const isHomepage =
-    pathname === "/" ||
-    pathname === `/${locale}` ||
-    pathname === `/${locale}/` ||
-    withoutLocale === "/" ||
-    withoutLocale === "" ||
-    !withoutLocale ||
-    withoutLocale.replace(/\//g, "") === "";
+    normalizedPath === "" ||
+    normalizedPath === "/" ||
+    normalizedPath === `/${locale}` ||
+    // handles /de, /en, /fr, /it with or without trailing slash
+    /^\/(de|en|fr|it)\/?$/.test(normalizedPath);
   if (isHomepage) return null;
   if (EXCLUDED.some((prefix) => withoutLocale.startsWith(prefix))) return null;
 
