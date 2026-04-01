@@ -196,3 +196,24 @@
 - **What happened**: When creating PaymentStep component, assumed `paymentMethod` field didn't exist in BookingFormData. It was already defined with type `'online' | 'in_person' | null`.
 - **Why it happened**: Didn't check the booking state types file before writing the component.
 - **Fix**: Always verify field names in BookingFormData at `lib/booking-state.ts` before adding payment/form handling logic. The field was already there; just use `updateFormData({ paymentMethod: method })` from the context.
+
+### Page params must be Promise<T> in Next.js 15+ with App Router
+- **Date**: 2026-04-02
+- **File(s)**: `app/[locale]/salon/[slug]/booking/page.tsx:10`
+- **What happened**: Initially defined `params: { locale: string; slug: string }` but Next.js 15 requires `params: Promise<{ locale: string; slug: string }>`. Build errored until fixed.
+- **Why it happened**: Next.js 15+ made params async to support streaming + dynamic routes. Old patterns don't work.
+- **Fix**: All page components that receive dynamic route params must declare `params: Promise<T>` and `await` them in the component. Also apply to `generateMetadata()`. Reference: coiffeur/page.tsx uses this pattern correctly.
+
+### Use createAdminSupabaseClient in Server Components, not createServerClient
+- **Date**: 2026-04-02
+- **File(s)**: `app/[locale]/salon/[slug]/booking/page.tsx:4`
+- **What happened**: Imported `createServerClient` which doesn't exist. Should use `createAdminSupabaseClient()`.
+- **Why it happened**: Assumed a generic "server client" function existed when the actual exports are `createServerSupabaseClient()` and `createAdminSupabaseClient()`.
+- **Fix**: Check lib/supabase.ts for actual function names before importing. For data fetching in Server Components (like booking page), use `createAdminSupabaseClient()`.
+
+### Metadata must be hardcoded or imported as static strings, not via i18n getTranslations
+- **Date**: 2026-04-02
+- **File(s)**: `app/[locale]/salon/[slug]/booking/page.tsx:18-20`
+- **What happened**: Tried to use `getTranslations({ locale, namespace: 'metadata' })` inside generateMetadata. TypeScript error: metadata namespace doesn't exist, and the call pattern was wrong.
+- **Why it happened**: Misunderstood how next-intl's getTranslations works in Server Components.
+- **Fix**: Metadata should be static strings or Metadata objects returned directly. Use getTranslations for page content only, not metadata. See coiffeur/page.tsx for the correct pattern of hardcoding titles + descriptions.
