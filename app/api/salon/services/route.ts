@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 
   const { data: services, error } = await supabase
     .from("services")
-    .select("id, name, name_de, is_active")
+    .select("id, name, name_de, name_en, duration_minutes, price, is_active")
     .eq("salon_id", salonId)
     .eq("is_active", true)
     .order("name", { ascending: true });
@@ -49,5 +49,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ services: services ?? [] });
+  // Return both formats for backward compatibility
+  return NextResponse.json({
+    services: services ?? [],
+    items: services?.map(s => ({
+      id: s.id,
+      name_de: s.name_de,
+      name_en: s.name_en,
+      duration_minutes: s.duration_minutes,
+      base_price: s.price
+    })) ?? []
+  });
 }

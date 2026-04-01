@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Package, Gift, Users, Tag } from "lucide-react";
+import { Package, Gift, Users, Tag, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PromoManager from "@/components/dashboard/PromoManager";
 import PackageManager from "@/components/dashboard/PackageManager";
 import ReferralDashboard from "@/components/dashboard/ReferralDashboard";
 import GiftCardManager from "@/components/dashboard/GiftCardManager";
+import LastMinuteManager from "@/components/dashboard/LastMinuteManager";
 import Spinner from "@/components/ui/Spinner";
 
-type MarketingTab = "pakete" | "geschenkkarten" | "empfehlungen" | "aktionen";
+type MarketingTab = "pakete" | "geschenkkarten" | "empfehlungen" | "aktionen" | "lastminute";
 
 export default function MarketingPage() {
   const t = useTranslations("marketing") as any;
@@ -31,6 +32,7 @@ export default function MarketingPage() {
     { key: "geschenkkarten", label: t("tab_gift_cards"), icon: Gift },
     { key: "empfehlungen", label: t("tab_referrals"), icon: Users },
     { key: "aktionen", label: t("tab_promos"), icon: Tag },
+    { key: "lastminute", label: t("tab_last_minute"), icon: Clock },
   ];
 
   return (
@@ -71,6 +73,7 @@ export default function MarketingPage() {
             {tab === "geschenkkarten" && salonId && <GiftCardManager salonId={salonId} />}
             {tab === "empfehlungen" && salonId && <ReferralDashboard salonId={salonId} />}
             {tab === "aktionen" && <PromoManager />}
+            {tab === "lastminute" && salonId && <LastMinuteManager salonId={salonId} />}
           </>
         )}
       </div>
