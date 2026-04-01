@@ -3568,6 +3568,14 @@
     "cancelled": "Storniert",
     "noBookings": "Noch keine Buchungen"
   },
+  "reviewPrompt": {
+    "title": "Wie war dein Besuch?",
+    "selectRating": "Bitte bewerte dein Erlebnis",
+    "commentPlaceholder": "Deine Meinung (optional)",
+    "submit": "Bewerten",
+    "submitFailed": "Fehler beim Senden. Bitte versuche es später erneut.",
+    "close": "Schliessen"
+  },
   "metadata": {
     "myBookings": "Meine Buchungen"
   }

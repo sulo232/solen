@@ -3535,6 +3535,14 @@
     "cancelled": "Annullato",
     "noBookings": "Nessuna prenotazione ancora"
   },
+  "reviewPrompt": {
+    "title": "Come ti è piaciuta la tua visita?",
+    "selectRating": "Valuta la tua esperienza",
+    "commentPlaceholder": "Il tuo feedback (opzionale)",
+    "submit": "Valuta",
+    "submitFailed": "Errore nell'invio della recensione. Riprova più tardi.",
+    "close": "Chiudi"
+  },
   "metadata": {
     "myBookings": "Le mie Prenotazioni"
   }

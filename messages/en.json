@@ -3558,6 +3558,14 @@
     "cancelled": "Cancelled",
     "noBookings": "No bookings yet"
   },
+  "reviewPrompt": {
+    "title": "How was your visit?",
+    "selectRating": "Please rate your experience",
+    "commentPlaceholder": "Your feedback (optional)",
+    "submit": "Rate",
+    "submitFailed": "Error sending review. Please try again later.",
+    "close": "Close"
+  },
   "metadata": {
     "myBookings": "My Bookings"
   }
