@@ -20,6 +20,7 @@ import { useRecentVisits } from "@/hooks/useRecentVisits";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 import TrustStatsBanner from "@/components/TrustStatsBanner";
 import BrowseByCitySection from "@/components/BrowseByCitySection";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -270,6 +271,9 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 4.5. Browse by City ── */}
         <BrowseByCitySection />
+
+        {/* ── 4.75. Testimonial Carousel ── */}
+        <TestimonialCarousel />
 
         {/* ── 5. Partner CTA ── */}
         <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-[#EBEBEB]">

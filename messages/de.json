@@ -257,6 +257,9 @@
     },
     "cities": {
       "title": "Salons in deiner Nähe"
+    },
+    "testimonials": {
+      "title": "Was unsere Nutzer sagen"
     }
   },
   "common": {
@@ -1575,7 +1578,11 @@
     "server_error": "Serverfehler",
     "slot_taken": "Dieser Termin ist bereits vergeben",
     "review_exists": "Du hast diese Buchung bereits bewertet",
-    "booking_not_completed": "Buchung ist noch nicht abgeschlossen"
+    "booking_not_completed": "Buchung ist noch nicht abgeschlossen",
+    "404_title": "Ups! Diese Seite gibt es nicht",
+    "404_description": "Vielleicht wurde sie verschoben oder existiert nicht mehr. Wir helfen dir gerne zurück!",
+    "404_home": "Zur Startseite",
+    "404_browse": "Salons entdecken"
   },
   "discovery": {
     "meta": {
@@ -3184,6 +3191,22 @@
     "payment": {
       "title": "Zahlung",
       "payNow": "Jetzt zahlen"
+    },
+    "profile": {
+      "title": "Meine Gutscheine",
+      "subtitle": "Gutscheine insgesamt",
+      "buyNew": "Neuen Gutschein schenken",
+      "noVouchers": "Du hast noch keine Gutscheine. Bestelle einen als Geschenk!",
+      "active": "Aktive Gutscheine",
+      "used": "Verwendet",
+      "expired": "Abgelaufen",
+      "statusActive": "Gültig",
+      "statusUsed": "Verwendet",
+      "statusExpired": "Abgelaufen",
+      "for": "Für",
+      "daysUntilExpiry": "Tage",
+      "remaining": "Verbleibend",
+      "error": "Fehler beim Laden der Gutscheine"
     }
   },
   "coiffeur": {

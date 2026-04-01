@@ -257,6 +257,9 @@
     },
     "cities": {
       "title": "Salons near you"
+    },
+    "testimonials": {
+      "title": "What our users say"
     }
   },
   "common": {
@@ -1565,7 +1568,11 @@
     "server_error": "Server error",
     "slot_taken": "This slot is already booked",
     "review_exists": "You have already reviewed this booking",
-    "booking_not_completed": "Booking is not yet completed"
+    "booking_not_completed": "Booking is not yet completed",
+    "404_title": "Oops! Page not found",
+    "404_description": "This page may have been moved or no longer exists. We'll help you get back!",
+    "404_home": "Back to homepage",
+    "404_browse": "Discover salons"
   },
   "discovery": {
     "meta": {
@@ -3174,6 +3181,22 @@
     "payment": {
       "title": "Payment",
       "payNow": "Pay now"
+    },
+    "profile": {
+      "title": "My vouchers",
+      "subtitle": "Vouchers total",
+      "buyNew": "Give a new voucher",
+      "noVouchers": "You don't have any vouchers yet. Order one as a gift!",
+      "active": "Active vouchers",
+      "used": "Used",
+      "expired": "Expired",
+      "statusActive": "Valid",
+      "statusUsed": "Used",
+      "statusExpired": "Expired",
+      "for": "For",
+      "daysUntilExpiry": "days",
+      "remaining": "Remaining",
+      "error": "Error loading vouchers"
     }
   },
   "coiffeur": {

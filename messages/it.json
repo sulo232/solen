@@ -257,6 +257,9 @@
     },
     "cities": {
       "title": "Saloni vicino a te"
+    },
+    "testimonials": {
+      "title": "Cosa dicono i nostri utenti"
     }
   },
   "common": {
@@ -1542,7 +1545,11 @@
     "server_error": "Errore del server",
     "slot_taken": "Questo orario è già prenotato",
     "review_exists": "Hai già recensito questa prenotazione",
-    "booking_not_completed": "La prenotazione non è ancora completata"
+    "booking_not_completed": "La prenotazione non è ancora completata",
+    "404_title": "Oops! Questa pagina non esiste",
+    "404_description": "Potrebbe essere stata spostata o non esiste più. Ti aiutiamo a tornare!",
+    "404_home": "Torna alla home",
+    "404_browse": "Scopri i saloni"
   },
   "discovery": {
     "meta": {
@@ -3151,6 +3158,22 @@
     "payment": {
       "title": "Pagamento",
       "payNow": "Paga ora"
+    },
+    "profile": {
+      "title": "I miei voucher",
+      "subtitle": "Voucher totali",
+      "buyNew": "Regala un nuovo voucher",
+      "noVouchers": "Non hai ancora nessun voucher. Ordinane uno come regalo!",
+      "active": "Voucher attivi",
+      "used": "Usati",
+      "expired": "Scaduti",
+      "statusActive": "Valido",
+      "statusUsed": "Utilizzato",
+      "statusExpired": "Scaduto",
+      "for": "Per",
+      "daysUntilExpiry": "giorni",
+      "remaining": "Rimanente",
+      "error": "Errore nel caricamento dei voucher"
     }
   },
   "coiffeur": {

@@ -257,6 +257,9 @@
     },
     "cities": {
       "title": "Salons près de vous"
+    },
+    "testimonials": {
+      "title": "Ce que disent nos utilisateurs"
     }
   },
   "common": {
@@ -1542,7 +1545,11 @@
     "server_error": "Erreur serveur",
     "slot_taken": "Ce créneau est déjà pris",
     "review_exists": "Vous avez déjà évalué cette réservation",
-    "booking_not_completed": "La réservation n'est pas encore terminée"
+    "booking_not_completed": "La réservation n'est pas encore terminée",
+    "404_title": "Oups ! Cette page n'existe pas",
+    "404_description": "Elle a peut-être été déplacée ou n'existe plus. Nous t'aidons à revenir !",
+    "404_home": "Retour à l'accueil",
+    "404_browse": "Découvrir les salons"
   },
   "discovery": {
     "meta": {
@@ -3151,6 +3158,22 @@
     "payment": {
       "title": "Paiement",
       "payNow": "Payer maintenant"
+    },
+    "profile": {
+      "title": "Mes bons",
+      "subtitle": "Bons au total",
+      "buyNew": "Offrir un nouveau bon",
+      "noVouchers": "Vous n'avez pas encore de bons. Commandez-en un en cadeau !",
+      "active": "Bons actifs",
+      "used": "Utilisés",
+      "expired": "Expiré",
+      "statusActive": "Valide",
+      "statusUsed": "Utilisé",
+      "statusExpired": "Expiré",
+      "for": "Pour",
+      "daysUntilExpiry": "jours",
+      "remaining": "Restant",
+      "error": "Erreur lors du chargement des bons"
     }
   },
   "coiffeur": {

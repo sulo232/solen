@@ -325,8 +325,21 @@ export default function CheckoutPage() {
   }
 
   const paymentMode = intent.payment_mode ?? "at_salon";
-  const chargeAmount = paymentMode === "prepay" ? intent.estimated_price : intent.deposit_amount;
-  const remainder = intent.estimated_price - chargeAmount;
+  let baseChargeAmount = paymentMode === "prepay" ? intent.estimated_price : intent.deposit_amount;
+
+  // Apply promo discount
+  let discountAmount = 0;
+  if (promoResult) {
+    discountAmount += promoResult.discount_amount;
+  }
+
+  // Apply voucher discount (use remaining_amount for partial vouchers)
+  if (voucherResult) {
+    discountAmount += voucherResult.remaining_amount;
+  }
+
+  const chargeAmount = Math.max(0, baseChargeAmount - discountAmount);
+  const remainder = intent.estimated_price - baseChargeAmount;
 
   // P9 — At-salon confirmed success
   if (atSalonConfirmed) {
@@ -420,16 +433,51 @@ export default function CheckoutPage() {
               <span className="text-s-ink/60">{intent.service_name}</span>
               <span className="font-medium text-s-ink">{formatCurrency(intent.estimated_price, locale)}</span>
             </div>
+
+            {/* Discount breakdown */}
+            {discountAmount > 0 && (
+              <>
+                {promoResult && (
+                  <div className="flex justify-between text-s-success">
+                    <span className="text-xs">Promo-Code</span>
+                    <span className="text-xs font-semibold">-{formatCurrency(promoResult.discount_amount, locale)}</span>
+                  </div>
+                )}
+                {voucherResult && (
+                  <div className="flex justify-between text-s-success">
+                    <span className="text-xs">Gutschein</span>
+                    <span className="text-xs font-semibold">-{formatCurrency(voucherResult.remaining_amount, locale)}</span>
+                  </div>
+                )}
+              </>
+            )}
+
             {paymentMode === "deposit" && (
               <>
                 <div className="flex justify-between text-s-ink/60">
-                  <span>Anzahlung ({Math.round((chargeAmount / intent.estimated_price) * 100)}%)</span>
-                  <span>{formatCurrency(chargeAmount, locale)}</span>
+                  <span>Anzahlung ({Math.round((baseChargeAmount / intent.estimated_price) * 100)}%)</span>
+                  <span>{formatCurrency(baseChargeAmount, locale)}</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-s-success text-xs">
+                    <span>Nach Rabatten</span>
+                    <span className="font-semibold">{formatCurrency(chargeAmount, locale)}</span>
+                  </div>
+                )}
                 <div className="border-t border-s-ink/5 pt-2 flex justify-between">
                   <span className="text-s-ink/50 text-xs">Restbetrag vor Ort</span>
                   <span className="text-s-ink/50 text-xs">{formatCurrency(remainder, locale)}</span>
                 </div>
+              </>
+            )}
+            {paymentMode === "prepay" && (
+              <>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-s-success text-xs">
+                    <span>Nach Rabatten</span>
+                    <span className="font-semibold">{formatCurrency(chargeAmount, locale)}</span>
+                  </div>
+                )}
               </>
             )}
             {paymentMode === "at_salon" && (
