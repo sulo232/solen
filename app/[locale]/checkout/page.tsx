@@ -125,6 +125,12 @@ export default function CheckoutPage() {
   const [promoResult, setPromoResult] = useState<{ valid: boolean; discount_amount: number; code: string } | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
 
+  // Voucher state
+  const [voucherCode, setVoucherCode] = useState("");
+  const [voucherLoading, setVoucherLoading] = useState(false);
+  const [voucherResult, setVoucherResult] = useState<{ valid: boolean; amount: number; remaining_amount: number; code: string; message?: string } | null>(null);
+  const [voucherError, setVoucherError] = useState<string | null>(null);
+
   // User credits
   const [userCredits, setUserCredits] = useState(0);
 
@@ -209,6 +215,41 @@ export default function CheckoutPage() {
       setPromoError("Fehler bei der Validierung");
     } finally {
       setPromoLoading(false);
+    }
+  };
+
+  // Validate voucher code
+  const handleVoucherValidate = async () => {
+    if (!voucherCode.trim() || !intent) return;
+    setVoucherLoading(true);
+    setVoucherError(null);
+    setVoucherResult(null);
+
+    try {
+      const res = await fetch("/api/vouchers/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: voucherCode.trim(),
+          salon_id: intent.salon_id,
+        }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setVoucherResult({
+          valid: true,
+          amount: data.amount,
+          remaining_amount: data.remaining_amount,
+          code: data.code,
+          message: data.message,
+        });
+      } else {
+        setVoucherError(data.message ?? "Ungültiger Gutscheincode");
+      }
+    } catch {
+      setVoucherError("Fehler bei der Validierung");
+    } finally {
+      setVoucherLoading(false);
     }
   };
 
@@ -489,6 +530,72 @@ export default function CheckoutPage() {
             </div>
           )}
         </div>
+
+        {/* P5b — Voucher code section */}
+        {!promoResult && (
+          <div className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/[0.07] dark:border-white/[0.07] shadow-warm-md p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <PartyPopper className="w-3.5 h-3.5 text-s-coral" />
+              <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-ink/40">
+                Gutscheincode
+              </p>
+            </div>
+
+            {/* Voucher code input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={voucherCode}
+                onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                placeholder="Code eingeben"
+                disabled={!!voucherResult}
+                className="flex-1 px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] bg-white dark:bg-s-dm-bg text-sm font-body text-s-ink dark:text-s-dm-text uppercase tracking-[.08em] placeholder:text-s-ink/25 dark:placeholder:text-s-dm-text/25 placeholder:normal-case placeholder:tracking-normal focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 outline-none disabled:opacity-50 transition-colors"
+              />
+              {voucherResult ? (
+                <button
+                  onClick={() => { setVoucherResult(null); setVoucherCode(""); }}
+                  className="px-4 py-3.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-ink/50 dark:text-s-dm-text/50 hover:border-s-ink/20 dark:hover:border-white/20 transition-colors"
+                >
+                  Entfernen
+                </button>
+              ) : (
+                <InteractiveHoverButton
+                  onClick={handleVoucherValidate}
+                  disabled={voucherLoading || !voucherCode.trim()}
+                  text={voucherLoading ? "..." : "Anwenden"}
+                  className="px-5 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-50"
+                />
+              )}
+            </div>
+
+            {/* Voucher error/success states */}
+            {voucherError && (
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-[10px] border border-s-coral/20"
+                style={{ background: "rgba(232,98,74,.06)" }}>
+                <AlertCircle size={13} className="text-s-coral shrink-0" />
+                <p className="text-xs font-body text-s-coral">{voucherError}</p>
+              </div>
+            )}
+
+            {voucherResult && (
+              <div className="flex items-center justify-between rounded-[10px] border border-s-success/25 px-3 py-2.5"
+                style={{ background: "rgba(46,125,50,.06)" }}>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={13} className="text-s-success shrink-0" />
+                  <span className="text-xs font-heading font-semibold text-s-success">{voucherResult.code} angewendet</span>
+                </div>
+                <span className="text-xs font-heading font-bold text-s-success">-{formatCurrency(voucherResult.remaining_amount, locale)}</span>
+              </div>
+            )}
+
+            {/* Show voucher message if available */}
+            {voucherResult?.message && (
+              <div className="text-xs font-body text-s-ink/60 italic px-3">
+                "{voucherResult.message}"
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Payment card — or at_salon confirm */}
         {paymentMode === "at_salon" ? (
