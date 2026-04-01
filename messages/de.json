@@ -606,6 +606,12 @@
       "selected": "Leistung(en) ausgewählt",
       "continue": "Weiter",
       "selectAtLeastOne": "Bitte wähle mindestens einen Service aus."
+    },
+    "staffSelection": {
+      "title": "Welcher Stylist darf's sein?",
+      "subtitle": "Wähle einen Stylist oder \"Verfügbar\" für den nächsten freien Termin.",
+      "back": "Zurück",
+      "continue": "Weiter"
     }
   },
   "chat": {

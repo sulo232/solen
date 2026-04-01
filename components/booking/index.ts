@@ -1,4 +1,5 @@
 export { default as ServiceSelectionStep } from './ServiceSelectionStep';
+export { default as StaffSelectionStep } from './StaffSelectionStep';
 export { default as ServiceCart } from './ServiceCart';
 export { default as StaffPicker } from './StaffPicker';
 export { default as GuestBookingForm } from './GuestBookingForm';

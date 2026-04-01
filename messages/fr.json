@@ -574,6 +574,12 @@
       "selected": "service(s) sélectionné(s)",
       "continue": "Continuer",
       "selectAtLeastOne": "Veuillez sélectionner au moins un service."
+    },
+    "staffSelection": {
+      "title": "Quel styliste préférez-vous ?",
+      "subtitle": "Choisissez un styliste spécifique ou \"Disponible\" pour le prochain créneau libre.",
+      "back": "Retour",
+      "continue": "Continuer"
     }
   },
   "chat": {
