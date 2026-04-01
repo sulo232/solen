@@ -3537,5 +3537,28 @@
     "ctaDesc": "Discover Basel's best salons — with chat, stamp cards and more.",
     "ctaBtn": "Try it now",
     "ctaSalonBtn": "Are you a salon?"
+  },
+  "bookingCard": {
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "minutes": "min.",
+    "reviews": "reviews",
+    "reschedule": "Reschedule",
+    "cancel": "Cancel",
+    "rebook": "Rebook",
+    "total": "Total"
+  },
+  "bookingsList": {
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "cancelled": "Cancelled",
+    "noBookings": "No bookings yet"
+  },
+  "metadata": {
+    "myBookings": "My Bookings"
   }
 }

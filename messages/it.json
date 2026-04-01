@@ -3514,5 +3514,28 @@
     "ctaDesc": "Scopri i migliori saloni di Basilea — con chat, tessere fedeltà e molto altro.",
     "ctaBtn": "Prova ora",
     "ctaSalonBtn": "Sei un salone?"
+  },
+  "bookingCard": {
+    "status": {
+      "confirmed": "Confermato",
+      "pending": "In sospeso",
+      "cancelled": "Annullato",
+      "completed": "Completato"
+    },
+    "minutes": "min.",
+    "reviews": "recensioni",
+    "reschedule": "Riprogramma",
+    "cancel": "Annulla",
+    "rebook": "Prenota di nuovo",
+    "total": "Totale"
+  },
+  "bookingsList": {
+    "upcoming": "Prossimi",
+    "past": "Passato",
+    "cancelled": "Annullato",
+    "noBookings": "Nessuna prenotazione ancora"
+  },
+  "metadata": {
+    "myBookings": "Le mie Prenotazioni"
   }
 }

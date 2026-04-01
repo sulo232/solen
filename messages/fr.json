@@ -3514,5 +3514,28 @@
     "ctaDesc": "Découvrez les meilleurs salons de Bâle — avec chat, cartes de fidélité et plus encore.",
     "ctaBtn": "Essayer maintenant",
     "ctaSalonBtn": "Êtes-vous un salon ?"
+  },
+  "bookingCard": {
+    "status": {
+      "confirmed": "Confirmé",
+      "pending": "En attente",
+      "cancelled": "Annulé",
+      "completed": "Complété"
+    },
+    "minutes": "min.",
+    "reviews": "avis",
+    "reschedule": "Reprogrammer",
+    "cancel": "Annuler",
+    "rebook": "Réserver à nouveau",
+    "total": "Total"
+  },
+  "bookingsList": {
+    "upcoming": "À venir",
+    "past": "Passé",
+    "cancelled": "Annulé",
+    "noBookings": "Aucune réservation pour le moment"
+  },
+  "metadata": {
+    "myBookings": "Mes Réservations"
   }
 }

@@ -3547,5 +3547,28 @@
     "ctaDesc": "Entdecke Basels beste Salons — mit Chat, Stempelkarten und mehr.",
     "ctaBtn": "Jetzt ausprobieren",
     "ctaSalonBtn": "Bist du ein Salon?"
+  },
+  "bookingCard": {
+    "status": {
+      "confirmed": "Bestätigt",
+      "pending": "Ausstehend",
+      "cancelled": "Storniert",
+      "completed": "Abgeschlossen"
+    },
+    "minutes": "Min.",
+    "reviews": "Bewertungen",
+    "reschedule": "Umbuchen",
+    "cancel": "Stornieren",
+    "rebook": "Erneut buchen",
+    "total": "Gesamtpreis"
+  },
+  "bookingsList": {
+    "upcoming": "Anstehend",
+    "past": "Vergangen",
+    "cancelled": "Storniert",
+    "noBookings": "Noch keine Buchungen"
+  },
+  "metadata": {
+    "myBookings": "Meine Buchungen"
   }
 }

@@ -11,3 +11,5 @@ export { default as GuestBookingForm } from './GuestBookingForm';
 export { default as GroupBookingModal } from './GroupBookingModal';
 export { default as CustomerPreferencesForm } from './CustomerPreferencesForm';
 export { default as PackageRedeemBanner } from './PackageRedeemBanner';
+export { default as BookingCard } from './BookingCard';
+export { default as BookingsList } from './BookingsList';
