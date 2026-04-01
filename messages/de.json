@@ -631,6 +631,16 @@
       "selectDateFirst": "Wähle zuerst ein Datum",
       "errorFetchingSlots": "Fehler beim Laden der Zeitfenster",
       "noSlotsAvailable": "Keine Zeitfenster verfügbar"
+    },
+    "confirmation": {
+      "title": "Übersicht & Bestätigung",
+      "services": "Leistungen",
+      "staff": "Stylist",
+      "dateTime": "Termin",
+      "total": "Gesamtpreis",
+      "back": "Zurück",
+      "continuePayment": "Zur Zahlung",
+      "cancellationPolicy": "Stornierungsbedingungen"
     }
   },
   "chat": {

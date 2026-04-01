@@ -599,6 +599,16 @@
       "selectDateFirst": "Veuillez d'abord sélectionner une date",
       "errorFetchingSlots": "Erreur lors du chargement des créneaux horaires",
       "noSlotsAvailable": "Aucun créneau horaire disponible"
+    },
+    "confirmation": {
+      "title": "Examen et confirmation",
+      "services": "Services",
+      "staff": "Coiffeur",
+      "dateTime": "Rendez-vous",
+      "total": "Prix total",
+      "back": "Retour",
+      "continuePayment": "Continuer vers le paiement",
+      "cancellationPolicy": "Politique d'annulation"
     }
   },
   "chat": {

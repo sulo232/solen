@@ -621,6 +621,16 @@
       "selectDateFirst": "Please select a date first",
       "errorFetchingSlots": "Error loading time slots",
       "noSlotsAvailable": "No time slots available"
+    },
+    "confirmation": {
+      "title": "Review & Confirm",
+      "services": "Services",
+      "staff": "Stylist",
+      "dateTime": "Appointment",
+      "total": "Total Price",
+      "back": "Back",
+      "continuePayment": "Continue to Payment",
+      "cancellationPolicy": "Cancellation Policy"
     }
   },
   "chat": {

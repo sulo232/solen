@@ -599,6 +599,16 @@
       "selectDateFirst": "Seleziona prima una data",
       "errorFetchingSlots": "Errore durante il caricamento degli orari",
       "noSlotsAvailable": "Nessun orario disponibile"
+    },
+    "confirmation": {
+      "title": "Revisione e conferma",
+      "services": "Servizi",
+      "staff": "Parrucchiere",
+      "dateTime": "Appuntamento",
+      "total": "Prezzo totale",
+      "back": "Indietro",
+      "continuePayment": "Continua al pagamento",
+      "cancellationPolicy": "Politica di cancellazione"
     }
   },
   "chat": {
