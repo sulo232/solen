@@ -249,6 +249,11 @@
       "bookingsThisWeek": "Prenotazioni questa settimana",
       "partnerSalons": "Saloni partner",
       "avgRating": "Valutazione media"
+    },
+    "trust_stats": {
+      "salons": "Saloni",
+      "reviews": "Recensioni",
+      "bookings": "Prenotazioni"
     }
   },
   "common": {
@@ -470,6 +475,7 @@
       "title": "Carrello",
       "minutes": "Min",
       "discountCodes": "Codici sconto",
+      "promoPlaceholder": "Codice promo",
       "giftCardPlaceholder": "Codice carta regalo",
       "referralPlaceholder": "Codice referral",
       "total": "Totale",

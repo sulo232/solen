@@ -52,16 +52,51 @@ export interface DemoDiscoverItem {
   id: string;
   image: string;
   label: string;
+  // Extended fields to satisfy ItemCard rendering
+  media_type: "photo" | "tiktok";
+  title: string;
+  category: string;
+  author_name: string;
+  tiktok_url?: string;
+  caption?: string;
+  tags?: string[];
 }
 
 /**
  * Demo discover items shown in DiscoverCarousel when /api/discovery/feed returns empty.
  * These match the 9:16 TikTok-card format used by the carousel.
+ * media_type="photo" renders through ItemCard; media_type="tiktok" through VideoCard.
  */
 export const DEMO_DISCOVER_ITEMS: DemoDiscoverItem[] = [
-  { id: "dd-1", image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80", label: "Coiffeur" },
-  { id: "dd-2", image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80", label: "Nails" },
-  { id: "dd-3", image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=80", label: "Barbershop" },
-  { id: "dd-4", image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=80", label: "Spa" },
-  { id: "dd-5", image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80", label: "Makeup" },
+  {
+    id: "dd-1", media_type: "photo",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80",
+    label: "Coiffeur", title: "Moderner Haarschnitt", category: "coiffeur", author_name: "[TEST] Atelier Lumière",
+    caption: "Schöner Balayage Look ✨", tags: ["balayage", "coiffeur"],
+  },
+  {
+    id: "dd-2", media_type: "photo",
+    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80",
+    label: "Nails", title: "Gel Nail Art", category: "nails", author_name: "[TEST] Nails & Grace",
+    caption: "Frische Gel Nails 💅", tags: ["nails", "gel"],
+  },
+  {
+    id: "dd-3", media_type: "photo",
+    image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&q=80",
+    label: "Barbershop", title: "Classic Fade", category: "barbershop", author_name: "[TEST] The Barber Society",
+    caption: "The perfect fade 💈", tags: ["barbershop", "fade"],
+  },
+  {
+    id: "dd-4", media_type: "photo",
+    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=80",
+    label: "Spa", title: "Hot Stone Massage", category: "spa", author_name: "[TEST] Serenity Spa",
+    caption: "Entspannung pur 🪨", tags: ["spa", "massage"],
+  },
+  {
+    id: "dd-5", media_type: "photo",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&q=80",
+    label: "Makeup", title: "Bridal Glam", category: "makeup", author_name: "[TEST] Glam Studio",
+    caption: "Bridal Makeup Look 👰", tags: ["makeup", "bridal"],
+  },
 ];
+

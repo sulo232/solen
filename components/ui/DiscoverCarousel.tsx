@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import ItemCard from "@/components/discovery/ItemCard";
@@ -85,17 +84,17 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
       {/* Scroll controls (Desktop only) */}
       <button
         onClick={scrollLeft}
-        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-s-dm-raised/90 rounded-pill items-center justify-center shadow-warm-lg border border-s-ink/5 dark:border-white/10 opacity-0 group-hover:opacity-100 transition-[opacity,transform,filter] duration-150 z-20 hover:brightness-[1.06] active:scale-[0.98] text-s-ink dark:text-white"
+        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.14)] border border-[#EBEBEB] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] text-[#222222]"
         aria-label={t("scrollLeft")}
       >
-        <ChevronLeft className="w-6 h-6" />
+        <ChevronLeft className="w-5 h-5" />
       </button>
       <button
         onClick={scrollRight}
-        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-s-dm-raised/90 rounded-pill items-center justify-center shadow-warm-lg border border-s-ink/5 dark:border-white/10 opacity-0 group-hover:opacity-100 transition-[opacity,transform,filter] duration-150 z-20 hover:brightness-[1.06] active:scale-[0.98] text-s-ink dark:text-white"
+        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.14)] border border-[#EBEBEB] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] text-[#222222]"
         aria-label={t("scrollRight")}
       >
-        <ChevronRight className="w-6 h-6" />
+        <ChevronRight className="w-5 h-5" />
       </button>
 
       <div 
@@ -104,41 +103,24 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {isLoading ? (
-          // Skeletons matching the TikTok aspect ratio styling
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16] rounded-2xl">
+            <div key={i} className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[4/5] rounded-2xl">
               <Skeleton className="w-full h-full rounded-[16px]" />
             </div>
           ))
         ) : items.length === 0 ? (
-          // DEMO — shown when no discovery content is seeded yet
           DEMO_DISCOVER_ITEMS.map((item, index) => {
             const isExpanded = activeIndex === index;
             return (
-              <div
+              <Link
                 key={item.id}
-                aria-hidden="true"
-                className="shrink-0 snap-center w-[44vw] max-w-[200px] aspect-[9/16]"
+                href={`/${locale}/discover`}
+                className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[4/5]"
               >
-                <div
-                  className={`relative w-full h-full rounded-[16px] overflow-hidden transition-[transform,opacity] duration-[250ms] origin-center
-                    ${isExpanded ? "scale-[1.03] opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
-                  `}
-                >
-                  <Image
-                    src={item.image}
-                    alt={item.label}
-                    fill
-                    sizes="200px"
-                    className="object-cover"
-                    priority={index < 2}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span className="absolute bottom-3 left-3 font-heading font-semibold text-[13px] text-white">
-                    {item.label}
-                  </span>
+                <div className="w-full h-full rounded-[16px] overflow-hidden">
+                  <ItemCard item={item as unknown as DiscoveryItem} isExpanded={isExpanded} />
                 </div>
-              </div>
+              </Link>
             );
           })
         ) : (
@@ -149,16 +131,11 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
                 href={`/${locale}/discover?id=${item.id}`}
                 prefetch={false}
                 key={item.id}
-                className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[9/16]"
+                className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[4/5]"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                {/* Dynamic Scaling based on Center or Hover position */}
-                <div
-                  className={`w-full h-full rounded-[16px] overflow-hidden transition-[transform,opacity] duration-[250ms] origin-center transform
-                    ${isExpanded ? "scale-[1.03] z-10 opacity-100" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
-                  `}
-                >
+                <div className="w-full h-full rounded-[16px] overflow-hidden">
                   {item.media_type === "tiktok" || item.tiktok_url ? (
                     <VideoCard item={item} isExpanded={isExpanded} />
                   ) : (
@@ -170,23 +147,19 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
           })
         )}
 
-        {/* 11th item: "Go to Entdecken" card */}
+        {/* Final card: "Go to Entdecken" — clean monochrome */}
         <Link
           href={`/${locale}/discover`}
-          className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[9/16]"
+          className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[4/5]"
         >
-          <div
-            className={`w-full h-full rounded-[16px] overflow-hidden bg-s-coral/10 dark:bg-s-coral/5 border-2 border-dashed border-s-coral/30 shadow-warm-sm transition-[transform,opacity,border-color] duration-[250ms] flex flex-col items-center justify-center p-6 text-center transform origin-center
-              ${activeIndex === (items.length > 0 ? items.length : DEMO_DISCOVER_ITEMS.length) ? "scale-105 z-10 opacity-100 border-s-coral" : "scale-[0.88] opacity-60 md:scale-[0.95] md:opacity-80"}
-            `}
-          >
-            <div className={`w-12 h-12 rounded-full bg-s-coral text-white flex items-center justify-center mb-4 transition-transform ${activeIndex === (items.length > 0 ? items.length : DEMO_DISCOVER_ITEMS.length) ? "scale-110" : ""}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          <div className="w-full h-full rounded-[16px] overflow-hidden bg-[#F7F7F7] border border-[#EBEBEB] flex flex-col items-center justify-center p-6 text-center hover:border-[#CCCCCC] transition-colors duration-150">
+            <div className="w-10 h-10 rounded-full bg-[#222222] text-white flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </div>
-            <h3 className={`font-heading font-semibold text-base leading-tight transition-colors duration-150 ${activeIndex === items.length ? "text-s-coral" : "text-s-ink dark:text-s-dm-text"}`}>
+            <h3 className="font-heading font-semibold text-[14px] text-[#222222] leading-tight">
               {t("browseAll")}
             </h3>
-            <p className="text-xs font-body text-s-ink/60 dark:text-s-dm-text/60 mt-2">
+            <p className="text-[12px] font-body text-[#717171] mt-2">
               {t("inspirationText")}
             </p>
           </div>

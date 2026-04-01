@@ -6,30 +6,14 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { CoiffeurIcon } from "@/components/icons/category/CoiffeurIcon";
-import { BarberIcon } from "@/components/icons/category/BarberIcon";
-import { NailsIcon } from "@/components/icons/category/NailsIcon";
-import { SpaIcon } from "@/components/icons/category/SpaIcon";
-import { MakeupIcon } from "@/components/icons/category/MakeupIcon";
-import { WaxingIcon } from "@/components/icons/category/WaxingIcon";
-
+import { getPersistedCity } from "@/lib/city-cookie";
+import type { CitySlug } from "@/lib/cities";
 // ─────────────────────────────────────────────────────────────────────────────
-// Types
+// Categories
 // ─────────────────────────────────────────────────────────────────────────────
 
-type CategoryDef = {
-  key: string;
-  Icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
-};
-
-const CATEGORIES: CategoryDef[] = [
-  { key: "coiffeur", Icon: CoiffeurIcon },
-  { key: "barbershop", Icon: BarberIcon },
-  { key: "nails", Icon: NailsIcon },
-  { key: "spa", Icon: SpaIcon },
-  { key: "makeup", Icon: MakeupIcon },
-  { key: "waxing", Icon: WaxingIcon },
-];
+const CATEGORIES = ["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"] as const;
+type CategoryKey = (typeof CATEGORIES)[number];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
@@ -48,13 +32,19 @@ interface CategoryStickyRowProps {
  */
 export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
   const [visible, setVisible] = useState(false);
+  const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
   const pathname = usePathname();
   const t = useTranslations("navigation");
+
+  // Read the user's persisted city on mount (cookie → localStorage fallback)
+  useEffect(() => {
+    setPersistedCity(getPersistedCity());
+  }, []);
 
   // On category pages (e.g. /de/coiffeur) — always show since there's no
   // homepage grid to scroll past
   const isHomepage = pathname === `/${locale}` || pathname === `/${locale}/`;
-  const isCategoryPage = CATEGORIES.some((c) => pathname.includes(`/${c.key}`));
+  const isCategoryPage = CATEGORIES.some((key) => pathname.includes(`/${key}`));
 
   useEffect(() => {
     if (!isHomepage) {
@@ -73,9 +63,7 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
   }, [isHomepage, isCategoryPage]);
 
   // Detect which category is currently active from URL
-  const currentCategory = CATEGORIES.find((c) =>
-    pathname.includes(`/${c.key}`)
-  )?.key;
+  const currentCategory = CATEGORIES.find((key) => pathname.includes(`/${key}`));
 
   return (
     <AnimatePresence>
@@ -93,20 +81,20 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
             role="tablist"
             aria-label={t("categories" as Parameters<typeof t>[0])}
           >
-            {CATEGORIES.map(({ key }) => {
+            {CATEGORIES.map((key) => {
               const isActive = currentCategory === key;
               return (
                 <Link
                   key={key}
-                  href={`/${locale}/${key}`}
+                  href={persistedCity ? `/${locale}/${persistedCity}/${key}` : `/${locale}/${key}`}
                   role="tab"
                   aria-selected={isActive}
                   aria-label={t(key as Parameters<typeof t>[0])}
                   className={cn(
                     "relative flex items-center px-4 py-2 shrink-0 transition-colors duration-150 whitespace-nowrap",
                     isActive
-                      ? "text-s-ink dark:text-s-dm-text font-semibold"
-                      : "text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text"
+                      ? "text-[#222222] font-semibold"
+                      : "text-[#717171] hover:text-[#222222]"
                   )}
                 >
                   <span className="text-[13px] font-heading font-semibold">
@@ -115,7 +103,7 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
                   {isActive && (
                     <motion.div
                       layoutId="cat-sticky-underline"
-                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-s-ink dark:bg-s-dm-text"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-[#222222]"
                       transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                     />
                   )}

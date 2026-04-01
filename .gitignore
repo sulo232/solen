@@ -26,6 +26,9 @@ dist-ssr
 # Sentry Config File
 .env.sentry-build-plugin
 
+# Worktrees
+.worktrees/
+
 # Next.js
 .next/
 out/

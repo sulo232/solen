@@ -56,6 +56,12 @@ export default function AdminSandboxPage() {
   const [newCategory, setNewCategory] = useState("hair");
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  // Platform test-salon seeding
+  const [seedCities, setSeedCities] = useState<string[]>(["basel", "zuerich", "bern"]);
+  const [platformSeeding, setPlatformSeeding] = useState<"idle" | "seeding" | "deleting" | "done" | "error">("idle");
+  const [platformSeedResult, setPlatformSeedResult] = useState<{ seeded?: string[]; errors?: string[] } | null>(null);
+  const [realCounts, setRealCounts] = useState<Record<string, number>>({});
+
   useEffect(() => {
     fetch("/api/profile")
       .then((r) => r.json())
@@ -74,10 +80,47 @@ export default function AdminSandboxPage() {
         const d = await res.json();
         setSalons(d.salons ?? []);
       }
+      // Also fetch real counts from the seeding endpoint
+      const countsRes = await fetch("/api/admin/seed-test-salons");
+      if (countsRes.ok) {
+        const cd = await countsRes.json();
+        setRealCounts(cd.realSalonCounts ?? {});
+      }
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const platformSeed = useCallback(async () => {
+    setPlatformSeeding("seeding");
+    setPlatformSeedResult(null);
+    try {
+      const res = await fetch("/api/admin/seed-test-salons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cities: seedCities }),
+      });
+      const d = await res.json();
+      setPlatformSeedResult(d);
+      setPlatformSeeding("done");
+      await loadSalons();
+    } catch {
+      setPlatformSeeding("error");
+    }
+  }, [seedCities, loadSalons]);
+
+  const platformDelete = useCallback(async () => {
+    if (!confirm("Alle Test-Salons aus der Datenbank löschen?")) return;
+    setPlatformSeeding("deleting");
+    try {
+      await fetch("/api/admin/seed-test-salons", { method: "DELETE" });
+      setPlatformSeeding("idle");
+      setSalons([]);
+      await loadSalons();
+    } catch {
+      setPlatformSeeding("error");
+    }
+  }, [loadSalons]);
 
   useEffect(() => { loadSalons(); }, [loadSalons]);
 
@@ -145,6 +188,75 @@ export default function AdminSandboxPage() {
 
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
+
+      {/* ── Platform Test-Salon Seeder ────────────────────────────── */}
+      <div className="mb-6 rounded-[14px] border border-s-amber/30 bg-s-amber/[0.05] p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <FlaskConical size={14} className="text-s-amber" />
+          <p className="text-[10px] font-heading font-bold uppercase tracking-[.18em] text-s-amber">
+            Platform Test-Salons
+          </p>
+        </div>
+        <p className="text-[11px] text-s-ink/50 dark:text-s-dm-text/50">
+          Seeded salons appear on the public site only when no real salons exist for that city+category.
+          They include services &amp; availability and are fully editable.
+        </p>
+
+        {/* City selector */}
+        <div className="flex flex-wrap gap-2">
+          {["basel", "zuerich", "bern"].map((citySlug) => (
+            <button
+              key={citySlug}
+              onClick={() => setSeedCities((prev) =>
+                prev.includes(citySlug) ? prev.filter((c) => c !== citySlug) : [...prev, citySlug]
+              )}
+              className={`px-3 py-1.5 rounded-pill text-xs font-heading font-semibold transition-all duration-150 ${
+                seedCities.includes(citySlug)
+                  ? "bg-s-amber text-white shadow-[0_2px_8px_rgba(243,176,41,0.3)]"
+                  : "bg-s-ink/[0.05] text-s-ink/55 hover:bg-s-ink/[0.09]"
+              }`}
+            >
+              {citySlug === "zuerich" ? "Zürich" : citySlug.charAt(0).toUpperCase() + citySlug.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={platformSeed}
+            disabled={platformSeeding === "seeding" || seedCities.length === 0}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-s-amber text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all disabled:opacity-40"
+          >
+            {platformSeeding === "seeding" ? <Loader2 size={11} className="animate-spin" /> : <Plus size={11} />}
+            Seed Test-Salons
+          </button>
+          <button
+            onClick={platformDelete}
+            disabled={platformSeeding === "deleting"}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] bg-red-50 text-red-500 text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-red-100 active:scale-[0.98] transition-all disabled:opacity-40"
+          >
+            {platformSeeding === "deleting" ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
+            Alle löschen
+          </button>
+        </div>
+
+        {/* Result */}
+        {platformSeedResult && (
+          <div className="text-[11px] space-y-1">
+            {(platformSeedResult.seeded?.length ?? 0) > 0 && (
+              <p className="text-s-sage font-medium">✓ {platformSeedResult.seeded?.length} Salons geseedet</p>
+            )}
+            {(platformSeedResult.errors?.length ?? 0) > 0 && (
+              <p className="text-red-500">{platformSeedResult.errors?.length} Fehler — siehe Konsole</p>
+            )}
+          </div>
+        )}
+        {platformSeeding === "error" && (
+          <p className="text-[11px] text-red-500">Fehler beim Seeden — Console prüfen</p>
+        )}
+      </div>
+
       {/* Header */}
       <div className="mb-6">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.20em] text-s-ink/30 mb-1">Admin</p>

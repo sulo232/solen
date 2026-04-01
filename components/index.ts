@@ -32,5 +32,6 @@ export { default as ChatWindow } from "@/components/ChatWindow";
 export { default as SignIn } from "@/components/auth/SignIn";
 export { default as TutorialTour } from "@/components/TutorialTour";
 export { default as RecentlyViewed, trackSalonView } from "@/components/RecentlyViewed";
+export { default as TrustStatsBanner } from "@/components/TrustStatsBanner";
 export { default as ReviewBreakdown } from "@/components/ReviewBreakdown";
 export { default as NearbySalons } from "@/components/NearbySalons";

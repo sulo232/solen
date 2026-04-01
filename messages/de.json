@@ -249,6 +249,11 @@
       "bookingsThisWeek": "Buchungen diese Woche",
       "partnerSalons": "Partner Salons",
       "avgRating": "Ø Bewertung"
+    },
+    "trust_stats": {
+      "salons": "Salons",
+      "reviews": "Bewertungen",
+      "bookings": "Buchungen"
     }
   },
   "common": {
@@ -502,6 +507,7 @@
       "title": "Warenkorb",
       "minutes": "Min",
       "discountCodes": "Rabatt-Codes",
+      "promoPlaceholder": "Promo-Code",
       "giftCardPlaceholder": "Gutschein-Code",
       "referralPlaceholder": "Empfehlungs-Code",
       "total": "Gesamt",

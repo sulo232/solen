@@ -249,6 +249,11 @@
       "bookingsThisWeek": "Bookings this week",
       "partnerSalons": "Partner Salons",
       "avgRating": "Avg Rating"
+    },
+    "trust_stats": {
+      "salons": "Salons",
+      "reviews": "Reviews",
+      "bookings": "Bookings"
     }
   },
   "common": {
@@ -492,6 +497,7 @@
       "title": "Shopping Cart",
       "minutes": "Min",
       "discountCodes": "Discount Codes",
+      "promoPlaceholder": "Promo Code",
       "giftCardPlaceholder": "Gift Card Code",
       "referralPlaceholder": "Referral Code",
       "total": "Total",

@@ -18,6 +18,7 @@ import { getPersistedCity } from "@/lib/city-cookie";
 import { type CitySlug } from "@/lib/cities";
 import { useRecentVisits } from "@/hooks/useRecentVisits";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
+import TrustStatsBanner from "@/components/TrustStatsBanner";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -220,6 +221,9 @@ export default function HomePage({ initialData }: HomePageProps) {
             );
           })}
         </section>
+
+        {/* ── 1.5. Trust Stats Banner (social proof) ── */}
+        <TrustStatsBanner />
 
         {/* ── 2. Entdecken — Pinterest-style Discovery intro (secondary, after listings) ── */}
         <section className="animate-in mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-[#EBEBEB] relative z-[2]" style={{ animationDelay: "120ms" }}>

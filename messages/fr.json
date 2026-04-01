@@ -249,6 +249,11 @@
       "bookingsThisWeek": "Réservations cette semaine",
       "partnerSalons": "Salons partenaires",
       "avgRating": "Note moyenne"
+    },
+    "trust_stats": {
+      "salons": "Salons",
+      "reviews": "Avis",
+      "bookings": "Réservations"
     }
   },
   "common": {
@@ -470,6 +475,7 @@
       "title": "Panier",
       "minutes": "Min",
       "discountCodes": "Codes de réduction",
+      "promoPlaceholder": "Code promotion",
       "giftCardPlaceholder": "Code carte cadeau",
       "referralPlaceholder": "Code parrainage",
       "total": "Total",

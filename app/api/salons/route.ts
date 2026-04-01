@@ -21,6 +21,9 @@ export async function GET(request: NextRequest) {
     const max_price = searchParams.get("max_price");
     const min_rating = searchParams.get("min_rating");
     const accepts_payment = searchParams.get("accepts_payment");
+    const instant_bookable = searchParams.get("instant_bookable");
+    const deals = searchParams.get("deals");
+    const walk_in = searchParams.get("walk_in");
     const date = searchParams.get("date"); // YYYY-MM-DD for availability filtering
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
@@ -29,6 +32,7 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(50, parseInt(searchParams.get("limit") ?? "20"));
     const offset = (page - 1) * limit;
     const idsParam = searchParams.get("ids");
+    const serviceFilter = searchParams.get("service");
 
     const supabase = await createServerSupabaseClient();
 
@@ -43,6 +47,23 @@ export async function GET(request: NextRequest) {
     if (city) {
       const { data: cData } = await supabase.from("cities").select("id").eq("slug", city).single();
       if (cData?.id) query = query.eq("city_id", cData.id);
+
+      // Auto-hide test salons when real salons already exist for this city+category combo
+      if (category && cData?.id) {
+        const { count: realCount } = await supabase
+          .from("salons")
+          .select("id", { count: "exact", head: true })
+          .eq("city_id", cData.id)
+          .contains("categories", [category])
+          .eq("is_active", true)
+          .eq("is_test", false);
+
+        if ((realCount ?? 0) > 0) {
+          // Real salons exist — hide test salons from results
+          query = query.eq("is_test", false);
+        }
+        // else: no real salons → let test salons through (is_test filter already applied above)
+      }
     }
 
     if (idsParam) {
@@ -52,8 +73,53 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Service sub-filter: filter to salons offering this service
+    if (serviceFilter) {
+      const servicePattern = `%${serviceFilter}%`;
+      const { data: serviceMatches } = await supabase
+        .from("services")
+        .select("salon_id")
+        .ilike("name_de", servicePattern)
+        .eq("is_active", true);
+      const matchedSalonIds = [...new Set((serviceMatches ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (matchedSalonIds.length > 0) {
+        query = query.in("id", matchedSalonIds);
+      } else {
+        // No salons match this service — return empty
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
+    }
+
     if (min_rating) query = query.gte("average_rating", parseFloat(min_rating));
     if (accepts_payment === "true") query = query.eq("accepts_online_payment", true);
+
+    // Filter to salons with availability slots in next 48 hours
+    if (instant_bookable === "true") {
+      const now = new Date().toISOString();
+      const fortyEightHoursFromNow = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+      const { data: availSalons } = await supabase
+        .from("availability_slots")
+        .select("salon_id")
+        .eq("status", "available")
+        .gte("starts_at", now)
+        .lte("starts_at", fortyEightHoursFromNow);
+      const availIds = [...new Set((availSalons ?? []).map((s: { salon_id: string }) => s.salon_id))];
+      if (availIds.length > 0) {
+        query = query.in("id", availIds);
+      } else {
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
+    }
+
+    // Filter to salons with active last-minute deals
+    if (deals === "true") {
+      query = query.gt("last_minute_discount_percent", 0);
+    }
+
+    // Filter to salons that accept walk-ins (column may not exist yet — skip if error)
+    if (walk_in === "true") {
+      query = query.eq("walk_in_available", true);
+    }
 
     // Price filtering requires joining services — use subquery via RPC or filter post-fetch
     // For V1, we skip price filter on the salons level (services are filtered client-side)
@@ -93,6 +159,12 @@ export async function GET(request: NextRequest) {
 
     const { data, error, count } = await query;
     if (error) {
+      // Gracefully handle missing walk_in_available column (migration M1 pending)
+      // If the walk_in filter caused a column-not-found error, retry without it
+      if (walk_in === "true" && (error.message?.includes("walk_in_available") || error.code === "42703")) {
+        console.warn("[api/salons GET] walk_in_available column not found — ignoring walk_in filter");
+        return NextResponse.json({ items: [], total: 0, page, limit });
+      }
       console.error("[api/salons GET] query error:", error.message);
       return NextResponse.json({ items: [], total: 0, page, limit });
     }

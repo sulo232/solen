@@ -12,6 +12,11 @@ import type { FilterPill } from '@/lib/types';
 export function getSearchFilterPills(t: (key: string) => string): FilterPill[] {
   return [
 
+    { id: 'open_now', label: t('openNow') },
+    { id: 'instant_bookable', label: t('instantBookable') },
+    { id: 'deals', label: t('deals') },
+    { id: 'walk_in', label: t('walkIn') },
+
     {
       id: 'availability',
       label: t('availability'),
@@ -37,9 +42,8 @@ export function getSearchFilterPills(t: (key: string) => string): FilterPill[] {
       subFilters: [
         { id: 'rating', label: t('sortByRating') },
         { id: 'price', label: t('sortByPrice') },
-        { id: 'nearest', label: t('sortByNearest') },
         { id: 'newest', label: t('sortByNewest') },
-        { id: 'next_slot', label: t('sortByNextSlot') },
+        { id: 'distance', label: t('sortByNearest') },
       ],
     },
   ];

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ShoppingBag, Plus, Gift, Tag } from "lucide-react";
+import { ShoppingBag, Plus, Gift, Tag, Ticket } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import Spinner from "@/components/ui/Spinner";
 
@@ -25,7 +25,7 @@ interface ServiceCartProps {
   services: CartService[];
   staffName?: string;
   salonId: string;
-  onCheckout: (data: { totalPrice: number; totalDuration: number; addonIds: string[]; giftCardCode: string; referralCode: string }) => void;
+  onCheckout: (data: { totalPrice: number; totalDuration: number; addonIds: string[]; promoCode: string; giftCardCode: string; referralCode: string }) => void;
   checking?: boolean;
 }
 
@@ -34,6 +34,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
   const t = useTranslations("booking.cart") as any;
   const [addons, setAddons] = useState<Record<string, Addon[]>>({});
   const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set());
+  const [promoCode, setPromoCode] = useState("");
   const [giftCardCode, setGiftCardCode] = useState("");
   const [referralCode, setReferralCode] = useState("");
 
@@ -126,9 +127,23 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
         </div>
       )}
 
-      {/* P8 — Gift card & referral code inputs */}
+      {/* P8 — Discount codes inputs (promo, gift card, referral) */}
       <div className="space-y-2 pt-3 border-t border-s-ink/[0.06] dark:border-white/[0.06]">
         <p className="text-[9px] font-heading font-bold uppercase tracking-[.16em] text-s-ink/35 dark:text-s-dm-text/35">{t("discountCodes")}</p>
+
+        {/* Promo code input */}
+        <div className="relative">
+          <Ticket size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
+          <input
+            type="text"
+            value={promoCode}
+            onChange={e => setPromoCode(e.target.value.toUpperCase())}
+            placeholder={t("promoPlaceholder")}
+            className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-xs font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
+          />
+        </div>
+
+        {/* Gift card input */}
         <div className="relative">
           <Gift size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
           <input
@@ -139,6 +154,8 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
             className="w-full pl-9 pr-3 py-2.5 rounded-[10px] border border-s-ink/[0.08] dark:border-white/[0.08] bg-s-bg-base dark:bg-s-dm-bg text-xs font-body text-s-ink dark:text-s-dm-text placeholder:text-s-ink/35 focus:outline-none focus:border-s-coral focus:ring-2 focus:ring-s-coral/15 transition-colors"
           />
         </div>
+
+        {/* Referral code input */}
         <div className="relative">
           <Tag size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30 dark:text-s-dm-text/30" />
           <input
@@ -165,7 +182,7 @@ export default function ServiceCart({ services, staffName, salonId, onCheckout, 
 
       {/* P9 — CTA */}
       <button
-        onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], giftCardCode, referralCode })}
+        onClick={() => onCheckout({ totalPrice, totalDuration, addonIds: [...selectedAddons], promoCode, giftCardCode, referralCode })}
         disabled={checking}
         className="w-full py-4 rounded-pill bg-s-coral text-white text-xs font-heading font-bold uppercase tracking-[.06em] active:scale-[0.98] hover:brightness-[1.06] transition-[transform,filter] duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-coral-glow"
       >

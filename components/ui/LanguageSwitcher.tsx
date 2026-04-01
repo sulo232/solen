@@ -87,11 +87,15 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/10 py-1 min-w-[120px] z-50">
+        <div className="absolute right-0 top-full mt-1 bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-md border border-s-ink/5 dark:border-white/10 py-1 min-w-[120px] z-[100]">
           {Object.entries(LOCALE_LABELS).map(([key, label]) => (
             <button
               key={key}
-              onClick={() => switchLocale(key)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                switchLocale(key);
+              }}
               className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                 key === locale
                   ? "text-s-coral font-medium bg-s-coral/5"

@@ -1,0 +1,93 @@
+<h2>Homepage Card Size</h2>
+<p class="subtitle">The category rows (Coiffeur, Nails, Barbershop…) use a horizontal scroll carousel. How big should each card be?</p>
+
+<div class="cards" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:24px;">
+
+  <div class="card" data-choice="current" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px 12px;background:#f5f5f5;border-radius:8px;">
+      <!-- Current: 240px wide, 4:5 tall -->
+      <div style="display:flex;gap:6px;align-items:flex-start;overflow:hidden;">
+        <div style="width:100px;height:125px;border-radius:8px;background:linear-gradient(160deg,#c96b48,#8a3a20);position:relative;overflow:hidden;flex-shrink:0;">
+          <div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:8px 6px 6px;display:flex;flex-direction:column;justify-content:flex-end;">
+            <div style="width:65%;height:7px;background:rgba(255,255,255,0.9);border-radius:3px;margin-bottom:3px;"></div>
+            <div style="width:45%;height:5px;background:rgba(255,255,255,0.6);border-radius:3px;"></div>
+          </div>
+        </div>
+        <div style="width:100px;height:125px;border-radius:8px;background:linear-gradient(160deg,#6b9ac9,#2a6090);position:relative;overflow:hidden;flex-shrink:0;">
+          <div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:8px 6px 6px;display:flex;flex-direction:column;justify-content:flex-end;">
+            <div style="width:60%;height:7px;background:rgba(255,255,255,0.9);border-radius:3px;margin-bottom:3px;"></div>
+            <div style="width:40%;height:5px;background:rgba(255,255,255,0.6);border-radius:3px;"></div>
+          </div>
+        </div>
+        <div style="width:40px;height:125px;border-radius:8px;background:linear-gradient(160deg,#8aac8f,#4a7a52);opacity:0.4;flex-shrink:0;"></div>
+      </div>
+      <div style="font-size:10px;color:#999;text-align:center;margin-top:6px;">~240px wide cards</div>
+    </div>
+    <div class="card-body">
+      <h3>Current (240px)</h3>
+      <p>Full overlay text on photo. Big and cinematic. Shows ~2.5 cards per screen on mobile.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="medium" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px 12px;background:#f5f5f5;border-radius:8px;">
+      <!-- Medium: ~180px wide, 1:1 square -->
+      <div style="display:flex;gap:6px;align-items:flex-start;overflow:hidden;">
+        <div style="width:80px;height:80px;border-radius:8px;background:linear-gradient(160deg,#c96b48,#8a3a20);position:relative;overflow:hidden;flex-shrink:0;"></div>
+        <div style="width:80px;height:80px;border-radius:8px;background:linear-gradient(160deg,#6b9ac9,#2a6090);position:relative;overflow:hidden;flex-shrink:0;"></div>
+        <div style="width:80px;height:80px;border-radius:8px;background:linear-gradient(160deg,#8aac8f,#4a7a52);position:relative;overflow:hidden;flex-shrink:0;"></div>
+      </div>
+      <!-- text below cards like SalonCard -->
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <div style="width:80px;flex-shrink:0;">
+          <div style="width:70%;height:7px;background:#333;border-radius:3px;margin-bottom:3px;"></div>
+          <div style="width:55%;height:5px;background:#aaa;border-radius:3px;margin-bottom:3px;"></div>
+          <div style="width:45%;height:5px;background:#aaa;border-radius:3px;"></div>
+        </div>
+        <div style="width:80px;flex-shrink:0;">
+          <div style="width:65%;height:7px;background:#333;border-radius:3px;margin-bottom:3px;"></div>
+          <div style="width:50%;height:5px;background:#aaa;border-radius:3px;margin-bottom:3px;"></div>
+          <div style="width:42%;height:5px;background:#aaa;border-radius:3px;"></div>
+        </div>
+        <div style="width:80px;flex-shrink:0;">
+          <div style="width:70%;height:7px;background:#333;border-radius:3px;margin-bottom:3px;"></div>
+          <div style="width:48%;height:5px;background:#aaa;border-radius:3px;margin-bottom:3px;"></div>
+          <div style="width:38%;height:5px;background:#aaa;border-radius:3px;"></div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#999;text-align:center;margin-top:6px;">~180px wide, text below photo</div>
+    </div>
+    <div class="card-body">
+      <h3>Compact (180px, Airbnb-style)</h3>
+      <p>Square photo + name/location/price below. Shows ~3 full cards + peek. Clean, browsable, familiar.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="small" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px 12px;background:#f5f5f5;border-radius:8px;">
+      <!-- Small: ~150px with text below -->
+      <div style="display:flex;gap:6px;align-items:flex-start;overflow:hidden;">
+        <div style="width:65px;height:65px;border-radius:8px;background:linear-gradient(160deg,#c96b48,#8a3a20);flex-shrink:0;"></div>
+        <div style="width:65px;height:65px;border-radius:8px;background:linear-gradient(160deg,#6b9ac9,#2a6090);flex-shrink:0;"></div>
+        <div style="width:65px;height:65px;border-radius:8px;background:linear-gradient(160deg,#8aac8f,#4a7a52);flex-shrink:0;"></div>
+        <div style="width:65px;height:65px;border-radius:8px;background:linear-gradient(160deg,#d4956b,#8a5a3a);flex-shrink:0;opacity:0.4;"></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:5px;">
+        <div style="width:65px;flex-shrink:0;"><div style="width:75%;height:6px;background:#333;border-radius:3px;margin-bottom:3px;"></div><div style="width:55%;height:5px;background:#aaa;border-radius:3px;"></div></div>
+        <div style="width:65px;flex-shrink:0;"><div style="width:70%;height:6px;background:#333;border-radius:3px;margin-bottom:3px;"></div><div style="width:50%;height:5px;background:#aaa;border-radius:3px;"></div></div>
+        <div style="width:65px;flex-shrink:0;"><div style="width:72%;height:6px;background:#333;border-radius:3px;margin-bottom:3px;"></div><div style="width:52%;height:5px;background:#aaa;border-radius:3px;"></div></div>
+        <div style="width:65px;flex-shrink:0;opacity:0.4;"><div style="width:68%;height:6px;background:#333;border-radius:3px;margin-bottom:3px;"></div><div style="width:48%;height:5px;background:#aaa;border-radius:3px;"></div></div>
+      </div>
+      <div style="font-size:10px;color:#999;text-align:center;margin-top:6px;">~150px wide, shows 4+ at once</div>
+    </div>
+    <div class="card-body">
+      <h3>Tight Grid (150px)</h3>
+      <p>More cards visible at once. Shows 4+ on mobile. Quick scanning, less immersive. Good if there are many salons.</p>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px;padding:14px 16px;background:#f7f7f7;border-radius:8px;font-size:13px;color:#555;line-height:1.6;">
+  <strong>Context:</strong> The hero <em>Entdecken</em> carousel (discovery content) at the top stays as-is with its cinematic tall cards. This question is only about the <strong>category rows</strong> — Coiffeur, Nails, Barbershop etc.
+</div>
