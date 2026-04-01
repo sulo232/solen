@@ -32,6 +32,7 @@ export default function LastMinutePage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  const [sortBy, setSortBy] = useState<"discount" | "price" | "time">("discount");
   const channelRef = useRef<ReturnType<ReturnType<typeof createBrowserSupabaseClient>["channel"]> | null>(null);
 
   const pills = getSearchFilterPills(t);
@@ -50,17 +51,38 @@ export default function LastMinutePage() {
     );
   };
 
-  const filteredSlots = slots.filter((slot) => {
-    if (selectedCategories.length > 0) {
-      const slotCategory = (slot as LastMinuteSlot & { category?: string }).category;
-      if (slotCategory && !selectedCategories.includes(slotCategory)) return false;
-    }
-    if (maxPrice !== null) {
-      const price = (slot as LastMinuteSlot & { discounted_price?: number }).discounted_price ?? slot.original_price;
-      if (price > maxPrice) return false;
-    }
-    return true;
-  });
+  const filteredSlots = slots
+    .filter((slot) => {
+      if (selectedCategories.length > 0) {
+        const slotCategory = (slot as LastMinuteSlot & { category?: string }).category;
+        if (slotCategory && !selectedCategories.includes(slotCategory)) return false;
+      }
+      if (maxPrice !== null) {
+        const price = (slot as LastMinuteSlot & { discounted_price?: number }).discounted_price ?? slot.original_price;
+        if (price > maxPrice) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const aSlot = a as LastMinuteSlot & { discounted_price?: number; discount_percent?: number };
+      const bSlot = b as LastMinuteSlot & { discounted_price?: number; discount_percent?: number };
+
+      if (sortBy === "discount") {
+        // Sort by discount percentage (highest first)
+        const aDiscount = aSlot.discount_percent ?? 0;
+        const bDiscount = bSlot.discount_percent ?? 0;
+        return bDiscount - aDiscount;
+      } else if (sortBy === "price") {
+        // Sort by price (lowest first)
+        const aPrice = aSlot.discounted_price ?? aSlot.original_price;
+        const bPrice = bSlot.discounted_price ?? bSlot.original_price;
+        return aPrice - bPrice;
+      } else if (sortBy === "time") {
+        // Sort by available soonest (earliest start_time first)
+        return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
+      }
+      return 0;
+    });
 
   useEffect(() => {
     let cancelled = false;
@@ -193,8 +215,35 @@ export default function LastMinutePage() {
         </div>
       </div>
 
-      {/* Category chips + price filter */}
+      {/* Category chips + price filter + sorting */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+        {/* Sorting toggle */}
+        <div className="mb-4 flex items-center gap-2 flex-wrap">
+          <span className="text-[9px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 dark:text-s-dm-text/40">
+            Sortieren nach:
+          </span>
+          {[
+            { key: "discount", label: "Rabatt %" },
+            { key: "price", label: "Preis" },
+            { key: "time", label: "Verfügbarkeit" },
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setSortBy(key as "discount" | "price" | "time")}
+              className={[
+                "px-3.5 py-2 rounded-pill text-[10px] font-heading font-bold transition-colors duration-150",
+                sortBy === key
+                  ? "bg-s-coral text-white"
+                  : "bg-s-bg-sunken dark:bg-s-dm-surface text-s-ink/55 dark:text-s-dm-text/55 hover:bg-s-ink/[0.07] dark:hover:bg-white/[0.10]",
+              ].join(" ")}
+              style={sortBy === key ? { boxShadow: "0 2px 4px rgba(232,98,74,.28), 0 4px 12px rgba(232,98,74,.16)" } : undefined}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Category + price filters */}
         <div className="flex items-center gap-2 flex-wrap">
           {FILTER_CATEGORIES.map(({ key, label, Icon }) => (
             <button
