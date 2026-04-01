@@ -1,29 +1,31 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { createServerClient } from '@/lib/supabase';
+import { createAdminSupabaseClient } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard } from '@/components/booking';
 import type { StaffMember } from '@/lib/types';
 
 interface BookingSalonPageProps {
-  params: { locale: string; slug: string };
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateMetadata({
-  params: { locale, slug },
-}: BookingSalonPageProps) {
-  const t = await getTranslations({ locale, namespace: 'metadata' });
+  params,
+}: BookingSalonPageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
 
   return {
-    title: t('booking'),
-    description: t('bookingDescription'),
+    title: 'Book your appointment | Solen',
+    description: 'Secure your appointment with just a few clicks.',
   };
 }
 
 export default async function BookingSalonPage({
-  params: { locale, slug },
+  params,
 }: BookingSalonPageProps) {
-  const supabase = createServerClient();
+  const { locale, slug } = await params;
+  const supabase = createAdminSupabaseClient();
   const t = await getTranslations({ locale, namespace: 'booking' });
 
   // Fetch salon
