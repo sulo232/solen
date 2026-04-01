@@ -2,24 +2,64 @@ import type { Metadata } from "next";
 import CategoryPage from "@/components/CategoryPage";
 import { NailsAboveGrid, NailsBelowGrid } from "@/components/nail/NailsSections";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { generateCategoryListSchema } from "@/lib/seo";
+import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Nägel & Nailstudio in Basel — solen.ch",
-  description: "Nagelstudios in Basel — Maniküre, Pediküre, Gel-Nägel, Nail Art. Online-Termine buchen.",
-  openGraph: {
-    title: "Nailstudio in Basel — solen.ch",
-    description: "Gel, Acryl, BIAB, Nail Art — finde dein Nailstudio in Basel und buche online.",
-    type: "website",
-  },
-  alternates: {
-    canonical: "https://solen.ch/de/nails",
-    languages: { de: "https://solen.ch/de/nails", en: "https://solen.ch/en/nails", fr: "https://solen.ch/fr/nails", it: "https://solen.ch/it/nails" },
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const loc = locale ?? "de";
+  const alternates = buildAlternates("nails", loc);
 
-export default async function Page() {
+  let count = 0;
+  try {
+    const supabase = createAdminSupabaseClient();
+    const { count: c } = await supabase
+      .from("salons")
+      .select("*", { count: "exact", head: true })
+      .contains("categories", ["nails"])
+      .eq("is_active", true);
+    count = c ?? 0;
+  } catch { /* graceful degradation */ }
+
+  const titles: Record<string, string> = {
+    de: "Beste Nagelstudios in Basel — Online buchen | Solen",
+    en: "Best Nail Studios in Basel — Book Online | Solen",
+    fr: "Meilleurs salons d'ongles à Bâle — Réserver en ligne | Solen",
+    it: "Migliori studi unghie a Basilea — Prenota online | Solen",
+  };
+  const descriptions: Record<string, string> = {
+    de: `${count > 0 ? `${count} ` : ""}Nagelstudios in Basel. Gel-Nägel, Maniküre, Nail Art & mehr. Vergleiche Preise, lies ★ Bewertungen und buche online. Sofort bestätigt.`,
+    en: `${count > 0 ? `${count} ` : ""}nail studios in Basel. Gel nails, manicure, nail art & more. Compare prices, read ★ reviews and book online.`,
+    fr: `${count > 0 ? `${count} ` : ""}salons d'ongles à Bâle. Ongles gel, manucure, nail art & plus. Comparez les prix et réservez en ligne.`,
+    it: `${count > 0 ? `${count} ` : ""}studi unghie a Basilea. Unghie gel, manicure, nail art e altro. Confronta prezzi e prenota online.`,
+  };
+
+  return {
+    title: titles[loc] ?? titles.de,
+    description: descriptions[loc] ?? descriptions.de,
+    openGraph: {
+      title: titles[loc] ?? titles.de,
+      description: descriptions[loc] ?? descriptions.de,
+      type: "website",
+      url: `https://solen.ch/${loc}/nails`,
+      siteName: "solen.ch",
+    },
+    alternates,
+  };
+}
+
+export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const loc = locale ?? "de";
   let jsonLd = null;
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Solen", item: `https://solen.ch/${loc}` },
+    { name: "Nails" },
+  ]);
+  const faq = generateFaqSchema(CATEGORY_FAQS.nails);
   try {
     const supabase = createAdminSupabaseClient();
     const { data: salons } = await supabase
@@ -30,12 +70,20 @@ export default async function Page() {
       .order("average_rating", { ascending: false })
       .limit(20);
     if (salons?.length) {
-      jsonLd = generateCategoryListSchema("nails", salons, "de");
+      jsonLd = generateCategoryListSchema("nails", salons, loc);
     }
   } catch { /* graceful degradation */ }
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+      />
       {jsonLd && (
         <script
           type="application/ld+json"

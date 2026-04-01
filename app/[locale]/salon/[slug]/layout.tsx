@@ -1,45 +1,71 @@
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { buildAlternates, generateBreadcrumbSchema } from "@/lib/seo";
 
-interface SalonLayoutParams {
-  locale: string;
-  slug: string;
-}
+const CATEGORY_LABELS: Record<string, Record<string, string>> = {
+  de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa", makeup: "Makeup", waxing: "Waxing" },
+  en: { coiffeur: "Hair Salon", barbershop: "Barbershop", nails: "Nail Studio", spa: "Spa", makeup: "Makeup", waxing: "Waxing" },
+  fr: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Salon d'ongles", spa: "Spa", makeup: "Maquillage", waxing: "Épilation" },
+  it: { coiffeur: "Parrucchiere", barbershop: "Barbiere", nails: "Studio unghie", spa: "Spa", makeup: "Trucco", waxing: "Ceretta" },
+};
 
 export async function generateMetadata({
   params,
 }: {
-  params: SalonLayoutParams;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { locale, slug } = await Promise.resolve(params);
+  const { locale, slug } = await params;
+  const loc = locale ?? "de";
   const supabase = await createServerSupabaseClient();
 
   const { data: salon } = await supabase
     .from("salons")
-    .select("name, description, cover_photo_url, categories")
+    .select("name, address, cover_photo_url, categories, average_rating, review_count")
     .eq("slug", slug)
     .single();
 
   if (!salon) {
-    return {
-      title: "Salon — solen.ch",
-    };
+    return { title: "Salon — solen.ch" };
   }
 
-  const category = Array.isArray(salon.categories) && salon.categories.length > 0
+  const firstCat = Array.isArray(salon.categories) && salon.categories.length > 0
     ? salon.categories[0]
-    : "Salon";
-  const title = `${salon.name} — ${category} Basel buchen · solen.ch`;
-  const description = salon.description
-    ? salon.description.slice(0, 160)
-    : `${salon.name} in Basel buchen. Kostenlose Stornierung bis 24h · solen.ch`;
-  const url = `https://www.solen.ch/${locale}/salon/${slug}`;
+    : "salon";
+  const catLabel = CATEGORY_LABELS[loc]?.[firstCat] ?? CATEGORY_LABELS.de[firstCat] ?? "Salon";
+  const city = "Basel";
+
+  // Title: "[Salon Name] — [Category] in [City] | Solen"
+  const title = `${salon.name} — ${catLabel} in ${city} | Solen`;
+
+  // Description: "Buche jetzt bei [Name] in [Address]. ★ [Rating] ([Count] Bewertungen). Online buchen, sofort bestätigt."
+  let description = "";
+  if (loc === "de") {
+    description = `Buche jetzt bei ${salon.name} in ${salon.address ?? city}.`;
+    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} Bewertungen).`;
+    description += ` Online buchen, sofort bestätigt.`;
+  } else if (loc === "fr") {
+    description = `Réserve maintenant chez ${salon.name} à ${salon.address ?? city}.`;
+    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} avis).`;
+    description += ` Réservation en ligne, confirmation immédiate.`;
+  } else if (loc === "it") {
+    description = `Prenota ora da ${salon.name} a ${salon.address ?? city}.`;
+    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} recensioni).`;
+    description += ` Prenota online, conferma immediata.`;
+  } else {
+    description = `Book now at ${salon.name} in ${salon.address ?? city}.`;
+    if (salon.review_count > 0) description += ` ★ ${salon.average_rating.toFixed(1)} (${salon.review_count} reviews).`;
+    description += ` Book online, instant confirmation.`;
+  }
+
+  const url = `https://solen.ch/${loc}/salon/${slug}`;
+  const alternates = buildAlternates(`salon/${slug}`, loc);
+  const ogLocale = loc === "de" ? "de_CH" : loc === "fr" ? "fr_CH" : loc === "it" ? "it_CH" : "en_GB";
 
   return {
     title,
     description,
     openGraph: {
-      title: salon.name,
+      title: `${salon.name} | Solen`,
       description,
       url,
       siteName: "solen.ch",
@@ -47,20 +73,52 @@ export async function generateMetadata({
         ? { images: [{ url: salon.cover_photo_url, width: 1200, height: 630, alt: salon.name }] }
         : {}),
       type: "website",
-      locale: locale === "de" ? "de_CH" : locale === "fr" ? "fr_CH" : locale === "it" ? "it_CH" : "en_GB",
+      locale: ogLocale,
     },
     twitter: {
       card: "summary_large_image",
-      title: salon.name,
+      title: `${salon.name} | Solen`,
       description,
       ...(salon.cover_photo_url ? { images: [salon.cover_photo_url] } : {}),
     },
-    alternates: {
-      canonical: url,
-    },
+    alternates,
   };
 }
 
-export default function SalonLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function SalonLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  const loc = locale ?? "de";
+  const supabase = await createServerSupabaseClient();
+
+  const { data: salon } = await supabase
+    .from("salons")
+    .select("name, categories")
+    .eq("slug", slug)
+    .single();
+
+  const firstCat = Array.isArray(salon?.categories) && salon.categories.length > 0
+    ? salon.categories[0]
+    : null;
+
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Solen", item: `https://solen.ch/${loc}` },
+    ...(firstCat ? [{ name: firstCat.charAt(0).toUpperCase() + firstCat.slice(1), item: `https://solen.ch/${loc}/${firstCat}` }] : []),
+    { name: salon?.name ?? slug },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      {children}
+    </>
+  );
 }
