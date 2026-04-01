@@ -16,6 +16,7 @@ import { formatCurrency } from "@/lib/format-currency";
 import { getNeighborhood } from "@/lib/basel-neighborhoods";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 import { useCompare } from "@/components/compare/CompareContext";
+import SalonBadge from "@/components/ui/SalonBadge";
 
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgOCA1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiNFOEU0REYiLz48L3N2Zz4=";
 
@@ -103,7 +104,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
   }, [isFavorited]);
 
   const [photoIndex, setPhotoIndex] = useState(0);
-  const allPhotos = [salon.cover_photo_url, ...(photos || [])].filter(Boolean) as string[];
+  const allPhotos = [salon.cover_photo_url, ...(salon.gallery_urls || []), ...(photos || [])].filter(Boolean) as string[];
   const hasMultiple = allPhotos.length > 1;
   const priceToShow = salon.min_price ?? salon.avg_price;
 
@@ -163,8 +164,8 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       )}
 
       <Link href={href} className="block w-full h-full">
-        {/* Cover photo — V5 Strict 1:1 Airbnb Geometry */}
-        <div className="relative w-full aspect-square bg-s-bg-sunken overflow-hidden rounded-[12px] group/carousel img-hover-zoom gpu">
+        {/* Cover photo — Roadmap 02: 4:3 landscape shows salon interiors better */}
+        <div className="relative w-full aspect-[4/3] bg-s-bg-sunken overflow-hidden rounded-[12px] group/carousel img-hover-zoom gpu">
           {allPhotos.length > 0 ? (
             <div
               ref={scrollContainerRef}
@@ -201,41 +202,13 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           )}
 
-          {/* Airbnb-style Overlay Badges (Guest Favorite, Neu, Top Rated) */}
-          {(() => {
-            const isGuestFavorite = salon.average_rating >= 4.9 && salon.review_count > 50;
-            const isNew = salon.review_count === 0 && (availableToday == null || availableToday === 0);
-            const isTopRated = salon.average_rating >= 4.8 && salon.review_count > 20;
-
-            if (isGuestFavorite) {
-              return (
-                <div className="absolute top-3 left-3 z-[1]">
-                  <span className="flex items-center gap-1 font-heading font-semibold text-[13px] text-[#222222] bg-white px-2 py-1 rounded-pill shadow-md">
-                    {t("guestFavorite")}
-                  </span>
-                </div>
-              );
-            }
-            if (isNew) {
-              return (
-                <div className="absolute top-3 left-3 z-[1]">
-                  <span className="font-heading font-semibold text-[13px] text-white bg-[#222222] px-2.5 py-1 rounded-pill shadow-md">
-                    {t("newOnSolen")}
-                  </span>
-                </div>
-              );
-            }
-            if (isTopRated) {
-              return (
-                <div className="absolute top-3 left-3 z-[1]">
-                  <span className="font-heading font-semibold text-[13px] text-[#222222] bg-white px-2.5 py-1 rounded-pill shadow-md">
-                    {t("topRated")}
-                  </span>
-                </div>
-              );
-            }
-            return null;
-          })()}
+          {/* Phase 2.1 — Priority badge system via SalonBadge */}
+          <div className="absolute top-2 left-2 z-[2]">
+            <SalonBadge
+              salon={salon}
+              availabilityStatus={availability?.status}
+            />
+          </div>
 
           {/* Category pills on photo — glass style kept here only if no badge? Let's just remove them as they clutter the image in Airbnb style. */}
 
@@ -282,14 +255,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </button>
           )}
 
-          {/* Last-minute discount badge */}
-          {salon.last_minute_discount_percent > 0 && (
-            <div className={`absolute ${onFavoriteToggle ? "top-12" : "top-2"} right-2`}>
-              <span className="px-2 py-0.5 rounded-pill bg-[#222222] text-white text-[10px] font-body font-semibold">
-                -{salon.last_minute_discount_percent}%
-              </span>
-            </div>
-          )}
+          {/* last_minute_discount badge is now handled by SalonBadge (Phase 2.1) */}
 
           {/* Availability badge */}
           {showAvailability && salon.next_available_slot && (
@@ -343,40 +309,69 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
         </div>
 
-        {/* ── Info Section — Airbnb 3-Line Compact Typography Matrix ─────────────────────── */}
+        {/* ── Info Section — Roadmap 02 Typography Matrix ─────────────────────── */}
         <div className="mt-3 flex flex-col gap-[2px]">
-          {/* Line 1: Name */}
+          {/* Line 1: Name + Rating (right-aligned, Airbnb pattern) */}
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-heading font-semibold text-[#222222] text-[15px] leading-[19px] truncate">
               {salon.name}
             </h3>
-          </div>
-
-          {/* Line 2: Distance/Location · Subtitle */}
-          <p className="text-[15px] text-[#717171] leading-[19px] truncate">
-            {showDistance && salon.distance_km != null
-              ? `${salon.quartier ? salon.quartier + ", " : ""}${salon.distance_km.toFixed(1)} km entfernt`
-              : `${getNeighborhood(salon.postal_code)} · ${((c: string) => c.charAt(0).toUpperCase() + c.slice(1))(salon.categories?.[0] || t("salon"))}`}
-          </p>
-
-          {/* Line 3: Price · Rating (Monochrome) */}
-          <div className="flex items-center text-[15px] leading-[19px] mt-[2px]">
-            <span className="font-semibold text-[#222222]">
-              {priceToShow != null ? `ab CHF ${priceToShow}` : "$$"}
-            </span>
-            {(salon.average_rating > 0) ? (
-              <span className="text-[#222222] font-medium ml-1">
-                <span className="text-[#717171] font-normal mr-1">·</span>
-                <Star className="inline w-[11px] h-[11px] fill-[#222222] text-[#222222] mb-[2px] mr-[3px]" />
-                {salon.average_rating.toFixed(2)}
+            {salon.average_rating > 0 ? (
+              <span className="shrink-0 flex items-center gap-0.5 text-[14px] font-semibold text-[#222222] leading-[19px]">
+                <Star className="w-[11px] h-[11px] fill-[#E8624A] text-[#E8624A] mb-[1px]" />
+                {salon.average_rating.toFixed(1)}
+                <span className="text-[#6A6A6A] font-normal text-[13px]">({salon.review_count})</span>
               </span>
             ) : salon.review_count === 0 ? (
-              <span className="text-[#717171] font-normal ml-1">
-                <span className="mr-1">·</span>
-                {t("newOnSolen")}
+              <span className="shrink-0 text-[11px] font-heading font-bold text-white bg-[#222222] px-2 py-0.5 rounded-pill">
+                Neu
               </span>
             ) : null}
           </div>
+
+          {/* Line 2: Business type · Quartier (Phase 3.2 — type first, then location) */}
+          <p className="text-[13px] text-[#6A6A6A] leading-[19px] truncate">
+            {showDistance && salon.distance_km != null
+              ? `${salon.quartier ?? getNeighborhood(salon.postal_code)} · ${salon.distance_km.toFixed(1)} km`
+              : `${((c: string) => c.charAt(0).toUpperCase() + c.slice(1))(salon.categories?.[0] || "Salon")} · ${salon.quartier ?? getNeighborhood(salon.postal_code)}`}
+          </p>
+
+          {/* Line 3: Price (Phase 3.1) */}
+          {priceToShow != null && (
+            <p className="text-[13px] text-[#6A6A6A] leading-[19px]">
+              ab CHF {priceToShow}
+            </p>
+          )}
+
+          {/* Line 4: Nächster Termin (Phase 3.4) */}
+          {salon.next_available_slot && (() => {
+            const slot = new Date(salon.next_available_slot);
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+            const slotDay = new Date(slot); slotDay.setHours(0, 0, 0, 0);
+            const timeStr = slot.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+            let label: string;
+            if (slotDay.getTime() === today.getTime()) {
+              label = `Nächster Termin: Heute ${timeStr}`;
+            } else if (slotDay.getTime() === tomorrow.getTime()) {
+              label = `Nächster Termin: Morgen ${timeStr}`;
+            } else {
+              const dateStr = slot.toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" });
+              label = `Nächster Termin: ${dateStr} ${timeStr}`;
+            }
+            return (
+              <p className="text-[12px] font-medium leading-[18px]" style={{ color: "#2E7D32" }}>
+                {label}
+              </p>
+            );
+          })()}
+
+          {/* Line 5: Social proof (Phase 3.5) */}
+          {(salon.booking_count_week ?? 0) >= 3 && (
+            <p className="text-[12px] text-[#6A6A6A] leading-[18px]">
+              {salon.booking_count_week}× diese Woche gebucht
+            </p>
+          )}
         </div>
       </Link>
     </motion.div>

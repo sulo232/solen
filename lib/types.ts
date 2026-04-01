@@ -143,6 +143,8 @@ export interface Salon {
   auto_complete_enabled?: boolean;
   booking_confirmation_mode?: "instant" | "manual_approval";
   is_top_pick?: boolean;
+  walk_in_available?: boolean;
+  booking_count_week?: number | null;
 }
 
 export interface StaffMember {

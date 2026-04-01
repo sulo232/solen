@@ -126,7 +126,7 @@ function parseFiltersFromParams(searchParams: URLSearchParams): ActiveFilter[] {
   const date = searchParams.get('date');
   if (date) filters.push({ pillId: 'availability', subId: date === 'custom' ? 'custom_date' : date, label: date });
 
-  const rating = searchParams.get('rating');
+  const rating = searchParams.get('min_rating');
   if (rating) filters.push({ pillId: 'rating', subId: rating, label: `${rating}+ ★` });
 
   const sort = searchParams.get('sort');
@@ -224,7 +224,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
       params.set("category", category);
       if (city) params.set("city", city);
       params.set("limit", String(PAGE_SIZE));
-      params.set("offset", String((p - 1) * PAGE_SIZE));
+      params.set("page", String(p));
       return `/api/salons?${params.toString()}`;
     },
     [searchParams, category, city]
@@ -255,11 +255,13 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         if (!data) { setLoading(false); return; }
         const items = data.items ?? [];
         const openNow = searchParams.get('open_now') === 'true';
-        setSalons(openNow ? items.filter((s: any) => isOpenNow((s as any).opening_hours).isOpen) : items);
-        setTotal(data.total ?? 0);
+        const filteredItems = openNow ? items.filter((s: any) => isOpenNow((s as any).opening_hours).isOpen) : items;
+        setSalons(filteredItems);
+        // When open_now is active, use the filtered count so Load More behaves correctly
+        setTotal(openNow ? filteredItems.length : (data.total ?? 0));
         setLoading(false);
       })
-      .catch(() => { if (!cancelled) setLoading(false); });
+      .catch((err) => { console.error("[CategoryPage] failed to fetch salons:", err); if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [buildUrl, searchParams]);
 
@@ -270,7 +272,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     fetch(buildDirUrl(1))
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (cancelled) return; if (!data) { setDirLoading(false); return; } setDirEntries(data.items ?? []); setDirTotal(data.total ?? 0); setDirLoading(false); })
-      .catch(() => { if (!cancelled) setDirLoading(false); });
+      .catch((err) => { console.error("[CategoryPage] failed to fetch directory:", err); if (!cancelled) setDirLoading(false); });
     return () => { cancelled = true; };
   }, [buildDirUrl]);
 
@@ -314,7 +316,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     // Clear previous filter params
     params.delete('page');
     params.delete('date');
-    params.delete('rating');
+    params.delete('min_rating');
     params.delete('sort');
     params.delete('online_payment');
     params.delete('off_peak');
@@ -330,7 +332,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           params.set('date', filter.subId);
         }
       } else if (filter.pillId === 'rating') {
-        params.set('rating', filter.subId);
+        params.set('min_rating', filter.subId);
       } else if (filter.pillId === 'sort') {
         params.set('sort', filter.subId);
       } else if (filter.pillId === 'online_payment') {
@@ -565,8 +567,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             />
           </div>
         ) : loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
-            {[...Array(6)].map((_, i) => <Skeleton key={i} variant="card" />)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => <Skeleton key={i} variant="card" />)}
           </div>
         ) : salons.length === 0 && dirEntries.length === 0 ? (
           <EmptyState
@@ -581,7 +583,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
             >
               {(selectedDate
                 ? [...salons].sort((a, b) => {
