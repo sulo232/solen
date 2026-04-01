@@ -204,6 +204,13 @@
 - **Why it happened**: Next.js 15+ made params async to support streaming + dynamic routes. Old patterns don't work.
 - **Fix**: All page components that receive dynamic route params must declare `params: Promise<T>` and `await` them in the component. Also apply to `generateMetadata()`. Reference: coiffeur/page.tsx uses this pattern correctly.
 
+### Translation namespaces must use dot notation for nested paths
+- **Date**: 2026-04-02
+- **File(s)**: `app/[locale]/confirmation/page.tsx:7`, `messages/de.json:2824`
+- **What happened**: Created a new "successPage" namespace in translation files and tried to access it with `getTranslations('successPage')`, but the keys were nested under "ui.successPage". Build completed but nextl-intl threw "MISSING_MESSAGE" errors at runtime.
+- **Why it happened**: Misunderstood the namespace hierarchy. When translations are nested (`ui -> successPage`), the namespace path must use dot notation.
+- **Fix**: Always use `getTranslations('namespace.subnamespace')` or `useTranslations('namespace.subnamespace')` when accessing nested translation keys. Check existing examples like `BookingSuccess.tsx` which uses `useTranslations("ui.bookingSuccess")` for reference.
+
 ### Use createAdminSupabaseClient in Server Components, not createServerClient
 - **Date**: 2026-04-02
 - **File(s)**: `app/[locale]/salon/[slug]/booking/page.tsx:4`
