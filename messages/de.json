@@ -598,7 +598,15 @@
     "chooseDate": "Datum wählen",
     "cancellationPolicy": "Kostenlose Stornierung bis {hours}h vor dem Termin. Danach werden {fee}% einbehalten.",
     "waitlistSubmitting": "Wird eingetragen…",
-    "notifyMe": "Benachrichtige mich"
+    "notifyMe": "Benachrichtige mich",
+    "serviceSelection": {
+      "title": "Welche Services möchtest du buchen?",
+      "subtitle": "Wähle ein oder mehrere Services aus. Die Kosten werden automatisch berechnet.",
+      "minutes": "Min",
+      "selected": "Leistung(en) ausgewählt",
+      "continue": "Weiter",
+      "selectAtLeastOne": "Bitte wähle mindestens einen Service aus."
+    }
   },
   "chat": {
     "send": "Senden",

@@ -588,7 +588,15 @@
     "chooseDate": "Choose date",
     "cancellationPolicy": "Free cancellation up to {hours}h before appointment. {fee}% retained after.",
     "waitlistSubmitting": "Adding you…",
-    "notifyMe": "Notify me"
+    "notifyMe": "Notify me",
+    "serviceSelection": {
+      "title": "Which services would you like to book?",
+      "subtitle": "Select one or more services. Costs are calculated automatically.",
+      "minutes": "min",
+      "selected": "service(s) selected",
+      "continue": "Continue",
+      "selectAtLeastOne": "Please select at least one service."
+    }
   },
   "chat": {
     "send": "Send",

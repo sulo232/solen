@@ -566,7 +566,15 @@
     "chooseDate": "Scegli data",
     "cancellationPolicy": "Cancellazione gratuita fino a {hours}h prima. Trattenuto {fee}% dopo.",
     "waitlistSubmitting": "Registrazione…",
-    "notifyMe": "Avvisami"
+    "notifyMe": "Avvisami",
+    "serviceSelection": {
+      "title": "Quali servizi desideri prenotare?",
+      "subtitle": "Seleziona uno o più servizi. I costi sono calcolati automaticamente.",
+      "minutes": "min",
+      "selected": "servizio(i) selezionato(i)",
+      "continue": "Continua",
+      "selectAtLeastOne": "Seleziona almeno un servizio."
+    }
   },
   "chat": {
     "send": "Invia",
