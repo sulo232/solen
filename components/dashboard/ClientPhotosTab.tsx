@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Camera, Upload, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
 import Spinner from "@/components/ui/Spinner";
 import Skeleton from "@/components/ui/Skeleton";
 import EmptyState from "@/components/ui/EmptyState";
@@ -104,8 +105,8 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
             <div className="space-y-2">
               <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-wider">Vorher</p>
               {beforePhotos.map((p) => (
-                <div key={p.id} className="relative rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
-                  <img src={p.photo_url} alt="Vorher" className="w-full aspect-[3/4] object-cover" />
+                <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+                  <Image src={p.photo_url} alt="Vorher" fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
                   <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
                   </span>
@@ -115,8 +116,8 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
             <div className="space-y-2">
               <p className="text-[10px] text-s-ink/30 dark:text-s-dm-text/30 uppercase tracking-wider">Nachher</p>
               {afterPhotos.map((p) => (
-                <div key={p.id} className="relative rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
-                  <img src={p.photo_url} alt="Nachher" className="w-full aspect-[3/4] object-cover" />
+                <div key={p.id} className="relative aspect-[3/4] rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+                  <Image src={p.photo_url} alt="Nachher" fill sizes="(max-width: 768px) 50vw, 200px" className="object-cover" />
                   <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                     {new Date(p.created_at).toLocaleDateString("de-CH")}
                   </span>
@@ -133,8 +134,8 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
           <p className="text-xs font-medium text-s-ink/50 dark:text-s-dm-text/50 mb-2">Verlauf</p>
           <div className="grid grid-cols-3 gap-2">
             {progressPhotos.map((p) => (
-              <div key={p.id} className="relative rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
-                <img src={p.photo_url} alt="Verlauf" className="w-full aspect-square object-cover" />
+              <div key={p.id} className="relative aspect-square rounded-[16px] overflow-hidden border border-s-ink/5 dark:border-white/5">
+                <Image src={p.photo_url} alt="Verlauf" fill sizes="(max-width: 768px) 33vw, 150px" className="object-cover" />
                 <span className="absolute bottom-1 left-1 text-[9px] bg-s-ink/60 text-white px-1.5 py-0.5 rounded">
                   {new Date(p.created_at).toLocaleDateString("de-CH")}
                 </span>

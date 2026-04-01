@@ -113,8 +113,8 @@ export async function POST(req: NextRequest) {
           storedUrl = pubUrl.publicUrl;
         }
       }
-    } catch {
-      // Fallback to fal.ai URL if upload fails
+    } catch (err) {
+      console.error("[nail-ai-gen] Supabase upload failed, serving fal.ai URL:", err);
     }
 
     // 12. Create discovery staging entry

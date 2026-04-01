@@ -10,7 +10,7 @@
     --border: 30 15% 85%;
     --input: 30 15% 85%;
     --ring: 10 78% 60%;
-    --background: 34 44% 95%;
+    --background: 0 0% 100%;
     --foreground: 28 30% 7%;
     --primary: 10 78% 60%;
     --primary-foreground: 0 0% 100%;
@@ -27,13 +27,32 @@
     --card-foreground: 28 30% 7%;
     --radius: 12px;
 
+    /* ── Typography scale ─────────────────────────────────────── */
+    --text-xs: 0.75rem;       /* 12px — badges, metadata */
+    --text-sm: 0.875rem;      /* 14px — secondary text */
+    --text-base: 1rem;        /* 16px — primary body */
+    --text-lg: 1.125rem;      /* 18px — section subtitles */
+    --text-xl: 1.375rem;      /* 22px — section titles */
+    --text-2xl: 1.75rem;      /* 28px — page titles */
+    --text-3xl: 2rem;         /* 32px — hero text */
+
+    /* ── Text color tokens ────────────────────────────────────── */
+    --color-heading: #222222;
+    --color-body: #484848;
+    --color-muted: #6A6A6A;   /* 5.0:1 contrast on white (WCAG AA) */
+    --color-border: #EBEBEB;
+    --color-hover-bg: #F7F7F7;
+    --color-error: #D32F2F;
+    --color-success: #2E7D32;
+    --color-warning: #ED6C02;
+
     /* Base / raised surface tokens */
-    --bg: #F7F7F7;
-    --base: #F7F7F7;
+    --bg: #FFFFFF;
+    --base: #FFFFFF;
 
     /* Glass CSS custom properties */
-    --glass-bg: rgba(247,247,247,.82);
-    --glass-bg-strong: rgba(255,255,255,.92);
+    --glass-bg: rgba(255,255,255,.88);
+    --glass-bg-strong: rgba(255,255,255,.95);
     --glass-bg-card: rgba(255,255,255,.80);
     --glass-bg-subtle: rgba(255,255,255,.62);
     --glass-border: rgba(255,255,255,.70);
@@ -89,10 +108,19 @@
   body {
     font-family: "DM Sans", sans-serif;
     background-color: var(--base);
+    color: var(--color-body);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: "Syne", sans-serif;
+    color: var(--color-heading);
+    letter-spacing: -0.02em;
+  }
+
+  /* ── Selection highlight ──────────────────────────────────── */
+  ::selection {
+    background: rgba(232, 98, 74, 0.15);
+    color: inherit;
   }
 }
 
@@ -118,14 +146,14 @@
 
   /* Glass utilities — warm-tinted */
   .glass {
-    background: rgba(250, 246, 239, 0.88);
+    background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(26, 18, 9, 0.08);
   }
 
   .glass-strong {
-    background: rgba(250, 246, 239, 0.95);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(26, 18, 9, 0.12);
@@ -239,6 +267,58 @@
   }
 }
 
+/* ── Phase 5.1: Standardized input styles ─────────────────────────── */
+@layer base {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  input[type="url"],
+  textarea,
+  select {
+    min-height: 48px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1rem;       /* 16px — prevents iOS zoom-on-focus */
+    font-family: "DM Sans", sans-serif;
+    color: var(--color-body);
+    background: #ffffff;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  textarea {
+    min-height: 96px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    resize: vertical;
+  }
+
+  input[type="text"].input-error,
+  input[type="email"].input-error,
+  input[type="password"].input-error,
+  textarea.input-error {
+    border-color: var(--color-error);
+  }
+
+  .dark input[type="text"],
+  .dark input[type="email"],
+  .dark input[type="password"],
+  .dark input[type="tel"],
+  .dark input[type="number"],
+  .dark input[type="search"],
+  .dark input[type="url"],
+  .dark textarea,
+  .dark select {
+    background: rgba(30,23,16,0.85);
+    border-color: rgba(245,238,228,0.12);
+    color: #F5EEE4;
+  }
+}
+
 /* ── Accessibility: Focus-visible rings ────────────────────────────── */
 @layer base {
   a:focus-visible,
@@ -292,20 +372,7 @@
 }
 
 /* ── P.3: Horizontal scroll containers — right-edge fade gradient ───── */
-.scroll-fade-right {
-  position: relative;
-}
-.scroll-fade-right::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 48px;
-  background: linear-gradient(to left, #F5F0EB, transparent);
-  pointer-events: none;
-  z-index: 2;
-}
+/* NOTE: Handled by .scroll-fade-right at end of file */
 
 /* ── P.4: Kill tap highlight on cards ──────────────────────────────── */
 .card-tap {
@@ -710,6 +777,16 @@ html {
   }
 }
 
+/* ── V5 Global Press Effect ────────────────────────────────────────── */
+.solen-press-effect {
+  transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1), opacity 0.1s ease;
+  will-change: transform, opacity;
+}
+.solen-press-effect:active {
+  transform: scale(0.97);
+  opacity: 0.8;
+}
+
 /* ── Horizontal scroll right-edge fade ─────────────────────────────── */
 /* Apply .scroll-fade-right to a relative wrapper around any overflow-x-auto container */
 .scroll-fade-right {
@@ -722,7 +799,15 @@ html {
   top: 0;
   bottom: 0;
   width: 48px;
-  background: linear-gradient(to left, var(--base, #F7F7F7) 0%, transparent 100%);
+  background: linear-gradient(to left, #FFFFFF 0%, transparent 100%);
   pointer-events: none;
   z-index: 1;
+}
+
+/* ── Skeleton shimmer utility ──────────────────────────────────────── */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #F0F0F0 25%, #E0E0E0 50%, #F0F0F0 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
 }

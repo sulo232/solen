@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, X, Star, Sparkles } from "lucide-react";
 import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCategory } from "@/lib/types";
@@ -241,7 +242,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
                   >
                     <div className="w-8 h-8 rounded-full bg-s-bg-sunken overflow-hidden shrink-0">
                       {salon.cover_image && (
-                        <img src={salon.cover_image} alt="" className="w-full h-full object-cover" />
+                        <Image src={salon.cover_image} alt="" width={32} height={32} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="min-w-0">

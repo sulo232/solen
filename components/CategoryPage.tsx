@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+import Image from "next/image";
 
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -19,6 +21,9 @@ import { containerVariants, itemVariants } from "@/lib/animations";
 import type { SalonCard as SalonCardType, SalonCategory, ActiveFilter } from "@/lib/types";
 import { type CitySlug, getCityName, CITY_SLUGS, CITIES } from "@/lib/cities";
 import SearchCriteriaChips from "@/components/search/SearchCriteriaChips";
+import SubCategoryChips from "@/components/ui/SubCategoryChips";
+import SortDropdown from "@/components/ui/SortDropdown";
+import { isOpenNow } from "@/lib/salon-hours";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
@@ -34,12 +39,12 @@ const categoryLabels: Record<SalonCategory, string> = {
 };
 
 const categoryGradients: Record<SalonCategory, string> = {
-  coiffeur:   "from-[rgba(232,98,74,0.06)] via-[rgba(250,246,239,0.80)] to-transparent",
-  barbershop: "from-[rgba(74,30,60,0.05)] via-[rgba(250,246,239,0.80)] to-transparent",
+  coiffeur:   "from-[rgba(232,98,74,0.06)] via-[rgba(255,255,255,0.80)] to-transparent",
+  barbershop: "from-[rgba(74,30,60,0.05)] via-[rgba(255,255,255,0.80)] to-transparent",
   nails:      "from-[rgba(232,98,74,0.05)] via-[rgba(242,193,68,0.03)] to-transparent",
-  spa:        "from-[rgba(123,166,136,0.07)] via-[rgba(250,246,239,0.80)] to-transparent",
-  makeup:     "from-[rgba(212,135,10,0.06)] via-[rgba(250,246,239,0.80)] to-transparent",
-  waxing:     "from-[rgba(107,163,200,0.06)] via-[rgba(250,246,239,0.80)] to-transparent",
+  spa:        "from-[rgba(123,166,136,0.07)] via-[rgba(255,255,255,0.80)] to-transparent",
+  makeup:     "from-[rgba(212,135,10,0.06)] via-[rgba(255,255,255,0.80)] to-transparent",
+  waxing:     "from-[rgba(107,163,200,0.06)] via-[rgba(255,255,255,0.80)] to-transparent",
 };
 
 interface CategoryPageProps {
@@ -63,7 +68,7 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-[20px] overflow-hidden hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+      className="rounded-[20px] overflow-hidden hover:-translate-y-0.5 transition-[transform,box-shadow] duration-[180ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]"
       style={{ border: "1.5px dashed rgba(26,18,9,.12)",
                background: "var(--glass-bg-subtle)",
                boxShadow: "0 1px 3px rgba(26,18,9,.06)" }}
@@ -71,7 +76,7 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
       {/* Photo */}
       <div className="h-36 relative overflow-hidden bg-s-bg-sunken">
         {entry.photo_url ? (
-          <img src={entry.photo_url} alt={entry.name} className="w-full h-full object-cover" />
+          <Image src={entry.photo_url} alt={entry.name} fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-s-ink/20">
             <Building2 className="w-10 h-10" />
@@ -115,6 +120,39 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
   );
 }
 
+function parseFiltersFromParams(searchParams: URLSearchParams): ActiveFilter[] {
+  const filters: ActiveFilter[] = [];
+
+  const date = searchParams.get('date');
+  if (date) filters.push({ pillId: 'availability', subId: date === 'custom' ? 'custom_date' : date, label: date });
+
+  const rating = searchParams.get('rating');
+  if (rating) filters.push({ pillId: 'rating', subId: rating, label: `${rating}+ ★` });
+
+  const sort = searchParams.get('sort');
+  if (sort) filters.push({ pillId: 'sort', subId: sort, label: sort });
+
+  if (searchParams.get('online_payment') === 'true')
+    filters.push({ pillId: 'online_payment', subId: 'online_payment', label: 'Online Payment' });
+
+  if (searchParams.get('off_peak') === 'true')
+    filters.push({ pillId: 'off_peak', subId: 'off_peak', label: 'Off Peak' });
+
+  if (searchParams.get('open_now') === 'true')
+    filters.push({ pillId: 'open_now', subId: 'open_now', label: 'Jetzt geöffnet' });
+
+  if (searchParams.get('instant_bookable') === 'true')
+    filters.push({ pillId: 'instant_bookable', subId: 'instant_bookable', label: 'Sofort buchbar' });
+
+  if (searchParams.get('deals') === 'true')
+    filters.push({ pillId: 'deals', subId: 'deals', label: 'Angebot' });
+
+  if (searchParams.get('walk_in') === 'true')
+    filters.push({ pillId: 'walk_in', subId: 'walk_in', label: 'Walk-in' });
+
+  return filters;
+}
+
 export default function CategoryPage({ category, city, aboveGrid, belowGrid }: CategoryPageProps) {
   const locale = useLocale();
   const tc = useTranslations("common");
@@ -130,7 +168,15 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  // Initialize active filters from URL params on mount
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>(() =>
+    parseFiltersFromParams(new URLSearchParams(searchParams.toString()))
+  );
+
+  // Sync active filters when searchParams change externally (e.g. browser back/forward)
+  useEffect(() => {
+    setActiveFilters(parseFiltersFromParams(new URLSearchParams(searchParams.toString())));
+  }, [searchParams]);
 
   const pills = getSearchFilterPills(t as any);
 
@@ -204,10 +250,18 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     setPage(1);
     fetch(buildUrl(1))
       .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (cancelled) return; if (!data) { setLoading(false); return; } setSalons(data.items ?? []); setTotal(data.total ?? 0); setLoading(false); })
+      .then((data) => {
+        if (cancelled) return;
+        if (!data) { setLoading(false); return; }
+        const items = data.items ?? [];
+        const openNow = searchParams.get('open_now') === 'true';
+        setSalons(openNow ? items.filter((s: any) => isOpenNow((s as any).opening_hours).isOpen) : items);
+        setTotal(data.total ?? 0);
+        setLoading(false);
+      })
       .catch(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [buildUrl]);
+  }, [buildUrl, searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -248,7 +302,10 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const hasDirMore = dirEntries.length < dirTotal;
   const categoryLabel = categoryLabels[category];
   const gradient = categoryGradients[category];
-  const cityName = city ? getCityName(city, locale) : "Basel";
+  const cityName = city
+    ? getCityName(city, locale)
+    : locale === "de" ? "Schweizweit" : locale === "fr" ? "Suisse" : locale === "it" ? "Svizzera" : "Switzerland";
+  const allCitiesLabel = locale === "de" ? "Alle Städte" : locale === "fr" ? "Toutes les villes" : "All Cities";
 
   const handleFilterChange = useCallback((filters: ActiveFilter[]) => {
     setActiveFilters(filters);
@@ -261,6 +318,10 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
     params.delete('sort');
     params.delete('online_payment');
     params.delete('off_peak');
+    params.delete('open_now');
+    params.delete('instant_bookable');
+    params.delete('deals');
+    params.delete('walk_in');
 
     // Apply new filters to URL params
     filters.forEach((filter) => {
@@ -276,6 +337,14 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
         params.set('online_payment', 'true');
       } else if (filter.pillId === 'off_peak') {
         params.set('off_peak', 'true');
+      } else if (filter.pillId === 'open_now') {
+        params.set('open_now', 'true');
+      } else if (filter.pillId === 'instant_bookable') {
+        params.set('instant_bookable', 'true');
+      } else if (filter.pillId === 'deals') {
+        params.set('deals', 'true');
+      } else if (filter.pillId === 'walk_in') {
+        params.set('walk_in', 'true');
       }
     });
 
@@ -293,7 +362,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
             <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[.12em] flex-wrap">
-              <li><span className="text-s-ink/30">{locale === "de" ? "Startseite" : "Home"}</span></li>
+              <li><Link href={`/${locale}`} className="text-s-ink/30 hover:text-s-ink/55 transition-colors duration-150">{locale === "de" ? "Startseite" : "Home"}</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {city && (
                 <>
@@ -307,28 +376,31 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
           {/* Amber eyebrow */}
           <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-3">
-            {cityName} · {categoryLabel}
+            {city ? cityName : allCitiesLabel} · {categoryLabel}
           </span>
 
           {/* Hero H1 — compact, responsive */}
           <h1 className="font-display text-4xl md:text-6xl text-s-ink dark:text-s-dm-text"
             style={{ lineHeight: "0.92", letterSpacing: "0.01em" }}>
-            {categoryLabel.toUpperCase()} IN{" "}
-            <span className="text-s-coral">{cityName.toUpperCase()}</span>
+            {city ? (
+              <>{categoryLabel.toUpperCase()} IN{" "}<span className="text-s-coral">{cityName.toUpperCase()}</span></>
+            ) : (
+              <>{categoryLabel.toUpperCase()} <span className="text-s-coral">{locale === "de" ? "ÜBERALL" : locale === "fr" ? "PARTOUT" : locale === "it" ? "OVUNQUE" : "EVERYWHERE"}</span></>
+            )}
           </h1>
 
           {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
             <p className="font-body italic text-s-ink/50 mt-3 text-[15px] leading-[1.82]">
-              {total} {total === 1 ? "Salon" : "Salons"} auf Solen
-              {dirTotal > 0 && ` · ${dirTotal} weitere in ${cityName}`}
+              {total} {total === 1 ? "Salon" : "Salons"} {city ? `in ${cityName}` : (locale === "de" ? "in der Schweiz" : locale === "fr" ? "en Suisse" : "in Switzerland")} auf Solen
+              {dirTotal > 0 && ` · ${dirTotal} weitere`}
             </p>
           )}
         </div>
       </div>
 
       {/* Search + Filters */}
-      <div className="sticky top-[56px] sm:top-[60px] z-40 glass-toolbar">
+      <div className="sticky top-20 z-40 glass-toolbar">
         <div className="max-w-5xl mx-auto px-3 sm:px-6 py-2 sm:py-3">
 
           {/* City selector pills */}
@@ -382,17 +454,21 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             onFilterChange={handleFilterChange}
             zone={3}
           />
+          <SubCategoryChips category={category} />
         </div>
       </div>
 
       {/* Map/List toggle */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 flex items-center justify-between gap-2 sm:gap-3">
-        {/* Results count — left */}
-        {!loading && salons.length > 0 && (
-          <p className="text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40">
-            {salons.length} von {total} Salons
-          </p>
-        )}
+        {/* Results count + Sort — left aligned */}
+        <div className="flex items-center gap-4">
+          {!loading && salons.length > 0 && (
+            <p className="text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40">
+              {salons.length} von {total} Salons
+            </p>
+          )}
+          <SortDropdown locale={locale} />
+        </div>
 
         <div className="flex items-center gap-2 ml-auto">
           <span className="hidden sm:inline-flex">
@@ -424,7 +500,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
       {/* Above grid slot (e.g. category-specific filters) — collapsible */}
       {aboveGrid && (
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4">
+        <div className="max-w-5xl mx-auto px-5 md:px-6 lg:px-10 pt-4">
           <button
             onClick={() => setFiltersExpanded(!filtersExpanded)}
             className="text-xs font-heading font-semibold text-s-coral hover:text-s-coral-hover transition-colors mb-2"
@@ -520,9 +596,9 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.45,
-                    delay: Math.min(i * 0.05, 0.4),
-                    ease: [0.23, 1, 0.32, 1]
+                    duration: 0.20,
+                    delay: Math.min(i * 0.03, 0.15),
+                    ease: [0.2, 0.8, 0.2, 1]
                   }}
                 >
                   <SalonCard

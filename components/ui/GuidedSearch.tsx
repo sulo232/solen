@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, ChevronLeft, ChevronRight, MapPin, Check, Star, Calendar as CalendarIcon, ChevronDown } from "lucide-react";
+import { Search, X, ChevronLeft, ChevronRight, MapPin, Check, Star, Calendar as CalendarIcon, ChevronDown, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   CATEGORY_SERVICES,
@@ -52,6 +52,57 @@ const CATEGORY_LIST: CategoryItem[] = [
 
 const TIME_KEYS: TimeKey[] = ["any", "morning", "afternoon", "evening"];
 
+const TRENDING_SEARCHES = [
+  "Balayage",
+  "Gel Nägel",
+  "Herrenschnitt",
+  "Wimpernverlängerung",
+  "Hot Stone Massage",
+] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Recent searches hook
+// ─────────────────────────────────────────────────────────────────────────────
+
+const RECENT_KEY = "solen_recent_searches";
+const MAX_RECENT = 5;
+
+type RecentSearch = {
+  query: string;
+  category?: string;
+  city: string;
+  timestamp: number;
+};
+
+function useRecentSearches() {
+  const [recents, setRecents] = useState<RecentSearch[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(RECENT_KEY);
+      if (raw) setRecents(JSON.parse(raw));
+    } catch { /* ignore parse errors */ }
+  }, []);
+
+  const save = (entry: Omit<RecentSearch, "timestamp">) => {
+    const newEntry: RecentSearch = { ...entry, timestamp: Date.now() };
+    setRecents((prev) => {
+      // Remove duplicate queries, then prepend, keep max 5
+      const deduped = prev.filter((r) => r.query !== entry.query || r.category !== entry.category);
+      const next = [newEntry, ...deduped].slice(0, MAX_RECENT);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
+  const clear = () => {
+    setRecents([]);
+    try { localStorage.removeItem(RECENT_KEY); } catch { /* ignore */ }
+  };
+
+  return { recents, save, clear };
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -78,6 +129,8 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
   const inputRef     = useRef<HTMLInputElement>(null);
   const cityTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const { recents, save: saveRecent, clear: clearRecents } = useRecentSearches();
 
   // Pre-fill city from localStorage → cookie → default Basel
   useEffect(() => {
@@ -216,6 +269,16 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
 
     const qs = params.toString();
     router.push(qs ? `${basePath}?${qs}` : basePath);
+
+    // Save to recent searches if there's a meaningful query or category
+    if (service || query.trim() || category) {
+      saveRecent({
+        query: service ?? query.trim(),
+        category: category ?? undefined,
+        city: city ?? "all",
+      });
+    }
+
     close();
   };
 
@@ -456,7 +519,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-[#EBEBEB] dark:border-white/[0.07]">
                           <div>
                             <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "#8A8178" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
@@ -488,7 +551,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-[#F0F0F0] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-[#EBEBEB] dark:border-white/[0.07]">
                           <div>
                             <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "#8A8178" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
@@ -521,6 +584,69 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         {/* Category list OR service drill-down */}
                         {!showServices ? (
                           <>
+                            {/* Recent searches — shown at top of Step 1 when there are saved searches */}
+                            {recents.length > 0 && (
+                              <div className="pt-4 pb-2">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40">
+                                    {locale === "de" ? "Zuletzt gesucht" : locale === "fr" ? "Recherches récentes" : locale === "it" ? "Ricerche recenti" : "Recent searches"}
+                                  </span>
+                                  <button
+                                    onClick={clearRecents}
+                                    className="text-[11px] font-body text-s-ink/40 dark:text-s-dm-text/40 hover:text-s-ink dark:hover:text-s-dm-text transition-colors"
+                                  >
+                                    {locale === "de" ? "Alle löschen" : locale === "fr" ? "Tout effacer" : locale === "it" ? "Cancella tutto" : "Clear all"}
+                                  </button>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  {recents.map((r, i) => {
+                                    const label = [r.query, r.city !== "all" ? r.city : null]
+                                      .filter(Boolean)
+                                      .join(" · ");
+                                    return (
+                                      <button
+                                        key={i}
+                                        onClick={() => {
+                                          if (r.category) setCategory(r.category as SalonCategory);
+                                          if (r.city && r.city !== "all") setCity(r.city as CitySlug);
+                                          navigate();
+                                        }}
+                                        aria-label={label}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:text-s-ink dark:hover:text-s-dm-text hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
+                                        style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
+                                      >
+                                        <Clock size={11} className="text-s-ink/40 dark:text-s-dm-text/40 shrink-0" aria-hidden="true" />
+                                        <span>{label}</span>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Trending searches */}
+                            <div className={recents.length > 0 ? "pb-2" : "pt-4 pb-2"}>
+                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/40 dark:text-s-dm-text/40 mb-2">
+                                {locale === "de" ? "Beliebt in Basel 🔥" : locale === "fr" ? "Populaire à Bâle 🔥" : locale === "it" ? "Popolare a Basilea 🔥" : "Popular in Basel 🔥"}
+                              </p>
+                              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                                {TRENDING_SEARCHES.map((term) => (
+                                  <button
+                                    key={term}
+                                    aria-label={term}
+                                    onClick={() => {
+                                      setQuery(term);
+                                      navigate();
+                                    }}
+                                    className="shrink-0 px-3 py-1.5 rounded-pill text-[12px] font-body font-medium text-s-ink/70 dark:text-s-dm-text/70 hover:text-s-ink dark:hover:text-s-dm-text hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors whitespace-nowrap"
+                                    style={{ border: "1px solid rgba(26,18,9,0.10)", background: "var(--raised)" }}
+                                  >
+                                    {term}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
                             {/* Vertical category list */}
                             <div className="flex flex-col divide-y divide-[#F5F5F5] dark:divide-white/[0.06] mb-2">
                               {/* All services row */}

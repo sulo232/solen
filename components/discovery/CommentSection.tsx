@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { MessageCircle, Send, ChevronDown } from "lucide-react";
+import Image from "next/image";
 import ReportButton from "./ReportButton";
 import { useTranslations } from "next-intl";
 
@@ -122,7 +123,7 @@ export default function CommentSection({ itemId, isAuthenticated, onAuthRequired
               <div key={c.id} className="flex gap-2 text-xs">
                 <div className="w-6 h-6 rounded-full bg-s-ink/10 dark:bg-white/10 flex items-center justify-center text-[10px] font-medium text-s-ink/50 dark:text-s-dm-text/50 shrink-0">
                   {c.user.avatar_url ? (
-                    <img src={c.user.avatar_url} alt={c.user.display_name} className="w-6 h-6 rounded-full object-cover" />
+                    <Image src={c.user.avatar_url} alt={c.user.display_name} width={24} height={24} className="rounded-full object-cover" />
                   ) : (
                     c.user.display_name.charAt(0).toUpperCase()
                   )}

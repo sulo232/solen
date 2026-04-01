@@ -1,32 +1,23 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { usePostHog } from "posthog-js/react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  RefreshCw,
-  Search,
-  Compass,
-  ArrowRight,
-} from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import GuidedSearch from "@/components/ui/GuidedSearch";
-import CityCarouselSection from "@/components/ui/CityCarouselSection";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { useCityDetection } from "@/hooks/useCityDetection";
-import ReviewCarousel from "@/components/ReviewCarousel";
 import TutorialTour from "@/components/TutorialTour";
 import FeaturedSalonCarousel from "@/components/ui/FeaturedSalonCarousel";
 import type { SalonCard as SalonCardType, LastMinuteSlot } from "@/lib/types";
 import { getPersistedCity } from "@/lib/city-cookie";
-import { cn } from "@/lib/utils";
 import { type CitySlug } from "@/lib/cities";
 import { useRecentVisits } from "@/hooks/useRecentVisits";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -99,24 +90,16 @@ export default function HomePage({ initialData }: HomePageProps) {
   const [nearbySalons, setNearbySalons] = useState<SalonCardType[]>([]);
   const [locationError, setLocationError] = useState(false);
   const [persistedCity, setPersistedCity] = useState<CitySlug | null>(null);
-  const [scrolledPast80, setScrolledPast80] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(initialData?.categoryCounts || {});
   const salonsWithCoords = initialData?.salonsWithCoords ?? 0;
 
   const [salons, setSalons] = useState<SalonCardType[]>(initialData?.salons || []);
   const [categorySalons] = useState<Record<string, SalonCardType[]>>(initialData?.categorySalons ?? {});
-  const [lastMinuteSlots, setLastMinuteSlots] = useState<LastMinuteSlot[]>(initialData?.lastMinuteSlots || []);
-  const [newSalons, setNewSalons] = useState<SalonCardType[]>(initialData?.newSalons || []);
-  const [trendingSalons, setTrendingSalons] = useState<SalonCardType[]>(initialData?.trendingSalons || []);
+  const [lastMinuteSlots] = useState<LastMinuteSlot[]>(initialData?.lastMinuteSlots || []);
 
   useEffect(() => {
     setPersistedCity(getPersistedCity());
-  }, []);
-
-  useEffect(() => {
-    const h = () => setScrolledPast80(window.scrollY > 80);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
   }, []);
 
   const { recentCats, visitCategory, bubbleRank, isMounted } = useRecentVisits();
@@ -144,9 +127,6 @@ export default function HomePage({ initialData }: HomePageProps) {
     
     return result;
   }, [bubbleRank, tNav]);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [nextBooking, setNextBooking] = useState<{ date: string; salon: string } | null>(null);
   const [sections, setSections] = useState<Record<string, boolean>>(
     initialData?.sections || {
       trending: true, nearby: true, new_salons: true,
@@ -154,7 +134,6 @@ export default function HomePage({ initialData }: HomePageProps) {
       social_proof: true, partner_cta: true,
     }
   );
-  const [showNearby, setShowNearby] = useState(false);
 
   const fetchNearby = useCallback(() => {
     if (!navigator.geolocation) {
@@ -186,10 +165,6 @@ export default function HomePage({ initialData }: HomePageProps) {
         if (!data) return;
         if (data.profile?.first_name) setUserName(data.profile.first_name);
         if (data.lastBooking?.slug) setLastBookedSalon({ slug: data.lastBooking.slug, name: data.lastBooking.name });
-        if (data.nextBooking?.date) {
-          const date = new Date(data.nextBooking.date).toLocaleDateString(locale, { weekday: "short", day: "numeric", month: "short" });
-          setNextBooking({ date, salon: data.nextBooking.salon });
-        }
         if (Array.isArray(data.favorites)) setFavoriteIds(new Set(data.favorites as string[]));
       })
       .catch((err) => console.error("[HomePage] failed to fetch user data:", err));
@@ -225,67 +200,57 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-white dark:bg-s-dm-bg">
+    <div className="min-h-screen relative overflow-x-hidden bg-white">
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
       <main className="max-w-[2520px] mx-auto pb-16">
         
-        {/* ── 1. Entdecken block (Algorithmic feed) ── */}
-        <section className="animate-in mx-auto px-4 sm:px-6 pt-6 pb-8 md:py-12 relative z-[2]" style={{ animationDelay: "120ms" }}>
-          <div className="mb-4 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="block font-body font-semibold text-[12px] uppercase mb-2" style={{ letterSpacing: "2.5px", color: "#E8735A" }}>{t("discover.eyebrow")}</span>
-              <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222] dark:text-white" style={{ lineHeight: "1.1" }}>
-                {t("discover.title")}
-              </h2>
-            </div>
-            <Link href={`/${locale}/discover`}
-              className="inline-flex items-center gap-2 text-[14px] font-body font-semibold text-[#222222] dark:text-white rounded-pill border border-s-ink/15 dark:border-white/15 px-5 py-2.5 hover:border-s-coral/40 hover:text-s-coral active:scale-[0.98] transition-all duration-150 shrink-0 self-start">
-              {t("discover.catalogCta")}
-            </Link>
-          </div>
-
-          <DiscoverCarousel locale={locale} />
-        </section>
-
-        {/* ── 2. Category Snapshot Rows ── */}
-        <section className="px-4 sm:px-6 py-6 pb-12 space-y-12">
+        {/* ── 1. Category Snapshot Rows (Core Product — shown first) ── */}
+        <section className="px-5 md:px-6 lg:px-10 xl:px-20 pt-6 pb-12 space-y-16">
           {orderedSectionKeys.map(({ key, label }) => {
             const salonsForCategory = categorySalons[key] || [];
-            // No null guard — FeaturedSalonCarousel shows demo cards when salonsForCategory is empty
 
             return (
               <div key={key}>
-                {/* We removed the inline H3 here since FeaturedSalonCarousel handles its own labeling now via title prop */}
-                <div className="-mx-4 sm:-mx-6 px-4 sm:px-6 relative">
-                  <FeaturedSalonCarousel salons={salonsForCategory} locale={locale} title={label} />
-                  <div className="mt-2 text-right px-6">
-                    <Link href={`/${locale}/${key}`} className="group inline-flex items-center gap-1.5 text-[14px] font-body font-semibold text-[#222222] dark:text-white hover:text-s-coral transition-colors duration-150">
-                      Alle {label} ansehen
-                      <ArrowRight size={14} className="transition-transform duration-150 group-hover:translate-x-1" />
-                    </Link>
-                  </div>
+                <div className="-mx-5 md:-mx-6 lg:-mx-10 xl:-mx-20 px-5 md:px-6 lg:px-10 xl:px-20 relative">
+                  <FeaturedSalonCarousel salons={salonsForCategory} locale={locale} title={label} viewAllHref={`/${locale}/${key}`} />
                 </div>
               </div>
             );
           })}
         </section>
 
+        {/* ── 2. Entdecken — Pinterest-style Discovery intro (secondary, after listings) ── */}
+        <section className="animate-in mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-[#EBEBEB] relative z-[2]" style={{ animationDelay: "120ms" }}>
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]" style={{ lineHeight: "1.1" }}>
+              {t("discover.title")}
+            </h2>
+            <Link href={`/${locale}/discover`}
+              className="inline-flex items-center gap-1 text-[14px] font-body font-semibold text-[#222222] hover:text-[#717171] transition-colors duration-150 shrink-0">
+              {t("discover.catalogCta")}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </Link>
+          </div>
+
+          <DiscoverCarousel locale={locale} />
+        </section>
+
         {/* ── 3. Wieder buchen? (logged-in users with past booking) ── */}
         {sections.rebook && lastBookedSalon && (
-          <section className="px-4 sm:px-6 pt-6 pb-10">
+          <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-[#EBEBEB]">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-              className="flex items-center gap-4 p-4 border border-s-ink/[0.05] dark:border-white/[0.05] rounded-xl bg-[#f7f7f7] dark:bg-s-dm-surface/20">
-              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-[#E8735A]/10">
-                <RefreshCw size={18} className="text-[#E8735A]" />
+              className="flex items-center gap-4 p-4 border border-[#EBEBEB] rounded-[16px] bg-white">
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-[#F7F7F7]">
+                <RefreshCw size={18} className="text-[#222222]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-heading font-bold text-[#222222] dark:text-white text-[15px]">{t("rebook.title")}</p>
-                <p className="text-sm text-[#717171] font-body truncate">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
+                <p className="font-heading font-medium text-[#222222] text-[15px]">{t("rebook.title")}</p>
+                <p className="text-[14px] text-[#717171] font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
-                className="shrink-0 px-4 py-2 rounded-lg bg-[#E8735A] text-white text-sm font-heading font-bold transition-transform hover:scale-[1.02]"
+                className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-[14px] font-heading font-semibold transition-transform hover:scale-[1.02]"
                 aria-label={t("rebook.cta")}>
                 {t("rebook.cta")}
               </Link>
@@ -294,34 +259,90 @@ export default function HomePage({ initialData }: HomePageProps) {
         )}
 
         {/* ── 4. Recently Viewed ── */}
-        <div className="px-4 sm:px-6">
-           <RecentlyViewed />
-        </div>
+        <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-[#EBEBEB]">
+          <RecentlyViewed />
+        </section>
 
-        {/* ── 5. High-Conversion Partner CTA ── */}
-        <section className="mt-16 sm:px-6 px-4">
-          <div className="bg-[#222222] rounded-[16px] overflow-hidden text-white flex flex-col md:flex-row relative">
-            <div className="p-10 md:p-16 flex-1 flex flex-col justify-center relative z-10">
-              <h2 className="font-heading font-extrabold text-[32px] md:text-[48px] leading-[1.1] tracking-tight mb-4 text-white">
-                Solen für Salons
-              </h2>
-              <p className="font-body text-[16px] md:text-[18px] text-white/80 mb-8 max-w-[400px]">
-                {t("partner.teaserPrompt") || "Erreichen Sie Tausende von Kunden, füllen Sie Ihren Kalender und verwalten Sie Ihr Geschäft mit Leichtigkeit."}
-              </p>
-              <Link
-                href={`/${locale}/partner`}
-                className="inline-flex items-center justify-center h-12 px-8 rounded-pill bg-s-coral text-white font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-all duration-150 self-start whitespace-nowrap"
-              >
-                {t("partner.cta")}
-              </Link>
-            </div>
-            {/* Ambient decoration */}
-            <div className="hidden md:block absolute right-0 top-0 bottom-0 w-1/2 overflow-hidden select-none pointer-events-none">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#222222] to-transparent z-10" />
-                <div className="w-full h-full bg-[#333] opacity-50" />
+        {/* ── 5. Partner CTA ── */}
+        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-[#EBEBEB]">
+          <div
+            className="rounded-[20px] overflow-hidden relative"
+            style={{
+              background: "linear-gradient(135deg, #FFF8F6 0%, #FFF5F0 60%, #FFF9F7 100%)",
+              border: "1px solid rgba(232,98,74,0.12)",
+            }}
+          >
+            <div className="px-8 py-10 sm:px-12 sm:py-12 flex flex-col md:flex-row items-start md:items-center gap-8">
+              {/* Left: copy */}
+              <div className="flex-1">
+                {/* Eyebrow */}
+                <span className="inline-block text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
+                  Für Salons &amp; Studios
+                </span>
+                <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3">
+                  Wachse mit Solen
+                </h2>
+                <p className="font-body text-[15px] sm:text-[16px] text-[#717171] max-w-[420px] leading-relaxed mb-6">
+                  {t("partner.teaserPrompt") || "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort."}
+                </p>
+
+                {/* Checklist */}
+                <ul className="space-y-2 mb-7">
+                  {[
+                    "Kostenloses Inserat erstellen",
+                    "Buchungen direkt empfangen",
+                    "Sichtbarkeit in deiner Stadt",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2.5 text-[14px] font-body text-[#555555]">
+                      <span
+                        className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
+                        style={{ background: "rgba(232,98,74,0.12)" }}
+                        aria-hidden="true"
+                      >
+                        <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                          <path d="M1 3.5L3.5 6L8 1" stroke="#E8624A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href={`/${locale}/partner`}
+                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.97] transition-all duration-150 self-start"
+                  style={{ boxShadow: "0 2px 12px rgba(232,98,74,.28)" }}
+                >
+                  {t("partner.cta")} →
+                </Link>
+              </div>
+
+              {/* Right: decorative stat cards */}
+              <div className="hidden md:flex flex-shrink-0 items-center justify-center">
+                <div className="relative w-[220px] h-[220px]">
+                  {/* Main card */}
+                  <div
+                    className="absolute top-0 left-0 right-0 bg-white rounded-[16px] p-5"
+                    style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.08)", border: "1px solid rgba(0,0,0,0.05)" }}
+                  >
+                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-1">Neue Buchungen</p>
+                    <p className="font-heading font-extrabold text-[28px] text-[#1A1A1A] leading-tight">+47%</p>
+                    <p className="text-[12px] font-body text-[#717171] mt-0.5">im ersten Monat</p>
+                  </div>
+                  {/* Floating stat */}
+                  <div
+                    className="absolute bottom-0 right-0 bg-white rounded-[14px] px-4 py-3"
+                    style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.09)", border: "1px solid rgba(0,0,0,0.05)" }}
+                  >
+                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-0.5">Neue Kunden</p>
+                    <p className="font-heading font-extrabold text-[22px] text-s-coral leading-tight">120+</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
+
 
       </main>
 

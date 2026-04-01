@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Wand2 } from "lucide-react";
+import Image from "next/image";
 import { STYLE_PRESETS, COLOR_PRESETS, SKIN_TONE_PRESETS } from "@/lib/nail/ai-prompts";
 import type { NailShape } from "@/lib/types";
 import { useTranslations } from "next-intl";
@@ -143,7 +144,7 @@ export default function AiArtGenerator() {
       {/* Result preview */}
       {result && (
         <div className="rounded-[16px] border border-s-ink/10 dark:border-s-dm-text/10 overflow-hidden bg-white dark:bg-s-dm-surface">
-          <img src={result.image_url} alt="AI generated nail art" className="w-full aspect-square object-cover" />
+          <Image src={result.image_url} alt="AI generated nail art" width={600} height={600} unoptimized className="w-full aspect-square object-cover" />
           <div className="p-3 space-y-2">
             <p className="text-xs text-s-ink/50 dark:text-s-dm-text/50 line-clamp-2">{result.prompt}</p>
             {result.staging_id && (

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
@@ -21,10 +22,13 @@ const buttonVariants = cva(
         link: "text-s-coral underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-5 py-2",
-        sm: "h-8 px-4 text-xs",
-        lg: "h-11 px-7",
-        icon: "h-10 w-10",
+        default: "h-12 px-6 py-2 min-h-[44px]",
+        sm: "h-9 px-4 text-xs min-h-[44px] min-w-[44px]",
+        lg: "h-14 px-8",
+        icon: "h-11 w-11 min-h-[44px] min-w-[44px]",
+      },
+      fullWidth: {
+        true: "w-full",
       },
     },
     defaultVariants: {
@@ -38,17 +42,28 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  loading?: boolean
+  fullWidth?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, loading = false, fullWidth, disabled, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
         ref={ref}
+        disabled={disabled || loading}
+        aria-busy={loading || undefined}
         {...props}
-      />
+      >
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+            {children}
+          </>
+        ) : children}
+      </Comp>
     )
   },
 )

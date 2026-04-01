@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Star, Heart, Award } from "lucide-react";
+import Image from "next/image";
+import { Star, Heart, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { SalonCard } from "@/lib/types";
 import { DEMO_SALONS } from "@/lib/demo-data";
@@ -9,9 +10,10 @@ interface FeaturedSalonCarouselProps {
   salons: SalonCard[];
   locale: string;
   title?: string;
+  viewAllHref?: string;
 }
 
-export default function FeaturedSalonCarousel({ salons, locale, title }: FeaturedSalonCarouselProps) {
+export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHref }: FeaturedSalonCarouselProps) {
   const t = useTranslations("home") as any;
 
   const salonsWithPhotos = salons.filter(
@@ -51,17 +53,41 @@ export default function FeaturedSalonCarousel({ salons, locale, title }: Feature
     });
   };
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === "left" ? -300 : 300;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="mt-8 -mx-4">
-      {/* Section label — always visible */}
-      <h2
-        className="px-6 mb-5 font-heading font-semibold text-[22px] tracking-tight text-[#222222] dark:text-white"
-      >
-        {title || t("heroCarousel.label")}
-      </h2>
+    <div className="mt-8 -mx-4 group/section relative">
+      <div className="flex items-center justify-between px-6 mb-5">
+        <div className="flex items-center gap-1">
+          <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]">
+            {title || t("heroCarousel.label")}
+          </h2>
+          {viewAllHref && (
+            <Link href={viewAllHref} className="ml-1 hover:bg-black/5 rounded-full p-1.5 transition-colors" aria-label={`View all ${title}`}>
+              <ChevronRight size={18} className="text-[#222222]" />
+            </Link>
+          )}
+        </div>
+        {/* Navigation Arrows — Airbnb spec: 32px white circle, light border, subtle shadow */}
+        <div className="hidden md:flex items-center gap-2">
+          <button onClick={() => scroll("left")} aria-label="Vorherige Salons" className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+            <ChevronLeft size={16} aria-hidden="true" />
+          </button>
+          <button onClick={() => scroll("right")} aria-label="Nächste Salons" className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+            <ChevronRight size={16} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
 
       {/* Horizontal scroll container */}
       <div
+        ref={scrollRef}
         className="flex gap-4 overflow-x-auto scrollbar-hide px-6 pb-4 snap-x snap-mandatory"
         style={{ WebkitOverflowScrolling: "touch", overscrollBehaviorX: "contain" } as React.CSSProperties}
       >
@@ -106,27 +132,27 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
     <>
       {/* ── Image (1:1 square) ── */}
       <div
-        className="relative w-full rounded-[12px] overflow-hidden bg-[#EDE8E2]"
-        style={{ height: 180 }}
+        className="relative w-full aspect-square rounded-[12px] overflow-hidden bg-s-bg-sunken"
       >
         {photo && (
-          <img
+          <Image
             src={photo}
             alt={salon.name}
-            className="w-full h-full object-cover"
-            loading={index < 2 ? "eager" : "lazy"}
+            fill
+            sizes="(max-width: 768px) 100vw, 320px"
+            className="object-cover"
+            priority={index < 2}
           />
         )}
 
         {/* Badge: top-left */}
-        <div className="absolute top-2 left-2 z-[2]">
+        <div className="absolute top-3 left-3 z-[2]">
           {isGuestFavorite ? (
-            <span className="flex items-center gap-1 font-heading font-semibold text-[10px] text-s-ink bg-white/95 backdrop-blur-md px-2 py-1 rounded-pill shadow-sm uppercase tracking-wider">
-              <Award size={10} className="text-s-coral" />{" "}
+            <span className="flex items-center gap-1 font-heading font-semibold text-[13px] text-[#222222] bg-white px-2 py-1 rounded-pill shadow-md">
               {(t("heroCarousel.guestFavorite") as string).includes("heroCarousel") ? "Top bewertet" : t("heroCarousel.guestFavorite")}
             </span>
           ) : isNew ? (
-            <span className="font-heading font-semibold text-[10px] text-white bg-s-coral px-2 py-1 rounded-pill shadow-sm">
+            <span className="font-heading font-semibold text-[13px] text-white bg-[#222222] px-2.5 py-1 rounded-pill shadow-md">
               Neu
             </span>
           ) : null}
@@ -151,30 +177,29 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
       </div>
 
       {/* ── Text below image ── */}
-      <div className="pt-2 pb-1">
-        <p className="font-heading font-semibold text-[14px] text-[#222222] dark:text-white truncate leading-snug">
+      <div className="mt-3 flex flex-col gap-[2px]">
+        <h3 className="font-heading font-semibold text-[15px] text-[#222222] truncate leading-[19px]">
           {salon.name}
-        </p>
-        <p className="font-body text-[12px] text-[#717171] dark:text-s-dm-text/60 truncate mt-0.5">
+        </h3>
+        <p className="font-body text-[15px] text-[#717171] leading-[19px] truncate">
           {locationText}
         </p>
-        {showRating ? (
-          <div className="flex items-center gap-1 mt-1">
-            <Star size={11} className="fill-s-coral text-s-coral flex-shrink-0" />
-            <span className="font-body text-[12px] text-[#717171] dark:text-s-dm-text/60">
-              {salon.average_rating.toFixed(1)}
+        <div className="flex items-center text-[15px] leading-[19px] mt-[2px]">
+          {salon.min_price != null ? (
+            <span className="font-semibold text-[#222222]">
+              ab CHF {salon.min_price}
             </span>
-            {salon.min_price != null && (
-              <span className="font-body text-[12px] text-[#717171] dark:text-s-dm-text/60">
-                {" · CHF "}{salon.min_price}
-              </span>
-            )}
-          </div>
-        ) : salon.min_price != null ? (
-          <p className="font-body text-[12px] text-[#717171] dark:text-s-dm-text/60 mt-1">
-            ab CHF {salon.min_price}
-          </p>
-        ) : null}
+          ) : (
+            <span className="font-semibold text-[#222222]">$$</span>
+          )}
+          {showRating ? (
+            <span className="text-[#222222] font-medium ml-1">
+              <span className="text-[#717171] font-normal mr-1">·</span>
+              <Star className="inline w-[11px] h-[11px] fill-[#222222] text-[#222222] mb-[2px] mr-[3px]" />
+              {salon.average_rating.toFixed(2)}
+            </span>
+          ) : null}
+        </div>
       </div>
     </>
   );

@@ -26,6 +26,7 @@ export default function BottomTabBar() {
 
   const [session, setSession] = useState<Session | null>(null);
   const [loginSheet, setLoginSheet] = useState<{ open: boolean; context: TabKey }>({ open: false, context: "account" });
+  const [tappedKey, setTappedKey] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
@@ -43,6 +44,10 @@ export default function BottomTabBar() {
   if (isHidden) return null;
 
   const handleTabClick = (key: TabKey, requiresAuth: boolean, isActive: boolean, e: React.MouseEvent) => {
+    // Trigger tap animation
+    setTappedKey(key);
+    setTimeout(() => setTappedKey(null), 300);
+
     if (requiresAuth && !session) {
       e.preventDefault();
       setLoginSheet({ open: true, context: key });
@@ -66,59 +71,90 @@ export default function BottomTabBar() {
 
   return (
     <>
+      {/* ── Bottom Nav ── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass-frost border-t border-black/[0.06] dark:border-s-dm-text/10"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom)",
+          // Liquid glass
+          background: "rgba(255,255,255,0.82)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          borderTop: "1px solid rgba(0,0,0,0.07)",
+          boxShadow: "0 -1px 0 rgba(0,0,0,0.04), 0 -8px 32px rgba(0,0,0,0.06)",
+        }}
         aria-label={t("mobileNavigation") ?? "Navigation"}
       >
-        <div className="flex items-stretch h-[56px]">
+        <div className="flex items-stretch h-[60px]">
           {TABS.map(({ key, href, Icon, requiresAuth }) => {
             const fullHref = href === "/" ? `/${locale}` : `/${locale}${href}`;
             const isActive = href === "/"
               ? pathname === `/${locale}` || pathname === `/${locale}/`
               : pathname === fullHref || pathname.startsWith(fullHref + "/");
+            const isTapped = tappedKey === key;
+
             return (
               <Link
                 key={key}
                 href={fullHref}
                 onClick={(e) => handleTabClick(key, requiresAuth, isActive, e)}
-                className={cn(
-                  "relative flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[44px] transition-colors duration-150",
-                  isActive ? "text-s-coral" : "text-s-ink/45 dark:text-s-dm-text/45 hover:text-s-ink/70"
-                )}
+                className="relative flex-1 flex flex-col items-center justify-center gap-[3px] min-h-[44px]"
                 aria-label={t(key as any)}
                 aria-current={isActive ? "page" : undefined}
+                style={{ WebkitTapHighlightColor: "transparent" }}
               >
-                <Icon
-                  className="w-6 h-6 transition-transform duration-200 ease-out"
-                  style={{ transform: isActive ? "translateY(-1px)" : "translateY(0)" }}
-                  strokeWidth={isActive ? 2.2 : 1.6}
-                />
-                {isActive && (
-                  <span
-                    className="absolute bottom-[8px] left-1/2"
-                    style={{
-                      width: 4, height: 4, borderRadius: 2,
-                      background: "#E8735A",
-                      transform: "translateX(-50%) scale(1)",
-                      animation: "dotPop 200ms cubic-bezier(0.34,1.56,0.64,1)",
-                    }}
-                    aria-hidden="true"
+                {/* Icon with spring scale */}
+                <motion.div
+                  animate={{
+                    scale: isTapped ? 0.82 : isActive ? 1.08 : 1,
+                    y: isActive ? -1 : 0,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 500,
+                    damping: 28,
+                    mass: 0.6,
+                  }}
+                  className="flex items-center justify-center"
+                >
+                  <Icon
+                    className={cn(
+                      "w-[22px] h-[22px] transition-colors duration-150",
+                      isActive ? "text-s-coral" : "text-[#8A8A8A]"
+                    )}
+                    strokeWidth={isActive ? 2.2 : 1.7}
                   />
-                )}
+                </motion.div>
+
+                {/* Label */}
                 <span className={cn(
-                  "text-[10px] font-heading font-semibold tracking-[.04em] leading-none",
-                  isActive ? "text-s-coral" : "text-s-ink/40 dark:text-s-dm-text/40"
+                  "text-[10px] font-heading font-semibold tracking-[.03em] leading-none transition-colors duration-150",
+                  isActive ? "text-s-coral" : "text-[#8A8A8A]"
                 )}>
                   {t(key as any)}
                 </span>
+
+                {/* Active dot */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      key="dot"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ type: "spring", stiffness: 600, damping: 30 }}
+                      className="absolute bottom-[7px] left-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full bg-s-coral"
+                      aria-hidden="true"
+                    />
+                  )}
+                </AnimatePresence>
               </Link>
             );
           })}
         </div>
       </nav>
 
-      {/* Login prompt sheet */}
+      {/* ── Login prompt sheet ── */}
       <AnimatePresence>
         {loginSheet.open && (
           <>
@@ -128,7 +164,8 @@ export default function BottomTabBar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="fixed inset-0 z-[60] bg-s-ink/30 dark:bg-black/50 backdrop-blur-[2px]"
+              className="fixed inset-0 z-[60] bg-black/30"
+              style={{ backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)" }}
               onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
               aria-hidden="true"
             />
@@ -137,35 +174,38 @@ export default function BottomTabBar() {
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ duration: 0.32, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed bottom-0 inset-x-0 z-[61] bg-white dark:bg-s-dm-surface rounded-t-[24px] px-6 pb-10 pt-4"
-              style={{ boxShadow: "0 -4px 32px rgba(0,0,0,.12)" }}
+              transition={{ duration: 0.34, ease: [0.32, 0.72, 0, 1] }}
+              className="fixed bottom-0 inset-x-0 z-[61] bg-white rounded-t-[28px] px-6 pt-4"
+              style={{
+                paddingBottom: "calc(env(safe-area-inset-bottom) + 32px)",
+                boxShadow: "0 -4px 40px rgba(0,0,0,.14)",
+              }}
               role="dialog"
               aria-modal="true"
             >
               {/* Handle */}
-              <div className="w-9 h-1 rounded-full bg-s-ink/15 dark:bg-white/15 mx-auto mb-5" aria-hidden="true" />
+              <div className="w-9 h-1 rounded-full bg-[#E4E4E4] mx-auto mb-6" aria-hidden="true" />
 
               {/* Close */}
               <button
                 onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
                 aria-label="Schliessen"
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-s-ink/[0.06] dark:hover:bg-white/[0.06] transition-colors"
+                className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-[#F5F5F5] hover:bg-[#ECECEC] transition-colors"
               >
-                <X size={16} className="text-s-ink/50 dark:text-s-dm-text/50" />
+                <X size={15} className="text-[#717171]" />
               </button>
 
-              <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text mb-1">
+              <h2 className="font-heading font-bold text-[20px] text-[#1A1A1A] mb-1">
                 {t("loginCta") ?? "Jetzt anmelden"}
               </h2>
-              <p className="text-sm font-body text-s-ink/55 dark:text-s-dm-text/55 mb-6">
+              <p className="text-[14px] font-body text-[#717171] mb-7 leading-snug">
                 {contextMessage}
               </p>
 
               {/* Google login */}
               <button
                 onClick={handleGoogleLogin}
-                className="w-full flex items-center justify-center gap-3 py-3.5 rounded-btn border border-s-ink/12 dark:border-white/12 text-sm font-heading font-semibold text-s-ink dark:text-s-dm-text hover:border-s-ink/25 dark:hover:border-white/25 hover:brightness-[0.98] active:scale-[0.98] transition-all mb-3"
+                className="w-full flex items-center justify-center gap-3 py-3.5 rounded-btn border border-[#EBEBEB] text-[14px] font-heading font-semibold text-[#222222] hover:border-[#AAAAAA] hover:bg-[#FAFAFA] active:scale-[0.98] transition-all mb-3"
               >
                 <Chrome size={18} className="text-s-coral" aria-hidden="true" />
                 Mit Google anmelden
@@ -175,8 +215,8 @@ export default function BottomTabBar() {
               <Link
                 href={`/${locale}/auth/login`}
                 onClick={() => setLoginSheet(s => ({ ...s, open: false }))}
-                className="w-full flex items-center justify-center py-3.5 rounded-btn bg-s-coral text-white text-sm font-heading font-bold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
-                style={{ boxShadow: "0 2px 6px rgba(232,98,74,.30)" }}
+                className="w-full flex items-center justify-center py-3.5 rounded-btn bg-s-coral text-white text-[14px] font-heading font-bold active:scale-[0.98] transition-all duration-150"
+                style={{ boxShadow: "0 2px 12px rgba(232,98,74,.32)" }}
               >
                 Mit E-Mail anmelden
               </Link>

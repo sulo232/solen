@@ -12,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" />
         <ThemeScript />
       </head>
       <body style={{ margin: 0, padding: 0 }} className="bg-s-bg-base text-s-ink dark:bg-s-dm-bg dark:text-s-dm-text">
