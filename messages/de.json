@@ -641,6 +641,18 @@
       "back": "Zurück",
       "continuePayment": "Zur Zahlung",
       "cancellationPolicy": "Stornierungsbedingungen"
+    },
+    "payment": {
+      "title": "Zahlungsart",
+      "online": "Online bezahlen",
+      "onlineDescription": "Sicher mit Kreditkarte oder TWINT",
+      "inPerson": "An Ort bezahlen",
+      "inPersonDescription": "Zahle direkt im Salon in bar oder mit Karte",
+      "back": "Zurück",
+      "confirmBooking": "Buchung bestätigen",
+      "selectPaymentMethod": "Bitte wähle eine Zahlungsart aus",
+      "bookingFailed": "Buchung fehlgeschlagen",
+      "unknownError": "Ein Fehler ist aufgetreten"
     }
   },
   "chat": {

@@ -189,3 +189,10 @@
 - **What happened**: When creating ConfirmationStep.tsx, initially expected to call `goToStep('confirmation')` but the BookingStep type union is `'services' | 'staff' | 'date' | 'time' | 'confirm' | 'payment'`. The correct step name is `'confirm'` (shortened).
 - **Why it happened**: The BookingStep type uses abbreviated step names for brevity.
 - **Fix**: When navigating the booking wizard, reference the exact BookingStep enum values, not expanded names. Always check `lib/booking-state.ts` for the canonical step names before building components.
+
+### Payment method is already in BookingFormData
+- **Date**: 2026-04-02
+- **File(s)**: `lib/booking-state.ts:28`, `lib/booking-context.tsx:24`
+- **What happened**: When creating PaymentStep component, assumed `paymentMethod` field didn't exist in BookingFormData. It was already defined with type `'online' | 'in_person' | null`.
+- **Why it happened**: Didn't check the booking state types file before writing the component.
+- **Fix**: Always verify field names in BookingFormData at `lib/booking-state.ts` before adding payment/form handling logic. The field was already there; just use `updateFormData({ paymentMethod: method })` from the context.

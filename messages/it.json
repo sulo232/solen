@@ -609,6 +609,18 @@
       "back": "Indietro",
       "continuePayment": "Continua al pagamento",
       "cancellationPolicy": "Politica di cancellazione"
+    },
+    "payment": {
+      "title": "Metodo di pagamento",
+      "online": "Paga online",
+      "onlineDescription": "Pagamento sicuro con carta o TWINT",
+      "inPerson": "Paga al salone",
+      "inPersonDescription": "Paga direttamente al salone in contanti o con carta",
+      "back": "Indietro",
+      "confirmBooking": "Conferma prenotazione",
+      "selectPaymentMethod": "Seleziona un metodo di pagamento",
+      "bookingFailed": "Prenotazione fallita",
+      "unknownError": "Si è verificato un errore"
     }
   },
   "chat": {

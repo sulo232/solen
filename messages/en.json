@@ -631,6 +631,18 @@
       "back": "Back",
       "continuePayment": "Continue to Payment",
       "cancellationPolicy": "Cancellation Policy"
+    },
+    "payment": {
+      "title": "Payment Method",
+      "online": "Pay Online",
+      "onlineDescription": "Secure payment with card or TWINT",
+      "inPerson": "Pay at Salon",
+      "inPersonDescription": "Pay directly at the salon in cash or by card",
+      "back": "Back",
+      "confirmBooking": "Confirm Booking",
+      "selectPaymentMethod": "Please select a payment method",
+      "bookingFailed": "Booking failed",
+      "unknownError": "An error occurred"
     }
   },
   "chat": {
