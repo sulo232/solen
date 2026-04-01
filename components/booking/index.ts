@@ -1,3 +1,4 @@
+export { default as BookingWizard } from './BookingWizard';
 export { default as ServiceSelectionStep } from './ServiceSelectionStep';
 export { default as StaffSelectionStep } from './StaffSelectionStep';
 export { default as DateSelectionStep } from './DateSelectionStep';

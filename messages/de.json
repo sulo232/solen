@@ -509,6 +509,7 @@
     "priceFrom": "Ab"
   },
   "booking": {
+    "bookingAt": "Termin bei {salon}",
     "cart": {
       "title": "Warenkorb",
       "minutes": "Min",

@@ -499,6 +499,7 @@
     "priceFrom": "From"
   },
   "booking": {
+    "bookingAt": "Book your appointment at {salon}",
     "cart": {
       "title": "Shopping Cart",
       "minutes": "Min",

@@ -477,6 +477,7 @@
     "priceFrom": "Dès"
   },
   "booking": {
+    "bookingAt": "Réservez votre rendez-vous chez {salon}",
     "cart": {
       "title": "Panier",
       "minutes": "Min",

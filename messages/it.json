@@ -477,6 +477,7 @@
     "priceFrom": "Da"
   },
   "booking": {
+    "bookingAt": "Prenota il tuo appuntamento presso {salon}",
     "cart": {
       "title": "Carrello",
       "minutes": "Min",
