@@ -71,7 +71,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
       const booking = await bookingRes.json();
 
       // Redirect to confirmation page
-      router.push(`/bookings/${booking.data.id}/confirm`);
+      router.push(`/confirmation?booking_id=${booking.data.id}`);
     } catch (err) {
       console.error('[PaymentStep] Booking failed:', err);
       setError(err instanceof Error ? err.message : t('unknownError'));
