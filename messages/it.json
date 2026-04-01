@@ -2788,6 +2788,18 @@
       "shareText": "Ho prenotato un appuntamento per {service} da {salon} il {date} alle {time}!",
       "bookedVia": "Prenotato tramite solen.ch"
     },
+    "successPage": {
+      "title": "Prenotazione confermata!",
+      "subtitle": "La tua prenotazione è confermata. Riceverai un'email di conferma.",
+      "salon": "Salone",
+      "service": "Servizio",
+      "dateTime": "Appuntamento",
+      "total": "Totale",
+      "addToCalendar": "Aggiungi al calendario",
+      "shareBooking": "Condividi prenotazione",
+      "rebook": "Prenota di nuovo",
+      "continueExploring": "Scopri altri saloni"
+    },
     "guestBookingForm": {
       "title": "Prenotazione ospite",
       "subtitle": "I tuoi dati di contatto",

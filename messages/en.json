@@ -2811,6 +2811,18 @@
       "shareText": "I booked an appointment for {service} at {salon} on {date} at {time}!",
       "bookedVia": "Booked via solen.ch"
     },
+    "successPage": {
+      "title": "Booking confirmed!",
+      "subtitle": "Your booking is confirmed. You'll receive a confirmation email.",
+      "salon": "Salon",
+      "service": "Service",
+      "dateTime": "Appointment",
+      "total": "Total",
+      "addToCalendar": "Add to calendar",
+      "shareBooking": "Share booking",
+      "rebook": "Book again",
+      "continueExploring": "Discover more salons"
+    },
     "guestBookingForm": {
       "title": "Guest booking",
       "subtitle": "Your contact details",

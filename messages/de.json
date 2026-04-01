@@ -2821,6 +2821,18 @@
       "shareText": "Ich habe einen Termin für {service} bei {salon} am {date} um {time} Uhr gebucht!",
       "bookedVia": "Gebucht über solen.ch"
     },
+    "successPage": {
+      "title": "Termin bestätigt!",
+      "subtitle": "Dein Termin ist gebucht. Du erhältst eine Bestätigung per E-Mail.",
+      "salon": "Salon",
+      "service": "Leistung",
+      "dateTime": "Termin",
+      "total": "Gesamtpreis",
+      "addToCalendar": "Zum Kalender hinzufügen",
+      "shareBooking": "Termin teilen",
+      "rebook": "Nochmal buchen",
+      "continueExploring": "Weitere Salons entdecken"
+    },
     "guestBookingForm": {
       "title": "Gastbuchung",
       "subtitle": "Deine Kontaktdaten",
