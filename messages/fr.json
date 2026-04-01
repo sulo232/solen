@@ -580,6 +580,13 @@
       "subtitle": "Choisissez un styliste spécifique ou \"Disponible\" pour le prochain créneau libre.",
       "back": "Retour",
       "continue": "Continuer"
+    },
+    "dateSelection": {
+      "title": "Quand désirez-vous réserver ?",
+      "subtitle": "Sélectionnez une date pour votre rendez-vous",
+      "back": "Retour",
+      "continue": "Continuer",
+      "selectDate": "Veuillez sélectionner une date"
     }
   },
   "chat": {

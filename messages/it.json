@@ -580,6 +580,13 @@
       "subtitle": "Scegli uno stilista specifico o \"Disponibile\" per il prossimo slot disponibile.",
       "back": "Indietro",
       "continue": "Continua"
+    },
+    "dateSelection": {
+      "title": "Quando desideri prenotare?",
+      "subtitle": "Seleziona una data per il tuo appuntamento",
+      "back": "Indietro",
+      "continue": "Continua",
+      "selectDate": "Seleziona una data"
     }
   },
   "chat": {

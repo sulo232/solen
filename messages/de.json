@@ -612,6 +612,13 @@
       "subtitle": "Wähle einen Stylist oder \"Verfügbar\" für den nächsten freien Termin.",
       "back": "Zurück",
       "continue": "Weiter"
+    },
+    "dateSelection": {
+      "title": "Wann möchtest du buchen?",
+      "subtitle": "Wähle ein Datum für deinen Termin",
+      "back": "Zurück",
+      "continue": "Weiter",
+      "selectDate": "Bitte wähle ein Datum aus"
     }
   },
   "chat": {

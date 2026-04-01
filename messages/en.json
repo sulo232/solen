@@ -602,6 +602,13 @@
       "subtitle": "Choose a specific stylist or \"Available\" for the next available slot.",
       "back": "Back",
       "continue": "Continue"
+    },
+    "dateSelection": {
+      "title": "When would you like to book?",
+      "subtitle": "Select a date for your appointment",
+      "back": "Back",
+      "continue": "Continue",
+      "selectDate": "Please select a date"
     }
   },
   "chat": {
