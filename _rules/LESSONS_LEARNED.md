@@ -178,3 +178,14 @@
 - **What happened**: `SalonCard.tsx` called `t("guestFavorite", { fallback: "Guest Favorite" })` and `t("topRated", { fallback: "Top Rated" })`. Because the keys were missing from the messages files AND next-intl does not support the `fallback` option, it rendered the raw key path (e.g. "salon.guestFavorite") literally on screen as a badge label.
 - **Why it happened**: `next-intl` does NOT support a `fallback` option in the `t()` call. The correct way to avoid missing-key crashes is to add the key to all 4 locale files. The `{ fallback }` pattern works in some other i18n libraries (e.g. `react-i18next`) but not here.
 - **Fix**: (1) Add the missing key to all 4 locale files (`messages/de.json`, `en.json`, `fr.json`, `it.json`) under the correct namespace. (2) Call `t("key")` with no second argument. Never use `{ fallback: "..." }` in next-intl — it is silently ignored and the raw key is displayed.
+
+---
+
+## Booking Wizard
+
+### BookingStep enum uses 'confirm' not 'confirmation'
+- **Date**: 2026-04-02
+- **File(s)**: `lib/booking-state.ts:7`
+- **What happened**: When creating ConfirmationStep.tsx, initially expected to call `goToStep('confirmation')` but the BookingStep type union is `'services' | 'staff' | 'date' | 'time' | 'confirm' | 'payment'`. The correct step name is `'confirm'` (shortened).
+- **Why it happened**: The BookingStep type uses abbreviated step names for brevity.
+- **Fix**: When navigating the booking wizard, reference the exact BookingStep enum values, not expanded names. Always check `lib/booking-state.ts` for the canonical step names before building components.
