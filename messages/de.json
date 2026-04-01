@@ -619,6 +619,18 @@
       "back": "Zurück",
       "continue": "Weiter",
       "selectDate": "Bitte wähle ein Datum aus"
+    },
+    "timeSelection": {
+      "title": "Wähle eine Uhrzeit",
+      "morning": "Morgens",
+      "afternoon": "Nachmittags",
+      "evening": "Abends",
+      "back": "Zurück",
+      "continue": "Weiter",
+      "selectTime": "Bitte wähle eine Uhrzeit aus",
+      "selectDateFirst": "Wähle zuerst ein Datum",
+      "errorFetchingSlots": "Fehler beim Laden der Zeitfenster",
+      "noSlotsAvailable": "Keine Zeitfenster verfügbar"
     }
   },
   "chat": {

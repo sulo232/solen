@@ -587,6 +587,18 @@
       "back": "Retour",
       "continue": "Continuer",
       "selectDate": "Veuillez sélectionner une date"
+    },
+    "timeSelection": {
+      "title": "Sélectionnez une heure",
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soirée",
+      "back": "Retour",
+      "continue": "Continuer",
+      "selectTime": "Veuillez sélectionner une heure",
+      "selectDateFirst": "Veuillez d'abord sélectionner une date",
+      "errorFetchingSlots": "Erreur lors du chargement des créneaux horaires",
+      "noSlotsAvailable": "Aucun créneau horaire disponible"
     }
   },
   "chat": {

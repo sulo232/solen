@@ -587,6 +587,18 @@
       "back": "Indietro",
       "continue": "Continua",
       "selectDate": "Seleziona una data"
+    },
+    "timeSelection": {
+      "title": "Seleziona un'ora",
+      "morning": "Mattina",
+      "afternoon": "Pomeriggio",
+      "evening": "Sera",
+      "back": "Indietro",
+      "continue": "Continua",
+      "selectTime": "Seleziona un'ora",
+      "selectDateFirst": "Seleziona prima una data",
+      "errorFetchingSlots": "Errore durante il caricamento degli orari",
+      "noSlotsAvailable": "Nessun orario disponibile"
     }
   },
   "chat": {

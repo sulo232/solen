@@ -609,6 +609,18 @@
       "back": "Back",
       "continue": "Continue",
       "selectDate": "Please select a date"
+    },
+    "timeSelection": {
+      "title": "Select a time",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "back": "Back",
+      "continue": "Continue",
+      "selectTime": "Please select a time",
+      "selectDateFirst": "Please select a date first",
+      "errorFetchingSlots": "Error loading time slots",
+      "noSlotsAvailable": "No time slots available"
     }
   },
   "chat": {
