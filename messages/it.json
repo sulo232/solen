@@ -254,6 +254,9 @@
       "salons": "Saloni",
       "reviews": "Recensioni",
       "bookings": "Prenotazioni"
+    },
+    "cities": {
+      "title": "Saloni vicino a te"
     }
   },
   "common": {
@@ -3126,9 +3129,29 @@
   },
   "vouchers": {
     "loading": "Caricamento...",
-    "title": "Acquista voucher",
+    "title": "Regala un voucher bellezza",
     "error": "Errore nella creazione del voucher",
-    "processing": "Elaborazione..."
+    "processing": "Elaborazione...",
+    "subtitle": "Il regalo perfetto per gli amanti della bellezza",
+    "searchPlaceholder": "Cerca saloni...",
+    "noSalons": "Nessun salone trovato",
+    "selectToGift": "Seleziona per regalare",
+    "backToSalons": "Torna ai saloni",
+    "optional": "opzionale",
+    "configure": {
+      "title": "Personalizza il tuo voucher",
+      "amount": "Importo (CHF)",
+      "recipientName": "Nome del destinatario",
+      "recipientEmail": "Email del destinatario",
+      "message": "Messaggio personale",
+      "messagePlaceholder": "Buon compleanno! 🎂",
+      "total": "Totale",
+      "continue": "Continua al pagamento"
+    },
+    "payment": {
+      "title": "Pagamento",
+      "payNow": "Paga ora"
+    }
   },
   "coiffeur": {
     "ai_matcher": {

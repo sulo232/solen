@@ -254,6 +254,9 @@
       "salons": "Salons",
       "reviews": "Bewertungen",
       "bookings": "Buchungen"
+    },
+    "cities": {
+      "title": "Salons in deiner Nähe"
     }
   },
   "common": {
@@ -3159,9 +3162,29 @@
   },
   "vouchers": {
     "loading": "Lade...",
-    "title": "Gutschein kaufen",
+    "title": "Schenke einen Beauty-Gutschein",
     "error": "Fehler beim Erstellen des Gutscheins",
-    "processing": "Wird verarbeitet..."
+    "processing": "Wird verarbeitet...",
+    "subtitle": "Das perfekte Geschenk für Beauty-Lovers",
+    "searchPlaceholder": "Salon suchen...",
+    "noSalons": "Keine Salons gefunden",
+    "selectToGift": "Wähle, um zu schenken",
+    "backToSalons": "Zurück zu Salons",
+    "optional": "optional",
+    "configure": {
+      "title": "Gestalte deinen Gutschein",
+      "amount": "Betrag (CHF)",
+      "recipientName": "Name des Beschenkten",
+      "recipientEmail": "E-Mail des Beschenkten",
+      "message": "Persönliche Nachricht",
+      "messagePlaceholder": "Alles Gute zum Geburtstag! 🎂",
+      "total": "Gesamtbetrag",
+      "continue": "Weiter zur Zahlung"
+    },
+    "payment": {
+      "title": "Zahlung",
+      "payNow": "Jetzt zahlen"
+    }
   },
   "coiffeur": {
     "ai_matcher": {

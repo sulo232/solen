@@ -254,6 +254,9 @@
       "salons": "Salons",
       "reviews": "Avis",
       "bookings": "Réservations"
+    },
+    "cities": {
+      "title": "Salons près de vous"
     }
   },
   "common": {
@@ -3126,9 +3129,29 @@
   },
   "vouchers": {
     "loading": "Chargement...",
-    "title": "Acheter un bon",
+    "title": "Offrir un bon beauté",
     "error": "Erreur lors de la création du bon",
-    "processing": "Traitement en cours..."
+    "processing": "Traitement en cours...",
+    "subtitle": "Le cadeau parfait pour les amateurs de beauté",
+    "searchPlaceholder": "Rechercher des salons...",
+    "noSalons": "Aucun salon trouvé",
+    "selectToGift": "Sélectionner pour offrir",
+    "backToSalons": "Retour aux salons",
+    "optional": "optionnel",
+    "configure": {
+      "title": "Personnalisez votre bon",
+      "amount": "Montant (CHF)",
+      "recipientName": "Nom du destinataire",
+      "recipientEmail": "Email du destinataire",
+      "message": "Message personnel",
+      "messagePlaceholder": "Joyeux anniversaire ! 🎂",
+      "total": "Total",
+      "continue": "Continuer vers le paiement"
+    },
+    "payment": {
+      "title": "Paiement",
+      "payNow": "Payer maintenant"
+    }
   },
   "coiffeur": {
     "ai_matcher": {

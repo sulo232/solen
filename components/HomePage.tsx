@@ -19,6 +19,7 @@ import { type CitySlug } from "@/lib/cities";
 import { useRecentVisits } from "@/hooks/useRecentVisits";
 import DiscoverCarousel from "@/components/ui/DiscoverCarousel";
 import TrustStatsBanner from "@/components/TrustStatsBanner";
+import BrowseByCitySection from "@/components/BrowseByCitySection";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation variants
@@ -266,6 +267,9 @@ export default function HomePage({ initialData }: HomePageProps) {
         <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-[#EBEBEB]">
           <RecentlyViewed />
         </section>
+
+        {/* ── 4.5. Browse by City ── */}
+        <BrowseByCitySection />
 
         {/* ── 5. Partner CTA ── */}
         <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-[#EBEBEB]">
