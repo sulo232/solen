@@ -34,5 +34,6 @@ export { default as TutorialTour } from "@/components/TutorialTour";
 export { default as RecentlyViewed, trackSalonView } from "@/components/RecentlyViewed";
 export { default as TrustStatsBanner } from "@/components/TrustStatsBanner";
 export { default as BrowseByCitySection } from "@/components/BrowseByCitySection";
+export { default as TestimonialCarousel } from "@/components/TestimonialCarousel";
 export { default as ReviewBreakdown } from "@/components/ReviewBreakdown";
 export { default as NearbySalons } from "@/components/NearbySalons";
