@@ -224,3 +224,10 @@
 - **What happened**: Tried to use `getTranslations({ locale, namespace: 'metadata' })` inside generateMetadata. TypeScript error: metadata namespace doesn't exist, and the call pattern was wrong.
 - **Why it happened**: Misunderstood how next-intl's getTranslations works in Server Components.
 - **Fix**: Metadata should be static strings or Metadata objects returned directly. Use getTranslations for page content only, not metadata. See coiffeur/page.tsx for the correct pattern of hardcoding titles + descriptions.
+
+### Import UI components from @/components (barrel), not @/components/ui
+- **Date**: 2026-04-02
+- **File(s)**: `components/booking/BookingsList.tsx:5`
+- **What happened**: Initially wrote `import { Spinner, EmptyState } from '@/components/ui'`. Build failed: "Module not found: Can't resolve '@/components/ui'".
+- **Why it happened**: The `@/components/ui` folder exists but does NOT have an index.ts barrel export. Components must be imported from the root `@/components` barrel (components/index.ts) instead.
+- **Fix**: Always import UI components from `@/components`, not `@/components/ui`. Check components/index.ts for the canonical exports: `export { default as Spinner } from "@/components/ui/Spinner"` etc. The barrel in components/index.ts handles the re-export.
