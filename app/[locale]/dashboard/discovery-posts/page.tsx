@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Plus, Upload, Link as LinkIcon, Loader2, Eye, EyeOff, BarChart } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -191,8 +192,8 @@ export default function DiscoveryPostsPage() {
               <div className="space-y-3">
                 {posts.map((post) => (
                   <div key={post.id} className="p-3 rounded-[12px] bg-white dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 flex items-center gap-3">
-                    <div className="w-14 h-14 rounded-btn bg-s-ink/5 dark:bg-white/5 shrink-0 overflow-hidden">
-                      {post.image_url && <img src={post.image_url} alt="" className="w-full h-full object-cover" />}
+                    <div className="w-14 h-14 rounded-btn bg-s-ink/5 dark:bg-white/5 shrink-0 overflow-hidden relative">
+                      {post.image_url && <Image src={post.image_url} alt="" fill className="object-cover" unoptimized />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-s-ink dark:text-s-dm-text truncate">{post.style_name || post.category}</p>

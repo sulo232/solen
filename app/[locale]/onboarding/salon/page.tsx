@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
 import Spinner from "@/components/ui/Spinner";
 import InteractiveHoverButton from "@/components/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
 import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
+import ImageUpload from "@/components/ui/ImageUpload";
 import type { SalonCategory } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -18,11 +19,12 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 // ─────────────────────────────────────────
 import { CATEGORY_OPTIONS } from "@/lib/constants/categories";
 
-const TOTAL_STEPS = 2;
+const TOTAL_STEPS = 3;
 
 const STEP_META = [
   { icon: Building2, label: "basics" },
   { icon: Sparkles, label: "quickwin" },
+  { icon: Camera, label: "photos" },
 ];
 
 // ─────────────────────────────────────────
@@ -299,6 +301,51 @@ function Step3({ data, onChange, category, t }: {
 }
 
 // ─────────────────────────────────────────
+// Step 3 — Photos (optional)
+// ─────────────────────────────────────────
+
+function StepPhotos({
+  uploadedUrls,
+  onUpload,
+  t,
+}: {
+  uploadedUrls: string[];
+  onUpload: (urls: string[]) => void;
+  t: TFunc;
+}) {
+  return (
+    <StepContainer title={t("stepPhotos.title")} subtitle={t("stepPhotos.subtitle")}>
+      <div className="space-y-5">
+        <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
+          {t("stepPhotos.desc")}
+        </p>
+
+        <ImageUpload
+          onUpload={onUpload}
+          maxFiles={10}
+          existingUrls={uploadedUrls}
+          bucket="salon-gallery"
+          pathPrefix="onboarding"
+        />
+
+        <div className="rounded-[12px] border border-s-coral/[0.12] p-4"
+          style={{ background: "rgba(232,98,74,.04)" }}>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <Camera size={12} className="text-s-coral shrink-0" />
+            <p className="text-[9px] font-heading font-bold uppercase tracking-[.14em] text-s-coral">
+              {t("stepPhotos.hint")}
+            </p>
+          </div>
+          <p className="text-xs font-body text-s-ink/50 dark:text-s-dm-text/50 leading-relaxed">
+            {t("stepPhotos.hintDesc")}
+          </p>
+        </div>
+      </div>
+    </StepContainer>
+  );
+}
+
+// ─────────────────────────────────────────
 // Main Wizard
 // ─────────────────────────────────────────
 
@@ -321,10 +368,13 @@ export default function SalonOnboardingPage() {
 
 
 
-  // Step 3 state (quick win service)
+  // Step 2 state (quick win service)
   const [quickWin, setQuickWin] = useState<QuickWinData>({
     service_name: "", service_duration: 60, service_price: 80,
   });
+
+  // Step 3 state (photos — optional)
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
 
   // Restore wizard state: DB first, then sessionStorage fallback
   const [hydrated, setHydrated] = useState(false);
@@ -332,6 +382,7 @@ export default function SalonOnboardingPage() {
     const restoreFromObj = (data: Record<string, unknown>) => {
       if (data.basics) setBasics(data.basics as BasicsData);
       if (data.quickWin) setQuickWin(data.quickWin as QuickWinData);
+      if (data.photoUrls) setPhotoUrls(data.photoUrls as string[]);
     };
 
     const loadDraft = async () => {
@@ -365,7 +416,7 @@ export default function SalonOnboardingPage() {
   // Save wizard state to sessionStorage + DB (debounced)
   useEffect(() => {
     if (!hydrated) return;
-    const stateObj = { basics, quickWin, step };
+    const stateObj = { basics, quickWin, photoUrls, step };
     try {
       sessionStorage.setItem("solen_wizard", JSON.stringify(stateObj));
     } catch { /* storage full */ }
@@ -375,13 +426,13 @@ export default function SalonOnboardingPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          draft_data: { basics, quickWin },
+          draft_data: { basics, quickWin, photoUrls },
           current_step: step,
         }),
       }).catch((err) => console.error("[OnboardingSalon] draft autosave failed:", err)); // fire-and-forget
     }, 2000);
     return () => clearTimeout(timer);
-  }, [hydrated, basics, quickWin, step]);
+  }, [hydrated, basics, quickWin, photoUrls, step]);
 
   // Auth guard — redirect to register if no session
   const [authChecked, setAuthChecked] = useState(false);
@@ -416,6 +467,7 @@ export default function SalonOnboardingPage() {
     if (step === 2) {
       if (!quickWin.service_name || quickWin.service_name.length < 2) errors.service_name = "Service-Name erforderlich";
     }
+    // Step 3 (photos) is optional — no validation needed
     return errors;
   };
 
@@ -462,6 +514,9 @@ export default function SalonOnboardingPage() {
             duration_minutes: quickWin.service_duration,
             price: quickWin.service_price,
           }] : [],
+          // Gallery photos uploaded in step 3
+          gallery_urls: photoUrls.length > 0 ? photoUrls : undefined,
+          cover_photo_url: photoUrls[0] || undefined,
         }),
       });
       if (!res.ok) {
@@ -629,12 +684,19 @@ export default function SalonOnboardingPage() {
                 t={t as any}
               />
             )}
+            {step === 3 && (
+              <StepPhotos
+                uploadedUrls={photoUrls}
+                onUpload={setPhotoUrls}
+                t={t as any}
+              />
+            )}
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Submit error banner */}
-      {submitError && step === TOTAL_STEPS && (
+      {submitError && step >= TOTAL_STEPS - 1 && (
         <div className="max-w-xl mx-auto px-4 mb-4">
           <div className="flex items-start gap-3 rounded-[12px] border border-s-coral/20 p-4"
             style={{ background: "rgba(232,98,74,.05)" }}>

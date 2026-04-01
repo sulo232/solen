@@ -1974,7 +1974,8 @@
       "team": "Équipe",
       "hours": "Horaires",
       "extras": "Extras",
-      "review": "Vérification"
+      "review": "Vérification",
+      "photos": "Photos"
     },
     "nav": {
       "back": "Retour",
@@ -2090,11 +2091,29 @@
       "hint": "Juste un début !",
       "hintDesc": "Vous pouvez ajouter des services, des membres d'équipe et des horaires dans le tableau de bord."
     },
+    "stepPhotos": {
+      "title": "Télécharger des photos",
+      "subtitle": "Optionnel · vous pouvez ignorer cette étape",
+      "desc": "Téléchargez des photos de votre salon — cela augmente considérablement votre taux de réservation.",
+      "hint": "Recommandé : 5+ photos",
+      "hintDesc": "Les salons avec photos reçoivent jusqu'à 3× plus de réservations. Vous pouvez ajouter des photos à tout moment dans le tableau de bord.",
+      "skip": "Ignorer"
+    },
     "done": {
       "title": "Salon créé !",
       "subtitle": "Votre salon est en cours de vérification. Vous serez informé(e) par e-mail.",
       "dashboardHint": "Redirection vers le tableau de bord…"
     }
+  },
+  "imageUpload": {
+    "dropZoneTitle": "Glissez des photos ici ou cliquez pour télécharger",
+    "dropZoneHint": "JPEG, PNG ou WebP · max. {max} Mo par fichier",
+    "dropZoneLabel": "Télécharger des photos",
+    "remove": "Supprimer",
+    "errorType": "Seulement JPEG, PNG ou WebP autorisés",
+    "errorSize": "Fichier trop volumineux (max. {max} Mo)",
+    "errorUpload": "Échec du téléchargement — veuillez réessayer",
+    "countHint": "{count} / {max} photos"
   },
   "nails": {
     "filter_shape": "Forme",
@@ -2530,7 +2549,11 @@
     "filterToday": "Filtrer les salons disponibles aujourd'hui",
     "filterTomorrow": "Filtrer les salons disponibles demain",
     "remove": "retirer",
-    "add": "filtrer"
+    "add": "filtrer",
+    "openNow": "Ouvert maintenant",
+    "instantBookable": "Réservable instantanément",
+    "deals": "Offres",
+    "walkIn": "Sans rendez-vous"
   },
   "discover": {
     "title": "Découvrir",

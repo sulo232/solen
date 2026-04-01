@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -133,11 +134,12 @@ function SalonPhoto({ salon }: { salon: CompareSalon }) {
 
   if (src) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={src}
         alt={salon.name}
-        className="w-full h-full object-cover"
+        fill
+        className="object-cover"
+        unoptimized
       />
     );
   }

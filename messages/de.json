@@ -2007,7 +2007,8 @@
       "team": "Team",
       "hours": "Zeiten",
       "extras": "Extras",
-      "review": "Überprüfung"
+      "review": "Überprüfung",
+      "photos": "Fotos"
     },
     "nav": {
       "back": "Zurück",
@@ -2123,11 +2124,29 @@
       "hint": "Nur ein Anfang!",
       "hintDesc": "Im Dashboard kannst du beliebig viele Services, Teammitglieder und Öffnungszeiten ergänzen."
     },
+    "stepPhotos": {
+      "title": "Fotos hochladen",
+      "subtitle": "Optional · kannst du überspringen",
+      "desc": "Lade Fotos deines Salons hoch — das erhöht deine Buchungsrate deutlich.",
+      "hint": "Empfohlen: 5+ Fotos",
+      "hintDesc": "Salons mit Fotos erhalten bis zu 3× mehr Buchungen. Du kannst Fotos jederzeit im Dashboard ergänzen.",
+      "skip": "Überspringen"
+    },
     "done": {
       "title": "Salon erstellt!",
       "subtitle": "Dein Salon wird jetzt geprüft. Du wirst per E-Mail informiert.",
       "dashboardHint": "Du wirst gleich zum Dashboard weitergeleitet…"
     }
+  },
+  "imageUpload": {
+    "dropZoneTitle": "Fotos hierher ziehen oder klicken zum Hochladen",
+    "dropZoneHint": "JPEG, PNG oder WebP · max. {max} MB pro Datei",
+    "dropZoneLabel": "Fotos hochladen",
+    "remove": "Entfernen",
+    "errorType": "Nur JPEG, PNG oder WebP erlaubt",
+    "errorSize": "Datei zu gross (max. {max} MB)",
+    "errorUpload": "Upload fehlgeschlagen — bitte erneut versuchen",
+    "countHint": "{count} / {max} Fotos"
   },
   "nails": {
     "filter_shape": "Form",
@@ -2563,7 +2582,11 @@
     "filterToday": "Heute verfügbare Salons filtern",
     "filterTomorrow": "Morgen verfügbare Salons filtern",
     "remove": "entfernen",
-    "add": "filtern"
+    "add": "filtern",
+    "openNow": "Jetzt geöffnet",
+    "instantBookable": "Sofort buchbar",
+    "deals": "Angebot",
+    "walkIn": "Walk-in"
   },
   "discover": {
     "title": "Entdecken",

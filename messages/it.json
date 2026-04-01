@@ -1974,7 +1974,8 @@
       "team": "Team",
       "hours": "Orari",
       "extras": "Extra",
-      "review": "Revisione"
+      "review": "Revisione",
+      "photos": "Foto"
     },
     "nav": {
       "back": "Indietro",
@@ -2090,11 +2091,29 @@
       "hint": "Solo l'inizio!",
       "hintDesc": "Puoi aggiungere servizi, membri del team e orari nella dashboard."
     },
+    "stepPhotos": {
+      "title": "Carica foto",
+      "subtitle": "Opzionale · puoi saltare questo passaggio",
+      "desc": "Carica foto del tuo salone — questo aumenta notevolmente il tasso di prenotazione.",
+      "hint": "Consigliato: 5+ foto",
+      "hintDesc": "I saloni con foto ricevono fino a 3× più prenotazioni. Puoi aggiungere foto in qualsiasi momento nella dashboard.",
+      "skip": "Salta"
+    },
     "done": {
       "title": "Salone creato!",
       "subtitle": "Il tuo salone è in fase di verifica. Sarai informato/a via e-mail.",
       "dashboardHint": "Reindirizzamento alla dashboard…"
     }
+  },
+  "imageUpload": {
+    "dropZoneTitle": "Trascina le foto qui o clicca per caricare",
+    "dropZoneHint": "JPEG, PNG o WebP · max. {max} MB per file",
+    "dropZoneLabel": "Carica foto",
+    "remove": "Rimuovi",
+    "errorType": "Solo JPEG, PNG o WebP consentiti",
+    "errorSize": "File troppo grande (max. {max} MB)",
+    "errorUpload": "Caricamento fallito — riprova",
+    "countHint": "{count} / {max} foto"
   },
   "nails": {
     "filter_shape": "Forma",
@@ -2530,7 +2549,11 @@
     "filterToday": "Filtra i saloni disponibili oggi",
     "filterTomorrow": "Filtra i saloni disponibili domani",
     "remove": "rimuovi",
-    "add": "filtra"
+    "add": "filtra",
+    "openNow": "Aperto ora",
+    "instantBookable": "Prenotabile subito",
+    "deals": "Offerte",
+    "walkIn": "Senza appuntamento"
   },
   "discover": {
     "title": "Scoprire",

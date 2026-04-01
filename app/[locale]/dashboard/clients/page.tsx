@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import Image from "next/image";
 import { Search, User, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
@@ -143,9 +144,9 @@ export default function ClientsPage() {
               onClick={() => setSelectedClient(c)}
               className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-s-ink/5 dark:border-white/5 bg-white dark:bg-s-dm-surface hover:border-s-coral/20 transition-colors text-left"
             >
-              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 overflow-hidden">
+              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 overflow-hidden relative">
                 {c.avatar_url ? (
-                  <img src={c.avatar_url} alt="" className="w-full h-full object-cover" />
+                  <Image src={c.avatar_url} alt="" fill className="object-cover" unoptimized />
                 ) : (
                   <User size={16} className="text-s-coral" />
                 )}
@@ -284,7 +285,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
         <ChevronLeft size={16} /> Zurück
       </button>
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center overflow-hidden">
+        <div className="w-12 h-12 rounded-full bg-s-coral/10 flex items-center justify-center overflow-hidden relative">
           {client.avatar_url ? (
             <img src={client.avatar_url} alt="" className="w-full h-full object-cover" />
           ) : (

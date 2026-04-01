@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Users, Search, ShieldCheck, Scissors, User, X, Ban, CheckCircle } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -194,9 +195,9 @@ export default function AllUsersPage() {
               >
                 <div className="flex gap-3 items-start">
                   {/* Avatar */}
-                  <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-xs font-bold text-s-coral overflow-hidden">
+                  <div className="w-8 h-8 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-xs font-bold text-s-coral overflow-hidden relative">
                     {u.avatar_url ? (
-                      <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                      <Image src={u.avatar_url} alt="" fill className="object-cover" unoptimized />
                     ) : (
                       (u.display_name ?? u.email ?? "?")[0].toUpperCase()
                     )}

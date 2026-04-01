@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { DollarSign, Wallet, FileText, Calendar, Clock, Users } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -215,8 +216,8 @@ export default function SalonEarningsPage() {
                       <tr key={s.id} className="border-t border-s-ink/5 dark:border-white/5 hover:bg-s-bg-surface/60 transition-colors">
                         <td className="px-5 py-4 text-s-ink dark:text-s-dm-text">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-s-coral/10 flex items-center justify-center text-[10px] font-bold text-s-coral shrink-0 overflow-hidden">
-                              {s.avatar_url ? <img src={s.avatar_url} alt="" className="w-full h-full object-cover" /> : s.name[0]}
+                            <div className="w-6 h-6 rounded-full bg-s-coral/10 flex items-center justify-center text-[10px] font-bold text-s-coral shrink-0 overflow-hidden relative">
+                              {s.avatar_url ? <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized /> : s.name[0]}
                             </div>
                             <span className="font-medium">{s.name}</span>
                           </div>

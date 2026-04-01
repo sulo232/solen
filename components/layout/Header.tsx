@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -152,7 +153,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
         {/* Left: Logo */}
         <div className="flex-1 shrink-0 flex items-center justify-start h-14">
           <Link href={`/${locale}`} aria-label={t("homeLink")}>
-            <img
+            <Image
               src="/logo.svg"
               alt="Solen.ch"
               className="h-7 sm:h-8 w-auto"

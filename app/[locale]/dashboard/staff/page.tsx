@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Mail, Check, Clock as ClockIcon, Send } from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Spinner from "@/components/ui/Spinner";
@@ -491,9 +492,9 @@ export default function StaffPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {staff.map((s) => (
             <div key={s.id} className="bg-white dark:bg-s-dm-surface rounded-[12px] border border-s-ink/5 dark:border-white/5 p-4 flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral">
+              <div className="w-10 h-10 rounded-full bg-s-coral/10 flex items-center justify-center shrink-0 text-sm font-bold text-s-coral overflow-hidden relative">
                 {s.avatar_url ? (
-                  <img src={s.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
+                  <Image src={s.avatar_url} alt="" fill className="object-cover" unoptimized />
                 ) : (s.name?.charAt(0) ?? "?").toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">

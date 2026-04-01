@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Heart, Check, AlertCircle } from "lucide-react";
@@ -105,9 +106,9 @@ export default function TipPage() {
     <div className="min-h-screen bg-s-bg-base dark:bg-s-dm-bg flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3 overflow-hidden">
+          <div className="w-20 h-20 rounded-full bg-s-coral/10 flex items-center justify-center mx-auto mb-3 overflow-hidden relative">
             {staffAvatar ? (
-              <img src={staffAvatar} alt="" className="w-full h-full object-cover" />
+              <Image src={staffAvatar} alt="" fill className="object-cover" unoptimized />
             ) : (
               <Heart size={28} className="text-s-coral" />
             )}

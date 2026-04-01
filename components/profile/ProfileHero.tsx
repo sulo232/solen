@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Share2, Heart, Settings } from 'lucide-react';
 import type { Profile } from '@/lib/types';
@@ -31,12 +32,14 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile, locale, onEdi
             background: 'linear-gradient(145deg, #C8614A 0%, #E8C49A 55%, #E8927A 100%)'
           }}
         >
-          <div className="w-full h-full rounded-full bg-[--raised] dark:bg-s-dm-surface flex items-center justify-center overflow-hidden">
+          <div className="w-full h-full rounded-full bg-[--raised] dark:bg-s-dm-surface flex items-center justify-center overflow-hidden relative">
             {profile.avatar_url ? (
-              <img
+              <Image
                 src={profile.avatar_url}
                 alt={profile.display_name}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                unoptimized
               />
             ) : (
               <span className="font-display text-[34px] text-s-ink dark:text-s-dm-text tracking-[.07em]">

@@ -1997,7 +1997,8 @@
       "team": "Team",
       "hours": "Hours",
       "extras": "Extras",
-      "review": "Review"
+      "review": "Review",
+      "photos": "Photos"
     },
     "nav": {
       "back": "Back",
@@ -2113,11 +2114,29 @@
       "hint": "Just a start!",
       "hintDesc": "You can add unlimited services, team members, and opening hours in the dashboard."
     },
+    "stepPhotos": {
+      "title": "Upload Photos",
+      "subtitle": "Optional · you can skip this",
+      "desc": "Upload photos of your salon — this significantly increases your booking rate.",
+      "hint": "Recommended: 5+ photos",
+      "hintDesc": "Salons with photos receive up to 3× more bookings. You can add photos anytime in the dashboard.",
+      "skip": "Skip"
+    },
     "done": {
       "title": "Salon created!",
       "subtitle": "Your salon is now being reviewed. You will be notified by email.",
       "dashboardHint": "Redirecting to your dashboard…"
     }
+  },
+  "imageUpload": {
+    "dropZoneTitle": "Drag photos here or click to upload",
+    "dropZoneHint": "JPEG, PNG or WebP · max. {max} MB per file",
+    "dropZoneLabel": "Upload photos",
+    "remove": "Remove",
+    "errorType": "Only JPEG, PNG or WebP allowed",
+    "errorSize": "File too large (max. {max} MB)",
+    "errorUpload": "Upload failed — please try again",
+    "countHint": "{count} / {max} photos"
   },
   "nails": {
     "filter_shape": "Shape",
@@ -2553,7 +2572,11 @@
     "filterToday": "Filter salons available today",
     "filterTomorrow": "Filter salons available tomorrow",
     "remove": "remove",
-    "add": "filter"
+    "add": "filter",
+    "openNow": "Open Now",
+    "instantBookable": "Instant Bookable",
+    "deals": "Deals",
+    "walkIn": "Walk-in"
   },
   "discover": {
     "title": "Discover",

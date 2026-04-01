@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { Plus, Pencil, Trash2, X, ToggleLeft, ToggleRight, Camera, Check, Clock, Upload, GripVertical, FileUp } from "lucide-react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
@@ -150,8 +151,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved }: {
             <div className="flex gap-2">
               {photos.map((url, i) => (
                 <div key={i} className="relative w-16 h-16 rounded-btn overflow-hidden border border-s-ink/10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <Image src={url} alt="" fill className="object-cover" />
                   <button type="button" onClick={() => setPhotos(photos.filter((_, j) => j !== i))}
                     className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-s-ink/60 text-white flex items-center justify-center">
                     <X size={8} />

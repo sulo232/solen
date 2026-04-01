@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Store, Search, X, ExternalLink } from "lucide-react";
@@ -215,9 +216,9 @@ export default function AllSalonsPage() {
               >
                 <div className="flex gap-3">
                   {/* Cover thumbnail */}
-                  <div className="w-10 h-10 rounded-lg bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-s-bg-sunken overflow-hidden shrink-0 flex items-center justify-center relative">
                     {salon.cover_photo_url ? (
-                      <img src={salon.cover_photo_url} alt="" className="w-full h-full object-cover" />
+                      <Image src={salon.cover_photo_url} alt="" fill className="object-cover" />
                     ) : (
                       <Store size={16} className="text-s-ink/20" />
                     )}
