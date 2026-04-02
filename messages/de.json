@@ -262,6 +262,23 @@
       "title": "Was unsere Nutzer sagen"
     }
   },
+  "breadcrumb": {
+    "back": "Zurück",
+    "coiffeur": "Coiffeur",
+    "barbershop": "Barbershop",
+    "nails": "Nails",
+    "spa": "Spa",
+    "makeup": "Makeup",
+    "waxing": "Waxing",
+    "salon": "Salon",
+    "profile": "Profil",
+    "bookings": "Buchungen",
+    "settings": "Einstellungen",
+    "last-minute": "Angebote",
+    "termine": "Termine",
+    "dashboard": "Dashboard",
+    "messages": "Nachrichten"
+  },
   "common": {
     "save": "Speichern",
     "saving": "Speichern...",
@@ -287,6 +304,7 @@
     "noPast": "Keine vergangenen Termine",
     "noSalonsFound": "Keine Salons gefunden",
     "noNailDesigns": "Keine Nail-Designs gefunden",
+    "fromPrice": "ab {price}",
     "noNailDesigns_message": "Versuche andere Filter oder schau später nochmal vorbei.",
     "pleaseFill": "Bitte alle Felder ausfüllen",
     "pleaseLogin": "Bitte melde dich zuerst an",
@@ -2483,6 +2501,7 @@
     }
   },
   "partner": {
+    "title": "Wachse mit Solen",
     "hero_title_1": "Dein Salon.",
     "hero_title_accent": "Mehr Kunden.",
     "hero_title_2": "Weniger Aufwand.",
@@ -2959,7 +2978,16 @@
     "photos_label": "Fotos hinzufügen (Optional, max. 3)",
     "remove_photo": "Entfernen",
     "cancel": "Abbrechen",
-    "submit": "Senden"
+    "submit": "Senden",
+    "result": "Ergebnis",
+    "atmosphere": "Atmosphäre",
+    "pricePerformance": "Preis-Leistung",
+    "new": "Neu",
+    "reviewCount": "{count} Bewertungen",
+    "noReviews": "Noch keine Bewertungen",
+    "verifiedBooking": "Verifizierte Buchung",
+    "readMore": "Mehr anzeigen",
+    "readLess": "Weniger anzeigen"
   },
   "cityPage": {
     "title": "Salons in {cityName}",

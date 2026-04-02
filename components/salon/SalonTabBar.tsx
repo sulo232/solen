@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 interface SalonTabBarProps {
   activeTab: string;
@@ -29,7 +30,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
   }, [activeTab]);
 
   return (
-    <div className="sticky top-[57px] z-40 w-full bg-s-bg-base dark:bg-s-dm-bg border-b border-s-ink/8 dark:border-white/8 py-0 px-4 md:px-8 mb-8 overflow-hidden pointer-events-auto">
+    <div className="sticky top-[57px] z-40 w-full bg-white border-b border-[#EBEBEB] py-0 px-4 md:px-8 mb-8 overflow-hidden pointer-events-auto">
       <div 
         ref={scrollContainerRef}
         className="flex items-center gap-6 overflow-x-auto scrollbar-hide snap-x pt-2"
@@ -42,13 +43,20 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
               data-tab={tab.key}
               onClick={() => onTabClick(tab.key)}
               className={`
-                whitespace-nowrap pb-3 text-sm font-semibold transition-colors duration-150 snap-center
-                ${isActive 
-                  ? "text-s-coral border-b-2 border-s-coral" 
-                  : "text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-ink dark:hover:text-s-dm-text border-b-2 border-transparent"
+                relative whitespace-nowrap pb-3 text-[14px] font-heading font-semibold transition-colors duration-150 snap-center
+                ${isActive
+                  ? "text-[#222222]"
+                  : "text-[#6A6A6A] hover:text-[#222222]"
                 }
               `}
             >
+              {isActive && (
+                <motion.div
+                  layoutId="salon-tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#222222]"
+                  transition={{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                />
+              )}
               {tab.label}
             </button>
           );

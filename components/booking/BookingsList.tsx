@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Calendar } from 'lucide-react';
 import BookingCard, { type Booking } from './BookingCard';
 import { Spinner, EmptyState } from '@/components';
 
@@ -107,8 +108,9 @@ export default function BookingsList({ userId }: BookingsListProps) {
 
       {!loading && !error && bookings.length === 0 && (
         <EmptyState
+          icon={Calendar}
           title={t('noBookings')}
-          description={
+          message={
             tab === 'upcoming'
               ? 'Buche jetzt deine nächste Behandlung'
               : tab === 'past'

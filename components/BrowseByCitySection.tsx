@@ -40,6 +40,8 @@ const CATEGORIES = [
   { slug: "nails", label: "Nägel" },
   { slug: "barbershop", label: "Barbershop" },
   { slug: "spa", label: "Spa" },
+  { slug: "makeup", label: "Makeup" },
+  { slug: "waxing", label: "Waxing" },
 ];
 
 export default function BrowseByCitySection() {

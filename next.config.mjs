@@ -5,8 +5,11 @@ const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: { ignoreBuildErrors: true },
+  typescript: { ignoreBuildErrors: false },
   eslint: { ignoreDuringBuilds: true },
+  experimental: {
+    scrollRestoration: true,
+  },
   env: {
     NEXT_PUBLIC_MAPBOX_TOKEN: process.env.MAPBOX_API,
   },

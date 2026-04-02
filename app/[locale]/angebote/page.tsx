@@ -78,8 +78,8 @@ export default function LastMinutePage() {
         const bPrice = bSlot.discounted_price ?? bSlot.original_price;
         return aPrice - bPrice;
       } else if (sortBy === "time") {
-        // Sort by available soonest (earliest start_time first)
-        return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
+        // Sort by available soonest (earliest starts_at first)
+        return new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime();
       }
       return 0;
     });

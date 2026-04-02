@@ -12,7 +12,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 export async function POST(req: NextRequest) {
   // Initialize Stripe
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2024-11-20",
+    apiVersion: "2026-02-25.clover",
   });
   const { payment_intent_id, voucher_id } = await req.json();
 

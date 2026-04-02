@@ -39,10 +39,10 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
         r.ok ? r.json() : null
       ),
       fetch(`/api/salon/services?salon_id=${salonId}`).then((r) =>
-        r.ok ? r.json() : {}
+        r.ok ? r.json() : { items: [], services: [] }
       ),
     ])
-      .then(([settingsData, servicesResponse]) => {
+      .then(([settingsData, servicesResponse]: [any, any]) => {
         if (cancelled) return;
         setSettings(
           settingsData || {
@@ -349,13 +349,14 @@ export default function LastMinuteManager({ salonId }: { salonId: string }) {
 
       {/* Save button */}
       <div className="border-t border-s-ink/5 dark:border-white/5 pt-6 flex gap-3 justify-end">
-        <InteractiveHoverButton
+        <button
           onClick={handleSave}
           disabled={saving}
-          text={saving ? "Speichert..." : "Speichern"}
-          className="flex items-center gap-2 px-6 rounded-btn text-[11px] font-heading font-bold uppercase tracking-[.06em] shadow-coral-glow disabled:opacity-60"
-          icon={<Save size={14} />}
-        />
+          className="flex items-center gap-2 px-6 py-2 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] disabled:opacity-60"
+        >
+          <Save size={14} />
+          {saving ? "Speichert..." : "Speichern"}
+        </button>
       </div>
     </div>
   );

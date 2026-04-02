@@ -32,6 +32,30 @@ const TESTIMONIALS: Testimonial[] = [
     city: "Basel",
     rating: 5,
   },
+  {
+    quote: "Termine buchen war noch nie so schnell und unkompliziert.",
+    name: "Sophie R.",
+    city: "Luzern",
+    rating: 5,
+  },
+  {
+    quote: "Preise vergleichen, Bewertungen lesen, direkt buchen — alles in einer App.",
+    name: "Nina W.",
+    city: "Zürich",
+    rating: 5,
+  },
+  {
+    quote: "Meine Kollegin hat mir Solen empfohlen — jetzt benutze ich nichts anderes mehr.",
+    name: "Elena P.",
+    city: "Winterthur",
+    rating: 5,
+  },
+  {
+    quote: "Sogar Last-Minute Angebote mit Rabatt gefunden. Mega!",
+    name: "Lea F.",
+    city: "Basel",
+    rating: 5,
+  },
 ];
 
 export default function TestimonialCarousel() {
@@ -42,14 +66,14 @@ export default function TestimonialCarousel() {
       </h2>
 
       <div className="overflow-hidden">
-        <div className="flex gap-6 animate-scroll">
+        <div className="flex gap-6 testimonial-scroll">
           {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, idx) => (
             <div
               key={idx}
               className="flex-shrink-0 w-[300px] bg-white border border-[#EBEBEB] rounded-[16px] p-6"
             >
               <p className="font-body text-[15px] text-[#222222] mb-4 leading-relaxed">
-                "{testimonial.quote}"
+                &ldquo;{testimonial.quote}&rdquo;
               </p>
               <div className="flex items-center justify-between">
                 <div>
@@ -62,7 +86,7 @@ export default function TestimonialCarousel() {
                 </div>
                 <div className="flex gap-0.5">
                   {Array(testimonial.rating).fill(null).map((_, i) => (
-                    <span key={i} className="text-s-coral">★</span>
+                    <span key={i} className="text-[#E8624A]">★</span>
                   ))}
                 </div>
               </div>
@@ -70,19 +94,6 @@ export default function TestimonialCarousel() {
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          animation: scroll 30s linear infinite;
-        }
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 }

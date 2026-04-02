@@ -207,8 +207,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   if (isDemo) {
     return (
       <div
-        className="flex-shrink-0 snap-start select-none"
-        style={{ width: 180 }}
+        className="flex-shrink-0 snap-start select-none w-[180px] sm:w-[220px] lg:w-[260px]"
         aria-hidden="true"
       >
         {cardContent}
@@ -219,8 +218,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   return (
     <Link
       href={`/${locale}/salon/${salon.slug}`}
-      className="flex-shrink-0 snap-start group cursor-pointer hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]"
-      style={{ width: 180 }}
+      className="flex-shrink-0 snap-start group cursor-pointer w-[180px] sm:w-[220px] lg:w-[260px] hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]"
       aria-label={salon.name}
       prefetch={false}
     >

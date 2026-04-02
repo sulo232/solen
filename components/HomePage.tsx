@@ -292,7 +292,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   Für Salons &amp; Studios
                 </span>
                 <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3">
-                  Wachse mit Solen
+                  {t("partner.title")}
                 </h2>
                 <p className="font-body text-[15px] sm:text-[16px] text-[#717171] max-w-[420px] leading-relaxed mb-6">
                   {t("partner.teaserPrompt") || "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort."}

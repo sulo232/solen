@@ -100,7 +100,7 @@ export default async function Page({
     .eq("is_test", false)
     .ilike("city", city);
 
-  const filteredSalons = salons.filter(
+  const filteredSalons = (salons || []).filter(
     (salon) => salon.categories?.includes(category) ?? false
   );
 

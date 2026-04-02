@@ -295,7 +295,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   aria-label={t("account")}
                   aria-expanded={profileOpen}
                   className={cn(
-                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-[#717171] border border-[#dddddd] hover:shadow-elevation-2 bg-white solen-press-effect",
+                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-[#717171] border border-[#EBEBEB] hover:shadow-elevation-2 bg-white solen-press-effect",
                     "transition-[box-shadow,transform] duration-200"
                   )}
                 >
@@ -332,7 +332,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                             {label}
                           </Link>
                         ))}
-                        <div className="border-t border-[#dddddd] my-2" />
+                        <div className="border-t border-[#EBEBEB] my-2" />
                         <button
                           onClick={handleSignOut}
                           role="menuitem"
@@ -349,7 +349,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <Link
                 href={`/${locale}/auth/login`}
                 aria-label={t("login")}
-                className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#dddddd] hover:shadow-elevation-2 bg-white text-[#222222] transition-[box-shadow,transform] duration-200 solen-press-effect"
+                className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#EBEBEB] hover:shadow-elevation-2 bg-white text-[#222222] transition-[box-shadow,transform] duration-200 solen-press-effect"
               >
                 <Menu strokeWidth={2} className="w-4 h-4 ml-1" />
                 <div className="bg-[#717171] text-white rounded-full w-[26px] h-[26px] flex items-center justify-center">

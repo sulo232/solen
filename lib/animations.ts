@@ -4,13 +4,13 @@ import type { Variants } from "framer-motion";
 const EASE_OUT_STRONG = [0.23, 1, 0.32, 1];
 const EASE_IN_OUT_STRONG = [0.77, 0, 0.175, 1];
 
-/** Stagger children with 80ms delay (V3: max 100ms per child) */
+/** Stagger children with 60ms delay (UI_RULES.md §4: Airbnb-style) */
 export const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.06,
       delayChildren: 0.04,
     },
   },

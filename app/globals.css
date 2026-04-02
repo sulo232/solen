@@ -811,3 +811,27 @@ html {
   animation: skeletonShimmer 1.5s ease-in-out infinite;
   border-radius: 8px;
 }
+
+/* ── Testimonial infinite scroll ───────────────────────────────────── */
+@keyframes testimonialScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.testimonial-scroll {
+  animation: testimonialScroll 40s linear infinite;
+}
+.testimonial-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* ── Global focus-visible ring (keyboard accessibility) ────────────── */
+*:focus-visible {
+  outline: 2px solid #222222;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+button:focus-visible,
+a:focus-visible {
+  outline-offset: 3px;
+}
+

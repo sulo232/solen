@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, X, Star, Sparkles } from "lucide-react";
@@ -200,8 +201,18 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
         )}
       </div>
 
-      {open && totalItems > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float overflow-hidden z-50">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {open && totalItems > 0 && `${totalItems} ${totalItems === 1 ? "result" : "results"} found`}
+        {open && totalItems === 0 && query.length >= 1 && "No results found"}
+      </div>
+      <AnimatePresence>
+        {open && totalItems > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
+            className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float overflow-hidden z-50">
           {services.length > 0 && (
             <div>
               <p className="text-[10px] font-bold text-s-ink/30 uppercase tracking-widest px-3 pt-2.5 pb-1">
@@ -317,14 +328,23 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
               </Link>
             </div>
           )}
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {open && totalItems === 0 && query.length >= 1 && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float z-50 px-4 py-5 text-center">
-          <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">{noResultsMsg}</p>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && totalItems === 0 && query.length >= 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
+            className="absolute top-full left-0 right-0 mt-1.5 glass-frost rounded-[12px] shadow-v5-float z-50 px-4 py-5 text-center"
+          >
+            <p className="text-sm font-body text-s-ink/40 dark:text-s-dm-text/40">{noResultsMsg}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

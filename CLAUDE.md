@@ -209,6 +209,53 @@ solen/
 - **Icon hover/idle animation**: Category icons play 1-cycle animation on hover (desktop) and on page-load stagger (all devices)
 - **prefers-reduced-motion**: MANDATORY global disable
 
+#### Animation Pattern Reference (Phase 3.2 — Micro-Animations & A11y)
+
+**Grid Stagger Animation** (Phase 1):
+- Use `containerVariants` + `itemVariants` from `lib/animations.ts` (already exported).
+- `staggerChildren: 0.06` (60ms per UI_RULES.md §4).
+- Applied to: `CategoryPage.tsx`, `HomePage.tsx` salon grids.
+- Zone 1+2 only. ZERO animation in Zone 3/4.
+
+**Tab Sliding Underline** (Phase 2):
+- Use framer-motion `layoutId="unique-name"` on `motion.div` for the indicator bar.
+- Transition: `{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }`.
+- Applied to: `SalonTabBar.tsx`.
+- Replace static `border-b-2` with animated `motion.div`.
+
+**Toast Slide-In** (Phase 3):
+- Already implemented: `Toast.tsx` uses `toastVariants` from `lib/animations.ts`.
+- `initial: { opacity: 0, y: 10 }` → `animate: { opacity: 1, y: 0 }` (300ms max).
+- Exit: `{ opacity: 0, y: -6, duration: 0.18 }`.
+- Wrap in `<AnimatePresence mode="popLayout">`.
+
+**ReviewBreakdown Bar Fill** (Phase 4):
+- Use `useInView` hook from framer-motion with `once: true, margin: "-50px"`.
+- Animate bars from `width: 0` to `width: ${percentage}%` on scroll-into-view.
+- Duration: 0.6s, stagger: `index * 0.08` (80ms between bars).
+- Applied to: `ReviewBreakdown.tsx` rating bars.
+
+**EmptyState Zone-Aware Animation** (Phase 5):
+- Accept `zone?: 1 | 2 | 3 | 4` prop (defaults to 1).
+- If `zone <= 2`: wrap content in `motion.div` with `initial={{ opacity: 0, scale: 0.97 }}` → `animate={{ opacity: 1, scale: 1 }}` (250ms).
+- If `zone > 2`: render static `<div>` (no animation).
+- Applied to: `EmptyState.tsx`.
+
+**Search Autocomplete Dropdown** (Phase 6):
+- Wrap dropdown in `<AnimatePresence>` with `motion.div`.
+- Transition: `initial={{ opacity: 0, y: -8 }}` → `animate={{ opacity: 1, y: 0 }}` (150ms, V5 easing).
+- Applied to: `SearchAutocomplete.tsx` suggestions dropdown.
+
+**Skip-to-Content Link** (Phase 7):
+- Already implemented in `app/[locale]/layout.tsx`.
+- Uses `sr-only focus:not-sr-only` to hide/show on focus.
+- WCAG 2.1 AA requirement for keyboard navigation.
+
+**ARIA Live Regions** (Phase 8):
+- `<div aria-live="polite" aria-atomic="true">` for dynamic content changes.
+- Applied to: `BookingCalendar.tsx` (slot count), `SearchAutocomplete.tsx` (result count), `ReviewForm.tsx` (star radiogroup).
+- Star rating uses `role="radiogroup"` + `role="radio"` + `aria-checked`.
+
 #### Component Standards
 - **Icons**: `lucide-react` for ALL icons. No emoji icons.
 - **Loading**: Use `<Skeleton variant="card" />` for full-page loading. Skeletons MUST have pixel-perfect dimensional parity (exact aspect ratios and border radii) with their populated counterparts to prevent CLS. (See `docs/superpowers/specs/2026-03-30-airbnb-skeleton-loaders.md`)

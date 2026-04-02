@@ -17,10 +17,10 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
   return (
     <div>
-      <p className="text-xs font-heading font-bold uppercase tracking-[0.12em] text-s-amber mb-2">
+      <p className="text-[11px] font-heading font-bold uppercase tracking-[0.12em] text-[#E8624A] mb-2">
         Team
       </p>
-      <h2 className="font-heading font-bold text-xl text-s-ink dark:text-s-dm-text mb-4">
+      <h2 className="font-heading font-bold text-[20px] text-[#222222] mb-4">
         Unser Team
       </h2>
 
@@ -29,12 +29,12 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
           <Link
             key={m.id}
             href={`/${locale}/salon/${salonSlug}/staff/${m.id}`}
-            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-s-ink/5 dark:border-white/5 bg-[--raised] dark:bg-s-dm-surface p-4 hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] shadow-warm-sm"
+            className="shrink-0 w-[200px] flex flex-col rounded-[16px] border border-[#EBEBEB] bg-white p-4 hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             {/* Avatar */}
             <div className="block">
               <div className="relative w-16 h-16 mx-auto mb-3">
-                <div className="w-16 h-16 rounded-full bg-s-bg-sunken dark:bg-s-dm-bg overflow-hidden flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-[#F0F0F0] overflow-hidden flex items-center justify-center">
                   {m.avatar_url ? (
                     <Image
                       src={m.avatar_url}
@@ -45,16 +45,16 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <span className="text-xl font-bold text-s-ink/20 dark:text-s-dm-text/20">
+                    <span className="text-xl font-bold text-[#222222]/20">
                       {m.name[0]}
                     </span>
                   )}
                 </div>
                 {/* Rating badge overlay */}
                 {m.average_rating != null && m.average_rating > 0 && (
-                  <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-[--raised] dark:bg-s-dm-surface px-1.5 py-0.5 rounded-pill shadow-warm-xs border border-s-ink/5 dark:border-white/5">
-                    <Star size={8} className="fill-s-coral text-s-coral" />
-                    <span className="text-[9px] data-text font-semibold text-s-ink dark:text-s-dm-text">
+                  <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 bg-white px-1.5 py-0.5 rounded-full shadow-sm border border-[#EBEBEB]">
+                    <Star size={8} className="fill-[#E8624A] text-[#E8624A]" />
+                    <span className="text-[9px] font-semibold text-[#222222]">
                       {m.average_rating.toFixed(1)}
                     </span>
                   </div>
@@ -62,7 +62,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               </div>
 
               {/* Name */}
-              <p className="font-heading font-semibold text-sm text-s-ink dark:text-s-dm-text text-center truncate">
+              <p className="font-heading font-semibold text-[14px] text-[#222222] text-center truncate">
                 {m.name}
               </p>
 
@@ -70,7 +70,7 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
               {m.languages && m.languages.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-1 mt-1">
                   {m.languages.map((lang: string) => (
-                    <span key={lang} className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-sm bg-s-ink/5 dark:bg-white/5 text-s-ink/60 dark:text-s-dm-text/60">
+                    <span key={lang} className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-sm bg-[#F0F0F0] text-[#6A6A6A]">
                       {lang}
                     </span>
                   ))}
@@ -79,34 +79,34 @@ export default function StaffSection({ staff, salonSlug, locale, onBook }: Staff
 
               {/* Specialties */}
               {m.specialties?.length > 0 && (
-                <p className="text-[11px] text-s-ink/50 dark:text-s-dm-text/50 text-center truncate mt-1">
+                <p className="text-[11px] text-[#6A6A6A] text-center truncate mt-1">
                   {m.specialties.slice(0, 2).join(", ")}
                 </p>
               )}
             </div>
 
             {/* Rating */}
-            <div className="flex items-center justify-between mt-auto pt-3 border-t border-s-ink/5 dark:border-white/5">
+            <div className="flex items-center justify-between mt-auto pt-3 border-t border-[#EBEBEB]">
               {m.average_rating != null && m.average_rating > 0 ? (
                 <div className="flex items-center gap-1">
-                  <Star size={12} className="fill-s-coral text-s-coral" />
-                  <span className="text-xs font-medium text-s-ink dark:text-s-dm-text">{m.average_rating.toFixed(1)}</span>
+                  <Star size={12} className="fill-[#E8624A] text-[#E8624A]" />
+                  <span className="text-[12px] font-medium text-[#222222]">{m.average_rating.toFixed(1)}</span>
                 </div>
               ) : (
-                <span className="text-xs text-s-ink/30 dark:text-s-dm-text/30">Neu</span>
+                <span className="text-[12px] text-[#6A6A6A]">Neu</span>
               )}
 
               {/* Next slot mock - in prod this would fetch from an API */}
               <div className="text-right">
-                <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-s-ink/40 dark:text-s-dm-text/40">Nächster Termin</p>
-                <p className="text-xs font-medium text-s-green">Morgen, 10:00</p>
+                <p className="text-[9px] font-heading font-semibold uppercase tracking-wider text-[#6A6A6A]">Nächster Termin</p>
+                <p className="text-[12px] font-medium text-[#2E7D32]">Morgen, 10:00</p>
               </div>
             </div>
 
             {/* Book button */}
             <button
               onClick={(e) => { e.preventDefault(); onBook?.(m.id); }}
-              className="w-full mt-3 py-2 rounded-pill active:scale-[0.98] bg-s-coral/10 text-s-coral hover:bg-s-coral hover:text-white text-xs font-semibold uppercase tracking-[.06em] transition-[background-color,color] duration-150"
+              className="w-full mt-3 py-2 rounded-full active:scale-[0.98] bg-[#E8624A]/10 text-[#E8624A] hover:bg-[#E8624A] hover:text-white text-[12px] font-semibold uppercase tracking-[.06em] transition-[background-color,color] duration-150"
             >
               Wählen
             </button>

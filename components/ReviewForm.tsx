@@ -146,11 +146,19 @@ export default function ReviewForm({ salonId, bookingId, onSuccess, onClose }: R
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Star Rating */}
           <div className="flex flex-col items-center gap-2">
-            <div className="flex gap-1" onMouseLeave={() => setHoverRating(0)}>
+            <div
+              role="radiogroup"
+              aria-label={t("rating")}
+              className="flex gap-1"
+              onMouseLeave={() => setHoverRating(0)}
+            >
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   type="button"
+                  role="radio"
+                  aria-checked={rating === star}
+                  aria-label={`${star} ${star === 1 ? "star" : "stars"}`}
                   onMouseEnter={() => setHoverRating(star)}
                   onClick={() => setRating(star)}
                   className="p-1 focus:outline-none transition-[transform] duration-150 hover:scale-110"

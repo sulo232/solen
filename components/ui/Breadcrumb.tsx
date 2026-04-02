@@ -1,26 +1,9 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChevronRight, ArrowLeft } from "lucide-react";
-
-const SEGMENT_LABELS: Record<string, string> = {
-  coiffeur: "Coiffeur",
-  barbershop: "Barbershop",
-  nails: "Nails",
-  spa: "Spa",
-  makeup: "Makeup",
-  waxing: "Waxing",
-  "last-minute": "Angebote",
-  salon: "Salon",
-  termine: "Termine",
-  profile: "Profil",
-  dashboard: "Dashboard",
-  bookings: "Buchungen",
-  messages: "Nachrichten",
-  settings: "Einstellungen",
-};
 
 export default function Breadcrumb() {
   const pathname = usePathname();

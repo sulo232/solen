@@ -735,6 +735,9 @@ export default function BookingCalendar({ salonId, salonName, salonSlug, service
           </motion.div>
         ) : (
           <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+          <div aria-live="polite" aria-atomic="true" className="sr-only">
+            {availableSlots.length} {availableSlots.length === 1 ? "Termin verfügbar" : "Termine verfügbar"}
+          </div>
           <div className="flex flex-col gap-4">
             {(["morning", "afternoon", "evening"] as const).map((group) => {
               const groupSlots = grouped[group];

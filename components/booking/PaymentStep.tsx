@@ -37,7 +37,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
     try {
       // Validate form data completeness
       if (!formData.selectedDate || !formData.selectedTime || formData.services.length === 0) {
-        setError(tGeneral('missingBookingDetails'));
+        setError('Bitte fülle alle erforderlichen Felder aus');
         setIsSubmitting(false);
         return;
       }

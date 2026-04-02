@@ -262,6 +262,23 @@
       "title": "What our users say"
     }
   },
+  "breadcrumb": {
+    "back": "Back",
+    "coiffeur": "Hair Salon",
+    "barbershop": "Barbershop",
+    "nails": "Nails",
+    "spa": "Spa",
+    "makeup": "Makeup",
+    "waxing": "Waxing",
+    "salon": "Salon",
+    "profile": "Profile",
+    "bookings": "Bookings",
+    "settings": "Settings",
+    "last-minute": "Offers",
+    "termine": "Appointments",
+    "dashboard": "Dashboard",
+    "messages": "Messages"
+  },
   "common": {
     "save": "Save",
     "saving": "Saving...",
@@ -287,6 +304,7 @@
     "noPast": "No past appointments",
     "noSalonsFound": "No salons found",
     "noNailDesigns": "No nail designs found",
+    "fromPrice": "from {price}",
     "noNailDesigns_message": "Try different filters or check back later.",
     "pleaseFill": "Please fill in all fields",
     "pleaseLogin": "Please sign in first",
@@ -2473,6 +2491,7 @@
     }
   },
   "partner": {
+    "title": "Grow with Solen",
     "hero_title_1": "Your salon.",
     "hero_title_accent": "More clients.",
     "hero_title_2": "Less hassle.",
@@ -2949,7 +2968,16 @@
     "photos_label": "Add photos (Optional, max. 3)",
     "remove_photo": "Remove",
     "cancel": "Cancel",
-    "submit": "Submit"
+    "submit": "Submit",
+    "result": "Result",
+    "atmosphere": "Atmosphere",
+    "pricePerformance": "Value for money",
+    "new": "New",
+    "reviewCount": "{count} reviews",
+    "noReviews": "No reviews yet",
+    "verifiedBooking": "Verified booking",
+    "readMore": "Read more",
+    "readLess": "Read less"
   },
   "cityPage": {
     "title": "Salons in {cityName}",
@@ -3461,7 +3489,22 @@
     "wed": "Wednesday",
     "thu": "Thursday",
     "fri": "Friday",
-    "sat": "Saturday"
+    "sat": "Saturday",
+    "showAllPhotos": "Show all {count} photos",
+    "whatCustomersSay": "What customers say",
+    "noReviews": "No reviews yet.",
+    "sortBy": "Sort by",
+    "verifiedBooking": "Verified",
+    "readMore": "Read more",
+    "readLess": "Less",
+    "flagReasonLabel": "State your reason",
+    "enlargePhoto": "Enlarge photo",
+    "salonReplied": "Salon replied",
+    "instantBooking": "Instant booking — confirmation in seconds",
+    "bookAppointment": "Book appointment",
+    "shareProfile": "Share profile",
+    "linkCopied": "Link copied!",
+    "shareError": "Unable to share"
   },
   "compare": {
     "back": "Back",

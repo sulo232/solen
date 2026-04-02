@@ -262,6 +262,23 @@
       "title": "Ce que disent nos utilisateurs"
     }
   },
+  "breadcrumb": {
+    "back": "Retour",
+    "coiffeur": "Coiffeur",
+    "barbershop": "Barbershop",
+    "nails": "Ongles",
+    "spa": "Spa",
+    "makeup": "Maquillage",
+    "waxing": "Épilation",
+    "salon": "Salon",
+    "profile": "Profil",
+    "bookings": "Réservations",
+    "settings": "Paramètres",
+    "last-minute": "Offres",
+    "termine": "Rendez-vous",
+    "dashboard": "Tableau de bord",
+    "messages": "Messages"
+  },
   "common": {
     "save": "Enregistrer",
     "saving": "Enregistrement...",
@@ -287,6 +304,7 @@
     "noPast": "Aucun rendez-vous passé",
     "noSalonsFound": "Aucun salon trouvé",
     "noNailDesigns": "Aucun design ongle trouvé",
+    "fromPrice": "à partir de {price}",
     "noNailDesigns_message": "Essayez d'autres filtres ou revenez plus tard.",
     "pleaseFill": "Veuillez remplir tous les champs",
     "pleaseLogin": "Veuillez d'abord vous connecter",
@@ -2450,6 +2468,7 @@
     }
   },
   "partner": {
+    "title": "Grandissez avec Solen",
     "hero_title_1": "Votre salon.",
     "hero_title_accent": "Plus de clients.",
     "hero_title_2": "Moins d'effort.",
@@ -2926,7 +2945,16 @@
     "photos_label": "Ajouter des photos (Optionnel, max. 3)",
     "remove_photo": "Retirer",
     "cancel": "Annuler",
-    "submit": "Envoyer"
+    "submit": "Envoyer",
+    "result": "Résultat",
+    "atmosphere": "Ambiance",
+    "pricePerformance": "Rapport qualité-prix",
+    "new": "Nouveau",
+    "reviewCount": "{count} avis",
+    "noReviews": "Pas encore d'avis",
+    "verifiedBooking": "Réservation vérifiée",
+    "readMore": "Voir plus",
+    "readLess": "Voir moins"
   },
   "cityPage": {
     "title": "Salons à {cityName}",
@@ -3438,7 +3466,22 @@
     "wed": "Mercredi",
     "thu": "Jeudi",
     "fri": "Vendredi",
-    "sat": "Samedi"
+    "sat": "Samedi",
+    "showAllPhotos": "Afficher les {count} photos",
+    "whatCustomersSay": "Ce que disent les clients",
+    "noReviews": "Aucun avis pour le moment.",
+    "sortBy": "Trier par",
+    "verifiedBooking": "Vérifié",
+    "readMore": "Lire plus",
+    "readLess": "Moins",
+    "flagReasonLabel": "Indiquer la raison",
+    "enlargePhoto": "Agrandir la photo",
+    "salonReplied": "Le salon a répondu",
+    "instantBooking": "Réservation instantanée — confirmation en quelques secondes",
+    "bookAppointment": "Prendre rendez-vous",
+    "shareProfile": "Partager le profil",
+    "linkCopied": "Lien copié !",
+    "shareError": "Impossible de partager"
   },
   "compare": {
     "back": "Retour",

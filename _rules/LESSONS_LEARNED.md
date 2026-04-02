@@ -231,3 +231,10 @@
 - **What happened**: Initially wrote `import { Spinner, EmptyState } from '@/components/ui'`. Build failed: "Module not found: Can't resolve '@/components/ui'".
 - **Why it happened**: The `@/components/ui` folder exists but does NOT have an index.ts barrel export. Components must be imported from the root `@/components` barrel (components/index.ts) instead.
 - **Fix**: Always import UI components from `@/components`, not `@/components/ui`. Check components/index.ts for the canonical exports: `export { default as Spinner } from "@/components/ui/Spinner"` etc. The barrel in components/index.ts handles the re-export.
+
+### ReviewPrompt component already has compatible API route
+- **Date**: 2026-04-02
+- **File(s)**: `components/booking/ReviewPrompt.tsx`, `app/api/reviews/route.ts`
+- **What happened**: When implementing ReviewPrompt, assumed `/api/reviews` endpoint might not exist. But it was already built and accepts the exact fields the component sends: `booking_id`, `rating`, `comment`.
+- **Why it happened**: Parallel agents had already implemented the reviews API in a previous phase.
+- **Fix**: Before assuming an API endpoint is missing, search for existing routes with `find app/api -name "*keyword*"`. Always check the validation schema in `lib/validations.ts` to verify it accepts the fields the component will send.

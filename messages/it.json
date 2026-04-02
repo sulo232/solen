@@ -2910,6 +2910,23 @@
     },
     "quickReplyChips": {}
   },
+  "breadcrumb": {
+    "back": "Indietro",
+    "coiffeur": "Parrucchiere",
+    "barbershop": "Barbershop",
+    "nails": "Unghie",
+    "spa": "Spa",
+    "makeup": "Trucco",
+    "waxing": "Depilazione",
+    "salon": "Salone",
+    "profile": "Profilo",
+    "bookings": "Prenotazioni",
+    "settings": "Impostazioni",
+    "last-minute": "Offerte",
+    "termine": "Appuntamenti",
+    "dashboard": "Dashboard",
+    "messages": "Messaggi"
+  },
   "reviews": {
     "title": "Scrivi una recensione",
     "subtitle": "Condividi la tua esperienza con altri clienti.",
@@ -3438,7 +3455,22 @@
     "wed": "Mercoledì",
     "thu": "Giovedì",
     "fri": "Venerdì",
-    "sat": "Sabato"
+    "sat": "Sabato",
+    "showAllPhotos": "Mostra tutte le {count} foto",
+    "whatCustomersSay": "Cosa dicono i clienti",
+    "noReviews": "Ancora nessuna recensione.",
+    "sortBy": "Ordina per",
+    "verifiedBooking": "Verificato",
+    "readMore": "Leggi di più",
+    "readLess": "Meno",
+    "flagReasonLabel": "Indica il motivo",
+    "enlargePhoto": "Ingrandisci foto",
+    "salonReplied": "Il salone ha risposto",
+    "instantBooking": "Prenotazione istantanea — conferma in pochi secondi",
+    "bookAppointment": "Prenota appuntamento",
+    "shareProfile": "Condividi profilo",
+    "linkCopied": "Link copiato!",
+    "shareError": "Impossibile condividere"
   },
   "compare": {
     "back": "Indietro",

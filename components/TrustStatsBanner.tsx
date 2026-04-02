@@ -58,7 +58,8 @@ export default function TrustStatsBanner() {
           onUpdate(targetValue);
         } else {
           const progress = elapsed / duration;
-          onUpdate(Math.floor(targetValue * progress));
+          const easedProgress = 1 - Math.pow(1 - progress, 3);
+          onUpdate(Math.floor(targetValue * easedProgress));
           requestAnimationFrame(animate);
         }
       };

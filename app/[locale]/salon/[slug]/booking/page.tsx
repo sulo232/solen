@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient } from '@/lib/supabase';
 import { BookingProvider } from '@/lib/booking-context';
 import { BookingWizard } from '@/components/booking';
-import type { StaffMember } from '@/lib/types';
+import type { StaffMember, Salon } from '@/lib/types';
 
 interface BookingSalonPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -87,7 +87,7 @@ export default async function BookingSalonPage({
 
         {/* Main content */}
         <main className="max-w-2xl mx-auto px-4 py-6">
-          <BookingWizard services={services} staffList={staff} salon={salon} />
+          <BookingWizard services={services} staffList={staff} salon={salon as Salon} />
         </main>
       </div>
     </BookingProvider>

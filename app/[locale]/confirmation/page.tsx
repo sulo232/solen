@@ -66,10 +66,11 @@ export default async function ConfirmationPage({
   };
 
   const getServiceName = (): string => {
-    if (locale === 'en' && booking.services.name_en) {
-      return booking.services.name_en;
+    const service = Array.isArray(booking.services) ? booking.services[0] : booking.services;
+    if (locale === 'en' && service?.name_en) {
+      return service.name_en;
     }
-    return booking.services.name_de || booking.services.name_en || '';
+    return service?.name_de || service?.name_en || '';
   };
 
   return (
@@ -98,10 +99,10 @@ export default async function ConfirmationPage({
               {t('salon')}
             </p>
             <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">
-              {booking.salons.name}
+              {(Array.isArray(booking.salons) ? booking.salons[0]?.name : booking.salons?.name) || ''}
             </h2>
             <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
-              {booking.salons.address}
+              {(Array.isArray(booking.salons) ? booking.salons[0]?.address : booking.salons?.address) || ''}
             </p>
           </div>
 
@@ -160,7 +161,7 @@ export default async function ConfirmationPage({
 
           {/* Rebook */}
           <Link
-            href={`/${locale}/salon/${booking.salons.slug}`}
+            href={`/${locale}/salon/${(Array.isArray(booking.salons) ? booking.salons[0]?.slug : booking.salons?.slug) || ''}`}
             className="block text-center py-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.98] transition-all"
             aria-label={t('rebook')}
           >
