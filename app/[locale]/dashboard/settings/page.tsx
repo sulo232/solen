@@ -348,14 +348,14 @@ function QuickRepliesTab() {
             <>
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
                 className="flex-1 text-sm focus:outline-none" autoFocus />
-              <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} className="text-s-coral"><Check size={14} /></button>
-              <button onClick={() => setEditing(null)} className="text-s-ink/30"><X size={14} /></button>
+              <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} aria-label="Speichern" className="text-s-coral"><Check size={14} /></button>
+              <button onClick={() => setEditing(null)} aria-label="Abbrechen" className="text-s-ink/30"><X size={14} /></button>
             </>
           ) : (
             <>
               <p className="flex-1 text-sm text-s-ink">{r}</p>
-              <button onClick={() => { setEditing(i); setEditValue(r); }} className="text-s-ink/30 hover:text-s-coral"><Pencil size={13} /></button>
-              <button onClick={() => save(replies.filter((_, j) => j !== i))} className="text-s-ink/30 hover:text-s-coral"><Trash2 size={13} /></button>
+              <button onClick={() => { setEditing(i); setEditValue(r); }} aria-label="Bearbeiten" className="text-s-ink/30 hover:text-s-coral"><Pencil size={13} /></button>
+              <button onClick={() => save(replies.filter((_, j) => j !== i))} aria-label="Löschen" className="text-s-ink/30 hover:text-s-coral"><Trash2 size={13} /></button>
             </>
           )}
         </div>

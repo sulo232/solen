@@ -136,7 +136,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
       <div className="bg-white dark:bg-s-dm-surface rounded-[12px] shadow-warm-lg w-full max-w-md p-6 max-h-[85vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">{initial ? "Bearbeiten" : "Mitarbeiter hinzufügen"}</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
+          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div>
@@ -156,7 +156,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder="z. B. Balayage…"
                 className="flex-1 px-3 py-2 rounded-btn border border-s-ink/10 dark:border-white/10 bg-white dark:bg-s-dm-bg text-sm text-s-ink dark:text-s-dm-text focus:outline-none focus:border-s-coral" />
-              <button type="button" onClick={addSpec} className="px-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"><Plus size={14} /></button>
+              <button type="button" onClick={addSpec} aria-label="Spezialisierung hinzufügen" className="px-2.5 rounded-btn bg-s-bg-sunken dark:bg-s-dm-bg text-s-ink/60 dark:text-s-dm-text/60"><Plus size={14} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -280,7 +280,7 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
             <Mail size={16} className="text-s-coral" />
             <h3 className="font-heading font-bold text-base text-s-ink dark:text-s-dm-text">Mitarbeiter einladen</h3>
           </div>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
+          <button onClick={onClose} aria-label="Schliessen"><X size={18} className="text-s-ink/30 dark:text-s-dm-text/30" /></button>
         </div>
         <div className="space-y-3 mb-4">
           <div>
