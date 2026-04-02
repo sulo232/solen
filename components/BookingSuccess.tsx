@@ -63,7 +63,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
           setRewardAmount(data.reward_amount / 100);
         }
       })
-      .catch((err) => console.log("Failed to fetch referral reward amount", err));
+      .catch((err) => console.error("[BookingSuccess] Failed to fetch referral reward amount:", err));
   }, []);
 
   // Simple CSS confetti on mount

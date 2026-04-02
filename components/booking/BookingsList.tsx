@@ -46,15 +46,15 @@ export default function BookingsList({ userId }: BookingsListProps) {
 
   // Tab handlers
   const handleReschedule = (booking: Booking) => {
-    console.log('[BookingsList] Reschedule booking:', booking.id);
+    // TODO: Implement reschedule logic
   };
 
   const handleCancel = (booking: Booking) => {
-    console.log('[BookingsList] Cancel booking:', booking.id);
+    // TODO: Implement cancel logic
   };
 
   const handleRebook = (booking: Booking) => {
-    console.log('[BookingsList] Rebook booking:', booking.id);
+    // TODO: Implement rebook logic
   };
 
   return (
