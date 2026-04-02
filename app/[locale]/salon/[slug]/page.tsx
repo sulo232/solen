@@ -263,6 +263,7 @@ export default function SalonProfilePage() {
   const [activeTab, setActiveTab] = useState("angebot");
   const [unreviewedBookingId, setUnreviewedBookingId] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [nextSlot, setNextSlot] = useState<any>(null);
 
   const sectionIds = useMemo(() => ["angebot", "bewertungen", "team", "fotos", "portfolio", "standort", "info"].map(key => `section-${key}`), []);
   const activeSection = useSectionObserver(sectionIds);
@@ -291,6 +292,12 @@ export default function SalonProfilePage() {
     fetch("/api/salons/mine")
       .then((r) => r.ok ? r.json() : null)
       .then((d) => { if (d?.salon?.id === salon.id) setIsOwner(true); })
+      .catch(() => {});
+
+    // Fetch next available slot for quick-book
+    fetch(`/api/slots/next-available?salon_id=${salon.id}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.available) setNextSlot(d.slot); })
       .catch(() => {});
   }, [salon?.id]);
 
@@ -346,6 +353,14 @@ export default function SalonProfilePage() {
 
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
+    setCalendarOpen(true);
+  };
+
+  const handleQuickBook = (slot: any) => {
+    // Set the selected staff member and open calendar for the next available slot
+    if (slot.staff_id) {
+      setSelectedStaff(slot.staff_id);
+    }
     setCalendarOpen(true);
   };
 
@@ -706,6 +721,8 @@ export default function SalonProfilePage() {
                 onOpenCalendar={() => setCalendarOpen(true)}
                 selectedServiceId={selectedService}
                 selectedStaffId={selectedStaff}
+                nextSlot={nextSlot}
+                onQuickBook={handleQuickBook}
               />
             </div>
           </div>

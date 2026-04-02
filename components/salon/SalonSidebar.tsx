@@ -7,6 +7,15 @@ import { formatCurrency } from "@/lib/format-currency";
 import BookingCalendar from "@/components/BookingCalendar";
 import type { Service } from "@/lib/types";
 
+interface NextSlot {
+  id: string;
+  starts_at: string;
+  ends_at: string;
+  staff_id: string;
+  staff_name: string;
+  service_name: string;
+}
+
 interface SalonSidebarProps {
   salonId: string;
   salonName: string;
@@ -19,6 +28,8 @@ interface SalonSidebarProps {
   onOpenCalendar: () => void;
   selectedServiceId?: string;
   selectedStaffId?: string;
+  nextSlot?: NextSlot | null;
+  onQuickBook?: (slot: NextSlot) => void;
 }
 
 export default function SalonSidebar({
@@ -33,9 +44,27 @@ export default function SalonSidebar({
   onOpenCalendar,
   selectedServiceId,
   selectedStaffId,
+  nextSlot,
+  onQuickBook,
 }: SalonSidebarProps) {
   const t = useTranslations("salonDetail");
   const locale = useLocale();
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const isToday = date.toDateString() === today.toDateString();
+    const isTomorrow = date.toDateString() === tomorrow.toDateString();
+
+    const timeStr = date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+
+    if (isToday) return `${t("today")} ${timeStr}`;
+    if (isTomorrow) return `${t("tomorrow")} ${timeStr}`;
+    return date.toLocaleDateString(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  };
 
   return (
     <div className="hidden lg:block lg:col-span-1">
@@ -77,6 +106,18 @@ export default function SalonSidebar({
               >
                 {t("bookNow")}
               </motion.button>
+
+              {/* Next Available button */}
+              {nextSlot && (
+                <button
+                  onClick={() => onQuickBook?.(nextSlot)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-[#222222]/10 text-sm font-body text-[#222222] hover:border-[#E8624A]/40 hover:text-[#E8624A] transition-colors duration-150"
+                >
+                  <Zap size={14} className="text-[#E8624A]" />
+                  {t("nextAvailable")}: {formatDate(nextSlot.starts_at)}
+                </button>
+              )}
+
               {/* Quick info */}
               <div className="space-y-2 pt-3 border-t border-[#EBEBEB]">
                 <div className="flex items-center gap-2 text-[13px] text-[#484848]">
