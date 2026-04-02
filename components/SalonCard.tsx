@@ -239,8 +239,9 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-              className="absolute top-3 right-3 z-10 transition-transform duration-200 hover:scale-105 active:scale-95 solen-press-effect"
+              className="absolute top-1 right-1 z-10 p-2 transition-transform duration-200 hover:scale-105 active:scale-95 solen-press-effect flex items-center justify-center"
               aria-label={isFavorited ? t("removeFromFavorites") : t("addToFavorites")}
+              style={{ minWidth: "44px", minHeight: "44px" }}
             >
               <Heart
                 className={`w-[26px] h-[26px] transition-colors duration-200 ${
