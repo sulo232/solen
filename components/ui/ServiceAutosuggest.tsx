@@ -186,11 +186,14 @@ export default function ServiceAutosuggest({
                 <span className="text-[9px] font-heading font-bold uppercase tracking-[.06em] px-1.5 py-0.5 rounded-pill bg-s-coral/10 text-s-coral shrink-0">
                   {item.category}
                 </span>
-                {item.price != null && (
-                  <span className="text-[11px] font-body text-s-ink/50 shrink-0 ml-1">
-                    {locale === "de" ? "ab" : locale === "fr" ? "dès" : "from"} CHF {item.price}
-                  </span>
-                )}
+                {item.price != null && (() => {
+                  const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+                  return (
+                    <span className="text-[11px] font-body text-s-ink/50 shrink-0 ml-1">
+                      {tCommon("fromPrice", { price: formatCurrency(item.price, currencyLocale) })}
+                    </span>
+                  );
+                })()}
               </button>
             );
           })}
