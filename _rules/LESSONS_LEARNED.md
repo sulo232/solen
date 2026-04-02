@@ -197,6 +197,24 @@
 - **Why it happened**: Didn't check the booking state types file before writing the component.
 - **Fix**: Always verify field names in BookingFormData at `lib/booking-state.ts` before adding payment/form handling logic. The field was already there; just use `updateFormData({ paymentMethod: method })` from the context.
 
+---
+
+## Translation Keys & Namespaces
+
+### Missing translation keys in salonDetail namespace break build
+- **Date**: 2026-04-02
+- **File(s)**: `messages/de.json`, `components/salon/SalonReviews.tsx`, `components/salon/SalonMobileCTA.tsx`
+- **What happened**: During SEO/i18n roadmap execution, discovered that German locale was missing translation keys that existed in en.json, fr.json, it.json. Missing keys: `showAllPhotos`, `bookAppointment`, `whatCustomersSay`, `noReviews`, `sortBy`, `verifiedBooking`, `enlargePhoto`, `salonReplied`, `instantBooking`, `shareError`, `flagReasonLabel`, `readMore`, `readLess`, `shareProfile`, `linkCopied`. Build failed with TypeScript error: "not assignable to parameter of type 'MessageKeys'..."
+- **Why it happened**: When adding translation keys to other locale files, the German translations were either skipped or added to the wrong namespace.
+- **Fix**: For ALL translation changes, always add keys to all 4 locale files (de, en, fr, it) in the SAME namespace in a single commit. Use grep to verify the key exists in all 4 files before pushing. Schema: grep -r "keyName" messages/ should return 4 results (one per file).
+
+### `dashboard.marketing` namespace doesn't exist — use top-level `marketing`
+- **Date**: 2026-04-02
+- **File(s)**: `components/dashboard/LastMinuteManager.tsx:24`
+- **What happened**: Component imported `useTranslations("dashboard.marketing")` but the translation system only has a top-level `marketing` namespace — no `marketing` sub-section under `dashboard`. This caused a TypeScript type error at build time: "Argument of type '...' is not assignable to parameter of type 'MessageKeys...'"
+- **Why it happened**: Nested namespace paths like "dashboard.marketing" are valid in next-intl for translation files with sub-objects, but this codebase doesn't use that pattern. Namespaces are always top-level.
+- **Fix**: Use `useTranslations("marketing")` instead of nested paths. If you need to namespace dashboard-specific strings, add them to the top-level `marketing` namespace with a prefix like `marketing_lastMinute_...` OR add a `dashboard` object with a `marketing` sub-object in the JSON structure.
+
 ### Page params must be Promise<T> in Next.js 15+ with App Router
 - **Date**: 2026-04-02
 - **File(s)**: `app/[locale]/salon/[slug]/booking/page.tsx:10`

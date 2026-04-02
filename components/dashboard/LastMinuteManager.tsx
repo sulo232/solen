@@ -21,7 +21,7 @@ interface Service {
 }
 
 export default function LastMinuteManager({ salonId }: { salonId: string }) {
-  const t = useTranslations("dashboard.marketing") as any;
+  const t = useTranslations("marketing") as any;
   const [settings, setSettings] = useState<LastMinuteSettings | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);

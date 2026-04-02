@@ -53,7 +53,7 @@ export default function Breadcrumb() {
         {segments.map((segment, i) => {
           const href = `/${locale}/${segments.slice(0, i + 1).join("/")}`;
           const isLast = i === segments.length - 1;
-          const label = t.has(segment) ? t(segment) : decodeURIComponent(segment);
+          const label = (t as any).has(segment) ? (t as any)(segment) : decodeURIComponent(segment);
 
           return (
             <span key={href} className="flex items-center gap-1.5">
