@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, memo } from "react";
+import Image from "next/image";
 import type { DiscoveryItem } from "@/lib/types";
 import { Play } from "lucide-react";
 import LikeButton from "./LikeButton";
@@ -96,12 +97,12 @@ export default memo(function VideoCard({
       <div className="absolute inset-0 bg-s-ink overflow-hidden">
         {/* Thumbnail — always visible as background layer (also fallback when iframe fails) */}
         {thumbnailUrl && !imgError ? (
-          <img
+          <Image
             src={thumbnailUrl}
             alt={item.alt_text || item.style_name || ""}
+            fill
             className="absolute inset-0 w-full h-full object-cover"
             onError={() => setImgError(true)}
-            loading="lazy"
           />
         ) : null}
 

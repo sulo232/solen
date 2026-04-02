@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import NextImage from "next/image";
 import { useTranslations } from "next-intl";
 import { Search, Link2, Sparkles, Download, Check, X, Loader2, Play, Image as ImageIcon, ChevronDown } from "lucide-react";
 
@@ -239,11 +240,11 @@ function SmartSearchTab() {
                     : "border-transparent hover:border-s-ink/10 dark:hover:border-white/10"
                 }`}
               >
-                <img
+                <NextImage
                   src={photo.thumbnail || photo.url}
                   alt={photo.alt_text}
+                  fill
                   className="w-full h-full object-cover"
-                  loading="lazy"
                 />
                 {selected.has(photo.id) && (
                   <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-s-coral flex items-center justify-center">

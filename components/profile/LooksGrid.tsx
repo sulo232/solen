@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Plus, Scissors, Sparkles, Palette } from 'lucide-react';
 
@@ -38,9 +39,10 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
             style={{ background: styles.bg }}
           >
             {look.imageUrl ? (
-              <img
+              <Image
                 src={look.imageUrl}
                 alt="Look"
+                fill
                 className="w-full h-full object-cover rounded-[10px]"
               />
             ) : (
