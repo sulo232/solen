@@ -175,7 +175,7 @@ export default function PhotoLightbox({
                     setDirection(i > currentIndex ? 1 : -1);
                     setCurrentIndex(i);
                   }}
-                  className={`relative w-12 h-12 rounded-lg overflow-hidden shrink-0 transition-all duration-200 ${
+                  className={`relative w-12 h-12 rounded-lg overflow-hidden shrink-0 transition-[transform,filter,border-color,background-color] duration-200 ${
                     i === currentIndex
                       ? "ring-2 ring-white opacity-100 scale-110"
                       : "opacity-50 hover:opacity-80"

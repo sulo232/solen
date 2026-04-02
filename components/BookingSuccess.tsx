@@ -196,7 +196,7 @@ export default function BookingSuccess(props: BookingSuccessProps) {
       <div className="flex flex-col gap-2">
         <button
           onClick={handleCalendarDownload}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-all"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-btn active:scale-[0.98] bg-s-coral text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
         >
           <Calendar size={16} />
           {t("addToCalendar")}

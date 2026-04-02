@@ -124,7 +124,7 @@ export default function BookingCard({
   };
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-all duration-[250ms]">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]">
       {/* Header */}
       <div className="p-4 border-b border-s-ink/[0.06] dark:border-white/[0.08] flex items-start justify-between">
         <div className="flex-1">
@@ -189,7 +189,7 @@ export default function BookingCard({
       <div className="px-4 py-3 border-t border-s-ink/[0.06] dark:border-white/[0.08] flex items-center justify-between">
         <button
           onClick={() => onRebook?.(booking)}
-          className="px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-all"
+          className="px-4 py-2 rounded-pill bg-s-coral text-white text-sm font-semibold hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
         >
           {t('rebook')}
         </button>

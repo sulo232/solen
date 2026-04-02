@@ -104,7 +104,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
         <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           <Link
             href={`/${locale}/${city}`}
-            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-all duration-150 ${
+            className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
               activeCategory === null
                 ? "bg-s-coral text-white shadow-coral-glow"
                 : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20"
@@ -116,7 +116,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
             <Link
               key={key}
               href={`/${locale}/${city}/${key}`}
-              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-all duration-150 ${
+              className={`shrink-0 flex items-center px-4 py-2 rounded-pill text-sm font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter,border-color,background-color] duration-150 ${
                 activeCategory === key
                   ? "bg-s-coral text-white shadow-coral-glow"
                   : "bg-[--raised] dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-ink/20"

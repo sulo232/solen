@@ -151,7 +151,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         <div className="absolute top-3 left-3 z-[2]">
           {isGuestFavorite ? (
             <span className="flex items-center gap-1 font-heading font-semibold text-[13px] text-[#222222] bg-white px-2 py-1 rounded-pill shadow-md">
-              {(t("heroCarousel.guestFavorite") as string).includes("heroCarousel") ? "Top bewertet" : t("heroCarousel.guestFavorite")}
+              {t("heroCarousel.guestFavorite")}
             </span>
           ) : isNew ? (
             <span className="font-heading font-semibold text-[13px] text-white bg-[#222222] px-2.5 py-1 rounded-pill shadow-md">
@@ -165,14 +165,16 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
           <button
             type="button"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); onFavoriteToggle(salon.id); }}
-            className="absolute top-2 right-2 z-[2] w-[28px] h-[28px] rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:bg-black/20 hover:scale-110 active:scale-95 shadow-sm"
+            className="absolute top-2 right-2 z-[2] p-2 rounded-full bg-black/10 backdrop-blur-md flex items-center justify-center transition-[background-color,transform] duration-200 hover:bg-black/20 hover:scale-110 active:scale-95 shadow-sm"
             aria-label="Toggle Favorite"
+            style={{ minWidth: "44px", minHeight: "44px" }}
           >
             <Heart
-              className={`w-[14px] h-[14px] transition-colors duration-200 ${
-                isFavorited ? "fill-white text-white" : "text-white stroke-white"
+              className={`w-6 h-6 transition-colors duration-200 ${
+                isFavorited ? "fill-[#FF385C] stroke-[#FF385C]" : "fill-transparent stroke-white"
               }`}
-              strokeWidth={isFavorited ? 1 : 2}
+              strokeWidth={2}
+              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))" }}
             />
           </button>
         )}

@@ -154,7 +154,7 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
                   <button
                     key={slot.time}
                     onClick={() => handleSelectTime(slot.time)}
-                    className={`py-3 rounded-[12px] border text-sm font-heading font-semibold transition-all ${
+                    className={`py-3 rounded-[12px] border text-sm font-heading font-semibold transition-[border-color,background-color] duration-150 ${
                       formData.selectedTime === slot.time
                         ? 'bg-s-coral border-s-coral text-white'
                         : 'border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
@@ -174,7 +174,7 @@ export default function TimeSelectionStep({ salonId }: TimeSelectionStepProps) {
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] transition-all duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

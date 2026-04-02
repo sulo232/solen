@@ -144,7 +144,7 @@ export default function VouchersPage() {
             </p>
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-all"
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-btn bg-s-coral text-white text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
             >
               Gutschein kaufen
             </Link>
@@ -156,7 +156,7 @@ export default function VouchersPage() {
           <div className="mt-8 pt-6 border-t border-s-ink/5 dark:border-white/5">
             <Link
               href={`/${locale}/vouchers`}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 dark:border-s-coral/40 bg-s-coral/5 dark:bg-s-coral/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40 dark:hover:border-s-coral/60 hover:bg-s-coral/10 dark:hover:bg-s-coral/20 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-btn border border-s-coral/20 dark:border-s-coral/40 bg-s-coral/5 dark:bg-s-coral/10 text-[11px] font-heading font-bold uppercase tracking-[.06em] text-s-coral hover:border-s-coral/40 dark:hover:border-s-coral/60 hover:bg-s-coral/10 dark:hover:bg-s-coral/20 transition-[transform,filter] duration-150"
             >
               Neuen Gutschein schenken
             </Link>
@@ -202,7 +202,7 @@ function VoucherCard({
 
   return (
     <div
-      className={`rounded-[12px] border p-4 transition-all ${statusColor}`}
+      className={`rounded-[12px] border p-4 transition-[border-color,background-color] duration-150 ${statusColor}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">

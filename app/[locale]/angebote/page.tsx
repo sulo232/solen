@@ -323,7 +323,7 @@ export default function LastMinutePage() {
                   <Link
                     key={cat}
                     href={`/${locale}/${cat}`}
-                    className="px-4 py-2.5 rounded-pill bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 hover:text-s-coral transition-all duration-150"
+                    className="px-4 py-2.5 rounded-pill bg-white dark:bg-s-dm-surface border border-s-ink/10 dark:border-white/10 text-sm text-s-ink/70 dark:text-s-dm-text/70 hover:border-s-coral/30 hover:text-s-coral transition-[transform,filter,border-color,background-color] duration-150"
                   >
                     {cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </Link>

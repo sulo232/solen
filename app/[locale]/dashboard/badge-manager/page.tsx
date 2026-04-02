@@ -136,7 +136,7 @@ function BadgeModal({
                 <button
                   key={c.value}
                   onClick={() => setColor(c.value)}
-                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                  className={`w-8 h-8 rounded-full border-2 transition-[border-color,background-color] duration-150 ${
                     color === c.value ? "border-s-ink scale-110" : "border-transparent"
                   }`}
                   style={{ backgroundColor: c.value }}

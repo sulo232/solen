@@ -85,6 +85,7 @@
       "beliebtInZuerich": "Populaire à Zurich",
       "beliebtInBern": "Populaire à Berne"
     },
+
     "lastMinute": {
       "eyebrow": "Offres",
       "title": "Économisez jusqu'à 50%",
@@ -126,7 +127,14 @@
       "feature1": "Pas de frais mensuels",
       "feature2": "En ligne en 24h",
       "feature3": "En ligne en 5 minutes",
-      "teaserPrompt": "Vous êtes propriétaire de salon?"
+      "teaserPrompt": "Touchez des milliers de clients, remplissez votre agenda et gérez votre entreprise — tout en un seul endroit.",
+      "forSalonsStudios": "Pour les salons et studios",
+      "checklistFree": "Créer une annonce gratuite",
+      "checklistBookings": "Recevoir des réservations directement",
+      "checklistVisibility": "Visibilité dans votre ville",
+      "newBookings": "Nouvelles réservations",
+      "firstMonth": "le premier mois",
+      "newCustomers": "Nouveaux clients"
     },
     "trust": {
       "securePayment": "Paiement sécurisé — chiffrement Stripe",
@@ -156,7 +164,8 @@
       "label": "Populaire près de chez vous",
       "empty": "Bientôt disponible dans votre ville",
       "newBadge": "Nouveau",
-      "fromPrice": "Dès CHF {amount}"
+      "fromPrice": "Dès CHF {amount}",
+      "guestFavorite": "Top noté"
     },
     "search": {
       "placeholder": "Rechercher un salon à Bâle...",
@@ -492,9 +501,27 @@
     "newOnSolen": "Nouveau sur Solen",
     "guestFavorite": "Favori des invités",
     "topRated": "Mieux noté",
-    "priceFrom": "Dès"
+    "priceFrom": "Dès",
+    "new": "Nouveau",
+    "nextAvailable": "Prochain rendez-vous: {date}",
+    "noAvailability": "Aucun rendez-vous disponible",
+    "availableToday": "Disponible aujourd'hui",
+    "removeFromFavorites": "Retirer des favoris",
+    "addToFavorites": "Ajouter aux favoris",
+    "bookedTimesThisWeek": "{count}× réservé cette semaine",
+    "nextAppointmentToday": "Prochain rendez-vous: Aujourd'hui {time}",
+    "nextAppointmentTomorrow": "Prochain rendez-vous: Demain {time}",
+    "nextAppointmentDate": "Prochain rendez-vous: {date} {time}"
   },
   "booking": {
+    "back": "Retour",
+    "stepOf": "Étape {current} sur {total}",
+    "stepServices": "Choisir un service",
+    "stepStaff": "Choisir un styliste",
+    "stepDate": "Choisir une date",
+    "stepTime": "Choisir l'heure",
+    "stepConfirm": "Confirmer",
+    "stepPayment": "Paiement",
     "bookingAt": "Réservez votre rendez-vous chez {salon}",
     "cart": {
       "title": "Panier",

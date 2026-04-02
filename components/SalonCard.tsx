@@ -279,7 +279,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
                   onClick={(e) => { e.preventDefault(); e.stopPropagation();
                     scrollContainerRef.current?.scrollTo({ left: i * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
                   }}
-                  className={`rounded-full transition-all duration-200 ${i === photoIndex ? "w-[6px] h-[6px] bg-white" : "w-[6px] h-[6px] bg-white/60 hover:bg-white/90"}`}
+                  className={`rounded-full transition-[background-color,width,height] duration-200 ${i === photoIndex ? "w-[6px] h-[6px] bg-white" : "w-[6px] h-[6px] bg-white/60 hover:bg-white/90"}`}
                   aria-label={`Photo ${i + 1}`}
                 />
               ))}
@@ -328,7 +328,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               </span>
             ) : salon.review_count === 0 ? (
               <span className="shrink-0 text-[11px] font-heading font-bold text-white bg-[#222222] px-2 py-0.5 rounded-pill">
-                Neu
+                {t("new")}
               </span>
             ) : null}
           </div>
@@ -356,15 +356,15 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             const today = new Date(); today.setHours(0, 0, 0, 0);
             const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
             const slotDay = new Date(slot); slotDay.setHours(0, 0, 0, 0);
-            const timeStr = slot.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+            const timeStr = slot.toLocaleTimeString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" });
             let label: string;
             if (slotDay.getTime() === today.getTime()) {
-              label = `Nächster Termin: Heute ${timeStr}`;
+              label = t("nextAppointmentToday", { time: timeStr });
             } else if (slotDay.getTime() === tomorrow.getTime()) {
-              label = `Nächster Termin: Morgen ${timeStr}`;
+              label = t("nextAppointmentTomorrow", { time: timeStr });
             } else {
-              const dateStr = slot.toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" });
-              label = `Nächster Termin: ${dateStr} ${timeStr}`;
+              const dateStr = slot.toLocaleDateString(locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB", { weekday: "short", day: "numeric", month: "short" });
+              label = t("nextAppointmentDate", { date: dateStr, time: timeStr });
             }
             return (
               <p className="text-[12px] font-medium leading-[18px]" style={{ color: "#2E7D32" }}>
@@ -376,7 +376,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {/* Line 5: Social proof (Phase 3.5) */}
           {(salon.booking_count_week ?? 0) >= 3 && (
             <p className="text-[12px] text-[#6A6A6A] leading-[18px]">
-              {salon.booking_count_week}× diese Woche gebucht
+              {t("bookedTimesThisWeek", { count: salon.booking_count_week })}
             </p>
           )}
         </div>

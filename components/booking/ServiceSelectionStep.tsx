@@ -102,7 +102,7 @@ export default function ServiceSelectionStep({
                   <button
                     key={service.id}
                     onClick={() => handleSelectService(service)}
-                    className={`w-full flex items-start gap-3 p-4 rounded-[12px] border-2 transition-all duration-200 ${
+                    className={`w-full flex items-start gap-3 p-4 rounded-[12px] border-2 transition-[border-color,background-color] duration-200 ${
                       selectedServiceIds.has(service.id)
                         ? 'border-s-coral bg-s-coral/[0.04] dark:bg-s-coral/[0.08]'
                         : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
@@ -110,7 +110,7 @@ export default function ServiceSelectionStep({
                   >
                     {/* Checkbox */}
                     <div
-                      className={`shrink-0 w-5 h-5 rounded-[6px] border-2 flex items-center justify-center transition-all mt-0.5 ${
+                      className={`shrink-0 w-5 h-5 rounded-[6px] border-2 flex items-center justify-center transition-[border-color,background-color] mt-0.5 ${
                         selectedServiceIds.has(service.id)
                           ? 'bg-s-coral border-s-coral'
                           : 'border-s-ink/20 dark:border-white/20'

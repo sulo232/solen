@@ -489,7 +489,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                       <button
                         key={s}
                         onClick={() => setStep(s)}
-                        className="rounded-pill font-body font-medium text-[12px] transition-all duration-150"
+                        className="rounded-pill font-body font-medium text-[12px] transition-[transform,filter,border-color,background-color] duration-150"
                         style={{
                           padding: "4px 12px",
                           background: isActive ? "#1A1A1A" : isCompleted ? "#E8735A" : "#EDE8E2",
@@ -835,7 +835,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         {/* Ganze Schweiz */}
                         <button
                           onClick={() => selectCity(null)}
-                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-card border mb-3 transition-all duration-200 ${
+                          className={`w-full flex items-center gap-3 px-4 py-3 rounded-card border mb-3 transition-[transform,filter,border-color,background-color] duration-200 ${
                             city === null
                               ? "border-s-coral bg-s-coral/[0.05] dark:bg-s-coral/[0.08]"
                               : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-ink/20 dark:hover:border-white/20"
@@ -858,7 +858,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                               key={slug}
                               onClick={() => selectCity(slug)}
                               aria-label={getCityLabel(slug)}
-                              className={`flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-card border transition-all duration-200 ${
+                              className={`flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-card border transition-[transform,filter,border-color,background-color] duration-200 ${
                                 city === slug
                                   ? "border-s-coral bg-s-coral/[0.05] dark:bg-s-coral/[0.08]"
                                   : "border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-ink/20 dark:hover:border-white/20"
@@ -913,7 +913,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 }}
                                 aria-label={label}
                                 aria-pressed={isSelected}
-                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-all duration-150"
+                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150"
                                 style={{
                                   border:     `1.5px solid ${isSelected ? "#1A1209" : "#E8E8E8"}`,
                                   background: isSelected ? "#1A1209" : "#FFFFFF",
@@ -965,7 +965,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 onClick={() => setTimeKey(key)}
                                 aria-label={t(`steps.date.time.${key}` as Parameters<typeof t>[0])}
                                 aria-pressed={isSelected}
-                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-all duration-150"
+                                className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150"
                                 style={{
                                   border:     `1.5px solid ${isSelected ? "#1A1209" : "#E8E8E8"}`,
                                   background: isSelected ? "#1A1209" : "#FFFFFF",

@@ -115,7 +115,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
         {/* Sliding active indicator */}
         <div
           ref={indicatorRef}
-          className="absolute bottom-0 left-0 h-[2px] bg-[#222222] transition-all duration-200 ease-out"
+          className="absolute bottom-0 left-0 h-[2px] bg-[#222222] transition-[transform,width] duration-200 ease-out"
           style={{ width: 0 }}
         />
       </div>

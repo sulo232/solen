@@ -66,7 +66,7 @@ export default function SalonMobileCTA({
             )}
           </div>
           <button
-            className="h-[44px] px-6 rounded-[10px] bg-[#E8624A] text-white font-heading font-bold text-[14px] hover:brightness-95 active:scale-[0.97] transition-all duration-150"
+            className="h-[44px] px-6 rounded-[10px] bg-[#E8624A] text-white font-heading font-bold text-[14px] hover:brightness-95 active:scale-[0.97] transition-[transform,filter] duration-150"
             style={{ boxShadow: "0 2px 8px rgba(232,98,74,0.28)" }}
           >
             {t("bookNow")}

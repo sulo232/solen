@@ -36,7 +36,7 @@ export default function BookingBubble({ salonName, salonSlug, conversationId, me
       </div>
       <Link
         href={`/${locale}/salon/${salonSlug}`}
-        className="shrink-0 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-all"
+        className="shrink-0 px-3 py-1.5 rounded-btn active:scale-[0.98] bg-s-coral text-white text-xs font-medium hover:brightness-[1.06] transition-[transform,filter] duration-150"
       >
         {t("bookNow")}
       </Link>

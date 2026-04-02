@@ -175,7 +175,7 @@ export default function ConfirmationStep({ salon, staff }: ConfirmationStepProps
         <div className="max-w-2xl mx-auto px-4 flex gap-3">
           <button
             onClick={handleBack}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] transition-all duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

@@ -85,6 +85,7 @@
       "beliebtInZuerich": "Popular in Zurich",
       "beliebtInBern": "Popular in Berne"
     },
+
     "lastMinute": {
       "eyebrow": "Offers",
       "title": "Save up to 50%",
@@ -126,7 +127,14 @@
       "feature1": "No monthly fees",
       "feature2": "Live in 24 hours",
       "feature3": "Online in 5 minutes",
-      "teaserPrompt": "Are you a salon owner?"
+      "teaserPrompt": "Reach thousands of customers, fill your calendar, and manage your business — all in one place.",
+      "forSalonsStudios": "For Salons & Studios",
+      "checklistFree": "Create a free listing",
+      "checklistBookings": "Receive bookings directly",
+      "checklistVisibility": "Visibility in your city",
+      "newBookings": "New Bookings",
+      "firstMonth": "in the first month",
+      "newCustomers": "New Customers"
     },
     "trust": {
       "securePayment": "Secure payment — Stripe encrypted",
@@ -156,7 +164,8 @@
       "label": "Popular near you",
       "empty": "Coming soon in your city",
       "newBadge": "New",
-      "fromPrice": "From CHF {amount}"
+      "fromPrice": "From CHF {amount}",
+      "guestFavorite": "Top Rated"
     },
     "search": {
       "placeholder": "Search salons in Basel...",
@@ -514,9 +523,21 @@
     "newOnSolen": "New on Solen",
     "guestFavorite": "Guest Favorite",
     "topRated": "Top Rated",
-    "priceFrom": "From"
+    "priceFrom": "From",
+    "bookedTimesThisWeek": "{count}× booked this week",
+    "nextAppointmentToday": "Next appointment: Today {time}",
+    "nextAppointmentTomorrow": "Next appointment: Tomorrow {time}",
+    "nextAppointmentDate": "Next appointment: {date} {time}"
   },
   "booking": {
+    "back": "Back",
+    "stepOf": "Step {current} of {total}",
+    "stepServices": "Choose service",
+    "stepStaff": "Choose stylist",
+    "stepDate": "Choose date",
+    "stepTime": "Choose time",
+    "stepConfirm": "Confirm",
+    "stepPayment": "Payment",
     "bookingAt": "Book your appointment at {salon}",
     "cart": {
       "title": "Shopping Cart",

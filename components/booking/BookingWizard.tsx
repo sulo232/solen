@@ -1,6 +1,7 @@
 'use client';
 
 import { useBooking } from '@/lib/booking-context';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import {
@@ -15,13 +16,13 @@ import type { Salon, StaffMember } from '@/lib/types';
 
 const STEPS = ['services', 'staff', 'date', 'time', 'confirm', 'payment'] as const;
 
-const STEP_LABELS: Record<string, string> = {
-  services: 'Service wählen',
-  staff: 'Stylist wählen',
-  date: 'Datum wählen',
-  time: 'Uhrzeit wählen',
-  confirm: 'Bestätigen',
-  payment: 'Bezahlung',
+const STEP_KEYS: Record<string, string> = {
+  services: 'stepServices',
+  staff: 'stepStaff',
+  date: 'stepDate',
+  time: 'stepTime',
+  confirm: 'stepConfirm',
+  payment: 'stepPayment',
 };
 
 interface Service {
@@ -60,6 +61,7 @@ export default function BookingWizard({
   staffList,
   salon,
 }: BookingWizardProps) {
+  const t = useTranslations('booking');
   const { currentStep, goToStep, formData } = useBooking();
 
   const currentIndex = STEPS.indexOf(currentStep as typeof STEPS[number]);
@@ -116,17 +118,18 @@ export default function BookingWizard({
           <button
             onClick={handleBack}
             className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#F7F7F7] transition-colors"
-            aria-label="Zurück"
+            aria-label={t('back')}
           >
             <ChevronLeft className="w-5 h-5 text-[#222222]" />
           </button>
         )}
         <div className="flex-1 min-w-0">
           <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-[#6A6A6A]">
-            Schritt {currentIndex + 1} von {STEPS.length}
+            {t('stepOf', { current: currentIndex + 1, total: STEPS.length })}
           </p>
           <h3 className="text-[17px] font-heading font-semibold text-[#222222] truncate">
-            {STEP_LABELS[currentStep] || currentStep}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {t(STEP_KEYS[currentStep] as any)}
           </h3>
         </div>
       </div>
@@ -136,7 +139,7 @@ export default function BookingWizard({
         {STEPS.map((step, i) => (
           <div
             key={step}
-            className={`h-[3px] rounded-full transition-all duration-300 ${
+            className={`h-[3px] rounded-full transition-[width,background-color] duration-300 ${
               i < currentIndex
                 ? "w-3 bg-[#E8624A]"
                 : i === currentIndex

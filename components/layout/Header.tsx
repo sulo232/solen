@@ -199,7 +199,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 >
                   <Search className="w-4 h-4 text-[#222222] shrink-0" />
                   <span className="text-[13px] font-body font-semibold text-[#717171] truncate text-left flex-1">
-                    Was suchst du?
+                    {t("searchCompact")}
                   </span>
                 </button>
               </div>
@@ -209,7 +209,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <div className="hidden md:block w-full">
                 {/* Emoji category tabs — visible when NOT scrolled */}
                 <div className={cn(
-                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-all duration-300",
+                  "flex items-center justify-center gap-6 overflow-x-auto scrollbar-hide px-2 transition-[opacity] duration-300",
                   scrolled ? "opacity-0 pointer-events-none absolute" : "opacity-100"
                 )}>
                   {[
@@ -245,7 +245,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
                 {/* Compact search pill — visible when scrolled */}
                 <div className={cn(
-                  "flex justify-center transition-all duration-300",
+                  "flex justify-center transition-[opacity] duration-300",
                   scrolled ? "opacity-100" : "opacity-0 pointer-events-none absolute"
                 )}>
                   <button
@@ -255,7 +255,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   >
                     <Search className="w-4 h-4 text-[#222222] shrink-0" />
                     <span className="text-[14px] font-body font-semibold text-[#717171] truncate text-left flex-1">
-                      Service, Salon oder Ort suchen...
+                      {t("search")}
                     </span>
                   </button>
                 </div>
@@ -412,7 +412,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   key={key}
                   href={`/${locale}${href}`}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading font-semibold whitespace-nowrap shrink-0 transition-all duration-150",
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading font-semibold whitespace-nowrap shrink-0 transition-[background-color,color] duration-150",
                     isActive
                       ? "bg-[#1A1A1A] text-white"
                       : "bg-[#F5F5F5] text-[#555555] hover:bg-[#EBEBEB]"

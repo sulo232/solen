@@ -376,8 +376,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             </ol>
           </nav>
 
-          {/* Amber eyebrow */}
-          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-amber mb-3">
+          {/* Coral eyebrow */}
+          <span className="block font-heading font-bold text-[11px] uppercase tracking-[.22em] text-s-coral mb-3">
             {city ? cityName : allCitiesLabel} · {categoryLabel}
           </span>
 
@@ -599,7 +599,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
                     duration: 0.20,
-                    delay: Math.min(i * 0.03, 0.15),
+                    delay: Math.min(i * 0.04, 0.24),
                     ease: [0.2, 0.8, 0.2, 1]
                   }}
                 >

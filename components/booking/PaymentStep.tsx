@@ -107,7 +107,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
         {/* Online Payment */}
         <button
           onClick={() => handleSelectPaymentMethod('online')}
-          className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all ${
+          className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-[border-color,background-color] duration-150 ${
             formData.paymentMethod === 'online'
               ? 'border-s-coral bg-s-coral/[0.04] dark:bg-s-coral/[0.08]'
               : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
@@ -123,7 +123,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
             </p>
           </div>
           <div
-            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150 ${
               formData.paymentMethod === 'online'
                 ? 'bg-s-coral border-s-coral'
                 : 'border-s-ink/20 dark:border-white/20'
@@ -138,7 +138,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
         {/* In-Person Payment */}
         <button
           onClick={() => handleSelectPaymentMethod('in_person')}
-          className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all ${
+          className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-[border-color,background-color] duration-150 ${
             formData.paymentMethod === 'in_person'
               ? 'border-s-coral bg-s-coral/[0.04] dark:bg-s-coral/[0.08]'
               : 'border-s-ink/[0.08] dark:border-white/[0.08] hover:border-s-coral/40 bg-[--raised] dark:bg-s-dm-surface'
@@ -154,7 +154,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
             </p>
           </div>
           <div
-            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-[border-color,background-color] duration-150 ${
               formData.paymentMethod === 'in_person'
                 ? 'bg-s-coral border-s-coral'
                 : 'border-s-ink/20 dark:border-white/20'
@@ -197,7 +197,7 @@ export default function PaymentStep({ salonId }: PaymentStepProps) {
           <button
             onClick={handleBack}
             disabled={isSubmitting}
-            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150"
+            className="flex-1 py-3 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-[transform,filter,border-color,background-color] duration-150"
           >
             {t('back')}
           </button>

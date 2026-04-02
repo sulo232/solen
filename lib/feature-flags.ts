@@ -11,28 +11,33 @@ export const CLIENT_FEATURE_FLAGS = {
 } as const;
 
 export async function checkFeatureEnabled(featureKey: FeatureKey): Promise<NextResponse | null> {
-  const admin = createAdminSupabaseClient();
+  try {
+    const admin = createAdminSupabaseClient();
 
-  // Always check maintenance mode first
-  const { data: maintenance } = await admin
-    .from("feature_flags").select("enabled").eq("key", "maintenance_mode").single();
-  if (maintenance?.enabled) {
-    return NextResponse.json(
-      { error: "solen.ch is currently under maintenance. Please try again shortly.", code: "MAINTENANCE_MODE" },
-      { status: 503 }
-    );
+    // Always check maintenance mode first
+    const { data: maintenance } = await admin
+      .from("feature_flags").select("enabled").eq("key", "maintenance_mode").single();
+    if (maintenance?.enabled) {
+      return NextResponse.json(
+        { error: "solen.ch is currently under maintenance. Please try again shortly.", code: "MAINTENANCE_MODE" },
+        { status: 503 }
+      );
+    }
+
+    const { data: flag } = await admin
+      .from("feature_flags").select("enabled").eq("key", featureKey).single();
+    if (flag && !flag.enabled) {
+      return NextResponse.json(
+        { error: "This feature is temporarily disabled.", code: "FEATURE_DISABLED" },
+        { status: 503 }
+      );
+    }
+
+    return null; // feature is enabled, proceed
+  } catch {
+    // Fail open — if admin client can't be created (e.g. missing service role key), allow the feature
+    return null;
   }
-
-  const { data: flag } = await admin
-    .from("feature_flags").select("enabled").eq("key", featureKey).single();
-  if (flag && !flag.enabled) {
-    return NextResponse.json(
-      { error: "This feature is temporarily disabled.", code: "FEATURE_DISABLED" },
-      { status: 503 }
-    );
-  }
-
-  return null; // feature is enabled, proceed
 }
 
 export async function checkUserBanned(userId: string): Promise<NextResponse | null> {

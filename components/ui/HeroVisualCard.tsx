@@ -57,7 +57,7 @@ export default function HeroVisualCard() {
           </span>
           <div className="flex items-center justify-between">
             <span className="text-sm text-s-ink/70 font-body">Ab <strong className="text-s-ink font-heading">CHF 45</strong></span>
-            <button className="px-4 py-2 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] transition-all"
+            <button className="px-4 py-2 rounded-pill text-white text-xs font-heading font-bold uppercase tracking-[.04em] transition-[transform,filter] duration-150"
               style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 16px rgba(232,98,74,.15)" }}>
               Jetzt buchen
             </button>

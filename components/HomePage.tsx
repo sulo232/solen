@@ -29,13 +29,13 @@ import TestimonialCarousel from "@/components/TestimonialCarousel";
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.06 },
+    transition: { staggerChildren: 0.04 },
   },
 } as const;
 
 const categoryContainerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } },
+  visible: { transition: { staggerChildren: 0.04, delayChildren: 0.1 } },
 } as const;
 
 const categoryItemVariants = {
@@ -43,7 +43,7 @@ const categoryItemVariants = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: i * 0.06 },
+    transition: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: i * 0.04 },
   }),
 };
 
@@ -289,7 +289,7 @@ export default function HomePage({ initialData }: HomePageProps) {
               <div className="flex-1">
                 {/* Eyebrow */}
                 <span className="inline-block text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
-                  Für Salons &amp; Studios
+                  {t("partner.forSalonsStudios")}
                 </span>
                 <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3">
                   {t("partner.title")}
@@ -301,9 +301,9 @@ export default function HomePage({ initialData }: HomePageProps) {
                 {/* Checklist */}
                 <ul className="space-y-2 mb-7">
                   {[
-                    "Kostenloses Inserat erstellen",
-                    "Buchungen direkt empfangen",
-                    "Sichtbarkeit in deiner Stadt",
+                    t("partner.checklistFree"),
+                    t("partner.checklistBookings"),
+                    t("partner.checklistVisibility"),
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2.5 text-[14px] font-body text-[#555555]">
                       <span
@@ -322,7 +322,7 @@ export default function HomePage({ initialData }: HomePageProps) {
 
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.97] transition-all duration-150 self-start"
+                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
                   style={{ boxShadow: "0 2px 12px rgba(232,98,74,.28)" }}
                 >
                   {t("partner.cta")} →
@@ -337,16 +337,16 @@ export default function HomePage({ initialData }: HomePageProps) {
                     className="absolute top-0 left-0 right-0 bg-white rounded-[16px] p-5"
                     style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.08)", border: "1px solid rgba(0,0,0,0.05)" }}
                   >
-                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-1">Neue Buchungen</p>
+                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-1">{t("partner.newBookings")}</p>
                     <p className="font-heading font-extrabold text-[28px] text-[#1A1A1A] leading-tight">+47%</p>
-                    <p className="text-[12px] font-body text-[#717171] mt-0.5">im ersten Monat</p>
+                    <p className="text-[12px] font-body text-[#717171] mt-0.5">{t("partner.firstMonth")}</p>
                   </div>
                   {/* Floating stat */}
                   <div
                     className="absolute bottom-0 right-0 bg-white rounded-[14px] px-4 py-3"
                     style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.09)", border: "1px solid rgba(0,0,0,0.05)" }}
                   >
-                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-0.5">Neue Kunden</p>
+                    <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-0.5">{t("partner.newCustomers")}</p>
                     <p className="font-heading font-extrabold text-[22px] text-s-coral leading-tight">120+</p>
                   </div>
                 </div>

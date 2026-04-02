@@ -95,7 +95,7 @@ export default function SalonSidebar({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={onOpenCalendar}
-                className="w-full h-12 rounded-[12px] bg-[#E8624A] text-white font-heading font-bold text-[16px] hover:brightness-95 transition-all duration-150"
+                className="w-full h-12 rounded-[12px] bg-[#E8624A] text-white font-heading font-bold text-[16px] hover:brightness-95 transition-[transform,filter] duration-150"
                 style={{ boxShadow: "0 2px 12px rgba(232,98,74,0.32)" }}
               >
                 {t("bookNow")}

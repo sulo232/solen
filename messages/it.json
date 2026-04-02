@@ -85,6 +85,7 @@
       "beliebtInZuerich": "Popolare a Zurigo",
       "beliebtInBern": "Popolare a Berna"
     },
+
     "lastMinute": {
       "eyebrow": "Offerte",
       "title": "Risparmia fino al 50%",
@@ -126,7 +127,14 @@
       "feature1": "Nessuna tariffa mensile",
       "feature2": "Online in 24 ore",
       "feature3": "Online in 5 minuti",
-      "teaserPrompt": "Sei un proprietario di salone?"
+      "teaserPrompt": "Raggiungi migliaia di clienti, riempi il tuo calendario e gestisci la tua attività — tutto in un unico posto.",
+      "forSalonsStudios": "Per saloni e studi",
+      "checklistFree": "Crea un annuncio gratuito",
+      "checklistBookings": "Ricevi prenotazioni direttamente",
+      "checklistVisibility": "Visibilità nella tua città",
+      "newBookings": "Nuove prenotazioni",
+      "firstMonth": "nel primo mese",
+      "newCustomers": "Nuovi clienti"
     },
     "trust": {
       "securePayment": "Pagamento sicuro — crittografato Stripe",
@@ -156,7 +164,8 @@
       "label": "Popolari vicino a te",
       "empty": "Prossimamente nella tua città",
       "newBadge": "Nuovo",
-      "fromPrice": "Da CHF {amount}"
+      "fromPrice": "Da CHF {amount}",
+      "guestFavorite": "Top valutato"
     },
     "search": {
       "placeholder": "Cerca un salone a Basilea...",
@@ -474,9 +483,27 @@
     "newOnSolen": "Nuovo su Solen",
     "guestFavorite": "Preferito degli ospiti",
     "topRated": "Più votato",
-    "priceFrom": "Da"
+    "priceFrom": "Da",
+    "new": "Nuovo",
+    "nextAvailable": "Prossimo appuntamento: {date}",
+    "noAvailability": "Nessun appuntamento disponibile",
+    "availableToday": "Disponibile oggi",
+    "removeFromFavorites": "Rimuovi dai preferiti",
+    "addToFavorites": "Aggiungi ai preferiti",
+    "bookedTimesThisWeek": "{count}× prenotato questa settimana",
+    "nextAppointmentToday": "Prossimo appuntamento: Oggi {time}",
+    "nextAppointmentTomorrow": "Prossimo appuntamento: Domani {time}",
+    "nextAppointmentDate": "Prossimo appuntamento: {date} {time}"
   },
   "booking": {
+    "back": "Indietro",
+    "stepOf": "Passaggio {current} di {total}",
+    "stepServices": "Scegli servizio",
+    "stepStaff": "Scegli stilista",
+    "stepDate": "Scegli data",
+    "stepTime": "Scegli orario",
+    "stepConfirm": "Conferma",
+    "stepPayment": "Pagamento",
     "bookingAt": "Prenota il tuo appuntamento presso {salon}",
     "cart": {
       "title": "Carrello",

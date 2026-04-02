@@ -488,7 +488,7 @@ function Step3({ onComplete }: { onComplete: () => void }) {
               key={o.value}
               type="button"
               onClick={() => toggle(o.value)}
-              className={`relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-input border transition-all duration-150 ${
+              className={`relative flex flex-col items-center justify-center gap-2.5 p-4 rounded-input border transition-[transform,filter,border-color,background-color] duration-150 ${
                 active
                   ? "border-s-coral bg-s-coral/[0.08]"
                   : "border-s-ink/[0.07] dark:border-white/10 hover:border-s-coral/40"

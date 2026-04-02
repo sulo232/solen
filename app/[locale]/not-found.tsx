@@ -28,13 +28,13 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href={`/${locale}`}
-            className="px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.98] transition-all"
+            className="px-6 py-3 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.98] transition-[transform,filter] duration-150"
           >
             {t("404_home") || "Zur Startseite"}
           </Link>
           <Link
             href={`/${locale}/coiffeur`}
-            className="px-6 py-3 rounded-pill border border-s-ink/20 text-s-ink font-heading font-bold text-[14px] hover:border-s-coral hover:text-s-coral transition-all"
+            className="px-6 py-3 rounded-pill border border-s-ink/20 text-s-ink font-heading font-bold text-[14px] hover:border-s-coral hover:text-s-coral transition-[transform,filter] duration-150"
           >
             {t("404_browse") || "Salons entdecken"}
           </Link>

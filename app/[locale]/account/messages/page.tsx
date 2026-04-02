@@ -85,7 +85,7 @@ export default function MessagesPage() {
           Wenn du einen Salon kontaktierst, erscheinen deine Unterhaltungen hier.
         </p>
         <Link href={`/${locale}/coiffeur`}
-          className="mt-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-all"
+          className="mt-2 px-6 py-3.5 rounded-btn text-white text-xs font-heading font-bold uppercase tracking-[.04em] active:scale-[0.98] transition-[transform,filter] duration-150"
           style={{ background: "#E8624A", boxShadow: "0 2px 4px rgba(232,98,74,.25), 0 4px 12px rgba(232,98,74,.15)" }}>
           Salons entdecken
         </Link>
@@ -113,7 +113,7 @@ export default function MessagesPage() {
                   key={conv.id}
                   onClick={() => setSelected(conv.id)}
                   className={[
-                    "flex items-start gap-3 p-3 rounded-[12px] text-left w-full transition-all",
+                    "flex items-start gap-3 p-3 rounded-[12px] text-left w-full transition-[transform,filter] duration-150",
                     selected === conv.id
                       ? "border border-s-coral/20"
                       : "bg-white dark:bg-s-dm-surface border border-s-ink/[0.07] dark:border-white/[0.06] hover:border-s-coral/25",

@@ -85,6 +85,7 @@
       "beliebtInZuerich": "Beliebt in Zürich",
       "beliebtInBern": "Beliebt in Bern"
     },
+
     "lastMinute": {
       "eyebrow": "Angebote",
       "title": "Spare bis zu 50%",
@@ -126,7 +127,14 @@
       "feature1": "Keine monatlichen Gebühren",
       "feature2": "Live in 24 Stunden",
       "feature3": "In 5 Minuten online",
-      "teaserPrompt": "Du bist Salon-Inhaber?"
+      "teaserPrompt": "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort.",
+      "forSalonsStudios": "Für Salons & Studios",
+      "checklistFree": "Kostenloses Inserat erstellen",
+      "checklistBookings": "Buchungen direkt empfangen",
+      "checklistVisibility": "Sichtbarkeit in deiner Stadt",
+      "newBookings": "Neue Buchungen",
+      "firstMonth": "im ersten Monat",
+      "newCustomers": "Neue Kunden"
     },
     "trust": {
       "securePayment": "Sichere Zahlung — Stripe verschlüsselt",
@@ -156,7 +164,8 @@
       "label": "Beliebt in deiner Nähe",
       "empty": "Bald verfügbar in deiner Stadt",
       "newBadge": "Neu",
-      "fromPrice": "Ab CHF {amount}"
+      "fromPrice": "Ab CHF {amount}",
+      "guestFavorite": "Top bewertet"
     },
     "search": {
       "placeholder": "Suche Salon in Basel...",
@@ -512,7 +521,7 @@
     "instagram": "Instagram ansehen",
     "similarSalons": "Ähnliche Salons",
     "new": "Neu",
-    "nextAvailable": "Nächster Termin",
+    "nextAvailable": "Nächster Termin: {date}",
     "noAvailability": "Keine Termine verfügbar",
     "availableToday": "Heute verfügbar",
     "appointmentsToday": "Heute gebucht",
@@ -524,9 +533,21 @@
     "newOnSolen": "Neu auf Solen",
     "guestFavorite": "Gästefavorit",
     "topRated": "Top bewertet",
-    "priceFrom": "Ab"
+    "priceFrom": "Ab",
+    "bookedTimesThisWeek": "{count}× diese Woche gebucht",
+    "nextAppointmentToday": "Nächster Termin: Heute {time}",
+    "nextAppointmentTomorrow": "Nächster Termin: Morgen {time}",
+    "nextAppointmentDate": "Nächster Termin: {date} {time}"
   },
   "booking": {
+    "back": "Zurück",
+    "stepOf": "Schritt {current} von {total}",
+    "stepServices": "Service wählen",
+    "stepStaff": "Stylist wählen",
+    "stepDate": "Datum wählen",
+    "stepTime": "Uhrzeit wählen",
+    "stepConfirm": "Bestätigen",
+    "stepPayment": "Bezahlung",
     "bookingAt": "Termin bei {salon}",
     "cart": {
       "title": "Warenkorb",

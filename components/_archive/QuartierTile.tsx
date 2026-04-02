@@ -33,7 +33,7 @@ export default function QuartierTile({
   return (
     <Link
       href={`/${locale}/coiffeur?quartier=${slug}`}
-      className="relative flex-shrink-0 w-40 h-24 rounded-[12px] bg-white dark:bg-s-dm-raised shadow-warm-sm hover:shadow-warm-lg hover:-translate-y-[5px] transition-all duration-250 flex flex-col justify-between p-3 overflow-hidden group"
+      className="relative flex-shrink-0 w-40 h-24 rounded-[12px] bg-white dark:bg-s-dm-raised shadow-warm-sm hover:shadow-warm-lg hover:-translate-y-[5px] transition-[transform,box-shadow] duration-250 flex flex-col justify-between p-3 overflow-hidden group"
     >
       {/* Icon background */}
       {(() => {

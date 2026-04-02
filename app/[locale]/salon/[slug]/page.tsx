@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import dynamic from "next/dynamic";
+
 import {
   Star, MapPin, Phone, Instagram, Clock, ChevronRight,
   Scissors, User, Sparkles, Waves, Palette, Zap, Info, ShieldCheck, Bus, Droplets, Award,
@@ -22,7 +22,7 @@ import { ReportContentButton } from "@/components/ui/ReportContentButton";
 import { trackSalonView } from "@/components/RecentlyViewed";
 import { motion } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
-import type { Salon, Service, StaffMember, Review, SalonCard, SalonCategory, OpeningHours } from "@/lib/types";
+import type { Salon, Service, StaffMember, Review, SalonCategory, OpeningHours } from "@/lib/types";
 import { generateSalonSchema } from "@/lib/seo";
 import { useSectionObserver } from "@/hooks/useSectionObserver";
 import SalonTabBar from "@/components/salon/SalonTabBar";
@@ -35,7 +35,7 @@ import SalonReviews from "@/components/salon/SalonReviews";
 import SalonSidebar from "@/components/salon/SalonSidebar";
 import SalonMobileCTA from "@/components/salon/SalonMobileCTA";
 
-const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
+
 
 // ─────────────────────────────────────────────────
 // Types
@@ -341,7 +341,6 @@ export default function SalonProfilePage() {
 
   // ── Derived data ──
   const photos = [salon.cover_photo_url, ...(salon.gallery_urls ?? [])].filter(Boolean) as string[];
-  const mapSalon: SalonCard = { ...salon };
   const now = new Date();
   const dayKey = DAY_KEYS[now.getDay()];
   const todayHours = salon.opening_hours?.[dayKey] as OpeningHours | null | undefined;
@@ -701,6 +700,36 @@ export default function SalonProfilePage() {
                     reloadSalon();
                   }}
                 />
+
+                {/* Location / Map */}
+                {salon.latitude && salon.longitude && (
+                  <div id="section-standort" className="scroll-mt-[180px]">
+                    <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">{t("location")}</h2>
+                    <a
+                      href={`https://maps.google.com/?q=${salon.latitude},${salon.longitude}`}
+                      target="_blank" rel="noopener noreferrer"
+                      className="block w-full aspect-[2/1] rounded-[16px] overflow-hidden bg-[#F0F0F0] border border-[#EBEBEB] hover:border-[#E8624A]/30 transition-colors duration-150 relative group"
+                    >
+                      <img
+                        src={`https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-s+E8624A(${salon.longitude},${salon.latitude})/${salon.longitude},${salon.latitude},14,0/600x300@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''}`}
+                        alt={`${salon.name} ${t("location")}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+                    </a>
+                    {salon.address && (
+                      <p className="text-sm text-[#222222]/60 mt-2">{salon.address}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Portfolio placeholder for nail/makeup salons */}
+                {(salon.categories?.includes("nails") || salon.categories?.includes("makeup")) && (
+                  <div id="section-portfolio" className="scroll-mt-[180px]">
+                    {/* Portfolio content is handled by the nail-artists section above */}
+                  </div>
+                )}
 
                 {/* Similar Salons */}
                 {salon.categories?.length > 0 && (
