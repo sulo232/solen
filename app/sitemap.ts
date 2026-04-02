@@ -6,6 +6,8 @@ export const dynamic = "force-dynamic";
 
 const APP_URL = "https://solen.ch";
 const LOCALES  = ["de", "en", "fr", "it"] as const;
+const CITIES = ["basel", "zurich", "bern", "luzern", "winterthur", "st-gallen"];
+const CATEGORIES = ["coiffeur", "barbershop", "nails", "spa", "makeup", "waxing"];
 
 const STATIC_PAGES: { path: string; freq: "daily" | "weekly" | "hourly"; priority: number }[] = [
   { path: "",             freq: "daily",   priority: 1.0 },
@@ -95,6 +97,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (err) {
     console.error("[sitemap] Failed to fetch salons:", err);
+  }
+
+  // City and city×category pages
+  for (const city of CITIES) {
+    // City-level pages
+    for (const locale of LOCALES) {
+      entries.push({
+        url:             `${APP_URL}/${locale}/${city}`,
+        lastModified:    new Date(),
+        changeFrequency: "weekly",
+        priority:        0.7,
+      });
+    }
+    // City×Category pages
+    for (const category of CATEGORIES) {
+      for (const locale of LOCALES) {
+        entries.push({
+          url:             `${APP_URL}/${locale}/${city}/${category}`,
+          lastModified:    new Date(),
+          changeFrequency: "weekly",
+          priority:        0.6,
+        });
+      }
+    }
   }
 
   return entries;
