@@ -1,29 +1,35 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
 
-/**
- * NailsIcon — 3D nail polish bottle icon with hover bounce animation
- */
 export function NailsIcon({
   animate = false,
-  className = "",
-}: { animate?: boolean; className?: string } & React.HTMLAttributes<HTMLDivElement>) {
+  ...props
+}: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
   return (
-    <motion.div
-      whileHover={{ scale: animate ? 1.08 : 1 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`inline-flex ${className}`}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
     >
-      <Image
-        src="/icons/category/nails.png"
-        alt="Nails"
-        width={128}
-        height={128}
-        priority
-        className="w-full h-full"
+      <style>{`
+        @keyframes nail-drip {
+          0%, 100% { transform: scale(1); transform-origin: 12px 22px; }
+          30% { transform: scale(1.18) translateY(1px); transform-origin: 12px 22px; }
+          60% { transform: scale(0.96); transform-origin: 12px 22px; }
+        }
+      `}</style>
+      <path d="M8 8V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4" />
+      <rect
+        x="6" y="8" width="12" height="14" rx="3"
+        style={animate ? { animation: "nail-drip 0.55s ease-in-out" } : undefined}
       />
-    </motion.div>
+      <path d="M10 14h4" />
+      <circle cx="12" cy="18" r="1" fill="currentColor" />
+    </svg>
   );
 }

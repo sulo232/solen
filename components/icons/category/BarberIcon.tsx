@@ -1,29 +1,37 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
 
-/**
- * BarberIcon — 3D barber pole icon with hover bounce animation
- */
 export function BarberIcon({
   animate = false,
-  className = "",
-}: { animate?: boolean; className?: string } & React.HTMLAttributes<HTMLDivElement>) {
+  ...props
+}: React.SVGProps<SVGSVGElement> & { animate?: boolean }) {
   return (
-    <motion.div
-      whileHover={{ scale: animate ? 1.08 : 1 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`inline-flex ${className}`}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
     >
-      <Image
-        src="/icons/category/barbershop.png"
-        alt="Barbershop"
-        width={128}
-        height={128}
-        priority
-        className="w-full h-full"
+      <style>{`
+        @keyframes razor-shimmer {
+          0%, 100% { stroke-dashoffset: 0; opacity: 1; }
+          40% { stroke-dashoffset: -6; opacity: 0.6; }
+          70% { stroke-dashoffset: 2; opacity: 0.9; }
+        }
+      `}</style>
+      <rect x="7" y="3" width="10" height="18" rx="2" />
+      <path
+        d="M7 6l10 3M7 11l10 3M7 16l10 3"
+        strokeDasharray="20"
+        style={animate ? { animation: "razor-shimmer 0.55s ease-in-out" } : undefined}
       />
-    </motion.div>
+      <path d="M5 3h14M5 21h14" />
+      <path d="M12 2v1" />
+      <path d="M12 21v1" />
+    </svg>
   );
 }
