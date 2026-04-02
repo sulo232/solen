@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -85,6 +85,7 @@ function getCategoryFallbackGradient(categories?: string[]): string {
 
 export default function SalonCard({ salon, variant = "default", locale = "de", showCompare = false, showAvailability, showDistance, isFavorited, onFavoriteToggle, stampProgress, solenTier, availableToday, availability, offPeakToday, aiReason, animated = true, photos }: SalonCardProps) {
   const t = useTranslations("salon") as any;
+  const tCommon = useTranslations("common");
   const tEmpty = useTranslations("emptyStates");
   const router = useRouter();
   const prefetched = useRef(false);
@@ -339,11 +340,14 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           </p>
 
           {/* Line 3: Price (Phase 3.1) */}
-          {priceToShow != null && (
-            <p className="text-[13px] text-[#6A6A6A] leading-[19px]">
-              ab CHF {priceToShow}
-            </p>
-          )}
+          {priceToShow != null && (() => {
+            const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+            return (
+              <p className="text-[13px] text-[#6A6A6A] leading-[19px]">
+                {tCommon("fromPrice", { price: formatCurrency(priceToShow, currencyLocale) })}
+              </p>
+            );
+          })()}
 
           {/* Line 4: Nächster Termin (Phase 3.4) */}
           {salon.next_available_slot && (() => {

@@ -5,16 +5,17 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     const supabase = await createServerSupabaseClient();
     const { data, error } = await supabase
       .from("salons")
       .select(
         "id, name, slug, cover_photo_url, average_rating, review_count, categories, quartier, address"
       )
-      .eq("slug", params.slug)
+      .eq("slug", slug)
       .eq("is_active", true)
       .single();
 
