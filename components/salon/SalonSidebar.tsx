@@ -52,18 +52,12 @@ export default function SalonSidebar({
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const isToday = date.toDateString() === today.toDateString();
-    const isTomorrow = date.toDateString() === tomorrow.toDateString();
-
-    const timeStr = date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
-
-    if (isToday) return `${t("today")} ${timeStr}`;
-    if (isTomorrow) return `${t("tomorrow")} ${timeStr}`;
-    return date.toLocaleDateString(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    return date.toLocaleDateString(locale, {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
