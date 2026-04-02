@@ -256,3 +256,17 @@
 - **What happened**: When implementing ReviewPrompt, assumed `/api/reviews` endpoint might not exist. But it was already built and accepts the exact fields the component sends: `booking_id`, `rating`, `comment`.
 - **Why it happened**: Parallel agents had already implemented the reviews API in a previous phase.
 - **Fix**: Before assuming an API endpoint is missing, search for existing routes with `find app/api -name "*keyword*"`. Always check the validation schema in `lib/validations.ts` to verify it accepts the fields the component will send.
+
+### Salon detail keys already exist in salonDetail namespace, not salon namespace
+- **Date**: 2026-04-02
+- **File(s)**: `messages/de.json:501`, `messages/de.json:3479`
+- **What happened**: When fixing Phase 7 i18n type errors, added translation keys (`showAllPhotos`, `bookAppointment`, `whatCustomersSay`, etc.) to the `salon` namespace. But components were using the `salonDetail` namespace which ALREADY HAD these keys. This caused confusion about which namespace to use and polluted the `salon` namespace with duplicate keys.
+- **Why it happened**: Did not check existing translations first. The `salon` namespace is for generic salon listing/card labels. The `salonDetail` namespace (used by `/salon/[slug]` detail page components) contains all the detailed view strings.
+- **Fix**: Before adding i18n keys, search the messages files for existing keys: `grep -r "keyName" messages/`. If a key exists, use it. Do not add duplicates to different namespaces. Components in `components/salon/` use `useTranslations("salonDetail")`, so all salon detail strings go in the `salonDetail` namespace, not `salon`.
+
+### Temporary test files in root must be removed before committing
+- **Date**: 2026-04-02
+- **File(s)**: `tmp2.tsx` (root)
+- **What happened**: A temporary test file `tmp2.tsx` in the repo root caused build failures: TypeScript tried to type-check it, found undefined properties, and errored. Build couldn't proceed.
+- **Why it happened**: Likely created during debugging/testing and forgot to remove before pushing.
+- **Fix**: Before `npm run build`, remove any `tmp*.tsx`, `test*.tsx`, or files with obvious temp names from the root and `components/` directory. Use `ls -la | grep tmp` to find them. Build validation should always check that only production code exists.
