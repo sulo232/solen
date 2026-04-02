@@ -3672,6 +3672,9 @@
     "loadMore": "Lade mehr…",
     "mapViewOpen": "Sieh Preise direkt auf der Karte!",
     "salonsCount": "{count} {count, plural, one {Salon} other {Salons}}",
-    "salonCountText": "{count} {count, plural, one {Salon} other {Salons}} {city, select, null {in der Schweiz} other {in {city}}} auf Solen"
+    "salonCountText": "{count} {count, plural, one {Salon} other {Salons}} {city, select, null {in der Schweiz} other {in {city}}} auf Solen",
+    "everywhere": "ÜBERALL",
+    "salonCountSingular": "{count, plural, one {Salon} other {Salons}}",
+    "onSolen": "auf Solen"
   }
 }

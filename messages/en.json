@@ -3662,6 +3662,9 @@
     "loadMore": "Load more…",
     "mapViewOpen": "See prices directly on the map!",
     "salonsCount": "{count} {count, plural, one {Salon} other {Salons}}",
-    "salonCountText": "{count} {count, plural, one {Salon} other {Salons}} {city, select, null {in Switzerland} other {in {city}}} on Solen"
+    "salonCountText": "{count} {count, plural, one {Salon} other {Salons}} {city, select, null {in Switzerland} other {in {city}}} on Solen",
+    "everywhere": "EVERYWHERE",
+    "salonCountSingular": "{count, plural, one {Salon} other {Salons}}",
+    "onSolen": "on Solen"
   }
 }

@@ -376,14 +376,14 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             {city ? (
               <>{categoryLabel.toUpperCase()} IN{" "}<span className="text-s-coral">{cityName.toUpperCase()}</span></>
             ) : (
-              <>{categoryLabel.toUpperCase()} <span className="text-s-coral">{locale === "de" ? "ÜBERALL" : locale === "fr" ? "PARTOUT" : locale === "it" ? "OVUNQUE" : "EVERYWHERE"}</span></>
+              <>{categoryLabel.toUpperCase()} <span className="text-s-coral">{tCategory("everywhere")}</span></>
             )}
           </h1>
 
           {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
             <p className="font-body italic text-s-ink/50 mt-3 text-[15px] leading-[1.82]">
-              {total} {total === 1 ? "Salon" : "Salons"} {city ? `in ${cityName}` : tCategory("inSwitzerland")} auf Solen
+              {total} {tCategory("salonCountSingular", { count: total })} {city ? `in ${cityName}` : tCategory("inSwitzerland")} {tCategory("onSolen")}
               {dirTotal > 0 && ` · ${dirTotal} ${tCategory("more")}`}
             </p>
           )}
