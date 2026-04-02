@@ -26,7 +26,7 @@ export default function FilterBar({
   const motionClass = (zone === 1 || zone === 2)
     ? 'transition-[color,background-color,border-color,transform] duration-[220ms] ease-[cubic-bezier(.4,0,.2,1)]'
     : 'transition-none duration-0';
-  const hoverLift = (zone === 1 || zone === 2) ? 'hover:-translate-y-px' : '';
+  const hoverLift = (zone === 1 || zone === 2) ? 'hover:-translate-y-[5px]' : '';
 
   const isPillActive = (pillId: string) =>
     activeFilters.some((f) => f.pillId === pillId);

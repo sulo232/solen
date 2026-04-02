@@ -35,7 +35,7 @@ export const LooksGrid: React.FC<LooksGridProps> = ({ looks = [], onAddLook }) =
         return (
           <div
             key={look.id}
-            className="aspect-square rounded-[10px] flex items-center justify-center shadow-warm-md hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer"
+            className="aspect-square rounded-[10px] flex items-center justify-center shadow-warm-md hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer"
             style={{ background: styles.bg }}
           >
             {look.imageUrl ? (

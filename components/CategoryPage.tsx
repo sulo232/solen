@@ -60,7 +60,7 @@ function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: stri
   return (
     <motion.div
       variants={itemVariants}
-      className="rounded-[20px] overflow-hidden hover:-translate-y-0.5 transition-[transform,box-shadow] duration-[180ms] ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+      className="rounded-[20px] overflow-hidden hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]"
       style={{ border: "1.5px dashed rgba(26,18,9,.12)",
                background: "var(--glass-bg-subtle)",
                boxShadow: "0 1px 3px rgba(26,18,9,.06)" }}

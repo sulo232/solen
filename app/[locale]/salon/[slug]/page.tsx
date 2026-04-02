@@ -622,7 +622,7 @@ export default function SalonProfilePage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3 md:mt-0">
                       {salon.staff.map((m) => (
                         <Link key={m.id} href={`/${locale}/salon/${slug}/barber/${(m as any).slug ?? m.id}`}
-                          className="group glass-frost rounded-[20px] p-4 text-center hover:-translate-y-1 hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]">
+                          className="group glass-frost rounded-[20px] p-4 text-center hover:-translate-y-[5px] hover:shadow-v5-card-hover transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]">
                           <div className="w-14 h-14 rounded-full bg-[#F0F0F0] mx-auto mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-s-coral/40 transition-[box-shadow,transform]">
                             {m.avatar_url ? (
                               <Image src={m.avatar_url} alt={m.name} width={56} height={56} className="object-cover w-full h-full" />

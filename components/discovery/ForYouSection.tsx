@@ -80,7 +80,7 @@ export default function ForYouSection() {
               <div
                 key={sim.id}
                 onClick={() => router.push(`/${locale}/discover/${sim.id}`)}
-                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+                className="w-32 shrink-0 snap-start rounded-[12px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/[0.06] dark:border-white/[0.05] cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
               >
                 <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
                   {(sim.image_url || sim.tiktok_thumbnail_url) && (

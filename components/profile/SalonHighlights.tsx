@@ -49,7 +49,7 @@ export const SalonHighlights: React.FC<SalonHighlightsProps> = ({ favorites, loc
             >
               {/* Circle */}
               <div
-                className="w-[58px] h-[58px] rounded-full flex items-center justify-center shadow-warm-md transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-1"
+                className="w-[58px] h-[58px] rounded-full flex items-center justify-center shadow-warm-md transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-[5px]"
                 style={{ background: colors.bg }}
               >
                 <Scissors size={24} strokeWidth={1.8} style={{ color: colors.icon }} />

@@ -145,7 +145,11 @@
     }
   }
 
-  /* ── Selection highlight ──────────────────────────────────── */
+  /* ── Hover state gating (already handled by Tailwind's @media(hover:hover)) ─── */
+  /* Tailwind's hover: prefix automatically wraps hover styles in @media(hover:hover),  */
+  /* which prevents touch devices from triggering hover effects. No additional CSS needed. */
+
+  /* Selection highlight ──────────────────────────────────── */
   ::selection {
     background: rgba(232, 98, 74, 0.15);
     color: inherit;

@@ -63,7 +63,7 @@ export default function SimilarStyles({ itemId, category, tags }: SimilarStylesP
             <div
               key={item.id}
               onClick={() => router.push(`/${locale}/discover/${item.id}`)}
-              className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-1 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+              className="w-32 shrink-0 snap-start rounded-[16px] overflow-hidden bg-[--raised] dark:bg-s-dm-surface border border-s-ink/5 dark:border-white/5 cursor-pointer hover:shadow-v5-card-hover hover:-translate-y-[5px] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
             >
               <div className="aspect-[3/4] relative bg-s-ink/5 dark:bg-white/5">
                 {(item.image_url || item.tiktok_thumbnail_url) && (

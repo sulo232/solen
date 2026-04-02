@@ -152,7 +152,7 @@ export default function DateSelectionStep({ salonId }: DateSelectionStepProps) {
                           ? 'text-s-ink/20 dark:text-s-dm-text/20 cursor-not-allowed'
                           : isOutsideMonth
                           ? 'text-s-ink/20 dark:text-s-dm-text/20'
-                          : 'text-s-ink dark:text-s-dm-text hover:-translate-y-1 hover:shadow-v5-card-hover'
+                          : 'text-s-ink dark:text-s-dm-text hover:-translate-y-[5px] hover:shadow-v5-card-hover'
                       }`
                     }
                   />

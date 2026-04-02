@@ -63,7 +63,7 @@ export default function BrowseByCitySection() {
           <Link
             key={city.slug}
             href={`/${locale}/${city.slug}/coiffeur`}
-            className="group relative overflow-hidden rounded-[16px] h-[200px] flex flex-col items-end justify-end p-6 hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(26,18,9,.06),0_16px_40px_rgba(26,18,9,.08)] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+            className="group relative overflow-hidden rounded-[16px] h-[200px] flex flex-col items-end justify-end p-6 hover:-translate-y-[5px] hover:shadow-[0_4px_12px_rgba(26,18,9,.06),0_16px_40px_rgba(26,18,9,.08)] transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
           >
             {/* Gradient Background */}
             <div
