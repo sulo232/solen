@@ -167,6 +167,11 @@
       "fromPrice": "Da CHF {amount}",
       "guestFavorite": "Top valutato"
     },
+    "carousel": {
+      "previousSalons": "Saloni precedenti",
+      "nextSalons": "Saloni successivi"
+    },
+    "new": "Nuovo",
     "search": {
       "placeholder": "Cerca un salone a Basilea...",
       "servicePlaceholder": "Quale servizio cerchi?",

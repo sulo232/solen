@@ -77,10 +77,10 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
         </div>
         {/* Navigation Arrows — Airbnb spec: 32px white circle, light border, subtle shadow */}
         <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => scroll("left")} aria-label="Vorherige Salons" className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
-          <button onClick={() => scroll("right")} aria-label="Nächste Salons" className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
             <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>
@@ -132,9 +132,9 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
 
   const cardContent = (
     <>
-      {/* ── Image (1:1 square) ── */}
+      {/* ── Image (4:5 portrait) ── */}
       <div
-        className="relative w-full aspect-square rounded-[12px] overflow-hidden bg-s-bg-sunken"
+        className="relative w-full aspect-[4/5] rounded-[12px] overflow-hidden bg-s-bg-sunken"
       >
         {photo && (
           <Image
@@ -155,7 +155,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
             </span>
           ) : isNew ? (
             <span className="font-heading font-semibold text-[13px] text-white bg-[#222222] px-2.5 py-1 rounded-pill shadow-md">
-              Neu
+              {t("new")}
             </span>
           ) : null}
         </div>

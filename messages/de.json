@@ -167,6 +167,11 @@
       "fromPrice": "Ab CHF {amount}",
       "guestFavorite": "Top bewertet"
     },
+    "carousel": {
+      "previousSalons": "Vorherige Salons",
+      "nextSalons": "Nächste Salons"
+    },
+    "new": "Neu",
     "search": {
       "placeholder": "Suche Salon in Basel...",
       "servicePlaceholder": "Welchen Service suchst du?",

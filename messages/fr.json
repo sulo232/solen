@@ -167,6 +167,11 @@
       "fromPrice": "Dès CHF {amount}",
       "guestFavorite": "Top noté"
     },
+    "carousel": {
+      "previousSalons": "Salons précédents",
+      "nextSalons": "Salons suivants"
+    },
+    "new": "Nouveau",
     "search": {
       "placeholder": "Rechercher un salon à Bâle...",
       "servicePlaceholder": "Quel service cherchez-vous?",

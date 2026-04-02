@@ -167,6 +167,11 @@
       "fromPrice": "From CHF {amount}",
       "guestFavorite": "Top Rated"
     },
+    "carousel": {
+      "previousSalons": "Previous salons",
+      "nextSalons": "Next salons"
+    },
+    "new": "New",
     "search": {
       "placeholder": "Search salons in Basel...",
       "servicePlaceholder": "What service are you looking for?",
