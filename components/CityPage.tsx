@@ -145,7 +145,7 @@ export default function CityPage({ city, locale, initialCategory = undefined }: 
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             initial="hidden"
             animate="visible"
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.04 } } }}
           >
             {salons.map((salon) => (
               <motion.div
