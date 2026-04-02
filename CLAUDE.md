@@ -1115,3 +1115,46 @@ fetch("/api/profile")
   .then((r) => r.json())  // crashes on 401 HTML response
   .catch(() => {});        // hides the failure
 ```
+
+### Pattern C: Page Transition Crossfade
+Use `PageTransitionWrapper` to add smooth opacity crossfade (200ms) between route navigations.
+- **Why**: Provides smooth visual feedback when navigating between pages, improved UX perception of speed.
+- **How**: Wrap page content with `PageTransitionWrapper` in the layout.tsx. It uses `usePathname()` to detect route changes and triggers a 200ms opacity fade via Framer Motion's `AnimatePresence`.
+- **Location**: `components/layout/PageTransitionWrapper.tsx` + `components/layout/PageTransition.tsx`
+- **Usage**:
+```tsx
+// app/[locale]/layout.tsx (SERVER component)
+import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper";
+
+export default async function LocaleLayout({ children, params }) {
+  return (
+    <PageTransitionWrapper>
+      <main>{children}</main>
+    </PageTransitionWrapper>
+  );
+}
+```
+
+### Pattern D: Account Deletion (GDPR Soft Delete + Grace Period)
+Implement user account deletion with a 30-day grace period for GDPR/nFADP compliance.
+- **Why**: Comply with data protection regulations. Soft delete prevents cascading failures if user data is referenced elsewhere.
+- **How**: 
+  1. API sets `deletion_requested_at` timestamp + suspends account immediately
+  2. Cron job (`app/api/cron/process-deletions/route.ts`) runs daily and permanently deletes accounts after 30 days
+  3. User can cancel deletion by logging in during the grace period
+- **UI Pattern**:
+  - Modal requires exact confirmation text "DELETE MY ACCOUNT" to prevent accidents
+  - Show warning banner about 30-day grace period and irreversibility
+  - Block deletion if user has active bookings (gracefully inform user)
+  - Audit log creation for compliance tracking
+- **Location**: `app/api/profile/delete/route.ts` (API), `components/profile/DeleteAccountModal.tsx` (UI), integrated into `components/ProfilePage.tsx`
+
+### Pattern E: Modal-Based Settings Actions
+For destructive or sensitive profile actions (like account deletion), use a dedicated modal component rather than inline confirmations.
+- **Why**: Reduces accidental activation, provides clear visual separation of danger zone actions, better mobile UX.
+- **How**: 
+  1. Create a separate memo component (e.g., `DeleteAccountModal.tsx`) accepting `open` and `onClose` props
+  2. Manage modal state in parent component (e.g., `ProfilePage.tsx`)
+  3. Pass `onDeleteClick={() => setModalOpen(true)}` callback to the settings form
+  4. Render modal after all other UI elements to maintain layering
+- **Pattern**: Multiple modals can coexist if they manage state independently
