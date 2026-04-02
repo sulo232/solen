@@ -3653,5 +3653,19 @@
   },
   "metadata": {
     "myBookings": "Meine Buchungen"
+  },
+  "categoryPage": {
+    "notBookable": "Nicht buchbar",
+    "call": "Anrufen",
+    "website": "Website",
+    "allCities": "Alle Städte",
+    "homepage": "Startseite",
+    "inSwitzerland": "in der Schweiz",
+    "more": "weitere",
+    "mapExpand": "Karte vergrössern",
+    "loadMore": "Lade mehr…",
+    "mapViewOpen": "Sieh Preise direkt auf der Karte!",
+    "salonsCount": "{count} {count, plural, one {Salon} other {Salons}}",
+    "salonCountText": "{count} {count, plural, one {Salon} other {Salons}} {city, select, null {in der Schweiz} other {in {city}}} auf Solen"
   }
 }

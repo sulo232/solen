@@ -64,7 +64,7 @@ interface SalonDirectoryEntry {
   photo_url: string | null;
 }
 
-function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
+function DirectoryCard({ entry, t }: { entry: SalonDirectoryEntry; t: (key: string) => string }) {
   return (
     <motion.div
       variants={itemVariants}
@@ -85,7 +85,7 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
         {/* Directory badge */}
         <span className="absolute top-2 right-2 text-[10px] font-heading font-bold uppercase tracking-[.08em] px-2.5 py-1 rounded-btn"
           style={{ background: "rgba(26,18,9,.55)", color: "rgba(255,255,255,.85)" }}>
-          Nicht buchbar
+          {t("notBookable")}
         </span>
       </div>
 
@@ -105,13 +105,13 @@ function DirectoryCard({ entry }: { entry: SalonDirectoryEntry }) {
           {entry.phone && (
             <a href={`tel:${entry.phone}`}
               className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
-              <Phone className="w-3 h-3 inline mr-1" />Anrufen
+              <Phone className="w-3 h-3 inline mr-1" />{t("call")}
             </a>
           )}
           {entry.website && (
             <a href={entry.website} target="_blank" rel="noopener noreferrer"
               className="flex-1 text-center text-[10px] font-heading font-bold uppercase tracking-[.06em] px-3 py-2 rounded-btn border border-s-ink/10 text-s-ink/60 hover:border-s-coral/40 hover:text-s-coral transition-[border-color,color] duration-150">
-              <Globe className="w-3 h-3 inline mr-1" />Website
+              <Globe className="w-3 h-3 inline mr-1" />{t("website")}
             </a>
           )}
         </div>
@@ -157,6 +157,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const locale = useLocale();
   const tc = useTranslations("common");
   const t = useTranslations('filters') as any;
+  const tCategory = useTranslations('categoryPage') as any;
   const searchParams = useSearchParams();
   const routerNav = useRouter();
   const currentPathname = usePathname();
@@ -307,7 +308,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const cityName = city
     ? getCityName(city, locale)
     : locale === "de" ? "Schweizweit" : locale === "fr" ? "Suisse" : locale === "it" ? "Svizzera" : "Switzerland";
-  const allCitiesLabel = locale === "de" ? "Alle Städte" : locale === "fr" ? "Toutes les villes" : "All Cities";
+  const allCitiesLabel = tCategory("allCities");
 
   const handleFilterChange = useCallback((filters: ActiveFilter[]) => {
     setActiveFilters(filters);
@@ -364,7 +365,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
             <ol className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[.12em] flex-wrap">
-              <li><Link href={`/${locale}`} className="text-s-ink/30 hover:text-s-ink/55 transition-colors duration-150">{locale === "de" ? "Startseite" : "Home"}</Link></li>
+              <li><Link href={`/${locale}`} className="text-s-ink/30 hover:text-s-ink/55 transition-colors duration-150">{tCategory("homepage")}</Link></li>
               <li aria-hidden><ChevronRight className="w-3 h-3 text-s-ink/20" /></li>
               {city && (
                 <>
@@ -394,8 +395,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
           {/* Count line */}
           {(total > 0 || dirTotal > 0) && (
             <p className="font-body italic text-s-ink/50 mt-3 text-[15px] leading-[1.82]">
-              {total} {total === 1 ? "Salon" : "Salons"} {city ? `in ${cityName}` : (locale === "de" ? "in der Schweiz" : locale === "fr" ? "en Suisse" : "in Switzerland")} auf Solen
-              {dirTotal > 0 && ` · ${dirTotal} weitere`}
+              {total} {total === 1 ? "Salon" : "Salons"} {city ? `in ${cityName}` : tCategory("inSwitzerland")} auf Solen
+              {dirTotal > 0 && ` · ${dirTotal} ${tCategory("more")}`}
             </p>
           )}
         </div>
@@ -421,7 +422,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
               }}
             >
               <MapPin size={10} />
-              Alle Städte
+              {tCategory("allCities")}
             </button>
 
             {/* Per-city pills */}
@@ -474,7 +475,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
         <div className="flex items-center gap-2 ml-auto">
           <span className="hidden sm:inline-flex">
-            <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte!" />
+            <SolenExclusiveBadge featureDescription={tCategory("mapViewOpen")} />
           </span>
           {/* Toggle pill */}
           <button
@@ -547,7 +548,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
             <div className="absolute inset-0 bg-gradient-to-t from-s-ink/40 to-transparent pointer-events-none" />
             <span className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-pill bg-white/95 text-s-ink text-xs font-heading font-bold uppercase tracking-[.06em] shadow-warm-md pointer-events-none flex items-center gap-1.5">
               <MapIcon size={13} className="text-s-coral" />
-              Karte vergrössern
+              {tCategory("mapExpand")}
             </span>
           </button>
         </div>
@@ -625,7 +626,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                 </motion.div>
               ))}
               {!dirLoading && dirEntries.map((entry) => (
-                <DirectoryCard key={entry.id} entry={entry} />
+                <DirectoryCard key={entry.id} entry={entry} t={tCategory} />
               ))}
             </motion.div>
 
@@ -641,7 +642,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                              color: "rgba(26,18,9,.70)",
                              boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
                     {loadingMore ? <Spinner size="sm" /> : null}
-                    {loadingMore ? "Lade mehr…" : `${total - salons.length} weitere Salons`}
+                    {loadingMore ? tCategory("loadMore") : `${total - salons.length} weitere Salons`}
                   </button>
                 </motion.div>
               )}
@@ -659,7 +660,7 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
                              color: "rgba(26,18,9,.70)",
                              boxShadow: "0 1px 2px rgba(26,18,9,.06)" }}>
                     {dirLoadingMore ? <Spinner size="sm" /> : null}
-                    {dirLoadingMore ? "Lade mehr…" : `${dirTotal - dirEntries.length} weitere Einträge`}
+                    {dirLoadingMore ? tCategory("loadMore") : `${dirTotal - dirEntries.length} weitere Einträge`}
                   </button>
                 </motion.div>
               )}
