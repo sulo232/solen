@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Star, Heart, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/format-currency";
 import type { SalonCard } from "@/lib/types";
 import { DEMO_SALONS } from "@/lib/demo-data";
 
@@ -120,6 +121,7 @@ interface SalonHeroCardProps {
 
 function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, isDemo }: SalonHeroCardProps) {
   const t = useTranslations("home") as any;
+  const tCommon = useTranslations("common");
   const photo = salon.cover_photo_url ?? salon.gallery_urls?.[0] ?? null;
   const showRating = (salon.review_count ?? 0) >= 3;
   const locationParts = [salon.quartier, salon.city_name ?? "Basel"].filter(Boolean);
@@ -185,11 +187,14 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
           {locationText}
         </p>
         <div className="flex items-center text-[15px] leading-[19px] mt-[2px]">
-          {salon.min_price != null ? (
-            <span className="font-semibold text-[#222222]">
-              ab CHF {salon.min_price}
-            </span>
-          ) : (
+          {salon.min_price != null ? (() => {
+            const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
+            return (
+              <span className="font-semibold text-[#222222]">
+                {tCommon("fromPrice", { price: formatCurrency(salon.min_price, currencyLocale) })}
+              </span>
+            );
+          })() : (
             <span className="font-semibold text-[#222222]">$$</span>
           )}
           {showRating ? (

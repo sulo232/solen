@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/format-currency";
 
 interface ServiceSuggestion {
   id: string;
@@ -51,6 +53,7 @@ export default function ServiceAutosuggest({
   city,
   onSelect,
 }: ServiceAutosuggestProps) {
+  const tCommon = useTranslations("common");
   const debouncedQuery = useDebounce(query, 300);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<SuggestResponse | null>(null);

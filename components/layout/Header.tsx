@@ -64,15 +64,37 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
   const [scrolled, setScrolled] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
   const [persistedCity, setPersistedCity] = useState<string | null>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+  const lastScrollYRef = useRef(0);
+  const scrollThreshold = 10; // Minimum scroll delta before triggering hide/show
 
-  // Scroll morph — pill shrinks after scrolling
+  // Scroll morph — pill shrinks after scrolling + scroll-direction header hide/show
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 200);
+    const handler = () => {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollYRef.current;
+
+      // Update scrolled state (for pill morphing)
+      setScrolled(currentScrollY > 200);
+
+      // Header hide/show logic with threshold
+      if (Math.abs(delta) < scrollThreshold) return; // Ignore tiny scrolls
+
+      if (delta > 0 && currentScrollY > 80) {
+        // Scrolling DOWN and past the header height
+        setIsHeaderVisible(false);
+      } else if (delta < 0) {
+        // Scrolling UP
+        setIsHeaderVisible(true);
+      }
+
+      lastScrollYRef.current = currentScrollY;
+    };
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
@@ -140,7 +162,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   return (
     <>
     <header className={cn(
-      "sticky top-0 z-50 w-full flex flex-col transition-[background-color,border-color,box-shadow] duration-300",
+      "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow] duration-[250ms] ease-[cubic-bezier(.4,0,.2,1)]",
+      isHeaderVisible ? "translate-y-0" : "-translate-y-full",
       scrolled
         ? "bg-white border-b border-[#EBEBEB] shadow-sm"
         : "bg-white border-transparent"
