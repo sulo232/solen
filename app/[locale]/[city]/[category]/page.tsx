@@ -45,9 +45,9 @@ export async function generateStaticParams(): Promise<Params[]> {
 export async function generateMetadata({
   params,
 }: {
-  params: Params;
+  params: Promise<Params>;
 }): Promise<Metadata> {
-  const { locale, city, category } = params;
+  const { locale, city, category } = await params;
 
   if (!CITIES.includes(city) || !CATEGORIES.includes(category)) {
     return {};
@@ -79,10 +79,11 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: {
-  params: Params;
+  params: Promise<Params>;
 }) {
-  unstable_setRequestLocale(params.locale);
-  const { city, category, locale } = params;
+  const { locale, city, category } = await params;
+  unstable_setRequestLocale(locale);
+
 
   if (!CITIES.includes(city) || !CATEGORIES.includes(category)) {
     notFound();

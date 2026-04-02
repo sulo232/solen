@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { isValidCitySlug, getCityName, type CitySlug } from "@/lib/cities";
+import { buildAlternates } from "@/lib/seo";
 import CityPage from "@/components/CityPage";
 
 interface Props {
@@ -25,8 +26,10 @@ export async function generateMetadata({ params }: Props) {
   if (!isValidCitySlug(city)) return {};
 
   const cityName = getCityName(city as CitySlug, locale);
+  const alternates = buildAlternates(city, locale);
   return {
     title: `Salons in ${cityName} | Solen`,
     description: `Finde die besten Salons in ${cityName}. Coiffeur, Barber, Nails & mehr — jetzt buchen auf Solen.`,
+    alternates,
   };
 }

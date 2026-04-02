@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/lib/supabase';
+import { buildAlternates } from '@/lib/seo';
 import { CheckCircle, Calendar, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/format-currency';
@@ -15,9 +16,11 @@ export async function generateMetadata({
 }: ConfirmationPageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'ui.successPage' });
+  const alternates = buildAlternates('confirmation', locale);
   return {
     title: t('title'),
     description: t('subtitle'),
+    alternates,
   };
 }
 
@@ -66,7 +69,7 @@ export default async function ConfirmationPage({
   };
 
   const getServiceName = (): string => {
-    const service = Array.isArray(booking.services) ? booking.services[0] : booking.services;
+    const service = Array.isArray(booking.services) ? (booking.services[0] as any) : (booking.services as any);
     if (locale === 'en' && service?.name_en) {
       return service.name_en;
     }
@@ -99,10 +102,10 @@ export default async function ConfirmationPage({
               {t('salon')}
             </p>
             <h2 className="font-heading font-bold text-lg text-s-ink dark:text-s-dm-text">
-              {(Array.isArray(booking.salons) ? booking.salons[0]?.name : booking.salons?.name) || ''}
+              {(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.name : (booking.salons as any)?.name) || ''}
             </h2>
             <p className="text-sm text-s-ink/60 dark:text-s-dm-text/60">
-              {(Array.isArray(booking.salons) ? booking.salons[0]?.address : booking.salons?.address) || ''}
+              {(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.address : (booking.salons as any)?.address) || ''}
             </p>
           </div>
 
@@ -161,7 +164,7 @@ export default async function ConfirmationPage({
 
           {/* Rebook */}
           <Link
-            href={`/${locale}/salon/${(Array.isArray(booking.salons) ? booking.salons[0]?.slug : booking.salons?.slug) || ''}`}
+            href={`/${locale}/salon/${(Array.isArray(booking.salons) ? (booking.salons[0] as any)?.slug : (booking.salons as any)?.slug) || ''}`}
             className="block text-center py-4 rounded-pill border border-s-ink/[0.08] dark:border-white/[0.08] text-s-ink dark:text-s-dm-text font-heading font-bold text-xs uppercase tracking-[.06em] hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] active:scale-[0.98] transition-all"
             aria-label={t('rebook')}
           >

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import SplitView from "@/components/search/SplitView";
+import { buildAlternates } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -21,9 +22,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     fr: "Trouvez votre salon idéal à Bâle. Filtrez par catégorie, disponibilité et prix.",
     it: "Trova il tuo salone perfetto a Basilea. Filtra per categoria, disponibilità e prezzo.",
   };
+  const alternates = buildAlternates("search", locale);
+
   return {
     title: titles[locale] ?? titles.de,
     description: descriptions[locale] ?? descriptions.de,
+    alternates,
   };
 }
 

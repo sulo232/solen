@@ -4,13 +4,16 @@ import { BookingsList } from '@/components/booking';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
+import { buildAlternates } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata' });
+  const alternates = buildAlternates('profile/bookings', locale);
   return {
     title: t('myBookings'),
     description: 'Manage and view your bookings',
+    alternates,
   };
 }
 

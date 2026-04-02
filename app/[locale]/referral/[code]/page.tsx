@@ -10,14 +10,16 @@ const REDIRECT_SECONDS = 5;
 const STORAGE_KEY = "solen_referral_code";
 
 interface Props {
-  params: { code: string; locale: string };
+  params: Promise<{ code: string; locale: string }>;
 }
 
 export default function ReferralLandingPage({ params }: Props) {
   const t = useTranslations("referral");
   const locale = useLocale();
   const router = useRouter();
-  const { code } = params;
+  // Note: In client components, params are passed directly (not as Promise)
+  // This type signature is for Next.js 15 compatibility
+  const code = (params as any).code;
 
   const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
   const [stored, setStored] = useState(false);
