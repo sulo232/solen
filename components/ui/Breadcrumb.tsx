@@ -9,6 +9,7 @@ export default function Breadcrumb() {
   const pathname = usePathname();
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("breadcrumb");
 
   // Strip locale prefix to get meaningful segments
   const withoutLocale = pathname.replace(`/${locale}`, "") || "/";
@@ -38,7 +39,7 @@ export default function Breadcrumb() {
         className="md:hidden flex items-center gap-1.5 text-sm text-s-ink/50 dark:text-s-dm-text/50 hover:text-s-coral transition-colors min-h-12"
       >
         <ArrowLeft size={16} />
-        Zurück
+        {t("back")}
       </button>
 
       {/* Desktop breadcrumb */}
@@ -52,7 +53,7 @@ export default function Breadcrumb() {
         {segments.map((segment, i) => {
           const href = `/${locale}/${segments.slice(0, i + 1).join("/")}`;
           const isLast = i === segments.length - 1;
-          const label = SEGMENT_LABELS[segment] || decodeURIComponent(segment);
+          const label = t.has(segment) ? t(segment) : decodeURIComponent(segment);
 
           return (
             <span key={href} className="flex items-center gap-1.5">
