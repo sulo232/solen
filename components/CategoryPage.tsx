@@ -38,14 +38,6 @@ const categoryLabels: Record<SalonCategory, string> = {
   waxing: "Waxing",
 };
 
-const categoryGradients: Record<SalonCategory, string> = {
-  coiffeur:   "from-[rgba(232,98,74,0.06)] via-[rgba(255,255,255,0.80)] to-transparent",
-  barbershop: "from-[rgba(74,30,60,0.05)] via-[rgba(255,255,255,0.80)] to-transparent",
-  nails:      "from-[rgba(232,98,74,0.05)] via-[rgba(242,193,68,0.03)] to-transparent",
-  spa:        "from-[rgba(123,166,136,0.07)] via-[rgba(255,255,255,0.80)] to-transparent",
-  makeup:     "from-[rgba(212,135,10,0.06)] via-[rgba(255,255,255,0.80)] to-transparent",
-  waxing:     "from-[rgba(107,163,200,0.06)] via-[rgba(255,255,255,0.80)] to-transparent",
-};
 
 interface CategoryPageProps {
   category: SalonCategory;
@@ -304,7 +296,6 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
   const hasMore = salons.length < total;
   const hasDirMore = dirEntries.length < dirTotal;
   const categoryLabel = categoryLabels[category];
-  const gradient = categoryGradients[category];
   const cityName = city
     ? getCityName(city, locale)
     : locale === "de" ? "Schweizweit" : locale === "fr" ? "Suisse" : locale === "it" ? "Svizzera" : "Switzerland";
@@ -356,11 +347,8 @@ export default function CategoryPage({ category, city, aboveGrid, belowGrid }: C
 
   return (
     <div className="min-h-screen bg-white dark:bg-s-dm-bg relative overflow-x-hidden">
-      {/* Hero — category gradient + Bebas Neue H1 */}
-      <div className="pt-16 pb-6 md:pt-20 md:pb-8 relative z-10 overflow-hidden">
-        {/* Category gradient overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} pointer-events-none`} />
-
+      {/* Hero — pure white + Bebas Neue H1 */}
+      <div className="pt-16 pb-6 md:pt-20 md:pb-8 relative z-10 overflow-hidden bg-white">
         <div className="max-w-5xl mx-auto px-4 pt-8 pb-6 relative z-10">
           {/* Breadcrumb — eyebrow style */}
           <nav aria-label="Breadcrumb" className="mb-4">
