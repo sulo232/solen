@@ -2082,7 +2082,17 @@
     "statusCompleted": "Abgeschlossen",
     "statusNoShow": "Nicht erschienen",
     "shareWhatsappMsg": "Buche deinen nächsten Termin bei Solen und erhalte CHF 10 Guthaben mit meinem Code: {code}\n{url}",
-    "shareSmsMsg": "Teste Solen für Beauty-Termine! Code: {code} → {url}"
+    "shareSmsMsg": "Teste Solen für Beauty-Termine! Code: {code} → {url}",
+    "dangerZone": "Gefahrenzone",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountWarning": "Warnung: Diese Aktion kann nicht rückgängig gemacht werden",
+    "deleteAccountWarningDesc": "Dein Konto und alle persönlichen Daten werden nach 30 Tagen dauerhaft gelöscht. In dieser Zeit kannst du dich noch anmelden, um die Löschung zu stornieren.",
+    "deleteAccountActiveBookings": "Du kannst dein Konto nicht löschen, wenn du noch aktive Termine hast. Bitte storniere oder schliesse diese zuerst ab.",
+    "deleteAccountConfirmLabel": "Zur Bestätigung, gib bitte folgendes ein:",
+    "deleteAccountConfirmPlaceholder": "DELETE MY ACCOUNT",
+    "deleteAccountHint": "Beachte die Grossschreibung!",
+    "deleteAccountConfirm": "Konto löschen",
+    "deleteAccount30Days": "Dein Konto wird nach 30 Tagen endgültig gelöscht. Du kannst die Löschung jederzeit stornieren, indem du dich anmeldest."
   },
   "salonRegistration": {
     "header": {

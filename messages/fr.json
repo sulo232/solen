@@ -2049,7 +2049,17 @@
     "statusCompleted": "Terminé",
     "statusNoShow": "Absent",
     "shareWhatsappMsg": "Réserve ton prochain rendez-vous sur Solen et reçois CHF 10 de crédit avec mon code : {code}\n{url}",
-    "shareSmsMsg": "Essaye Solen pour tes rendez-vous beauté ! Code : {code} → {url}"
+    "shareSmsMsg": "Essaye Solen pour tes rendez-vous beauté ! Code : {code} → {url}",
+    "dangerZone": "Zone dangereuse",
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountWarning": "Avertissement : Cette action ne peut pas être annulée",
+    "deleteAccountWarningDesc": "Ton compte et toutes tes données personnelles seront supprimés définitivement après 30 jours. Pendant cette période, tu peux toujours te connecter pour annuler la suppression.",
+    "deleteAccountActiveBookings": "Tu ne peux pas supprimer ton compte si tu as des rendez-vous actifs. Veuillez d'abord les annuler ou les terminer.",
+    "deleteAccountConfirmLabel": "Pour confirmer, veuillez taper :",
+    "deleteAccountConfirmPlaceholder": "DELETE MY ACCOUNT",
+    "deleteAccountHint": "Attention à la casse !",
+    "deleteAccountConfirm": "Supprimer le compte",
+    "deleteAccount30Days": "Ton compte sera supprimé définitivement après 30 jours. Tu peux annuler la suppression à tout moment en te connectant."
   },
   "salonRegistration": {
     "header": {

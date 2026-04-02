@@ -29,6 +29,7 @@ import { SalonHighlights } from "@/components/profile/SalonHighlights";
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
 import { LooksGrid } from "@/components/profile/LooksGrid";
 import { PaymentMethodsSection } from "@/components/profile/PaymentMethodsSection";
+import { DeleteAccountModal } from "@/components/profile/DeleteAccountModal";
 
 interface LoyaltyCard {
   id: string;
@@ -377,9 +378,11 @@ const INPUT_CLS = "w-full px-3 py-2.5 rounded-input border border-s-ink/10 dark:
 const SettingsSection = memo(function SettingsSection({
   profile,
   onSave,
+  onDeleteClick,
 }: {
   profile: Profile;
   onSave: (p: Partial<Profile>) => Promise<void>;
+  onDeleteClick: () => void;
 }) {
   const router = useRouter();
   const locale = useLocale();
@@ -634,6 +637,20 @@ const SettingsSection = memo(function SettingsSection({
         </button>
         {saved && <span className="text-sm text-s-coral font-medium">{t("saved")}</span>}
       </div>
+
+      {/* Danger zone: Delete account */}
+      <div className="pt-6 border-t border-red-200 dark:border-red-900/40">
+        <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-red-600 dark:text-red-400 mb-3">
+          {t("dangerZone")}
+        </p>
+        <button
+          type="button"
+          onClick={onDeleteClick}
+          className="px-4 py-2.5 rounded-pill active:scale-[0.98] bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-[11px] font-heading font-bold uppercase tracking-[.06em] hover:bg-red-100 dark:hover:bg-red-950/40 transition-[background-color,transform] duration-150"
+        >
+          {t("deleteAccount")}
+        </button>
+      </div>
     </form>
   );
 });
@@ -667,6 +684,7 @@ export default function ProfilePage() {
   const [pastOpen, setPastOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'looks' | 'termine' | 'favoriten' | 'stempel' | 'einstellungen'>('termine');
   const [beautyEditOpen, setBeautyEditOpen] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -880,6 +898,12 @@ export default function ProfilePage() {
           onSave={handleSaveBeautyProfile}
         />
 
+        {/* Delete Account Modal */}
+        <DeleteAccountModal
+          open={deleteAccountOpen}
+          onClose={() => setDeleteAccountOpen(false)}
+        />
+
         {/* Profile Hero */}
         <ProfileHero profile={profile} locale={locale} onEditProfile={() => setActiveTab('einstellungen')} />
 
@@ -1028,7 +1052,7 @@ export default function ProfilePage() {
                 </Link>
               </div>
 
-              <SettingsSection profile={profile} onSave={handleSaveProfile} />
+              <SettingsSection profile={profile} onSave={handleSaveProfile} onDeleteClick={() => setDeleteAccountOpen(true)} />
 
               {/* Payment Methods */}
               <PaymentMethodsSection />

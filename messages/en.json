@@ -2072,7 +2072,17 @@
     "statusCompleted": "Completed",
     "statusNoShow": "No show",
     "shareWhatsappMsg": "Book your next appointment at Solen and get CHF 10 credit with my code: {code}\n{url}",
-    "shareSmsMsg": "Try Solen for beauty appointments! Code: {code} → {url}"
+    "shareSmsMsg": "Try Solen for beauty appointments! Code: {code} → {url}",
+    "dangerZone": "Danger zone",
+    "deleteAccount": "Delete account",
+    "deleteAccountWarning": "Warning: This action cannot be undone",
+    "deleteAccountWarningDesc": "Your account and all personal data will be permanently deleted after 30 days. During this time, you can still log in to cancel the deletion.",
+    "deleteAccountActiveBookings": "You cannot delete your account if you have active appointments. Please cancel or complete them first.",
+    "deleteAccountConfirmLabel": "To confirm, please type:",
+    "deleteAccountConfirmPlaceholder": "DELETE MY ACCOUNT",
+    "deleteAccountHint": "Note the capitalization!",
+    "deleteAccountConfirm": "Delete account",
+    "deleteAccount30Days": "Your account will be permanently deleted after 30 days. You can cancel the deletion at any time by logging in."
   },
   "salonRegistration": {
     "header": {
