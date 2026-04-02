@@ -96,14 +96,17 @@ solen/
 │       ├── analytics/platform/route.ts # System-wide analytics (category counts)
 │       ├── analytics/referrals/route.ts # Referral statistics for dashboard
 │       ├── bookings/waitlist/route.ts   # Waitlist submission endpoint
+│       ├── bookings/[id]/reschedule/route.ts # Booking reschedule endpoint (atomic)
 │       ├── metrics/global/route.ts # Global platform metrics (cached 24h)
 │       ├── partner/leads/route.ts  # B2B Partner lead capture endpoint
 │       ├── referral/route.ts       # Profile page referral stats endpoint
 │       ├── salons/trending/route.ts     # Dynamic trending salons endpoint
 │       ├── search/detect-category/route.ts # AI Search category detection endpoint
-│       └── salon/services/route.ts      # Salon services API
+│       ├── salon/services/route.ts      # Salon services API
+│       └── slots/next-available/route.ts # Next available slot quick-book API
 ├── components/         # Shared React components (Dev 2 owns, Dev 3 imports)
 │   ├── index.ts        # Barrel exports — Dev 3 depends on this
+│   ├── salon/          # Salon detail page components (SalonHero, SalonServices, SalonReviews, SalonSidebar, SalonMobileCTA)
 │   ├── dashboard/      # Dev 3's dashboard-specific components
 │   │   └── nail/       # Nail CRM dashboard components (StationManager, RetailManager, etc.)
 │   ├── nail/           # Nail category UI components (booking flow, portfolio, discovery)
