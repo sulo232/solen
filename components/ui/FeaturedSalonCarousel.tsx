@@ -182,13 +182,13 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
 
       {/* ── Text below image ── */}
       <div className="mt-3 flex flex-col gap-0.5">
-        <h3 className="font-heading font-semibold text-[15px] text-s-ink truncate leading-[19px]">
+        <h3 className="font-heading font-semibold text-[15px] text-s-ink truncate leading-6">
           {salon.name}
         </h3>
-        <p className="font-body text-[15px] text-s-ink/60 leading-[19px] truncate">
+        <p className="font-body text-[15px] text-s-ink/60 leading-6 truncate">
           {locationText}
         </p>
-        <div className="flex items-center text-[15px] leading-[19px] mt-[2px]">
+        <div className="flex items-center text-[15px] leading-6 mt-[2px]">
           {salon.min_price != null ? (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
             return (
