@@ -66,21 +66,21 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
     <div className="mt-8 -mx-4 group/section relative">
       <div className="flex items-center justify-between px-6 mb-5">
         <div className="flex items-center gap-1">
-          <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]">
+          <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink">
             {title || t("heroCarousel.label")}
           </h2>
           {viewAllHref && (
             <Link href={viewAllHref} className="ml-1 hover:bg-black/5 rounded-full p-1.5 transition-colors" aria-label={`View all ${title}`}>
-              <ChevronRight size={18} className="text-[#222222]" />
+              <ChevronRight size={18} className="text-s-ink" />
             </Link>
           )}
         </div>
         {/* Navigation Arrows — Airbnb spec: 32px white circle, light border, subtle shadow */}
         <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
-          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center text-[#222222] hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
             <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>
@@ -150,11 +150,11 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
         {/* Badge: top-left */}
         <div className="absolute top-3 left-3 z-[2]">
           {isGuestFavorite ? (
-            <span className="flex items-center gap-1 font-heading font-semibold text-[13px] text-[#222222] bg-white px-2 py-1 rounded-pill shadow-md">
+            <span className="flex items-center gap-1 font-heading font-semibold text-[13px] text-s-ink bg-white px-2 py-1 rounded-pill shadow-md">
               {t("heroCarousel.guestFavorite")}
             </span>
           ) : isNew ? (
-            <span className="font-heading font-semibold text-[13px] text-white bg-[#222222] px-2.5 py-1 rounded-pill shadow-md">
+            <span className="font-heading font-semibold text-[13px] text-white bg-s-ink px-2.5 py-1 rounded-pill shadow-md">
               {t("new")}
             </span>
           ) : null}
@@ -171,7 +171,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
           >
             <Heart
               className={`w-6 h-6 transition-colors duration-200 ${
-                isFavorited ? "fill-[#FF385C] stroke-[#FF385C]" : "fill-transparent stroke-white"
+                isFavorited ? "fill-s-coral stroke-s-coral" : "fill-transparent stroke-white"
               }`}
               strokeWidth={2}
               style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.45))" }}
@@ -182,17 +182,17 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
 
       {/* ── Text below image ── */}
       <div className="mt-3 flex flex-col gap-[2px]">
-        <h3 className="font-heading font-semibold text-[15px] text-[#222222] truncate leading-[19px]">
+        <h3 className="font-heading font-semibold text-[15px] text-s-ink truncate leading-[19px]">
           {salon.name}
         </h3>
-        <p className="font-body text-[15px] text-[#717171] leading-[19px] truncate">
+        <p className="font-body text-[15px] text-s-ink/60 leading-[19px] truncate">
           {locationText}
         </p>
         <div className="flex items-center text-[15px] leading-[19px] mt-[2px]">
           {salon.min_price != null ? (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
             return (
-              <span className="font-semibold text-[#222222]">
+              <span className="font-semibold text-s-ink">
                 {tCommon("fromPrice", { price: formatCurrency(salon.min_price, currencyLocale) })}
               </span>
             );
