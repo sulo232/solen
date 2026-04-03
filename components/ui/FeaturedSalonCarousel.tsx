@@ -18,6 +18,7 @@ import {
   staggerContainer,
   VIEWPORT,
   SPRING,
+  imageParallax,
   categoryIconHover,
 } from "@/lib/motion";
 
@@ -243,7 +244,12 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
       {/* ── Image (4:5 portrait) ── */}
       <div className="relative w-full aspect-[4/5] rounded-[12px] overflow-hidden bg-s-bg-sunken">
         {photo && (
-          <div className="relative w-full h-full">
+          <motion.div
+            initial="initial"
+            whileHover="animate"
+            variants={imageParallax}
+            className="relative w-full h-full"
+          >
             <Image
               src={photo}
               alt={salon.name}
@@ -253,7 +259,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
               style={{ transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }}
               priority={index < 2}
             />
-          </div>
+          </motion.div>
         )}
 
         {/* Badge: top-left */}
