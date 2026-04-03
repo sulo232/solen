@@ -114,7 +114,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
     return (
       <Link
         href={href}
-        className="flex items-center gap-3 p-3 rounded-card bg-white border border-[#EBEBEB] group"
+        className="flex items-center gap-3 p-3 rounded-card bg-white border border-s-ink/[0.08] group"
       >
         <div className="relative w-16 h-16 rounded-input overflow-hidden shrink-0 bg-s-bg-sunken img-hover-zoom">
           {salon.cover_photo_url && (
@@ -122,16 +122,16 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           )}
         </div>
         <div className="min-w-0">
-          <p className="font-heading font-medium text-sm text-[#222222] truncate group-hover:text-[#717171] transition-colors duration-200">{salon.name}</p>
-          <p className="text-xs text-[#717171] font-body truncate">{salon.address}</p>
+          <p className="font-heading font-medium text-sm text-s-ink truncate group-hover:text-s-ink/60 transition-colors duration-200">{salon.name}</p>
+          <p className="text-xs text-s-ink/60 font-body truncate">{salon.address}</p>
           {(salon.average_rating > 0 || salon.review_count > 0) ? (
             <div className="flex items-center gap-1 mt-0.5">
-              <Star className="w-3 h-3 fill-[#222222] text-[#222222]" />
-              <span className="text-xs text-[#717171]">{salon.average_rating.toFixed(1)}</span>
+              <Star className="w-3 h-3 fill-s-ink text-s-ink" />
+              <span className="text-xs text-s-ink/60">{salon.average_rating.toFixed(1)}</span>
             </div>
           ) : (
             <div className="flex items-center gap-1 mt-0.5">
-              <span className="text-[10px] font-body font-medium text-[#222222] bg-[#F7F7F7] px-1.5 py-0.5 rounded-pill">{t("new")}</span>
+              <span className="text-xs font-body font-medium text-s-ink bg-s-bg-sunken px-1.5 py-0.5 rounded-pill">{t("new")}</span>
             </div>
           )}
         </div>
@@ -317,24 +317,24 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         <div className="mt-3 flex flex-col gap-[2px]">
           {/* Line 1: Name + Rating (right-aligned, Airbnb pattern) */}
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading font-semibold text-[#222222] text-[15px] leading-[19px] truncate">
+            <h3 className="font-heading font-semibold text-s-ink text-base leading-6 truncate">
               {salon.name}
             </h3>
             {salon.average_rating > 0 ? (
-              <span className="shrink-0 flex items-center gap-0.5 text-[14px] font-semibold text-[#222222] leading-[19px]">
-                <Star className="w-[11px] h-[11px] fill-[#E8624A] text-[#E8624A] mb-[1px]" />
+              <span className="shrink-0 flex items-center gap-0.5 text-sm font-semibold text-s-ink leading-6">
+                <Star className="w-3.5 h-3.5 fill-s-coral text-s-coral mb-0.5" />
                 {salon.average_rating.toFixed(1)}
-                <span className="text-[#6A6A6A] font-normal text-[13px]">({salon.review_count})</span>
+                <span className="text-s-ink/60 font-normal text-xs">({salon.review_count})</span>
               </span>
             ) : salon.review_count === 0 ? (
-              <span className="shrink-0 text-[11px] font-heading font-bold text-white bg-[#222222] px-2 py-0.5 rounded-pill">
+              <span className="shrink-0 text-xs font-heading font-bold text-white bg-s-ink px-2 py-0.5 rounded-pill">
                 {t("new")}
               </span>
             ) : null}
           </div>
 
           {/* Line 2: Business type · Quartier (Phase 3.2 — type first, then location) */}
-          <p className="text-[13px] text-[#6A6A6A] leading-[19px] truncate">
+          <p className="text-sm text-s-ink/60 leading-6 truncate">
             {showDistance && salon.distance_km != null
               ? `${salon.quartier ?? getNeighborhood(salon.postal_code)} · ${salon.distance_km.toFixed(1)} km`
               : `${((c: string) => c.charAt(0).toUpperCase() + c.slice(1))(salon.categories?.[0] || "Salon")} · ${salon.quartier ?? getNeighborhood(salon.postal_code)}`}
@@ -344,7 +344,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {priceToShow != null && (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-GB";
             return (
-              <p className="text-[13px] text-[#6A6A6A] leading-[19px]">
+              <p className="text-sm text-s-ink/60 leading-6">
                 {tCommon("fromPrice", { price: formatCurrency(priceToShow, currencyLocale) })}
               </p>
             );
@@ -367,7 +367,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               label = t("nextAppointmentDate", { date: dateStr, time: timeStr });
             }
             return (
-              <p className="text-[12px] font-medium leading-[18px]" style={{ color: "#2E7D32" }}>
+              <p className="text-xs font-medium leading-5 text-s-sage">
                 {label}
               </p>
             );
@@ -375,7 +375,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
 
           {/* Line 5: Social proof (Phase 3.5) */}
           {(salon.booking_count_week ?? 0) >= 3 && (
-            <p className="text-[12px] text-[#6A6A6A] leading-[18px]">
+            <p className="text-xs text-s-ink/60 leading-5">
               {t("bookedTimesThisWeek", { count: salon.booking_count_week })}
             </p>
           )}
