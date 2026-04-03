@@ -105,7 +105,7 @@ export default function BookingWizard({
       {/* ── Progress bar ── */}
       <div className="w-full h-1 bg-s-bg-surface rounded-full overflow-hidden mb-1">
         <motion.div
-          className="h-full bg-[#E8624A] rounded-full"
+          className="h-full bg-s-coral rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
@@ -124,7 +124,7 @@ export default function BookingWizard({
           </button>
         )}
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-[#6A6A6A]">
+          <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-s-ink/60">
             {t('stepOf', { current: currentIndex + 1, total: STEPS.length })}
           </p>
           <h3 className="text-[17px] font-heading font-semibold text-s-ink truncate">
@@ -141,9 +141,9 @@ export default function BookingWizard({
             key={step}
             className={`h-[3px] rounded-full transition-[width,background-color] duration-300 ${
               i < currentIndex
-                ? "w-3 bg-[#E8624A]"
+                ? "w-3 bg-s-coral"
                 : i === currentIndex
-                ? "w-6 bg-[#E8624A]"
+                ? "w-6 bg-s-coral"
                 : "w-3 bg-s-ink/[0.08]"
             }`}
           />

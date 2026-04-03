@@ -234,7 +234,7 @@ function SmartSearchTab() {
               <button
                 key={photo.id}
                 onClick={() => toggleSelect(photo.id)}
-                className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-[transform,box-shadow] duration-[250ms] ${
+                className={`relative aspect-[3/4] rounded-[16px] overflow-hidden border-2 transition-[transform,box-shadow] duration-200 ${
                   selected.has(photo.id)
                     ? "border-s-coral ring-2 ring-s-coral/30"
                     : "border-transparent hover:border-s-ink/10 dark:hover:border-white/10"

@@ -162,7 +162,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
   return (
     <>
     <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow] duration-[250ms] ease-[cubic-bezier(.4,0,.2,1)]",
+      "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(.4,0,.2,1)]",
       isHeaderVisible ? "translate-y-0" : "-translate-y-full",
       scrolled
         ? "bg-white border-b border-s-ink/[0.08] shadow-sm"
@@ -194,7 +194,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <div className="md:hidden w-full max-w-[300px]">
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
-                  className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-[0_1px_4px_rgba(0,0,0,0.1)] rounded-full px-3 py-2 w-full"
+                  className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-3 py-2 w-full"
                   aria-label="Suchen"
                 >
                   <Search className="w-4 h-4 text-s-ink shrink-0" />
@@ -250,7 +250,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 )}>
                   <button
                     onClick={() => setSearchExpanded(true)}
-                    className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-[0_1px_4px_rgba(0,0,0,0.1)] rounded-full px-4 py-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.14)] transition-shadow duration-200 w-[380px]"
+                    className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-elevation-1 rounded-full px-4 py-2 hover:shadow-elevation-2 transition-shadow duration-200 w-[380px]"
                     aria-label="Suche öffnen"
                   >
                     <Search className="w-4 h-4 text-s-ink shrink-0" />
@@ -336,7 +336,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                       animate="visible"
                       exit="exit"
                       style={{ transformOrigin: "top right" }}
-                      className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-2xl z-[80] overflow-hidden bg-white shadow-[0_8px_28px_rgba(0,0,0,0.15)] ring-1 ring-black/5"
+                      className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-2xl z-[80] overflow-hidden bg-white shadow-v5-float ring-1 ring-black/5"
                     >
                       <nav className="py-2" role="menu">
                         {[

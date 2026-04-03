@@ -83,7 +83,7 @@ export default function StaffComparison({ salonId }: StaffComparisonProps) {
             <div key={s.staff_member_id} className="flex items-center gap-3">
               <span className="text-xs font-medium text-s-ink dark:text-s-dm-text w-20 truncate">{s.name.split(" ")[0]}</span>
               <div className="flex-1 h-5 bg-s-ink/5 dark:bg-s-dm-bg rounded-btn overflow-hidden">
-                <div className="h-full bg-s-coral rounded-btn transition-[width] duration-[250ms]"
+                <div className="h-full bg-s-coral rounded-btn transition-[width] duration-200"
                   style={{ width: `${maxRevenue > 0 ? (s.revenue / maxRevenue) * 100 : 0}%` }} />
               </div>
               <span className="text-xs data-text text-s-ink/60 dark:text-s-dm-text/60 w-16 text-right">

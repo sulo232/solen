@@ -124,7 +124,7 @@ export default function BookingCard({
   };
 
   return (
-    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]">
+    <div className="bg-[--raised] dark:bg-s-dm-surface rounded-card border border-s-ink/[0.06] dark:border-white/[0.08] overflow-hidden hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200">
       {/* Header */}
       <div className="p-4 border-b border-s-ink/[0.06] dark:border-white/[0.08] flex items-start justify-between">
         <div className="flex-1">

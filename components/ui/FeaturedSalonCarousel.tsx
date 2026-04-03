@@ -77,10 +77,10 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
         </div>
         {/* Navigation Arrows — Airbnb spec: 32px white circle, light border, subtle shadow */}
         <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+          <button onClick={() => scroll("left")} aria-label={t("carousel.previousSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
             <ChevronLeft size={16} aria-hidden="true" />
           </button>
-          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-[0_1px_3px_rgba(0,0,0,0.12)] transition-shadow active:scale-95">
+          <button onClick={() => scroll("right")} aria-label={t("carousel.nextSalons")} className="w-[32px] h-[32px] rounded-full border border-s-ink/[0.08] bg-white flex items-center justify-center text-s-ink hover:shadow-elevation-1 transition-shadow active:scale-95">
             <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>
@@ -225,7 +225,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
   return (
     <Link
       href={`/${locale}/salon/${salon.slug}`}
-      className="flex-shrink-0 snap-start group cursor-pointer w-[180px] sm:w-[220px] lg:w-[260px] hover:-translate-y-[5px] hover:shadow-[0_6px_20px_rgba(26,18,9,0.12)] transition-[transform,box-shadow] duration-[250ms]"
+      className="flex-shrink-0 snap-start group cursor-pointer w-[180px] sm:w-[220px] lg:w-[260px] hover:-translate-y-[5px] hover:shadow-elevation-3 transition-[transform,box-shadow] duration-200"
       aria-label={salon.name}
       prefetch={false}
     >

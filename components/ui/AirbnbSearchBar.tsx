@@ -112,7 +112,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
             className={cn(
               "flex items-stretch overflow-visible relative transition-[background-color,box-shadow] duration-200",
               activeSegment === null
-                ? "bg-[--raised] rounded-search border border-s-ink/[0.08] shadow-elevation-2 hover:shadow-elevation-3 hover:scale-[1.005] transition-[box-shadow,transform] duration-[250ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+                ? "bg-[--raised] rounded-search border border-s-ink/[0.08] shadow-elevation-2 hover:shadow-elevation-3 hover:scale-[1.005] transition-[box-shadow,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
                 : "bg-s-ink/[0.05] border border-transparent shadow-none rounded-[32px]"
             )}
             style={{ height: 64 }}

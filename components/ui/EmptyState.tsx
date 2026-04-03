@@ -54,9 +54,9 @@ export default function EmptyState({ icon: Icon, title, message, action, illustr
         )}
         <div className="relative mb-5 flex items-center justify-center w-16 h-16">
           {/* Soft halo — NO scale, explicit negative inset */}
-          <div className="absolute -inset-5 rounded-full blur-xl" style={{ background: "rgba(232,98,74,.09)" }} />
-          <div className="relative flex items-center justify-center w-16 h-16 rounded-[20px]" style={{ background: "rgba(232,98,74,.10)" }}>
-            <Icon size={28} className="text-s-coral" strokeWidth={1.5} />
+          <div className="absolute -inset-5 rounded-full blur-xl" style={{ background: "rgba(232,98,74,.15)" }} />
+          <div className="relative flex items-center justify-center w-16 h-16 rounded-[20px]" style={{ background: "rgba(232,98,74,.15)" }}>
+            <Icon size={32} className="text-s-coral" strokeWidth={1.5} />
           </div>
         </div>
         {eyebrow && (
@@ -87,9 +87,9 @@ export default function EmptyState({ icon: Icon, title, message, action, illustr
       )}
       <div className="relative mb-5 flex items-center justify-center w-16 h-16">
         {/* Soft halo — NO scale, explicit negative inset */}
-        <div className="absolute -inset-5 rounded-full blur-xl" style={{ background: "rgba(232,98,74,.09)" }} />
-        <div className="relative flex items-center justify-center w-16 h-16 rounded-[20px]" style={{ background: "rgba(232,98,74,.10)" }}>
-          <Icon size={28} className="text-s-coral" strokeWidth={1.5} />
+        <div className="absolute -inset-5 rounded-full blur-xl" style={{ background: "rgba(232,98,74,.15)" }} />
+        <div className="relative flex items-center justify-center w-16 h-16 rounded-[20px]" style={{ background: "rgba(232,98,74,.15)" }}>
+          <Icon size={32} className="text-s-coral" strokeWidth={1.5} />
         </div>
       </div>
       {eyebrow && (
