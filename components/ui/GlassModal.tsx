@@ -143,10 +143,10 @@ export default function GlassModal({
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-[8px] text-s-ink/40 hover:text-s-ink hover:bg-s-ink/5 transition-colors duration-150"
+                  className="p-3 rounded-[8px] text-s-ink/60 hover:text-s-ink hover:bg-s-ink/10 transition-colors duration-150"
                   aria-label={t("close")}
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
             )}

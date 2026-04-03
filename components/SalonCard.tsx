@@ -270,33 +270,33 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
             </div>
           )}
 
-          {/* Photo carousel dot indicators — visible on hover (or mobile) */}
+          {/* Photo carousel dot indicators — always visible, larger touch target */}
           {hasMultiple && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-[5px] z-10 opacity-100 md:opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-200">
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10 opacity-100 group-hover/carousel:opacity-100 transition-opacity duration-200">
               {allPhotos.slice(0, 5).map((_, i) => (
                 <button
                   key={i}
                   onClick={(e) => { e.preventDefault(); e.stopPropagation();
                     scrollContainerRef.current?.scrollTo({ left: i * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
                   }}
-                  className={`rounded-full transition-[background-color,width,height] duration-200 ${i === photoIndex ? "w-[6px] h-[6px] bg-white" : "w-[6px] h-[6px] bg-white/60 hover:bg-white/90"}`}
-                  aria-label={`Photo ${i + 1}`}
+                  className={`rounded-full transition-[background-color,width,height] duration-200 ${i === photoIndex ? "w-2.5 h-2.5 bg-white" : "w-2 h-2 bg-white/60 hover:bg-white/90"}`}
+                  aria-label={`Photo ${i + 1} of ${allPhotos.length}`}
                 />
               ))}
             </div>
           )}
 
-          {/* Left/right arrows — desktop hover only */}
+          {/* Left/right arrows — desktop hover only, larger touch target */}
           {hasMultiple && photoIndex > 0 && (
             <button
               type="button"
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex - 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
               aria-label="Previous photo"
             >
-              <ChevronLeft size={14} />
+              <ChevronLeft size={18} />
             </button>
           )}
           {hasMultiple && photoIndex < Math.min(allPhotos.length - 1, 4) && (
@@ -305,10 +305,10 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
               onClick={(e) => { e.preventDefault(); e.stopPropagation();
                 scrollContainerRef.current?.scrollTo({ left: (photoIndex + 1) * (scrollContainerRef.current.clientWidth || 0), behavior: 'smooth' });
               }}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 shadow-sm flex items-center justify-center opacity-0 group-hover/carousel:opacity-100 transition-opacity z-[2] hover:bg-white hover:scale-105"
               aria-label="Next photo"
             >
-              <ChevronRight size={14} />
+              <ChevronRight size={18} />
             </button>
           )}
         </div>

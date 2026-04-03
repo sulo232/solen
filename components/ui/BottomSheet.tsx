@@ -122,10 +122,10 @@ export default function BottomSheet({
                 <h3 className="font-heading font-semibold text-s-ink dark:text-s-dm-text">{title}</h3>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-full text-s-ink/40 hover:text-s-ink hover:bg-s-bg-sunken dark:text-s-dm-text/40 dark:hover:text-s-dm-text dark:hover:bg-white/10 transition-colors"
+                  className="p-3 rounded-full text-s-ink/60 hover:text-s-ink hover:bg-s-bg-sunken dark:text-s-dm-text/60 dark:hover:text-s-dm-text dark:hover:bg-white/20 transition-colors"
                   aria-label="Schliessen"
                 >
-                  <X size={16} />
+                  <X size={20} />
                 </button>
               </div>
             )}
