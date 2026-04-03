@@ -113,7 +113,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
               "flex items-stretch overflow-visible relative transition-[background-color,box-shadow] duration-200",
               activeSegment === null
                 ? "bg-[--raised] rounded-search border border-s-ink/[0.08] shadow-elevation-2 hover:shadow-elevation-3 hover:scale-[1.005] transition-[box-shadow,transform] duration-[250ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
-                : "bg-[#EBEBEB] border border-transparent shadow-none rounded-[32px]"
+                : "bg-s-ink/[0.05] border border-transparent shadow-none rounded-[32px]"
             )}
             style={{ height: 64 }}
           >
@@ -125,7 +125,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                   activeSegment === 'category'
                     ? "bg-white rounded-[32px] shadow-[0px_2px_16px_0px_rgba(0,0,0,0.12)]"
                     : activeSegment !== null
-                      ? "hover:bg-[#DDDDDD] rounded-full"
+                      ? "hover:bg-s-ink/[0.12] rounded-full"
                       : ""
                 )}
                 onClick={() => activateSegment('category')}
@@ -221,7 +221,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                   activeSegment === 'city'
                     ? "bg-white rounded-[32px] shadow-[0px_2px_16px_0px_rgba(0,0,0,0.12)]"
                     : activeSegment !== null
-                      ? "hover:bg-[#DDDDDD] rounded-full cursor-pointer"
+                      ? "hover:bg-s-ink/[0.12] rounded-full cursor-pointer"
                       : "hover:bg-s-ink/[0.03] transition-colors rounded-none cursor-pointer"
                 )}
                 style={{ minWidth: 140 }}
@@ -302,7 +302,7 @@ export default function AirbnbSearchBar({ scrolledPast80, locale, categoryCounts
                   activeSegment === 'date'
                     ? "bg-white rounded-[32px] shadow-[0px_2px_16px_0px_rgba(0,0,0,0.12)]"
                     : activeSegment !== null
-                      ? "hover:bg-[#DDDDDD] rounded-full cursor-pointer"
+                      ? "hover:bg-s-ink/[0.12] rounded-full cursor-pointer"
                       : "hover:bg-s-ink/[0.03] transition-colors rounded-none cursor-pointer"
                 )}
                 style={{ minWidth: 140 }}

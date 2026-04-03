@@ -77,7 +77,7 @@ export default function SalonHero({ photos, salonName }: SalonHeroProps) {
         /* ── Single-photo carousel (original behavior) ── */
         <div
           id="section-fotos"
-          className="scroll-mt-[100px] relative w-full aspect-[16/7] rounded-[20px] overflow-hidden bg-[#F0F0F0] mb-8 select-none"
+          className="scroll-mt-[100px] relative w-full aspect-[16/7] rounded-[20px] overflow-hidden bg-s-bg-surface mb-8 select-none"
         >
           <AnimatePresence mode="wait" initial={false}>
             {photos[photoIndex] && (
@@ -103,7 +103,7 @@ export default function SalonHero({ photos, salonName }: SalonHeroProps) {
 
           {photos.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-display text-[80px] text-[#222222]/10">
+              <span className="font-display text-[80px] text-s-ink/10">
                 {salonName[0]}
               </span>
             </div>
@@ -124,7 +124,7 @@ export default function SalonHero({ photos, salonName }: SalonHeroProps) {
                   boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
                 }}
               >
-                <ChevronLeft className="w-5 h-5 text-[#222222]" />
+                <ChevronLeft className="w-5 h-5 text-s-ink" />
               </button>
               {/* Right nav */}
               <button
@@ -139,7 +139,7 @@ export default function SalonHero({ photos, salonName }: SalonHeroProps) {
                   boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05)",
                 }}
               >
-                <ChevronRight className="w-5 h-5 text-[#222222]" />
+                <ChevronRight className="w-5 h-5 text-s-ink" />
               </button>
 
               {/* Photo counter badge */}
