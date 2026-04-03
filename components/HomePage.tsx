@@ -314,14 +314,8 @@ export default function HomePage({ initialData }: HomePageProps) {
 
                 <Link
                   href={`/${locale}/partner`}
-                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter,box-shadow] duration-200 self-start"
+                  className="inline-flex items-center justify-center h-[46px] px-7 rounded-pill bg-s-coral text-white font-heading font-bold text-[14px] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 self-start"
                   style={{ boxShadow: "0 2px 12px rgba(232,98,74,.28)" }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 0 24px rgba(232, 98, 74, 0.4), 0 2px 12px rgba(232,98,74,.28)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 2px 12px rgba(232,98,74,.28)";
-                  }}
                 >
                   {t("partner.cta")} →
                 </Link>
