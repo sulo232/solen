@@ -90,27 +90,27 @@ export default function BookingCard({
   const statusConfig = {
     confirmed: {
       label: t('status.confirmed'),
-      bgColor: 'bg-green-50 dark:bg-green-950/30',
-      textColor: 'text-green-700 dark:text-green-300',
-      borderColor: 'border-green-200 dark:border-green-800/50',
+      bgColor: 'bg-s-sage/10 dark:bg-s-sage/10',
+      textColor: 'text-s-sage dark:text-s-sage',
+      borderColor: 'border-s-sage/30 dark:border-s-sage/30',
     },
     pending: {
       label: t('status.pending'),
-      bgColor: 'bg-yellow-50 dark:bg-yellow-950/30',
-      textColor: 'text-yellow-700 dark:text-yellow-300',
-      borderColor: 'border-yellow-200 dark:border-yellow-800/50',
+      bgColor: 'bg-s-warning/10 dark:bg-s-warning/10',
+      textColor: 'text-s-warning dark:text-s-warning',
+      borderColor: 'border-s-warning/30 dark:border-s-warning/30',
     },
     cancelled: {
       label: t('status.cancelled'),
-      bgColor: 'bg-red-50 dark:bg-red-950/30',
-      textColor: 'text-red-700 dark:text-red-300',
-      borderColor: 'border-red-200 dark:border-red-800/50',
+      bgColor: 'bg-s-error/10 dark:bg-s-error/10',
+      textColor: 'text-s-error dark:text-s-error',
+      borderColor: 'border-s-error/30 dark:border-s-error/30',
     },
     completed: {
       label: t('status.completed'),
-      bgColor: 'bg-gray-50 dark:bg-gray-900/30',
-      textColor: 'text-gray-700 dark:text-gray-300',
-      borderColor: 'border-gray-200 dark:border-gray-800/50',
+      bgColor: 'bg-s-ink/5 dark:bg-s-dm-text/5',
+      textColor: 'text-s-ink/60 dark:text-s-dm-text/60',
+      borderColor: 'border-s-ink/10 dark:border-s-dm-text/10',
     },
   };
 
@@ -221,7 +221,7 @@ export default function BookingCard({
                       onCancel?.(booking);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 font-body"
+                    className="w-full text-left px-4 py-2 text-sm text-s-error dark:text-s-error hover:bg-s-error/10 dark:hover:bg-s-error/10 font-body"
                   >
                     {t('cancel')}
                   </button>
