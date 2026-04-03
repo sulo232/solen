@@ -12,6 +12,7 @@ import {
   getLocalizedLabel,
   datePickToParam,
 } from "@/lib/guided-search-data";
+import { dropdownItemVariants } from "@/lib/motion";
 import { CITIES, CITY_SLUGS, type CitySlug } from "@/lib/cities";
 import { getPersistedCity } from "@/lib/city-cookie";
 import type { SalonCategory } from "@/lib/types";
@@ -674,14 +675,19 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 {!category && <Check size={16} className="text-s-coral shrink-0" aria-hidden="true" />}
                               </button>
 
-                              {CATEGORY_LIST.map((cat) => {
+                              {CATEGORY_LIST.map((cat, index) => {
                                 const count = categoryCounts[cat.key] ?? 0;
                                 const isFlashing = flashedCat === cat.key;
                                 return (
-                                  <button
+                                  <motion.button
                                     key={cat.key}
                                     onClick={() => selectCategory(cat.key)}
                                     aria-label={tNav(cat.key as Parameters<typeof tNav>[0])}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                    custom={index}
+                                    variants={dropdownItemVariants}
                                     className="w-full flex items-center text-left transition-[background-color] duration-100 hover:bg-[rgba(0,0,0,0.03)]"
                                     style={{
                                       padding: "14px 24px",
@@ -715,7 +721,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     ) : (
                                       <ChevronRight size={18} style={{ color: "#C4BBB2", flexShrink: 0 }} aria-hidden="true" />
                                     )}
-                                  </button>
+                                  </motion.button>
                                 );
                               })}
                             </div>
