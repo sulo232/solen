@@ -1,0 +1,46 @@
+{
+  "enableAllProjectMcpServers": true,
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true,
+    "supabase@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "php-lsp@claude-plugins-official": true,
+    "learning-output-style@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "cloudflare@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "gmail@claude-plugins-official": true,
+    "google-calendar@claude-plugins-official": true,
+    "posthog@claude-plugins-official": true,
+    "stripe@claude-plugins-official": true,
+    "emil-design-eng@claude-plugins-official": true,
+    "nodejs-lsp@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "docker@claude-plugins-official": true,
+    "postgresql-lsp@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "MultiEdit(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "TodoRead",
+      "TodoWrite"
+    ],
+    "defaultMode": "bypassPermissions"
+  }
+}
