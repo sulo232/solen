@@ -54,3 +54,4 @@ supabase/.temp/
 
 _archive/
 node_modules_old/
+.vercel

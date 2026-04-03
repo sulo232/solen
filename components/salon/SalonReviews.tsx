@@ -57,7 +57,7 @@ function Stars({ rating, size = "sm" }: { rating: number; size?: "sm" | "md" }) 
       {[1, 2, 3, 4, 5].map((i) => (
         <Star
           key={i}
-          className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-[#222222]/20"].join(" ")}
+          className={[sz, i <= rounded ? "fill-s-coral text-s-coral" : "text-s-ink/20"].join(" ")}
         />
       ))}
     </span>
@@ -147,7 +147,7 @@ export default function SalonReviews({
           {t("reviews")}
         </span>
         <h2
-          className="font-heading font-extrabold text-[#222222]"
+          className="font-heading font-extrabold text-s-ink"
           style={{ fontSize: "clamp(22px, 3vw, 32px)", letterSpacing: "-0.02em" }}
         >
           {t("whatCustomersSay")}
@@ -155,7 +155,7 @@ export default function SalonReviews({
       </div>
       <div className="mt-3 md:mt-0">
         {reviews.length === 0 ? (
-          <p className="text-sm text-[#222222]/40">{t("noReviews")}</p>
+          <p className="text-sm text-s-ink/40">{t("noReviews")}</p>
         ) : (
           <>
             <ReviewBreakdown
@@ -182,7 +182,7 @@ export default function SalonReviews({
 
             {/* Review sort */}
             <div className="flex items-center gap-2 mt-4 mb-4">
-              <span className="text-xs text-[#222222]/40">{t("sortBy")}:</span>
+              <span className="text-xs text-s-ink/40">{t("sortBy")}:</span>
               {(["newest", "highest", "lowest"] as const).map((s) => (
                 <button
                   key={s}
@@ -193,7 +193,7 @@ export default function SalonReviews({
                   className={`px-3 py-1.5 rounded-btn text-xs font-heading font-bold uppercase tracking-[.06em] transition-colors ${
                     reviewSort === s
                       ? "bg-s-coral text-white"
-                      : "bg-[#F0F0F0] border border-[#222222]/[0.08] text-[#222222]/60 hover:border-[#222222]/20"
+                      : "bg-s-bg-surface border border-s-ink/[0.08] text-s-ink/60 hover:border-s-ink/20"
                   }`}
                 >
                   {s === "newest" ? t("sortNewest") : s === "highest" ? t("sortHighest") : t("sortLowest")}
@@ -209,21 +209,21 @@ export default function SalonReviews({
                   !isExpanded && needsTruncation ? rev.comment?.slice(0, 150) + "..." : rev.comment;
 
                 return (
-                  <div key={rev.id} className="border border-[#222222]/5 rounded-[16px] p-4">
+                  <div key={rev.id} className="border border-s-ink/5 rounded-[16px] p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-[#F0F0F0] overflow-hidden flex items-center justify-center text-xs text-[#222222]/40">
+                        <div className="w-7 h-7 rounded-full bg-s-bg-surface overflow-hidden flex items-center justify-center text-xs text-s-ink/40">
                           {rev.profiles?.avatar_url ? (
                             <Image src={rev.profiles.avatar_url} alt="" width={28} height={28} className="object-cover" />
                           ) : (
                             rev.profiles?.display_name?.[0] ?? "?"
                           )}
                         </div>
-                        <span className="text-sm font-medium text-[#222222]">
+                        <span className="text-sm font-medium text-s-ink">
                           {rev.profiles?.display_name ?? "Anonym"}
                         </span>
                         {(rev as any).booking_id && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#EBF5EE] text-[#2E5E3A] text-xs font-medium">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-s-sage/10 text-s-sage text-xs font-medium">
                             <ShieldCheck size={12} />
                             {t("verifiedBooking")}
                           </span>
@@ -232,7 +232,7 @@ export default function SalonReviews({
                       <Stars rating={rev.rating} size="sm" />
                     </div>
                     {displayText && (
-                      <p className="text-sm text-[#222222]/70 leading-relaxed">
+                      <p className="text-sm text-s-ink/70 leading-relaxed">
                         {displayText}
                         {needsTruncation && (
                           <button
@@ -257,12 +257,12 @@ export default function SalonReviews({
                           }}
                         >
                           {flagSuccess ? (
-                            <p className="text-xs text-[#2E5E3A] font-heading font-semibold py-1">
+                            <p className="text-xs text-s-sage font-heading font-semibold py-1">
                               ✓ {t("flagSuccess")}
                             </p>
                           ) : (
                             <>
-                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-[#222222]/40 mb-2">
+                              <p className="text-[10px] font-heading font-bold uppercase tracking-[.12em] text-s-ink/40 mb-2">
                                 {t("flagReasonLabel")}
                               </p>
                               <textarea
@@ -270,12 +270,12 @@ export default function SalonReviews({
                                 onChange={(e) => setFlagReason(e.target.value)}
                                 placeholder={t("flagReasonPlaceholder")}
                                 rows={2}
-                                className="w-full text-xs font-body text-[#222222] bg-transparent border border-[#222222]/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-[#222222]/30 transition-colors duration-150"
+                                className="w-full text-xs font-body text-s-ink bg-transparent border border-s-ink/10 rounded-[8px] px-2.5 py-2 resize-none outline-none focus:border-s-coral/40 placeholder:text-s-ink/30 transition-colors duration-150"
                               />
                               <div className="flex gap-2 mt-2 justify-end">
                                 <button
                                   onClick={() => setFlaggingReviewId(null)}
-                                  className="text-xs text-[#222222]/40 hover:text-[#222222]/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
+                                  className="text-xs text-s-ink/40 hover:text-s-ink/60 font-heading font-bold uppercase tracking-[.08em] px-3 py-1.5 transition-colors duration-150"
                                 >
                                   {t("flagCancel")}
                                 </button>
@@ -294,7 +294,7 @@ export default function SalonReviews({
                       ) : (
                         <button
                           onClick={() => handleFlagReview(rev.id)}
-                          className="text-xs text-[#222222]/30 hover:text-s-coral transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
+                          className="text-xs text-s-ink/30 hover:text-s-coral transition-colors duration-150 font-heading font-semibold uppercase tracking-[.08em]"
                         >
                           {t("flagReview")}
                         </button>
@@ -308,7 +308,7 @@ export default function SalonReviews({
                           <button
                             key={photo.id}
                             onClick={() => onLightbox?.(photo.photo_url)}
-                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-[#F0F0F0] hover:opacity-80 transition-opacity duration-150 shrink-0"
+                            className="relative w-16 h-16 rounded-[12px] overflow-hidden bg-s-bg-surface hover:opacity-80 transition-opacity duration-150 shrink-0"
                             aria-label={t("enlargePhoto")}
                           >
                             <Image src={photo.photo_url} alt="" fill className="object-cover" sizes="64px" />
@@ -330,12 +330,12 @@ export default function SalonReviews({
                             <ShieldCheck className="w-3 h-3" />
                             {t("salonReplied")}
                           </p>
-                          <p className="text-xs text-[#222222]/60">{reply}</p>
+                          <p className="text-xs text-s-ink/60">{reply}</p>
                         </div>
                       );
                     })()}
 
-                    <p className="text-xs text-[#222222]/30 mt-2">
+                    <p className="text-xs text-s-ink/30 mt-2">
                       {new Date(rev.created_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB")}
                     </p>
                   </div>
@@ -346,7 +346,7 @@ export default function SalonReviews({
             {reviews.length > reviewsVisible.length && (
               <button
                 onClick={() => setReviewPage((p) => p + 1)}
-                className="mt-4 w-full py-2.5 border border-[#222222]/10 rounded-btn text-sm text-[#222222]/60 hover:border-s-coral transition-colors duration-150"
+                className="mt-4 w-full py-2.5 border border-s-ink/10 rounded-btn text-sm text-s-ink/60 hover:border-s-coral transition-colors duration-150"
               >
                 {t("showMoreReviews")}
               </button>

@@ -165,7 +165,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
       "fixed top-0 left-0 right-0 z-50 w-full flex flex-col transition-[transform,background-color,border-color,box-shadow] duration-[250ms] ease-[cubic-bezier(.4,0,.2,1)]",
       isHeaderVisible ? "translate-y-0" : "-translate-y-full",
       scrolled
-        ? "bg-white border-b border-[#EBEBEB] shadow-sm"
+        ? "bg-white border-b border-s-ink/[0.08] shadow-sm"
         : "bg-white border-transparent"
     )}>
       {/* ── Top Row: Logo, (Small Pill if scrolled), Profile ── */}
@@ -194,11 +194,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <div className="md:hidden w-full max-w-[300px]">
                 <button
                   onClick={() => window.dispatchEvent(new CustomEvent("openSearchSheet", { detail: { step: 1 } }))}
-                  className="flex items-center gap-2.5 bg-white border border-[#EBEBEB] shadow-[0_1px_4px_rgba(0,0,0,0.1)] rounded-full px-3 py-2 w-full"
+                  className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-[0_1px_4px_rgba(0,0,0,0.1)] rounded-full px-3 py-2 w-full"
                   aria-label="Suchen"
                 >
-                  <Search className="w-4 h-4 text-[#222222] shrink-0" />
-                  <span className="text-[13px] font-body font-semibold text-[#717171] truncate text-left flex-1">
+                  <Search className="w-4 h-4 text-s-ink shrink-0" />
+                  <span className="text-[13px] font-body font-semibold text-s-ink/60 truncate text-left flex-1">
                     {t("searchCompact")}
                   </span>
                 </button>
@@ -233,8 +233,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                         <span className={cn(
                           "text-[12px] font-body font-semibold pb-2 border-b-2 transition-colors duration-200 whitespace-nowrap",
                           isActive
-                            ? "text-[#222222] border-[#222222]"
-                            : "text-[#717171] border-transparent group-hover:text-[#222222] group-hover:border-[#EBEBEB]"
+                            ? "text-s-ink border-s-ink"
+                            : "text-s-ink/60 border-transparent group-hover:text-s-ink group-hover:border-s-ink/[0.08]"
                         )}>
                           {label}
                         </span>
@@ -250,11 +250,11 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                 )}>
                   <button
                     onClick={() => setSearchExpanded(true)}
-                    className="flex items-center gap-2.5 bg-white border border-[#EBEBEB] shadow-[0_1px_4px_rgba(0,0,0,0.1)] rounded-full px-4 py-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.14)] transition-shadow duration-200 w-[380px]"
+                    className="flex items-center gap-2.5 bg-white border border-s-ink/[0.08] shadow-[0_1px_4px_rgba(0,0,0,0.1)] rounded-full px-4 py-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.14)] transition-shadow duration-200 w-[380px]"
                     aria-label="Suche öffnen"
                   >
-                    <Search className="w-4 h-4 text-[#222222] shrink-0" />
-                    <span className="text-[14px] font-body font-semibold text-[#717171] truncate text-left flex-1">
+                    <Search className="w-4 h-4 text-s-ink shrink-0" />
+                    <span className="text-[14px] font-body font-semibold text-s-ink/60 truncate text-left flex-1">
                       {t("search")}
                     </span>
                   </button>
@@ -290,8 +290,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                     <span className={cn(
                       "text-[12px] font-body font-semibold pb-2 border-b-2 transition-colors duration-200 whitespace-nowrap",
                       isActive
-                        ? "text-[#222222] border-[#222222]"
-                        : "text-[#717171] border-transparent group-hover:text-[#222222] group-hover:border-[#EBEBEB]"
+                        ? "text-s-ink border-s-ink"
+                        : "text-s-ink/60 border-transparent group-hover:text-s-ink group-hover:border-s-ink/[0.08]"
                     )}>
                       {label}
                     </span>
@@ -318,12 +318,12 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   aria-label={t("account")}
                   aria-expanded={profileOpen}
                   className={cn(
-                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-[#717171] border border-[#EBEBEB] hover:shadow-elevation-2 bg-white solen-press-effect",
+                    "flex items-center justify-center w-[42px] h-[42px] rounded-full text-s-ink/60 border border-s-ink/[0.08] hover:shadow-elevation-2 bg-white solen-press-effect",
                     "transition-[box-shadow,transform] duration-200"
                   )}
                 >
                   <Menu className="w-4 h-4 mr-1" />
-                  <div className="bg-[#717171] text-white rounded-full w-6 h-6 flex items-center justify-center">
+                  <div className="bg-s-ink/60 text-white rounded-full w-6 h-6 flex items-center justify-center">
                     <User className="w-[14px] h-[14px]" />
                   </div>
                 </button>
@@ -350,16 +350,16 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                             href={href}
                             onClick={() => setProfileOpen(false)}
                             role="menuitem"
-                            className="flex items-center px-4 py-2.5 text-[14px] font-body text-[#222222] hover:bg-[#f7f7f7] transition-colors"
+                            className="flex items-center px-4 py-2.5 text-[14px] font-body text-s-ink hover:bg-s-bg-sunken transition-colors"
                           >
                             {label}
                           </Link>
                         ))}
-                        <div className="border-t border-[#EBEBEB] my-2" />
+                        <div className="border-t border-s-ink/[0.08] my-2" />
                         <button
                           onClick={handleSignOut}
                           role="menuitem"
-                          className="flex items-center w-full px-4 py-2.5 text-[14px] font-body text-[#222222] hover:bg-[#f7f7f7] transition-colors"
+                          className="flex items-center w-full px-4 py-2.5 text-[14px] font-body text-s-ink hover:bg-s-bg-sunken transition-colors"
                         >
                           {t("logout")}
                         </button>
@@ -372,10 +372,10 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
               <Link
                 href={`/${locale}/auth/login`}
                 aria-label={t("login")}
-                className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#EBEBEB] hover:shadow-elevation-2 bg-white text-[#222222] transition-[box-shadow,transform] duration-200 solen-press-effect"
+                className="flex items-center gap-2 px-3 py-2 rounded-full border border-s-ink/[0.08] hover:shadow-elevation-2 bg-white text-s-ink transition-[box-shadow,transform] duration-200 solen-press-effect"
               >
                 <Menu strokeWidth={2} className="w-4 h-4 ml-1" />
-                <div className="bg-[#717171] text-white rounded-full w-[26px] h-[26px] flex items-center justify-center">
+                <div className="bg-s-ink/60 text-white rounded-full w-[26px] h-[26px] flex items-center justify-center">
                   <User className="w-[14px] h-[14px]" />
                 </div>
               </Link>
@@ -396,7 +396,7 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
 
       {/* ── Mobile Category Strip (Homepage + Unscrolled) ── */}
       {isHomepage && !scrolled && (
-        <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-1 px-3 border-b border-[#EBEBEB]">
+        <div className="md:hidden overflow-x-auto scrollbar-hide pb-3 pt-1 px-3 border-b border-s-ink/[0.08]">
           <div className="flex items-center gap-1 w-max">
             {[
               { key: "all",        href: "/",           icon: "✨", label: "Entdecken" },
@@ -414,8 +414,8 @@ export default function Header({ locale, unreadCount = 0 }: HeaderProps) {
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-heading font-semibold whitespace-nowrap shrink-0 transition-[background-color,color] duration-150",
                     isActive
-                      ? "bg-[#1A1A1A] text-white"
-                      : "bg-[#F5F5F5] text-[#555555] hover:bg-[#EBEBEB]"
+                      ? "bg-s-ink text-white"
+                      : "bg-s-bg-surface text-s-ink/55 hover:bg-s-ink/[0.08]"
                   )}
                 >
                   <span className="text-[14px] leading-none">{icon}</span>
