@@ -1161,3 +1161,466 @@ For destructive or sensitive profile actions (like account deletion), use a dedi
   3. Pass `onDeleteClick={() => setModalOpen(true)}` callback to the settings form
   4. Render modal after all other UI elements to maintain layering
 - **Pattern**: Multiple modals can coexist if they manage state independently
+
+---
+
+## 17. 🚨 DESIGN SYSTEM ENFORCEMENT & QUALITY STANDARDS (MANDATORY)
+
+> **CONTEXT**: On 2026-04-03, a comprehensive UI audit identified 20+ design quality issues stemming from inconsistent token usage, accessibility failures, and desktop-first design thinking. Root causes: design systems defined AFTER components were built, no migration path for old code, and lack of enforcement tooling. These rules prevent recurring design debt.
+
+### Rule 48: DESIGN TOKEN USAGE IS NON-NEGOTIABLE
+
+**All components MUST use design tokens. No exceptions. No arbitrary values.**
+
+#### Colors — ONLY Use Design Tokens
+```tsx
+// ✅ CORRECT — always use tokens
+<div className="text-s-ink hover:text-s-coral" />
+<button className="bg-s-coral text-white" />
+<input className="border border-s-ink/[0.08]" />
+
+// ❌ BANNED — no arbitrary hex, no Tailwind defaults
+<div className="text-[#222222]" />
+<div className="text-gray-700" />
+<div style={{ color: "#717171" }} />
+```
+
+**Reference:** `tailwind.config.js` contains all valid color tokens:
+- Text: `text-s-ink`, `text-s-ink/60`, `text-s-ink/40`, `text-s-ink/20`
+- Backgrounds: `bg-s-coral`, `bg-s-amber`, `bg-s-blue`, `bg-s-plum`, `bg-s-sage`, `bg-s-sand`, `bg-s-yellow`
+- Dark mode: `dark:text-s-dm-text`, `dark:bg-s-dm-bg`
+
+**Migration:** If you find hardcoded colors in existing code, replace them IMMEDIATELY. Use search-replace:
+```bash
+find . -name "*.tsx" -o -name "*.ts" | xargs grep -l "text-\[#" | head -20
+# Then replace each instance with correct token
+```
+
+#### Font Sizes — ONLY Tailwind Scale
+```tsx
+// ✅ CORRECT
+<h1 className="text-4xl" />       // 36px
+<h2 className="text-2xl" />       // 28px
+<p className="text-base" />       // 16px
+<span className="text-sm" />      // 14px
+<caption className="text-xs" />   // 12px
+
+// ❌ BANNED — no arbitrary pixel sizes
+<h1 className="text-[42px]" />
+<p className="text-[15px]" />
+<span style={{ fontSize: "13px" }} />
+```
+
+**Why:** Arbitrary sizes break vertical rhythm and make font hierarchy unclear. Tailwind scale enforces consistency.
+
+#### Spacing — Use Design Scale Only
+```tsx
+// ✅ CORRECT — use 4px multiples: gap-1(4px), gap-2(8px), gap-3(12px), gap-4(16px), gap-6(24px), etc.
+<div className="flex gap-3 p-4 mb-6" />
+<div className="px-6 py-8 rounded-card" />
+
+// ❌ BANNED — arbitrary spacing values
+<div className="gap-[2px] p-[7px]" />
+<div style={{ padding: "18px", marginTop: "13px" }} />
+```
+
+**Reference spacing scale:**
+- `gap-1` = 4px, `gap-2` = 8px, `gap-3` = 12px, `gap-4` = 16px, `gap-6` = 24px, `gap-8` = 32px
+
+#### Shadows — Use V5 System Only
+```tsx
+// ✅ CORRECT
+<div className="shadow-elevation-1" />        // Cards at rest
+<div className="shadow-elevation-3" />        // Cards on hover
+<div className="shadow-v5-card" />            // Preset card shadow
+<div className="shadow-v5-float" />           // Modals, floating UI
+
+// ❌ BANNED — custom shadows, non-V5 tokens
+<div className="shadow-[0_6px_20px_rgba(...)]" />
+<div className="shadow-warm-md" />
+<div style={{ boxShadow: "0 4px 12px rgba(...)" }} />
+```
+
+**Reference:** `app/globals.css` contains all V5 shadows. Do not create custom shadow values.
+
+#### Border Radius — Use Preset Values Only
+```tsx
+// ✅ CORRECT
+<div className="rounded-input" />     // 12px — form inputs
+<div className="rounded-card" />      // 16px — salon cards
+<div className="rounded-card-lg" />   // 20px — feature cards
+<div className="rounded-btn" />       // 99px — pill buttons
+<div className="rounded-pill" />      // 9999px — tags, badges
+
+// ❌ BANNED — arbitrary pixel values, standard Tailwind radii
+<div className="rounded-[14px]" />
+<div className="rounded-lg" />
+<div style={{ borderRadius: "10px" }} />
+```
+
+---
+
+### Rule 49: ACCESSIBILITY IS A HARD REQUIREMENT (NOT OPTIONAL)
+
+**Every interactive element must be accessible. Audit before shipping.**
+
+#### Focus Indicators — WCAG AAA Standard
+```tsx
+// ✅ CORRECT — full opacity, 2px thickness, high contrast
+<input className="focus-visible:ring-2 focus-visible:ring-s-coral" />
+<button className="focus-visible:ring-2 focus-visible:ring-s-coral" />
+
+// ❌ BANNED — subtle focus rings (fail WCAG AAA)
+<input className="focus-visible:ring-s-coral/40" />    // 40% opacity = ~1.5:1 contrast
+<button className="focus:outline-none" />               // NO focus ring
+```
+
+**Measure:** All focus rings must have ≥3:1 contrast ratio against background. Use tools: https://webaim.org/resources/contrastchecker/
+
+#### Touch Targets — 44x44px Minimum (Mobile)
+```tsx
+// ✅ CORRECT — all interactive elements ≥44x44px
+<button className="h-11 w-11" />                    // 44px button
+<button className="p-2.5" />                        // 44px from padding + padding
+<div className="cursor-pointer p-3" />              // 48px hit target
+
+// ❌ BANNED — small hit targets that fail mobile UX
+<div className="w-6 h-6" />                         // 24px—impossible on mobile
+<button className="p-1.5" />                        // ~24px hit target
+<div className="w-[6px] h-[6px]" />                 // photo carousel dots
+```
+
+**Verification script:**
+```bash
+# Find all buttons/links with suspicious sizes
+grep -rn "w-\[6px\]\|p-1\(\|h-6\|w-7" components/ app/
+# Should return 0 for interactive elements (exceptions: decorative icons only)
+```
+
+#### Text Contrast — WCAG AAA for All Text
+```tsx
+// ✅ CORRECT — meet 7:1 contrast (AAA) on white background
+<p className="text-s-ink" />              // #1A1209 on white = 11.3:1 ✓
+<p className="text-s-ink/60" />           // Medium gray, ~5:1 ✓ (WCAG AA)
+<label className="text-sm text-s-ink/70" /> // Slightly lighter but acceptable
+
+// ❌ BANNED — fails WCAG AAA (light gray text)
+<p className="text-[#717171]" />          // Generic gray ≈ 4.5:1 (fails AAA for 12px)
+<span className="text-s-ink/40" />        // Too light, ~2.5:1
+```
+
+**For 12px text:** minimum 5:1 contrast required (WCAG AA). Use `text-s-ink/50` or darker.
+**For 16px+ text:** 4.5:1 acceptable. Use `text-s-ink/60` or darker.
+
+**Audit tool:** Run before every PR:
+```bash
+npm run build && npx lighthoused https://localhost:3000 --view
+# Must score ≥90 on accessibility
+```
+
+#### ARIA Labels — Required on Icon Buttons
+```tsx
+// ✅ CORRECT
+<button aria-label={t("toggleMenu")}>
+  <Menu />
+</button>
+
+// ❌ BANNED — icon buttons without labels
+<button>
+  <Heart />  // Screen reader announces nothing
+</button>
+```
+
+---
+
+### Rule 50: MOBILE-FIRST DESIGN & TESTING MANDATORY
+
+**All components must be designed and tested on actual mobile devices, not just desktop.**
+
+#### Design Approach
+1. **Mobile viewport first** (375px: iPhone SE)
+2. **Responsive breakpoints** tested:
+   - `sm`: 640px (tablet in portrait)
+   - `md`: 768px (tablet in landscape)
+   - `lg`: 1024px (desktop)
+   - `xl`: 1280px (desktop large)
+3. **Touch interaction** (no hover assumptions)
+4. **Readable without pinch-to-zoom** (minimum 16px font on inputs)
+
+#### Responsive Images & Aspect Ratios
+```tsx
+// ✅ CORRECT — responsive aspect ratio
+<img className="aspect-[4/5]" />        // Always 4:5, scales to screen width
+<img className="aspect-square md:aspect-[20/19]" /> // Different on mobile/desktop
+
+// ❌ BANNED — fixed heights (don't scale)
+<img className="h-40 w-full" />         // Mobile: too tall. Desktop: too short.
+<img style={{ height: "300px" }} />
+```
+
+#### Form Inputs — Mobile Friendly
+```tsx
+// ✅ CORRECT
+<input className="h-12 text-base" />    // 48px height, 16px font (no zoom needed)
+<input className="rounded-input" />     // Rounded corners, easier to tap
+
+// ❌ BANNED
+<input className="h-10" />              // 40px too small on mobile
+<input className="text-sm" />           // 14px font triggers zoom on iOS
+```
+
+#### Testing Checklist
+Before shipping ANY component:
+- [ ] Open in Chrome DevTools: Device Toolbar (375px width)
+- [ ] Test on iPhone SE (375x667), iPhone 12 (390x844), iPad (768x1024)
+- [ ] All buttons ≥44x44px tap-able
+- [ ] No horizontal scroll
+- [ ] Text readable without pinch-to-zoom
+- [ ] Images not stretched or distorted
+
+---
+
+### Rule 51: DESIGN SYSTEM UPDATES REQUIRE CODE MIGRATION
+
+**When design tokens or systems change, old code MUST be migrated. Do not leave legacy code.**
+
+#### Scenario: New Token System Added
+```
+Timeline:
+- T=0: Tailwind has text-gray-700, text-blue-500, etc. (Tailwind defaults)
+- T=30: New design tokens added (s-coral, s-ink, s-sage, etc.)
+- T=60: Old code still uses text-gray-700
+- T=90: Dark mode added—fails because text-gray-700 doesn't have dark: variant
+```
+
+**Fix:** Create a migration task immediately:
+```markdown
+## Migration: Replace Tailwind defaults with design tokens
+- [ ] Find: grep -rn "text-gray-\|text-blue-\|bg-red-" components/ app/
+- [ ] Replace each with proper token
+- [ ] Verify: npm run build passes, no TypeScript errors
+- [ ] Test: visual check on localhost
+- [ ] Commit with message: "refactor: migrate to design tokens (no visual change)"
+```
+
+#### Scenario: Shadow System Refined
+```
+Timeline:
+- T=0: Custom shadows used (shadow-[...] arbitrary values)
+- T=30: V5 shadow system defined (shadow-elevation-1, shadow-v5-card, etc.)
+- T=60: Old components still use custom shadows
+- T=90: Design review says "shadows inconsistent"
+```
+
+**Fix:** Mass-migrate using search-replace:
+```bash
+# Find all custom shadows
+grep -rn "shadow-\[" components/ app/ | grep -v "shadow-elevation\|shadow-v5"
+
+# Replace with nearest V5 equivalent
+# shadow-[0_6px_20px_rgba(...)] → shadow-elevation-3
+# shadow-[0_4px_12px_rgba(...)] → shadow-elevation-1
+```
+
+#### Rule: New Tokens → Auto-Migration Task
+Whenever a new design system element is added:
+1. Document it in `tailwind.config.js` or `app/globals.css`
+2. Create a migration grep command
+3. Add to next roadmap as "Migrate old code to X system"
+4. Do NOT allow old and new systems to coexist indefinitely
+
+---
+
+### Rule 52: COMPONENT LIFECYCLE — PREVENT ORPHANS & DECAY
+
+**Every component must have a clear lifecycle. Obsolete components are deleted, not left to rot.**
+
+#### Component States:
+```
+ACTIVE: Component is imported and rendered on at least one page
+  → Must follow all design rules
+  → Must be maintained when systems change
+  
+STAGING: Component is built but not yet imported by a page
+  → Allowed temporarily (max 2 weeks)
+  → MUST live in components/_staging/
+  → Add entry to _tasks/INCOMPLETE_FEATURES.md
+  
+DEPRECATED: Component has been replaced or is no longer used
+  → Move to components/_archive/
+  → Remove from components/index.ts barrel export
+  → Add deprecation note: "Replaced by X on YYYY-MM-DD"
+```
+
+#### Verification (Run Monthly):
+```bash
+# Find orphaned components (exported but never imported)
+for comp in $(grep "export.*from" components/index.ts | awk '{print $NF}' | tr -d '";'); do
+  count=$(grep -r "import.*$comp" app/ components/ | grep -v ".tsx:" | wc -l)
+  if [ "$count" -eq 0 ]; then
+    echo "⚠️ ORPHANED: $comp"
+  fi
+done
+
+# Remove orphaned exports or move to _staging/
+```
+
+---
+
+### Rule 53: ANIMATION TIMING — BENCHMARK AGAINST PLATFORM STANDARDS
+
+**Animation timings must be responsive, not arbitrary. Benchmark against iOS/Android.**
+
+#### Platform Standards:
+- **Modal/Sheet Entry:** 150-200ms (iOS: ~160ms, Android: ~180ms)
+- **Page Transition:** 200-300ms (perceived smoothness)
+- **Hover/Click Feedback:** 100-150ms (responsive feel)
+- **Loading spinner:** Never add extra delays; instant start
+
+#### Implementation:
+```tsx
+// ✅ CORRECT — responsive timing
+<motion.div
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.2 }} // 200ms modal entry
+/>
+
+<motion.button
+  whileHover={{ scale: 1.02 }}
+  transition={{ duration: 0.15 }} // 150ms hover feedback
+/>
+
+// ❌ BANNED — arbitrary or slow timing
+<motion.div
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.5 }} // 500ms = feels sluggish
+/>
+
+<div style={{ transition: "all 0.8s ease" }} /> // way too slow
+```
+
+**Verification:**
+```bash
+# Find all hardcoded timing values
+grep -rn "duration.*[0-9]\|transition.*[0-9]" components/ app/ --include="*.tsx"
+# Check each is between 100-400ms (except page-level which can be 300-500ms)
+```
+
+---
+
+### Rule 54: FORM VALIDATION — USE INLINE ERRORS, NEVER alert()
+
+**Browser `alert()` is banned in forms. Use inline validation instead.**
+
+```tsx
+// ✅ CORRECT — inline validation
+const [error, setError] = useState<string | null>(null);
+
+<form onSubmit={async (e) => {
+  e.preventDefault();
+  if (!email) {
+    setError(t("emailRequired")); // Show inline
+    return;
+  }
+  // submit...
+}}>
+  <input value={email} onChange={(e) => {
+    setEmail(e.target.value);
+    if (e.target.value) setError(null); // Clear error on input
+  }} />
+  {error && <p className="text-s-rose text-sm">{error}</p>}
+</form>
+
+// ❌ BANNED — alert() breaks UX
+<form onSubmit={() => {
+  if (!email) {
+    alert(t("emailRequired")); // Blocks interaction, kills flow
+  }
+}}>
+```
+
+---
+
+### Rule 55: DESIGN DEBT PREVENTION — BUILD RIGHT THE FIRST TIME
+
+**Prevention is cheaper than cleanup. Follow these rules to avoid future audits:**
+
+#### Pre-Build Checklist (Every New Component):
+```
+Design System Compliance:
+□ All colors are design tokens (s-coral, s-ink, etc.)
+□ All font sizes from Tailwind scale (text-base, text-lg, etc.)
+□ All spacing from 4px rhythm (gap-3, p-4, etc.)
+□ All radii are preset (rounded-card, rounded-input, etc.)
+□ All shadows from V5 system (shadow-elevation-*, shadow-v5-*)
+
+Accessibility:
+□ Focus rings: 100% opacity, 2px, ≥3:1 contrast
+□ Touch targets: ≥44x44px
+□ Text contrast: ≥5:1 on 12px, ≥4.5:1 on 16px+
+□ ARIA labels on icon buttons
+□ No color-alone meaning (include icon/text)
+
+Mobile:
+□ Tested on actual mobile device (375px, 390px widths)
+□ Images responsive (aspect-[ratio], not fixed height)
+□ Form inputs 48px height, 16px font
+□ No horizontal scroll
+□ Touch-friendly spacing (no 6px gaps)
+
+UX:
+□ Loading states visible + have timeout fallback
+□ Error states shown inline (not alert)
+□ Success feedback clear (toast or visual change)
+□ Animations <300ms (not arbitrary timing)
+□ Component imported + rendered somewhere
+```
+
+#### Post-Build Verification:
+```bash
+npm run build  # Must pass
+npx tsc --noEmit  # Zero type errors
+grep -n "text-\[#\|bg-\[#\|text-gray-\|text-blue-" components/MyComponent.tsx
+  # Should return 0 results
+```
+
+---
+
+### Rule 56: DOCUMENTATION — UPDATE RULES WHEN SYSTEM CHANGES
+
+**This file (CLAUDE.md) is the source of truth. Keep it current.**
+
+Whenever you:
+- Discover a new design pattern
+- Find a bug caused by inconsistent design
+- Create a new design token or rule
+- Notice an agent making repeated mistakes
+
+**Add a new entry to this section OR update `_rules/LESSONS_LEARNED.md`.**
+
+Example:
+```markdown
+### Rule [XX]: [Issue Title]
+
+> **INCIDENT**: [What happened, when, which files]
+
+**Root cause**: [Why it happened]
+
+**Fix**: [How to prevent it]
+```
+
+---
+
+## Summary: Design System is Non-Negotiable
+
+This project has **invested heavily** in a design system (V5 tokens, accessibility standards, mobile responsiveness). All components MUST use it. 
+
+**If you see:**
+- Arbitrary hex colors → Replace with tokens
+- Random font sizes → Use Tailwind scale
+- Custom shadows → Use V5 system
+- Small touch targets → Increase to 44x44px
+- Slow animations → Reduce to <300ms
+- Form alerts → Convert to inline errors
+
+**Do it immediately. Do not ship debt.**
