@@ -173,7 +173,7 @@ export default function HomePage({ initialData }: HomePageProps) {
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden bg-white bg-grain" style={{ backgroundSize: "100px 100px" }}>
+    <div className="min-h-screen relative overflow-x-hidden bg-white">
       {/* GuidedSearch sheet — sheet-only, trigger rendered inline in header */}
       <GuidedSearch categoryCounts={categoryCounts} hideTrigger />
 
