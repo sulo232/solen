@@ -76,7 +76,7 @@ export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProp
     return (
       <span
         className="font-heading font-bold text-[11px] uppercase tracking-wide text-white px-2.5 py-1 rounded-full"
-        style={{ background: "#222222", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
+        style={{ background: "s-ink", boxShadow: "0 2px 4px rgba(0,0,0,0.15)" }}
       >
         Neu
       </span>

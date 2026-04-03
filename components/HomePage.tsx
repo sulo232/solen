@@ -228,13 +228,13 @@ export default function HomePage({ initialData }: HomePageProps) {
         <TrustStatsBanner />
 
         {/* ── 2. Entdecken — Pinterest-style Discovery intro (secondary, after listings) ── */}
-        <section className="animate-in mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-[#EBEBEB] relative z-[2]" style={{ animationDelay: "120ms" }}>
+        <section className="animate-in mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08] relative z-[2]" style={{ animationDelay: "120ms" }}>
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]" style={{ lineHeight: "1.1" }}>
+            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink" style={{ lineHeight: "1.1" }}>
               {t("discover.title")}
             </h2>
             <Link href={`/${locale}/discover`}
-              className="inline-flex items-center gap-1 text-[14px] font-body font-semibold text-[#222222] hover:text-[#717171] transition-colors duration-150 shrink-0">
+              className="inline-flex items-center gap-1 text-[14px] font-body font-semibold text-s-ink hover:text-[s-ink/60] transition-colors duration-150 shrink-0">
               {t("discover.catalogCta")}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </Link>
@@ -245,15 +245,15 @@ export default function HomePage({ initialData }: HomePageProps) {
 
         {/* ── 3. Wieder buchen? (logged-in users with past booking) ── */}
         {sections.rebook && lastBookedSalon && (
-          <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-[#EBEBEB]">
+          <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08]">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-              className="flex items-center gap-4 p-4 border border-[#EBEBEB] rounded-[16px] bg-white">
-              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-[#F7F7F7]">
-                <RefreshCw size={18} className="text-[#222222]" />
+              className="flex items-center gap-4 p-4 border border-s-ink/[0.08] rounded-[16px] bg-white">
+              <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
+                <RefreshCw size={18} className="text-s-ink" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-heading font-medium text-[#222222] text-[15px]">{t("rebook.title")}</p>
-                <p className="text-[14px] text-[#717171] font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
+                <p className="font-heading font-medium text-s-ink text-[15px]">{t("rebook.title")}</p>
+                <p className="text-[14px] text-[s-ink/60] font-body truncate mt-0.5">{t("rebook.lastVisit", { name: lastBookedSalon.name })}</p>
               </div>
               <Link href={`/${locale}/salon/${lastBookedSalon.slug}`}
                 className="shrink-0 px-4 py-2.5 rounded-lg bg-s-coral text-white text-[14px] font-heading font-semibold transition-transform hover:scale-[1.02]"
@@ -265,7 +265,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         )}
 
         {/* ── 4. Recently Viewed ── */}
-        <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-[#EBEBEB]">
+        <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08]">
           <RecentlyViewed />
         </section>
 
@@ -276,7 +276,7 @@ export default function HomePage({ initialData }: HomePageProps) {
         <TestimonialCarousel />
 
         {/* ── 5. Partner CTA ── */}
-        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-[#EBEBEB]">
+        <section className="py-12 px-5 md:px-6 lg:px-10 xl:px-20 border-t border-s-ink/[0.08]">
           <div
             className="rounded-[20px] overflow-hidden relative"
             style={{
@@ -294,7 +294,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3">
                   {t("partner.title")}
                 </h2>
-                <p className="font-body text-[15px] sm:text-[16px] text-[#717171] max-w-[420px] leading-relaxed mb-6">
+                <p className="font-body text-[15px] sm:text-[16px] text-[s-ink/60] max-w-[420px] leading-relaxed mb-6">
                   {t("partner.teaserPrompt") || "Erreiche Tausende Kunden, fülle deinen Kalender und verwalte dein Geschäft – alles an einem Ort."}
                 </p>
 
@@ -339,7 +339,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                   >
                     <p className="text-[11px] font-heading font-bold uppercase tracking-wider text-[#AAAAAA] mb-1">{t("partner.newBookings")}</p>
                     <p className="font-heading font-extrabold text-[28px] text-[#1A1A1A] leading-tight">+47%</p>
-                    <p className="text-[12px] font-body text-[#717171] mt-0.5">{t("partner.firstMonth")}</p>
+                    <p className="text-[12px] font-body text-[s-ink/60] mt-0.5">{t("partner.firstMonth")}</p>
                   </div>
                   {/* Floating stat */}
                   <div

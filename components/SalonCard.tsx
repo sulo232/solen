@@ -151,7 +151,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
       {/* Date-based availability overlay */}
       {availability?.status === "unavailable" && (
         <div className="absolute inset-0 bg-white/60 rounded-[inherit] z-10 pointer-events-none flex items-end p-3">
-          <span className="text-xs font-body text-[#717171] pointer-events-auto">
+          <span className="text-xs font-body text-[s-ink/60] pointer-events-auto">
             {availability.nextDate
               ? t("nextAvailable", { date: new Date(availability.nextDate).toLocaleDateString(locale, { weekday: "short", day: "numeric", month: "short" }) })
               : t("noAvailability")}

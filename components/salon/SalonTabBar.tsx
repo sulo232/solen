@@ -30,7 +30,7 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
   }, [activeTab]);
 
   return (
-    <div className="sticky top-[57px] z-40 w-full bg-white border-b border-[#EBEBEB] py-0 px-4 md:px-8 mb-8 overflow-hidden pointer-events-auto">
+    <div className="sticky top-[57px] z-40 w-full bg-white border-b border-s-ink/[0.08] py-0 px-4 md:px-8 mb-8 overflow-hidden pointer-events-auto">
       <div 
         ref={scrollContainerRef}
         className="flex items-center gap-6 overflow-x-auto scrollbar-hide snap-x pt-2"
@@ -45,15 +45,15 @@ export default function SalonTabBar({ activeTab, onTabClick, tabs }: SalonTabBar
               className={`
                 relative whitespace-nowrap pb-3 text-[14px] font-heading font-semibold transition-colors duration-150 snap-center
                 ${isActive
-                  ? "text-[#222222]"
-                  : "text-[#6A6A6A] hover:text-[#222222]"
+                  ? "text-s-ink"
+                  : "text-[#6A6A6A] hover:text-s-ink"
                 }
               `}
             >
               {isActive && (
                 <motion.div
                   layoutId="salon-tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#222222]"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-s-ink"
                   transition={{ type: "tween", duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                 />
               )}

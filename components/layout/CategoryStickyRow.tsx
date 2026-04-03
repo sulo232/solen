@@ -93,8 +93,8 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
                   className={cn(
                     "relative flex items-center px-4 py-2 shrink-0 transition-colors duration-150 whitespace-nowrap",
                     isActive
-                      ? "text-[#222222] font-semibold"
-                      : "text-[#717171] hover:text-[#222222]"
+                      ? "text-s-ink font-semibold"
+                      : "text-[s-ink/60] hover:text-s-ink"
                   )}
                 >
                   <span className="text-[13px] font-heading font-semibold">
@@ -103,7 +103,7 @@ export default function CategoryStickyRow({ locale }: CategoryStickyRowProps) {
                   {isActive && (
                     <motion.div
                       layoutId="cat-sticky-underline"
-                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-[#222222]"
+                      className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-s-ink"
                       transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                     />
                   )}

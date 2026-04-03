@@ -102,12 +102,12 @@ export default function TrustStatsBanner() {
   return (
     <section
       ref={sectionRef}
-      className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-[#EBEBEB]"
+      className="px-5 md:px-6 lg:px-10 xl:px-20 py-10 border-t border-s-ink/[0.08]"
     >
       <div className="flex flex-col sm:flex-row justify-center items-center gap-10 sm:gap-16">
         {/* Stat 1: Salons */}
         <div className="flex flex-col items-center gap-1">
-          <p className="font-heading font-bold text-[32px] md:text-[40px] text-[#222222]">
+          <p className="font-heading font-bold text-[32px] md:text-[40px] text-s-ink">
             {animatedValues.salons}+
           </p>
           <p className="font-body text-[14px] text-[#6A6A6A]">
@@ -117,7 +117,7 @@ export default function TrustStatsBanner() {
 
         {/* Stat 2: Reviews */}
         <div className="flex flex-col items-center gap-1">
-          <p className="font-heading font-bold text-[32px] md:text-[40px] text-[#222222]">
+          <p className="font-heading font-bold text-[32px] md:text-[40px] text-s-ink">
             {animatedValues.reviews}+
           </p>
           <p className="font-body text-[14px] text-[#6A6A6A]">
@@ -127,7 +127,7 @@ export default function TrustStatsBanner() {
 
         {/* Stat 3: Bookings */}
         <div className="flex flex-col items-center gap-1">
-          <p className="font-heading font-bold text-[32px] md:text-[40px] text-[#222222]">
+          <p className="font-heading font-bold text-[32px] md:text-[40px] text-s-ink">
             {animatedValues.bookings}+
           </p>
           <p className="font-body text-[14px] text-[#6A6A6A]">

@@ -40,7 +40,7 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
         boxShadow: "0 1px 3px rgba(26,18,9,.07), 0 2px 8px rgba(26,18,9,.05), inset 0 1px 0 rgba(255,255,255,.70)",
       }}
     >
-      <h2 className="font-heading font-semibold text-base text-[#222222] mb-3 flex items-center gap-2">
+      <h2 className="font-heading font-semibold text-base text-s-ink mb-3 flex items-center gap-2">
         <Clock className="w-4 h-4 text-s-coral" />
         {t("openingHours")}
       </h2>
@@ -51,16 +51,16 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
           onClick={() => setHoursExpanded(!hoursExpanded)}
           className="w-full flex items-center justify-between py-2 text-sm"
         >
-          <span className="flex items-center gap-2 text-[#222222]/70">
+          <span className="flex items-center gap-2 text-s-ink/70">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
-                isOpen ? "bg-[#2ECC71] shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-[#222222]/30"
+                isOpen ? "bg-[#2ECC71] shadow-[0_0_4px_rgba(46,204,113,0.4)]" : "bg-s-ink/30"
               }`}
             />
             {t("todayPrefix")}: {todayHours ? `${todayHours.open}–${todayHours.close}` : t("closed")}
           </span>
           <ChevronDown
-            className={`w-4 h-4 text-[#222222]/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-s-ink/40 transition-transform ${hoursExpanded ? "rotate-180" : ""}`}
           />
         </button>
         {hoursExpanded && (
@@ -78,17 +78,17 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${h ? "bg-[#2ECC71]" : "bg-[#222222]/15"} ${
+                      className={`w-1.5 h-1.5 rounded-full ${h ? "bg-[#2ECC71]" : "bg-s-ink/15"} ${
                         isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                       }`}
                     />
-                    <span className={isToday ? "font-heading font-bold text-[#222222]" : "text-[#222222]/50"}>
+                    <span className={isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50"}>
                       {label}
                     </span>
                   </div>
                   <span
                     className={`data-text ${
-                      h ? (isToday ? "font-bold text-s-coral" : "text-[#222222]") : "text-[#222222]/20"
+                      h ? (isToday ? "font-bold text-s-coral" : "text-s-ink") : "text-s-ink/20"
                     }`}
                   >
                     {h ? `${h.open}–${h.close}` : t("closed")}
@@ -115,17 +115,17 @@ export default function SalonOpeningHours({ openingHours, locale }: SalonOpening
             >
               <div className="flex items-center gap-2">
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${h ? "bg-[#2ECC71]" : "bg-[#222222]/15"} ${
+                  className={`w-1.5 h-1.5 rounded-full ${h ? "bg-[#2ECC71]" : "bg-s-ink/15"} ${
                     isToday && h ? "shadow-[0_0_4px_rgba(46,204,113,0.4)]" : ""
                   }`}
                 />
-                <span className={isToday ? "font-heading font-bold text-[#222222]" : "text-[#222222]/50"}>
+                <span className={isToday ? "font-heading font-bold text-s-ink" : "text-s-ink/50"}>
                   {label}
                 </span>
               </div>
               <span
                 className={`data-text ${
-                  h ? (isToday ? "font-bold text-s-coral" : "text-[#222222]") : "text-[#222222]/20"
+                  h ? (isToday ? "font-bold text-s-coral" : "text-s-ink") : "text-s-ink/20"
                 }`}
               >
                 {h ? `${h.open}–${h.close}` : t("closed")}

@@ -49,10 +49,10 @@ export default function BrowseByCitySection() {
   const t = useTranslations("home");
 
   return (
-    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-[#EBEBEB]">
+    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08]">
       {/* Section Header */}
       <div className="mb-8">
-        <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]" style={{ lineHeight: "1.1" }}>
+        <h2 className="font-heading font-semibold text-[22px] tracking-tight text-s-ink" style={{ lineHeight: "1.1" }}>
           {t("cities.title") || "Salons in deiner Nähe"}
         </h2>
       </div>
@@ -92,12 +92,12 @@ export default function BrowseByCitySection() {
               <div key={category.slug} className="flex items-center gap-2">
                 <Link
                   href={`/${locale}/${city.slug}/${category.slug}`}
-                  className="text-[13px] text-[#6A6A6A] hover:text-[#222222] transition-colors duration-150"
+                  className="text-[13px] text-[#6A6A6A] hover:text-s-ink transition-colors duration-150"
                 >
                   {category.label}
                 </Link>
                 {idx < CATEGORIES.length - 1 && (
-                  <span className="text-[#EBEBEB]">·</span>
+                  <span className="text-s-ink/[0.08]">·</span>
                 )}
               </div>
             ))}

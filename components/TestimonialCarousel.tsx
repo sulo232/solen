@@ -60,8 +60,8 @@ const TESTIMONIALS: Testimonial[] = [
 
 export default function TestimonialCarousel() {
   return (
-    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-[#EBEBEB]">
-      <h2 className="font-heading font-semibold text-[22px] text-[#222222] mb-8 text-center">
+    <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-ink/[0.08]">
+      <h2 className="font-heading font-semibold text-[22px] text-s-ink mb-8 text-center">
         Was unsere Nutzer sagen
       </h2>
 
@@ -70,14 +70,14 @@ export default function TestimonialCarousel() {
           {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, idx) => (
             <div
               key={idx}
-              className="flex-shrink-0 w-[300px] bg-white border border-[#EBEBEB] rounded-[16px] p-6"
+              className="flex-shrink-0 w-[300px] bg-white border border-s-ink/[0.08] rounded-[16px] p-6"
             >
-              <p className="font-body text-[15px] text-[#222222] mb-4 leading-relaxed">
+              <p className="font-body text-[15px] text-s-ink mb-4 leading-relaxed">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-body font-semibold text-[14px] text-[#222222]">
+                  <p className="font-body font-semibold text-[14px] text-s-ink">
                     {testimonial.name}
                   </p>
                   <p className="font-body text-[13px] text-[#6A6A6A]">

@@ -64,7 +64,7 @@ export default function SalonSidebar({
     <div className="hidden lg:block lg:col-span-1">
       <div className="sticky top-[100px]">
         <div
-          className="rounded-2xl overflow-hidden p-6 bg-white border border-[#EBEBEB]"
+          className="rounded-2xl overflow-hidden p-6 bg-white border border-s-ink/[0.08]"
           style={{ boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}
         >
           {!calendarOpen ? (
@@ -72,12 +72,12 @@ export default function SalonSidebar({
               {/* Price + Rating row */}
               <div className="flex items-baseline justify-between">
                 {services.length > 0 && (
-                  <span className="text-[20px] font-heading font-bold text-[#222222]">
+                  <span className="text-[20px] font-heading font-bold text-s-ink">
                     ab {formatCurrency(Math.min(...services.map((s) => s.price)), locale)}
                   </span>
                 )}
                 {averageRating > 0 && (
-                  <span className="flex items-center gap-1 text-[14px] text-[#222222]">
+                  <span className="flex items-center gap-1 text-[14px] text-s-ink">
                     <Star className="w-[13px] h-[13px] fill-[#E8624A] text-[#E8624A]" />
                     <span className="font-semibold">{averageRating.toFixed(1)}</span>
                     <span className="text-[#6A6A6A]">({reviewCount})</span>
@@ -105,7 +105,7 @@ export default function SalonSidebar({
               {nextSlot && (
                 <button
                   onClick={() => onQuickBook?.(nextSlot)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-[#222222]/10 text-sm font-body text-[#222222] hover:border-[#E8624A]/40 hover:text-[#E8624A] transition-colors duration-150"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-[12px] border border-s-ink/10 text-sm font-body text-s-ink hover:border-[#E8624A]/40 hover:text-[#E8624A] transition-colors duration-150"
                 >
                   <Zap size={14} className="text-[#E8624A]" />
                   {t("nextAvailable")}: {formatDate(nextSlot.starts_at)}
@@ -113,7 +113,7 @@ export default function SalonSidebar({
               )}
 
               {/* Quick info */}
-              <div className="space-y-2 pt-3 border-t border-[#EBEBEB]">
+              <div className="space-y-2 pt-3 border-t border-s-ink/[0.08]">
                 <div className="flex items-center gap-2 text-[13px] text-[#484848]">
                   <Zap className="w-4 h-4 text-[#6A6A6A]" />
                   <span>{t("instantBooking")}</span>

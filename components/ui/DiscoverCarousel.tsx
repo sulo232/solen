@@ -84,14 +84,14 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
       {/* Scroll controls (Desktop only) */}
       <button
         onClick={scrollLeft}
-        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.14)] border border-[#EBEBEB] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] text-[#222222]"
+        className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.14)] border border-s-ink/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] text-s-ink"
         aria-label={t("scrollLeft")}
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
       <button
         onClick={scrollRight}
-        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.14)] border border-[#EBEBEB] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] text-[#222222]"
+        className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.14)] border border-s-ink/[0.08] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.18)] active:scale-[0.98] text-s-ink"
         aria-label={t("scrollRight")}
       >
         <ChevronRight className="w-5 h-5" />
@@ -152,14 +152,14 @@ export default function DiscoverCarousel({ locale }: { locale: string }) {
           href={`/${locale}/discover`}
           className="shrink-0 snap-center group relative block w-[44vw] max-w-[200px] aspect-[4/5]"
         >
-          <div className="w-full h-full rounded-[16px] overflow-hidden bg-[#F7F7F7] border border-[#EBEBEB] flex flex-col items-center justify-center p-6 text-center hover:border-[#CCCCCC] transition-colors duration-150">
-            <div className="w-10 h-10 rounded-full bg-[#222222] text-white flex items-center justify-center mb-4">
+          <div className="w-full h-full rounded-[16px] overflow-hidden bg-s-bg-sunken border border-s-ink/[0.08] flex flex-col items-center justify-center p-6 text-center hover:border-s-ink/[0.2] transition-colors duration-150">
+            <div className="w-10 h-10 rounded-full bg-s-ink text-white flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </div>
-            <h3 className="font-heading font-semibold text-[14px] text-[#222222] leading-tight">
+            <h3 className="font-heading font-semibold text-[14px] text-s-ink leading-tight">
               {t("browseAll")}
             </h3>
-            <p className="text-[12px] font-body text-[#717171] mt-2">
+            <p className="text-[12px] font-body text-[s-ink/60] mt-2">
               {t("inspirationText")}
             </p>
           </div>

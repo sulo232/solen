@@ -83,7 +83,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
     <div
       ref={navRef}
       className={cn(
-        "sticky top-[72px] z-30 bg-white border-b border-[#EBEBEB] transition-shadow duration-200",
+        "sticky top-[72px] z-30 bg-white border-b border-s-ink/[0.08] transition-shadow duration-200",
         isSticky && "shadow-sm"
       )}
     >
@@ -103,8 +103,8 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
               className={cn(
                 "relative shrink-0 px-4 py-4 text-[14px] font-body font-medium whitespace-nowrap transition-colors duration-150",
                 activeId === id
-                  ? "text-[#222222] font-semibold"
-                  : "text-[#6A6A6A] hover:text-[#222222]"
+                  ? "text-s-ink font-semibold"
+                  : "text-[#6A6A6A] hover:text-s-ink"
               )}
             >
               {label}
@@ -115,7 +115,7 @@ export default function SalonSectionNav({ sections }: SalonSectionNavProps) {
         {/* Sliding active indicator */}
         <div
           ref={indicatorRef}
-          className="absolute bottom-0 left-0 h-[2px] bg-[#222222] transition-[transform,width] duration-200 ease-out"
+          className="absolute bottom-0 left-0 h-[2px] bg-s-ink transition-[transform,width] duration-200 ease-out"
           style={{ width: 0 }}
         />
       </div>

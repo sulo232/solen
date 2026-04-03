@@ -36,7 +36,7 @@ export default function MobileBookingBar({
         {/* Left: Price + Rating */}
         <div className="flex flex-col gap-0.5">
           {minPrice != null && (
-            <span className="text-[15px] font-heading font-bold text-[#222222]">
+            <span className="text-[15px] font-heading font-bold text-s-ink">
               ab {formatCurrency(minPrice)}
             </span>
           )}

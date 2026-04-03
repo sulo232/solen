@@ -197,12 +197,12 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
               </span>
             );
           })() : (
-            <span className="font-semibold text-[#222222]">$$</span>
+            <span className="font-semibold text-s-ink">$$</span>
           )}
           {showRating ? (
-            <span className="text-[#222222] font-medium ml-1">
-              <span className="text-[#717171] font-normal mr-1">·</span>
-              <Star className="inline w-[11px] h-[11px] fill-[#222222] text-[#222222] mb-[2px] mr-[3px]" />
+            <span className="text-s-ink font-medium ml-1">
+              <span className="text-s-ink/60 font-normal mr-1">·</span>
+              <Star className="inline w-[11px] h-[11px] fill-s-ink text-s-ink mb-[2px] mr-[3px]" />
               {salon.average_rating.toFixed(2)}
             </span>
           ) : null}

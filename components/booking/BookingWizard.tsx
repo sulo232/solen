@@ -103,7 +103,7 @@ export default function BookingWizard({
   return (
     <div className="w-full">
       {/* ── Progress bar ── */}
-      <div className="w-full h-1 bg-[#F0F0F0] rounded-full overflow-hidden mb-1">
+      <div className="w-full h-1 bg-s-bg-surface rounded-full overflow-hidden mb-1">
         <motion.div
           className="h-full bg-[#E8624A] rounded-full"
           initial={{ width: 0 }}
@@ -117,17 +117,17 @@ export default function BookingWizard({
         {canGoBack && (
           <button
             onClick={handleBack}
-            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#F7F7F7] transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-s-bg-sunken transition-colors"
             aria-label={t('back')}
           >
-            <ChevronLeft className="w-5 h-5 text-[#222222]" />
+            <ChevronLeft className="w-5 h-5 text-s-ink" />
           </button>
         )}
         <div className="flex-1 min-w-0">
           <p className="text-[11px] font-heading font-bold uppercase tracking-[.08em] text-[#6A6A6A]">
             {t('stepOf', { current: currentIndex + 1, total: STEPS.length })}
           </p>
-          <h3 className="text-[17px] font-heading font-semibold text-[#222222] truncate">
+          <h3 className="text-[17px] font-heading font-semibold text-s-ink truncate">
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {t(STEP_KEYS[currentStep] as any)}
           </h3>
@@ -144,7 +144,7 @@ export default function BookingWizard({
                 ? "w-3 bg-[#E8624A]"
                 : i === currentIndex
                 ? "w-6 bg-[#E8624A]"
-                : "w-3 bg-[#EBEBEB]"
+                : "w-3 bg-s-ink/[0.08]"
             }`}
           />
         ))}

@@ -40,7 +40,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
 
   return (
     <div id="section-angebot" className="scroll-mt-[180px]">
-      <h2 className="font-heading font-semibold text-base text-[#222222] mb-3">{t("services")}</h2>
+      <h2 className="font-heading font-semibold text-base text-s-ink mb-3">{t("services")}</h2>
       <ServiceCategoryFilter
         categories={filterCategories}
         activeCategory={activeCategory}
@@ -54,7 +54,7 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
             <p className="text-[9px] font-heading font-bold uppercase tracking-[.18em] text-s-amber mb-3 mt-1">
               {cat}
             </p>
-            <div className="divide-y divide-[#222222]/5">
+            <div className="divide-y divide-s-ink/5">
               {svcs.map((svc) => (
                 <button
                   key={svc.id}
@@ -69,23 +69,23 @@ export default function SalonServices({ services, salonId, onServiceSelect, sele
                   className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[12px] text-left transition-[background-color,border-color] duration-[200ms] ${
                     selectedServiceId === svc.id
                       ? "bg-s-coral/[0.08] border border-s-coral/20"
-                      : "hover:bg-[#F0F0F0] border border-transparent"
+                      : "hover:bg-s-bg-surface border border-transparent"
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <div>
-                      <p className="text-sm font-medium text-[#222222]">
+                      <p className="text-sm font-medium text-s-ink">
                         {locale === "de" ? svc.name_de : svc.name_en}
                       </p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="flex items-center gap-1 text-xs text-[#222222]/40">
+                        <span className="flex items-center gap-1 text-xs text-s-ink/40">
                           <Clock size={10} /> {svc.duration_minutes} Min.
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0 ml-4">
-                    <span className="data-text font-semibold text-sm text-[#222222]">
+                    <span className="data-text font-semibold text-sm text-s-ink">
                       {formatCurrency(svc.price, locale)}
                     </span>
                     <span

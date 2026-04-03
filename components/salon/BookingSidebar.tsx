@@ -30,20 +30,20 @@ export default function BookingSidebar({
 }: BookingSidebarProps) {
   return (
     <div
-      className="sticky top-[100px] rounded-2xl border border-[#EBEBEB] bg-white p-6"
+      className="sticky top-[100px] rounded-2xl border border-s-ink/[0.08] bg-white p-6"
       style={{ boxShadow: "0 6px 16px rgba(0,0,0,0.12)" }}
     >
       {/* Price + Rating */}
       <div className="flex items-baseline justify-between mb-5">
         {minPrice != null && (
           <div>
-            <span className="text-[20px] font-heading font-bold text-[#222222]">
+            <span className="text-[20px] font-heading font-bold text-s-ink">
               ab {formatCurrency(minPrice)}
             </span>
           </div>
         )}
         {avgRating != null && avgRating > 0 && (
-          <span className="flex items-center gap-1 text-[14px] text-[#222222]">
+          <span className="flex items-center gap-1 text-[14px] text-s-ink">
             <Star className="w-[13px] h-[13px] fill-[#E8624A] text-[#E8624A]" />
             <span className="font-semibold">{avgRating.toFixed(1)}</span>
             {reviewCount != null && (
@@ -83,7 +83,7 @@ export default function BookingSidebar({
       </button>
 
       {/* Quick info badges */}
-      <div className="space-y-3 pt-3 border-t border-[#EBEBEB]">
+      <div className="space-y-3 pt-3 border-t border-s-ink/[0.08]">
         {nextSlotLabel && (
           <div className="flex items-center gap-2.5 text-[13px] text-[#484848]">
             <Clock className="w-4 h-4 text-[#6A6A6A] shrink-0" />

@@ -53,7 +53,7 @@ export default function SalonMobileCTA({
         <div className="flex items-center justify-between px-5 py-3">
           <div className="flex flex-col gap-0.5">
             {services.length > 0 && (
-              <span className="text-[15px] font-heading font-bold text-[#222222]">
+              <span className="text-[15px] font-heading font-bold text-s-ink">
                 ab {formatCurrency(Math.min(...services.map((s) => s.price)), locale)}
               </span>
             )}

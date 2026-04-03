@@ -519,7 +519,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-[s-ink/[0.08]] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08] dark:border-white/[0.07]">
                           <div>
                             <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
@@ -551,7 +551,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-[s-ink/[0.08]] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-s-ink/[0.08] dark:border-white/[0.07]">
                           <div>
                             <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
@@ -648,7 +648,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             </div>
 
                             {/* Vertical category list */}
-                            <div className="flex flex-col divide-y divide-[s-bg-surface] dark:divide-white/[0.06] mb-2">
+                            <div className="flex flex-col divide-y divide-s-bg-surface dark:divide-white/[0.06] mb-2">
                               {/* All services row */}
                               <button
                                 onClick={() => selectService(null)}
@@ -773,7 +773,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             </button>
                             <button
                               onClick={() => selectService(null)}
-                              className="w-full flex items-center gap-3 py-3.5 border-t border-[s-bg-surface] dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                              className="w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                             >
                               <div className="flex-1 font-body text-[14px] text-s-ink/50 dark:text-s-dm-text/50 italic">
                                 {t("steps.service.skip")}
@@ -787,7 +787,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   key={svc.key}
                                   onClick={() => selectService(svc.key)}
                                   aria-label={label}
-                                  className={`w-full flex items-center gap-3 py-3.5 border-t border-[s-bg-surface] dark:border-white/[0.06] text-left transition-colors ${
+                                  className={`w-full flex items-center gap-3 py-3.5 border-t border-s-bg-surface dark:border-white/[0.06] text-left transition-colors ${
                                     service === svc.key
                                       ? "bg-s-coral/[0.04] dark:bg-s-coral/[0.08]"
                                       : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
