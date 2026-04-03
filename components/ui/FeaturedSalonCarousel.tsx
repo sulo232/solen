@@ -181,7 +181,7 @@ function SalonHeroCard({ salon, locale, index, isFavorited, onFavoriteToggle, is
       </div>
 
       {/* ── Text below image ── */}
-      <div className="mt-3 flex flex-col gap-[2px]">
+      <div className="mt-3 flex flex-col gap-0.5">
         <h3 className="font-heading font-semibold text-[15px] text-s-ink truncate leading-[19px]">
           {salon.name}
         </h3>

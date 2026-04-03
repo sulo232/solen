@@ -314,7 +314,7 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
         </div>
 
         {/* ── Info Section — Roadmap 02 Typography Matrix ─────────────────────── */}
-        <div className="mt-3 flex flex-col gap-[2px]">
+        <div className="mt-3 flex flex-col gap-0.5">
           {/* Line 1: Name + Rating (right-aligned, Airbnb pattern) */}
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-heading font-semibold text-s-ink text-base leading-6 truncate">

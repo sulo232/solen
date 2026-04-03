@@ -99,7 +99,7 @@ export default function BottomTabBar() {
                 key={key}
                 href={fullHref}
                 onClick={(e) => handleTabClick(key, requiresAuth, isActive, e)}
-                className="relative flex-1 flex flex-col items-center justify-center gap-[3px] min-h-[44px]"
+                className="relative flex-1 flex flex-col items-center justify-center gap-1 min-h-[44px]"
                 aria-label={t(key as any)}
                 aria-current={isActive ? "page" : undefined}
                 style={{ WebkitTapHighlightColor: "transparent" }}
