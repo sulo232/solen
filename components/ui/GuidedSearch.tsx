@@ -332,7 +332,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
   // ── Step dot animation values ──────────────────────────────────────────────
   const stepDot = (s: Step) => ({
     width:      s === step ? 20 : 6,
-    background: s === step ? "#E8624A" : s < step ? "#1A1209" : "#E0E0E0",
+    background: s === step ? "s-coral" : s < step ? "s-ink" : "s-ink/[0.08]",
   });
 
   // ── JSX ───────────────────────────────────────────────────────────────────
@@ -472,7 +472,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                     className="flex items-center justify-center rounded-full hover:bg-s-ink/[0.05] transition-colors"
                     style={{ width: 44, height: 44 }}
                   >
-                    <X size={24} style={{ color: "#8A8178" }} aria-hidden="true" />
+                    <X size={24} style={{ color: "s-ink/60" }} aria-hidden="true" />
                   </button>
                 </div>
 
@@ -492,8 +492,8 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         className="rounded-pill font-body font-medium text-[12px] transition-[transform,filter,border-color,background-color] duration-150"
                         style={{
                           padding: "4px 12px",
-                          background: isActive ? "#1A1A1A" : isCompleted ? "#E8735A" : "#EDE8E2",
-                          color: isActive ? "#FFFFFF" : isCompleted ? "#FFFFFF" : "#8A8178",
+                          background: isActive ? "s-ink" : isCompleted ? "s-coral" : "s-bg-sunken",
+                          color: isActive ? "#FFFFFF" : isCompleted ? "#FFFFFF" : "s-ink/60",
                         }}
                         aria-current={isActive ? "step" : undefined}
                       >
@@ -519,9 +519,9 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-[#EBEBEB] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-[s-ink/[0.08]] dark:border-white/[0.07]">
                           <div>
-                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "#8A8178" }}>
+                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWas" as Parameters<typeof t>[0])}
                             </div>
                             <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
@@ -551,9 +551,9 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                         transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center justify-between py-3 border-b border-[#EBEBEB] dark:border-white/[0.07]">
+                        <div className="flex items-center justify-between py-3 border-b border-[s-ink/[0.08]] dark:border-white/[0.07]">
                           <div>
-                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "#8A8178" }}>
+                            <div className="text-[11px] font-heading font-bold uppercase tracking-[.07em]" style={{ color: "s-ink/60" }}>
                               {t("segWo" as Parameters<typeof t>[0])}
                             </div>
                             <div className="font-heading font-bold text-[13px] text-s-ink dark:text-s-dm-text">
@@ -648,7 +648,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             </div>
 
                             {/* Vertical category list */}
-                            <div className="flex flex-col divide-y divide-[#F5F5F5] dark:divide-white/[0.06] mb-2">
+                            <div className="flex flex-col divide-y divide-[s-bg-surface] dark:divide-white/[0.06] mb-2">
                               {/* All services row */}
                               <button
                                 onClick={() => selectService(null)}
@@ -694,7 +694,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     {/* Icon container */}
                                     <div
                                       className="shrink-0 flex items-center justify-center"
-                                      style={{ width: 40, height: 40, borderRadius: 12, background: "#F5F0EB" }}
+                                      style={{ width: 40, height: 40, borderRadius: 12, background: "s-bg-base" }}
                                     >
                                       <cat.Icon width={20} height={20} className="text-s-coral" />
                                     </div>
@@ -709,11 +709,11 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                     </div>
                                     {/* Right side: count or chevron */}
                                     {count > 0 ? (
-                                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#8A8178", whiteSpace: "nowrap", flexShrink: 0 }}>
+                                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "s-ink/60", whiteSpace: "nowrap", flexShrink: 0 }}>
                                         {count} {count === 1 ? "Salon" : "Salons"}
                                       </span>
                                     ) : (
-                                      <ChevronRight size={18} style={{ color: "#C4BBB2", flexShrink: 0 }} aria-hidden="true" />
+                                      <ChevronRight size={18} style={{ color: "s-sand", flexShrink: 0 }} aria-hidden="true" />
                                     )}
                                   </button>
                                 );
@@ -732,7 +732,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             {/* Text search input */}
                             <div
                               className="relative flex items-center mb-4"
-                              style={{ border: `${inputFocused ? "1.5px" : "1px"} solid ${inputFocused ? "#1A1A1A" : "rgba(0,0,0,0.10)"}`, borderRadius: "12px", transition: "border-color 150ms ease" }}
+                              style={{ border: `${inputFocused ? "1.5px" : "1px"} solid ${inputFocused ? "s-ink" : "rgba(0,0,0,0.10)"}`, borderRadius: "12px", transition: "border-color 150ms ease" }}
                             >
                               <Search size={15} className="absolute left-3.5 text-s-ink/35 dark:text-s-dm-text/35 shrink-0 pointer-events-none" aria-hidden="true" />
                               <input
@@ -773,7 +773,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                             </button>
                             <button
                               onClick={() => selectService(null)}
-                              className="w-full flex items-center gap-3 py-3.5 border-t border-[#F5F5F5] dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                              className="w-full flex items-center gap-3 py-3.5 border-t border-[s-bg-surface] dark:border-white/[0.06] text-left hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                             >
                               <div className="flex-1 font-body text-[14px] text-s-ink/50 dark:text-s-dm-text/50 italic">
                                 {t("steps.service.skip")}
@@ -787,7 +787,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                   key={svc.key}
                                   onClick={() => selectService(svc.key)}
                                   aria-label={label}
-                                  className={`w-full flex items-center gap-3 py-3.5 border-t border-[#F5F5F5] dark:border-white/[0.06] text-left transition-colors ${
+                                  className={`w-full flex items-center gap-3 py-3.5 border-t border-[s-bg-surface] dark:border-white/[0.06] text-left transition-colors ${
                                     service === svc.key
                                       ? "bg-s-coral/[0.04] dark:bg-s-coral/[0.08]"
                                       : "hover:bg-s-ink/[0.02] dark:hover:bg-white/[0.02]"
@@ -808,7 +808,7 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                           <button
                             onClick={() => { close(); router.push(`/${locale}/search`); }}
                             className="font-body font-medium text-[14px] hover:brightness-[1.06] transition-[filter] duration-150"
-                            style={{ color: "#E8735A" }}
+                            style={{ color: "s-coral" }}
                           >
                             {t("allCategories" as Parameters<typeof t>[0])} →
                           </button>
@@ -915,9 +915,9 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 aria-pressed={isSelected}
                                 className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150"
                                 style={{
-                                  border:     `1.5px solid ${isSelected ? "#1A1209" : "#E8E8E8"}`,
-                                  background: isSelected ? "#1A1209" : "#FFFFFF",
-                                  color:      isSelected ? "#FFFFFF" : "#1A1209",
+                                  border:     `1.5px solid ${isSelected ? "s-ink" : "s-bg-surface"}`,
+                                  background: isSelected ? "s-ink" : "#FFFFFF",
+                                  color:      isSelected ? "#FFFFFF" : "s-ink",
                                 }}
                               >
                                 {label}
@@ -967,9 +967,9 @@ export default function GuidedSearch({ categoryCounts = {}, hideTrigger = false 
                                 aria-pressed={isSelected}
                                 className="px-[18px] py-2.5 rounded-pill text-[13px] font-heading font-semibold transition-[transform,filter,border-color,background-color] duration-150"
                                 style={{
-                                  border:     `1.5px solid ${isSelected ? "#1A1209" : "#E8E8E8"}`,
-                                  background: isSelected ? "#1A1209" : "#FFFFFF",
-                                  color:      isSelected ? "#FFFFFF" : "#1A1209",
+                                  border:     `1.5px solid ${isSelected ? "s-ink" : "s-bg-surface"}`,
+                                  background: isSelected ? "s-ink" : "#FFFFFF",
+                                  color:      isSelected ? "#FFFFFF" : "s-ink",
                                 }}
                               >
                                 {t(`steps.date.time.${key}` as Parameters<typeof t>[0])}
