@@ -11,7 +11,7 @@ interface SkeletonProps {
 }
 
 export default function Skeleton({ variant = "text", className, style }: SkeletonProps) {
-  const base = "animate-shimmer rounded-[8px] bg-gradient-to-r from-[#F0F0F0] via-[#E8E8E8] to-[#F0F0F0] bg-[length:200%_100%]";
+  const base = "animate-shimmer rounded-[8px] bg-gradient-to-r from-s-bg-surface via-s-bg-sunken to-s-bg-surface bg-[length:200%_100%] dark:from-s-dm-surface dark:via-s-dm-sunken dark:to-s-dm-surface";
 
   if (variant === "avatar") {
     return <div className={cn(base, "w-10 h-10 rounded-full", className)} style={style} />;
@@ -20,8 +20,8 @@ export default function Skeleton({ variant = "text", className, style }: Skeleto
   if (variant === "card") {
     return (
       <div className={cn("rounded-[20px] overflow-hidden border border-s-ink/5", className)} style={style}>
-        {/* Photo placeholder */}
-        <div className={cn(base, "h-40 w-full rounded-none")} />
+        {/* Photo placeholder — matches SalonCard aspect-[4/5] */}
+        <div className={cn(base, "w-full aspect-[4/5] rounded-none")} />
         {/* Text lines */}
         <div className="p-4 space-y-3">
           <div className={cn(base, "h-4 w-3/4")} />
