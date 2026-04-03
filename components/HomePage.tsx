@@ -206,7 +206,7 @@ export default function HomePage({ initialData }: HomePageProps) {
           className="mx-auto px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-[#EBEBEB] relative z-[2]"
         >
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]" style={{ lineHeight: "1.1" }}>
+            <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]" style={{ lineHeight: "1.1", letterSpacing: "0.5px" }}>
               {t("discover.title")}
             </h2>
             <Link href={`/${locale}/discover`}
@@ -283,7 +283,7 @@ export default function HomePage({ initialData }: HomePageProps) {
                 <span className="inline-block text-[11px] font-heading font-bold uppercase tracking-[.12em] text-s-coral mb-3">
                   {t("partner.forSalonsStudios")}
                 </span>
-                <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3">
+                <h2 className="font-heading font-extrabold text-[28px] sm:text-[34px] leading-[1.1] tracking-tight text-[#1A1A1A] mb-3" style={{ letterSpacing: "0.5px" }}>
                   {t("partner.title")}
                 </h2>
                 <p className="font-body text-[15px] sm:text-[16px] text-[#717171] max-w-[420px] leading-relaxed mb-6">
