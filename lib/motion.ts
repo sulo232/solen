@@ -200,15 +200,13 @@ export const headingVariants = blurFadeUp;
 //  Category icons, dropdowns, parallax effects
 // ═══════════════════════════════════════════════════════════════════════
 
-/** Category icon hover — scale + glow effect */
+/** Category icon hover — scale effect only (no filter animation due to rendering issues) */
 export const categoryIconHover: Variants = {
   rest: {
     scale: 1,
-    filter: "drop-shadow(0 0 0px rgba(232, 98, 74, 0))",
   },
   hover: {
-    scale: 1.05,
-    filter: "drop-shadow(0 0 12px rgba(232, 98, 74, 0.3))",
+    scale: 1.08,
     transition: { duration: DUR.fast, ease: EASE.out },
   },
 };

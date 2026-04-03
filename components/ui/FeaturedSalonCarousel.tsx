@@ -19,6 +19,7 @@ import {
   VIEWPORT,
   SPRING,
   imageParallax,
+  categoryIconHover,
 } from "@/lib/motion";
 
 interface FeaturedSalonCarouselProps {
@@ -110,7 +111,12 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
         variants={slideInLeft}
         className="flex items-center justify-between px-6 mb-5"
       >
-        <div className="flex items-center gap-1 cursor-pointer">
+        <motion.div
+          initial="rest"
+          whileHover="hover"
+          variants={categoryIconHover}
+          className="flex items-center gap-1 cursor-pointer"
+        >
           <h2 className="font-heading font-semibold text-[22px] tracking-tight text-[#222222]">
             {title || t("heroCarousel.label")}
           </h2>
@@ -119,7 +125,7 @@ export default function FeaturedSalonCarousel({ salons, locale, title, viewAllHr
               <ChevronRight size={18} className="text-[#222222]" />
             </Link>
           )}
-        </div>
+        </motion.div>
 
         {/* Navigation Arrows */}
         <div className="hidden md:flex items-center gap-2">
