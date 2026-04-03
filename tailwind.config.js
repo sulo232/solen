@@ -78,6 +78,10 @@ module.exports = {
         "v5-card-hover": "0 4px 12px rgba(26,18,9,.06), 0 12px 32px rgba(26,18,9,.06)",
         "v5-float":      "0 8px 32px rgba(26,18,9,.10), 0 2px 8px rgba(26,18,9,.04)",
         "v5-glow-coral": "0 0 24px rgba(232,98,74,.12)",
+        // ── Glow Effects (micro-interactions) ──
+        "glow-coral":    "0 0 24px rgba(232, 98, 74, 0.4)",
+        "glow-amber":    "0 0 20px rgba(212, 135, 10, 0.35)",
+        "glow-subtle":   "0 0 16px rgba(26, 18, 9, 0.08)",
       },
       zIndex: {
         55: '55',
@@ -91,6 +95,7 @@ module.exports = {
       backgroundImage: {
         "glass-gradient": "linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%)",
         "mesh-warm": "radial-gradient(at 40% 20%, rgba(232,98,74,0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(212,135,10,0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(107,163,200,0.06) 0px, transparent 50%)",
+        "grain": "url(\"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 seed=%221%22 /%3E%3CfeColorMatrix type=%22saturate%22 values=%220.3%22/%3E%3C/filter%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23F5F0EB%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E\")",
       },
       transitionTimingFunction: {
         "ease-out-strong": "cubic-bezier(0.23, 1, 0.32, 1)",
